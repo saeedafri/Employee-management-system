@@ -1,3 +1,4 @@
+import { authenticate } from '../../middleware/authenticate.js';
 import {
   employeeDashboardHandler,
   getTodayHandler,
@@ -10,6 +11,7 @@ import {
 } from './employee.controller.js';
 
 export async function employeeDashboardRoutes(fastify) {
+  fastify.addHook('onRequest', authenticate);
   fastify.get(
     '/dashboard/employee',
     {

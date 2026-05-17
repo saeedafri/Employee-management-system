@@ -1,3 +1,4 @@
+import { authenticate } from '../../middleware/authenticate.js';
 import {
   managerDashboardHandler,
   getTeamHandler,
@@ -8,6 +9,7 @@ import {
 } from './manager.controller.js';
 
 export async function managerDashboardRoutes(fastify) {
+  fastify.addHook('onRequest', authenticate);
   fastify.get(
     '/dashboard/manager',
     {
