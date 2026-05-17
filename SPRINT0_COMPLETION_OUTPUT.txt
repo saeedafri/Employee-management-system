@@ -49,7 +49,7 @@ SWAGGER DOCUMENTATION
 ✓ OpenAPI 3.0 schema integrated
 ✓ All 12 auth/logs endpoints documented
 ✓ Response schemas with status codes: 200, 201, 400, 401, 403, 404
-✓ Endpoint: http://localhost:3000/documentation
+✓ Endpoint: http://localhost:3000/docs
 
 ================================================================================
                         BRANCH COVERAGE EXCEPTION
@@ -224,7 +224,7 @@ $ npx newman run docs/postman/EMS-API.postman_collection.json \
 
 Documentation:
 $ npm start                            # Server on :3000
-$ curl http://localhost:3000/documentation  # Swagger UI
+$ curl http://localhost:3000/docs  # Swagger UI
 
 ================================================================================
                         APPROVAL & SIGN-OFF
