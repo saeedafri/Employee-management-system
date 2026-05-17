@@ -91,6 +91,37 @@ export async function createTestPasswordResetToken(userId, tenantId) {
   };
 }
 
+export async function createTestOtpChallenge(userId, tenantId, email = 'test@test.com') {
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const codeHash = hashSHA256(code);
+  const challengeId = `challenge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  const destinationMasked = email.replace(/(.{1})(.*)(@.*)/, '$1***$3');
+
+  const challenge = await prisma.otpChallenge.create({
+    data: {
+      userId,
+      tenantId,
+      challengeId,
+      codeHash,
+      purpose: 'LOGIN',
+      deliveryChannel: 'EMAIL',
+      destinationMasked,
+      attempts: 0,
+      maxAttempts: 5,
+      resendCount: 0,
+      maxResends: 3,
+      lastSentAt: new Date(),
+      expiresAt,
+    },
+  });
+
+  return {
+    challenge,
+    code,
+  };
+}
+
 export async function getAuthToken(app, tenantKey, email, password) {
   const response = await app.inject({
     method: 'POST',

@@ -47,6 +47,17 @@ function renderEmailTemplate(template, data) {
         </body>
       </html>
     `,
+    otp_verification: (d) => `
+      <html>
+        <body>
+          <h2>Verify Your Identity</h2>
+          <p>Your one-time password (OTP) is:</p>
+          <h1 style="letter-spacing: 5px; font-size: 28px; font-weight: bold;">${d.code}</h1>
+          <p>This code expires in ${d.expiresInMinutes} minutes.</p>
+          <p>If you didn't request this code, you can ignore this email.</p>
+        </body>
+      </html>
+    `,
   };
 
   const templateFn = templates[template];
@@ -91,6 +102,30 @@ export async function enqueuePasswordResetEmail(to, resetToken, expiresInMinutes
     template: 'password_reset',
     data: {
       resetUrl,
+      expiresInMinutes,
+    },
+  }, {
+    removeOnComplete: true,
+    removeOnFail: false,
+    attempts: 3,
+    backoff: {
+      type: 'exponential',
+      delay: 2000,
+    },
+  });
+}
+
+export async function enqueueOtpEmail(to, code, expiresInMinutes) {
+  if (config.isTesting) {
+    return { success: true, devMode: true };
+  }
+
+  await emailQueue.add('otp_verification', {
+    to,
+    subject: 'Verify Your Identity - OTP',
+    template: 'otp_verification',
+    data: {
+      code,
       expiresInMinutes,
     },
   }, {

@@ -141,9 +141,13 @@ export async function findOtpChallenge(db, challengeId) {
   return db.otpChallenge.findUnique({ where: { challengeId } });
 }
 
-export async function updateOtpChallenge(db, challengeId, data) {
+export async function findOtpChallengeById(db, id) {
+  return db.otpChallenge.findUnique({ where: { id } });
+}
+
+export async function updateOtpChallenge(db, id, data) {
   return db.otpChallenge.update({
-    where: { challengeId },
+    where: { id },
     data,
   });
 }

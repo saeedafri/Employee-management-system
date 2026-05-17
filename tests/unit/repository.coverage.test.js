@@ -351,8 +351,14 @@ describe('Auth Repository Coverage', function () {
         userId: testUser.id,
         tenantId: testTenant.id,
         codeHash: 'code-hash-' + Date.now(),
+        purpose: 'LOGIN',
+        deliveryChannel: 'EMAIL',
+        destinationMasked: 't***@test.com',
         expiresAt: new Date(Date.now() + 10 * 60 * 1000),
         attempts: 0,
+        maxAttempts: 5,
+        resendCount: 0,
+        maxResends: 3,
       };
 
       const challenge = await authRepository.createOtpChallenge(prisma, otpData);
@@ -367,12 +373,18 @@ describe('Auth Repository Coverage', function () {
         userId: testUser.id,
         tenantId: testTenant.id,
         codeHash: 'code-hash-' + Date.now(),
+        purpose: 'LOGIN',
+        deliveryChannel: 'EMAIL',
+        destinationMasked: 't***@test.com',
         expiresAt: new Date(Date.now() + 10 * 60 * 1000),
         attempts: 0,
+        maxAttempts: 5,
+        resendCount: 0,
+        maxResends: 3,
       };
 
-      await authRepository.createOtpChallenge(prisma, otpData);
-      const found = await authRepository.findOtpChallenge(prisma, challengeId);
+      const created = await authRepository.createOtpChallenge(prisma, otpData);
+      const found = await authRepository.findOtpChallengeById(prisma, created.id);
 
       expect(found).to.exist;
       expect(found.challengeId).to.equal(challengeId);
@@ -385,12 +397,18 @@ describe('Auth Repository Coverage', function () {
         userId: testUser.id,
         tenantId: testTenant.id,
         codeHash: 'code-hash-' + Date.now(),
+        purpose: 'LOGIN',
+        deliveryChannel: 'EMAIL',
+        destinationMasked: 't***@test.com',
         expiresAt: new Date(Date.now() + 10 * 60 * 1000),
         attempts: 0,
+        maxAttempts: 5,
+        resendCount: 0,
+        maxResends: 3,
       };
 
-      await authRepository.createOtpChallenge(prisma, otpData);
-      const updated = await authRepository.updateOtpChallenge(prisma, challengeId, {
+      const created = await authRepository.createOtpChallenge(prisma, otpData);
+      const updated = await authRepository.updateOtpChallenge(prisma, created.id, {
         consumedAt: new Date(),
         attempts: 1,
       });

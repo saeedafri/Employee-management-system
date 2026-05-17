@@ -351,22 +351,32 @@ model PasswordResetToken {
 }
 
 model OtpChallenge {
-  id          String    @id @default(cuid())
-  userId      String
-  tenantId    String
-  challengeId String    @unique // State reference, not the code itself
-  codeHash    String    // SHA-256 hash of 6-digit code
-  attempts    Int       @default(0)
-  expiresAt   DateTime
-  consumedAt  DateTime?
-  createdAt   DateTime  @default(now())
+  id              String    @id @default(cuid())
+  userId          String
+  tenantId        String
+  challengeId     String    @unique // State reference, not the code itself
+  codeHash        String    // SHA-256 hash of 6-digit code
+  purpose         String    // LOGIN, EMAIL_VERIFY, PHONE_VERIFY, ACCOUNT_RECOVERY
+  deliveryChannel String    // EMAIL, SMS
+  destinationMasked String  // Masked email/phone for display (e.g., "u***@test.com")
+  attempts        Int       @default(0)
+  maxAttempts     Int       @default(5)
+  resendCount     Int       @default(0)
+  maxResends      Int       @default(3)
+  lastSentAt      DateTime?
+  lockedAt        DateTime?
+  expiresAt       DateTime
+  consumedAt      DateTime?
+  createdAt       DateTime  @default(now())
 
   // Relations
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-  @@index([tenantId])
+  @@index([tenantId, challengeId])
+  @@index([tenantId, userId, consumedAt])
+  @@index([expiresAt])
+  @@index([lockedAt])
 }
 
 model EmployeeDocument {

@@ -1,6 +1,7 @@
 import { authenticate } from '../../middleware/authenticate.js';
 import * as authController from './auth.controller.js';
 import * as passwordResetController from './passwordReset.controller.js';
+import * as otpController from './otp.controller.js';
 
 export default async function authRoutes(fastify) {
   fastify.post('/auth/login', {
@@ -224,4 +225,137 @@ export default async function authRoutes(fastify) {
       timeWindow: '15 minutes',
     },
   }, async (request, reply) => passwordResetController.resetPasswordController(request, reply));
+
+  fastify.post('/auth/verify-otp', {
+    schema: {
+      tags: ['OTP Verification'],
+      description: 'Verify OTP code',
+      body: {
+        type: 'object',
+        required: ['challengeId', 'code'],
+        properties: {
+          challengeId: { type: 'string' },
+          code: { type: 'string', pattern: '^\\d{6}$' },
+        },
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                valid: { type: 'boolean' },
+                challengeId: { type: 'string' },
+              },
+            },
+          },
+        },
+        400: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+        429: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+    rateLimit: {
+      max: 5,
+      timeWindow: '5 minutes',
+    },
+  }, async (request, reply) => otpController.verifyOtpController(request, reply));
+
+  fastify.post('/auth/resend-otp', {
+    schema: {
+      tags: ['OTP Verification'],
+      description: 'Resend OTP code to registered email',
+      body: {
+        type: 'object',
+        required: ['challengeId'],
+        properties: {
+          challengeId: { type: 'string' },
+        },
+      },
+      response: {
+        202: {
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                success: { type: 'boolean' },
+                destinationMasked: { type: 'string' },
+                expiresIn: { type: 'integer' },
+              },
+            },
+            meta: {
+              type: 'object',
+              properties: {
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+        400: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+        401: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+        429: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+    rateLimit: {
+      max: 3,
+      timeWindow: '15 minutes',
+    },
+    onRequest: [authenticate],
+  }, async (request, reply) => otpController.resendOtpController(request, reply));
 }
