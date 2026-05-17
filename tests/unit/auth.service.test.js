@@ -1,7 +1,6 @@
 import * as authService from '../../src/modules/auth/auth.service.js';
 import * as authRepository from '../../src/modules/auth/auth.repository.js';
 import * as hashUtils from '../../src/utils/hash.js';
-import * as tokenUtils from '../../src/utils/token.js';
 import { expect } from 'chai';
 import sinon from 'sinon';
 

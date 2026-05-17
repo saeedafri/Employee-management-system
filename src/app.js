@@ -8,6 +8,7 @@ import { helmetPlugin } from './plugins/helmet.js';
 import { rateLimitPlugin } from './plugins/rateLimit.js';
 import { requestIdPlugin } from './plugins/requestId.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { resolveTenant } from './middleware/resolveTenant.js';
 import authRoutes from './modules/auth/auth.routes.js';
 
 export async function createApp() {
@@ -38,6 +39,7 @@ export async function createApp() {
   // Register routes
   fastify.register(
     async (fastify) => {
+      fastify.addHook('onRequest', resolveTenant);
       fastify.register(authRoutes);
     },
     { prefix: config.apiPrefix },

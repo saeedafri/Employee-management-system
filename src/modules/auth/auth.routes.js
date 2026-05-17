@@ -11,11 +11,9 @@ export default async function authRoutes(fastify) {
     authController.adminLoginController(request, reply),
   );
 
-  // Protected routes
-  fastify.post(
-    '/auth/refresh',
-    { onRequest: [authenticate] },
-    async (request, reply) => authController.refreshController(request, reply),
+  // Public route (refresh token validates from cookie)
+  fastify.post('/auth/refresh', async (request, reply) =>
+    authController.refreshController(request, reply),
   );
 
   fastify.post(

@@ -6,7 +6,6 @@ describe('Auth Routes Integration Tests', function () {
 
   let app;
   let testTenant;
-  let testUser;
 
   before(async function () {
     app = await createTestApp();
@@ -15,7 +14,7 @@ describe('Auth Routes Integration Tests', function () {
   beforeEach(async function () {
     await cleanDatabase();
     testTenant = await createTestTenant();
-    testUser = await createTestUser(testTenant.id, {
+    await createTestUser(testTenant.id, {
       email: 'test@example.com',
       memberType: 'EMPLOYEE',
       passwordHash: '$argon2id$v=19$m=19456,t=2,p=1$dGVzdA$o5IIR5YvuDHRlGxJuXWBwJjNdJNjhYkE0T6PkZVb7Xc',  // password: 'password'

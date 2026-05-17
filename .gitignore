@@ -1,11 +1,16 @@
 # Dependencies
-node_modules/
-pnpm-lock.yaml
-package-lock.json
-yarn.lock
+node_modules
+.env
+.DS_Store
+__MACOSX
+coverage
+logs
+dist
+.nyc_output
+.prisma/client
+*.log
 
 # Environment
-.env
 .env.local
 .env.*.local
 
@@ -15,28 +20,26 @@ yarn.lock
 *.swp
 *.swo
 *.iml
-.DS_Store
 Thumbs.db
 
-# Build & Test
-dist/
+# Build
 build/
-coverage/
-.nyc_output/
 
 # Logs
-logs/
-*.log
 npm-debug.log*
 yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Prisma
-prisma/migrations/
+prisma/dev.db
+prisma/dev.db-journal
 
 # Runtime
 tmp/
+temp/
 .cache/
 
-# OS
-.DS_Store
-__MACOSX/
+# Testing
+.mocha/
+test-results.json

@@ -3,10 +3,11 @@ import { config } from './index.js';
 
 export const redis = new Redis(config.redisUrl);
 
+// Redis connection events handled silently - errors will be thrown to callers
 redis.on('connect', () => {
-  console.log('✅ Redis connected');
+  // Connection established
 });
 
-redis.on('error', (err) => {
-  console.error('❌ Redis error:', err);
+redis.on('error', () => {
+  // Error handling by caller
 });

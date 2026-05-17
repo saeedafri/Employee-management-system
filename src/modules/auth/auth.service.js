@@ -1,4 +1,5 @@
-import { verifyPassword, hashPassword, hashSHA256 } from '../../utils/hash.js';
+import crypto from 'crypto';
+import { verifyPassword, hashSHA256 } from '../../utils/hash.js';
 import { createAccessToken, generateRefreshToken } from '../../utils/token.js';
 import { config } from '../../config/index.js';
 import * as authRepository from './auth.repository.js';
@@ -54,19 +55,26 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
   }
 
   // Create session
-  const refreshToken = generateRefreshToken();
-  const refreshTokenHash = hashSHA256(refreshToken);
+  const rawRefreshToken = generateRefreshToken();
+  const refreshTokenHash = hashSHA256(rawRefreshToken);
   const expiresAt = new Date(
     Date.now() + config.sessionMaxAgeDays * 24 * 60 * 60 * 1000,
   );
 
-  const session = await authRepository.createSession(db, {
+  const sessionData = {
     userId: user.id,
     tenantId,
     refreshTokenHash,
     ipAddress,
     userAgent,
     expiresAt,
+  };
+
+  const session = await authRepository.createSession(db, sessionData);
+
+  // Set sessionFamilyId to sessionId for first login
+  await authRepository.updateSession(db, session.id, {
+    sessionFamilyId: session.id,
   });
 
   // Create access token
@@ -96,6 +104,9 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
     data: { lastLoginAt: new Date() },
   });
 
+  // Return opaque refresh token format: sessionId.rawRefreshToken
+  const opaqueRefreshToken = `${session.id}.${rawRefreshToken}`;
+
   return {
     user: {
       id: user.id,
@@ -104,7 +115,7 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
       employee: user.employee,
     },
     accessToken,
-    refreshToken,
+    refreshToken: opaqueRefreshToken,
     sessionId: session.id,
     permissions,
   };
@@ -123,19 +134,26 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
   }
 
   // Same as regular login, but with admin check
-  const refreshToken = generateRefreshToken();
-  const refreshTokenHash = hashSHA256(refreshToken);
+  const rawRefreshToken = generateRefreshToken();
+  const refreshTokenHash = hashSHA256(rawRefreshToken);
   const expiresAt = new Date(
     Date.now() + config.sessionMaxAgeDays * 24 * 60 * 60 * 1000,
   );
 
-  const session = await authRepository.createSession(db, {
+  const sessionData = {
     userId: user.id,
     tenantId,
     refreshTokenHash,
     ipAddress,
     userAgent,
     expiresAt,
+  };
+
+  const session = await authRepository.createSession(db, sessionData);
+
+  // Set sessionFamilyId to sessionId for first login
+  await authRepository.updateSession(db, session.id, {
+    sessionFamilyId: session.id,
   });
 
   const permissions = extractPermissions(user);
@@ -162,6 +180,9 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
     data: { lastLoginAt: new Date() },
   });
 
+  // Return opaque refresh token format: sessionId.rawRefreshToken
+  const opaqueRefreshToken = `${session.id}.${rawRefreshToken}`;
+
   return {
     user: {
       id: user.id,
@@ -170,84 +191,105 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
       employee: user.employee,
     },
     accessToken,
-    refreshToken,
+    refreshToken: opaqueRefreshToken,
     sessionId: session.id,
     permissions,
   };
 }
 
-export async function refreshAccessToken(db, userId, sessionId, refreshToken) {
-  // Verify session exists and is not revoked
-  const session = await authRepository.findSessionByIdAndUser(db, sessionId, userId);
+export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToken) {
+  // Step 1: Retrieve session by sessionId
+  const session = await authRepository.findSessionByIdWithFamily(db, sessionId);
   if (!session) {
-    throw new AppError('Session not found or expired', 'SESSION_EXPIRED', 401);
+    throw new AppError('Session not found', 'SESSION_NOT_FOUND', 401);
   }
 
-  // Check token expiry
+  // Step 2: Verify session not already revoked
+  if (session.revokedAt !== null) {
+    throw new AppError('Session revoked', 'SESSION_REVOKED', 401);
+  }
+
+  // Step 3: Verify tenant matches
+  if (session.tenantId !== tenantId) {
+    throw new AppError('Tenant mismatch', 'TENANT_MISMATCH', 401);
+  }
+
+  // Step 4: Check session expiry
   if (new Date() > session.expiresAt) {
     await authRepository.revokeSession(db, sessionId, 'EXPIRED');
     throw new AppError('Session expired', 'SESSION_EXPIRED', 401);
   }
 
-  // Verify refresh token matches
-  const refreshTokenHash = hashSHA256(refreshToken);
-  if (refreshTokenHash !== session.refreshTokenHash) {
-    // Token reuse detected - revoke entire session family
-    await authRepository.revokeSession(db, sessionId, 'TOKEN_REUSE_DETECTED');
+  // Step 5: Verify refresh token using timing-safe comparison
+  const providedHash = hashSHA256(rawRefreshToken);
+  const tokensMatch = crypto.timingSafeEqual(
+    Buffer.from(providedHash),
+    Buffer.from(session.refreshTokenHash),
+  );
+
+  if (!tokensMatch) {
+    // Step 6: Token mismatch detected - revoke entire family
+    await authRepository.revokeSessionFamily(db, session.sessionFamilyId, 'TOKEN_REUSE_DETECTED');
     throw new AppError(
-      'Token reuse detected. Session revoked.',
+      'Token reuse detected. All sessions revoked.',
       'TOKEN_REUSE',
       401,
     );
   }
 
-  // Get updated user data
-  const user = await authRepository.findUserById(db, userId);
+  // Step 7: Fetch user data
+  const user = await authRepository.findUserById(db, session.userId);
   if (!user) {
     throw new AppError('User not found', 'USER_NOT_FOUND', 404);
   }
 
-  // Create new session (old one stays for audit)
-  const newRefreshToken = generateRefreshToken();
-  const newRefreshTokenHash = hashSHA256(newRefreshToken);
+  // Step 8: Generate new refresh token
+  const newRawRefreshToken = generateRefreshToken();
+  const newRefreshTokenHash = hashSHA256(newRawRefreshToken);
   const expiresAt = new Date(
     Date.now() + config.sessionMaxAgeDays * 24 * 60 * 60 * 1000,
   );
 
+  // Step 9: Create new session with same sessionFamilyId
   const newSession = await authRepository.createSession(db, {
-    userId,
-    tenantId: user.tenantId,
+    userId: session.userId,
+    tenantId: session.tenantId,
     refreshTokenHash: newRefreshTokenHash,
+    sessionFamilyId: session.sessionFamilyId,
     ipAddress: session.ipAddress,
     userAgent: session.userAgent,
     expiresAt,
   });
 
-  // Revoke old session
+  // Step 10: Revoke old session
   await authRepository.revokeSession(db, sessionId, 'TOKEN_ROTATED');
 
-  // Create new access token
+  // Step 11: Generate new access token
   const permissions = extractPermissions(user);
   const accessToken = await createAccessToken({
     sub: user.id,
-    tenantId: user.tenantId,
+    tenantId: session.tenantId,
     memberType: user.memberType,
     sessionId: newSession.id,
     permissions,
   });
 
-  // Audit log
+  // Step 12: Create audit log
   await authRepository.createAuditLog(db, {
-    tenantId: user.tenantId,
-    actorUserId: user.id,
+    tenantId: session.tenantId,
+    actorUserId: session.userId,
     action: 'TOKEN_REFRESH',
     entityType: 'Session',
     entityId: newSession.id,
   });
 
+  // Step 13: Format opaque refresh token
+  const opaqueRefreshToken = `${newSession.id}.${newRawRefreshToken}`;
+
+  // Step 14: Return response
   return {
     accessToken,
-    refreshToken: newRefreshToken,
+    refreshToken: opaqueRefreshToken,
     sessionId: newSession.id,
   };
 }
@@ -267,7 +309,7 @@ export async function logout(db, userId, sessionId) {
   }
 }
 
-export async function logoutAll(db, userId, currentSessionId) {
+export async function logoutAll(db, userId, _currentSessionId) {
   const user = await authRepository.findUserById(db, userId);
   if (!user) {
     throw new AppError('User not found', 'USER_NOT_FOUND', 404);

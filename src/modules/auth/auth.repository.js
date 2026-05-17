@@ -90,6 +90,22 @@ export async function revokeUserSessions(db, userId, reason) {
   });
 }
 
+export async function revokeSessionFamily(db, sessionFamilyId, reason) {
+  return db.session.updateMany({
+    where: { sessionFamilyId },
+    data: {
+      revokedAt: new Date(),
+      revokeReason: reason,
+    },
+  });
+}
+
+export async function findSessionByIdWithFamily(db, sessionId) {
+  return db.session.findUnique({
+    where: { id: sessionId },
+  });
+}
+
 export async function createPasswordResetToken(db, tokenData) {
   return db.passwordResetToken.create({ data: tokenData });
 }

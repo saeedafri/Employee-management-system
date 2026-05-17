@@ -93,6 +93,8 @@ enum ResignationStatus {
 // Models
 model Tenant {
   id                  String   @id @default(cuid())
+  tenantKey           String   @unique // For header-based tenant resolution
+  slug                String?  @unique // For subdomain-based tenant resolution
   name                String
   legalName           String
   displayName         String
