@@ -1132,6 +1132,217 @@
               ]
             }
           }
+        },
+        {
+          "name": "POST /api/v1/auth/login - HR Admin (for Analytics)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response has accessToken', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken'); pm.environment.set('access_token', data.data.accessToken);});",
+                  "pm.test('User is HR_ADMIN', function() {var data = pm.response.json(); pm.expect(data.data.user.memberType).to.equal('HR_ADMIN');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"hr-admin@test.com\",\"password\":\"password\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/attendance - Invalid Range (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', function() {pm.response.to.have.status(400);});",
+                  "pm.test('Response has error code', function() {var data = pm.response.json(); pm.expect(data.error).to.have.property('code');});",
+                  "pm.test('Error message contains invalid range', function() {var data = pm.response.json(); pm.expect(data.error.message.toLowerCase()).to.include('range');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "attendance"
+              ],
+              "query": [
+                {
+                  "key": "range",
+                  "value": "invalid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/summary - Employee Forbidden (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403', function() {pm.response.to.have.status(403);});",
+                  "pm.test('Error code is FORBIDDEN', function() {var data = pm.response.json(); pm.expect(data.error.code).to.equal('FORBIDDEN');});",
+                  "pm.test('Message indicates insufficient permissions', function() {var data = pm.response.json(); pm.expect(data.error.message.toLowerCase()).to.include('permission');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/summary - Manager Forbidden (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403', function() {pm.response.to.have.status(403);});",
+                  "pm.test('Error code is FORBIDDEN', function() {var data = pm.response.json(); pm.expect(data.error.code).to.equal('FORBIDDEN');});",
+                  "pm.test('Message indicates insufficient permissions', function() {var data = pm.response.json(); pm.expect(data.error.message.toLowerCase()).to.include('permission');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{manager_access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/summary - Missing Authorization (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', function() {pm.response.to.have.status(401);});",
+                  "pm.test('Error code is UNAUTHORIZED', function() {var data = pm.response.json(); pm.expect(data.error.code).to.equal('UNAUTHORIZED');});",
+                  "pm.test('Message indicates missing token', function() {var data = pm.response.json(); pm.expect(data.error.message.toLowerCase()).to.include('token');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "summary"
+              ]
+            }
+          }
         }
       ]
     }

@@ -457,6 +457,173 @@ async function main() {
   );
   console.log(`✅ Holidays created: ${holidays.length}`);
 
+  // Create Additional Departments (8 total)
+  const depts = [engineeringDept, salesDept, hrDept];
+  const deptNames = ['Finance', 'Operations', 'Product', 'Marketing', 'Customer Success'];
+  for (const name of deptNames) {
+    const dept = await prisma.department.create({
+      data: {
+        tenantId: tenant.id,
+        name,
+        departmentCode: name.substring(0, 3).toUpperCase(),
+        depth: 0,
+      },
+    });
+    depts.push(dept);
+  }
+  console.log(`✅ Additional departments created: ${depts.length - 3}`);
+
+  // Create 60+ Employees
+  const employees = [managerEmployee, employeeEmployee, hrEmployee];
+  const firstNames = ['Rajesh', 'Sakshi', 'Vikram', 'Neha', 'Amit', 'Deepika', 'Arjun', 'Ananya', 'Rohan', 'Zara',
+    'Karan', 'Pooja', 'Nikhil', 'Anjali', 'Sanjay', 'Ritika', 'Aditya', 'Sneha', 'Rahul', 'Divya',
+    'Manish', 'Preeti', 'Varun', 'Swati', 'Harish', 'Pallavi', 'Ashok', 'Shreya', 'Suresh', 'Avni',
+    'Ravi', 'Isha', 'Manoj', 'Nisha', 'Shailesh', 'Diya', 'Pawan', 'Aarav', 'Anushka', 'Naveen',
+    'Jaya', 'Kartik', 'Tanya', 'Subhash', 'Akshita', 'Mahesh', 'Kavya', 'Sameer', 'Esha', 'Aryan'];
+  const lastNames = ['Sharma', 'Singh', 'Patel', 'Kumar', 'Verma', 'Gupta', 'Malhotra', 'Joshi', 'Rao', 'Bhat'];
+
+  for (let i = 0; i < 62; i++) {
+    const dept = depts[i % depts.length];
+    const firstName = firstNames[i % firstNames.length];
+    const lastName = lastNames[i % lastNames.length];
+    const emp = await prisma.employee.create({
+      data: {
+        tenantId: tenant.id,
+        employeeCode: `E${String(i + 4).padStart(4, '0')}`,
+        firstName,
+        lastName,
+        workEmail: `emp${i + 4}@acme.test`,
+        personalEmail: `emp${i + 4}@gmail.com`,
+        phone: `+91 ${Math.floor(98000 + Math.random() * 99999)}`,
+        dateOfBirth: new Date(1985 + Math.floor(Math.random() * 25), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1),
+        gender: Math.random() > 0.5 ? 'MALE' : 'FEMALE',
+        address: `${['Delhi', 'Mumbai', 'Bangalore', 'Hyderabad', 'Pune'][i % 5]}, India`,
+        emergencyContactName: `${firstName} Family`,
+        emergencyContactPhone: `+91 ${Math.floor(98000 + Math.random() * 99999)}`,
+        designation: ['Senior Engineer', 'Software Developer', 'Product Manager', 'Sales Executive', 'Financial Analyst', 'Operations Coordinator'][i % 6],
+        departmentId: dept.id,
+        managerId: i % 3 === 0 ? managerEmployee.id : undefined,
+        joinedOn: new Date(2020 + Math.floor(Math.random() * 4), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1),
+        employmentType: 'FULL_TIME',
+        employmentStatus: i % 10 === 0 ? 'INACTIVE' : 'ACTIVE',
+        location: ['Delhi', 'Mumbai', 'Bangalore'][i % 3],
+        payCurrency: 'INR',
+        createdBy: hrAdminUser.id,
+      },
+    });
+    employees.push(emp);
+  }
+  console.log(`✅ Employees created: ${employees.length}`);
+
+  // Create Leave Balances for all new employees
+  const allLeaveTypes = [annualLeave, sickLeave, casualLeave];
+  for (const emp of employees) {
+    for (const leaveType of allLeaveTypes) {
+      await prisma.leaveBalance.create({
+        data: {
+          tenantId: tenant.id,
+          employeeId: emp.id,
+          leaveTypeId: leaveType.id,
+          balance: leaveType.code === 'ANNUAL' ? 21 : 10,
+          used: Math.floor(Math.random() * 5),
+          pending: Math.random() > 0.7 ? 1 : 0,
+        },
+      }).catch(() => undefined);
+    }
+  }
+  console.log(`✅ Leave balances created for ${employees.length} employees`);
+
+  // Create Attendance Records (30 days back)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const statuses = ['PRESENT', 'ABSENT', 'LEAVE', 'WFH', 'HALF_DAY'];
+
+  for (const emp of employees) {
+    for (let d = 0; d < 30; d++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - d);
+      const dayOfWeek = date.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) continue; // Skip weekends
+
+      await prisma.attendanceRecord.create({
+        data: {
+          tenantId: tenant.id,
+          employeeId: emp.id,
+          attendanceDate: date,
+          status: statuses[Math.floor(Math.random() * statuses.length)],
+          checkInTime: Math.random() > 0.3 ? new Date(date.getTime() + 9 * 60 * 60 * 1000) : null,
+          checkOutTime: Math.random() > 0.3 ? new Date(date.getTime() + 18 * 60 * 60 * 1000) : null,
+        },
+      }).catch(() => undefined);
+    }
+  }
+  console.log(`✅ Attendance records created (30 days × ${employees.length} employees)`);
+
+  // Create Leave Requests
+  for (let i = 0; i < 50; i++) {
+    const emp = employees[Math.floor(Math.random() * employees.length)];
+    const startDate = new Date(today);
+    startDate.setDate(startDate.getDate() + Math.floor(Math.random() * 30) - 15);
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 5));
+
+    await prisma.leaveRequest.create({
+      data: {
+        tenantId: tenant.id,
+        employeeId: emp.id,
+        leaveTypeId: allLeaveTypes[Math.floor(Math.random() * allLeaveTypes.length)].id,
+        startDate,
+        endDate,
+        totalDays: Math.floor((endDate - startDate) / (24 * 60 * 60 * 1000)) + 1,
+        reason: ['Family event', 'Medical appointment', 'Personal matters', 'Travel'][Math.floor(Math.random() * 4)],
+        status: ['PENDING', 'APPROVED', 'DENIED', 'WITHDRAWN'][Math.floor(Math.random() * 4)],
+        approvedBy: Math.random() > 0.3 ? managerEmployee.id : null,
+        approvedAt: Math.random() > 0.3 ? new Date() : null,
+      },
+    }).catch(() => undefined);
+  }
+  console.log(`✅ Leave requests created: 50`);
+
+  // Create Attendance Regularization Requests
+  for (let i = 0; i < 20; i++) {
+    const emp = employees[Math.floor(Math.random() * employees.length)];
+    const date = new Date(today);
+    date.setDate(date.getDate() - Math.floor(Math.random() * 30));
+
+    await prisma.attendanceRegularizationRequest.create({
+      data: {
+        tenantId: tenant.id,
+        employeeId: emp.id,
+        attendanceDate: date,
+        reason: ['Late arrival', 'Early departure', 'Forgot to mark', 'System error'][Math.floor(Math.random() * 4)],
+        status: ['PENDING', 'APPROVED', 'DENIED'][Math.floor(Math.random() * 3)],
+        approvedBy: Math.random() > 0.4 ? managerEmployee.id : null,
+        approvedAt: Math.random() > 0.4 ? new Date() : null,
+      },
+    }).catch(() => undefined);
+  }
+  console.log(`✅ Attendance regularization requests created: 20`);
+
+  // Create Audit Logs
+  for (let i = 0; i < 100; i++) {
+    const actionTypes = ['CREATE', 'UPDATE', 'DELETE', 'APPROVE', 'REJECT'];
+    const entityTypes = ['Employee', 'LeaveRequest', 'AttendanceRecord', 'Department', 'User'];
+
+    await prisma.auditLog.create({
+      data: {
+        tenantId: tenant.id,
+        actorUserId: [superAdminUser.id, hrAdminUser.id, managerUser.id][Math.floor(Math.random() * 3)],
+        action: actionTypes[Math.floor(Math.random() * actionTypes.length)],
+        entityType: entityTypes[Math.floor(Math.random() * entityTypes.length)],
+        entityId: employees[Math.floor(Math.random() * employees.length)].id,
+        oldValuesJson: JSON.stringify({ field: 'old_value' }),
+        newValuesJson: JSON.stringify({ field: 'new_value' }),
+        createdAt: new Date(today.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+      },
+    }).catch(() => undefined);
+  }
+  console.log(`✅ Audit logs created: 100`);
+
   console.log('🎉 Seeding complete!');
   console.log(`
 Seed Users (password: ${seedPassword}):
@@ -464,6 +631,12 @@ Seed Users (password: ${seedPassword}):
 - HR Admin: hr@acme.test
 - Manager: aman@acme.test
 - Employee: priya@acme.test
+
+Database Stats:
+- Departments: ${depts.length}
+- Employees: ${employees.length}
+- Leave Types: ${allLeaveTypes.length}
+- Holidays: ${holidays.length}
   `);
 }
 
