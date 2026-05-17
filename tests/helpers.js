@@ -1,5 +1,15 @@
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/plugins/prisma.js';
+import { hashPassword } from '../src/utils/hash.js';
+
+let testPasswordHash;
+
+async function getTestPasswordHash() {
+  if (!testPasswordHash) {
+    testPasswordHash = await hashPassword('password');
+  }
+  return testPasswordHash;
+}
 
 export async function createTestApp() {
   const app = await createApp();
@@ -29,11 +39,12 @@ export async function createTestTenant() {
 
 export async function createTestUser(tenantId, data = {}) {
   const defaultEmail = `user-${Date.now()}@test.com`;
+  const passwordHash = data.passwordHash || await getTestPasswordHash();
   return await prisma.user.create({
     data: {
       tenantId,
       email: data.email || defaultEmail,
-      passwordHash: data.passwordHash || '$argon2id$v=19$m=19456,t=2,p=1$test$test',
+      passwordHash,
       memberType: data.memberType || 'EMPLOYEE',
       status: data.status || 'ACTIVE',
       ...data,
@@ -42,21 +53,26 @@ export async function createTestUser(tenantId, data = {}) {
 }
 
 export async function createTestSession(userId, tenantId) {
+  const sessionId = 'session-' + Date.now();
   return await prisma.session.create({
     data: {
+      id: sessionId,
       userId,
       tenantId,
+      sessionFamilyId: sessionId,
       refreshTokenHash: 'test-hash-' + Date.now(),
       ipAddress: '127.0.0.1',
       userAgent: 'Test Agent',
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
   });
 }
 
-export async function getAuthToken(app, email, password) {
+export async function getAuthToken(app, tenantKey, email, password) {
   const response = await app.inject({
     method: 'POST',
     url: '/api/v1/auth/login',
+    headers: { 'x-tenant-key': tenantKey },
     payload: {
       email,
       password,

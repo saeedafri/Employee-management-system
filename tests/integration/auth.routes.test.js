@@ -17,12 +17,10 @@ describe('Auth Routes Integration Tests', function () {
     await createTestUser(testTenant.id, {
       email: 'test@example.com',
       memberType: 'EMPLOYEE',
-      passwordHash: '$argon2id$v=19$m=19456,t=2,p=1$dGVzdA$o5IIR5YvuDHRlGxJuXWBwJjNdJNjhYkE0T6PkZVb7Xc',  // password: 'password'
     });
     await createTestUser(testTenant.id, {
       email: 'admin@example.com',
       memberType: 'HR_ADMIN',
-      passwordHash: '$argon2id$v=19$m=19456,t=2,p=1$dGVzdA$o5IIR5YvuDHRlGxJuXWBwJjNdJNjhYkE0T6PkZVb7Xc',  // password: 'password'
     });
   });
 
