@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
+import cookiePlugin from '@fastify/cookie';
 import { config } from './config/index.js';
-import { prismaPlugin } from './plugins/prisma.js';
+import prismaPlugin from './plugins/prisma.js';
 import { swaggerPlugin } from './plugins/swagger.js';
 import { corsPlugin } from './plugins/cors.js';
 import { helmetPlugin } from './plugins/helmet.js';
@@ -24,6 +25,7 @@ export async function createApp() {
 
   // Register plugins
   await fastify.register(requestIdPlugin);
+  await fastify.register(cookiePlugin);
   await fastify.register(prismaPlugin);
   await fastify.register(corsPlugin);
   await fastify.register(helmetPlugin);

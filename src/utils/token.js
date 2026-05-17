@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose';
+import crypto from 'crypto';
 import { config } from '../config/index.js';
 
 const secret = new TextEncoder().encode(config.jwtSecret);
@@ -21,5 +22,5 @@ export async function verifyToken(token) {
 }
 
 export function generateRefreshToken() {
-  return require('crypto').randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString('hex');
 }

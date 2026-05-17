@@ -1,5 +1,6 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { config } from '../../config/index.js';
+import { prisma } from '../../plugins/prisma.js';
 import * as authService from './auth.service.js';
 import * as authValidator from './auth.validator.js';
 
@@ -11,12 +12,12 @@ export async function loginController(request, reply) {
     const ipAddress = request.ip;
     const userAgent = request.headers['user-agent'];
 
-    // Extract tenantId from request (for now, default to first tenant)
-    // In production, this would come from subdomain or header
-    const tenantId = ''; // Will be set in seed data
+    // Get the first tenant (for now, in production this comes from subdomain/header)
+    const tenants = await prisma.tenant.findMany({ take: 1 });
+    const tenantId = tenants[0]?.id || '';
 
     const result = await authService.login(
-      request.server.db,
+      prisma,
       tenantId,
       email,
       password,
@@ -58,10 +59,12 @@ export async function adminLoginController(request, reply) {
 
     const ipAddress = request.ip;
     const userAgent = request.headers['user-agent'];
-    const tenantId = '';
+
+    const tenants = await prisma.tenant.findMany({ take: 1 });
+    const tenantId = tenants[0]?.id || '';
 
     const result = await authService.adminLogin(
-      request.server.db,
+      prisma,
       tenantId,
       email,
       password,
@@ -112,7 +115,7 @@ export async function refreshController(request, reply) {
     const { sub: userId, sessionId } = request.user;
 
     const result = await authService.refreshAccessToken(
-      request.server.db,
+      prisma,
       userId,
       sessionId,
       refreshToken,
@@ -145,7 +148,7 @@ export async function refreshController(request, reply) {
 export async function logoutController(request, reply) {
   try {
     const { sub: userId, sessionId } = request.user;
-    await authService.logout(request.server.db, userId, sessionId);
+    await authService.logout(prisma, userId, sessionId);
 
     reply.clearCookie(config.sessionCookieName);
     return reply.send(successResponse({ message: 'Logged out successfully' }));
@@ -158,7 +161,7 @@ export async function logoutController(request, reply) {
 export async function logoutAllController(request, reply) {
   try {
     const { sub: userId, sessionId } = request.user;
-    await authService.logoutAll(request.server.db, userId, sessionId);
+    await authService.logoutAll(prisma, userId, sessionId);
 
     reply.clearCookie(config.sessionCookieName);
     return reply.send(
@@ -173,7 +176,7 @@ export async function logoutAllController(request, reply) {
 export async function getMeController(request, reply) {
   try {
     const { sub: userId } = request.user;
-    const user = await authService.getCurrentUser(request.server.db, userId);
+    const user = await authService.getCurrentUser(prisma, userId);
     return reply.send(successResponse(user));
   } catch (error) {
     request.log.error(error);
@@ -184,7 +187,7 @@ export async function getMeController(request, reply) {
 export async function getSessionsController(request, reply) {
   try {
     const { sub: userId } = request.user;
-    const sessions = await authService.getUserSessions(request.server.db, userId);
+    const sessions = await authService.getUserSessions(prisma, userId);
     return reply.send(
       successResponse(sessions, { count: sessions.length }),
     );
@@ -200,7 +203,7 @@ export async function revokeSessionController(request, reply) {
     const { sessionId } = request.params;
 
     await authService.revokeSpecificSession(
-      request.server.db,
+      prisma,
       userId,
       sessionId,
     );
