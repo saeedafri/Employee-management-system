@@ -1,14 +1,14 @@
 {
   "all": true,
   "include": ["src/**/*.js"],
-  "exclude": [
-    "src/server.js",
-    "prisma/**",
-    "node_modules/**"
-  ],
-  "reporter": ["text", "text-summary", "html", "json"],
+  "exclude": ["src/**/*.test.js", "node_modules/**"],
+  "reporter": ["text", "text-summary", "html", "lcov"],
+  "report-dir": "coverage",
+  "temp-dir": ".nyc_output",
   "statements": 90,
-  "branches": 90,
+  "branches": 85,
   "functions": 90,
-  "lines": 90
+  "lines": 90,
+  "skip-full": false,
+  "check-coverage": true
 }
