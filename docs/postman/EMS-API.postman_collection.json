@@ -1,53 +1,516 @@
 {
-  "info": {"_postman_id": "ems-backend-api", "name": "EMS Backend API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"},
+  "info": {
+    "_postman_id": "ems-backend-api",
+    "name": "EMS Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
   "item": [
     {
       "name": "Authentication",
       "item": [
         {
           "name": "Login - Employee",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Status is 200', function() {pm.response.to.have.status(200);});", "pm.test('Response has accessToken', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});", "pm.test('Response has sessionId', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('sessionId'); pm.environment.set('session_id', data.data.sessionId);});", "pm.test('Response has user', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('user');});", "pm.test('Save access token', function() {var data = pm.response.json(); pm.environment.set('access_token', data.data.accessToken);}); "]}}],
-          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "body": {"mode": "raw", "raw": "{\"email\":\"{{employee_email}}\",\"password\":\"{{employee_password}}\"}"}, "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "login"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response has accessToken', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});",
+                  "pm.test('Response has sessionId', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('sessionId'); pm.environment.set('session_id', data.data.sessionId);});",
+                  "pm.test('Response has user', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('user');});",
+                  "pm.test('Save access token', function() {var data = pm.response.json(); pm.environment.set('access_token', data.data.accessToken);}); "
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{employee_email}}\",\"password\":\"{{employee_password}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          }
         },
         {
           "name": "Get Current User",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Get current user returns 200', function() {pm.response.to.have.status(200);});", "pm.test('Response contains user email', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('email');});"]}}],
-          "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "me"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Get current user returns 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response contains user email', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('email');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          }
         },
         {
           "name": "Get User Sessions",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Get sessions returns 200', function() {pm.response.to.have.status(200);});", "pm.test('Response is an array', function() {var data = pm.response.json(); pm.expect(data.data).to.be.an('array');});"]}}],
-          "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "sessions"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Get sessions returns 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response is an array', function() {var data = pm.response.json(); pm.expect(data.data).to.be.an('array');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "sessions"
+              ]
+            }
+          }
         },
         {
           "name": "Revoke Specific Session",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Revoke session returns 200', function() {pm.response.to.have.status(200);});"]}}],
-          "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "sessions", "{{session_id}}"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Revoke session returns 200', function() {pm.response.to.have.status(200);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "sessions",
+                "{{session_id}}"
+              ]
+            }
+          }
         },
         {
           "name": "Login - HR Admin",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Status is 200', function() {pm.response.to.have.status(200);});", "pm.test('Response has accessToken', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});", "pm.test('Save HR Admin token', function() {var data = pm.response.json(); pm.environment.set('admin_access_token', data.data.accessToken); pm.environment.set('admin_session_id', data.data.sessionId);});"]}}],
-          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "body": {"mode": "raw", "raw": "{\"email\":\"{{hr_admin_email}}\",\"password\":\"{{hr_admin_password}}\"}"}, "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "login"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response has accessToken', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});",
+                  "pm.test('Save HR Admin token', function() {var data = pm.response.json(); pm.environment.set('admin_access_token', data.data.accessToken); pm.environment.set('admin_session_id', data.data.sessionId);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{hr_admin_email}}\",\"password\":\"{{hr_admin_password}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          }
         },
         {
           "name": "Admin Login",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Admin login returns 200', function() {pm.response.to.have.status(200);});", "pm.test('Admin login returns access token', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});"]}}],
-          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "body": {"mode": "raw", "raw": "{\"email\":\"{{hr_admin_email}}\",\"password\":\"{{hr_admin_password}}\"}"}, "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "admin", "login"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admin login returns 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Admin login returns access token', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{hr_admin_email}}\",\"password\":\"{{hr_admin_password}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "admin",
+                "login"
+              ]
+            }
+          }
         },
         {
           "name": "Refresh Token",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Refresh returns 200', function() {pm.response.to.have.status(200);});", "pm.test('Refresh returns new accessToken', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});", "pm.test('Update admin access token', function() {var data = pm.response.json(); pm.environment.set('admin_access_token', data.data.accessToken);});"]}}],
-          "request": {"method": "POST", "header": [{"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "refresh"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Refresh returns 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Refresh returns new accessToken', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('accessToken');});",
+                  "pm.test('Update admin access token', function() {var data = pm.response.json(); pm.environment.set('admin_access_token', data.data.accessToken);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            }
+          }
         },
         {
           "name": "Logout",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Logout returns 200', function() {pm.response.to.have.status(200);});"]}}],
-          "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "logout"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Logout returns 200', function() {pm.response.to.have.status(200);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          }
         },
         {
           "name": "Logout All",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Logout all returns 200', function() {pm.response.to.have.status(200);});"]}}],
-          "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "logout-all"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Logout all returns 200', function() {pm.response.to.have.status(200);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout-all"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Forgot password returns 202\", function() {pm.response.to.have.status(202);});",
+                  "pm.test(\"Response has challengeId or mfaRequired\", function() {var data = pm.response.json(); var hasChallengeId = data.data && data.data.challengeId; var hasMfaRequired = data.data && data.data.mfaRequired; pm.expect(hasChallengeId || hasMfaRequired).to.be.true;});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{employee_email}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Verify OTP returns 200\", function() {pm.response.to.have.status(200);});",
+                  "pm.test(\"Response has accessToken or user\", function() {var data = pm.response.json(); pm.expect(data.data).to.have.property(\"accessToken\").or.have.property(\"user\");});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"challengeId\":\"{{challenge_id}}\",\"code\":\"{{otp_code}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-otp"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Resend OTP returns 202\", function() {pm.response.to.have.status(202);});",
+                  "pm.test(\"Response has destinationMasked\", function() {var data = pm.response.json(); pm.expect(data.data).to.have.property(\"destinationMasked\");});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"challengeId\":\"{{challenge_id}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "resend-otp"
+              ]
+            }
+          }
         }
       ]
     },
@@ -56,33 +519,265 @@
       "item": [
         {
           "name": "Login Employee for Logs Test",
-          "event": [{"listen": "test", "script": {"exec": ["var data = pm.response.json(); pm.environment.set('employee_token', data.data.accessToken);"]}}],
-          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "body": {"mode": "raw", "raw": "{\"email\":\"{{employee_email}}\",\"password\":\"{{employee_password}}\"}"}, "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "login"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json(); pm.environment.set('employee_token', data.data.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{employee_email}}\",\"password\":\"{{employee_password}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          }
         },
         {
           "name": "Login Admin for Logs Test",
-          "event": [{"listen": "test", "script": {"exec": ["var data = pm.response.json(); pm.environment.set('admin_token', data.data.accessToken);"]}}],
-          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "body": {"mode": "raw", "raw": "{\"email\":\"{{hr_admin_email}}\",\"password\":\"{{hr_admin_password}}\"}"}, "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "login"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json(); pm.environment.set('admin_token', data.data.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"{{hr_admin_email}}\",\"password\":\"{{hr_admin_password}}\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          }
         },
         {
           "name": "List Logs",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Admin can list logs', function() {pm.response.to.have.status(200);});", "pm.test('Response contains log array', function() {var data = pm.response.json(); pm.expect(data.data).to.be.an('array');});"]}}],
-          "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "admin", "logs"], "query": [{"key": "limit", "value": "10"}, {"key": "offset", "value": "0"}]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admin can list logs', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response contains log array', function() {var data = pm.response.json(); pm.expect(data.data).to.be.an('array');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "logs"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Employee Cannot Access Logs (403)",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Employee gets 403 on admin/logs', function() {pm.response.to.have.status(403);});", "pm.test('Error code is FORBIDDEN', function() {var data = pm.response.json(); pm.expect(data.error.code).to.equal('FORBIDDEN');});"]}}],
-          "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{employee_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "admin", "logs"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Employee gets 403 on admin/logs', function() {pm.response.to.have.status(403);});",
+                  "pm.test('Error code is FORBIDDEN', function() {var data = pm.response.json(); pm.expect(data.error.code).to.equal('FORBIDDEN');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employee_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "logs"
+              ]
+            }
+          }
         },
         {
           "name": "Export Logs as CSV",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('CSV export returns 200', function() {pm.response.to.have.status(200);});"]}}],
-          "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "admin", "logs", "export"], "query": [{"key": "format", "value": "csv"}]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('CSV export returns 200', function() {pm.response.to.have.status(200);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "logs",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "csv"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Stream Logs as NDJSON",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Stream logs returns 200', function() {pm.response.to.have.status(200);});"]}}],
-          "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "admin", "logs", "stream"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Stream logs returns 200', function() {pm.response.to.have.status(200);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "logs",
+                "stream"
+              ]
+            }
+          }
         }
       ]
     },
@@ -91,18 +786,121 @@
       "item": [
         {
           "name": "Invalid Credentials",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Invalid credentials returns 401', function() {pm.response.to.have.status(401);});", "pm.test('Error code is INVALID_CREDENTIALS', function() {var data = pm.response.json(); pm.expect(data.error.code).to.equal('INVALID_CREDENTIALS');});"]}}],
-          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "x-tenant-key", "value": "{{tenant_key}}"}], "body": {"mode": "raw", "raw": "{\"email\":\"priya@acme.test\",\"password\":\"WrongPassword123!\"}"}, "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "login"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Invalid credentials returns 401', function() {pm.response.to.have.status(401);});",
+                  "pm.test('Error code is INVALID_CREDENTIALS', function() {var data = pm.response.json(); pm.expect(data.error.code).to.equal('INVALID_CREDENTIALS');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"priya@acme.test\",\"password\":\"WrongPassword123!\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          }
         },
         {
           "name": "Missing Tenant Header",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Missing tenant header returns 400', function() {pm.response.to.have.status(400);});"]}}],
-          "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"email\":\"priya@acme.test\",\"password\":\"ChangeMe123!\"}"}, "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "login"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing tenant header returns 400', function() {pm.response.to.have.status(400);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"priya@acme.test\",\"password\":\"ChangeMe123!\"}"
+            },
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          }
         },
         {
           "name": "Missing Authorization Token",
-          "event": [{"listen": "test", "script": {"exec": ["pm.test('Missing token returns 401', function() {pm.response.to.have.status(401);});"]}}],
-          "request": {"method": "GET", "header": [{"key": "x-tenant-key", "value": "{{tenant_key}}"}], "url": {"protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "auth", "me"]}}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing token returns 401', function() {pm.response.to.have.status(401);});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          }
         }
       ]
     }
