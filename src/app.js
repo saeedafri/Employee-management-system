@@ -13,6 +13,8 @@ import { attachRequestLogging } from './middleware/requestLogging.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import logsRoutes from './modules/logs/logs.routes.js';
 import analyticsRoutes from './modules/analytics/analytics.routes.js';
+import { managerDashboardRoutes } from './modules/dashboard/manager.routes.js';
+import { employeeDashboardRoutes } from './modules/dashboard/employee.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -49,6 +51,8 @@ export async function createApp() {
       fastify.register(authRoutes);
       fastify.register(logsRoutes);
       fastify.register(analyticsRoutes);
+      fastify.register(managerDashboardRoutes);
+      fastify.register(employeeDashboardRoutes);
     },
     { prefix: config.apiPrefix },
   );
