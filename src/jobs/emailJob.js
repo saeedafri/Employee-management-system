@@ -3,11 +3,12 @@ import nodemailer from 'nodemailer';
 import { config } from '../config/index.js';
 import { emailQueue, redisConnection } from './emailQueue.js';
 
-const isDev = config.isDevelopment;
+const isMockProvider = config.emailProvider === 'mock';
+const isSmtpProvider = config.emailProvider === 'smtp';
 
 let transporter;
 
-if (!isDev) {
+if (isSmtpProvider) {
   transporter = nodemailer.createTransport({
     host: config.smtpHost,
     port: config.smtpPort,
@@ -21,8 +22,10 @@ if (!isDev) {
 async function sendEmail(job) {
   const { to, subject, template, data } = job.data;
 
-  if (isDev) {
-    return { success: true, devMode: true };
+  if (isMockProvider) {
+    // Mock mode: log to console only, no actual email sent
+    console.log(`[EMAIL_MOCK] To: ${to}\nSubject: ${subject}\nTemplate: ${template}`);
+    return { success: true, mock: true };
   }
 
   const html = renderEmailTemplate(template, data);

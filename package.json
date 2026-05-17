@@ -19,7 +19,9 @@
     "test:coverage": "c8 mocha 'tests/**/*.test.js'",
     "lint": "eslint src/ tests/",
     "lint:fix": "eslint src/ tests/ --fix",
-    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"prisma/**/*.js\""
+    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"prisma/**/*.js\"",
+    "email:test": "node scripts/sendTestEmail.js",
+    "seed:test-email-user": "node scripts/seedTestEmailUser.js"
   },
   "keywords": [
     "employee-management",

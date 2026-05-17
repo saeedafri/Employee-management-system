@@ -305,6 +305,64 @@ Revokes one session while keeping others active.
 | REFRESH_TOKEN_MISSING | 401 | Cookie not found |
 | INVALID_TOKEN_FORMAT | 401 | Token format not sessionId.token |
 
+## Email & User Identity Mapping
+
+### Data Source of Truth
+
+- **User.email** is the source of truth for all authentication operations
+  - Login: Use User.email
+  - Password Reset: Send to User.email
+  - OTP Verification: Send OTP to User.email
+  - MFA: Destination is User.email from database
+
+- **Employee.workEmail** is synchronized with User.email
+  - When User.email changes, Employee.workEmail must be updated
+  - When Employee.workEmail changes, User.email must be synced
+  - Keep them in sync during employee updates
+
+- **Employee.personalEmail** is optional
+  - Used for emergency contact only
+  - Never used for login, password reset, or OTP
+
+### Email Safety Rules
+
+**DO NOT:**
+- Send OTP to arbitrary email from API request
+- Send password reset to email other than User.email (except forgot-password lookup)
+- Accept email destination override in reset-token request
+- Store raw tokens/codes in logs
+- Log OTP destination email when it's not a standard field
+
+**DO:**
+- Always lookup User.email from database
+- Verify User.email exists before sending OTP/reset
+- Mask email in API responses (`u***@example.com`)
+- Log only that email was sent (without address)
+- Verify user status/account before sending email
+
+### Onboarding Flow
+
+When HR onboards an employee:
+1. HR enters Employee.workEmail
+2. If login access is enabled: create User with email=Employee.workEmail
+3. Employee.personalEmail is optional
+4. User.email is the source of truth (from now on)
+5. Keep User.email and Employee.workEmail synced
+
+### Testing
+
+Create test user with specific email:
+
+```bash
+npm run seed:test-email-user -- --email test@example.com --mfa
+```
+
+Test email delivery (mock mode):
+
+```bash
+EMAIL_PROVIDER=mock npm run email:test -- --to test@example.com
+```
+
 ## Security Best Practices for Clients
 
 1. **Store access token in memory only** - Never in localStorage
