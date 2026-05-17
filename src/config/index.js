@@ -20,6 +20,7 @@ export const config = {
   // Session
   sessionCookieName: process.env.SESSION_COOKIE_NAME || 'refreshToken',
   sessionMaxAgeDays: parseInt(process.env.SESSION_MAX_AGE_DAYS, 10) || 7,
+  defaultTenantKey: process.env.DEFAULT_TENANT_KEY || null,
 
   // App
   appName: process.env.APP_NAME || 'EMS',

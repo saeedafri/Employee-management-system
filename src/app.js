@@ -9,7 +9,9 @@ import { rateLimitPlugin } from './plugins/rateLimit.js';
 import { requestIdPlugin } from './plugins/requestId.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { resolveTenant } from './middleware/resolveTenant.js';
+import { attachRequestLogging } from './middleware/requestLogging.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import logsRoutes from './modules/logs/logs.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -33,6 +35,9 @@ export async function createApp() {
   await fastify.register(rateLimitPlugin);
   await fastify.register(swaggerPlugin);
 
+  // Attach request logging
+  await attachRequestLogging(fastify);
+
   // Global error handler
   fastify.setErrorHandler(errorHandler);
 
@@ -41,6 +46,7 @@ export async function createApp() {
     async (fastify) => {
       fastify.addHook('onRequest', resolveTenant);
       fastify.register(authRoutes);
+      fastify.register(logsRoutes);
     },
     { prefix: config.apiPrefix },
   );
