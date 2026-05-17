@@ -11,9 +11,12 @@
     "db:migrate:prod": "prisma migrate deploy",
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage",
+    "test": "mocha 'tests/**/*.test.js'",
+    "test:unit": "mocha 'tests/unit/**/*.test.js'",
+    "test:integration": "mocha 'tests/integration/**/*.test.js'",
+    "test:e2e": "mocha 'tests/e2e/**/*.test.js'",
+    "test:watch": "mocha 'tests/**/*.test.js' --watch",
+    "test:coverage": "c8 mocha 'tests/**/*.test.js'",
     "lint": "eslint src/ tests/",
     "lint:fix": "eslint src/ tests/ --fix",
     "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"prisma/**/*.js\""
@@ -46,12 +49,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
-    "@vitest/ui": "^1.2.0",
+    "c8": "^11.0.0",
+    "chai": "^6.2.2",
     "eslint": "^8.57.0",
     "globals": "^14.0.0",
+    "mocha": "^11.7.5",
     "prettier": "^3.2.5",
     "prisma": "^5.15.0",
-    "vitest": "^1.2.0"
+    "sinon": "^22.0.0",
+    "supertest": "^7.2.2"
   },
   "engines": {
     "node": ">=20.0.0"

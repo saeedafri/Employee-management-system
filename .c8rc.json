@@ -1,0 +1,14 @@
+{
+  "all": true,
+  "include": ["src/**/*.js"],
+  "exclude": [
+    "src/server.js",
+    "prisma/**",
+    "node_modules/**"
+  ],
+  "reporter": ["text", "text-summary", "html", "json"],
+  "statements": 90,
+  "branches": 90,
+  "functions": 90,
+  "lines": 90
+}
