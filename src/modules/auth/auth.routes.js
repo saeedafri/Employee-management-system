@@ -1,5 +1,6 @@
 import { authenticate } from '../../middleware/authenticate.js';
 import * as authController from './auth.controller.js';
+import * as passwordResetController from './passwordReset.controller.js';
 
 export default async function authRoutes(fastify) {
   fastify.post('/auth/login', {
@@ -90,4 +91,122 @@ export default async function authRoutes(fastify) {
     },
     onRequest: [authenticate],
   }, async (request, reply) => authController.revokeSessionController(request, reply));
+
+  fastify.post('/auth/forgot-password', {
+    schema: {
+      tags: ['Password Reset'],
+      description: 'Request password reset link - always returns 202 regardless of email existence',
+      body: {
+        type: 'object',
+        required: ['email'],
+        properties: {
+          email: { type: 'string', format: 'email' },
+        },
+      },
+      response: {
+        202: {
+          type: 'object',
+          properties: {
+            data: { type: 'null' },
+            meta: {
+              type: 'object',
+              properties: {
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+    rateLimit: {
+      max: 5,
+      timeWindow: '15 minutes',
+    },
+  }, async (request, reply) => passwordResetController.forgotPasswordController(request, reply));
+
+  fastify.get('/auth/validate-reset-token', {
+    schema: {
+      tags: ['Password Reset'],
+      description: 'Validate reset token before allowing password change',
+      querystring: {
+        type: 'object',
+        required: ['token'],
+        properties: {
+          token: { type: 'string' },
+        },
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                valid: { type: 'boolean' },
+                expiresAt: { type: 'string', format: 'date-time' },
+                emailMasked: { type: 'string' },
+              },
+            },
+          },
+        },
+        400: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+  }, async (request, reply) => passwordResetController.validateResetTokenController(request, reply));
+
+  fastify.post('/auth/reset-password', {
+    schema: {
+      tags: ['Password Reset'],
+      description: 'Reset password using valid reset token',
+      body: {
+        type: 'object',
+        required: ['token', 'newPassword'],
+        properties: {
+          token: { type: 'string' },
+          newPassword: { type: 'string' },
+        },
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                success: { type: 'boolean' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+        400: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' },
+                message: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+    rateLimit: {
+      max: 5,
+      timeWindow: '15 minutes',
+    },
+  }, async (request, reply) => passwordResetController.resetPasswordController(request, reply));
 }

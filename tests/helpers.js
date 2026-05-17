@@ -1,6 +1,7 @@
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/plugins/prisma.js';
-import { hashPassword } from '../src/utils/hash.js';
+import { hashPassword, hashSHA256 } from '../src/utils/hash.js';
+import { generateRefreshToken } from '../src/utils/token.js';
 
 let testPasswordHash;
 
@@ -66,6 +67,28 @@ export async function createTestSession(userId, tenantId) {
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
   });
+}
+
+export async function createTestPasswordResetToken(userId, tenantId) {
+  const rawToken = generateRefreshToken();
+  const tokenHash = hashSHA256(rawToken);
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+
+  const token = await prisma.passwordResetToken.create({
+    data: {
+      userId,
+      tenantId,
+      tokenHash,
+      expiresAt,
+      createdByIp: '127.0.0.1',
+      userAgent: 'Test Agent',
+    },
+  });
+
+  return {
+    token,
+    rawToken,
+  };
 }
 
 export async function getAuthToken(app, tenantKey, email, password) {

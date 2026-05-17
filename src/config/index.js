@@ -22,6 +22,12 @@ export const config = {
   sessionMaxAgeDays: parseInt(process.env.SESSION_MAX_AGE_DAYS, 10) || 7,
   defaultTenantKey: process.env.DEFAULT_TENANT_KEY || null,
 
+  // Reset Password
+  resetPasswordTokenTtlMinutes: parseInt(process.env.RESET_PASSWORD_TOKEN_TTL_MINUTES, 10) || 30,
+  resetPasswordRateLimitMax: parseInt(process.env.RESET_PASSWORD_RATE_LIMIT_MAX, 10) || 5,
+  resetPasswordRateLimitWindow: process.env.RESET_PASSWORD_RATE_LIMIT_WINDOW || '15 minutes',
+  frontendResetPasswordUrl: process.env.FRONTEND_RESET_PASSWORD_URL || 'http://localhost:5173/reset-password',
+
   // App
   appName: process.env.APP_NAME || 'EMS',
   appVersion: process.env.APP_VERSION || '1.0.0',

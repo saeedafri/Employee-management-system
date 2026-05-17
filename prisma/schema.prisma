@@ -328,20 +328,26 @@ model Session {
 }
 
 model PasswordResetToken {
-  id        String    @id @default(cuid())
-  userId    String
-  tenantId  String
-  tokenHash String    @unique // SHA-256 hash
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
+  id          String    @id @default(cuid())
+  userId      String
+  tenantId    String
+  tokenHash   String    @unique // SHA-256 hash
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdByIp String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
 
   // Relations
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tenantId])
+  @@index([userId, expiresAt])
+  @@index([tenantId, tokenHash])
+  @@index([expiresAt])
+  @@index([usedAt])
 }
 
 model OtpChallenge {

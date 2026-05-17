@@ -121,6 +121,18 @@ export async function updatePasswordResetToken(db, tokenId, data) {
   });
 }
 
+export async function invalidateOldResetTokens(db, userId, tenantId) {
+  return db.passwordResetToken.updateMany({
+    where: {
+      userId,
+      tenantId,
+      usedAt: null,
+      expiresAt: { gt: new Date() },
+    },
+    data: { usedAt: new Date() },
+  });
+}
+
 export async function createOtpChallenge(db, otpData) {
   return db.otpChallenge.create({ data: otpData });
 }
