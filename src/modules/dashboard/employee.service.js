@@ -54,8 +54,8 @@ export async function getEmployeeDashboard(employeeId, tenantId) {
       department: employee.department?.name,
       todayAttendance: todayAttendance ? {
         status: todayAttendance.status,
-        checkInTime: todayAttendance.checkInTime,
-        checkOutTime: todayAttendance.checkOutTime,
+        checkInAt: todayAttendance.checkInAt,
+        checkOutAt: todayAttendance.checkOutAt,
       } : null,
       pendingLeaves,
       upcomingLeave: upcomingLeave ? {
@@ -86,22 +86,22 @@ export async function getEmployeeToday(employeeId, tenantId) {
       return successResponse({
         date: today,
         status: 'NOT_MARKED',
-        checkInTime: null,
-        checkOutTime: null,
+        checkInAt: null,
+        checkOutAt: null,
         duration: null,
       }, { cached: false });
     }
 
     let duration = null;
-    if (attendance.checkInTime && attendance.checkOutTime) {
-      duration = Math.round((attendance.checkOutTime - attendance.checkInTime) / (1000 * 60)); // minutes
+    if (attendance.checkInAt && attendance.checkOutAt) {
+      duration = Math.round((attendance.checkOutAt - attendance.checkInAt) / (1000 * 60)); // minutes
     }
 
     return successResponse({
       date: today,
       status: attendance.status,
-      checkInTime: attendance.checkInTime,
-      checkOutTime: attendance.checkOutTime,
+      checkInAt: attendance.checkInAt,
+      checkOutAt: attendance.checkOutAt,
       duration,
     }, { cached: false });
   } catch (error) {
@@ -130,19 +130,19 @@ export async function checkIn(employeeId, tenantId) {
           employeeId,
           tenantId,
           attendanceDate: today,
-          checkInTime: now,
+          checkInAt: now,
           status: 'PRESENT',
         },
       });
-    } else if (!attendance.checkInTime) {
+    } else if (!attendance.checkInAt) {
       attendance = await prisma.attendanceRecord.update({
         where: { id: attendance.id },
-        data: { checkInTime: now, status: 'PRESENT' },
+        data: { checkInAt: now, status: 'PRESENT' },
       });
     }
 
     return successResponse({
-      checkInTime: attendance.checkInTime,
+      checkInAt: attendance.checkInAt,
       message: 'Check-in successful',
     }, { cached: false });
   } catch (error) {
@@ -171,13 +171,13 @@ export async function checkOut(employeeId, tenantId) {
 
     const updated = await prisma.attendanceRecord.update({
       where: { id: attendance.id },
-      data: { checkOutTime: now },
+      data: { checkOutAt: now },
     });
 
-    const duration = Math.round((now - attendance.checkInTime) / (1000 * 60));
+    const duration = Math.round((now - attendance.checkInAt) / (1000 * 60));
 
     return successResponse({
-      checkOutTime: updated.checkOutTime,
+      checkOutAt: updated.checkOutAt,
       duration,
       message: 'Check-out successful',
     }, { cached: false });

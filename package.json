@@ -10,6 +10,7 @@
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:prod": "prisma migrate deploy",
     "db:seed": "node prisma/seed.js",
+    "db:seed:large": "node prisma/seedLargeDemo.js",
     "db:studio": "prisma studio",
     "test": "mocha 'tests/**/*.test.js'",
     "test:unit": "mocha 'tests/unit/**/*.test.js'",
@@ -21,7 +22,9 @@
     "lint:fix": "eslint src/ tests/ --fix",
     "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"prisma/**/*.js\"",
     "email:test": "node scripts/sendTestEmail.js",
-    "seed:test-email-user": "node scripts/seedTestEmailUser.js"
+    "seed:test-email-user": "node scripts/seedTestEmailUser.js",
+    "api:capture": "node scripts/captureApiResponses.js",
+    "perf:api": "node scripts/perfApiSmoke.js"
   },
   "keywords": [
     "employee-management",

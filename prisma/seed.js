@@ -537,6 +537,7 @@ async function main() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const statuses = ['PRESENT', 'ABSENT', 'LEAVE', 'WFH', 'HALF_DAY'];
+  const workModes = ['OFFICE', 'WFH', 'HYBRID'];
 
   for (const emp of employees) {
     for (let d = 0; d < 30; d++) {
@@ -545,14 +546,20 @@ async function main() {
       const dayOfWeek = date.getDay();
       if (dayOfWeek === 0 || dayOfWeek === 6) continue; // Skip weekends
 
+      const checkInAt = Math.random() > 0.3 ? new Date(date.getTime() + 9 * 60 * 60 * 1000) : null;
+      const checkOutAt = Math.random() > 0.3 ? new Date(date.getTime() + 18 * 60 * 60 * 1000) : null;
+      const totalMinutes = checkInAt && checkOutAt ? Math.round((checkOutAt - checkInAt) / (1000 * 60)) : null;
+
       await prisma.attendanceRecord.create({
         data: {
           tenantId: tenant.id,
           employeeId: emp.id,
           attendanceDate: date,
           status: statuses[Math.floor(Math.random() * statuses.length)],
-          checkInTime: Math.random() > 0.3 ? new Date(date.getTime() + 9 * 60 * 60 * 1000) : null,
-          checkOutTime: Math.random() > 0.3 ? new Date(date.getTime() + 18 * 60 * 60 * 1000) : null,
+          checkInAt,
+          checkOutAt,
+          totalMinutes,
+          workMode: workModes[Math.floor(Math.random() * workModes.length)],
         },
       }).catch(() => undefined);
     }
@@ -567,6 +574,9 @@ async function main() {
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 5));
 
+    const status = ['PENDING', 'APPROVED', 'DENIED', 'WITHDRAWN'][Math.floor(Math.random() * 4)];
+    const shouldHaveApprover = Math.random() > 0.3 && status !== 'PENDING';
+
     await prisma.leaveRequest.create({
       data: {
         tenantId: tenant.id,
@@ -576,9 +586,10 @@ async function main() {
         endDate,
         totalDays: Math.floor((endDate - startDate) / (24 * 60 * 60 * 1000)) + 1,
         reason: ['Family event', 'Medical appointment', 'Personal matters', 'Travel'][Math.floor(Math.random() * 4)],
-        status: ['PENDING', 'APPROVED', 'DENIED', 'WITHDRAWN'][Math.floor(Math.random() * 4)],
-        approvedBy: Math.random() > 0.3 ? managerEmployee.id : null,
-        approvedAt: Math.random() > 0.3 ? new Date() : null,
+        status,
+        approverId: shouldHaveApprover ? managerEmployee.id : null,
+        approverComment: shouldHaveApprover ? ['Approved', 'Denied - conflict', 'Approved as requested'][Math.floor(Math.random() * 3)] : null,
+        decidedAt: shouldHaveApprover ? new Date() : null,
       },
     }).catch(() => undefined);
   }
@@ -590,15 +601,18 @@ async function main() {
     const date = new Date(today);
     date.setDate(date.getDate() - Math.floor(Math.random() * 30));
 
+    const status = ['PENDING', 'APPROVED', 'DENIED'][Math.floor(Math.random() * 3)];
+    const shouldHaveReviewer = Math.random() > 0.4 && status !== 'PENDING';
+
     await prisma.attendanceRegularizationRequest.create({
       data: {
         tenantId: tenant.id,
         employeeId: emp.id,
         attendanceDate: date,
         reason: ['Late arrival', 'Early departure', 'Forgot to mark', 'System error'][Math.floor(Math.random() * 4)],
-        status: ['PENDING', 'APPROVED', 'DENIED'][Math.floor(Math.random() * 3)],
-        approvedBy: Math.random() > 0.4 ? managerEmployee.id : null,
-        approvedAt: Math.random() > 0.4 ? new Date() : null,
+        status,
+        reviewerId: shouldHaveReviewer ? managerEmployee.id : null,
+        reviewerComment: shouldHaveReviewer ? ['Approved', 'Denied - no evidence', 'Approved with note'][Math.floor(Math.random() * 3)] : null,
       },
     }).catch(() => undefined);
   }

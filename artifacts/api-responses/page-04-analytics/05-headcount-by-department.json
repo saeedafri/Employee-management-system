@@ -1,0 +1,14 @@
+{
+  "endpoint": "page-04-analytics/05-headcount-by-department",
+  "url": "/api/v1/analytics/headcount-by-department",
+  "method": "GET",
+  "statusCode": 400,
+  "timestamp": "2026-05-17T21:27:55.253Z",
+  "response": {
+    "success": false,
+    "error": {
+      "code": "INVALID_TENANT",
+      "message": "Tenant not found"
+    }
+  }
+}

@@ -11,7 +11,7 @@ import {
 export async function managerDashboardRoutes(fastify) {
   fastify.addHook('onRequest', authenticate);
   fastify.get(
-    '/dashboard/manager',
+    '/manager/dashboard',
     {
       schema: {
         tags: ['Manager Dashboard'],
@@ -40,23 +40,30 @@ export async function managerDashboardRoutes(fastify) {
   );
 
   fastify.get(
-    '/dashboard/manager/team',
+    '/manager/team',
     {
       schema: {
         tags: ['Manager Dashboard'],
         description: 'Get manager team members',
         response: {
           200: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                id: { type: 'string' },
-                employeeCode: { type: 'string' },
-                firstName: { type: 'string' },
-                lastName: { type: 'string' },
-                designation: { type: 'string' },
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'string' },
+                    employeeCode: { type: 'string' },
+                    firstName: { type: 'string' },
+                    lastName: { type: 'string' },
+                    designation: { type: 'string' },
+                  },
+                },
               },
+              meta: { type: 'object' },
             },
           },
         },
@@ -66,7 +73,7 @@ export async function managerDashboardRoutes(fastify) {
   );
 
   fastify.get(
-    '/dashboard/manager/team-attendance',
+    '/manager/team/attendance',
     {
       schema: {
         tags: ['Manager Dashboard'],
@@ -81,8 +88,15 @@ export async function managerDashboardRoutes(fastify) {
           200: {
             type: 'object',
             properties: {
-              range: { type: 'string' },
-              series: { type: 'array' },
+              success: { type: 'boolean' },
+              data: {
+                type: 'object',
+                properties: {
+                  range: { type: 'string' },
+                  series: { type: 'array' },
+                },
+              },
+              meta: { type: 'object' },
             },
           },
         },
@@ -92,7 +106,7 @@ export async function managerDashboardRoutes(fastify) {
   );
 
   fastify.get(
-    '/dashboard/manager/pending-approvals',
+    '/manager/approvals',
     {
       schema: {
         tags: ['Manager Dashboard'],
@@ -101,8 +115,15 @@ export async function managerDashboardRoutes(fastify) {
           200: {
             type: 'object',
             properties: {
-              leaveRequests: { type: 'array' },
-              regularizationRequests: { type: 'array' },
+              success: { type: 'boolean' },
+              data: {
+                type: 'object',
+                properties: {
+                  leaveRequests: { type: 'array' },
+                  regularizationRequests: { type: 'array' },
+                },
+              },
+              meta: { type: 'object' },
             },
           },
         },
@@ -111,26 +132,40 @@ export async function managerDashboardRoutes(fastify) {
     getPendingApprovalsHandler,
   );
 
-  fastify.post(
-    '/dashboard/manager/approve-leave',
+  fastify.patch(
+    '/manager/leave-requests/:id/decision',
     {
       schema: {
         tags: ['Manager Dashboard'],
         description: 'Approve or deny leave request',
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'string' },
+          },
+        },
         body: {
           type: 'object',
-          required: ['leaveRequestId', 'decision'],
+          required: ['decision'],
           properties: {
-            leaveRequestId: { type: 'string' },
             decision: { type: 'string', enum: ['approve', 'deny'] },
+            comment: { type: 'string' },
           },
         },
         response: {
           200: {
             type: 'object',
             properties: {
-              id: { type: 'string' },
-              status: { type: 'string' },
+              success: { type: 'boolean' },
+              data: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string' },
+                  status: { type: 'string' },
+                },
+              },
+              meta: { type: 'object' },
             },
           },
         },
@@ -139,26 +174,40 @@ export async function managerDashboardRoutes(fastify) {
     approveLeaveHandler,
   );
 
-  fastify.post(
-    '/dashboard/manager/approve-regularization',
+  fastify.patch(
+    '/manager/regularization-requests/:id/decision',
     {
       schema: {
         tags: ['Manager Dashboard'],
         description: 'Approve or deny regularization request',
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'string' },
+          },
+        },
         body: {
           type: 'object',
-          required: ['requestId', 'decision'],
+          required: ['decision'],
           properties: {
-            requestId: { type: 'string' },
             decision: { type: 'string', enum: ['approve', 'deny'] },
+            comment: { type: 'string' },
           },
         },
         response: {
           200: {
             type: 'object',
             properties: {
-              id: { type: 'string' },
-              status: { type: 'string' },
+              success: { type: 'boolean' },
+              data: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string' },
+                  status: { type: 'string' },
+                },
+              },
+              meta: { type: 'object' },
             },
           },
         },

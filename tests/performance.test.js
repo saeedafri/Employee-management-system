@@ -75,13 +75,13 @@ describe('Performance Tests - Dashboard APIs', function () {
   });
 
   describe('Manager Dashboard Performance', () => {
-    it('GET /api/v1/dashboard/manager should complete in <150ms p95', async () => {
+    it('GET /api/v1/manager/dashboard should complete in <150ms p95', async () => {
       const times = [];
       for (let i = 0; i < 10; i++) {
         const start = process.hrtime.bigint();
         await app.inject({
           method: 'GET',
-          url: '/api/v1/dashboard/manager',
+          url: '/api/v1/manager/dashboard',
           headers: {
             authorization: managerToken,
             'x-tenant-key': testTenant.tenantKey,
@@ -96,13 +96,13 @@ describe('Performance Tests - Dashboard APIs', function () {
       expect(p95).to.be.lessThan(150);
     });
 
-    it('GET /api/v1/dashboard/manager/team should complete in <150ms p95', async () => {
+    it('GET /api/v1/manager/team should complete in <150ms p95', async () => {
       const times = [];
       for (let i = 0; i < 10; i++) {
         const start = process.hrtime.bigint();
         await app.inject({
           method: 'GET',
-          url: '/api/v1/dashboard/manager/team',
+          url: '/api/v1/manager/team',
           headers: {
             authorization: managerToken,
             'x-tenant-key': testTenant.tenantKey,
@@ -119,13 +119,13 @@ describe('Performance Tests - Dashboard APIs', function () {
   });
 
   describe('Employee Dashboard Performance', () => {
-    it('GET /api/v1/dashboard/employee should complete in <120ms p95', async () => {
+    it('GET /api/v1/employee/dashboard should complete in <120ms p95', async () => {
       const times = [];
       for (let i = 0; i < 10; i++) {
         const start = process.hrtime.bigint();
         await app.inject({
           method: 'GET',
-          url: '/api/v1/dashboard/employee',
+          url: '/api/v1/employee/dashboard',
           headers: {
             authorization: employeeToken,
             'x-tenant-key': testTenant.tenantKey,
@@ -140,13 +140,13 @@ describe('Performance Tests - Dashboard APIs', function () {
       expect(p95).to.be.lessThan(120);
     });
 
-    it('GET /api/v1/dashboard/employee/today should complete in <120ms p95', async () => {
+    it('GET /api/v1/attendance/today should complete in <120ms p95', async () => {
       const times = [];
       for (let i = 0; i < 10; i++) {
         const start = process.hrtime.bigint();
         await app.inject({
           method: 'GET',
-          url: '/api/v1/dashboard/employee/today',
+          url: '/api/v1/attendance/today',
           headers: {
             authorization: employeeToken,
             'x-tenant-key': testTenant.tenantKey,

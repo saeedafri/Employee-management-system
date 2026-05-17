@@ -1,0 +1,12 @@
+{
+  "endpoint": "page-06-employee-dashboard/04-employee-holidays",
+  "url": "/api/v1/dashboard/employee/holidays",
+  "method": "GET",
+  "statusCode": 404,
+  "timestamp": "2026-05-17T21:27:55.258Z",
+  "response": {
+    "message": "Route GET:/api/v1/dashboard/employee/holidays not found",
+    "error": "Not Found",
+    "statusCode": 404
+  }
+}

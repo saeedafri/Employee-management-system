@@ -13,7 +13,7 @@ import {
 export async function employeeDashboardRoutes(fastify) {
   fastify.addHook('onRequest', authenticate);
   fastify.get(
-    '/dashboard/employee',
+    '/employee/dashboard',
     {
       schema: {
         tags: ['Employee Dashboard'],
@@ -43,77 +43,147 @@ export async function employeeDashboardRoutes(fastify) {
   );
 
   fastify.get(
-    '/dashboard/employee/today',
+    '/attendance/today',
     {
       schema: {
-        tags: ['Employee Dashboard'],
+        tags: ['Attendance'],
         description: 'Get today\'s attendance data',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: { type: 'object' },
+              meta: { type: 'object' },
+            },
+          },
+        },
       },
     },
     getTodayHandler,
   );
 
   fastify.post(
-    '/dashboard/employee/check-in',
+    '/attendance/check-in',
     {
       schema: {
-        tags: ['Employee Dashboard'],
+        tags: ['Attendance'],
         description: 'Employee check-in',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: { type: 'object' },
+              meta: { type: 'object' },
+            },
+          },
+        },
       },
     },
     checkInHandler,
   );
 
   fastify.post(
-    '/dashboard/employee/check-out',
+    '/attendance/check-out',
     {
       schema: {
-        tags: ['Employee Dashboard'],
+        tags: ['Attendance'],
         description: 'Employee check-out',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: { type: 'object' },
+              meta: { type: 'object' },
+            },
+          },
+        },
       },
     },
     checkOutHandler,
   );
 
   fastify.get(
-    '/dashboard/employee/balance',
+    '/leave/balance',
     {
       schema: {
-        tags: ['Employee Dashboard'],
+        tags: ['Leave'],
         description: 'Get leave balance',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: { type: 'array' },
+              meta: { type: 'object' },
+            },
+          },
+        },
       },
     },
     getBalanceHandler,
   );
 
   fastify.get(
-    '/dashboard/employee/holidays',
+    '/holidays',
     {
       schema: {
-        tags: ['Employee Dashboard'],
+        tags: ['Holidays'],
         description: 'Get company holidays',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: { type: 'array' },
+              meta: { type: 'object' },
+            },
+          },
+        },
       },
     },
     getHolidaysHandler,
   );
 
   fastify.get(
-    '/dashboard/employee/documents',
+    '/employee/documents',
     {
       schema: {
-        tags: ['Employee Dashboard'],
+        tags: ['Employee'],
         description: 'Get employee documents',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: { type: 'array' },
+              meta: { type: 'object' },
+            },
+          },
+        },
       },
     },
     getDocumentsHandler,
   );
 
   fastify.get(
-    '/dashboard/employee/team',
+    '/employee/team',
     {
       schema: {
-        tags: ['Employee Dashboard'],
+        tags: ['Employee'],
         description: 'Get manager and peers',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              success: { type: 'boolean' },
+              data: { type: 'object' },
+              meta: { type: 'object' },
+            },
+          },
+        },
       },
     },
     getTeamHandler,

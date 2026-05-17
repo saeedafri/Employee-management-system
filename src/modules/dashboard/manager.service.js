@@ -227,7 +227,7 @@ export async function getPendingApprovals(managerId, tenantId) {
   }
 }
 
-export async function approveLeaveRequest(managerId, leaveRequestId, tenantId, decision) {
+export async function approveLeaveRequest(managerId, leaveRequestId, tenantId, decision, comment = '') {
   try {
     // Verify manager has authority to approve this request
     const leaveRequest = await prisma.leaveRequest.findUnique({
@@ -257,8 +257,9 @@ export async function approveLeaveRequest(managerId, leaveRequestId, tenantId, d
       where: { id: leaveRequestId },
       data: {
         status,
-        approvedBy: managerId,
-        approvedAt: new Date(),
+        approverId: managerId,
+        approverComment: comment || null,
+        decidedAt: new Date(),
       },
     });
 
@@ -281,7 +282,7 @@ export async function approveLeaveRequest(managerId, leaveRequestId, tenantId, d
   }
 }
 
-export async function approveRegularizationRequest(managerId, requestId, tenantId, decision) {
+export async function approveRegularizationRequest(managerId, requestId, tenantId, decision, comment = '') {
   try {
     const request = await prisma.attendanceRegularizationRequest.findUnique({
       where: { id: requestId },
@@ -310,8 +311,8 @@ export async function approveRegularizationRequest(managerId, requestId, tenantI
       where: { id: requestId },
       data: {
         status,
-        approvedBy: managerId,
-        approvedAt: new Date(),
+        reviewerId: managerId,
+        reviewerComment: comment || null,
       },
     });
 

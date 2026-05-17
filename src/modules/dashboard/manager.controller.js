@@ -59,7 +59,8 @@ export async function getPendingApprovalsHandler(request, reply) {
 
 export async function approveLeaveHandler(request, reply) {
   const { user, tenantId } = request;
-  const { leaveRequestId, decision } = request.body;
+  const { id } = request.params;
+  const { decision, comment } = request.body;
 
   if (user.memberType !== 'MANAGER') {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only managers can approve leaves', request.requestId));
@@ -69,13 +70,14 @@ export async function approveLeaveHandler(request, reply) {
     return reply.code(400).send(errorResponse('INVALID_DECISION', 'Decision must be approve or deny', request.requestId));
   }
 
-  const result = await approveLeaveRequest(user.employeeId, leaveRequestId, tenantId, decision);
+  const result = await approveLeaveRequest(user.employeeId, id, tenantId, decision, comment);
   reply.code(result.error ? 400 : 200).send(result);
 }
 
 export async function approveRegularizationHandler(request, reply) {
   const { user, tenantId } = request;
-  const { requestId, decision } = request.body;
+  const { id } = request.params;
+  const { decision, comment } = request.body;
 
   if (user.memberType !== 'MANAGER') {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only managers can approve requests', request.requestId));
@@ -85,6 +87,6 @@ export async function approveRegularizationHandler(request, reply) {
     return reply.code(400).send(errorResponse('INVALID_DECISION', 'Decision must be approve or deny', request.requestId));
   }
 
-  const result = await approveRegularizationRequest(user.employeeId, requestId, tenantId, decision);
+  const result = await approveRegularizationRequest(user.employeeId, id, tenantId, decision, comment);
   reply.code(result.error ? 400 : 200).send(result);
 }

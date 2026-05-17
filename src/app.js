@@ -15,6 +15,7 @@ import logsRoutes from './modules/logs/logs.routes.js';
 import analyticsRoutes from './modules/analytics/analytics.routes.js';
 import { managerDashboardRoutes } from './modules/dashboard/manager.routes.js';
 import { employeeDashboardRoutes } from './modules/dashboard/employee.routes.js';
+import { employeesRoutes } from './modules/employees/employees.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -53,6 +54,7 @@ export async function createApp() {
       fastify.register(analyticsRoutes);
       fastify.register(managerDashboardRoutes);
       fastify.register(employeeDashboardRoutes);
+      fastify.register(employeesRoutes);
     },
     { prefix: config.apiPrefix },
   );
