@@ -52,7 +52,7 @@ describe('OTP E2E Tests', function () {
     });
 
     expect(response.statusCode).to.equal(400);
-    let body = JSON.parse(response.body);
+    let body = JSON.parse(response.payload);
     expect(body.error.code).to.equal('OTP_INVALID');
 
     // Step 3: Verify with correct code
@@ -74,7 +74,7 @@ describe('OTP E2E Tests', function () {
     });
 
     expect(response.statusCode).to.equal(200);
-    body = JSON.parse(response.body);
+    body = JSON.parse(response.payload);
     // For LOGIN purpose OTP verification
     // The response should contain user and session information
     expect(body.success).to.be.true;
@@ -100,7 +100,7 @@ describe('OTP E2E Tests', function () {
     });
 
     expect(response.statusCode).to.equal(400);
-    body = JSON.parse(response.body);
+    body = JSON.parse(response.payload);
     expect(body.error.code).to.equal('OTP_ALREADY_USED');
 
     // Step 6: Verify that audit log was created for OTP verification
@@ -142,7 +142,7 @@ describe('OTP E2E Tests', function () {
     });
 
     expect(response.statusCode).to.equal(429);
-    const body = JSON.parse(response.body);
+    const body = JSON.parse(response.payload);
     expect(body.error.code).to.equal('OTP_LOCKED');
 
     // Verify lock was set in database
@@ -184,7 +184,7 @@ describe('OTP E2E Tests', function () {
     });
 
     expect(response.statusCode).to.equal(400);
-    const body = JSON.parse(response.body);
+    const body = JSON.parse(response.payload);
     expect(body.error.code).to.equal('OTP_EXPIRED');
   });
 });

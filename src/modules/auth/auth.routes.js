@@ -242,18 +242,41 @@ export default async function authRoutes(fastify) {
         200: {
           type: 'object',
           properties: {
+            success: { type: 'boolean' },
             data: {
               type: 'object',
-              properties: {
-                valid: { type: 'boolean' },
-                challengeId: { type: 'string' },
-              },
+              oneOf: [
+                {
+                  properties: {
+                    valid: { type: 'boolean' },
+                    challengeId: { type: 'string' },
+                  },
+                },
+                {
+                  properties: {
+                    accessToken: { type: 'string' },
+                    sessionId: { type: 'string' },
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string' },
+                        email: { type: 'string' },
+                        memberType: { type: 'string' },
+                        employee: { type: 'object' },
+                      },
+                    },
+                    permissions: { type: 'array' },
+                  },
+                },
+              ],
             },
+            meta: { type: 'object' },
           },
         },
         400: {
           type: 'object',
           properties: {
+            success: { type: 'boolean' },
             error: {
               type: 'object',
               properties: {
@@ -266,6 +289,7 @@ export default async function authRoutes(fastify) {
         429: {
           type: 'object',
           properties: {
+            success: { type: 'boolean' },
             error: {
               type: 'object',
               properties: {

@@ -95,8 +95,15 @@ describe('OTP Routes', function () {
       expect(body.error.code).to.equal('OTP_CHALLENGE_NOT_FOUND');
     });
 
-    it('should resend OTP successfully within cooldown window', async function () {
-      const challenge = await createTestOtpChallenge(testUser.id, testTenant.id, 'user@test.com');
+    it('should resend OTP successfully after cooldown expires', async function () {
+      const { challenge } = await createTestOtpChallenge(testUser.id, testTenant.id, 'user@test.com');
+
+      // Backdate lastSentAt by 61 seconds to bypass cooldown check
+      const { prisma } = await import('../../src/plugins/prisma.js');
+      await prisma.otpChallenge.update({
+        where: { id: challenge.id },
+        data: { lastSentAt: new Date(Date.now() - 61000) },
+      });
 
       const response = await app.inject({
         method: 'POST',
@@ -112,7 +119,7 @@ describe('OTP Routes', function () {
     });
 
     it('should reject resend for consumed OTP', async function () {
-      const challenge = await createTestOtpChallenge(testUser.id, testTenant.id, 'user@test.com');
+      const { challenge } = await createTestOtpChallenge(testUser.id, testTenant.id, 'user@test.com');
 
       // Mark as consumed
       const { prisma } = await import('../../src/plugins/prisma.js');
