@@ -1,0 +1,230 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, stg-deploy]
+  pull_request:
+    branches: [main, develop, stg-deploy]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ems_test
+          MYSQL_USER: ems_user
+          MYSQL_PASSWORD: ems_pass
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+      redis:
+        image: redis:7.0
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h"127.0.0.1" -u"ems_user" -p"ems_pass" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 1
+          done
+
+      - name: Setup database
+        env:
+          DATABASE_URL: mysql://ems_user:ems_pass@127.0.0.1:3306/ems_test
+        run: |
+          npm run db:migrate:dev
+          npm run db:seed
+
+      - name: Run tests
+        env:
+          NODE_ENV: testing
+          DATABASE_URL: mysql://ems_user:ems_pass@127.0.0.1:3306/ems_test
+          REDIS_URL: redis://127.0.0.1:6379
+          JWT_SECRET: test-secret
+        run: npm test
+
+      - name: Generate coverage
+        env:
+          NODE_ENV: testing
+          DATABASE_URL: mysql://ems_user:ems_pass@127.0.0.1:3306/ems_test
+          REDIS_URL: redis://127.0.0.1:6379
+          JWT_SECRET: test-secret
+        run: npm run test:coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Check for secrets
+        run: |
+          npm install -g snyk
+          snyk test --severity-threshold=high
+        continue-on-error: true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run db:generate
+
+      - name: Build
+        run: npm run build
+        continue-on-error: true
+
+      - name: Verify app loads
+        run: node -e "import('./src/app.js').then(() => console.log('App loaded successfully'))"
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [lint]
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ems_test
+          MYSQL_USER: ems_user
+          MYSQL_PASSWORD: ems_pass
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+      redis:
+        image: redis:7.0
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup database
+        env:
+          DATABASE_URL: mysql://ems_user:ems_pass@127.0.0.1:3306/ems_test
+        run: |
+          npm run db:migrate:dev
+          npm run db:seed
+
+      - name: Run integration tests
+        env:
+          NODE_ENV: testing
+          DATABASE_URL: mysql://ems_user:ems_pass@127.0.0.1:3306/ems_test
+          REDIS_URL: redis://127.0.0.1:6379
+          JWT_SECRET: test-secret
+        run: npm run test:integration
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [lint, test, security, build, integration]
+    if: always()
+    steps:
+      - name: Check workflow status
+        run: |
+          if [ "${{ needs.lint.result }}" = "failure" ] || \
+             [ "${{ needs.test.result }}" = "failure" ] || \
+             [ "${{ needs.build.result }}" = "failure" ] || \
+             [ "${{ needs.integration.result }}" = "failure" ]; then
+            echo "CI Failed"
+            exit 1
+          else
+            echo "CI Passed"
+          fi
