@@ -316,13 +316,15 @@ describe('Auth Routes Integration Tests', function () {
 
       const firstRefreshToken = loginResponse.cookies[0].value;
 
-      // Refresh 1
+      // Refresh 1 (should succeed)
       const refresh1Response = await app.inject({
         method: 'POST',
         url: '/api/v1/auth/refresh',
         headers: { 'x-tenant-key': testTenant.tenantKey },
         cookies: { refreshToken: firstRefreshToken },
       });
+
+      expect(refresh1Response.statusCode).to.equal(200);
 
       // Try to reuse old token (should fail)
       const reuseResponse = await app.inject({
