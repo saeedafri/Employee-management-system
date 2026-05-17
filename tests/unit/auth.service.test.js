@@ -170,12 +170,11 @@ describe('Auth Service Unit Tests', function () {
         data: { mfaEnabled: true },
       });
 
-      try {
-        await authService.login(prisma, testTenant.id, 'user@test.com', 'password123', '127.0.0.1', 'test');
-        expect.fail('Should have thrown MFA_REQUIRED');
-      } catch (error) {
-        expect(error.code).to.equal('MFA_REQUIRED');
-      }
+      const result = await authService.login(prisma, testTenant.id, 'user@test.com', 'password123', '127.0.0.1', 'test');
+      expect(result.mfaRequired).to.equal(true);
+      expect(result).to.have.property('challengeId');
+      expect(result).to.have.property('destinationMasked');
+      expect(result).to.have.property('expiresIn');
     });
   });
 
@@ -491,6 +490,46 @@ describe('Auth Service Unit Tests', function () {
       });
 
       expect(logs.length).to.be.greaterThan(0);
+    });
+  });
+
+  describe('completeMfaLogin', function () {
+    it('should create session and return tokens after MFA verification', async function () {
+      const result = await authService.completeMfaLogin(prisma, testTenant.id, testUser.id, '127.0.0.1', 'test-agent');
+
+      expect(result).to.have.property('user');
+      expect(result).to.have.property('accessToken');
+      expect(result).to.have.property('refreshToken');
+      expect(result).to.have.property('sessionId');
+      expect(result.user.id).to.equal(testUser.id);
+    });
+
+    it('should create MFA_LOGIN_COMPLETED audit log', async function () {
+      await authService.completeMfaLogin(prisma, testTenant.id, testUser.id, '127.0.0.1', 'test-agent');
+
+      const logs = await prisma.auditLog.findMany({
+        where: { action: 'MFA_LOGIN_COMPLETED', tenantId: testTenant.id },
+      });
+
+      expect(logs.length).to.equal(1);
+      expect(logs[0].actorUserId).to.equal(testUser.id);
+    });
+
+    it('should throw USER_NOT_FOUND for invalid user', async function () {
+      try {
+        await authService.completeMfaLogin(prisma, testTenant.id, 'invalid-user-id', '127.0.0.1', 'test-agent');
+        expect.fail('Should have thrown');
+      } catch (error) {
+        expect(error.code).to.equal('USER_NOT_FOUND');
+      }
+    });
+
+    it('should update lastLoginAt on MFA completion', async function () {
+      const beforeLogin = testUser.lastLoginAt;
+      await authService.completeMfaLogin(prisma, testTenant.id, testUser.id, '127.0.0.1', 'test-agent');
+
+      const updatedUser = await prisma.user.findUnique({ where: { id: testUser.id } });
+      expect(updatedUser.lastLoginAt.getTime()).to.be.greaterThan(beforeLogin?.getTime() || 0);
     });
   });
 

@@ -167,6 +167,95 @@ POST /api/v1/auth/admin/login
 - Non-admin users receive 403 Forbidden
 - All other flows identical to regular login
 
+## Multi-Factor Authentication (MFA) with OTP
+
+### Overview
+When a user has MFA enabled, the login flow returns a challenge instead of tokens, requiring email-based OTP verification.
+
+### MFA Login Flow (4 Steps)
+
+```
+Client                          Server
+  |                               |
+  |------ POST /auth/login ------>|
+  |     (email, password)          |
+  |                                |
+  |                        1. Validate credentials
+  |                        2. Check mfaEnabled
+  |                        3. Generate OTP challenge
+  |                           - challengeId (UUID)
+  |                           - code (6-digit)
+  |                           - TTL: 10 minutes
+  |                        4. Queue OTP email
+  |                                |
+  |<------ 202 Accepted ----------|
+  |   {                            |
+  |     mfaRequired: true,         |
+  |     challengeId: "...",        |
+  |     destinationMasked: "...",  |
+  |     expiresIn: 600             |
+  |   }                            |
+```
+
+### OTP Verification
+
+```
+POST /api/v1/auth/verify-otp
+Content-Type: application/json
+X-Tenant-Key: {tenantKey}
+
+{
+  "challengeId": "challenge_uuid",
+  "code": "123456"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "accessToken": "eyJ...",
+    "user": {
+      "id": "user_id",
+      "email": "user@example.com",
+      "memberType": "EMPLOYEE"
+    },
+    "permissions": ["read:profile", "write:leave"],
+    "sessionId": "session_uuid"
+  }
+}
+```
+
+### OTP Resend
+
+```
+POST /api/v1/auth/resend-otp
+Content-Type: application/json
+X-Tenant-Key: {tenantKey}
+
+{
+  "challengeId": "challenge_uuid"
+}
+```
+
+**Constraints:**
+- 60-second cooldown between resends
+- Maximum 3 resends per challenge
+- Returns `OTP_RESEND_COOLDOWN` with `cooldownSeconds` if too soon
+- Returns `OTP_RESEND_LIMIT_EXCEEDED` if max resends reached
+
+### OTP Error Codes
+
+| Code | Status | Meaning |
+|------|--------|---------|
+| OTP_CHALLENGE_NOT_FOUND | 400 | Invalid challengeId |
+| OTP_INVALID | 400 | Wrong code (5 attempts max) |
+| OTP_LOCKED | 429 | Locked after 5 failed attempts (15 min) |
+| OTP_EXPIRED | 400 | Challenge expired (10 min TTL) |
+| OTP_ALREADY_USED | 400 | Challenge already consumed |
+| OTP_RESEND_COOLDOWN | 429 | Too soon to resend (60 sec min) |
+| OTP_RESEND_LIMIT_EXCEEDED | 429 | Max 3 resends reached |
+
 ## Current User
 
 ```

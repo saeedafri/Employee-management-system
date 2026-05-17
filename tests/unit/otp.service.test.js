@@ -62,7 +62,7 @@ describe('OTP Service', function () {
         where: { tenantId: testTenant.id },
       });
 
-      const generatedLog = logs.find(l => l.action === 'OTP_GENERATED');
+      const generatedLog = logs.find(l => l.action === 'OTP_CHALLENGE_CREATED');
       expect(generatedLog).to.exist;
     });
 
@@ -216,6 +216,12 @@ describe('OTP Service', function () {
   describe('resendOtp', function () {
     it('should resend OTP and increment resend count', async function () {
       const result = await otpService.generateOtp(testTenant.id, testUser.id, 'test@test.com');
+
+      // Update lastSentAt to bypass cooldown (simulate time passing)
+      await prisma.otpChallenge.update({
+        where: { challengeId: result.challengeId },
+        data: { lastSentAt: new Date(Date.now() - 61000) },
+      });
 
       const resendResult = await otpService.resendOtp(testTenant.id, result.challengeId, 'test@test.com');
 

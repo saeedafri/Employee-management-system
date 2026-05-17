@@ -286,7 +286,7 @@ export default async function authRoutes(fastify) {
   fastify.post('/auth/resend-otp', {
     schema: {
       tags: ['OTP Verification'],
-      description: 'Resend OTP code to registered email',
+      description: 'Resend OTP code to registered email (no auth required during MFA flow)',
       body: {
         type: 'object',
         required: ['challengeId'],
@@ -326,18 +326,6 @@ export default async function authRoutes(fastify) {
             },
           },
         },
-        401: {
-          type: 'object',
-          properties: {
-            error: {
-              type: 'object',
-              properties: {
-                code: { type: 'string' },
-                message: { type: 'string' },
-              },
-            },
-          },
-        },
         429: {
           type: 'object',
           properties: {
@@ -346,6 +334,7 @@ export default async function authRoutes(fastify) {
               properties: {
                 code: { type: 'string' },
                 message: { type: 'string' },
+                details: { type: 'object' },
               },
             },
           },
@@ -353,9 +342,8 @@ export default async function authRoutes(fastify) {
       },
     },
     rateLimit: {
-      max: 3,
+      max: 5,
       timeWindow: '15 minutes',
     },
-    onRequest: [authenticate],
   }, async (request, reply) => otpController.resendOtpController(request, reply));
 }

@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { createTestApp, createTestTenant, createTestUser, cleanDatabase } from '../helpers.js';
+import { prisma } from '../../src/plugins/prisma.js';
 
 describe('Auth Routes Integration Tests', function () {
   this.timeout(10000);
@@ -145,6 +146,51 @@ describe('Auth Routes Integration Tests', function () {
       });
 
       expect(response.statusCode).to.equal(200);
+    });
+  });
+
+  describe('MFA Login Flow', function () {
+    it('should return mfaRequired when user has MFA enabled', async function () {
+      // Create user with MFA enabled
+      await prisma.user.updateMany({
+        where: { email: 'test@example.com', tenantId: testTenant.id },
+        data: { mfaEnabled: true },
+      });
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/login',
+        headers: { 'x-tenant-key': testTenant.tenantKey },
+        payload: {
+          email: 'test@example.com',
+          password: 'password',
+        },
+      });
+
+      expect(response.statusCode).to.equal(202);
+      const body = JSON.parse(response.body);
+      expect(body.data.mfaRequired).to.be.true;
+      expect(body.data).to.have.property('challengeId');
+      expect(body.data).to.have.property('destinationMasked');
+      expect(body.data).to.have.property('expiresIn');
+    });
+
+    it('should still allow normal login without MFA', async function () {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/login',
+        headers: { 'x-tenant-key': testTenant.tenantKey },
+        payload: {
+          email: 'test@example.com',
+          password: 'password',
+        },
+      });
+
+      expect(response.statusCode).to.equal(200);
+      const body = JSON.parse(response.body);
+      expect(body.data).to.have.property('accessToken');
+      expect(body.data).to.have.property('sessionId');
+      expect(body.data.mfaRequired).to.be.undefined;
     });
   });
 

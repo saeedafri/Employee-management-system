@@ -56,6 +56,69 @@
             ],
             "url": {"raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"]}
           }
+        },
+        {
+          "name": "POST Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var data = pm.response.json();",
+                  "  pm.environment.set('accessToken', data.data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "X-Tenant-Key", "value": "{{tenantKey}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\"challengeId\": \"{{challengeId}}\", \"code\": \"123456\"}"},
+            "url": {"raw": "{{baseUrl}}/auth/verify-otp", "host": ["{{baseUrl}}"], "path": ["auth", "verify-otp"]}
+          }
+        },
+        {
+          "name": "POST Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "X-Tenant-Key", "value": "{{tenantKey}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\"challengeId\": \"{{challengeId}}\"}"},
+            "url": {"raw": "{{baseUrl}}/auth/resend-otp", "host": ["{{baseUrl}}"], "path": ["auth", "resend-otp"]}
+          }
+        },
+        {
+          "name": "POST Login (MFA User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 202 Accepted', () => pm.expect(pm.response.code).to.equal(202));",
+                  "if (pm.response.code === 202) {",
+                  "  var data = pm.response.json();",
+                  "  pm.environment.set('challengeId', data.data.challengeId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "X-Tenant-Key", "value": "{{tenantKey}}"}
+            ],
+            "body": {"mode": "raw", "raw": "{\"email\": \"mfa-user@example.com\", \"password\": \"password\"}"},
+            "url": {"raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"]}
+          }
         }
       ]
     },
@@ -84,6 +147,7 @@
   "variable": [
     {"key": "baseUrl", "value": "http://localhost:3000/api/v1"},
     {"key": "tenantKey", "value": "test-tenant"},
-    {"key": "accessToken", "value": ""}
+    {"key": "accessToken", "value": ""},
+    {"key": "challengeId", "value": ""}
   ]
 }

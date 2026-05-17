@@ -4,6 +4,7 @@ import { createAccessToken, generateRefreshToken } from '../../utils/token.js';
 import { generateId } from '../../utils/id.js';
 import { config } from '../../config/index.js';
 import * as authRepository from './auth.repository.js';
+import * as otpService from './otp.service.js';
 
 class AppError extends Error {
   constructor(message, code, statusCode = 400, details = {}) {
@@ -51,8 +52,26 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
   const user = await validateLogin(db, tenantId, email, password);
 
   if (user.mfaEnabled) {
-    // TODO: Generate OTP challenge and return mfaRequired
-    throw new AppError('MFA not yet implemented', 'MFA_REQUIRED', 400);
+    // Generate OTP challenge for MFA
+    const otpResult = await otpService.generateOtp(tenantId, user.id, user.email, 'LOGIN', 'EMAIL');
+
+    // Audit log for MFA login initiation
+    await authRepository.createAuditLog(db, {
+      tenantId,
+      actorUserId: user.id,
+      action: 'MFA_LOGIN_INITIATED',
+      entityType: 'User',
+      entityId: user.id,
+      ipAddress,
+      userAgent,
+    });
+
+    return {
+      mfaRequired: true,
+      challengeId: otpResult.challengeId,
+      destinationMasked: otpResult.destinationMasked,
+      expiresIn: otpResult.expiresIn,
+    };
   }
 
   // Create session with sessionFamilyId in single operation
@@ -172,6 +191,79 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
     userAgent,
   });
 
+  await db.user.update({
+    where: { id: user.id },
+    data: { lastLoginAt: new Date() },
+  });
+
+  // Return opaque refresh token format: sessionId.rawRefreshToken
+  const opaqueRefreshToken = `${session.id}.${rawRefreshToken}`;
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      memberType: user.memberType,
+      employee: user.employee,
+    },
+    accessToken,
+    refreshToken: opaqueRefreshToken,
+    sessionId: session.id,
+    permissions,
+  };
+}
+
+export async function completeMfaLogin(db, tenantId, userId, ipAddress, userAgent) {
+  // Fetch user to ensure they exist
+  const user = await authRepository.findUserById(db, userId);
+
+  if (!user) {
+    throw new AppError('User not found', 'USER_NOT_FOUND', 401);
+  }
+
+  // Create session
+  const sessionId = generateId();
+  const rawRefreshToken = generateRefreshToken();
+  const refreshTokenHash = hashSHA256(rawRefreshToken);
+  const expiresAt = new Date(
+    Date.now() + config.sessionMaxAgeDays * 24 * 60 * 60 * 1000,
+  );
+
+  const sessionData = {
+    id: sessionId,
+    userId: user.id,
+    tenantId,
+    sessionFamilyId: sessionId,
+    refreshTokenHash,
+    ipAddress,
+    userAgent,
+    expiresAt,
+  };
+
+  const session = await authRepository.createSession(db, sessionData);
+
+  // Create access token
+  const permissions = extractPermissions(user);
+  const accessToken = await createAccessToken({
+    sub: user.id,
+    tenantId,
+    memberType: user.memberType,
+    sessionId: session.id,
+    permissions,
+  });
+
+  // Audit log
+  await authRepository.createAuditLog(db, {
+    tenantId,
+    actorUserId: user.id,
+    action: 'MFA_LOGIN_COMPLETED',
+    entityType: 'User',
+    entityId: user.id,
+    ipAddress,
+    userAgent,
+  });
+
+  // Update last login
   await db.user.update({
     where: { id: user.id },
     data: { lastLoginAt: new Date() },

@@ -34,6 +34,18 @@ export async function loginController(request, reply) {
       userAgent,
     );
 
+    // If MFA is required, return MFA challenge without access token
+    if (result.mfaRequired) {
+      return reply.code(202).send(
+        successResponse({
+          mfaRequired: true,
+          challengeId: result.challengeId,
+          destinationMasked: result.destinationMasked,
+          expiresIn: result.expiresIn,
+        }),
+      );
+    }
+
     // Set refresh token in HttpOnly cookie
     reply.setCookie(
       config.sessionCookieName,
