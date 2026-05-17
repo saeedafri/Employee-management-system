@@ -1,10 +1,15 @@
+import crypto from 'crypto';
 import { prisma } from '../../plugins/prisma.js';
 import * as otpRepository from './otp.repository.js';
 import { hashSHA256 } from '../../utils/hash.js';
 import { enqueueOtpEmail } from '../../jobs/emailJob.js';
 
 function generateOtpCode() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return crypto.randomInt(100000, 1000000).toString();
+}
+
+function generateSecureChallengeId() {
+  return crypto.randomUUID();
 }
 
 function maskEmail(email) {
@@ -20,7 +25,7 @@ export async function generateOtp(tenantId, userId, email, purpose = 'LOGIN', de
   try {
     const code = generateOtpCode();
     const codeHash = hashSHA256(code);
-    const challengeId = `challenge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const challengeId = generateSecureChallengeId();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     const destinationMasked = maskEmail(email);
 
@@ -43,7 +48,7 @@ export async function generateOtp(tenantId, userId, email, purpose = 'LOGIN', de
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: userId,
-      action: 'OTP_GENERATED',
+      action: 'OTP_CHALLENGE_CREATED',
       entityType: 'OtpChallenge',
       entityId: challenge.id,
     });
@@ -79,7 +84,7 @@ export async function generateOtp(tenantId, userId, email, purpose = 'LOGIN', de
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: userId,
-      action: 'OTP_GENERATION_FAILED',
+      action: 'OTP_VERIFICATION_FAILED',
       entityType: 'OtpChallenge',
       entityId: 'unknown',
     });
@@ -126,7 +131,7 @@ export async function verifyOtp(tenantId, challengeId, code) {
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: challenge.userId,
-      action: 'OTP_VERIFICATION_FAILED',
+      action: 'OTP_EXPIRED',
       entityType: 'OtpChallenge',
       entityId: challenge.id,
     });
@@ -141,7 +146,7 @@ export async function verifyOtp(tenantId, challengeId, code) {
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: challenge.userId,
-      action: 'OTP_VERIFICATION_FAILED',
+      action: 'OTP_LOCKED',
       entityType: 'OtpChallenge',
       entityId: challenge.id,
     });
@@ -184,7 +189,7 @@ export async function verifyOtp(tenantId, challengeId, code) {
   await otpRepository.createAuditLog(prisma, {
     tenantId,
     actorUserId: challenge.userId,
-    action: 'OTP_VERIFIED',
+    action: 'OTP_VERIFICATION_SUCCEEDED',
     entityType: 'OtpChallenge',
     entityId: challenge.id,
   });
@@ -204,7 +209,7 @@ export async function resendOtp(tenantId, challengeId, email) {
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: null,
-      action: 'OTP_RESEND_FAILED',
+      action: 'OTP_VERIFICATION_FAILED',
       entityType: 'OtpChallenge',
       entityId: 'unknown',
     });
@@ -219,7 +224,7 @@ export async function resendOtp(tenantId, challengeId, email) {
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: challenge.userId,
-      action: 'OTP_RESEND_FAILED',
+      action: 'OTP_VERIFICATION_FAILED',
       entityType: 'OtpChallenge',
       entityId: challenge.id,
     });
@@ -234,7 +239,7 @@ export async function resendOtp(tenantId, challengeId, email) {
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: challenge.userId,
-      action: 'OTP_RESEND_FAILED',
+      action: 'OTP_EXPIRED',
       entityType: 'OtpChallenge',
       entityId: challenge.id,
     });
@@ -245,11 +250,29 @@ export async function resendOtp(tenantId, challengeId, email) {
     };
   }
 
+  // Check cooldown (60 seconds)
+  if (challenge.lastSentAt && Date.now() - challenge.lastSentAt.getTime() < 60000) {
+    const cooldownSeconds = Math.ceil((60000 - (Date.now() - challenge.lastSentAt.getTime())) / 1000);
+    await otpRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: challenge.userId,
+      action: 'OTP_RESEND_BLOCKED',
+      entityType: 'OtpChallenge',
+      entityId: challenge.id,
+    });
+    throw {
+      code: 'OTP_RESEND_COOLDOWN',
+      message: 'Please wait before requesting another OTP.',
+      statusCode: 429,
+      details: { cooldownSeconds },
+    };
+  }
+
   if (challenge.resendCount >= challenge.maxResends) {
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: challenge.userId,
-      action: 'OTP_RESEND_FAILED',
+      action: 'OTP_VERIFICATION_FAILED',
       entityType: 'OtpChallenge',
       entityId: challenge.id,
     });
@@ -289,7 +312,7 @@ export async function resendOtp(tenantId, challengeId, email) {
     await otpRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: challenge.userId,
-      action: 'OTP_RESEND_EMAIL_FAILED',
+      action: 'OTP_EMAIL_FAILED',
       entityType: 'OtpChallenge',
       entityId: challenge.id,
     });
