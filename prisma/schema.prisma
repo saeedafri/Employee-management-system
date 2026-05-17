@@ -396,7 +396,7 @@ model AttendanceRecord {
   workMode      WorkMode @default(OFFICE)
   status        AttendanceStatus @default(PRESENT)
   totalMinutes  Int?
-  locationJson  String?  // JSON stringified location data
+  locationJson  Json?    // Location data
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -406,6 +406,9 @@ model AttendanceRecord {
   employee      Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, employeeId, attendanceDate])
+  @@index([tenantId, attendanceDate])
+  @@index([employeeId, attendanceDate])
+  @@index([status])
   @@index([tenantId])
   @@index([employeeId])
 }
@@ -545,24 +548,28 @@ model Resignation {
 model AuditLog {
   id              String   @id @default(cuid())
   tenantId        String
-  actorUserId     String
+  actorUserId     String?  // Nullable for system-generated actions
   action          String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT, APPROVE, etc.
   entityType      String   // Employee, LeaveRequest, etc.
   entityId        String
-  oldValuesJson   String?  // JSON stringified
-  newValuesJson   String?  // JSON stringified
+  oldValuesJson   Json?    // JSON data for change tracking
+  newValuesJson   Json?    // JSON data for change tracking
   ipAddress       String?
   userAgent       String?
   createdAt       DateTime @default(now())
 
   // Relations
   tenant          Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  actor           User    @relation(fields: [actorUserId], references: [id], onDelete: Cascade)
+  actor           User?   @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
 
-  @@index([tenantId])
+  @@index([tenantId, createdAt])
+  @@index([tenantId, action])
+  @@index([tenantId, entityType, entityId])
+  @@index([tenantId, actorUserId])
   @@index([entityType])
   @@index([entityId])
   @@index([createdAt])
+  @@index([action])
 }
 
 model Notification {
@@ -572,7 +579,7 @@ model Notification {
   type            String   // leave_approved, leave_rejected, etc.
   title           String
   message         String
-  metadataJson    String?  // JSON stringified context
+  metadataJson    Json?    // JSON context data
   readAt          DateTime?
   createdAt       DateTime @default(now())
 
@@ -580,6 +587,9 @@ model Notification {
   tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([tenantId, userId])
+  @@index([tenantId, createdAt])
+  @@index([userId, readAt])
   @@index([tenantId])
   @@index([userId])
   @@index([readAt])
