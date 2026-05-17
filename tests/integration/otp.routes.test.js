@@ -1,8 +1,6 @@
 import { describe, it, before, beforeEach, after } from 'mocha';
 import { expect } from 'chai';
-import { createTestApp, createTestTenant, createTestUser, createTestOtpChallenge, cleanDatabase, getAuthToken } from '../helpers.js';
-import { hashSHA256 } from '../../src/utils/hash.js';
-import { prisma } from '../../src/plugins/prisma.js';
+import { createTestApp, createTestTenant, createTestUser, createTestOtpChallenge, cleanDatabase } from '../helpers.js';
 
 describe('OTP Routes', function () {
   this.timeout(15000);

@@ -1,7 +1,6 @@
 import { prisma } from '../../plugins/prisma.js';
 import * as otpRepository from './otp.repository.js';
 import { hashSHA256 } from '../../utils/hash.js';
-import { config } from '../../config/index.js';
 import { enqueueOtpEmail } from '../../jobs/emailJob.js';
 
 function generateOtpCode() {

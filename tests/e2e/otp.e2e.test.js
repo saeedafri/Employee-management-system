@@ -153,7 +153,7 @@ describe('OTP E2E Tests', function () {
   it('E2E: Expired OTP cannot be verified', async function () {
     // Create an expired challenge
     const challengeId = `challenge_${Date.now()}`;
-    const challenge = await prisma.otpChallenge.create({
+    await prisma.otpChallenge.create({
       data: {
         userId: testUser.id,
         tenantId: testTenant.id,
