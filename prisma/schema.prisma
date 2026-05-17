@@ -300,6 +300,7 @@ model Session {
   id                String    @id @default(cuid())
   userId            String
   tenantId          String
+  sessionFamilyId   String    // For tracking token rotation and reuse detection
   refreshTokenHash  String    // SHA-256 hash of refresh token
   ipAddress         String?
   userAgent         String?
@@ -308,16 +309,16 @@ model Session {
   lastSeenAt        DateTime  @updatedAt
   expiresAt         DateTime
   revokedAt         DateTime?
-  revokeReason      String?   // LOGOUT, TOKEN_REUSE, ADMIN_REVOKE, etc.
+  revokeReason      String?   // LOGOUT, TOKEN_REUSE_DETECTED, ADMIN_REVOKE, etc.
   createdAt         DateTime  @default(now())
 
   // Relations
   user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-  @@index([tenantId])
-  @@index([revokedAt])
+  @@index([userId, revokedAt, expiresAt])
+  @@index([tenantId, userId, revokedAt])
+  @@index([sessionFamilyId, revokedAt])
   @@index([expiresAt])
 }
 
