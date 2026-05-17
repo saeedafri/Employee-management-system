@@ -75,13 +75,13 @@ describe('Password Reset Routes', function () {
     });
   });
 
-  describe('GET /api/v1/auth/validate-reset-token', function () {
+  describe('GET /api/v1/auth/reset-password/validate', function () {
     it('should validate valid token', async function () {
       const { rawToken } = await createTestPasswordResetToken(testUser.id, testTenant.id);
 
       const response = await app.inject({
         method: 'GET',
-        url: `/api/v1/auth/validate-reset-token?token=${rawToken}`,
+        url: `/api/v1/auth/reset-password/validate?token=${rawToken}`,
         headers: { 'x-tenant-key': testTenant.tenantKey },
       });
 
@@ -94,7 +94,7 @@ describe('Password Reset Routes', function () {
     it('should reject invalid token', async function () {
       const response = await app.inject({
         method: 'GET',
-        url: '/api/v1/auth/validate-reset-token?token=invalid-token',
+        url: '/api/v1/auth/reset-password/validate?token=invalid-token',
         headers: { 'x-tenant-key': testTenant.tenantKey },
       });
 
@@ -106,11 +106,27 @@ describe('Password Reset Routes', function () {
     it('should reject missing token', async function () {
       const response = await app.inject({
         method: 'GET',
-        url: '/api/v1/auth/validate-reset-token',
+        url: '/api/v1/auth/reset-password/validate',
         headers: { 'x-tenant-key': testTenant.tenantKey },
       });
 
       expect(response.statusCode).to.equal(400);
+    });
+  });
+
+  describe('GET /api/v1/auth/validate-reset-token (deprecated)', function () {
+    it('should validate valid token (backward compatibility)', async function () {
+      const { rawToken } = await createTestPasswordResetToken(testUser.id, testTenant.id);
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/api/v1/auth/validate-reset-token?token=${rawToken}`,
+        headers: { 'x-tenant-key': testTenant.tenantKey },
+      });
+
+      expect(response.statusCode).to.equal(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.valid).to.be.true;
     });
   });
 

@@ -34,11 +34,16 @@ export const config = {
   apiPrefix: process.env.API_PREFIX || '/api/v1',
 
   // Email
+  emailProvider: process.env.EMAIL_PROVIDER || 'smtp',
   smtpHost: process.env.SMTP_HOST || 'localhost',
   smtpPort: parseInt(process.env.SMTP_PORT, 10) || 1025,
   smtpUser: process.env.SMTP_USER || '',
   smtpPass: process.env.SMTP_PASS || '',
   smtpFrom: process.env.SMTP_FROM || 'noreply@acme.test',
+  resendApiKey: process.env.RESEND_API_KEY || '',
+  resendFrom: process.env.RESEND_FROM || 'noreply@acme.test',
+  brevoApiKey: process.env.BREVO_API_KEY || '',
+  brevoFrom: process.env.BREVO_FROM || 'noreply@acme.test',
 
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',

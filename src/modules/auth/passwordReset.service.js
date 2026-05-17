@@ -98,6 +98,13 @@ export async function validateResetToken(tenantId, rawToken) {
   });
 
   if (!token) {
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: null,
+      action: 'PASSWORD_RESET_FAILED',
+      entityType: 'PasswordResetToken',
+      entityId: 'unknown',
+    });
     throw {
       code: 'RESET_TOKEN_INVALID',
       message: 'Invalid or expired reset token',
@@ -106,6 +113,13 @@ export async function validateResetToken(tenantId, rawToken) {
   }
 
   if (token.usedAt) {
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: token.userId,
+      action: 'PASSWORD_RESET_FAILED',
+      entityType: 'PasswordResetToken',
+      entityId: token.id,
+    });
     throw {
       code: 'RESET_TOKEN_ALREADY_USED',
       message: 'This reset token has already been used',
@@ -114,6 +128,13 @@ export async function validateResetToken(tenantId, rawToken) {
   }
 
   if (new Date() > token.expiresAt) {
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: token.userId,
+      action: 'PASSWORD_RESET_FAILED',
+      entityType: 'PasswordResetToken',
+      entityId: token.id,
+    });
     throw {
       code: 'RESET_TOKEN_EXPIRED',
       message: 'This reset token has expired',
@@ -152,6 +173,15 @@ export async function completePasswordReset(tenantId, rawToken, newPassword, ip,
   });
 
   if (!token) {
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: null,
+      action: 'PASSWORD_RESET_FAILED',
+      entityType: 'PasswordResetToken',
+      entityId: 'unknown',
+      ipAddress: ip,
+      userAgent,
+    });
     throw {
       code: 'RESET_TOKEN_INVALID',
       message: 'Invalid or expired reset token',
@@ -160,6 +190,15 @@ export async function completePasswordReset(tenantId, rawToken, newPassword, ip,
   }
 
   if (token.usedAt) {
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: token.userId,
+      action: 'PASSWORD_RESET_FAILED',
+      entityType: 'PasswordResetToken',
+      entityId: token.id,
+      ipAddress: ip,
+      userAgent,
+    });
     throw {
       code: 'RESET_TOKEN_ALREADY_USED',
       message: 'This reset token has already been used',
@@ -168,6 +207,15 @@ export async function completePasswordReset(tenantId, rawToken, newPassword, ip,
   }
 
   if (new Date() > token.expiresAt) {
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: token.userId,
+      action: 'PASSWORD_RESET_FAILED',
+      entityType: 'PasswordResetToken',
+      entityId: token.id,
+      ipAddress: ip,
+      userAgent,
+    });
     throw {
       code: 'RESET_TOKEN_EXPIRED',
       message: 'This reset token has expired',
