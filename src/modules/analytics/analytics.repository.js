@@ -6,26 +6,36 @@ function getRangeDays(range) {
 }
 
 function formatIstDate(date) {
-  const d = new Date(date);
-  const pad = (n) => String(n).padStart(2, '0');
-  const day = pad(d.getDate());
-  const month = pad(d.getMonth() + 1);
-  const year = d.getFullYear();
-  const hours = pad(d.getHours());
-  const mins = pad(d.getMinutes());
-  const secs = pad(d.getSeconds());
-  const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
-  return `${day}/${month}/${year} ${hours}:${mins}:${secs} ${ampm} IST`;
+  const formatter = new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+
+  const parts = formatter.formatToParts(date);
+  const values = {};
+  parts.forEach(part => {
+    if (part.type !== 'literal') {
+      values[part.type] = part.value;
+    }
+  });
+
+  const period = values.dayPeriod || 'AM';
+  return `${values.day}/${values.month}/${values.year} ${values.hour}:${values.minute}:${values.second} ${period} IST`;
 }
 
 export async function getSummaryData(tenantId) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const [totalEmployees, activeToday, onLeaveToday, openRequests] = await Promise.all([
+  const [totalEmployees, activeToday, onLeaveToday, pendingLeaves, pendingRegularizations] = await Promise.all([
     prisma.employee.count({
       where: { tenantId, deletedAt: null },
     }),
@@ -47,21 +57,27 @@ export async function getSummaryData(tenantId) {
     prisma.leaveRequest.count({
       where: { tenantId, status: 'PENDING' },
     }),
+    prisma.attendanceRegularizationRequest.count({
+      where: { tenantId, status: 'PENDING' },
+    }),
   ]);
 
   return {
     totalEmployees,
     activeToday,
     onLeaveToday,
-    openRequests,
+    openRequests: pendingLeaves + pendingRegularizations,
   };
 }
 
 export async function getAttendanceData(tenantId, range) {
   const days = getRangeDays(range);
   const endDate = new Date();
+  endDate.setHours(23, 59, 59, 999);
+
   const startDate = new Date(endDate);
-  startDate.setDate(startDate.getDate() - days);
+  startDate.setDate(startDate.getDate() - days + 1);
+  startDate.setHours(0, 0, 0, 0);
 
   const records = await prisma.attendanceRecord.findMany({
     where: {
@@ -104,24 +120,35 @@ export async function getHeadcountByDepartment(tenantId) {
     select: { id: true, name: true },
   });
 
-  const result = [];
-  for (const dept of departments) {
-    const [employeeCount, activeCount] = await Promise.all([
-      prisma.employee.count({
-        where: { tenantId, departmentId: dept.id, deletedAt: null },
-      }),
-      prisma.employee.count({
-        where: { tenantId, departmentId: dept.id, employmentStatus: 'ACTIVE', deletedAt: null },
-      }),
-    ]);
+  const employeeCounts = await prisma.employee.groupBy({
+    by: ['departmentId'],
+    where: { tenantId, deletedAt: null },
+    _count: { id: true },
+  });
 
-    result.push({
-      departmentId: dept.id,
-      departmentName: dept.name,
-      employeeCount,
-      activeCount,
-    });
-  }
+  const activeCounts = await prisma.employee.groupBy({
+    by: ['departmentId'],
+    where: { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' },
+    _count: { id: true },
+  });
+
+  const employeeMap = {};
+  const activeMap = {};
+
+  employeeCounts.forEach(e => {
+    employeeMap[e.departmentId] = e._count.id;
+  });
+
+  activeCounts.forEach(a => {
+    activeMap[a.departmentId] = a._count.id;
+  });
+
+  const result = departments.map(dept => ({
+    departmentId: dept.id,
+    departmentName: dept.name,
+    employeeCount: employeeMap[dept.id] || 0,
+    activeCount: activeMap[dept.id] || 0,
+  }));
 
   return result;
 }
@@ -135,7 +162,7 @@ export async function getRecentActivity(tenantId, limit = 10) {
       entityType: true,
       entityId: true,
       createdAt: true,
-      actor: { select: { email: true, id: true } },
+      actor: { select: { email: true } },
     },
     orderBy: { createdAt: 'desc' },
     take: Math.min(limit, 50),
@@ -144,7 +171,10 @@ export async function getRecentActivity(tenantId, limit = 10) {
   return logs.map(log => {
     const actorEmail = log.actor?.email || 'System';
     const [firstName] = actorEmail.split('@');
-    const actorName = firstName.split('.').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+    const actorName = firstName
+      .split('.')
+      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
 
     return {
       id: log.id,

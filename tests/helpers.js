@@ -17,12 +17,51 @@ export async function createTestApp() {
   return app;
 }
 
+// eslint-disable-next-line no-empty
 export async function cleanDatabase() {
-  // Clean up test data
-  await prisma.auditLog.deleteMany({});
-  await prisma.session.deleteMany({});
-  await prisma.user.deleteMany({});
-  await prisma.tenant.deleteMany({});
+  // Clean up test data (order matters for foreign keys)
+  try {
+    await prisma.auditLog.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.session.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.attendanceRegularizationRequest.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.leaveRequest.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.attendanceRecord.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.employee.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.department.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.leaveType.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.userRole.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.rolePermission.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.role.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.user.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.permission.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.tenant.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
 }
 
 export async function createTestTenant() {
@@ -38,19 +77,105 @@ export async function createTestTenant() {
   });
 }
 
+export async function createTestLeaveType(tenantId, data = {}) {
+  const code = data.code || `LT-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+  return await prisma.leaveType.create({
+    data: {
+      tenantId,
+      name: data.name || 'Casual Leave',
+      code,
+      ...data,
+    },
+  });
+}
+
 export async function createTestUser(tenantId, data = {}) {
   const defaultEmail = `user-${Date.now()}@test.com`;
   const passwordHash = data.passwordHash || await getTestPasswordHash();
-  return await prisma.user.create({
+  const memberType = data.memberType || 'EMPLOYEE';
+
+  const user = await prisma.user.create({
     data: {
       tenantId,
       email: data.email || defaultEmail,
       passwordHash,
-      memberType: data.memberType || 'EMPLOYEE',
+      memberType,
       status: data.status || 'ACTIVE',
       ...data,
     },
   });
+
+  // Assign role with appropriate permissions
+  if (memberType === 'HR_ADMIN' || memberType === 'SUPER_ADMIN' || memberType === 'MANAGER') {
+    const roleKey = memberType === 'HR_ADMIN' ? 'hr-admin' : memberType === 'SUPER_ADMIN' ? 'super-admin' : 'manager';
+    let role = await prisma.role.findFirst({
+      where: { tenantId, key: roleKey },
+    });
+
+    if (!role) {
+      // Create role if it doesn't exist
+      role = await prisma.role.create({
+        data: {
+          tenantId,
+          name: memberType === 'HR_ADMIN' ? 'HR Admin' : memberType === 'SUPER_ADMIN' ? 'Super Admin' : 'Manager',
+          key: roleKey,
+          isSystem: false,
+        },
+      });
+    }
+
+    // Create and assign permissions based on role
+    const permissionKeys = [];
+    if (memberType === 'HR_ADMIN') {
+      permissionKeys.push('analytics:read', 'employees:read', 'leave:read', 'attendance:read', 'audit:read');
+    } else if (memberType === 'SUPER_ADMIN') {
+      permissionKeys.push('analytics:read', 'employees:read', 'leave:read', 'attendance:read', 'audit:read', 'roles:write', 'users:write');
+    } else if (memberType === 'MANAGER') {
+      permissionKeys.push('employees:read', 'leave:read', 'attendance:read');
+    }
+
+    // Create permissions and assign to role
+    for (const key of permissionKeys) {
+      let permission = await prisma.permission.findFirst({ where: { key } });
+      if (!permission) {
+        permission = await prisma.permission.create({
+          data: {
+            key,
+            module: key.split(':')[0],
+            description: key,
+          },
+        });
+      }
+
+      // Check if role permission already exists before creating
+      const existing = await prisma.rolePermission.findFirst({
+        where: { roleId: role.id, permissionId: permission.id },
+      });
+      if (!existing) {
+        await prisma.rolePermission.create({
+          data: {
+            roleId: role.id,
+            permissionId: permission.id,
+          },
+        });
+      }
+    }
+
+    // Assign role to user
+    const existingUserRole = await prisma.userRole.findFirst({
+      where: { userId: user.id, roleId: role.id },
+    });
+    if (!existingUserRole) {
+      await prisma.userRole.create({
+        data: {
+          userId: user.id,
+          roleId: role.id,
+        },
+      });
+    }
+  }
+
+  return user;
 }
 
 export async function createTestSession(userId, tenantId) {

@@ -1,121 +1,294 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import { expect } from 'chai';
-import sinon from 'sinon';
+import * as analyticsService from '../../src/modules/analytics/analytics.service.js';
+import { prisma } from '../../src/plugins/prisma.js';
+import { createTestLeaveType } from '../helpers.js';
 
-describe('Analytics Service - Unit Tests', () => {
-  let sandbox;
+describe('Analytics Service Unit Tests', function () {
+  this.timeout(15000);
+  let testTenant;
+  let testLeaveType;
 
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-  });
+  beforeEach(async function () {
+    await prisma.attendanceRegularizationRequest.deleteMany({});
+    await prisma.leaveRequest.deleteMany({});
+    await prisma.attendanceRecord.deleteMany({});
+    await prisma.employee.deleteMany({});
+    await prisma.department.deleteMany({});
+    await prisma.auditLog.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.leaveType.deleteMany({});
+    await prisma.tenant.deleteMany({});
 
-  afterEach(() => {
-    sandbox.restore();
+    testTenant = await prisma.tenant.create({
+      data: {
+        tenantKey: `test-${Date.now()}`,
+        name: 'Test Tenant',
+        legalName: 'Test Legal',
+        displayName: 'Test',
+        country: 'India',
+        primaryContactEmail: 'test@test.com',
+      },
+    });
+
+    testLeaveType = await createTestLeaveType(testTenant.id);
+
+    await prisma.user.create({
+      data: {
+        tenantId: testTenant.id,
+        email: 'test@test.com',
+        passwordHash: 'hash',
+        memberType: 'HR_ADMIN',
+      },
+    });
   });
 
   describe('getSummary', () => {
-    it('should return summary with totalEmployees', async () => {
-      const result = {
-        success: true,
-        data: {
-          totalEmployees: 100,
-          activeEmployees: 95,
-          inactiveEmployees: 5,
-          onLeaveToday: 3,
-        },
-        meta: { generatedAt: new Date().toISOString() },
-      };
+    it('should return summary data with correct structure', async () => {
+      await prisma.employee.createMany({
+        data: Array.from({ length: 100 }, (_, i) => ({
+          tenantId: testTenant.id,
+          employeeCode: `E${i}`,
+          firstName: `User${i}`,
+          lastName: 'Test',
+          workEmail: `user${i}@company.com`,
+          joinedOn: new Date(),
+        })),
+      });
+
+      const result = await analyticsService.getSummary(testTenant.id);
 
       expect(result.success).to.be.true;
+      expect(result.data).to.have.all.keys('totalEmployees', 'activeToday', 'onLeaveToday', 'openRequests');
       expect(result.data.totalEmployees).to.equal(100);
-      expect(result.data.activeEmployees).to.equal(95);
+      expect(result.meta).to.have.property('cached');
+      expect(result.meta).to.have.property('generatedAt');
     });
 
-    it('should have proper meta structure', async () => {
-      const result = {
-        success: true,
-        data: { totalEmployees: 100 },
-        meta: { cached: false, generatedAt: new Date().toISOString() },
-      };
+    it('should count openRequests as sum of pending leaves and regularizations', async () => {
+      const employee = await prisma.employee.create({
+        data: {
+          tenantId: testTenant.id,
+          employeeCode: 'E001',
+          firstName: 'Test',
+          lastName: 'User',
+          workEmail: 'emp@company.com',
+          joinedOn: new Date(),
+        },
+      });
 
-      expect(result.meta).to.be.an('object');
-      expect(result.meta).to.have.property('generatedAt');
+      await prisma.leaveRequest.create({
+        data: {
+          tenantId: testTenant.id,
+          employeeId: employee.id,
+          leaveTypeId: testLeaveType.id,
+          startDate: new Date(),
+          endDate: new Date(),
+          totalDays: 1,
+          reason: 'Test leave',
+          status: 'PENDING',
+        },
+      });
+
+      await prisma.attendanceRegularizationRequest.create({
+        data: {
+          tenantId: testTenant.id,
+          employeeId: employee.id,
+          attendanceDate: new Date(),
+          reason: 'Late arrival',
+          status: 'PENDING',
+        },
+      });
+
+      const result = await analyticsService.getSummary(testTenant.id);
+
+      expect(result.data.openRequests).to.equal(2);
+    });
+
+    it('should cache results on subsequent calls', async () => {
+      const result1 = await analyticsService.getSummary(testTenant.id);
+      expect(result1.meta.cached).to.be.false;
+
+      const result2 = await analyticsService.getSummary(testTenant.id);
+      expect(result2.meta.cached).to.be.true;
+      expect(result2.data).to.deep.equal(result1.data);
     });
   });
 
   describe('getAttendance', () => {
-    it('should return attendance data with period', async () => {
-      const result = {
-        success: true,
-        data: {
-          period: { start: '2025-01-01', end: '2025-01-31' },
-          totalRecords: 2000,
-          byDepartment: { dept1: '95.5' },
-        },
-        meta: { generatedAt: new Date().toISOString() },
-      };
+    it('should return attendance series with correct structure', async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-      expect(result.data).to.have.property('period');
-      expect(result.data.period).to.have.property('start');
-      expect(result.data.byDepartment).to.be.an('object');
+      const employee = await prisma.employee.create({
+        data: {
+          tenantId: testTenant.id,
+          employeeCode: 'E001',
+          firstName: 'Test',
+          lastName: 'User',
+          workEmail: 'emp@company.com',
+          joinedOn: new Date(),
+        },
+      });
+
+      await prisma.attendanceRecord.createMany({
+        data: Array.from({ length: 30 }, (_, i) => {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          return {
+            tenantId: testTenant.id,
+            employeeId: employee.id,
+            attendanceDate: date,
+            status: ['PRESENT', 'ABSENT', 'LEAVE', 'WFH', 'HALF_DAY'][i % 5],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+        }),
+      });
+
+      const result = await analyticsService.getAttendance(testTenant.id, '30d');
+
+      expect(result.success).to.be.true;
+      expect(result.data.range).to.equal('30d');
+      expect(result.data.series).to.have.lengthOf(30);
+      expect(result.data.series[0]).to.have.all.keys('date', 'present', 'absent', 'leave', 'wfh', 'halfDay');
+    });
+
+    it('should use default range of 30d', async () => {
+      const result = await analyticsService.getAttendance(testTenant.id);
+      expect(result.data.range).to.equal('30d');
     });
   });
 
   describe('getHeadcountByDepartment', () => {
-    it('should return array of departments with headcount', async () => {
-      const result = {
-        success: true,
-        data: [
-          { departmentId: 'dept-1', departmentName: 'Engineering', headcount: 50 },
-          { departmentId: 'dept-2', departmentName: 'Sales', headcount: 30 },
-        ],
-        meta: { generatedAt: new Date().toISOString() },
-      };
+    it('should return departments with employee counts', async () => {
+      const dept = await prisma.department.create({
+        data: { tenantId: testTenant.id, name: 'Engineering', departmentCode: 'ENG' },
+      });
+
+      await prisma.employee.createMany({
+        data: Array.from({ length: 50 }, (_, i) => ({
+          tenantId: testTenant.id,
+          departmentId: dept.id,
+          employeeCode: `E${i}`,
+          firstName: `User${i}`,
+          lastName: 'Test',
+          workEmail: `user${i}@company.com`,
+          employmentStatus: i < 45 ? 'ACTIVE' : 'INACTIVE',
+          joinedOn: new Date(),
+        })),
+      });
+
+      const result = await analyticsService.getHeadcountByDepartment(testTenant.id);
 
       expect(result.data).to.be.an('array');
-      expect(result.data[0]).to.have.property('headcount');
-      expect(result.data[0].headcount).to.be.a('number');
+      expect(result.data[0]).to.have.all.keys('departmentId', 'departmentName', 'employeeCount', 'activeCount');
+      expect(result.data[0].employeeCount).to.equal(50);
+      expect(result.data[0].activeCount).to.equal(45);
     });
   });
 
   describe('getRecentActivity', () => {
-    it('should return array of activity logs', async () => {
-      const result = {
-        success: true,
-        data: [
-          {
-            id: 'log-1',
-            action: 'LOGIN',
-            entityType: 'User',
-            actor: 'test@example.com',
-            timestamp: new Date().toISOString(),
-          },
-        ],
-        meta: { generatedAt: new Date().toISOString() },
-      };
+    it('should return audit logs with IST formatting', async () => {
+      const user = await prisma.user.findFirst({ where: { tenantId: testTenant.id } });
 
-      expect(result.data).to.be.an('array');
-      expect(result.data[0]).to.have.property('action');
-      expect(result.data[0].actor).to.be.a('string');
+      await prisma.auditLog.createMany({
+        data: Array.from({ length: 15 }, (_, i) => ({
+          tenantId: testTenant.id,
+          actorUserId: user.id,
+          action: 'CREATE',
+          entityType: 'Employee',
+          entityId: `emp-${i}`,
+          oldValuesJson: '{}',
+          newValuesJson: '{}',
+          createdAt: new Date(Date.now() - i * 5 * 60 * 1000),
+        })),
+      });
+
+      const result = await analyticsService.getRecentActivity(testTenant.id, 10);
+
+      expect(result.data).to.have.lengthOf(10);
+      expect(result.data[0]).to.have.all.keys(
+        'id', 'actorName', 'action', 'entityType', 'entityId', 'resourceLabel', 'createdAt', 'createdAtIstDisplay',
+      );
+      expect(result.data[0].createdAtIstDisplay).to.include('IST');
+    });
+
+    it('should respect limit parameter', async () => {
+      const user = await prisma.user.findFirst({ where: { tenantId: testTenant.id } });
+
+      await prisma.auditLog.createMany({
+        data: Array.from({ length: 20 }, (_, i) => ({
+          tenantId: testTenant.id,
+          actorUserId: user.id,
+          action: 'UPDATE',
+          entityType: 'Employee',
+          entityId: `emp-${i}`,
+          oldValuesJson: '{}',
+          newValuesJson: '{}',
+          createdAt: new Date(),
+        })),
+      });
+
+      const result = await analyticsService.getRecentActivity(testTenant.id, 5);
+      expect(result.data.length).to.be.lessThanOrEqual(5);
     });
   });
 
   describe('getLeaveSummary', () => {
-    it('should return leave summary with status breakdown', async () => {
-      const result = {
-        success: true,
+    it('should return leave status breakdown', async () => {
+      const employee = await prisma.employee.create({
         data: {
-          year: 2025,
-          totalLeaves: 150,
-          byStatus: { APPROVED: 130, PENDING: 15, DENIED: 5 },
-          byType: { 'leave-type-1': { count: 100, totalDays: 200 } },
+          tenantId: testTenant.id,
+          employeeCode: 'E001',
+          firstName: 'Test',
+          lastName: 'User',
+          workEmail: 'emp@company.com',
+          joinedOn: new Date(),
         },
-        meta: { generatedAt: new Date().toISOString() },
-      };
+      });
 
-      expect(result.data.year).to.equal(2025);
-      expect(result.data.byStatus).to.be.an('object');
-      expect(result.data.byStatus.APPROVED).to.be.a('number');
+      await prisma.leaveRequest.createMany({
+        data: [
+          ...Array.from({ length: 12 }, () => ({
+            tenantId: testTenant.id,
+            employeeId: employee.id,
+            leaveTypeId: testLeaveType.id,
+            startDate: new Date(),
+            endDate: new Date(),
+            totalDays: 1,
+            reason: 'Test leave',
+            status: 'PENDING',
+          })),
+          ...Array.from({ length: 45 }, () => ({
+            tenantId: testTenant.id,
+            employeeId: employee.id,
+            leaveTypeId: testLeaveType.id,
+            startDate: new Date(),
+            endDate: new Date(),
+            totalDays: 1,
+            reason: 'Test leave',
+            status: 'APPROVED',
+          })),
+          ...Array.from({ length: 8 }, () => ({
+            tenantId: testTenant.id,
+            employeeId: employee.id,
+            leaveTypeId: testLeaveType.id,
+            startDate: new Date(),
+            endDate: new Date(),
+            totalDays: 1,
+            reason: 'Test leave',
+            status: 'DENIED',
+          })),
+        ],
+      });
+
+      const result = await analyticsService.getLeaveSummary(testTenant.id, '30d');
+
+      expect(result.data).to.have.all.keys('pending', 'approved', 'rejected', 'withdrawn');
+      expect(result.data.pending).to.equal(12);
+      expect(result.data.approved).to.equal(45);
+      expect(result.data.rejected).to.equal(8);
     });
   });
 });

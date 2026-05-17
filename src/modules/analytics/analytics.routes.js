@@ -1,8 +1,12 @@
 import { authenticate } from '../../middleware/authenticate.js';
+import { resolveTenant } from '../../middleware/resolveTenant.js';
+import { requireAnalyticsPermission } from './analytics.policy.js';
 import * as analyticsController from './analytics.controller.js';
 
 export default async function analyticsRoutes(fastify) {
+  fastify.addHook('onRequest', resolveTenant);
   fastify.addHook('onRequest', authenticate);
+  fastify.addHook('onRequest', requireAnalyticsPermission);
 
   fastify.get('/analytics/summary', {
     schema: {

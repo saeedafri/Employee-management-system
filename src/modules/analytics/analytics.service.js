@@ -21,7 +21,7 @@ async function getCachedOrFetch(cacheKey, fetchFn, ttlSeconds) {
     const data = await fetchFn();
 
     try {
-      await redis.setex(cacheKey, ttlSeconds, JSON.stringify(data));
+      await redis.set(cacheKey, JSON.stringify(data), { EX: ttlSeconds });
     } catch (cacheErr) {
       logger.warn(`Analytics cache set failed: ${cacheErr.message}`);
     }

@@ -903,6 +903,237 @@
           }
         }
       ]
+    },
+    {
+      "name": "Analytics (HR Admin Dashboard)",
+      "item": [
+        {
+          "name": "GET /api/v1/analytics/summary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response contains totalEmployees', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('totalEmployees');});",
+                  "pm.test('Response contains activeToday', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('activeToday');});",
+                  "pm.test('Response contains onLeaveToday', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('onLeaveToday');});",
+                  "pm.test('Response contains openRequests', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('openRequests');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/attendance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response contains range', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('range');});",
+                  "pm.test('Response contains series array', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('series'); pm.expect(data.data.series).to.be.an('array');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "attendance"
+              ],
+              "query": [
+                {
+                  "key": "range",
+                  "value": "30d"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/headcount-by-department",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response is an array', function() {var data = pm.response.json(); pm.expect(data.data).to.be.an('array');});",
+                  "pm.test('Each item has required fields', function() {var data = pm.response.json(); if(data.data.length > 0) {pm.expect(data.data[0]).to.have.property('departmentName'); pm.expect(data.data[0]).to.have.property('employeeCount');}})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "headcount-by-department"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/recent-activity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response is an array', function() {var data = pm.response.json(); pm.expect(data.data).to.be.an('array');});",
+                  "pm.test('Each log has required fields', function() {var data = pm.response.json(); if(data.data.length > 0) {pm.expect(data.data[0]).to.have.property('actorName'); pm.expect(data.data[0]).to.have.property('action');}})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "recent-activity"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/analytics/leave-summary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function() {pm.response.to.have.status(200);});",
+                  "pm.test('Response contains pending', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('pending');});",
+                  "pm.test('Response contains approved', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('approved');});",
+                  "pm.test('Response contains rejected', function() {var data = pm.response.json(); pm.expect(data.data).to.have.property('rejected');});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "x-tenant-key",
+                "value": "{{tenant_key}}"
+              }
+            ],
+            "url": {
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "leave-summary"
+              ],
+              "query": [
+                {
+                  "key": "range",
+                  "value": "30d"
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }
