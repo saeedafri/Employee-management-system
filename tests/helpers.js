@@ -21,7 +21,8 @@ export async function createTestTenant() {
       legalName: 'Test Tenant Inc',
       displayName: 'Test',
       country: 'US',
-      tenantKey: 'test-tenant',
+      tenantKey: `test-tenant-${Date.now()}`,
+      primaryContactEmail: 'contact@test.com',
     },
   });
 }
