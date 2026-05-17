@@ -155,40 +155,40 @@ describe('Logs Service Unit Tests', function () {
     });
 
     it('should retrieve all logs for tenant', async function () {
-      const logs = await logsService.getLogs(testTenant.id);
+      const { logs } = await logsService.getLogs(testTenant.id);
 
       expect(logs).to.be.an('array');
       expect(logs.length).to.equal(3);
     });
 
     it('should filter logs by level', async function () {
-      const logs = await logsService.getLogs(testTenant.id, { level: 'error' });
+      const { logs } = await logsService.getLogs(testTenant.id, { level: 'error' });
 
       expect(logs.length).to.equal(1);
       expect(logs[0].level).to.equal('error');
     });
 
     it('should filter logs by module', async function () {
-      const logs = await logsService.getLogs(testTenant.id, { module: 'auth' });
+      const { logs } = await logsService.getLogs(testTenant.id, { module: 'auth' });
 
       expect(logs.length).to.equal(2);
       expect(logs[0].module).to.equal('auth');
     });
 
     it('should filter logs by actorUserId', async function () {
-      const logs = await logsService.getLogs(testTenant.id, { actorUserId: testUser.id });
+      const { logs } = await logsService.getLogs(testTenant.id, { actorUserId: testUser.id });
 
       expect(logs.length).to.equal(3);
     });
 
     it('should respect limit and offset', async function () {
-      const logs = await logsService.getLogs(testTenant.id, { limit: 2, offset: 0 });
+      const { logs } = await logsService.getLogs(testTenant.id, { limit: 2, offset: 0 });
 
       expect(logs.length).to.equal(2);
     });
 
     it('should return logs ordered by most recent first', async function () {
-      const logs = await logsService.getLogs(testTenant.id);
+      const { logs } = await logsService.getLogs(testTenant.id);
 
       const timestamp0 = new Date(logs[0].timestampUtc);
       const timestampLast = new Date(logs[logs.length - 1].timestampUtc);
@@ -199,7 +199,7 @@ describe('Logs Service Unit Tests', function () {
       const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
       const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-      const logs = await logsService.getLogs(testTenant.id, {
+      const { logs } = await logsService.getLogs(testTenant.id, {
         startDate: yesterday.toISOString(),
         endDate: tomorrow.toISOString(),
       });
