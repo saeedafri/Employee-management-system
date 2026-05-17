@@ -2,6 +2,7 @@ import { Worker } from 'bullmq';
 import nodemailer from 'nodemailer';
 import { config } from '../config/index.js';
 import { emailQueue, redisConnection } from './emailQueue.js';
+import { logger } from '../utils/logger.js';
 
 const isMockProvider = config.emailProvider === 'mock';
 const isSmtpProvider = config.emailProvider === 'smtp';
@@ -23,8 +24,13 @@ async function sendEmail(job) {
   const { to, subject, template, data } = job.data;
 
   if (isMockProvider) {
-    // Mock mode: log to console only, no actual email sent
-    console.log(`[EMAIL_MOCK] To: ${to}\nSubject: ${subject}\nTemplate: ${template}`);
+    logger.info({
+      type: 'email_mock',
+      to,
+      subject,
+      template,
+      message: 'Email sent via mock provider (dev mode)',
+    });
     return { success: true, mock: true };
   }
 

@@ -12,6 +12,7 @@ import { resolveTenant } from './middleware/resolveTenant.js';
 import { attachRequestLogging } from './middleware/requestLogging.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import logsRoutes from './modules/logs/logs.routes.js';
+import analyticsRoutes from './modules/analytics/analytics.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -47,6 +48,7 @@ export async function createApp() {
       fastify.addHook('onRequest', resolveTenant);
       fastify.register(authRoutes);
       fastify.register(logsRoutes);
+      fastify.register(analyticsRoutes);
     },
     { prefix: config.apiPrefix },
   );

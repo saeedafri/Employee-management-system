@@ -1,21 +1,25 @@
 import { z } from 'zod';
 
-export const attendanceParamsSchema = z.object({
+export const summaryQuerySchema = z.object({
+  departmentId: z.string().optional(),
+}).strict();
+
+export const attendanceQuerySchema = z.object({
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
-  department: z.string().optional(),
-});
+  departmentId: z.string().optional(),
+}).strict();
 
-export const leaveParamsSchema = z.object({
+export const headcountQuerySchema = z.object({
+  excludeInactive: z.string().transform(v => v === 'true').optional(),
+}).strict();
+
+export const recentActivityQuerySchema = z.object({
+  action: z.string().optional(),
+  limit: z.string().transform(Number).refine(n => n > 0 && n <= 100).optional(),
+}).strict();
+
+export const leaveSummaryQuerySchema = z.object({
   year: z.string().regex(/^\d{4}$/).transform(Number).optional(),
-  department: z.string().optional(),
-});
-
-export const payrollParamsSchema = z.object({
-  month: z.string().regex(/^\d{1,2}$/).transform(Number).optional(),
-  year: z.string().regex(/^\d{4}$/).transform(Number).optional(),
-});
-
-export const departmentParamsSchema = z.object({
-  departmentId: z.string().min(1),
-});
+  status: z.enum(['PENDING', 'APPROVED', 'DENIED']).optional(),
+}).strict();

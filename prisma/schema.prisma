@@ -220,6 +220,8 @@ model Employee {
   @@index([departmentId])
   @@index([managerId])
   @@index([deletedAt])
+  @@index([tenantId, employmentStatus])
+  @@index([tenantId, departmentId, employmentStatus])
 }
 
 model Department {
@@ -430,6 +432,7 @@ model AttendanceRecord {
   @@index([status])
   @@index([tenantId])
   @@index([employeeId])
+  @@index([tenantId, status, attendanceDate])
 }
 
 model AttendanceRegularizationRequest {
@@ -452,6 +455,7 @@ model AttendanceRegularizationRequest {
   @@index([tenantId])
   @@index([employeeId])
   @@index([status])
+  @@index([tenantId, status, createdAt])
 }
 
 model LeaveType {
@@ -521,6 +525,7 @@ model LeaveRequest {
   @@index([tenantId])
   @@index([employeeId])
   @@index([status])
+  @@index([tenantId, status, startDate])
 }
 
 model Holiday {
@@ -589,6 +594,7 @@ model AuditLog {
   @@index([entityId])
   @@index([createdAt])
   @@index([action])
+  @@index([tenantId, createdAt, action])
 }
 
 model LogEntry {

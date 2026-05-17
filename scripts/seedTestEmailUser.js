@@ -22,6 +22,7 @@ if (!emailRegex.test(testEmail)) {
 }
 
 const mfaFlag = args.includes('--mfa');
+const showPassword = args.includes('--show-password-local') && process.env.NODE_ENV !== 'production';
 
 async function seedTestUser() {
   try {
@@ -156,7 +157,11 @@ async function seedTestUser() {
 
     console.log('\n✅ Test user setup complete');
     console.log(`Email: ${testEmail}`);
-    console.log(`Password: ${testPassword}`);
+    if (showPassword) {
+      console.log(`Password: ${testPassword}`);
+    } else {
+      console.log('Password: (hidden - use --show-password-local to display in dev mode)');
+    }
     console.log(`MFA Enabled: ${mfaFlag}`);
     console.log(`Tenant: acme`);
   } catch (error) {

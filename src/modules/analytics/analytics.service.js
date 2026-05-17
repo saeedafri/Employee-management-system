@@ -1,160 +1,122 @@
-import { prisma } from '../../plugins/prisma.js';
-import { getCachedOrFetch } from './analytics.cache.js';
+import { redis } from '../../plugins/redis.js';
+import { logger } from '../../utils/logger.js';
+import * as repo from './analytics.repository.js';
 
-export async function getDashboardSummary(tenantId) {
-  return getCachedOrFetch(
-    `analytics:dashboard-summary:${tenantId}`,
-    async () => {
-      const [
-        totalEmployees,
-        activeEmployees,
-        inactiveEmployees,
-        onLeaveToday,
-        newHiresLast7Days,
-        departmentBreakdown,
-      ] = await Promise.all([
-        prisma.employee.count({ where: { tenantId } }),
-        prisma.employee.count({ where: { tenantId, employmentStatus: 'ACTIVE' } }),
-        prisma.employee.count({ where: { tenantId, employmentStatus: 'INACTIVE' } }),
-        prisma.leave.count({
-          where: {
-            tenantId,
-            startDate: { lte: new Date() },
-            endDate: { gte: new Date() },
-            status: 'APPROVED',
-          },
-        }),
-        prisma.employee.count({
-          where: {
-            tenantId,
-            joinedOn: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-          },
-        }),
-        prisma.employee.groupBy({
-          by: ['department'],
-          where: { tenantId },
-          _count: { id: true },
-        }),
-      ]);
-
-      const deptMap = {};
-      departmentBreakdown.forEach(d => {
-        if (d.department) deptMap[d.department] = d._count.id;
-      });
-
-      return {
-        totalEmployees,
-        activeEmployees,
-        inactiveEmployees,
-        onLeaveToday,
-        departmentBreakdown: deptMap,
-        newHiresLast7Days,
-      };
-    },
-    3600 // 1 hour cache
-  );
+function getCacheKey(endpoint, tenantId, filters = {}) {
+  const filterStr = Object.keys(filters).length > 0
+    ? `:${Object.entries(filters).sort().map(([k, v]) => `${k}=${v}`).join('|')}`
+    : '';
+  return `analytics:${endpoint}:${tenantId}${filterStr}`;
 }
 
-export async function getAttendanceAnalytics(tenantId, filters = {}) {
-  const startDate = filters.startDate ? new Date(filters.startDate) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  const endDate = filters.endDate ? new Date(filters.endDate) : new Date();
+async function getCachedOrFetch(cacheKey, fetchFn, ttlSeconds) {
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      logger.debug(`Analytics cache HIT: ${cacheKey}`);
+      return JSON.parse(cached);
+    }
 
-  return getCachedOrFetch(
-    `analytics:attendance:${tenantId}:${startDate.toISOString()}:${endDate.toISOString()}`,
-    async () => {
-      // Query attendance records
-      // This would query audit logs or attendance table
-      // Placeholder implementation
-      return {
-        period: { start: startDate, end: endDate },
-        totalWorkDays: 22,
-        averageAttendanceRate: 96.5,
-        departmentRates: {},
-        trends: [],
-      };
-    },
-    7200 // 2 hours cache
-  );
+    logger.debug(`Analytics cache MISS: ${cacheKey}`);
+    const result = await fetchFn();
+
+    try {
+      await redis.setex(cacheKey, ttlSeconds, JSON.stringify(result));
+    } catch (cacheErr) {
+      logger.warn(`Analytics cache set failed: ${cacheErr.message}`);
+    }
+
+    return result;
+  } catch (error) {
+    logger.error(`Analytics cache error: ${error.message}`);
+    return await fetchFn();
+  }
 }
 
-export async function getLeaveAnalytics(tenantId, filters = {}) {
-  const year = filters.year || new Date().getFullYear();
+export async function getSummary(tenantId, filters = {}) {
+  const cacheKey = getCacheKey('summary', tenantId, filters);
 
-  return getCachedOrFetch(
-    `analytics:leave:${tenantId}:${year}`,
-    async () => {
-      const leaves = await prisma.leave.findMany({
-        where: {
-          tenantId,
-          startDate: {
-            gte: new Date(`${year}-01-01`),
-            lte: new Date(`${year}-12-31`),
-          },
-        },
-      });
+  const data = await getCachedOrFetch(cacheKey, () => repo.getSummaryData(tenantId, filters), 60);
 
-      return {
-        year,
-        totalLeavesTaken: leaves.length,
-        leaveByType: {
-          CASUAL: leaves.filter(l => l.type === 'CASUAL').length,
-          SICK: leaves.filter(l => l.type === 'SICK').length,
-          ANNUAL: leaves.filter(l => l.type === 'ANNUAL').length,
-        },
-        pendingApprovals: leaves.filter(l => l.status === 'PENDING').length,
-        usage: [],
-      };
+  return {
+    success: true,
+    data,
+    meta: {
+      cached: false,
+      generatedAt: new Date().toISOString(),
     },
-    7200 // 2 hours cache
-  );
+  };
 }
 
-export async function getPayrollAnalytics(tenantId, filters = {}) {
-  const month = filters.month || new Date().getMonth() + 1;
-  const year = filters.year || new Date().getFullYear();
+export async function getAttendance(tenantId, filters = {}) {
+  const cacheKey = getCacheKey('attendance', tenantId, filters);
 
-  return getCachedOrFetch(
-    `analytics:payroll:${tenantId}:${year}-${month}`,
-    async () => {
-      // Query payroll records
-      // Placeholder implementation
-      return {
-        period: `${year}-${String(month).padStart(2, '0')}`,
-        totalSalaryCost: 0,
-        employeeCount: 0,
-        averageSalary: 0,
-        deductionBreakdown: {},
-        status: 'PROCESSED',
-      };
+  const data = await getCachedOrFetch(cacheKey, () => repo.getAttendanceData(tenantId, filters), 60);
+
+  return {
+    success: true,
+    data,
+    meta: {
+      cached: false,
+      generatedAt: new Date().toISOString(),
     },
-    14400 // 4 hours cache
-  );
+  };
 }
 
-export async function getDepartmentAnalytics(tenantId, departmentId) {
-  return getCachedOrFetch(
-    `analytics:department:${tenantId}:${departmentId}`,
-    async () => {
-      const employees = await prisma.employee.findMany({
-        where: { tenantId, department: departmentId },
-      });
+export async function getHeadcountByDepartment(tenantId, filters = {}) {
+  const cacheKey = getCacheKey('headcount-by-department', tenantId, filters);
 
-      return {
-        departmentId,
-        totalMembers: employees.length,
-        activeMembers: employees.filter(e => e.employmentStatus === 'ACTIVE').length,
-        composition: {
-          byRole: {}, // Would be populated from actual data
-          byLevel: {}, // Would be populated from actual data
-        },
-        metrics: {
-          averageTenure: 0,
-          turnoverRate: 0,
-          performanceScore: 0,
-        },
-        trends: [],
-      };
+  const data = await getCachedOrFetch(cacheKey, () => repo.getHeadcountByDepartment(tenantId, filters), 300);
+
+  return {
+    success: true,
+    data,
+    meta: {
+      cached: false,
+      generatedAt: new Date().toISOString(),
     },
-    7200 // 2 hours cache
-  );
+  };
+}
+
+export async function getRecentActivity(tenantId, filters = {}) {
+  const cacheKey = getCacheKey('recent-activity', tenantId, filters);
+
+  const data = await getCachedOrFetch(cacheKey, () => repo.getRecentActivity(tenantId, filters), 30);
+
+  return {
+    success: true,
+    data,
+    meta: {
+      cached: false,
+      generatedAt: new Date().toISOString(),
+    },
+  };
+}
+
+export async function getLeaveSummary(tenantId, filters = {}) {
+  const cacheKey = getCacheKey('leave-summary', tenantId, filters);
+
+  const data = await getCachedOrFetch(cacheKey, () => repo.getLeaveSummary(tenantId, filters), 60);
+
+  return {
+    success: true,
+    data,
+    meta: {
+      cached: false,
+      generatedAt: new Date().toISOString(),
+    },
+  };
+}
+
+export async function invalidateAnalyticsCache(tenantId) {
+  try {
+    const pattern = `analytics:*:${tenantId}*`;
+    const keys = await redis.keys(pattern);
+    if (keys.length > 0) {
+      await redis.del(...keys);
+      logger.info(`Invalidated ${keys.length} analytics cache keys for tenant ${tenantId}`);
+    }
+  } catch (error) {
+    logger.error(`Failed to invalidate analytics cache: ${error.message}`);
+  }
 }

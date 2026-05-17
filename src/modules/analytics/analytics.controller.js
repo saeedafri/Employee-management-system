@@ -1,124 +1,92 @@
-import { successResponse, errorResponse } from '../../utils/response.js';
+import { logger } from '../../utils/logger.js';
 import * as analyticsService from './analytics.service.js';
 import * as analyticsValidator from './analytics.validator.js';
 
-export async function getDashboardSummary(request, reply) {
-  try {
-    const { id: tenantId } = request.tenant;
-
-    const data = await analyticsService.getDashboardSummary(tenantId);
-
-    return reply.send(
-      successResponse(data, {
-        endpoint: 'dashboard-summary',
-        timestamp: new Date().toISOString(),
-      })
-    );
-  } catch (error) {
-    request.log.error(error);
+function requireAnalyticsRole(memberType) {
+  if (!['HR_ADMIN', 'SUPER_ADMIN'].includes(memberType)) {
+    const error = new Error('Analytics access restricted to HR admins');
+    error.code = 'FORBIDDEN';
+    error.statusCode = 403;
     throw error;
   }
 }
 
-export async function getAttendanceAnalytics(request, reply) {
+export async function getSummary(request, reply) {
   try {
+    requireAnalyticsRole(request.user.memberType);
+
     const { id: tenantId } = request.tenant;
-    const { startDate, endDate } = await analyticsValidator.attendanceParamsSchema.parseAsync(
-      request.query
-    );
+    const filters = await analyticsValidator.summaryQuerySchema.parseAsync(request.query);
 
-    const data = await analyticsService.getAttendanceAnalytics(tenantId, {
-      startDate,
-      endDate,
-    });
+    const result = await analyticsService.getSummary(tenantId, filters);
 
-    return reply.send(
-      successResponse(data, {
-        endpoint: 'attendance',
-        timestamp: new Date().toISOString(),
-      })
-    );
+    return reply.send(result);
   } catch (error) {
-    request.log.error(error);
+    logger.error(`Analytics summary error: ${error.message}`);
     throw error;
   }
 }
 
-export async function getLeaveAnalytics(request, reply) {
+export async function getAttendance(request, reply) {
   try {
+    requireAnalyticsRole(request.user.memberType);
+
     const { id: tenantId } = request.tenant;
-    const { year } = await analyticsValidator.leaveParamsSchema.parseAsync(
-      request.query
-    );
+    const filters = await analyticsValidator.attendanceQuerySchema.parseAsync(request.query);
 
-    const data = await analyticsService.getLeaveAnalytics(tenantId, { year });
+    const result = await analyticsService.getAttendance(tenantId, filters);
 
-    return reply.send(
-      successResponse(data, {
-        endpoint: 'leave',
-        timestamp: new Date().toISOString(),
-      })
-    );
+    return reply.send(result);
   } catch (error) {
-    request.log.error(error);
+    logger.error(`Analytics attendance error: ${error.message}`);
     throw error;
   }
 }
 
-export async function getPayrollAnalytics(request, reply) {
+export async function getHeadcountByDepartment(request, reply) {
   try {
-    const { id: tenantId, memberType } = request.tenant;
+    requireAnalyticsRole(request.user.memberType);
 
-    // Only SUPER_ADMIN can access payroll analytics
-    if (memberType !== 'SUPER_ADMIN') {
-      return reply.code(403).send(
-        errorResponse(
-          'FORBIDDEN',
-          'Payroll analytics restricted to SUPER_ADMIN',
-          {},
-          request.id
-        )
-      );
-    }
+    const { id: tenantId } = request.tenant;
+    const filters = await analyticsValidator.headcountQuerySchema.parseAsync(request.query);
 
-    const { month, year } = await analyticsValidator.payrollParamsSchema.parseAsync(
-      request.query
-    );
+    const result = await analyticsService.getHeadcountByDepartment(tenantId, filters);
 
-    const data = await analyticsService.getPayrollAnalytics(tenantId, {
-      month,
-      year,
-    });
-
-    return reply.send(
-      successResponse(data, {
-        endpoint: 'payroll',
-        timestamp: new Date().toISOString(),
-      })
-    );
+    return reply.send(result);
   } catch (error) {
-    request.log.error(error);
+    logger.error(`Analytics headcount error: ${error.message}`);
     throw error;
   }
 }
 
-export async function getDepartmentAnalytics(request, reply) {
+export async function getRecentActivity(request, reply) {
   try {
+    requireAnalyticsRole(request.user.memberType);
+
     const { id: tenantId } = request.tenant;
-    const { departmentId } = await analyticsValidator.departmentParamsSchema.parseAsync(
-      request.params
-    );
+    const filters = await analyticsValidator.recentActivityQuerySchema.parseAsync(request.query);
 
-    const data = await analyticsService.getDepartmentAnalytics(tenantId, departmentId);
+    const result = await analyticsService.getRecentActivity(tenantId, filters);
 
-    return reply.send(
-      successResponse(data, {
-        endpoint: 'department',
-        timestamp: new Date().toISOString(),
-      })
-    );
+    return reply.send(result);
   } catch (error) {
-    request.log.error(error);
+    logger.error(`Analytics recent activity error: ${error.message}`);
+    throw error;
+  }
+}
+
+export async function getLeaveSummary(request, reply) {
+  try {
+    requireAnalyticsRole(request.user.memberType);
+
+    const { id: tenantId } = request.tenant;
+    const filters = await analyticsValidator.leaveSummaryQuerySchema.parseAsync(request.query);
+
+    const result = await analyticsService.getLeaveSummary(tenantId, filters);
+
+    return reply.send(result);
+  } catch (error) {
+    logger.error(`Analytics leave summary error: ${error.message}`);
     throw error;
   }
 }
