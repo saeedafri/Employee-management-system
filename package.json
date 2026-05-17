@@ -1,0 +1,58 @@
+{
+  "name": "employee-management-system-backend",
+  "version": "1.0.0",
+  "description": "Production-grade Employee Management System backend",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "NODE_ENV=development node --watch src/server.js",
+    "start": "NODE_ENV=production node src/server.js",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:prod": "prisma migrate deploy",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "prisma studio",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix",
+    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"prisma/**/*.js\""
+  },
+  "keywords": [
+    "employee-management",
+    "hrms",
+    "fastify",
+    "prisma"
+  ],
+  "author": "Mohd Saeed Afri",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/cors": "^8.5.0",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/jwt": "^7.1.0",
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/swagger": "^8.14.0",
+    "@fastify/swagger-ui": "^3.0.0",
+    "@prisma/client": "^5.15.0",
+    "argon2": "^0.31.2",
+    "bullmq": "^5.14.0",
+    "fastify": "^4.26.1",
+    "ioredis": "^5.3.5",
+    "jose": "^5.4.1",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^8.57.0",
+    "@vitest/ui": "^1.2.0",
+    "eslint": "^8.57.0",
+    "globals": "^14.0.0",
+    "prettier": "^3.2.5",
+    "prisma": "^5.15.0",
+    "vitest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
