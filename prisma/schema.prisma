@@ -126,6 +126,7 @@ model Tenant {
   holidays                   Holiday[]
   resignations               Resignation[]
   auditLogs                  AuditLog[]
+  logEntries                 LogEntry[]
   notifications              Notification[]
   savedViews                 SavedView[]
   settings                   Setting[]
@@ -155,6 +156,7 @@ model User {
   otpChallenges           OtpChallenge[]
   userRoles               UserRole[]
   auditLogs               AuditLog[]
+  logEntries              LogEntry[]
   uploadedDocuments       EmployeeDocument[]                @relation("uploadedBy")
   verifiedDocuments       EmployeeDocument[]                @relation("verifiedBy")
   reviewedRegularizations AttendanceRegularizationRequest[] @relation("reviewer")
@@ -213,6 +215,7 @@ model Employee {
   resignations            Resignation[]
 
   @@unique([tenantId, employeeCode])
+  @@unique([tenantId, workEmail])
   @@index([tenantId])
   @@index([departmentId])
   @@index([managerId])
@@ -572,6 +575,29 @@ model AuditLog {
   @@index([action])
 }
 
+model LogEntry {
+  id              String   @id @default(cuid())
+  tenantId        String
+  level           String   // ERROR, WARN, INFO, DEBUG
+  levelLabel      String   // Error, Warning, Information, Debug
+  levelColor      String   // red, yellow, blue, gray
+  module          String   // auth, employees, attendance, etc.
+  message         String
+  requestId       String?  // Associated request ID
+  actorUserId     String?  // User who triggered the log
+  metadataJson    Json?    // Additional context
+  createdAt       DateTime @default(now())
+
+  // Relations
+  tenant          Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actor           User?   @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, level])
+  @@index([tenantId, module])
+  @@index([requestId])
+}
+
 model Notification {
   id              String   @id @default(cuid())
   tenantId        String
@@ -601,8 +627,8 @@ model SavedView {
   userId          String
   module          String   // employees, leave, attendance, etc.
   name            String
-  filtersJson     String   // JSON stringified filters
-  columnsJson     String?  // JSON stringified column visibility
+  filtersJson     Json     // JSON filters
+  columnsJson     Json?    // JSON column visibility
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -620,7 +646,7 @@ model Setting {
   tenantId        String
   groupKey        String   // workspace, people, security, etc.
   settingKey      String   // company-name, leave-types, etc.
-  valueJson       String   // JSON stringified value
+  valueJson       Json     // JSON value
   updatedById     String?
   updatedAt       DateTime @updatedAt
 

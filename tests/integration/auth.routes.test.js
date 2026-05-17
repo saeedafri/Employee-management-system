@@ -30,7 +30,7 @@ describe('Auth Routes Integration Tests', function () {
   });
 
   describe('POST /auth/login', function () {
-    it('should successfully login with valid credentials and return opaque refresh token', async function () {
+    it('should successfully login with valid credentials and return access token', async function () {
       const response = await app.inject({
         method: 'POST',
         url: '/api/v1/auth/login',
@@ -47,8 +47,9 @@ describe('Auth Routes Integration Tests', function () {
       expect(body.data).to.have.property('accessToken');
       expect(body.data).to.have.property('sessionId');
       expect(body.data).to.have.property('user');
-      expect(body.data.refreshToken).to.include('.');
-      expect(body.data.refreshToken.split('.').length).to.equal(2);
+      expect(body.data).to.have.property('permissions');
+      expect(body.data.user).to.have.property('id');
+      expect(body.data.user).to.have.property('email');
     });
 
     it('should set httpOnly refresh token cookie', async function () {
@@ -64,8 +65,8 @@ describe('Auth Routes Integration Tests', function () {
 
       expect(response.cookies).to.have.lengthOf(1);
       const cookie = response.cookies[0];
-      expect(cookie.httponly).to.be.true;
-      expect(cookie.samesite).to.equal('Strict');
+      expect(cookie.httpOnly).to.be.true;
+      expect(cookie.sameSite).to.equal('Strict');
       expect(cookie.value).to.include('.');
     });
 
@@ -507,6 +508,65 @@ describe('Auth Routes Integration Tests', function () {
       });
 
       expect(response.statusCode).to.equal(200);
+    });
+  });
+
+  describe('GET /logs (Role-Based Access Control)', function () {
+    it('should allow HR_ADMIN to access logs', async function () {
+      const loginResponse = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/login',
+        headers: { 'x-tenant-key': testTenant.tenantKey },
+        payload: {
+          email: 'admin@example.com',
+          password: 'password',
+        },
+      });
+
+      const loginBody = JSON.parse(loginResponse.body);
+      const accessToken = loginBody.data.accessToken;
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/api/v1/admin/logs',
+        headers: {
+          'x-tenant-key': testTenant.tenantKey,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      expect(response.statusCode).to.equal(200);
+      const body = JSON.parse(response.body);
+      expect(body.success).to.be.true;
+      expect(body.data).to.be.an('array');
+    });
+
+    it('should reject EMPLOYEE from accessing logs with 403', async function () {
+      const loginResponse = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/login',
+        headers: { 'x-tenant-key': testTenant.tenantKey },
+        payload: {
+          email: 'test@example.com',
+          password: 'password',
+        },
+      });
+
+      const loginBody = JSON.parse(loginResponse.body);
+      const accessToken = loginBody.data.accessToken;
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/api/v1/admin/logs',
+        headers: {
+          'x-tenant-key': testTenant.tenantKey,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      expect(response.statusCode).to.equal(403);
+      const body = JSON.parse(response.body);
+      expect(body.error.code).to.equal('FORBIDDEN');
     });
   });
 });

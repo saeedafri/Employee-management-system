@@ -20,6 +20,8 @@ async function main() {
   // Create Tenant
   const tenant = await prisma.tenant.create({
     data: {
+      tenantKey: 'acme-corp-001',
+      slug: 'acme',
       name: 'Acme Corp',
       legalName: 'Acme Corporation Pvt Ltd',
       displayName: 'Acme',

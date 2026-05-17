@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { verifyPassword, hashSHA256 } from '../../utils/hash.js';
 import { createAccessToken, generateRefreshToken } from '../../utils/token.js';
+import { generateId } from '../../utils/id.js';
 import { config } from '../../config/index.js';
 import * as authRepository from './auth.repository.js';
 
@@ -54,7 +55,8 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
     throw new AppError('MFA not yet implemented', 'MFA_REQUIRED', 400);
   }
 
-  // Create session
+  // Create session with sessionFamilyId in single operation
+  const sessionId = generateId();
   const rawRefreshToken = generateRefreshToken();
   const refreshTokenHash = hashSHA256(rawRefreshToken);
   const expiresAt = new Date(
@@ -62,8 +64,10 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
   );
 
   const sessionData = {
+    id: sessionId,
     userId: user.id,
     tenantId,
+    sessionFamilyId: sessionId,
     refreshTokenHash,
     ipAddress,
     userAgent,
@@ -71,11 +75,6 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
   };
 
   const session = await authRepository.createSession(db, sessionData);
-
-  // Set sessionFamilyId to sessionId for first login
-  await authRepository.updateSession(db, session.id, {
-    sessionFamilyId: session.id,
-  });
 
   // Create access token
   const permissions = extractPermissions(user);
@@ -134,6 +133,7 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
   }
 
   // Same as regular login, but with admin check
+  const sessionId = generateId();
   const rawRefreshToken = generateRefreshToken();
   const refreshTokenHash = hashSHA256(rawRefreshToken);
   const expiresAt = new Date(
@@ -141,8 +141,10 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
   );
 
   const sessionData = {
+    id: sessionId,
     userId: user.id,
     tenantId,
+    sessionFamilyId: sessionId,
     refreshTokenHash,
     ipAddress,
     userAgent,
@@ -150,11 +152,6 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
   };
 
   const session = await authRepository.createSession(db, sessionData);
-
-  // Set sessionFamilyId to sessionId for first login
-  await authRepository.updateSession(db, session.id, {
-    sessionFamilyId: session.id,
-  });
 
   const permissions = extractPermissions(user);
   const accessToken = await createAccessToken({
@@ -198,38 +195,75 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
 }
 
 export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToken) {
-  // Step 1: Retrieve session by sessionId
+  // Step 1: Retrieve session by sessionId (including revoked ones)
   const session = await authRepository.findSessionByIdWithFamily(db, sessionId);
   if (!session) {
     throw new AppError('Session not found', 'SESSION_NOT_FOUND', 401);
   }
 
-  // Step 2: Verify session not already revoked
-  if (session.revokedAt !== null) {
-    throw new AppError('Session revoked', 'SESSION_REVOKED', 401);
-  }
-
-  // Step 3: Verify tenant matches
+  // Step 2: Verify tenant matches
   if (session.tenantId !== tenantId) {
     throw new AppError('Tenant mismatch', 'TENANT_MISMATCH', 401);
   }
 
-  // Step 4: Check session expiry
+  // Step 3: Hash provided token for comparison
+  const providedHash = hashSHA256(rawRefreshToken);
+
+  // Step 4: If session is revoked, check if this is token reuse
+  if (session.revokedAt !== null) {
+    try {
+      crypto.timingSafeEqual(
+        Buffer.from(providedHash),
+        Buffer.from(session.refreshTokenHash),
+      );
+      // Token matches but session is revoked - this is reuse of a rotated token
+      await authRepository.revokeSessionFamily(db, session.sessionFamilyId, 'TOKEN_REUSE_DETECTED');
+      await authRepository.createAuditLog(db, {
+        tenantId,
+        actorUserId: session.userId,
+        action: 'TOKEN_REUSE_DETECTED',
+        entityType: 'Session',
+        entityId: sessionId,
+      });
+    } catch (_e) {
+      // Token doesn't match revoked session - also suspicious
+      await authRepository.revokeSessionFamily(db, session.sessionFamilyId, 'TOKEN_REUSE_DETECTED');
+    }
+    throw new AppError(
+      'Token reuse detected. All sessions revoked.',
+      'TOKEN_REUSE',
+      401,
+    );
+  }
+
+  // Step 5: Session is active - verify token and check expiry
   if (new Date() > session.expiresAt) {
     await authRepository.revokeSession(db, sessionId, 'EXPIRED');
     throw new AppError('Session expired', 'SESSION_EXPIRED', 401);
   }
 
-  // Step 5: Verify refresh token using timing-safe comparison
-  const providedHash = hashSHA256(rawRefreshToken);
-  const tokensMatch = crypto.timingSafeEqual(
-    Buffer.from(providedHash),
-    Buffer.from(session.refreshTokenHash),
-  );
+  // Step 6: Verify token with timing-safe comparison
+  let tokensMatch = false;
+  try {
+    crypto.timingSafeEqual(
+      Buffer.from(providedHash),
+      Buffer.from(session.refreshTokenHash),
+    );
+    tokensMatch = true;
+  } catch (_e) {
+    tokensMatch = false;
+  }
 
   if (!tokensMatch) {
-    // Step 6: Token mismatch detected - revoke entire family
+    // Token mismatch - revoke entire family
     await authRepository.revokeSessionFamily(db, session.sessionFamilyId, 'TOKEN_REUSE_DETECTED');
+    await authRepository.createAuditLog(db, {
+      tenantId,
+      actorUserId: session.userId,
+      action: 'TOKEN_REUSE_DETECTED',
+      entityType: 'Session',
+      entityId: sessionId,
+    });
     throw new AppError(
       'Token reuse detected. All sessions revoked.',
       'TOKEN_REUSE',
@@ -244,6 +278,7 @@ export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToke
   }
 
   // Step 8: Generate new refresh token
+  const newSessionId = generateId();
   const newRawRefreshToken = generateRefreshToken();
   const newRefreshTokenHash = hashSHA256(newRawRefreshToken);
   const expiresAt = new Date(
@@ -252,6 +287,7 @@ export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToke
 
   // Step 9: Create new session with same sessionFamilyId
   const newSession = await authRepository.createSession(db, {
+    id: newSessionId,
     userId: session.userId,
     tenantId: session.tenantId,
     refreshTokenHash: newRefreshTokenHash,

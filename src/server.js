@@ -1,5 +1,8 @@
+import pino from 'pino';
 import { config } from './config/index.js';
 import { createApp } from './app.js';
+
+const logger = pino();
 
 async function main() {
   try {
@@ -15,8 +18,7 @@ async function main() {
       docsUrl: `http://localhost:${config.port}/docs`,
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Server startup failed:', error);
+    logger.error(error, 'Server startup failed');
     process.exit(1);
   }
 }
