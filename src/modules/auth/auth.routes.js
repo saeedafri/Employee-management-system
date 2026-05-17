@@ -124,7 +124,7 @@ export default async function authRoutes(fastify) {
     },
   }, async (request, reply) => passwordResetController.forgotPasswordController(request, reply));
 
-  fastify.get('/auth/validate-reset-token', {
+  fastify.get('/auth/reset-password/validate', {
     schema: {
       tags: ['Password Reset'],
       description: 'Validate reset token before allowing password change',
@@ -162,6 +162,21 @@ export default async function authRoutes(fastify) {
           },
         },
       },
+    },
+  }, async (request, reply) => passwordResetController.validateResetTokenController(request, reply));
+
+  fastify.get('/auth/validate-reset-token', {
+    schema: {
+      tags: ['Password Reset'],
+      description: 'Validate reset token before allowing password change (deprecated, use /reset-password/validate)',
+      querystring: {
+        type: 'object',
+        required: ['token'],
+        properties: {
+          token: { type: 'string' },
+        },
+      },
+      deprecated: true,
     },
   }, async (request, reply) => passwordResetController.validateResetTokenController(request, reply));
 

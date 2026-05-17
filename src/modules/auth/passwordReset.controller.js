@@ -26,9 +26,10 @@ export async function forgotPasswordController(request, reply) {
 
 export async function validateResetTokenController(request, reply) {
   try {
+    const { id: tenantId } = request.tenant;
     const { token } = await authValidator.validateResetTokenSchema.parseAsync(request.query);
 
-    const result = await passwordResetService.validateResetToken(token);
+    const result = await passwordResetService.validateResetToken(tenantId, token);
 
     return reply.send(
       successResponse(
@@ -57,11 +58,12 @@ export async function validateResetTokenController(request, reply) {
 
 export async function resetPasswordController(request, reply) {
   try {
+    const { id: tenantId } = request.tenant;
     const { token, newPassword } = await authValidator.resetPasswordSchema.parseAsync(request.body);
     const ip = request.ip;
     const userAgent = request.headers['user-agent'] || '';
 
-    const result = await passwordResetService.completePasswordReset(token, newPassword, ip, userAgent);
+    const result = await passwordResetService.completePasswordReset(tenantId, token, newPassword, ip, userAgent);
 
     return reply.send(
       successResponse(

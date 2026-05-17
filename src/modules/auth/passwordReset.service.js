@@ -22,7 +22,7 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
       await authRepository.createAuditLog(prisma, {
         tenantId,
         actorUserId: null,
-        action: 'PASSWORD_RESET_REQUESTED_NOT_FOUND',
+        action: 'PASSWORD_RESET_REQUESTED',
         entityType: 'User',
         entityId: 'unknown',
         ipAddress: ip,
@@ -37,7 +37,7 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
     const tokenHash = hashSHA256(rawToken);
     const expiresAt = new Date(Date.now() + config.resetPasswordTokenTtlMinutes * 60 * 1000);
 
-    await authRepository.createPasswordResetToken(prisma, {
+    const token = await authRepository.createPasswordResetToken(prisma, {
       userId: user.id,
       tenantId,
       tokenHash,
@@ -46,30 +46,56 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
       userAgent,
     });
 
-    await enqueuePasswordResetEmail(user.email, rawToken, config.resetPasswordTokenTtlMinutes);
-
     await authRepository.createAuditLog(prisma, {
       tenantId,
       actorUserId: user.id,
       action: 'PASSWORD_RESET_REQUESTED',
-      entityType: 'User',
-      entityId: user.id,
+      entityType: 'PasswordResetToken',
+      entityId: token.id,
       ipAddress: ip,
       userAgent,
     });
 
+    try {
+      await enqueuePasswordResetEmail(user.email, rawToken, config.resetPasswordTokenTtlMinutes);
+
+      await authRepository.createAuditLog(prisma, {
+        tenantId,
+        actorUserId: user.id,
+        action: 'PASSWORD_RESET_EMAIL_QUEUED',
+        entityType: 'PasswordResetToken',
+        entityId: token.id,
+        ipAddress: ip,
+        userAgent,
+      });
+    } catch (emailError) {
+      await authRepository.createAuditLog(prisma, {
+        tenantId,
+        actorUserId: user.id,
+        action: 'PASSWORD_RESET_FAILED',
+        entityType: 'PasswordResetToken',
+        entityId: token.id,
+        ipAddress: ip,
+        userAgent,
+      });
+      throw emailError;
+    }
+
     return { success: true };
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('[PASSWORD_RESET] requestPasswordReset error:', error.message);
     return { success: true };
   }
 }
 
-export async function validateResetToken(rawToken) {
+export async function validateResetToken(tenantId, rawToken) {
   const tokenHash = hashSHA256(rawToken);
 
-  const token = await authRepository.findPasswordResetToken(prisma, tokenHash);
+  const token = await prisma.passwordResetToken.findFirst({
+    where: {
+      tokenHash,
+      tenantId,
+    },
+  });
 
   if (!token) {
     throw {
@@ -96,6 +122,14 @@ export async function validateResetToken(rawToken) {
   }
 
   const user = await authRepository.findUserById(prisma, token.userId);
+
+  await authRepository.createAuditLog(prisma, {
+    tenantId,
+    actorUserId: token.userId,
+    action: 'PASSWORD_RESET_TOKEN_VALIDATED',
+    entityType: 'PasswordResetToken',
+    entityId: token.id,
+  });
 
   return {
     valid: true,
@@ -107,10 +141,15 @@ export async function validateResetToken(rawToken) {
   };
 }
 
-export async function completePasswordReset(rawToken, newPassword, ip, userAgent) {
+export async function completePasswordReset(tenantId, rawToken, newPassword, ip, userAgent) {
   const tokenHash = hashSHA256(rawToken);
 
-  const token = await authRepository.findPasswordResetToken(prisma, tokenHash);
+  const token = await prisma.passwordResetToken.findFirst({
+    where: {
+      tokenHash,
+      tenantId,
+    },
+  });
 
   if (!token) {
     throw {
@@ -136,31 +175,44 @@ export async function completePasswordReset(rawToken, newPassword, ip, userAgent
     };
   }
 
-  const passwordHash = await hashPassword(newPassword);
+  try {
+    const passwordHash = await hashPassword(newPassword);
 
-  await prisma.user.update({
-    where: { id: token.userId },
-    data: { passwordHash },
-  });
+    await prisma.user.update({
+      where: { id: token.userId },
+      data: { passwordHash },
+    });
 
-  await authRepository.updatePasswordResetToken(prisma, token.id, { usedAt: new Date() });
+    await authRepository.updatePasswordResetToken(prisma, token.id, { usedAt: new Date() });
 
-  await authRepository.revokeUserSessions(prisma, token.userId, 'PASSWORD_RESET');
+    await authRepository.revokeUserSessions(prisma, token.userId, 'PASSWORD_RESET');
 
-  const user = await authRepository.findUserById(prisma, token.userId);
+    const user = await authRepository.findUserById(prisma, token.userId);
 
-  await authRepository.createAuditLog(prisma, {
-    tenantId: token.tenantId,
-    actorUserId: token.userId,
-    action: 'PASSWORD_RESET_COMPLETED',
-    entityType: 'User',
-    entityId: token.userId,
-    ipAddress: ip,
-    userAgent,
-  });
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: token.userId,
+      action: 'PASSWORD_RESET_COMPLETED',
+      entityType: 'User',
+      entityId: token.userId,
+      ipAddress: ip,
+      userAgent,
+    });
 
-  return {
-    success: true,
-    email: maskEmail(user.email),
-  };
+    return {
+      success: true,
+      email: maskEmail(user.email),
+    };
+  } catch (error) {
+    await authRepository.createAuditLog(prisma, {
+      tenantId,
+      actorUserId: token.userId,
+      action: 'PASSWORD_RESET_FAILED',
+      entityType: 'PasswordResetToken',
+      entityId: token.id,
+      ipAddress: ip,
+      userAgent,
+    });
+    throw error;
+  }
 }

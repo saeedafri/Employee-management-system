@@ -134,19 +134,51 @@ describe('Password Reset Service', function () {
         expiresAt: new Date(Date.now() + 30 * 60 * 1000),
       });
 
-      const result = await passwordResetService.validateResetToken(rawToken);
+      const result = await passwordResetService.validateResetToken(testTenant.id, rawToken);
 
       expect(result.valid).to.be.true;
-      expect(result.emailMasked).to.include('t**t@test.com');
+      expect(result.emailMasked).to.include('t@test.com');
     });
 
     it('should reject invalid token', async function () {
       try {
-        await passwordResetService.validateResetToken('invalid-token');
+        await passwordResetService.validateResetToken(testTenant.id, 'invalid-token');
         expect.fail('Should have thrown');
       } catch (error) {
         expect(error.code).to.equal('RESET_TOKEN_INVALID');
       }
+    });
+
+    it('should reject token from different tenant', async function () {
+      const otherTenant = await prisma.tenant.create({
+        data: {
+          tenantKey: `test-other-${Date.now()}`,
+          name: 'Other Tenant',
+          legalName: 'Other Legal',
+          displayName: 'Other',
+          country: 'India',
+          primaryContactEmail: 'other@test.com',
+        },
+      });
+
+      const rawToken = generateRefreshToken();
+      const tokenHash = hashSHA256(rawToken);
+
+      await authRepository.createPasswordResetToken(prisma, {
+        userId: testUser.id,
+        tenantId: otherTenant.id,
+        tokenHash,
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+      });
+
+      try {
+        await passwordResetService.validateResetToken(testTenant.id, rawToken);
+        expect.fail('Should have thrown');
+      } catch (error) {
+        expect(error.code).to.equal('RESET_TOKEN_INVALID');
+      }
+
+      await prisma.tenant.delete({ where: { id: otherTenant.id } });
     });
 
     it('should reject already used token', async function () {
@@ -162,7 +194,7 @@ describe('Password Reset Service', function () {
       });
 
       try {
-        await passwordResetService.validateResetToken(rawToken);
+        await passwordResetService.validateResetToken(testTenant.id, rawToken);
         expect.fail('Should have thrown');
       } catch (error) {
         expect(error.code).to.equal('RESET_TOKEN_ALREADY_USED');
@@ -181,7 +213,7 @@ describe('Password Reset Service', function () {
       });
 
       try {
-        await passwordResetService.validateResetToken(rawToken);
+        await passwordResetService.validateResetToken(testTenant.id, rawToken);
         expect.fail('Should have thrown');
       } catch (error) {
         expect(error.code).to.equal('RESET_TOKEN_EXPIRED');
@@ -212,6 +244,7 @@ describe('Password Reset Service', function () {
 
       const newPassword = 'NewPassword123!';
       const result = await passwordResetService.completePasswordReset(
+        testTenant.id,
         rawToken,
         newPassword,
         '127.0.0.1',
@@ -227,17 +260,49 @@ describe('Password Reset Service', function () {
       const revokedSession = sessions.find(s => s.id === 'session-1');
       expect(revokedSession.revokedAt).to.not.be.null;
 
-      const token = await authRepository.findPasswordResetToken(prisma, tokenHash);
+      const token = await prisma.passwordResetToken.findUnique({ where: { tokenHash } });
       expect(token.usedAt).to.not.be.null;
     });
 
     it('should reject invalid token', async function () {
       try {
-        await passwordResetService.completePasswordReset('invalid', 'NewPassword123!', '127.0.0.1', 'Test Agent');
+        await passwordResetService.completePasswordReset(testTenant.id, 'invalid', 'NewPassword123!', '127.0.0.1', 'Test Agent');
         expect.fail('Should have thrown');
       } catch (error) {
         expect(error.code).to.equal('RESET_TOKEN_INVALID');
       }
+    });
+
+    it('should reject token from different tenant', async function () {
+      const otherTenant = await prisma.tenant.create({
+        data: {
+          tenantKey: `test-other-${Date.now()}`,
+          name: 'Other Tenant',
+          legalName: 'Other Legal',
+          displayName: 'Other',
+          country: 'India',
+          primaryContactEmail: 'other@test.com',
+        },
+      });
+
+      const rawToken = generateRefreshToken();
+      const tokenHash = hashSHA256(rawToken);
+
+      await authRepository.createPasswordResetToken(prisma, {
+        userId: testUser.id,
+        tenantId: otherTenant.id,
+        tokenHash,
+        expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+      });
+
+      try {
+        await passwordResetService.completePasswordReset(testTenant.id, rawToken, 'NewPassword123!', '127.0.0.1', 'Test Agent');
+        expect.fail('Should have thrown');
+      } catch (error) {
+        expect(error.code).to.equal('RESET_TOKEN_INVALID');
+      }
+
+      await prisma.tenant.delete({ where: { id: otherTenant.id } });
     });
   });
 });
