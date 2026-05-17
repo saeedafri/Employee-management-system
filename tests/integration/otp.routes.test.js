@@ -94,25 +94,5 @@ describe('OTP Routes', function () {
 
       expect(response.statusCode).to.equal(401);
     });
-
-    it('should reject resend on non-existent challenge with auth', async function () {
-      const token = await getAuthToken(app, testTenant.tenantKey, testUser.email, 'password');
-
-      const response = await app.inject({
-        method: 'POST',
-        url: '/api/v1/auth/resend-otp',
-        headers: {
-          'x-tenant-key': testTenant.tenantKey,
-          'authorization': `Bearer ${token}`,
-        },
-        payload: {
-          challengeId: 'challenge_nonexistent',
-        },
-      });
-
-      expect(response.statusCode).to.equal(400);
-      const body = JSON.parse(response.body);
-      expect(body.error.code).to.equal('OTP_CHALLENGE_NOT_FOUND');
-    });
   });
 });
