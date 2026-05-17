@@ -1,162 +1,89 @@
 {
   "info": {
+    "_postman_id": "ems-backend-collection",
     "name": "EMS Backend API",
-    "description": "Employee Management System REST API",
-    "version": "1.0.0"
+    "description": "Employee Management System Backend API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000/api/v1",
-      "type": "string"
-    },
-    {
-      "key": "accessToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "employeeEmail",
-      "value": "priya@acme.test",
-      "type": "string"
-    },
-    {
-      "key": "employeePassword",
-      "value": "ChangeMe123!",
-      "type": "string"
-    },
-    {
-      "key": "adminEmail",
-      "value": "hr@acme.test",
-      "type": "string"
-    },
-    {
-      "key": "adminPassword",
-      "value": "ChangeMe123!",
-      "type": "string"
-    }
-  ],
   "item": [
     {
-      "name": "Auth",
+      "name": "Authentication",
       "item": [
         {
-          "name": "Employee Login",
+          "name": "POST Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.expect(pm.response.code).to.equal(200));",
+                  "if (pm.response.code === 200) {",
+                  "  var data = pm.response.json();",
+                  "  pm.environment.set('accessToken', data.data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "X-Tenant-Key", "value": "{{tenantKey}}"}
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"{{employeeEmail}}\",\n  \"password\": \"{{employeePassword}}\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
-            }
-          },
-          "response": []
+            "body": {"mode": "raw", "raw": "{\"email\": \"test@example.com\", \"password\": \"password\"}"},
+            "url": {"raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"]}
+          }
         },
         {
-          "name": "Admin Login",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/admin/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "admin/login"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Current User",
+          "name": "GET Current User",
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "X-Tenant-Key", "value": "{{tenantKey}}"}
             ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "me"]
-            }
-          },
-          "response": []
+            "url": {"raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"]}
+          }
         },
         {
-          "name": "List Sessions",
+          "name": "POST Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "X-Tenant-Key", "value": "{{tenantKey}}"}
+            ],
+            "url": {"raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "GET Audit Logs",
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "X-Tenant-Key", "value": "{{tenantKey}}"}
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/sessions",
+              "raw": "{{baseUrl}}/admin/logs?limit=50",
               "host": ["{{baseUrl}}"],
-              "path": ["auth", "sessions"]
+              "path": ["admin", "logs"],
+              "query": [{"key": "limit", "value": "50"}]
             }
-          },
-          "response": []
-        },
-        {
-          "name": "Logout",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "logout"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Logout All",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/logout-all",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "logout-all"]
-            }
-          },
-          "response": []
+          }
         }
       ]
     }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:3000/api/v1"},
+    {"key": "tenantKey", "value": "test-tenant"},
+    {"key": "accessToken", "value": ""}
   ]
 }
