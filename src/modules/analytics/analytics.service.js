@@ -2,11 +2,11 @@ import { redis } from '../../plugins/redis.js';
 import { logger } from '../../utils/logger.js';
 import * as repo from './analytics.repository.js';
 
-function getCacheKey(endpoint, tenantId, filters = {}) {
-  const filterStr = Object.keys(filters).length > 0
-    ? `:${Object.entries(filters).sort().map(([k, v]) => `${k}=${v}`).join('|')}`
+function getCacheKey(endpoint, tenantId, params = {}) {
+  const paramStr = Object.keys(params).length > 0
+    ? `:${Object.entries(params).sort().map(([k, v]) => `${k}=${v}`).join('|')}`
     : '';
-  return `analytics:${endpoint}:${tenantId}${filterStr}`;
+  return `analytics:${endpoint}:${tenantId}${paramStr}`;
 }
 
 async function getCachedOrFetch(cacheKey, fetchFn, ttlSeconds) {
@@ -14,95 +14,91 @@ async function getCachedOrFetch(cacheKey, fetchFn, ttlSeconds) {
     const cached = await redis.get(cacheKey);
     if (cached) {
       logger.debug(`Analytics cache HIT: ${cacheKey}`);
-      return JSON.parse(cached);
+      return { data: JSON.parse(cached), cached: true };
     }
 
     logger.debug(`Analytics cache MISS: ${cacheKey}`);
-    const result = await fetchFn();
+    const data = await fetchFn();
 
     try {
-      await redis.setex(cacheKey, ttlSeconds, JSON.stringify(result));
+      await redis.setex(cacheKey, ttlSeconds, JSON.stringify(data));
     } catch (cacheErr) {
       logger.warn(`Analytics cache set failed: ${cacheErr.message}`);
     }
 
-    return result;
+    return { data, cached: false };
   } catch (error) {
     logger.error(`Analytics cache error: ${error.message}`);
-    return await fetchFn();
+    const data = await fetchFn();
+    return { data, cached: false };
   }
 }
 
-export async function getSummary(tenantId, filters = {}) {
-  const cacheKey = getCacheKey('summary', tenantId, filters);
-
-  const data = await getCachedOrFetch(cacheKey, () => repo.getSummaryData(tenantId, filters), 60);
+export async function getSummary(tenantId) {
+  const cacheKey = getCacheKey('summary', tenantId);
+  const { data, cached } = await getCachedOrFetch(cacheKey, () => repo.getSummaryData(tenantId), 60);
 
   return {
     success: true,
     data,
     meta: {
-      cached: false,
+      cached,
       generatedAt: new Date().toISOString(),
     },
   };
 }
 
-export async function getAttendance(tenantId, filters = {}) {
-  const cacheKey = getCacheKey('attendance', tenantId, filters);
-
-  const data = await getCachedOrFetch(cacheKey, () => repo.getAttendanceData(tenantId, filters), 60);
+export async function getAttendance(tenantId, range = '30d') {
+  const cacheKey = getCacheKey('attendance', tenantId, { range });
+  const { data, cached } = await getCachedOrFetch(cacheKey, () => repo.getAttendanceData(tenantId, range), 60);
 
   return {
     success: true,
     data,
     meta: {
-      cached: false,
+      cached,
       generatedAt: new Date().toISOString(),
     },
   };
 }
 
-export async function getHeadcountByDepartment(tenantId, filters = {}) {
-  const cacheKey = getCacheKey('headcount-by-department', tenantId, filters);
-
-  const data = await getCachedOrFetch(cacheKey, () => repo.getHeadcountByDepartment(tenantId, filters), 300);
+export async function getHeadcountByDepartment(tenantId) {
+  const cacheKey = getCacheKey('headcount-by-department', tenantId);
+  const { data, cached } = await getCachedOrFetch(cacheKey, () => repo.getHeadcountByDepartment(tenantId), 300);
 
   return {
     success: true,
     data,
     meta: {
-      cached: false,
+      cached,
       generatedAt: new Date().toISOString(),
     },
   };
 }
 
-export async function getRecentActivity(tenantId, filters = {}) {
-  const cacheKey = getCacheKey('recent-activity', tenantId, filters);
-
-  const data = await getCachedOrFetch(cacheKey, () => repo.getRecentActivity(tenantId, filters), 30);
+export async function getRecentActivity(tenantId, limit = 10) {
+  const cacheKey = getCacheKey('recent-activity', tenantId, { limit });
+  const { data, cached } = await getCachedOrFetch(cacheKey, () => repo.getRecentActivity(tenantId, limit), 30);
 
   return {
     success: true,
     data,
     meta: {
-      cached: false,
+      cached,
       generatedAt: new Date().toISOString(),
     },
   };
 }
 
-export async function getLeaveSummary(tenantId, filters = {}) {
-  const cacheKey = getCacheKey('leave-summary', tenantId, filters);
-
-  const data = await getCachedOrFetch(cacheKey, () => repo.getLeaveSummary(tenantId, filters), 60);
+export async function getLeaveSummary(tenantId, range = '30d') {
+  const cacheKey = getCacheKey('leave-summary', tenantId, { range });
+  const { data, cached } = await getCachedOrFetch(cacheKey, () => repo.getLeaveSummary(tenantId, range), 60);
 
   return {
     success: true,
     data,
     meta: {
-      cached: false,
+      cached,
       generatedAt: new Date().toISOString(),
     },
   };

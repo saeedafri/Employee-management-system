@@ -24,6 +24,14 @@ if (!emailRegex.test(testEmail)) {
 const mfaFlag = args.includes('--mfa');
 const showPassword = args.includes('--show-password-local') && process.env.NODE_ENV !== 'production';
 
+function maskEmail(email) {
+  const [localPart, domain] = email.split('@');
+  if (localPart.length <= 3) {
+    return `${localPart[0]}***@${domain}`;
+  }
+  return `${localPart.slice(0, 2)}***@${domain}`;
+}
+
 async function seedTestUser() {
   try {
     // Get or create default tenant
@@ -156,7 +164,7 @@ async function seedTestUser() {
     }
 
     console.log('\n✅ Test user setup complete');
-    console.log(`Email: ${testEmail}`);
+    console.log(`Email: ${maskEmail(testEmail)}`);
     if (showPassword) {
       console.log(`Password: ${testPassword}`);
     } else {
@@ -164,6 +172,9 @@ async function seedTestUser() {
     }
     console.log(`MFA Enabled: ${mfaFlag}`);
     console.log(`Tenant: acme`);
+    if (!showPassword && process.env.NODE_ENV !== 'production') {
+      console.log('\nNote: Run with --show-password-local to display the password');
+    }
   } catch (error) {
     console.error('Error setting up test user:', error.message);
     process.exit(1);

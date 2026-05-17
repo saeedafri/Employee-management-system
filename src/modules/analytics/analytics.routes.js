@@ -7,13 +7,7 @@ export default async function analyticsRoutes(fastify) {
   fastify.get('/analytics/summary', {
     schema: {
       tags: ['Analytics'],
-      description: 'Get dashboard summary with employee counts and key metrics',
-      querystring: {
-        type: 'object',
-        properties: {
-          departmentId: { type: 'string' },
-        },
-      },
+      description: 'Get HR admin dashboard summary with key metrics',
       response: {
         200: {
           type: 'object',
@@ -23,12 +17,18 @@ export default async function analyticsRoutes(fastify) {
               type: 'object',
               properties: {
                 totalEmployees: { type: 'integer' },
-                activeEmployees: { type: 'integer' },
-                inactiveEmployees: { type: 'integer' },
+                activeToday: { type: 'integer' },
                 onLeaveToday: { type: 'integer' },
+                openRequests: { type: 'integer' },
               },
             },
-            meta: { type: 'object' },
+            meta: {
+              type: 'object',
+              properties: {
+                cached: { type: 'boolean' },
+                generatedAt: { type: 'string' },
+              },
+            },
           },
         },
       },
@@ -39,13 +39,11 @@ export default async function analyticsRoutes(fastify) {
   fastify.get('/analytics/attendance', {
     schema: {
       tags: ['Analytics'],
-      description: 'Get attendance analytics with departmental breakdown',
+      description: 'Get attendance analytics with date series',
       querystring: {
         type: 'object',
         properties: {
-          startDate: { type: 'string', format: 'date-time' },
-          endDate: { type: 'string', format: 'date-time' },
-          departmentId: { type: 'string' },
+          range: { type: 'string', enum: ['7d', '30d', '90d'] },
         },
       },
       response: {
@@ -56,9 +54,21 @@ export default async function analyticsRoutes(fastify) {
             data: {
               type: 'object',
               properties: {
-                period: { type: 'object' },
-                totalRecords: { type: 'integer' },
-                byDepartment: { type: 'object' },
+                range: { type: 'string' },
+                series: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      date: { type: 'string' },
+                      present: { type: 'integer' },
+                      absent: { type: 'integer' },
+                      leave: { type: 'integer' },
+                      wfh: { type: 'integer' },
+                      halfDay: { type: 'integer' },
+                    },
+                  },
+                },
               },
             },
             meta: { type: 'object' },
@@ -72,13 +82,7 @@ export default async function analyticsRoutes(fastify) {
   fastify.get('/analytics/headcount-by-department', {
     schema: {
       tags: ['Analytics'],
-      description: 'Get employee headcount distribution by department',
-      querystring: {
-        type: 'object',
-        properties: {
-          excludeInactive: { type: 'string', enum: ['true', 'false'] },
-        },
-      },
+      description: 'Get employee headcount by department',
       response: {
         200: {
           type: 'object',
@@ -91,7 +95,8 @@ export default async function analyticsRoutes(fastify) {
                 properties: {
                   departmentId: { type: 'string' },
                   departmentName: { type: 'string' },
-                  headcount: { type: 'integer' },
+                  employeeCount: { type: 'integer' },
+                  activeCount: { type: 'integer' },
                 },
               },
             },
@@ -110,7 +115,6 @@ export default async function analyticsRoutes(fastify) {
       querystring: {
         type: 'object',
         properties: {
-          action: { type: 'string' },
           limit: { type: 'string' },
         },
       },
@@ -125,11 +129,13 @@ export default async function analyticsRoutes(fastify) {
                 type: 'object',
                 properties: {
                   id: { type: 'string' },
+                  actorName: { type: 'string' },
                   action: { type: 'string' },
                   entityType: { type: 'string' },
                   entityId: { type: 'string' },
-                  actor: { type: 'string' },
-                  timestamp: { type: 'string' },
+                  resourceLabel: { type: 'string' },
+                  createdAt: { type: 'string' },
+                  createdAtIstDisplay: { type: 'string' },
                 },
               },
             },
@@ -148,8 +154,7 @@ export default async function analyticsRoutes(fastify) {
       querystring: {
         type: 'object',
         properties: {
-          year: { type: 'string', pattern: '^\\d{4}$' },
-          status: { type: 'string', enum: ['PENDING', 'APPROVED', 'DENIED'] },
+          range: { type: 'string', enum: ['7d', '30d', '90d'] },
         },
       },
       response: {
@@ -160,10 +165,10 @@ export default async function analyticsRoutes(fastify) {
             data: {
               type: 'object',
               properties: {
-                year: { type: 'integer' },
-                totalLeaves: { type: 'integer' },
-                byStatus: { type: 'object' },
-                byType: { type: 'object' },
+                pending: { type: 'integer' },
+                approved: { type: 'integer' },
+                rejected: { type: 'integer' },
+                withdrawn: { type: 'integer' },
               },
             },
             meta: { type: 'object' },

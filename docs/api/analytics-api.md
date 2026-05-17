@@ -1,8 +1,8 @@
-# Analytics API Documentation
+# Analytics API Documentation - Page 04 HR Admin Dashboard
 
 ## Overview
 
-The Analytics API provides HR admins and super admins with dashboard metrics and insights across the organization.
+The Analytics API powers the HR Admin Dashboard, providing key metrics for organizational oversight.
 
 **Access Control:** HR_ADMIN, SUPER_ADMIN only  
 **Base URL:** `/api/v1/analytics`
@@ -13,97 +13,96 @@ The Analytics API provides HR admins and super admins with dashboard metrics and
 
 ### 1. GET /analytics/summary
 
-**Description:** Dashboard summary with key employee metrics
-
-**Query Parameters:**
-- `departmentId` (optional): Filter by specific department
+**Wireframe:** Page 04 - Dashboard Summary Cards  
+**Widget:** Total Employees, Active Today, On Leave Today, Open Requests
 
 **Response:**
 ```json
 {
   "success": true,
   "data": {
-    "totalEmployees": 150,
-    "activeEmployees": 142,
-    "inactiveEmployees": 8,
-    "onLeaveToday": 5
+    "totalEmployees": 1240,
+    "activeToday": 1087,
+    "onLeaveToday": 84,
+    "openRequests": 23
   },
   "meta": {
-    "cached": false,
-    "generatedAt": "2025-01-15T10:30:00Z"
+    "cached": true,
+    "generatedAt": "2026-05-18T10:30:00Z"
   }
 }
 ```
 
-**Database Tables Used:**
-| Table | Operation | Reason |
-|-------|-----------|--------|
-| `Employee` | COUNT (WHERE tenantId, deletedAt=null) | Total headcount |
-| `Employee` | COUNT (WHERE employmentStatus=ACTIVE) | Active employees |
-| `Employee` | COUNT (WHERE employmentStatus=INACTIVE) | Inactive count |
-| `LeaveRequest` | COUNT (WHERE status=APPROVED, dates overlap today) | Today's leaves |
+**Tables/Models Read:**
+- `Employee` (count where tenantId, deletedAt=null)
+- `AttendanceRecord` (count where tenantId, attendanceDate=today, status=PRESENT)
+- `LeaveRequest` (count where tenantId, status=APPROVED, dates overlap today)
+- `AttendanceRegularizationRequest` (count where tenantId, status=PENDING)
 
-**Composite Indexes Used:**
-- `(tenantId, employmentStatus)` - Fast filtering by status
-- `(tenantId, departmentId, employmentStatus)` - Filtered department queries
-
-**Cache TTL:** 60 seconds
+**Cache:**
+- Key: `analytics:summary:{tenantId}`
+- TTL: 60 seconds
 
 ---
 
 ### 2. GET /analytics/attendance
 
-**Description:** Attendance rates by department with date range filtering
+**Wireframe:** Page 04 - Attendance Chart (last 30 days)  
+**Widget:** Time-series attendance by day
 
 **Query Parameters:**
-- `startDate` (optional): ISO 8601 datetime (default: 30 days ago)
-- `endDate` (optional): ISO 8601 datetime (default: today)
-- `departmentId` (optional): Filter by department
+- `range` (optional): `7d`, `30d`, `90d` (default: `30d`)
 
 **Response:**
 ```json
 {
   "success": true,
   "data": {
-    "period": {
-      "start": "2025-01-01T00:00:00Z",
-      "end": "2025-01-31T23:59:59Z"
-    },
-    "totalRecords": 2850,
-    "byDepartment": {
-      "dept-engineering": "96.5",
-      "dept-sales": "94.2",
-      "dept-operations": "92.8"
-    }
+    "range": "30d",
+    "series": [
+      {
+        "date": "2026-04-18",
+        "present": 1045,
+        "absent": 12,
+        "leave": 45,
+        "wfh": 85,
+        "halfDay": 53
+      },
+      {
+        "date": "2026-04-19",
+        "present": 1052,
+        "absent": 8,
+        "leave": 42,
+        "wfh": 82,
+        "halfDay": 56
+      }
+    ]
   },
   "meta": {
-    "cached": false,
-    "generatedAt": "2025-01-15T10:30:00Z"
+    "cached": true,
+    "generatedAt": "2026-05-18T10:30:00Z"
   }
 }
 ```
 
-**Database Tables Used:**
-| Table | Operation | Reason |
-|-------|-----------|--------|
-| `AttendanceRecord` | FIND (WHERE tenantId, date range) | Fetch records in range |
-| `Employee` | RELATION select (departmentId) | Get department info |
+**Tables/Models Read:**
+- `AttendanceRecord` (WHERE tenantId, attendanceDate between range)
 
-**Composite Indexes Used:**
-- `(tenantId, attendanceDate)` - Date range queries
-- `(employeeId, attendanceDate)` - Employee lookups
-- `(tenantId, status, attendanceDate)` - Status + date filtering
+**Implementation:**
+- Query all records in range
+- Group by attendanceDate and status
+- Fill missing dates with zeros for stable chart rendering
 
-**Cache TTL:** 60 seconds
+**Cache:**
+- Key: `analytics:attendance:{tenantId}:range={range}`
+- TTL: 60 seconds
 
 ---
 
 ### 3. GET /analytics/headcount-by-department
 
-**Description:** Employee headcount distribution across all departments
-
-**Query Parameters:**
-- `excludeInactive` (optional): "true" to exclude inactive employees (default: false)
+**Wireframe:** Page 04 - Headcount by Department Table  
+**Widget:** Department headcount distribution
 
 **Response:**
 ```json
@@ -113,46 +112,45 @@ The Analytics API provides HR admins and super admins with dashboard metrics and
     {
       "departmentId": "dept-001",
       "departmentName": "Engineering",
-      "headcount": 48
+      "employeeCount": 412,
+      "activeCount": 390
     },
     {
       "departmentId": "dept-002",
       "departmentName": "Sales",
-      "headcount": 35
-    },
-    {
-      "departmentId": "dept-003",
-      "departmentName": "Operations",
-      "headcount": 28
+      "employeeCount": 285,
+      "activeCount": 268
     }
   ],
   "meta": {
-    "cached": false,
-    "generatedAt": "2025-01-15T10:30:00Z"
+    "cached": true,
+    "generatedAt": "2026-05-18T10:30:00Z"
   }
 }
 ```
 
-**Database Tables Used:**
-| Table | Operation | Reason |
-|-------|-----------|--------|
-| `Department` | FIND + COUNT (relation) | All departments with employee counts |
-| `Employee` | RELATION aggregate | Count per department |
+**Tables/Models Read:**
+- `Department` (WHERE tenantId, deletedAt=null)
+- `Employee` (grouped by departmentId)
 
-**Composite Indexes Used:**
-- `(tenantId, employmentStatus)` - Filter by status when excluding inactive
+**Implementation:**
+- List all departments
+- For each department, count total and active employees
+- Return sorted by department name
 
-**Cache TTL:** 300 seconds (5 minutes)
+**Cache:**
+- Key: `analytics:headcount-by-department:{tenantId}`
+- TTL: 300 seconds (5 minutes)
 
 ---
 
 ### 4. GET /analytics/recent-activity
 
-**Description:** Latest audit log entries (system activity)
+**Wireframe:** Page 04 - Recent Activity Table  
+**Widget:** Latest 10 system activities
 
 **Query Parameters:**
-- `action` (optional): Filter by action type (e.g., "LOGIN", "CREATE", "UPDATE")
-- `limit` (optional): Number of records (1-100, default: 10)
+- `limit` (optional): 1-50 (default: 10)
 
 **Response:**
 ```json
@@ -161,143 +159,95 @@ The Analytics API provides HR admins and super admins with dashboard metrics and
   "data": [
     {
       "id": "log-001",
-      "action": "LOGIN",
-      "entityType": "User",
-      "entityId": "user-001",
-      "actor": "john.doe@company.com",
-      "timestamp": "2025-01-15T10:28:45Z"
-    },
-    {
-      "id": "log-002",
-      "action": "CREATE",
-      "entityType": "LeaveRequest",
-      "entityId": "leave-001",
-      "actor": "jane.smith@company.com",
-      "timestamp": "2025-01-15T10:25:12Z"
+      "actorName": "Priya S.",
+      "action": "created",
+      "entityType": "Employee",
+      "entityId": "emp-001",
+      "resourceLabel": "Employee #EMP-0",
+      "createdAt": "2026-05-18T10:25:00Z",
+      "createdAtIstDisplay": "18/05/2026 03:55:00 PM IST"
     }
   ],
   "meta": {
     "cached": false,
-    "generatedAt": "2025-01-15T10:30:00Z"
+    "generatedAt": "2026-05-18T10:30:00Z"
   }
 }
 ```
 
-**Database Tables Used:**
-| Table | Operation | Reason |
-|-------|-----------|--------|
-| `AuditLog` | FIND (WHERE tenantId, action) | Recent logs |
-| `User` | RELATION select (email) | Get actor details |
+**Tables/Models Read:**
+- `AuditLog` (WHERE tenantId, ORDER BY createdAt DESC, LIMIT)
+- `User` (for actor email → name extraction)
 
-**Composite Indexes Used:**
-- `(tenantId, createdAt, action)` - Time + action filtering
-- `(tenantId, createdAt)` - Latest entries first
+**Implementation:**
+- Extract first name from actor email
+- Format name from email parts (e.g., "priya.sharma@" → "Priya Sharma")
+- Format timestamp as DD/MM/YYYY HH:MM:SS AM/PM IST
+- Resource label: `{entityType} #{first 5 chars of entityId}`
 
-**Cache TTL:** 30 seconds
+**Cache:**
+- Key: `analytics:recent-activity:{tenantId}:limit={limit}`
+- TTL: 30 seconds
 
 ---
 
 ### 5. GET /analytics/leave-summary
 
-**Description:** Leave usage statistics and breakdown
+**Wireframe:** Page 04 - Leave Summary Cards  
+**Widget:** Leave status breakdown
 
 **Query Parameters:**
-- `year` (optional): YYYY format (default: current year)
-- `status` (optional): PENDING, APPROVED, or DENIED
+- `range` (optional): `7d`, `30d`, `90d` (default: `30d`)
 
 **Response:**
 ```json
 {
   "success": true,
   "data": {
-    "year": 2025,
-    "totalLeaves": 215,
-    "byStatus": {
-      "APPROVED": 185,
-      "PENDING": 20,
-      "DENIED": 10
-    },
-    "byType": {
-      "leave-type-001": {
-        "count": 120,
-        "totalDays": 240
-      },
-      "leave-type-002": {
-        "count": 95,
-        "totalDays": 95
-      }
-    }
+    "pending": 12,
+    "approved": 185,
+    "rejected": 8,
+    "withdrawn": 3
   },
   "meta": {
-    "cached": false,
-    "generatedAt": "2025-01-15T10:30:00Z"
+    "cached": true,
+    "generatedAt": "2026-05-18T10:30:00Z"
   }
 }
 ```
 
-**Database Tables Used:**
-| Table | Operation | Reason |
-|-------|-----------|--------|
-| `LeaveRequest` | COUNT + GROUPBY (status) | Status breakdown |
-| `LeaveRequest` | GROUPBY (leaveTypeId) | Type breakdown |
+**Tables/Models Read:**
+- `LeaveRequest` (WHERE tenantId, startDate within range)
 
-**Composite Indexes Used:**
-- `(tenantId, status, startDate)` - Status + date filtering
-- `(tenantId, status)` - Quick status counts
+**Implementation:**
+- Query leaves with startDate >= (today - range_days)
+- Group by status
+- Map Prisma enum to API response:
+  - PENDING → pending
+  - APPROVED → approved
+  - DENIED → rejected
+  - WITHDRAWN → withdrawn
 
-**Cache TTL:** 60 seconds
-
----
-
-## Performance Characteristics
-
-### Response Times (Expected)
-
-| Endpoint | DB Time | Cache Hit | Typical Total |
-|----------|---------|-----------|---------------|
-| `/summary` | 15-25ms | 1-2ms | 16-27ms |
-| `/attendance` | 20-40ms | 1-2ms | 21-42ms |
-| `/headcount-by-department` | 25-50ms | 1-2ms | 26-52ms |
-| `/recent-activity` | 10-15ms | 1-2ms | 11-17ms |
-| `/leave-summary` | 20-35ms | 1-2ms | 21-37ms |
-
-### Index Strategy
-
-All analytics endpoints use **composite indexes** to ensure sub-millisecond lookups:
-
-```sql
--- Employee queries
-ALTER TABLE Employee ADD INDEX idx_tenant_status (tenantId, employmentStatus);
-ALTER TABLE Employee ADD INDEX idx_tenant_dept_status (tenantId, departmentId, employmentStatus);
-
--- Attendance queries
-ALTER TABLE AttendanceRecord ADD INDEX idx_tenant_status_date (tenantId, status, attendanceDate);
-
--- Leave queries
-ALTER TABLE LeaveRequest ADD INDEX idx_tenant_status_startdate (tenantId, status, startDate);
-
--- Audit log queries
-ALTER TABLE AuditLog ADD INDEX idx_tenant_created_action (tenantId, createdAt, action);
-```
+**Cache:**
+- Key: `analytics:leave-summary:{tenantId}:range={range}`
+- TTL: 60 seconds
 
 ---
 
 ## Error Responses
 
-### 403 Forbidden (RBAC)
-
+### 400 Bad Request
 ```json
 {
   "success": false,
   "error": {
-    "code": "FORBIDDEN",
-    "message": "Analytics access restricted to HR admins"
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid range parameter"
   }
 }
 ```
 
 ### 401 Unauthorized
-
 ```json
 {
   "success": false,
@@ -308,71 +258,56 @@ ALTER TABLE AuditLog ADD INDEX idx_tenant_created_action (tenantId, createdAt, a
 }
 ```
 
-### 400 Bad Request (Invalid Parameters)
-
+### 403 Forbidden
 ```json
 {
   "success": false,
   "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Invalid startDate format"
+    "code": "FORBIDDEN",
+    "message": "Analytics access restricted to HR admins"
   }
 }
 ```
 
 ---
 
-## Caching Strategy
+## Access Control
 
-All endpoints use Redis caching with tenant-scoped keys:
-
-```
-Key Format: analytics:{endpoint}:{tenantId}[:{param1}={value1}|{param2}={value2}]
-```
-
-**Cache Invalidation:** Automatic invalidation happens when:
-- LeaveRequest, Employee, AttendanceRecord, or AuditLog records change
-- Custom invalidation endpoint (admin only)
-
-**Manual Invalidation:**
-```
-POST /api/v1/analytics/invalidate-cache
-Headers: Authorization: Bearer <token>
-Body: { "tenantId": "tenant-001" }
-```
+| Endpoint | SUPER_ADMIN | HR_ADMIN | MANAGER | EMPLOYEE | AUDITOR |
+|----------|------------|---------|---------|----------|---------|
+| /summary | ✅ | ✅ | ❌ | ❌ | ❌ |
+| /attendance | ✅ | ✅ | ❌ | ❌ | ❌ |
+| /headcount-by-department | ✅ | ✅ | ❌ | ❌ | ❌ |
+| /recent-activity | ✅ | ✅ | ❌ | ❌ | ❌ |
+| /leave-summary | ✅ | ✅ | ❌ | ❌ | ❌ |
 
 ---
 
 ## Rate Limiting
 
-All analytics endpoints are rate limited to protect database:
-
-- **Limit:** 100 requests per minute per user
-- **Window:** 1 minute rolling
-- **Response Header:** `RateLimit-Remaining`
+All endpoints: 100 requests per minute per user
 
 ---
 
-## Access Control Matrix
+## Performance
 
-| Role | /summary | /attendance | /headcount | /recent-activity | /leave-summary |
-|------|----------|------------|-----------|------------------|----------------|
-| SUPER_ADMIN | ✓ | ✓ | ✓ | ✓ | ✓ |
-| HR_ADMIN | ✓ | ✓ | ✓ | ✓ | ✓ |
-| MANAGER | ✗ | ✗ | ✗ | ✗ | ✗ |
-| EMPLOYEE | ✗ | ✗ | ✗ | ✗ | ✗ |
-| AUDITOR | ✗ | ✗ | ✗ | ✗ | ✗ |
+Expected response times with Redis cache warm:
+- summary: 1-2ms
+- attendance: 1-2ms
+- headcount-by-department: 1-2ms
+- recent-activity: 1-2ms
+- leave-summary: 1-2ms
+
+Without cache (database queries): 15-50ms per endpoint
 
 ---
 
-## Testing
+## Frontend Integration
 
-Run tests with:
+These APIs power the following frontend components:
 
-```bash
-npm run test:unit -- analytics
-npm run test:integration -- analytics
-npm run test:e2e -- analytics
-```
-
-See `tests/unit/analytics.service.test.js` and `tests/integration/analytics.routes.test.js` for test cases.
+1. **Dashboard Summary Cards** → GET /analytics/summary
+2. **Attendance Chart** → GET /analytics/attendance?range=30d
+3. **Headcount by Department** → GET /analytics/headcount-by-department
+4. **Recent Activity Table** → GET /analytics/recent-activity?limit=10
+5. **Leave Summary** → GET /analytics/leave-summary?range=30d

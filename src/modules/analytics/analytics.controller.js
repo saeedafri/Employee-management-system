@@ -1,4 +1,3 @@
-import { logger } from '../../utils/logger.js';
 import * as analyticsService from './analytics.service.js';
 import * as analyticsValidator from './analytics.validator.js';
 
@@ -16,13 +15,12 @@ export async function getSummary(request, reply) {
     requireAnalyticsRole(request.user.memberType);
 
     const { id: tenantId } = request.tenant;
-    const filters = await analyticsValidator.summaryQuerySchema.parseAsync(request.query);
+    await analyticsValidator.summaryQuerySchema.parseAsync(request.query);
 
-    const result = await analyticsService.getSummary(tenantId, filters);
-
+    const result = await analyticsService.getSummary(tenantId);
     return reply.send(result);
   } catch (error) {
-    logger.error(`Analytics summary error: ${error.message}`);
+    request.log.error(error);
     throw error;
   }
 }
@@ -32,13 +30,12 @@ export async function getAttendance(request, reply) {
     requireAnalyticsRole(request.user.memberType);
 
     const { id: tenantId } = request.tenant;
-    const filters = await analyticsValidator.attendanceQuerySchema.parseAsync(request.query);
+    const { range } = await analyticsValidator.attendanceQuerySchema.parseAsync(request.query);
 
-    const result = await analyticsService.getAttendance(tenantId, filters);
-
+    const result = await analyticsService.getAttendance(tenantId, range || '30d');
     return reply.send(result);
   } catch (error) {
-    logger.error(`Analytics attendance error: ${error.message}`);
+    request.log.error(error);
     throw error;
   }
 }
@@ -48,13 +45,12 @@ export async function getHeadcountByDepartment(request, reply) {
     requireAnalyticsRole(request.user.memberType);
 
     const { id: tenantId } = request.tenant;
-    const filters = await analyticsValidator.headcountQuerySchema.parseAsync(request.query);
+    await analyticsValidator.headcountQuerySchema.parseAsync(request.query);
 
-    const result = await analyticsService.getHeadcountByDepartment(tenantId, filters);
-
+    const result = await analyticsService.getHeadcountByDepartment(tenantId);
     return reply.send(result);
   } catch (error) {
-    logger.error(`Analytics headcount error: ${error.message}`);
+    request.log.error(error);
     throw error;
   }
 }
@@ -64,13 +60,12 @@ export async function getRecentActivity(request, reply) {
     requireAnalyticsRole(request.user.memberType);
 
     const { id: tenantId } = request.tenant;
-    const filters = await analyticsValidator.recentActivityQuerySchema.parseAsync(request.query);
+    const { limit } = await analyticsValidator.recentActivityQuerySchema.parseAsync(request.query);
 
-    const result = await analyticsService.getRecentActivity(tenantId, filters);
-
+    const result = await analyticsService.getRecentActivity(tenantId, limit || 10);
     return reply.send(result);
   } catch (error) {
-    logger.error(`Analytics recent activity error: ${error.message}`);
+    request.log.error(error);
     throw error;
   }
 }
@@ -80,13 +75,12 @@ export async function getLeaveSummary(request, reply) {
     requireAnalyticsRole(request.user.memberType);
 
     const { id: tenantId } = request.tenant;
-    const filters = await analyticsValidator.leaveSummaryQuerySchema.parseAsync(request.query);
+    const { range } = await analyticsValidator.leaveSummaryQuerySchema.parseAsync(request.query);
 
-    const result = await analyticsService.getLeaveSummary(tenantId, filters);
-
+    const result = await analyticsService.getLeaveSummary(tenantId, range || '30d');
     return reply.send(result);
   } catch (error) {
-    logger.error(`Analytics leave summary error: ${error.message}`);
+    request.log.error(error);
     throw error;
   }
 }
