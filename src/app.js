@@ -52,24 +52,24 @@ export async function createApp() {
   // Global error handler
   fastify.setErrorHandler(errorHandler);
 
-  // Register routes (MUST await so routes are registered before swagger plugin)
+  // Register routes (MUST await all nested registrations)
   await fastify.register(
     async (fastify) => {
       fastify.addHook('onRequest', resolveTenant);
-      fastify.register(authRoutes);
-      fastify.register(logsRoutes);
-      fastify.register(analyticsRoutes);
-      fastify.register(managerDashboardRoutes);
-      fastify.register(employeeDashboardRoutes);
-      fastify.register(employeesRoutes);
-      fastify.register(departmentsRoutes);
-      fastify.register(holidaysRoutes);
-      fastify.register(leaveRoutes);
-      fastify.register(attendanceRoutes);
-      fastify.register(reportsRoutes);
-      fastify.register(exportRoutes);
-      fastify.register(auditLogsRoutes);
-      fastify.register(settingsRoutes);
+      await fastify.register(authRoutes);
+      await fastify.register(logsRoutes);
+      await fastify.register(analyticsRoutes);
+      await fastify.register(managerDashboardRoutes);
+      await fastify.register(employeeDashboardRoutes);
+      await fastify.register(employeesRoutes);
+      await fastify.register(departmentsRoutes);
+      await fastify.register(holidaysRoutes);
+      await fastify.register(leaveRoutes);
+      await fastify.register(attendanceRoutes);
+      await fastify.register(reportsRoutes);
+      await fastify.register(exportRoutes);
+      await fastify.register(auditLogsRoutes);
+      await fastify.register(settingsRoutes);
     },
     { prefix: config.apiPrefix },
   );
