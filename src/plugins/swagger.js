@@ -283,11 +283,6 @@ export async function swaggerPlugin(fastify) {
     uiConfig: {
       docExpansion: 'list',
       deepLinking: true,
-      presets: [
-        'swaggerUIBundle.presets.apis',
-        'SwaggerUIStandalonePreset',
-      ],
-      layout: 'StandaloneLayout',
     },
   });
 }
