@@ -14,7 +14,7 @@ export async function swaggerPlugin(fastify) {
           email: 'support@acme.test',
         },
       },
-      host: `localhost:${config.port}`,
+      host: config.isDevelopment ? `localhost:${config.port}` : 'employee-management-system-2b9q.onrender.com',
       basePath: config.apiPrefix,
       schemes: [config.isDevelopment ? 'http' : 'https'],
       securityDefinitions: {
