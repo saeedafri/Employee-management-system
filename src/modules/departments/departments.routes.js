@@ -6,7 +6,7 @@ import {
   deleteDepartment,
 } from './departments.controller.js';
 
-export async function departmentsRoutes(fastify) {
+export default async function departmentsRoutes(fastify) {
   fastify.addHook('onRequest', authenticate);
 
   fastify.get(

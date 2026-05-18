@@ -6,7 +6,7 @@ import {
   deleteHoliday,
 } from './holidays.controller.js';
 
-export async function holidaysRoutes(fastify) {
+export default async function holidaysRoutes(fastify) {
   fastify.addHook('onRequest', authenticate);
 
   fastify.get(
