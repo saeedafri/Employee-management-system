@@ -7,6 +7,10 @@ export async function checkIn(request, reply) {
     const tenantId = request.tenant.id;
     const employeeId = request.user.employeeId;
 
+    if (!employeeId) {
+      return reply.status(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', {}, request.id));
+    }
+
     const body = attendanceValidator.checkInSchema.parse(request.body);
 
     const result = await attendanceService.checkIn(tenantId, employeeId, body);
@@ -40,6 +44,10 @@ export async function checkOut(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const employeeId = request.user.employeeId;
+
+    if (!employeeId) {
+      return reply.status(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', {}, request.id));
+    }
 
     const body = attendanceValidator.checkOutSchema.parse(request.body || {});
 
