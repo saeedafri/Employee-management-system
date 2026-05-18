@@ -52,8 +52,8 @@ export async function createApp() {
   // Global error handler
   fastify.setErrorHandler(errorHandler);
 
-  // Register routes
-  fastify.register(
+  // Register routes (MUST await so routes are registered before swagger plugin)
+  await fastify.register(
     async (fastify) => {
       fastify.addHook('onRequest', resolveTenant);
       fastify.register(authRoutes);
