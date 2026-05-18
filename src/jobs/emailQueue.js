@@ -20,5 +20,9 @@ export const redisClient = createClient({
 });
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV !== 'testing') {
-  await redisClient.connect();
+  try {
+    await redisClient.connect();
+  } catch (err) {
+    console.warn('⚠️  Redis connection failed. Email queue disabled. Details:', err.message);
+  }
 }
