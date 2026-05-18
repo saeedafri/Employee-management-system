@@ -11,7 +11,9 @@
     "db:migrate:prod": "prisma migrate deploy",
     "db:seed": "node prisma/seed.js",
     "db:seed:large": "node prisma/seedLargeDemo.js",
+    "db:seed:production": "node prisma/seedProductionData.js",
     "db:studio": "prisma studio",
+    "test:performance": "mocha 'tests/performance.test.js'",
     "test": "mocha 'tests/**/*.test.js'",
     "test:unit": "mocha 'tests/unit/**/*.test.js'",
     "test:integration": "mocha 'tests/integration/**/*.test.js'",
@@ -56,6 +58,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
+    "@faker-js/faker": "^8.4.1",
     "c8": "^11.0.0",
     "chai": "^6.2.2",
     "eslint": "^8.57.0",
