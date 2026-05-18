@@ -4,6 +4,7 @@ import { config } from '../config/index.js';
 
 export async function swaggerPlugin(fastify) {
   await fastify.register(fastifySwagger, {
+    mode: 'dynamic',
     swagger: {
       info: {
         title: config.appName,
