@@ -16,6 +16,14 @@ import analyticsRoutes from './modules/analytics/analytics.routes.js';
 import { managerDashboardRoutes } from './modules/dashboard/manager.routes.js';
 import { employeeDashboardRoutes } from './modules/dashboard/employee.routes.js';
 import { employeesRoutes } from './modules/employees/employees.routes.js';
+import { departmentsRoutes } from './modules/departments/departments.routes.js';
+import { holidaysRoutes } from './modules/holidays/holidays.routes.js';
+import leaveRoutes from './modules/leave/leave.routes.js';
+import attendanceRoutes from './modules/attendance/attendance.routes.js';
+import reportsRoutes from './modules/reports/reports.routes.js';
+import exportRoutes from './modules/export/export.routes.js';
+import auditLogsRoutes from './modules/auditLogs/auditLogs.routes.js';
+import settingsRoutes from './modules/settings/settings.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -55,6 +63,14 @@ export async function createApp() {
       fastify.register(managerDashboardRoutes);
       fastify.register(employeeDashboardRoutes);
       fastify.register(employeesRoutes);
+      fastify.register(departmentsRoutes);
+      fastify.register(holidaysRoutes);
+      fastify.register(leaveRoutes);
+      fastify.register(attendanceRoutes);
+      fastify.register(reportsRoutes);
+      fastify.register(exportRoutes);
+      fastify.register(auditLogsRoutes);
+      fastify.register(settingsRoutes);
     },
     { prefix: config.apiPrefix },
   );

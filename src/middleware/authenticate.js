@@ -28,3 +28,19 @@ export async function authenticate(request, reply) {
     );
   }
 }
+
+export function authorize(allowedRoles = []) {
+  return async (request, reply) => {
+    const memberType = request.user?.memberType;
+    if (!memberType || !allowedRoles.includes(memberType)) {
+      return reply.code(403).send(
+        errorResponse(
+          'FORBIDDEN',
+          'Insufficient permissions for this action',
+          { requiredRoles: allowedRoles, userRole: memberType },
+          request.id,
+        ),
+      );
+    }
+  };
+}

@@ -33,6 +33,9 @@ export async function cleanDatabase() {
     await prisma.leaveRequest.deleteMany({});
   } catch {} // eslint-disable-line no-empty
   try {
+    await prisma.leaveBalance.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
     await prisma.attendanceRecord.deleteMany({});
   } catch {} // eslint-disable-line no-empty
   try {
@@ -40,6 +43,9 @@ export async function cleanDatabase() {
   } catch {} // eslint-disable-line no-empty
   try {
     await prisma.department.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.holiday.deleteMany({});
   } catch {} // eslint-disable-line no-empty
   try {
     await prisma.leaveType.deleteMany({});
@@ -58,6 +64,9 @@ export async function cleanDatabase() {
   } catch {} // eslint-disable-line no-empty
   try {
     await prisma.permission.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
+    await prisma.exportJob.deleteMany({});
   } catch {} // eslint-disable-line no-empty
   try {
     await prisma.tenant.deleteMany({});
@@ -245,6 +254,30 @@ export async function createTestOtpChallenge(userId, tenantId, email = 'test@tes
     challenge,
     code,
   };
+}
+
+export async function createTestEmployee(tenantId, userId, data = {}) {
+  const employeeCode = data.employeeCode || `EMP-${Date.now()}`;
+  const workEmail = data.workEmail || `${employeeCode}@test.com`;
+
+  return await prisma.employee.create({
+    data: {
+      tenantId,
+      userId,
+      firstName: data.firstName || 'Test',
+      lastName: data.lastName || 'Employee',
+      employeeCode,
+      workEmail,
+      email: data.email,
+      phone: data.phone,
+      gender: data.gender || 'MALE',
+      employmentType: data.employmentType || 'FULL_TIME',
+      employmentStatus: data.employmentStatus || 'ACTIVE',
+      workMode: data.workMode || 'OFFICE',
+      jobTitle: data.jobTitle || 'Developer',
+      ...data,
+    },
+  });
 }
 
 export async function getAuthToken(app, tenantKey, email, password) {

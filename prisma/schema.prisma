@@ -90,6 +90,30 @@ enum ResignationStatus {
   WITHDRAWN
 }
 
+enum ReportFrequency {
+  WEEKLY
+  MONTHLY
+}
+
+enum ReportExportStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum ExportJobStatus {
+  QUEUED
+  PROCESSING
+  SUCCESS
+  FAILED
+}
+
+enum ExportType {
+  EMPLOYEES
+  ATTENDANCE
+  LEAVE
+}
+
 // Models
 model Tenant {
   id                  String   @id @default(cuid())
@@ -130,6 +154,11 @@ model Tenant {
   notifications              Notification[]
   savedViews                 SavedView[]
   settings                   Setting[]
+  scheduledReports           ScheduledReport[]
+  reportExports              ReportExport[]
+  exportJobs                 ExportJob[]
+  tenantConfigs              TenantConfig[]
+  emailTemplates             EmailTemplate[]
 
   @@index([deletedAt])
 }
@@ -678,4 +707,100 @@ model Setting {
 
   @@unique([tenantId, groupKey, settingKey])
   @@index([tenantId])
+}
+
+model ScheduledReport {
+  id              String   @id @default(cuid())
+  tenantId        String
+  createdById     String
+  reportType      String   // attendance, leaves, payroll
+  frequency       ReportFrequency
+  emailRecipients Json     // Array of email strings
+  nextRunDate     DateTime
+  isActive        Boolean  @default(true)
+  lastRunAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, isActive])
+  @@index([tenantId, nextRunDate])
+}
+
+model ReportExport {
+  id              String   @id @default(cuid())
+  tenantId        String
+  createdById     String?
+  reportType      String   // attendance, leaves, payroll
+  format          String   // json, csv
+  status          ReportExportStatus @default(PENDING)
+  fileUrl         String?
+  filePath        String?
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  // Relations
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+}
+
+model TenantConfig {
+  id                  String   @id @default(cuid())
+  tenantId            String   @unique
+  companyName         String
+  timezone            String   @default("Asia/Kolkata")
+  workingHoursStart   String   @default("09:00") // HH:mm format
+  workingHoursEnd     String   @default("18:00") // HH:mm format
+  fiscalYearStart     Int      @default(4) // April = 4
+  fiscalYearEnd       Int      @default(3) // March = 3
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  tenant              Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+}
+
+model EmailTemplate {
+  id              String   @id @default(cuid())
+  tenantId        String
+  type            String   // LEAVE_APPROVAL, LEAVE_REJECTION, ATTENDANCE_ALERT
+  subject         String
+  body            String   @db.LongText
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, type])
+  @@index([tenantId])
+}
+
+model ExportJob {
+  id              String   @id @default(cuid())
+  tenantId        String
+  jobId           String   @unique
+  createdById     String?
+  exportType      ExportType
+  format          String   // csv, excel, json
+  status          ExportJobStatus @default(QUEUED)
+  fileUrl         String?
+  errorMessage    String?
+  filters         Json?
+  createdAt       DateTime @default(now())
+  completedAt     DateTime?
+
+  // Relations
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, jobId])
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
 }
