@@ -1,7 +1,5 @@
-import { Worker } from 'bullmq';
 import nodemailer from 'nodemailer';
 import { config } from '../config/index.js';
-import { emailQueue, redisConnection } from './emailQueue.js';
 import { logger } from '../utils/logger.js';
 
 const isMockProvider = config.emailProvider === 'mock';
@@ -18,30 +16,6 @@ if (isSmtpProvider) {
       pass: config.smtpPass,
     } : undefined,
   });
-}
-
-async function sendEmail(job) {
-  const { to, subject, template, data } = job.data;
-
-  if (isMockProvider) {
-    logger.info({
-      type: 'email_mock',
-      to,
-      subject,
-      template,
-      message: 'Email sent via mock provider (dev mode)',
-    });
-    return { success: true, mock: true };
-  }
-
-  const html = renderEmailTemplate(template, data);
-  await transporter.sendMail({
-    from: config.smtpFrom,
-    to,
-    subject,
-    html,
-  });
-  return { success: true };
 }
 
 function renderEmailTemplate(template, data) {
@@ -77,25 +51,37 @@ function renderEmailTemplate(template, data) {
   return templateFn(data);
 }
 
-let emailWorker;
+async function sendEmailDirect(to, subject, template, data) {
+  if (isMockProvider) {
+    logger.info({
+      type: 'email_mock',
+      to,
+      subject,
+      template,
+      message: 'Email sent via mock provider',
+    });
+    return { success: true, mock: true };
+  }
 
-if (config.isTesting) {
-  emailWorker = null;
-} else {
-  emailWorker = new Worker('email', async (job) => {
-    return sendEmail(job);
-  }, {
-    connection: redisConnection,
-    concurrency: 5,
-  });
+  if (!isSmtpProvider) {
+    logger.warn('Email provider not configured, skipping email');
+    return { success: false, reason: 'Email provider not configured' };
+  }
 
-  emailWorker.on('completed', () => {
-    // Job completed successfully
-  });
-
-  emailWorker.on('failed', () => {
-    // Job failed
-  });
+  try {
+    const html = renderEmailTemplate(template, data);
+    await transporter.sendMail({
+      from: config.smtpFrom,
+      to,
+      subject,
+      html,
+    });
+    logger.info({ type: 'email_sent', to, template });
+    return { success: true };
+  } catch (err) {
+    logger.error({ type: 'email_failed', to, template, error: err.message });
+    return { success: false, error: err.message };
+  }
 }
 
 export async function enqueuePasswordResetEmail(to, resetToken, expiresInMinutes) {
@@ -105,22 +91,9 @@ export async function enqueuePasswordResetEmail(to, resetToken, expiresInMinutes
 
   const resetUrl = `${config.frontendResetPasswordUrl}?token=${resetToken}`;
 
-  await emailQueue.add('password_reset', {
-    to,
-    subject: 'Reset Your Password',
-    template: 'password_reset',
-    data: {
-      resetUrl,
-      expiresInMinutes,
-    },
-  }, {
-    removeOnComplete: true,
-    removeOnFail: false,
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 2000,
-    },
+  return sendEmailDirect(to, 'Reset Your Password', 'password_reset', {
+    resetUrl,
+    expiresInMinutes,
   });
 }
 
@@ -129,21 +102,8 @@ export async function enqueueOtpEmail(to, code, expiresInMinutes) {
     return { success: true, devMode: true };
   }
 
-  await emailQueue.add('otp_verification', {
-    to,
-    subject: 'Verify Your Identity - OTP',
-    template: 'otp_verification',
-    data: {
-      code,
-      expiresInMinutes,
-    },
-  }, {
-    removeOnComplete: true,
-    removeOnFail: false,
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 2000,
-    },
+  return sendEmailDirect(to, 'Verify Your Identity - OTP', 'otp_verification', {
+    code,
+    expiresInMinutes,
   });
 }

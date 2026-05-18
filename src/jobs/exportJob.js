@@ -1,28 +1,19 @@
-import { Worker } from 'bullmq';
-import { createWriteStream, mkdirSync } from 'fs';
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { config } from '../config/index.js';
-import { exportQueue, redisConnection } from './exportQueue.js';
 import { logger } from '../utils/logger.js';
 import * as exportRepository from '../modules/export/export.repository.js';
 
 const EXPORTS_DIR = config.exportsDir || '/tmp/exports';
 mkdirSync(EXPORTS_DIR, { recursive: true });
 
-async function processEmployeeExport(job) {
-  const { jobId, tenantId, filters } = job.data;
-
+export async function exportEmployees(jobId, tenantId, filters) {
   try {
-    job.updateProgress(10);
-
     const employees = await exportRepository.getEmployeesForExport(tenantId, {
       departmentId: filters.department_id,
       status: filters.status,
       include_archived: filters.include_archived,
     });
-
-    job.updateProgress(30);
 
     const filename = await generateExportFile(
       employees,
@@ -30,8 +21,6 @@ async function processEmployeeExport(job) {
       filters.format,
       jobId,
     );
-
-    job.updateProgress(90);
 
     const fileUrl = `${config.apiUrl}/files/${jobId}`;
 
@@ -65,19 +54,13 @@ async function processEmployeeExport(job) {
   }
 }
 
-async function processAttendanceExport(job) {
-  const { jobId, tenantId, filters } = job.data;
-
+export async function exportAttendance(jobId, tenantId, filters) {
   try {
-    job.updateProgress(10);
-
     const records = await exportRepository.getAttendanceForExport(tenantId, {
       departmentId: filters.department_id,
       fromDate: filters.from_date,
       toDate: filters.to_date,
     });
-
-    job.updateProgress(30);
 
     const filename = await generateExportFile(
       records,
@@ -85,8 +68,6 @@ async function processAttendanceExport(job) {
       filters.format,
       jobId,
     );
-
-    job.updateProgress(90);
 
     const fileUrl = `${config.apiUrl}/files/${jobId}`;
 
@@ -120,12 +101,8 @@ async function processAttendanceExport(job) {
   }
 }
 
-async function processLeaveExport(job) {
-  const { jobId, tenantId, filters } = job.data;
-
+export async function exportLeave(jobId, tenantId, filters) {
   try {
-    job.updateProgress(10);
-
     const leaves = await exportRepository.getLeaveForExport(tenantId, {
       fromDate: filters.from_date,
       toDate: filters.to_date,
@@ -133,16 +110,12 @@ async function processLeaveExport(job) {
       status: filters.status,
     });
 
-    job.updateProgress(30);
-
     const filename = await generateExportFile(
       leaves,
       'leave',
       filters.format,
       jobId,
     );
-
-    job.updateProgress(90);
 
     const fileUrl = `${config.apiUrl}/files/${jobId}`;
 
@@ -266,47 +239,3 @@ function flattenObject(obj, prefix = '') {
   return result;
 }
 
-let exportWorker;
-
-if (config.isTesting) {
-  exportWorker = null;
-} else {
-  exportWorker = new Worker('export', async (job) => {
-    if (job.name === 'export_employees') {
-      return processEmployeeExport(job);
-    } else if (job.name === 'export_attendance') {
-      return processAttendanceExport(job);
-    } else if (job.name === 'export_leave') {
-      return processLeaveExport(job);
-    }
-  }, {
-    connection: redisConnection,
-    concurrency: 3,
-  });
-
-  exportWorker.on('completed', (job) => {
-    logger.info({
-      type: 'export_job_completed',
-      jobId: job.id,
-      jobName: job.name,
-    });
-  });
-
-  exportWorker.on('failed', (job, err) => {
-    logger.error({
-      type: 'export_job_failed',
-      jobId: job.id,
-      jobName: job.name,
-      error: err.message,
-    });
-  });
-
-  exportWorker.on('error', (err) => {
-    logger.error({
-      type: 'export_worker_error',
-      error: err.message,
-    });
-  });
-}
-
-export default exportWorker;
