@@ -32,6 +32,153 @@ export async function swaggerPlugin(fastify) {
           description: 'Tenant Key for multi-tenancy support',
         },
       },
+      paths: {
+        '/auth/login': {
+          post: {
+            tags: ['Authentication'],
+            summary: 'User login',
+            parameters: [
+              {
+                in: 'body',
+                name: 'body',
+                required: true,
+                schema: { $ref: '#/definitions/LoginRequest' },
+              },
+            ],
+            responses: {
+              200: {
+                description: 'Login successful',
+                schema: { $ref: '#/definitions/LoginResponse' },
+              },
+              400: { description: 'Invalid credentials' },
+            },
+          },
+        },
+        '/auth/logout': {
+          post: {
+            tags: ['Authentication'],
+            summary: 'User logout',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'Logged out successfully' } },
+          },
+        },
+        '/auth/me': {
+          get: {
+            tags: ['Authentication'],
+            summary: 'Get current user profile',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'User profile' } },
+          },
+        },
+        '/employees': {
+          get: {
+            tags: ['Employees'],
+            summary: 'List all employees',
+            security: [{ Bearer: [] }],
+            parameters: [
+              { in: 'query', name: 'page', type: 'number' },
+              { in: 'query', name: 'limit', type: 'number' },
+            ],
+            responses: { 200: { description: 'Employee list' } },
+          },
+          post: {
+            tags: ['Employees'],
+            summary: 'Create new employee',
+            security: [{ Bearer: [] }],
+            responses: { 201: { description: 'Employee created' } },
+          },
+        },
+        '/employees/{id}': {
+          get: {
+            tags: ['Employees'],
+            summary: 'Get employee details',
+            security: [{ Bearer: [] }],
+            parameters: [{ in: 'path', name: 'id', type: 'string', required: true }],
+            responses: { 200: { description: 'Employee details' } },
+          },
+          patch: {
+            tags: ['Employees'],
+            summary: 'Update employee',
+            security: [{ Bearer: [] }],
+            parameters: [{ in: 'path', name: 'id', type: 'string', required: true }],
+            responses: { 200: { description: 'Employee updated' } },
+          },
+          delete: {
+            tags: ['Employees'],
+            summary: 'Delete employee',
+            security: [{ Bearer: [] }],
+            parameters: [{ in: 'path', name: 'id', type: 'string', required: true }],
+            responses: { 204: { description: 'Employee deleted' } },
+          },
+        },
+        '/departments': {
+          get: {
+            tags: ['Departments'],
+            summary: 'List departments',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'Department list' } },
+          },
+          post: {
+            tags: ['Departments'],
+            summary: 'Create department',
+            security: [{ Bearer: [] }],
+            responses: { 201: { description: 'Department created' } },
+          },
+        },
+        '/attendance/check-in': {
+          post: {
+            tags: ['Attendance'],
+            summary: 'Check in',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'Check in recorded' } },
+          },
+        },
+        '/attendance/check-out': {
+          post: {
+            tags: ['Attendance'],
+            summary: 'Check out',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'Check out recorded' } },
+          },
+        },
+        '/attendance/records': {
+          get: {
+            tags: ['Attendance'],
+            summary: 'Get attendance records',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'Attendance records' } },
+          },
+        },
+        '/leave/balance': {
+          get: {
+            tags: ['Leave'],
+            summary: 'Get leave balance',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'Leave balance' } },
+          },
+        },
+        '/leave/requests': {
+          get: {
+            tags: ['Leave'],
+            summary: 'Get leave requests',
+            security: [{ Bearer: [] }],
+            responses: { 200: { description: 'Leave requests' } },
+          },
+          post: {
+            tags: ['Leave'],
+            summary: 'Create leave request',
+            security: [{ Bearer: [] }],
+            responses: { 201: { description: 'Leave request created' } },
+          },
+        },
+        '/health': {
+          get: {
+            tags: ['Health'],
+            summary: 'Health check',
+            responses: { 200: { description: 'Server is healthy' } },
+          },
+        },
+      },
       definitions: {
         LoginRequest: {
           type: 'object',
