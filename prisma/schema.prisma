@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -772,7 +772,7 @@ model EmailTemplate {
   tenantId        String
   type            String   // LEAVE_APPROVAL, LEAVE_REJECTION, ATTENDANCE_ALERT
   subject         String
-  body            String   @db.LongText
+  body            String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

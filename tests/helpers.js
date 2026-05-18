@@ -273,8 +273,8 @@ export async function createTestEmployee(tenantId, userId, data = {}) {
       gender: data.gender || 'MALE',
       employmentType: data.employmentType || 'FULL_TIME',
       employmentStatus: data.employmentStatus || 'ACTIVE',
-      workMode: data.workMode || 'OFFICE',
-      jobTitle: data.jobTitle || 'Developer',
+      designation: data.designation || 'Developer',
+      joinedOn: data.joinedOn || new Date(),
       ...data,
     },
   });

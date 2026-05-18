@@ -63,89 +63,10 @@ export async function employeeDashboardRoutes(fastify) {
     getTodayHandler,
   );
 
-  fastify.post(
-    '/attendance/check-in',
-    {
-      schema: {
-        tags: ['Attendance'],
-        description: 'Employee check-in',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
-            },
-          },
-        },
-      },
-    },
-    checkInHandler,
-  );
+  // Note: POST /attendance/check-in and /attendance/check-out are provided by attendance module
 
-  fastify.post(
-    '/attendance/check-out',
-    {
-      schema: {
-        tags: ['Attendance'],
-        description: 'Employee check-out',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
-            },
-          },
-        },
-      },
-    },
-    checkOutHandler,
-  );
-
-  fastify.get(
-    '/leave/balance',
-    {
-      schema: {
-        tags: ['Leave'],
-        description: 'Get leave balance',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'array' },
-              meta: { type: 'object' },
-            },
-          },
-        },
-      },
-    },
-    getBalanceHandler,
-  );
-
-  fastify.get(
-    '/holidays',
-    {
-      schema: {
-        tags: ['Holidays'],
-        description: 'Get company holidays',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'array' },
-              meta: { type: 'object' },
-            },
-          },
-        },
-      },
-    },
-    getHolidaysHandler,
-  );
+  // Note: GET /leave/balance is provided by leave module
+  // Note: GET /holidays is provided by holidays module
 
   fastify.get(
     '/employee/documents',

@@ -35,8 +35,8 @@ describe('Auth Service Unit Tests', function () {
   });
 
   afterEach(async function () {
-    await prisma.$executeRawUnsafe(`DELETE FROM \`User\` WHERE tenantId = '${testTenant.id}'`);
-    await prisma.$executeRawUnsafe(`DELETE FROM \`Tenant\` WHERE id = '${testTenant.id}'`);
+    await prisma.$executeRawUnsafe(`DELETE FROM "User" WHERE "tenantId" = '${testTenant.id}'`);
+    await prisma.$executeRawUnsafe(`DELETE FROM "Tenant" WHERE id = '${testTenant.id}'`);
   });
 
   describe('extractPermissions', function () {
