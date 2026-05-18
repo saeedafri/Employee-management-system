@@ -38,14 +38,13 @@ export async function createApp() {
     },
   });
 
-  // Register plugins
+  // Register plugins (order matters - swagger goes last after routes)
   await fastify.register(requestIdPlugin);
   await fastify.register(cookiePlugin);
   await fastify.register(prismaPlugin);
   await fastify.register(corsPlugin);
   await fastify.register(helmetPlugin);
   await fastify.register(rateLimitPlugin);
-  await fastify.register(swaggerPlugin);
 
   // Attach request logging
   await attachRequestLogging(fastify);
@@ -78,6 +77,9 @@ export async function createApp() {
   // Health check
   fastify.get('/health', async () => ({ status: 'ok' }));
   fastify.get('/healthz', async () => ({ status: 'ok' }));
+
+  // Register swagger AFTER all routes are defined
+  await fastify.register(swaggerPlugin);
 
   return fastify;
 }
