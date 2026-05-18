@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { exportQueue } from '../../jobs/exportQueue.js';
+import { exportEmployees, exportAttendance, exportLeave } from '../../jobs/exportJob.js';
 import * as exportRepository from './export.repository.js';
 import { logger } from '../../utils/logger.js';
 
@@ -25,19 +25,6 @@ export async function queueEmployeeExport(tenantId, userId, filters) {
     filters,
   });
 
-  await exportQueue.add('export_employees', {
-    jobId,
-    tenantId,
-    userId,
-    filters,
-  }, {
-    removeOnComplete: false,
-    removeOnFail: false,
-    attempts: 2,
-    backoff: { type: 'exponential', delay: 5000 },
-    jobId,
-  });
-
   logger.info({
     type: 'export_queued',
     jobId,
@@ -45,9 +32,20 @@ export async function queueEmployeeExport(tenantId, userId, filters) {
     tenantId,
   });
 
+  setImmediate(() => {
+    exportEmployees(jobId, tenantId, filters).catch((err) => {
+      logger.error({
+        type: 'export_failed',
+        jobId,
+        exportType: 'EMPLOYEES',
+        error: err.message,
+      });
+    });
+  });
+
   return {
     job_id: jobId,
-    status: 'QUEUED',
+    status: 'PROCESSING',
     estimated_completion_time: estimatedTime,
   };
 }
@@ -63,19 +61,6 @@ export async function queueAttendanceExport(tenantId, userId, filters) {
     filters,
   });
 
-  await exportQueue.add('export_attendance', {
-    jobId,
-    tenantId,
-    userId,
-    filters,
-  }, {
-    removeOnComplete: false,
-    removeOnFail: false,
-    attempts: 2,
-    backoff: { type: 'exponential', delay: 5000 },
-    jobId,
-  });
-
   logger.info({
     type: 'export_queued',
     jobId,
@@ -83,9 +68,20 @@ export async function queueAttendanceExport(tenantId, userId, filters) {
     tenantId,
   });
 
+  setImmediate(() => {
+    exportAttendance(jobId, tenantId, filters).catch((err) => {
+      logger.error({
+        type: 'export_failed',
+        jobId,
+        exportType: 'ATTENDANCE',
+        error: err.message,
+      });
+    });
+  });
+
   return {
     job_id: jobId,
-    status: 'QUEUED',
+    status: 'PROCESSING',
     estimated_completion_time: estimatedTime,
   };
 }
@@ -101,19 +97,6 @@ export async function queueLeaveExport(tenantId, userId, filters) {
     filters,
   });
 
-  await exportQueue.add('export_leave', {
-    jobId,
-    tenantId,
-    userId,
-    filters,
-  }, {
-    removeOnComplete: false,
-    removeOnFail: false,
-    attempts: 2,
-    backoff: { type: 'exponential', delay: 5000 },
-    jobId,
-  });
-
   logger.info({
     type: 'export_queued',
     jobId,
@@ -121,9 +104,20 @@ export async function queueLeaveExport(tenantId, userId, filters) {
     tenantId,
   });
 
+  setImmediate(() => {
+    exportLeave(jobId, tenantId, filters).catch((err) => {
+      logger.error({
+        type: 'export_failed',
+        jobId,
+        exportType: 'LEAVE',
+        error: err.message,
+      });
+    });
+  });
+
   return {
     job_id: jobId,
-    status: 'QUEUED',
+    status: 'PROCESSING',
     estimated_completion_time: estimatedTime,
   };
 }
@@ -150,11 +144,7 @@ export async function getExportStatus(jobId, tenantId) {
     response.error_message = exportJob.errorMessage;
     response.completed_at = exportJob.completedAt;
   } else if (exportJob.status === 'PROCESSING') {
-    const job = await exportQueue.getJob(jobId);
-    if (job) {
-      const progress = job.progress();
-      response.progress_percentage = progress || 0;
-    }
+    response.progress_percentage = 50;
   }
 
   return response;
