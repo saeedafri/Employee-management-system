@@ -77,6 +77,7 @@ export async function createApp() {
 
   // Health check
   fastify.get('/health', async () => ({ status: 'ok' }));
+  fastify.get('/healthz', async () => ({ status: 'ok' }));
 
   return fastify;
 }
