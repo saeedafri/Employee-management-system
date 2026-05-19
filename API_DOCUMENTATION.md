@@ -1,8 +1,11 @@
 # EMS Backend API Documentation
 
-**Version**: 1.0.0  
-**Base URL**: `http://localhost:3000/api/v1`  
-**Production URL**: `https://ems-api.render.com/api/v1`
+> 📘 **UI Team:** Start with **[UI_TEAM_GUIDE.md](./UI_TEAM_GUIDE.md)** — it maps each wireframe page to APIs and lists test users for every role. Use this doc as a deeper endpoint reference.
+
+**Version**: 1.0.0
+**Base URL (local)**: `http://localhost:3000/api/v1`
+**Base URL (production)**: `https://employee-management-system-2b9q.onrender.com/api/v1`
+**Swagger UI**: `https://employee-management-system-2b9q.onrender.com/docs/static/index.html`
 
 ---
 

@@ -1,9 +1,13 @@
 # EMS Frontend - Backend API Integration Guide
 
-**For**: UI/Frontend Team  
-**Last Updated**: May 18, 2026  
-**Backend Version**: 1.0.0  
-**Framework**: React, Vue, or any modern JavaScript framework  
+> ⚠️  **SUPERSEDED on 2026-05-19** — use **[UI_TEAM_GUIDE.md](./UI_TEAM_GUIDE.md)** instead.
+> That doc has the verified wireframe→API mapping, working test users for every role,
+> and the corrected auth flow. This file is kept for historical reference only.
+
+**For**: UI/Frontend Team
+**Last Updated**: May 18, 2026
+**Backend Version**: 1.0.0
+**Framework**: React, Vue, or any modern JavaScript framework
 
 ---
 

@@ -1,22 +1,31 @@
 # Employee Management System (EMS) Backend
 
-Production-grade Employee Management System backend built with Fastify, Prisma, and MySQL.
+Production-grade Employee Management System backend built with Fastify, Prisma, and PostgreSQL.
+
+**Live API:** https://employee-management-system-2b9q.onrender.com
+**Swagger UI:** https://employee-management-system-2b9q.onrender.com/docs/static/index.html
+
+## For UI / Frontend Team
+
+➡️  **[UI_TEAM_GUIDE.md](./UI_TEAM_GUIDE.md)** — the only document you need.
+Maps every wireframe page to APIs, lists test users for every role, explains the auth flow.
 
 ## Features
 
-- ✅ User authentication with JWT access tokens and refresh token rotation
-- ✅ Session management with secure HttpOnly cookies
-- ✅ Role-based access control (RBAC) with 5 member types
+- ✅ JWT access tokens (8h) with refresh token rotation (httpOnly cookie)
+- ✅ Multi-tenant with `X-Tenant-Key` header
+- ✅ Role-based access control: SUPER_ADMIN, HR_ADMIN, MANAGER, EMPLOYEE, AUDITOR
 - ✅ Admin and employee login modes
 - ✅ Audit logging for all mutations
 - ✅ Comprehensive error handling
-- ✅ API documentation with Swagger/OpenAPI
+- ✅ API documentation with Swagger/OpenAPI (88 endpoints, 14 tag groups)
+- ✅ Employee lifecycle management
+- ✅ Attendance tracking with check-in / check-out / regularization
+- ✅ Leave management with approval workflow
+- ✅ Holiday calendar
+- ✅ Reports (attendance, leave, payroll) with CSV export
 - 🔜 Multi-factor authentication (MFA)
-- 🔜 Employee lifecycle management
-- 🔜 Attendance tracking
-- 🔜 Leave management
 - 🔜 Resignations
-- 🔜 Holiday calendar
 
 ## Tech Stack
 
