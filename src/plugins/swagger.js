@@ -22,15 +22,31 @@ export async function swaggerPlugin(fastify) {
       info: {
         title: config.appName,
         version: config.appVersion,
-        description: 'Employee Management System Backend API — Production Grade Auth & Admin APIs',
+        description: `Employee Management System Backend API
+
+## How to use this Swagger UI
+
+**Step 1 — Get a token:**
+Click \`POST /auth/login\` → Try it out → use \`{"email":"admin@testorg.com","password":"password123"}\` → Execute → copy \`data.accessToken\` from the response.
+
+**Step 2 — Authorize:**
+Click the **Authorize 🔒** button at the top.
+- **Bearer**: paste the token (with or without "Bearer " prefix)
+- **TenantKey**: enter \`test-key-123456789\`
+Click Authorize on each, then Close.
+
+**Step 3 — Test any endpoint:**
+Click any endpoint → Try it out → Execute.
+
+Token lasts **8 hours**. If you get 401, repeat Step 1.`,
         contact: { name: 'API Support', email: 'support@acme.test' },
       },
       host: config.isDevelopment ? `localhost:${config.port}` : 'employee-management-system-2b9q.onrender.com',
       basePath: config.apiPrefix,
       schemes: [config.isDevelopment ? 'http' : 'https'],
       securityDefinitions: {
-        Bearer:    { type: 'apiKey', name: 'Authorization', in: 'header', description: 'JWT: Bearer <token>' },
-        TenantKey: { type: 'apiKey', name: 'X-Tenant-Key',  in: 'header', description: 'Tenant isolation key' },
+        Bearer:    { type: 'apiKey', name: 'Authorization', in: 'header', description: 'Paste your JWT token here. Get it from POST /auth/login → data.accessToken. Enter with or without "Bearer " prefix — both work. Token lasts 8 hours.' },
+        TenantKey: { type: 'apiKey', name: 'X-Tenant-Key',  in: 'header', description: 'Tenant key for your organisation. Test value: test-key-123456789' },
       },
       paths: {
 
