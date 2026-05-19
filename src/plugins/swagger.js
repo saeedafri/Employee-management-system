@@ -27,13 +27,18 @@ export async function swaggerPlugin(fastify) {
 ## How to use this Swagger UI
 
 **Step 1 — Get a token:**
-Click \`POST /auth/login\` → Try it out → use \`{"email":"admin@testorg.com","password":"password123"}\` → Execute → copy \`data.accessToken\` from the response.
+Click \`POST /auth/login\` → Try it out → Execute with body \`{"email":"admin@testorg.com","password":"password123"}\`
+
+In the response, find \`"accessToken"\` and copy **only the long string value** — it starts with \`eyJ\` and ends before the next \`"\`. Example of what to copy:
+\`eyJhbGciOiJIUzI1NiJ9.eyJzdW...ONLY_THIS_PART\`
+
+⚠️ **Do NOT copy the surrounding quotes or any other JSON fields.**
 
 **Step 2 — Authorize:**
 Click the **Authorize 🔒** button at the top.
-- **Bearer**: paste the token (with or without "Bearer " prefix)
+- **Bearer**: paste the token string (just \`eyJ...\`, no extra text)
 - **TenantKey**: enter \`test-key-123456789\`
-Click Authorize on each, then Close.
+Click Authorize on each → Close.
 
 **Step 3 — Test any endpoint:**
 Click any endpoint → Try it out → Execute.
