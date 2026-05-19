@@ -11,14 +11,14 @@
 
 ## 1. Authentication — Read This First
 
-### 1.1 Two required headers on every request
+### 1.1 Header requirements (updated 2026-05-19)
 
-| Header           | Value                                                   | Why                          |
-| ---------------- | ------------------------------------------------------- | ---------------------------- |
-| `Authorization`  | `Bearer <accessToken>` (the `Bearer ` prefix is optional) | Identifies the user          |
-| `X-Tenant-Key`   | `test-key-123456789` or `acme-corp-001` (see users)     | Identifies the organisation  |
+| Header           | When required                                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `Authorization`  | On every authenticated route. Format: `Bearer <accessToken>` (the `Bearer ` prefix is optional).                  |
+| `X-Tenant-Key`   | **Not required.** Login auto-resolves tenant from email; the JWT then carries it. Only needed for cross-tenant emails (rare). |
 
-If a tenant key is wrong for the user, login returns `401 INVALID_CREDENTIALS`. Match the user to its tenant in §2.
+For step-by-step Swagger walkthrough with screenshots, see [SWAGGER_TESTING_GUIDE.md](./SWAGGER_TESTING_GUIDE.md).
 
 ### 1.2 Login flow
 

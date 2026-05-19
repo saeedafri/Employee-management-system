@@ -7,8 +7,9 @@ Production-grade Employee Management System backend built with Fastify, Prisma, 
 
 ## For UI / Frontend Team
 
-➡️  **[UI_TEAM_GUIDE.md](./UI_TEAM_GUIDE.md)** — the only document you need.
-Maps every wireframe page to APIs, lists test users for every role, explains the auth flow.
+➡️  **[SWAGGER_TESTING_GUIDE.md](./SWAGGER_TESTING_GUIDE.md)** — step-by-step Swagger walkthrough with screenshots. Read this first.
+➡️  **[EMS.postman_collection.json](./EMS.postman_collection.json)** — Postman collection. Import → pick a Login → done.
+➡️  **[UI_TEAM_GUIDE.md](./UI_TEAM_GUIDE.md)** — wireframe page → API endpoint map, full role × page matrix.
 
 ## Features
 
