@@ -2,7 +2,7 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import { config } from '../config/index.js';
 
-const sec = [{ Bearer: [] }, { TenantKey: [] }];
+const sec = [{ Bearer: [], TenantKey: [] }];
 const r200 = { description: 'Success' };
 const r201 = { description: 'Created' };
 const r400 = { description: 'Bad Request' };
