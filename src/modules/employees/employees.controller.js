@@ -3,7 +3,7 @@ import * as validator from './employees.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
 export async function listEmployees(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   // Check permission
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
@@ -20,7 +20,7 @@ export async function listEmployees(request, reply) {
 }
 
 export async function getEmployee(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
@@ -38,7 +38,7 @@ export async function getEmployee(request, reply) {
 }
 
 export async function createEmployee(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   // Only HR/Admin can create
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
@@ -55,7 +55,7 @@ export async function createEmployee(request, reply) {
 }
 
 export async function updateEmployee(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
@@ -74,7 +74,7 @@ export async function updateEmployee(request, reply) {
 }
 
 export async function deleteEmployee(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   // Only HR/Admin can delete
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
@@ -91,7 +91,7 @@ export async function deleteEmployee(request, reply) {
 }
 
 export async function exportEmployees(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   // Only HR/Admin can export
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {

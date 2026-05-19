@@ -3,7 +3,7 @@ import * as validator from './holidays.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
 export async function listHolidays(request, reply) {
-  const { tenantId } = request;
+  const tenantId = request.tenant.id;
 
   try {
     const query = await validator.listQuerySchema.parseAsync(request.query);
@@ -15,7 +15,7 @@ export async function listHolidays(request, reply) {
 }
 
 export async function createHoliday(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create holidays', request.requestId));
@@ -31,7 +31,7 @@ export async function createHoliday(request, reply) {
 }
 
 export async function updateHoliday(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can update holidays', request.requestId));
@@ -48,7 +48,7 @@ export async function updateHoliday(request, reply) {
 }
 
 export async function deleteHoliday(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete holidays', request.requestId));

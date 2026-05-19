@@ -9,7 +9,7 @@ import {
 import { errorResponse } from '../../utils/response.js';
 
 export async function managerDashboardHandler(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (user.memberType !== 'MANAGER') {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only managers can access this', request.requestId));
@@ -20,7 +20,7 @@ export async function managerDashboardHandler(request, reply) {
 }
 
 export async function getTeamHandler(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (user.memberType !== 'MANAGER') {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only managers can access this', request.requestId));
@@ -31,7 +31,7 @@ export async function getTeamHandler(request, reply) {
 }
 
 export async function getTeamAttendanceHandler(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
   const { range = '30d' } = request.query;
 
   if (user.memberType !== 'MANAGER') {
@@ -47,7 +47,7 @@ export async function getTeamAttendanceHandler(request, reply) {
 }
 
 export async function getPendingApprovalsHandler(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (user.memberType !== 'MANAGER') {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only managers can access this', request.requestId));
@@ -58,7 +58,7 @@ export async function getPendingApprovalsHandler(request, reply) {
 }
 
 export async function approveLeaveHandler(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
   const { id } = request.params;
   const { decision, comment } = request.body;
 
@@ -75,7 +75,7 @@ export async function approveLeaveHandler(request, reply) {
 }
 
 export async function approveRegularizationHandler(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
   const { id } = request.params;
   const { decision, comment } = request.body;
 

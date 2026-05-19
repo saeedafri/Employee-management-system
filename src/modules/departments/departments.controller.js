@@ -3,7 +3,7 @@ import * as validator from './departments.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
 export async function listDepartments(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can list departments', request.requestId));
@@ -19,7 +19,7 @@ export async function listDepartments(request, reply) {
 }
 
 export async function createDepartment(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create departments', request.requestId));
@@ -35,7 +35,7 @@ export async function createDepartment(request, reply) {
 }
 
 export async function updateDepartment(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can update departments', request.requestId));
@@ -52,7 +52,7 @@ export async function updateDepartment(request, reply) {
 }
 
 export async function deleteDepartment(request, reply) {
-  const { user, tenantId } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', request.requestId));
