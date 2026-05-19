@@ -24,24 +24,30 @@ export async function swaggerPlugin(fastify) {
         version: config.appVersion,
         description: `Employee Management System Backend API
 
-## How to use this Swagger UI
+## How to use this Swagger UI (2 steps)
 
 **Step 1 — Get a token:**
-Click \`POST /auth/login\` → Try it out → Execute with body \`{"email":"admin@testorg.com","password":"password123"}\`
+Click \`POST /auth/login\` → Try it out → Execute with one of:
+- HR Admin:  \`{"email":"admin@testorg.com","password":"password123"}\`
+- HR Admin:  \`{"email":"hr@acme.test","password":"Password123!"}\`
+- Manager:   \`{"email":"aman@acme.test","password":"Password123!"}\`
+- Employee:  \`{"email":"priya@acme.test","password":"Password123!"}\`
+- SuperAdmin:\`{"email":"superadmin@acme.test","password":"Password123!"}\`
 
-In the response, find \`"accessToken"\` and copy **only the long string value** — it starts with \`eyJ\` and ends before the next \`"\`. Example of what to copy:
-\`eyJhbGciOiJIUzI1NiJ9.eyJzdW...ONLY_THIS_PART\`
-
-⚠️ **Do NOT copy the surrounding quotes or any other JSON fields.**
+You do **NOT** need to enter a TenantKey to log in — the server auto-resolves it from your email. Copy \`data.accessToken\` from the response (the long string starting with \`eyJ\`).
 
 **Step 2 — Authorize:**
-Click the **Authorize 🔒** button at the top.
-- **Bearer**: paste the token string (just \`eyJ...\`, no extra text)
-- **TenantKey**: enter \`test-key-123456789\`
-Click Authorize on each → Close.
+Click **Authorize 🔒** at the top → paste the token in the **Bearer** field → click Authorize → Close.
+
+You can leave the **TenantKey** field empty — the JWT already carries the tenant. Only fill it if you want to override.
 
 **Step 3 — Test any endpoint:**
 Click any endpoint → Try it out → Execute.
+
+Each role sees a different dashboard:
+- \`GET /analytics/summary\` — HR_ADMIN / SUPER_ADMIN
+- \`GET /manager/dashboard\` — MANAGER
+- \`GET /employee/dashboard\` — EMPLOYEE
 
 Token lasts **8 hours**. If you get 401, repeat Step 1.`,
         contact: { name: 'API Support', email: 'support@acme.test' },

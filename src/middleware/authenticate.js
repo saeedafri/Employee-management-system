@@ -36,6 +36,8 @@ export async function authenticate(request, reply) {
 export function authorize(allowedRoles = []) {
   return async (request, reply) => {
     const memberType = request.user?.memberType;
+    // SUPER_ADMIN bypasses all role checks — they have unrestricted access by definition.
+    if (memberType === 'SUPER_ADMIN') return;
     if (!memberType || !allowedRoles.includes(memberType)) {
       return reply.code(403).send(
         errorResponse(

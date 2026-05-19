@@ -12,16 +12,45 @@ export async function loginController(request, reply) {
     const ipAddress = request.ip;
     const userAgent = request.headers['user-agent'];
 
-    // Get tenant from request context (set by resolveTenant middleware)
-    const tenantId = request.tenant?.id;
+    // Resolve tenant. Priority:
+    //   1. Explicit X-Tenant-Key header (already resolved by resolveTenant middleware)
+    //   2. Auto-resolve from email — if an explicit header was NOT supplied or matched no user,
+    //      and the email exists in exactly one tenant, use that tenant.
+    let tenantId = request.tenant?.id;
+    const explicitTenantHeader = !!request.headers['x-tenant-key'];
+
+    const candidateUsers = await prisma.user.findMany({
+      where: { email, deletedAt: null },
+      select: { tenantId: true },
+    });
+
+    if (candidateUsers.length === 0) {
+      // No user with this email anywhere — generic 401 (do not leak tenant existence)
+      return reply.code(401).send(
+        errorResponse('INVALID_CREDENTIALS', 'Invalid credentials', {}, request.id),
+      );
+    }
+
+    if (!explicitTenantHeader) {
+      if (candidateUsers.length === 1) {
+        // Single tenant for this email — auto-resolve, no header needed
+        tenantId = candidateUsers[0].tenantId;
+      } else {
+        // Email exists in multiple tenants — caller MUST disambiguate with X-Tenant-Key
+        return reply.code(400).send(
+          errorResponse(
+            'AMBIGUOUS_EMAIL',
+            'This email is registered in multiple organizations. Supply X-Tenant-Key header to disambiguate.',
+            {},
+            request.id,
+          ),
+        );
+      }
+    }
+
     if (!tenantId) {
       return reply.code(400).send(
-        errorResponse(
-          'TENANT_MISSING',
-          'Tenant context not found',
-          {},
-          request.id,
-        ),
+        errorResponse('TENANT_MISSING', 'Tenant context not found', {}, request.id),
       );
     }
 
@@ -131,34 +160,6 @@ export async function adminLoginController(request, reply) {
 
 export async function refreshController(request, reply) {
   try {
-    // Get tenant from headers (required for refresh)
-    const tenantKey = request.headers['x-tenant-key'];
-    if (!tenantKey) {
-      return reply.code(400).send(
-        errorResponse(
-          'TENANT_MISSING',
-          'X-Tenant-Key header required',
-          {},
-          request.id,
-        ),
-      );
-    }
-
-    // Resolve tenant
-    const tenant = await prisma.tenant.findUnique({
-      where: { tenantKey },
-    });
-    if (!tenant) {
-      return reply.code(400).send(
-        errorResponse(
-          'INVALID_TENANT',
-          'Tenant not found',
-          {},
-          request.id,
-        ),
-      );
-    }
-
     // Get refresh token from cookie
     const opaqueRefreshToken = request.cookies[config.sessionCookieName];
     if (!opaqueRefreshToken) {
@@ -187,9 +188,20 @@ export async function refreshController(request, reply) {
 
     const [sessionId, rawRefreshToken] = parts;
 
+    // Derive tenant from the session itself — no header required.
+    const session = await prisma.session.findUnique({
+      where: { id: sessionId },
+      select: { tenantId: true },
+    });
+    if (!session) {
+      return reply.code(401).send(
+        errorResponse('INVALID_SESSION', 'Session not found', {}, request.id),
+      );
+    }
+
     const result = await authService.refreshAccessToken(
       prisma,
-      tenant.id,
+      session.tenantId,
       sessionId,
       rawRefreshToken,
     );

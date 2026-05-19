@@ -3,12 +3,10 @@ import * as validator from './departments.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
 export async function listDepartments(request, reply) {
-  const { user } = request; const tenantId = request.tenant.id;
+  const { user: _user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can list departments', request.requestId));
-  }
-
+  // List is readable by every authenticated user (used for filter dropdowns, profile pages, etc).
+  // Mutations below remain restricted to HR_ADMIN / SUPER_ADMIN.
   try {
     const query = await validator.listQuerySchema.parseAsync(request.query);
     const result = await service.listDepartments(tenantId, query);

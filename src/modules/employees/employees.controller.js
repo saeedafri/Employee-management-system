@@ -6,13 +6,19 @@ import { errorResponse } from '../../utils/response.js';
 export async function listEmployees(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  // Check permission
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can list employees', request.requestId));
-  }
-
   try {
     const query = await validator.listQuerySchema.parseAsync(request.query);
+
+    // Server-side row-level filtering per wireframe Page 07:
+    //   HR_ADMIN / SUPER_ADMIN → see everyone
+    //   MANAGER                → see their direct reports + themselves
+    //   EMPLOYEE               → see only themselves
+    if (user.memberType === 'MANAGER' && user.employeeId) {
+      query.managerOrSelf = user.employeeId;
+    } else if (user.memberType === 'EMPLOYEE' && user.employeeId) {
+      query.selfId = user.employeeId;
+    }
+
     const result = await service.listEmployees(tenantId, query, user.id);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {

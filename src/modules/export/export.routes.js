@@ -78,7 +78,7 @@ export default async function exportRoutes(fastify) {
   fastify.get('/export/list', {
     schema: {
       tags: ['Export'],
-      description: 'List all exports',
+      description: 'List exports — any authenticated user sees their own; HR Admins see all',
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
@@ -89,6 +89,6 @@ export default async function exportRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate],
   }, (request, reply) => exportController.listExports(request, reply));
 }

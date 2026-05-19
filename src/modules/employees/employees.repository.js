@@ -1,7 +1,7 @@
 import { prisma } from '../../plugins/prisma.js';
 
 export async function listEmployees(tenantId, filters = {}) {
-  const { page = 1, limit = 20, search, departmentId, status, location } = filters;
+  const { page = 1, limit = 20, search, departmentId, status, location, managerOrSelf, selfId } = filters;
   const skip = (page - 1) * limit;
 
   const where = {
@@ -9,6 +9,9 @@ export async function listEmployees(tenantId, filters = {}) {
     employmentStatus: status,
     ...(departmentId && { departmentId }),
     ...(location && { location }),
+    // Row-level filtering for non-admin roles
+    ...(managerOrSelf && { OR: [{ managerId: managerOrSelf }, { id: managerOrSelf }] }),
+    ...(selfId && { id: selfId }),
     ...(search && {
       OR: [
         { firstName: { contains: search, mode: 'insensitive' } },
