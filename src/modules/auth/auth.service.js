@@ -101,6 +101,7 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
     sub: user.id,
     tenantId,
     memberType: user.memberType,
+    employeeId: user.employee?.id,
     sessionId: session.id,
     permissions,
   });
@@ -130,6 +131,7 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
       id: user.id,
       email: user.email,
       memberType: user.memberType,
+      employeeId: user.employee?.id,
       employee: user.employee,
     },
     accessToken,
@@ -177,6 +179,7 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
     sub: user.id,
     tenantId,
     memberType: user.memberType,
+    employeeId: user.employee?.id,
     sessionId: session.id,
     permissions,
   });
@@ -204,6 +207,7 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
       id: user.id,
       email: user.email,
       memberType: user.memberType,
+      employeeId: user.employee?.id,
       employee: user.employee,
     },
     accessToken,
@@ -248,6 +252,7 @@ export async function completeMfaLogin(db, tenantId, userId, ipAddress, userAgen
     sub: user.id,
     tenantId,
     memberType: user.memberType,
+    employeeId: user.employee?.id,
     sessionId: session.id,
     permissions,
   });
@@ -277,6 +282,7 @@ export async function completeMfaLogin(db, tenantId, userId, ipAddress, userAgen
       id: user.id,
       email: user.email,
       memberType: user.memberType,
+      employeeId: user.employee?.id,
       employee: user.employee,
     },
     accessToken,
@@ -398,6 +404,7 @@ export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToke
     sub: user.id,
     tenantId: session.tenantId,
     memberType: user.memberType,
+    employeeId: user.employee?.id,
     sessionId: newSession.id,
     permissions,
   });
@@ -466,6 +473,7 @@ export async function getCurrentUser(db, userId) {
     id: user.id,
     email: user.email,
     memberType: user.memberType,
+    employeeId: user.employee?.id,
     status: user.status,
     employee: user.employee,
     permissions,
