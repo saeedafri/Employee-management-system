@@ -65,17 +65,14 @@ export async function getLeaveRequests(tenantId, filters = {}) {
 export async function getHolidays(tenantId, filters = {}) {
   const where = { tenantId };
   if (filters.fromDate || filters.toDate) {
-    where.date = {};
-    if (filters.fromDate) where.date.gte = filters.fromDate;
-    if (filters.toDate) where.date.lte = filters.toDate;
-  }
-  if (filters.departmentId) {
-    where.applicableToAll = true;
+    where.holidayDate = {};
+    if (filters.fromDate) where.holidayDate.gte = filters.fromDate;
+    if (filters.toDate) where.holidayDate.lte = filters.toDate;
   }
 
   return prisma.holiday.findMany({
     where,
-    orderBy: { date: 'desc' },
+    orderBy: { holidayDate: 'desc' },
   });
 }
 

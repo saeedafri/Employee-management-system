@@ -1,4 +1,5 @@
 import * as service from './employees.service.js';
+import * as repo from './employees.repository.js';
 import * as validator from './employees.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
@@ -93,14 +94,23 @@ export async function deleteEmployee(request, reply) {
 export async function exportEmployees(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  // Only HR/Admin can export
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can export employees', request.requestId));
   }
 
   try {
-    const result = await service.exportEmployees(tenantId);
-    reply.type('text/csv').send(result);
+    const employees = await repo.exportEmployeesCsv(tenantId);
+    const headers = ['employeeCode', 'firstName', 'lastName', 'workEmail', 'designation', 'department', 'manager', 'employmentType', 'employmentStatus', 'joinedOn'];
+    const rows = employees.map(e => [
+      e.employeeCode, e.firstName, e.lastName, e.workEmail,
+      e.designation || '',
+      e.department?.name || '',
+      e.manager ? `${e.manager.firstName} ${e.manager.lastName}` : '',
+      e.employmentType, e.employmentStatus,
+      e.joinedOn ? new Date(e.joinedOn).toISOString().split('T')[0] : '',
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    reply.type('text/csv').header('Content-Disposition', 'attachment; filename="employees.csv"').send(csv);
   } catch (error) {
     reply.code(400).send(errorResponse('EXPORT_ERROR', error.message, request.requestId));
   }
