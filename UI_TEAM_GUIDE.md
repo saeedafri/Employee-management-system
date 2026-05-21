@@ -365,6 +365,7 @@ A: After login, yes — the JWT carries `tenantId`, so all subsequent calls need
 
 ## 9. Where to Find More
 
+- **`EMPLOYEE_IDENTITY_GUIDE.md`:** how the system knows which employee — read this first.
 - **Live Swagger UI:** every endpoint, every parameter, every response shape — already authoritative.
 - **`WIREFRAMES_API_MAPPING.md`:** same mapping with wireframe images per page.
 - **`DATABASE_SCHEMA.md`:** ER diagram + table fields.
