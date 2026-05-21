@@ -101,6 +101,7 @@ export async function loginController(request, reply) {
 
     return reply.send(
       successResponse({
+        accessToken: result.accessToken,
         sessionId: result.sessionId,
         user: result.user,
         permissions: result.permissions,
@@ -168,6 +169,7 @@ export async function adminLoginController(request, reply) {
 
     return reply.send(
       successResponse({
+        accessToken: result.accessToken,
         sessionId: result.sessionId,
         user: result.user,
         permissions: result.permissions,
@@ -248,6 +250,7 @@ export async function refreshController(request, reply) {
 
     return reply.send(
       successResponse({
+        accessToken: result.accessToken,
         sessionId: result.sessionId,
       }),
     );
