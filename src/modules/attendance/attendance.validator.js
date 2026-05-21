@@ -13,6 +13,7 @@ export const checkOutSchema = z.object({
 export const getAttendanceRecordsSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'month must be YYYY-MM').optional(),
   fromDate: z.coerce.date().optional(),
   toDate: z.coerce.date().optional(),
 });

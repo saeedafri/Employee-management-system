@@ -107,16 +107,31 @@ export async function checkOut(tenantId, employeeId, { note } = {}) {
   };
 }
 
+function monthToDateRange(month) {
+  const [year, mon] = month.split('-').map(Number);
+  const from = new Date(year, mon - 1, 1);
+  const to = new Date(year, mon, 0, 23, 59, 59, 999);
+  return { from, to };
+}
+
 export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
   const {
-    page = 1, limit = 10, fromDate, toDate,
+    page = 1, limit = 10, month, fromDate, toDate,
   } = filters;
 
   const offset = (page - 1) * limit;
+  let resolvedFrom = fromDate;
+  let resolvedTo = toDate;
+
+  if (month) {
+    const range = monthToDateRange(month);
+    resolvedFrom = range.from;
+    resolvedTo = range.to;
+  }
 
   return attendanceRepository.getAttendanceRecords(tenantId, employeeId, {
-    fromDate,
-    toDate,
+    fromDate: resolvedFrom,
+    toDate: resolvedTo,
     limit,
     offset,
   });
@@ -124,14 +139,22 @@ export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
 
 export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filters = {}) {
   const {
-    page = 1, limit = 10, fromDate, toDate,
+    page = 1, limit = 10, month, fromDate, toDate,
   } = filters;
 
   const offset = (page - 1) * limit;
+  let resolvedFrom = fromDate;
+  let resolvedTo = toDate;
+
+  if (month) {
+    const range = monthToDateRange(month);
+    resolvedFrom = range.from;
+    resolvedTo = range.to;
+  }
 
   return attendanceRepository.getTeamAttendanceRecords(tenantId, managerEmployeeId, {
-    fromDate,
-    toDate,
+    fromDate: resolvedFrom,
+    toDate: resolvedTo,
     limit,
     offset,
   });

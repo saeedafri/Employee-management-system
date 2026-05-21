@@ -68,45 +68,39 @@ export async function employeeDashboardRoutes(fastify) {
   // Note: GET /leave/balance is provided by leave module
   // Note: GET /holidays is provided by holidays module
 
-  fastify.get(
-    '/employee/documents',
-    {
-      schema: {
-        tags: ['Employee'],
-        description: 'Get employee documents',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'array' },
-              meta: { type: 'object' },
-            },
-          },
+  const documentsSchema = {
+    tags: ['Employee'],
+    description: 'Get your employee documents',
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean' },
+          data: { type: 'array' },
+          meta: { type: 'object' },
         },
       },
     },
-    getDocumentsHandler,
-  );
+  };
 
-  fastify.get(
-    '/employee/team',
-    {
-      schema: {
-        tags: ['Employee'],
-        description: 'Get manager and peers',
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
-            },
-          },
+  const teamSchema = {
+    tags: ['Employee'],
+    description: 'Get your manager and team peers',
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean' },
+          data: { type: 'object' },
+          meta: { type: 'object' },
         },
       },
     },
-    getTeamHandler,
-  );
+  };
+
+  fastify.get('/employee/documents', { schema: documentsSchema }, getDocumentsHandler);
+  fastify.get('/employees/me/documents', { schema: documentsSchema }, getDocumentsHandler);
+
+  fastify.get('/employee/team', { schema: teamSchema }, getTeamHandler);
+  fastify.get('/employees/me/team', { schema: teamSchema }, getTeamHandler);
 }

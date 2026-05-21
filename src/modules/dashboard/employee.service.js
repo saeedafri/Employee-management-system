@@ -223,11 +223,23 @@ export async function getHolidays(tenantId) {
   }
 }
 
-export async function getDocuments() {
+export async function getDocuments(employeeId, tenantId) {
   try {
-    // This would typically retrieve documents from a file storage service
-    // For now, return empty array as documents table may not be in schema
-    return successResponse([], { cached: false });
+    const documents = await prisma.employeeDocument.findMany({
+      where: { employeeId, tenantId },
+      select: {
+        id: true,
+        documentType: true,
+        fileName: true,
+        fileUrl: true,
+        mimeType: true,
+        sizeBytes: true,
+        verificationStatus: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return successResponse(documents, { cached: false });
   } catch (error) {
     return errorResponse('ERROR', error.message, null);
   }

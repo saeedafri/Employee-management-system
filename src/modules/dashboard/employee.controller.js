@@ -73,13 +73,13 @@ export async function getHolidaysHandler(request, reply) {
 }
 
 export async function getDocumentsHandler(request, reply) {
-  const { user } = request;
+  const { user } = request; const tenantId = request.tenant.id;
 
   if (!user.employeeId) {
     return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', request.requestId));
   }
 
-  const result = await getDocuments();
+  const result = await getDocuments(user.employeeId, tenantId);
   reply.code(result.error ? 400 : 200).send(result);
 }
 

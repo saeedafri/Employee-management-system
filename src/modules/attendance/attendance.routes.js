@@ -37,13 +37,14 @@ export default async function attendanceRoutes(fastify) {
   fastify.get('/attendance/records', {
     schema: {
       tags: ['Attendance'],
-      description: 'Get your attendance records',
+      description: 'Get your attendance records. Use ?month=YYYY-MM for a full month, or ?fromDate=&toDate= for a custom range.',
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
         properties: {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 10 },
+          month: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$', description: 'Filter by month, e.g. 2025-06' },
           fromDate: { type: 'string', format: 'date-time' },
           toDate: { type: 'string', format: 'date-time' },
         },
@@ -55,13 +56,14 @@ export default async function attendanceRoutes(fastify) {
   fastify.get('/attendance/team/records', {
     schema: {
       tags: ['Attendance'],
-      description: 'Get your team attendance records (managers only)',
+      description: 'Get your team attendance records (managers only). Use ?month=YYYY-MM for a full month.',
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
         properties: {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 10 },
+          month: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$', description: 'Filter by month, e.g. 2025-06' },
           fromDate: { type: 'string', format: 'date-time' },
           toDate: { type: 'string', format: 'date-time' },
         },

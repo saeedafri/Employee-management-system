@@ -212,15 +212,15 @@ EMS/
 | PATCH | /leave/requests/:id/reject | MANAGER, HR_ADMIN |
 | PATCH | /leave/requests/:id/withdraw | any (own) |
 | GET | /leave/balance | any |
-| ❌ | /leave/types | **NOT IMPLEMENTED** — UI/wireframes expect this |
+| GET | /leave/types | any |
 
 ### Attendance (`/api/v1/attendance/*`)
 | Method | Path | Roles |
 |--------|------|-------|
 | POST | /attendance/check-in | any |
 | POST | /attendance/check-out | any |
-| GET | /attendance/records | any (own) |
-| GET | /attendance/team/records | MANAGER, HR_ADMIN |
+| GET | /attendance/records | any (own) — supports ?month=YYYY-MM or ?fromDate=&toDate= |
+| GET | /attendance/team/records | MANAGER, HR_ADMIN — supports ?month=YYYY-MM |
 | GET | /attendance/summary | any |
 | POST | /attendance/regularization | any |
 | GET | /attendance/regularization | any (own) |
@@ -288,12 +288,14 @@ EMS/
 | GET | /manager/team (plus more) |
 
 ### Employee Dashboard (`/api/v1/employee/*`)
-| Method | Path |
-|--------|------|
-| GET | /employee/dashboard |
-| GET | /employee/documents |
-| GET | /employee/team |
-| GET | /attendance/today (via employee routes) |
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | /employee/dashboard | personal summary |
+| GET | /employee/documents | returns EmployeeDocument records from DB |
+| GET | /employees/me/documents | alias for above (wireframe path) |
+| GET | /employee/team | manager + peers in same dept |
+| GET | /employees/me/team | alias for above (wireframe path) |
+| GET | /attendance/today | today's check-in/out status |
 
 ### Logs (`/api/v1/logs`)
 | Method | Path |
@@ -310,8 +312,7 @@ EMS/
 | Payroll | No Prisma model | No module dir, no routes |
 | Permissions API | `Permission`, `RolePermission`, `UserRole`, `Role` | Models exist, no CRUD API |
 | Resignations | `Resignation` | No module dir, no routes |
-| File/Document Upload | `EmployeeDocument` | No module dir, no upload endpoint |
-| `/leave/types` | `LeaveType` | Model + data exists, no GET endpoint |
+| File/Document Upload | `EmployeeDocument` | GET list works; no upload endpoint (no file storage) |
 | MFA enforcement | `OtpChallenge` | Flow works but NOT enforced by default |
 
 ---
@@ -366,38 +367,28 @@ SUPER_ADMIN > HR_ADMIN > MANAGER > EMPLOYEE > AUDITOR
 
 ## Known Bugs & Issues (Confirmed by Code Audit)
 
-### ✅ FIXED — `analytics.routes.js` double-hooked `resolveTenant`
-**File**: `src/modules/analytics/analytics.routes.js:5` — **Fixed 2026-05-22**
+### ✅ FIXED — `analytics.routes.js` double-hooked `resolveTenant` (2026-05-22)
+### ✅ FIXED — Default DB URL was MySQL in `src/config/index.js` (2026-05-22)
+### ✅ FIXED — Dead Redis/BullMQ/ioredis removed from `package.json` (2026-05-22)
+### ✅ FIXED — `GET /leave/types` route added (2026-05-22)
+### ✅ FIXED — `seed.js` seedPassword corrected to `Password123!` (2026-05-22)
+### ✅ FIXED — `playwright` moved to devDependencies (2026-05-22)
+### ✅ FIXED — `getDocuments()` now queries `prisma.employeeDocument` instead of returning `[]` (2026-05-22)
+### ✅ FIXED — `GET /attendance/records` now supports `?month=YYYY-MM` (2026-05-22)
+### ✅ FIXED — Added `/employees/me/documents` and `/employees/me/team` route aliases (2026-05-22)
 
-### ✅ FIXED — Default DB URL was MySQL
-**File**: `src/config/index.js:14` — **Fixed 2026-05-22** (now `postgresql://localhost:5432/ems_local`)
+### Remaining — File upload not implemented
+**Problem**: `EmployeeDocument` records exist in DB but there is no upload endpoint. Documents can only be read (GET), not created via API.  
+**Impact**: UI cannot let employees upload documents. The GET endpoint returns documents if they were seeded directly into DB.
 
-### Bug 3 — Dead Redis/Queue dependencies
-**Files**: `package.json`, `src/jobs/*`, `src/plugins/redis.js`, `src/config/redis.js`  
-**Problem**: `bullmq`, `ioredis`, `redis` are in `package.json` dependencies. `src/jobs/emailQueue.js` exports `null` for everything. `src/plugins/redis.js` exports `null`. These are dead code shipping to production.  
-**Impact**: Larger node_modules, unnecessary install time. No runtime error.  
-**Fix**: Remove `bullmq`, `ioredis`, `redis` from `package.json`. Delete `src/jobs/` dir and `src/plugins/redis.js` and `src/config/redis.js` if queue is truly gone.
+### Remaining — Notifications module not built
+No `src/modules/notifications/` dir. `Notification` Prisma model exists but zero routes.
 
-### Bug 4 — `/leave/types` endpoint missing
-**Problem**: `LeaveType` Prisma model has data seeded. Wireframes, docs, and UI team expect `GET /leave/types`. The route does not exist.  
-**Impact**: UI will hit 404 on leave type selection dropdown. Leave requests require `leaveTypeId` but there's no way to list types.  
-**Fix**: Add `GET /leave/types` to `leave.routes.js`.
+### Remaining — Resignations module not built
+No `src/modules/resignations/` dir. `Resignation` Prisma model exists but zero routes.
 
-### Bug 5 — `seed.js` password mismatch
-**File**: `prisma/seed.js`  
-**Problem**: `seedPassword = 'ChangeMe123!'` but live DB was seeded with `Password123!`.  
-**Impact**: Running `npm run db:seed` will create users with wrong password, breaking all test credentials.  
-**Fix**: Update `seedPassword` in `seed.js` to `Password123!` before any re-seed.
-
-### Bug 6 — `playwright` in production dependencies
-**File**: `package.json`  
-**Problem**: `playwright` (a browser testing framework, ~300MB) is listed under `dependencies` (not `devDependencies`). It gets installed in production.  
-**Impact**: Massively bloated production install. Render build will be slow.  
-**Fix**: Move `playwright` to `devDependencies`.
-
-### Doc Bug — Old docs show wrong tenant key for `hr@acme.test`
-**Files**: `UI_TEAM_GUIDE.md`, `SWAGGER_TESTING_GUIDE.md` (old sections)  
-**Problem**: Some docs referenced `test-key-123456789` as the tenant for `hr@acme.test`. Wrong — HR user is in `acme-corp-001`.
+### Remaining — Permissions API not wired
+`Role`/`Permission`/`RolePermission`/`UserRole` models exist. `authorize()` middleware still uses `memberType` enum only. Fine-grained permission checks not implemented.
 
 ---
 
