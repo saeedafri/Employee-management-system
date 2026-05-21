@@ -23,39 +23,57 @@ export async function swaggerPlugin(fastify) {
         version: config.appVersion,
         description: `Employee Management System Backend API
 
-## How to use this Swagger UI (2 steps)
+## How to use this Swagger UI
 
-**Step 1 — Get a token:**
-Click \`POST /auth/login\` → Try it out → Execute with one of:
-- HR Admin:  \`{"email":"admin@testorg.com","password":"password123"}\`
-- HR Admin:  \`{"email":"hr@acme.test","password":"Password123!"}\`
-- Manager:   \`{"email":"aman@acme.test","password":"Password123!"}\`
-- Employee:  \`{"email":"priya@acme.test","password":"Password123!"}\`
-- SuperAdmin:\`{"email":"superadmin@acme.test","password":"Password123!"}\`
+**Step 1 — Login (sets auth cookie automatically):**
+Click \`POST /auth/login\` → Try it out → Execute with one of these bodies:
 
-You do **NOT** need to enter a TenantKey to log in — the server auto-resolves it from your email. Copy \`data.accessToken\` from the response (the long string starting with \`eyJ\`).
+| Who | Body |
+|-----|------|
+| HR Admin | \`{"email":"hr@acme.test","password":"Password123!"}\` |
+| Manager  | \`{"email":"aman@acme.test","password":"Password123!"}\` |
+| Employee | \`{"email":"priya@acme.test","password":"Password123!"}\` |
+| SuperAdmin | \`{"email":"superadmin@acme.test","password":"Password123!"}\` |
 
-**Step 2 — Authorize:**
-Click **Authorize 🔒** at the top → paste the token in the **Bearer** field → click Authorize → Close.
+No \`X-Tenant-Key\` needed — server resolves it from email automatically.
 
-You can leave the **TenantKey** field empty — the JWT already carries the tenant. Only fill it if you want to override.
+After login the browser stores the \`accessToken\` as an **httpOnly cookie**. All subsequent Swagger calls automatically include it — **you do NOT need to paste anything into Authorize**.
 
-**Step 3 — Test any endpoint:**
-Click any endpoint → Try it out → Execute.
+**Step 2 — Test any endpoint:**
+Click any endpoint → Try it out → Execute. Auth is automatic via cookie.
 
-Each role sees a different dashboard:
-- \`GET /analytics/summary\` — HR_ADMIN / SUPER_ADMIN
-- \`GET /manager/dashboard\` — MANAGER
-- \`GET /employee/dashboard\` — EMPLOYEE
+---
 
-Token lasts **8 hours**. If you get 401, repeat Step 1.`,
+## Which user to use for which endpoint
+
+| Endpoint | Use this login |
+|----------|----------------|
+| \`GET /employee/dashboard\` | hr@acme.test OR priya@acme.test OR aman@acme.test |
+| \`GET /manager/dashboard\` | aman@acme.test (MANAGER) |
+| \`GET /analytics/summary\` | hr@acme.test (HR_ADMIN) |
+| \`GET /employees\` | any |
+
+⚠️ **SUPER_ADMIN has no employee record** — \`/employee/dashboard\`, \`/attendance/check-in\`, \`/leave/requests\` will return \`400 NO_EMPLOYEE_RECORD\`. Use hr@acme.test, aman@acme.test or priya@acme.test for those endpoints.
+
+---
+
+## How employeeId works — you never pass it manually
+
+The \`employeeId\` is embedded inside the JWT at login time. The server reads it automatically from the token. There is no \`employeeId\` parameter in any URL — just login as the right user and call the endpoint.
+
+---
+
+## If you need to use curl / Postman instead
+
+Copy the \`accessToken\` cookie value from browser DevTools (Application → Cookies) and add it as a header:
+\`Authorization: Bearer <token>\``,
         contact: { name: 'API Support', email: 'support@acme.test' },
       },
       host: config.isDevelopment ? `localhost:${config.port}` : 'employee-management-system-2b9q.onrender.com',
       basePath: config.apiPrefix,
       schemes: [config.isDevelopment ? 'http' : 'https'],
       securityDefinitions: {
-        Bearer:    { type: 'apiKey', name: 'Authorization', in: 'header', description: 'Paste your JWT token here. Get it from POST /auth/login → data.accessToken. Enter with or without "Bearer " prefix — both work. Token lasts 8 hours.' },
+        Bearer:    { type: 'apiKey', name: 'Authorization', in: 'header', description: 'Only needed for curl/Postman. In Swagger, just call POST /auth/login first — the accessToken cookie is set automatically and all requests use it. For curl: paste "Bearer eyJ..." here.' },
         TenantKey: { type: 'apiKey', name: 'X-Tenant-Key',  in: 'header', description: 'Tenant key for your organisation. Test value: test-key-123456789' },
       },
       paths: {
@@ -63,7 +81,7 @@ Token lasts **8 hours**. If you get 401, repeat Step 1.`,
         // ── AUTHENTICATION ────────────────────────────────────────────────────
         '/auth/login': {
           post: op('Authentication', 'User login', false, {
-            responses: { 200: { description: 'Returns accessToken, refreshToken, user, permissions' }, 400: r400 },
+            responses: { 200: { description: 'Sets accessToken + refreshToken as httpOnly cookies. Returns sessionId, user, permissions in body.' }, 400: r400 },
             parameters: [{ in: 'body', name: 'body', required: true, schema: { $ref: '#/definitions/LoginRequest' } }],
           }),
         },
