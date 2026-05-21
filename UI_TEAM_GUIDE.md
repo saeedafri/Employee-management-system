@@ -4,8 +4,8 @@
 
 - **Production API base:** `https://employee-management-system-2b9q.onrender.com/api/v1`
 - **Swagger UI:** `https://employee-management-system-2b9q.onrender.com/docs/static/index.html`
-- **Backend status:** Live. 88 endpoints. All bug fixes deployed `2026-05-19`.
-- **Last verified:** `2026-05-19` — 26/39 endpoints return 200, 13/39 return expected 400/403 based on role and employee linkage. **Zero 5xx errors.**
+- **Backend status:** Live. 90 endpoints. All bug fixes deployed `2026-05-22`.
+- **Last verified:** `2026-05-22` — all known bugs fixed. See §7 for status per endpoint.
 
 ---
 
@@ -49,8 +49,8 @@ Response:
 }
 ```
 
-- Token lifetime: **8 hours**. On `401 INVALID_TOKEN` → call `/auth/login` again.
-- Store `accessToken` in memory, the refresh token cookie is set automatically.
+- Token lifetime: **15 minutes**. On `401 INVALID_TOKEN` → call `POST /auth/refresh` (uses httpOnly cookie automatically) to get a new token without re-login. Full re-login only needed if refresh also fails.
+- Store `accessToken` in memory (not localStorage). Refresh token cookie is set automatically by the browser — do not touch it.
 - When pasting the token into Swagger UI's **Authorize** dialog, copy **only** the value between the quotes — do not include the quote characters or anything after.
 
 ### 1.3 Refresh
@@ -172,10 +172,11 @@ All passwords reset to known values on `2026-05-19`. Use these for every role-sp
 | Today's check-in status    | POST   | `/attendance/check-in`                | `priya@acme.test`    |
 | Check out                  | POST   | `/attendance/check-out`               | `priya@acme.test`    |
 | Leave balance              | GET    | `/leave/balance`                      | `priya@acme.test`    |
-| Upcoming holidays          | GET    | `/holidays?limit=3`                   | any                  |
-| My documents               | GET    | `/employee/documents`                 | `priya@acme.test`    |
-| My team                    | GET    | `/employee/team`                      | `priya@acme.test`    |
+| Upcoming holidays          | GET    | `/holidays?year=2026`                 | any                  |
+| My documents               | GET    | `/employee/documents` OR `/employees/me/documents` | `priya@acme.test` — both paths work |
+| My team                    | GET    | `/employee/team` OR `/employees/me/team` | `priya@acme.test` — both paths work |
 | Request leave drawer       | POST   | `/leave/requests`                     | `priya@acme.test`    |
+| Leave type dropdown        | GET    | `/leave/types`                        | any — get leaveTypeId for POST body |
 
 ### Page 07 — Employees List
 
@@ -248,7 +249,7 @@ Required body fields for POST: `employeeCode`, `firstName`, `lastName`, `workEma
 | Reject (with comment) | PATCH  | `/leave/requests/:id/reject`              |
 | Withdraw (own)        | PATCH  | `/leave/requests/:id/withdraw`            |
 
-Body for POST `/leave/requests`: `{ leaveTypeId, startDate, endDate, reason }`. Get `leaveTypeId` from `/leave/balance` (it returns `leaveTypeId` per balance row).
+Body for POST `/leave/requests`: `{ leaveTypeId, startDate, endDate, reason }`. Get `leaveTypeId` from `GET /leave/types` (returns id, name, code per type) or from `/leave/balance` (also returns leaveTypeId).
 
 ### Page 13 — Holiday Calendar
 
@@ -318,6 +319,7 @@ Same caveat for `permissions:manage` (only `SUPER_ADMIN`) and the strict role-re
 ✅ /attendance/records, /attendance/summary                       → 200
 ✅ /attendance/team/records, /attendance/team/regularization     → 200
 ✅ /attendance/regularization (GET, POST, PATCH :id approve|deny)→ 200/201
+✅ /leave/types                                                    → 200
 ✅ /leave/balance, /leave/requests (GET, POST)                    → 200/201
 ✅ /leave/team/requests, /leave/requests/:id/{approve,reject,withdraw} → 200
 ✅ /export/list, /export/employees, /export/attendance, /export/leave  → 200/202
@@ -326,9 +328,9 @@ Same caveat for `permissions:manage` (only `SUPER_ADMIN`) and the strict role-re
 ✅ /admin/logs                                                    → 200
 
 ⚠️  /attendance/check-in, /check-out, /attendance/today           → 400 NO_EMPLOYEE_RECORD
-    (only for users without a linked employee — use priya@acme.test)
-⚠️  /employee/dashboard, /employee/team                           → 400 NO_EMPLOYEE_RECORD
-    (same reason)
+    (only for users without a linked employee — use priya@acme.test or aman@acme.test)
+⚠️  /employee/dashboard, /employee/team, /employee/documents      → 400 NO_EMPLOYEE_RECORD
+    (same reason — superadmin@acme.test has no employee record linked)
 ⚠️  /analytics/*                                                  → 403 FORBIDDEN
     (HR_ADMIN role seed lacks analytics:read — see §6)
 ⚠️  /manager/dashboard, /manager/team, /manager/approvals         → 403 FORBIDDEN
@@ -354,17 +356,17 @@ A: The logged-in user has no Employee row linked. Test attendance flows as `priy
 A: Role doesn't have `analytics:read`. Either grant it via Page 14, or test as `superadmin@acme.test`.
 
 **Q: "How long does the token last?"**
-A: 8 hours. After 401, call `/auth/login` again.
+A: 15 minutes. After 401, call `POST /auth/refresh` to get a new token without re-logging in. The refresh token lives in an httpOnly cookie and lasts 7 days. Full re-login only needed after 7 days of inactivity.
 
 **Q: "Can I skip the X-Tenant-Key header?"**
-A: On Render production yes — `DEFAULT_TENANT_KEY=test-key-123456789` is set, so the header is optional. But for acme.test users you **must** send `X-Tenant-Key: acme-corp-001`.
+A: After login, yes — the JWT carries `tenantId`, so all subsequent calls need only `Authorization: Bearer <token>`. For the initial `/auth/login` call, the header is also optional if your email is unique across all tenants. It's only required if you get `AMBIGUOUS_EMAIL` (same email in multiple tenants).
 
 ---
 
 ## 9. Where to Find More
 
 - **Live Swagger UI:** every endpoint, every parameter, every response shape — already authoritative.
-- **`API_DOCUMENTATION.md`:** machine-generated reference for completeness.
+- **`WIREFRAMES_API_MAPPING.md`:** same mapping with wireframe images per page.
 - **`DATABASE_SCHEMA.md`:** ER diagram + table fields.
 - **`DEVELOPER_SETUP.md`:** how to run the backend locally.
 - **`RENDER_DEPLOYMENT_GUIDE.md`:** production deployment.

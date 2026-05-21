@@ -125,8 +125,9 @@
 | Leave balance card | `GET` | `/leave/balance` | Returns array per leave type |
 | "View history" → leave history | `GET` | `/leave/requests` | – |
 | Upcoming holidays card | `GET` | `/holidays?limit=3` | Returns next 3 holidays |
-| My Documents list | `GET` | `/employee/documents` | – |
-| My Team mini-list | `GET` | `/employee/team` | Same-department teammates |
+| My Documents list | `GET` | `/employee/documents` or `/employees/me/documents` | Both paths work |
+| My Team mini-list | `GET` | `/employee/team` or `/employees/me/team` | Both paths work |
+| Leave type dropdown | `GET` | `/leave/types` | Get leaveTypeId for request form |
 | "Request leave" button (drawer) | `POST` | `/leave/requests` | Body: `{ leaveTypeId, startDate, endDate, reason }` |
 
 ---
@@ -240,13 +241,14 @@
 | Tab "Approvals" (manager queue) | `GET` | `/leave/team/requests?status=PENDING` | – |
 | Tab "Team Calendar" | `GET` | `/leave/team/requests?month=YYYY-MM` | All approved leaves for the month |
 | Tab "Balances" | `GET` | `/leave/balance` | Returns `[{ leaveTypeId, leaveTypeName, total, used, available }]` |
+| Leave type dropdown | `GET` | `/leave/types` | Load before showing the request form |
 | "Request leave" button (drawer) | `POST` | `/leave/requests` | `{ leaveTypeId, startDate, endDate, reason }` |
 | Approve | `PATCH` | `/leave/requests/:id/approve` | – |
-| Reject (with comment) | `PATCH` | `/leave/requests/:id/reject` | `{ comment }` |
+| Reject (with comment) | `PATCH` | `/leave/requests/:id/reject` | `{ approverComment }` |
 | Withdraw (own) | `PATCH` | `/leave/requests/:id/withdraw` | Only allowed if still PENDING |
 | Bulk approve | loop | `PATCH /leave/requests/:id/approve` | Multi-select |
 
-`leaveTypeId` for POST must come from `/leave/balance` — it returns the canonical IDs.
+`leaveTypeId` for POST must come from `GET /leave/types` — returns `[{ id, name, code, annualAllowance, isPaid }]`.
 
 ---
 
