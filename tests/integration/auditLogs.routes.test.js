@@ -10,7 +10,7 @@ describe('Audit Logs Routes Integration Tests', function () {
   let superAdminUser;
   let auditorUser;
   let employeeUser;
-  let superAdminToken;
+  let _superAdminToken;
   let auditorToken;
   let employeeToken;
 
@@ -47,7 +47,7 @@ describe('Audit Logs Routes Integration Tests', function () {
       headers: { 'x-tenant-key': testTenant.tenantKey },
       payload: { email: 'superadmin@example.com', password: 'password' },
     });
-    superAdminToken = JSON.parse(superAdminLogin.body).data.accessToken;
+    _superAdminToken = JSON.parse(superAdminLogin.body).data.accessToken;
 
     const auditorLogin = await app.inject({
       method: 'POST',

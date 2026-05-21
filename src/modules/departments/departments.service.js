@@ -11,7 +11,7 @@ export async function listDepartments(tenantId, filters) {
   }
 }
 
-export async function createDepartment(tenantId, data, userId) {
+export async function createDepartment(tenantId, data, _userId) {
   try {
     if (data.parentId) {
       const parentExists = await repo.getDepartmentById(data.parentId, tenantId);
@@ -34,7 +34,7 @@ export async function createDepartment(tenantId, data, userId) {
   }
 }
 
-export async function updateDepartment(id, tenantId, data, userId) {
+export async function updateDepartment(id, tenantId, data, _userId) {
   try {
     const existing = await repo.getDepartmentById(id, tenantId);
     if (!existing) {

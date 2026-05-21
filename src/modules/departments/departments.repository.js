@@ -61,7 +61,7 @@ export async function updateDepartment(id, tenantId, data) {
   });
 }
 
-export async function softDeleteDepartment(id, tenantId) {
+export async function softDeleteDepartment(id, _tenantId) {
   return prisma.department.update({
     where: { id },
     data: {

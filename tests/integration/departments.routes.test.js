@@ -8,7 +8,7 @@ describe('Departments Routes Integration Tests', function () {
   let app;
   let testTenant;
   let adminToken;
-  let adminUser;
+  let _adminUser;
 
   before(async function () {
     app = await createTestApp();
@@ -17,7 +17,7 @@ describe('Departments Routes Integration Tests', function () {
   beforeEach(async function () {
     await cleanDatabase();
     testTenant = await createTestTenant();
-    adminUser = await createTestUser(testTenant.id, {
+    _adminUser = await createTestUser(testTenant.id, {
       email: 'admin@example.com',
       memberType: 'HR_ADMIN',
     });
@@ -100,7 +100,7 @@ describe('Departments Routes Integration Tests', function () {
     });
 
     it('should require HR_ADMIN role', async function () {
-      const employee = await createTestUser(testTenant.id, {
+      const _employee = await createTestUser(testTenant.id, {
         email: 'emp@example.com',
         memberType: 'EMPLOYEE',
       });

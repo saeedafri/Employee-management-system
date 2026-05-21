@@ -2,10 +2,6 @@ import { authenticate } from '../../middleware/authenticate.js';
 import {
   employeeDashboardHandler,
   getTodayHandler,
-  checkInHandler,
-  checkOutHandler,
-  getBalanceHandler,
-  getHolidaysHandler,
   getDocumentsHandler,
   getTeamHandler,
 } from './employee.controller.js';

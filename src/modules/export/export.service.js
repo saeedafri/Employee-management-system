@@ -12,7 +12,6 @@ class AppError extends Error {
   }
 }
 
-const EXPORT_TIMEOUT_MINUTES = 30;
 
 export async function queueEmployeeExport(tenantId, userId, filters) {
   const jobId = uuidv4();
@@ -207,7 +206,7 @@ export async function scheduleExportCleanup() {
   }
 }
 
-function calculateEstimatedTime(exportType, filters) {
+function calculateEstimatedTime(exportType, _filters) {
   let minutes = 1;
 
   if (exportType === 'employees') {

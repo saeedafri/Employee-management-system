@@ -11,7 +11,7 @@ export async function listHolidays(tenantId, filters) {
   }
 }
 
-export async function createHoliday(tenantId, data, userId) {
+export async function createHoliday(tenantId, data, _userId) {
   try {
     const holidayDate = new Date(data.holidayDate);
 

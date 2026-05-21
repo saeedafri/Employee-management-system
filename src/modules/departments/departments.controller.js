@@ -3,7 +3,7 @@ import * as validator from './departments.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
 export async function listDepartments(request, reply) {
-  const { user: _user } = request; const tenantId = request.tenant.id;
+  const tenantId = request.tenant.id;
 
   // List is readable by every authenticated user (used for filter dropdowns, profile pages, etc).
   // Mutations below remain restricted to HR_ADMIN / SUPER_ADMIN.

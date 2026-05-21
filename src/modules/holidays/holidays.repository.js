@@ -48,7 +48,7 @@ export async function updateHoliday(id, tenantId, data) {
   });
 }
 
-export async function deleteHoliday(id, tenantId) {
+export async function deleteHoliday(id, _tenantId) {
   return prisma.holiday.delete({
     where: { id },
   });

@@ -8,7 +8,6 @@ const r201 = { description: 'Created' };
 const r400 = { description: 'Bad Request' };
 const r401 = { description: 'Unauthorized' };
 const r403 = { description: 'Forbidden' };
-const r404 = { description: 'Not Found' };
 const idParam = [{ in: 'path', name: 'id', type: 'string', required: true, description: 'Resource ID' }];
 
 function op(tag, summary, security = true, extra = {}) {

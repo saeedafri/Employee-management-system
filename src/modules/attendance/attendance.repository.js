@@ -138,26 +138,26 @@ export async function getAttendanceSummary(tenantId, employeeId, fromDate, toDat
 
   records.forEach((record) => {
     switch (record.status) {
-      case 'PRESENT':
-        summary.present += 1;
-        break;
-      case 'ABSENT':
-        summary.absent += 1;
-        break;
-      case 'LEAVE':
-        summary.leave += 1;
-        break;
-      case 'WFH':
-        summary.wfh += 1;
-        break;
-      case 'HALF_DAY':
-        summary.halfDay += 1;
-        break;
-      case 'HOLIDAY':
-        summary.holiday += 1;
-        break;
-      default:
-        break;
+    case 'PRESENT':
+      summary.present += 1;
+      break;
+    case 'ABSENT':
+      summary.absent += 1;
+      break;
+    case 'LEAVE':
+      summary.leave += 1;
+      break;
+    case 'WFH':
+      summary.wfh += 1;
+      break;
+    case 'HALF_DAY':
+      summary.halfDay += 1;
+      break;
+    case 'HOLIDAY':
+      summary.holiday += 1;
+      break;
+    default:
+      break;
     }
   });
 

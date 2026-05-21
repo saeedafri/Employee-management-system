@@ -214,7 +214,7 @@ describe('Holidays Routes Integration Tests', function () {
     });
 
     it('should require HR_ADMIN role', async function () {
-      const employee = await createTestUser(testTenant.id, {
+      const _employee = await createTestUser(testTenant.id, {
         email: 'emp@example.com',
         memberType: 'EMPLOYEE',
       });
@@ -334,7 +334,7 @@ describe('Holidays Routes Integration Tests', function () {
     });
 
     it('should require HR_ADMIN role', async function () {
-      const employee = await createTestUser(testTenant.id, {
+      const _employee = await createTestUser(testTenant.id, {
         email: 'emp@example.com',
         memberType: 'EMPLOYEE',
       });

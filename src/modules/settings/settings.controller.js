@@ -23,8 +23,6 @@ export async function getTenantConfig(request, reply) {
 export async function updateTenantConfig(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const userId = request.user.id;
-
     const body = settingsValidator.updateTenantConfigSchema.parse(request.body);
 
     const config = await settingsService.updateTenantConfig(tenantId, body);
