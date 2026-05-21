@@ -16,10 +16,17 @@ export const config = {
   corsOrigin: (process.env.CORS_ORIGIN || 'http://localhost:3000').split(','),
 
   // Database
-  databaseUrl: process.env.DATABASE_URL || 'mysql://localhost:3306/ems_local',
+  databaseUrl: process.env.DATABASE_URL || 'postgresql://localhost:5432/ems_local',
 
-  // Redis
-  redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
+  // Redis (removed — kept for env-var compatibility only)
+  redisUrl: process.env.REDIS_URL || null,
+
+  // Multi-tenant
+  // appDomain: the root domain of this SaaS deployment.
+  // When set, subdomains are extracted from the Host header for tenant resolution.
+  // Example: if appDomain = "yourems.com", then "acme.yourems.com" → slug "acme"
+  // Leave empty in local dev (no subdomains on localhost).
+  appDomain: process.env.APP_DOMAIN || null,
 
   // Session
   sessionCookieName: process.env.SESSION_COOKIE_NAME || 'refreshToken',

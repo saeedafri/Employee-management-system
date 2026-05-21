@@ -1,8 +1,19 @@
 import { prisma } from '../plugins/prisma.js';
 import { config } from '../config/index.js';
 
-// Routes that resolve their tenant from the request body (email lookup) instead
-// of requiring an X-Tenant-Key header up-front. The login controller does this.
+/**
+ * Multi-tenant resolution middleware.
+ *
+ * Resolution order (first match wins):
+ *   1. Subdomain from Host header  — acme.yourems.com → slug "acme"
+ *   2. X-Tenant-Key header         — explicit key for API/Postman/Swagger
+ *   3. JWT payload tenantId        — for already-authenticated requests (no header needed)
+ *   4. DEFAULT_TENANT_KEY env var  — dev/testing fallback
+ *
+ * Routes in TENANT_OPTIONAL_ROUTES skip the "missing tenant" error — their
+ * controllers resolve tenant themselves from the email address in the body.
+ */
+
 const TENANT_OPTIONAL_ROUTES = new Set([
   '/api/v1/auth/login',
   '/api/v1/auth/admin/login',
@@ -10,21 +21,40 @@ const TENANT_OPTIONAL_ROUTES = new Set([
   '/api/v1/auth/forgot-password',
   '/api/v1/auth/reset-password',
   '/api/v1/auth/validate-reset-token',
+  '/api/v1/auth/reset-password/validate',
   '/api/v1/auth/verify-otp',
   '/api/v1/auth/resend-otp',
 ]);
 
-// Decode a JWT payload without verifying the signature. The `authenticate`
-// middleware (which runs after this one on protected routes) verifies properly;
-// we only need tenantId here to look up the tenant. A forged token gets caught
-// at authenticate time.
+/**
+ * Extract tenant slug from Host header when APP_DOMAIN is configured.
+ * "acme.yourems.com" with appDomain="yourems.com" → "acme"
+ * "localhost:3000" or "yourems.com" (no subdomain) → null
+ */
+function slugFromHost(host) {
+  if (!config.appDomain || !host) return null;
+  const hostname = host.split(':')[0].toLowerCase();
+  const root = config.appDomain.toLowerCase();
+  // Must end with .appDomain and have something before the dot
+  if (!hostname.endsWith('.' + root)) return null;
+  const sub = hostname.slice(0, hostname.length - root.length - 1);
+  // Reject empty, www, api — those aren't tenant subdomains
+  if (!sub || sub === 'www' || sub === 'api' || sub === 'app') return null;
+  return sub;
+}
+
+/**
+ * Decode JWT payload without verifying signature.
+ * authenticate() verifies properly; we only need tenantId here for routing.
+ * A forged token is caught at authenticate() time before any data is touched.
+ */
 function tenantIdFromAuthHeader(authHeader) {
   if (!authHeader) return null;
   const raw = authHeader.replace(/^Bearer\s+/i, '').trim();
-  const match = raw.match(/^(eyJ[A-Za-z0-9_\-]+)\.(eyJ[A-Za-z0-9_\-]+)\.[A-Za-z0-9_\-]+/);
+  const match = raw.match(/^eyJ[A-Za-z0-9_-]+\.(eyJ[A-Za-z0-9_-]+)\.[A-Za-z0-9_-]+/);
   if (!match) return null;
   try {
-    const payload = JSON.parse(Buffer.from(match[2], 'base64url').toString('utf8'));
+    const payload = JSON.parse(Buffer.from(match[1], 'base64url').toString('utf8'));
     return payload?.tenantId || null;
   } catch {
     return null;
@@ -35,45 +65,71 @@ export async function resolveTenant(request, reply) {
   const path = request.routeOptions?.url || request.url.split('?')[0];
   const isTenantOptional = TENANT_OPTIONAL_ROUTES.has(path);
 
-  // Resolution order: explicit header → JWT payload → DEFAULT_TENANT_KEY env
-  let tenantKey = request.headers['x-tenant-key'] || null;
-  let tenantId = null;
-  if (!tenantKey) {
-    tenantId = tenantIdFromAuthHeader(request.headers.authorization);
-  }
-  if (!tenantKey && !tenantId) {
-    tenantKey = config.defaultTenantKey || null;
-  }
+  // Layer 1: Subdomain (slug lookup)
+  const slug = slugFromHost(request.headers.host);
 
-  if (!tenantKey && !tenantId) {
-    if (isTenantOptional) return; // login controllers will resolve tenant themselves
+  // Layer 2: Explicit header key
+  const tenantKey = !slug ? (request.headers['x-tenant-key'] || null) : null;
+
+  // Layer 3: JWT payload tenantId (skip if already have slug or key)
+  const tenantId = (!slug && !tenantKey)
+    ? tenantIdFromAuthHeader(request.headers.authorization)
+    : null;
+
+  // Layer 4: Default key from env
+  const fallbackKey = (!slug && !tenantKey && !tenantId)
+    ? (config.defaultTenantKey || null)
+    : null;
+
+  const hasAnyIdentifier = slug || tenantKey || tenantId || fallbackKey;
+
+  if (!hasAnyIdentifier) {
+    if (isTenantOptional) return;
     return reply.code(400).send({
       success: false,
       error: {
         code: 'MISSING_TENANT',
-        message: 'Tenant not specified. Send X-Tenant-Key header, or log in via /auth/login to obtain a token that carries it.',
+        message: 'Tenant context missing. Options: use a company subdomain, send X-Tenant-Key header, or log in first (JWT carries tenant automatically).',
       },
     });
   }
 
-  const tenant = await prisma.tenant.findUnique({
-    where: tenantId ? { id: tenantId } : { tenantKey },
-  });
+  // Build Prisma where clause — prefer more specific identifiers first
+  let where;
+  if (slug) {
+    where = { slug };
+  } else if (tenantKey || fallbackKey) {
+    where = { tenantKey: tenantKey || fallbackKey };
+  } else {
+    where = { id: tenantId };
+  }
+
+  const tenant = await prisma.tenant.findUnique({ where });
 
   if (!tenant) {
-    if (isTenantOptional) return; // let the login controller try email-based resolution
+    if (isTenantOptional) return;
+    const hint = slug
+      ? `No tenant with subdomain "${slug}".`
+      : tenantKey
+        ? `No tenant with key "${tenantKey}".`
+        : 'Tenant not found.';
     return reply.code(400).send({
       success: false,
-      error: {
-        code: 'INVALID_TENANT',
-        message: 'Tenant not found',
-      },
+      error: { code: 'INVALID_TENANT', message: hint },
+    });
+  }
+
+  if (tenant.deletedAt) {
+    return reply.code(403).send({
+      success: false,
+      error: { code: 'TENANT_INACTIVE', message: 'This organization account is no longer active.' },
     });
   }
 
   request.tenant = {
     id: tenant.id,
     tenantKey: tenant.tenantKey,
+    slug: tenant.slug,
     name: tenant.name,
     timezone: tenant.timezone,
   };

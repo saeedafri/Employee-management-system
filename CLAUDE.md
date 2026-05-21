@@ -316,21 +316,39 @@ EMS/
 
 ---
 
-## API Auth Pattern
+## Multi-Tenant Architecture
+
+**DB Model**: Shared DB, row-level isolation — every table has `tenantId`. Correct approach for SaaS. One DB, many companies, fully isolated data.
+
+### Tenant Resolution — 4-Layer Priority Chain (in `resolveTenant.js`)
+```
+1. Subdomain    acme.yourems.com → Tenant.slug = "acme"   (requires APP_DOMAIN env var)
+2. Header       X-Tenant-Key: acme-corp-001               (always works, for Postman/Swagger)
+3. JWT payload  Bearer <token> → tenantId from JWT         (automatic after login)
+4. Env fallback DEFAULT_TENANT_KEY                         (dev/testing only)
+```
+
+### Login Auto-Resolution
+- Email unique across tenants → login with just email + password (no header needed)
+- Email in multiple tenants → returns `AMBIGUOUS_EMAIL`, requires `X-Tenant-Key`
+- After any login, JWT carries `tenantId` — all subsequent calls are automatic
+
+### Enabling Subdomain Routing (when domain is configured)
+1. Set `APP_DOMAIN=yourems.com` in Render env vars
+2. Wildcard DNS: `*.yourems.com → Render service`
+3. Wildcard SSL on Render or Cloudflare
+4. Code already handles it — no changes needed
+
+### API Auth Pattern
 Every protected request needs:
 ```
 Authorization: Bearer <accessToken>
-x-tenant-key: acme-corp-001
+x-tenant-key: acme-corp-001   ← only if JWT doesn't already have tenantId
 ```
 
-**Tenant resolution order** (in `resolveTenant.js`):
-1. `x-tenant-key` header
-2. JWT payload `tenantId` (decoded without verify, just for routing)
-3. `DEFAULT_TENANT_KEY` env var
-
-**Tenant-optional routes** (resolve tenant internally from email):
+**Tenant-optional routes** (resolve tenant from email internally):
 - `/auth/login`, `/auth/admin/login`, `/auth/refresh`
-- `/auth/forgot-password`, `/auth/reset-password`, `/auth/validate-reset-token`
+- `/auth/forgot-password`, `/auth/reset-password`, `/auth/reset-password/validate`, `/auth/validate-reset-token`
 - `/auth/verify-otp`, `/auth/resend-otp`
 
 ---
@@ -348,20 +366,11 @@ SUPER_ADMIN > HR_ADMIN > MANAGER > EMPLOYEE > AUDITOR
 
 ## Known Bugs & Issues (Confirmed by Code Audit)
 
-### Bug 1 — `analytics.routes.js` double-hooks `resolveTenant`
-**File**: `src/modules/analytics/analytics.routes.js:5`  
-**Problem**: `fastify.addHook('onRequest', resolveTenant)` is added inside analytics routes, but `resolveTenant` is already a global hook in `app.js` for ALL routes. This means every analytics request runs `resolveTenant` twice — one extra DB lookup per request.  
-**Impact**: Harmless functionally, but wasteful (extra Prisma query per analytics call).  
-**Fix**: Remove the `addHook('onRequest', resolveTenant)` line from `analytics.routes.js`.
+### ✅ FIXED — `analytics.routes.js` double-hooked `resolveTenant`
+**File**: `src/modules/analytics/analytics.routes.js:5` — **Fixed 2026-05-22**
 
-### Bug 2 — Default DB URL is MySQL in config
-**File**: `src/config/index.js:14`  
-```js
-databaseUrl: process.env.DATABASE_URL || 'mysql://localhost:3306/ems_local',
-```
-**Problem**: DB is PostgreSQL, not MySQL. The fallback default is wrong.  
-**Impact**: Only triggers if `DATABASE_URL` env var is missing entirely — which in production it never is. Misleading in dev if .env is misconfigured.  
-**Fix**: Change fallback to `postgresql://localhost:5432/ems_local`.
+### ✅ FIXED — Default DB URL was MySQL
+**File**: `src/config/index.js:14` — **Fixed 2026-05-22** (now `postgresql://localhost:5432/ems_local`)
 
 ### Bug 3 — Dead Redis/Queue dependencies
 **Files**: `package.json`, `src/jobs/*`, `src/plugins/redis.js`, `src/config/redis.js`  

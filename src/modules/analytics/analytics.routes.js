@@ -1,10 +1,9 @@
 import { authenticate } from '../../middleware/authenticate.js';
-import { resolveTenant } from '../../middleware/resolveTenant.js';
 import { requireAnalyticsPermission } from './analytics.policy.js';
 import * as analyticsController from './analytics.controller.js';
 
 export default async function analyticsRoutes(fastify) {
-  fastify.addHook('onRequest', resolveTenant);
+  // resolveTenant is already a global hook registered in app.js — do not add again
   fastify.addHook('onRequest', authenticate);
   fastify.addHook('onRequest', requireAnalyticsPermission);
 

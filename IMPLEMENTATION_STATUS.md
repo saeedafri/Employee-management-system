@@ -1,372 +1,248 @@
 # EMS Backend Implementation Status
 
-## Overview
-This document tracks the implementation status of all 15 Pages of the EMS backend API, from login through employee data export.
+> **Last Updated**: 2026-05-22 — Full source audit. Previous version was massively outdated (said 45% complete, Pages 07-15 pending — all of those are actually built).
 
-**Last Updated**: 2026-05-18
-**Status**: Pages 01-06 in progress, Pages 07-15 pending
+## Completion Summary — ~90% Complete
 
----
-
-## Completion Summary
-
-| Page | Module | Status | Notes |
-|------|--------|--------|-------|
-| **01** | Auth - Login/Logout | ✅ Complete | Universal login, refresh token rotation, session family tracking |
-| **02** | Auth - Password Reset | 🔄 In Progress | Routes exist, needs final fixes to approveLeaveRequest/regularization parameters |
-| **03** | Auth - OTP Challenge | ⏳ Pending | Design complete, implementation awaiting start |
-| **04** | HR Admin Dashboard | ✅ Complete | Analytics endpoints, summary cards, charts |
-| **05** | Manager Dashboard | ✅ Fixed (Routes Updated) | Routes renamed from /dashboard/manager to /api/v1/manager, PATCH for approvals |
-| **06** | Employee Dashboard | ✅ Fixed (Routes Updated) | Routes renamed to /api/v1/employee, /api/v1/attendance, /api/v1/leave, /api/v1/holidays |
-| **07** | Employees List | ⏳ Pending | Listed in requirements, to implement after 05/06 acceptance |
-| **08-15** | Advanced Features | ⏳ Pending | Leave Management, Attendance, etc. |
-
----
-
-## PART 1: ✅ Artifacts & Response Capture
-
-**Status**: COMPLETE
-
-### Created Files
-- `artifacts/` folder structure with subdirectories:
-  - `api-responses/{page-04-analytics,page-05-manager-dashboard,page-06-employee-dashboard,page-07-employees-list}`
-  - `newman/`, `performance/`, `test-results/`, `screenshots-or-logs/`
-- `scripts/captureApiResponses.js` - Captures all endpoint responses
-- `scripts/perfApiSmoke.js` - Performance smoke tests
-- Added npm scripts: `api:capture`, `perf:api`, `db:seed:large`
-
-### Next Action
-- Run `npm run api:capture` to save response JSON files (requires running API)
+| Module | Status | Route Count | Notes |
+|--------|--------|-------------|-------|
+| **Auth** | ✅ Complete | 14 routes | Login, refresh, OTP/MFA, password reset, sessions |
+| **Employees** | ✅ Complete | 6 routes | CRUD + soft delete + CSV export |
+| **Departments** | ✅ Complete | 4 routes | Hierarchical, head-employee |
+| **Holidays** | ✅ Complete | 4 routes | Per-tenant, optional holidays |
+| **Attendance** | ✅ Complete | 10 routes | Check-in/out, regularization, team view |
+| **Leave** | ✅ Complete | 7 routes | Requests, approve/reject/withdraw, balance |
+| **Analytics** | ✅ Complete | 5 routes | HR Admin dashboard metrics |
+| **Reports** | ✅ Complete | 8 routes | Attendance/leave/payroll reports + scheduling |
+| **Export** | ✅ Complete | 5 routes | Async export jobs (employees/attendance/leave) |
+| **Audit Logs** | ✅ Complete | 4 routes | Full audit trail + DPIA + export |
+| **Settings** | ✅ Complete | 6 routes | Tenant config, email templates, role-permissions |
+| **Manager Dashboard** | ✅ Complete | 6+ routes | Team, approvals, attendance |
+| **Employee Dashboard** | ✅ Complete | 4+ routes | Dashboard, documents, team |
+| **Logs** | ✅ Complete | 1 route | Internal log viewer |
+| **Notifications** | ❌ Not Built | 0 routes | Prisma model exists, no module |
+| **Resignations** | ❌ Not Built | 0 routes | Prisma model exists, no module |
+| **Payroll** | ❌ Not Built | 0 routes | No Prisma model either |
+| **File Upload** | ❌ Not Built | 0 routes | EmployeeDocument model exists, no upload endpoint |
+| **`/leave/types`** | ❌ Missing | 0 routes | LeaveType model + data exists, no GET endpoint |
 
 ---
 
-## PART 2: ✅ Seed Data & Schema Fixes
+## What Works Right Now (Live on Render)
 
-**Status**: COMPLETE
+### Auth Flow
+```
+POST   /api/v1/auth/login                    → returns accessToken + sets refreshToken cookie
+POST   /api/v1/auth/admin/login              → HR_ADMIN/SUPER_ADMIN only
+POST   /api/v1/auth/refresh                  → rotate refresh token, get new accessToken
+POST   /api/v1/auth/logout                   → revoke current session
+POST   /api/v1/auth/logout-all              → revoke all sessions
+GET    /api/v1/auth/me                       → current user profile
+GET    /api/v1/auth/sessions                 → all active sessions
+DELETE /api/v1/auth/sessions/:id             → revoke specific session
+POST   /api/v1/auth/forgot-password          → send reset email
+GET    /api/v1/auth/reset-password/validate  → validate token before form shows
+POST   /api/v1/auth/reset-password           → change password with token
+POST   /api/v1/auth/verify-otp              → complete MFA challenge
+POST   /api/v1/auth/resend-otp              → resend OTP code
+```
 
-### Fixed Issues
-- Changed `checkInTime` → `checkInAt` (AttendanceRecord)
-- Changed `checkOutTime` → `checkOutAt` (AttendanceRecord)
-- Changed `approvedBy` → `approverId` (LeaveRequest)
-- Changed `approvedAt` → `decidedAt` (LeaveRequest)
-- Changed `approvedBy` → `reviewerId` (AttendanceRegularizationRequest)
-- Added `workMode`, `totalMinutes`, `locationJson` fields
-- Added `approverComment` field to LeaveRequest
+### Employees
+```
+GET    /api/v1/employees            → paginated list (all authenticated)
+POST   /api/v1/employees            → create (HR_ADMIN, SUPER_ADMIN)
+GET    /api/v1/employees/:id        → get one (all authenticated)
+PATCH  /api/v1/employees/:id        → update (HR_ADMIN, SUPER_ADMIN)
+DELETE /api/v1/employees/:id        → soft delete (HR_ADMIN, SUPER_ADMIN)
+GET    /api/v1/employees/export/csv → CSV download (HR_ADMIN, SUPER_ADMIN)
+```
 
-### Files Updated
-- `/prisma/seed.js` - Fixed all field names, 65 employees, 30 days attendance
-- `/prisma/seedLargeDemo.js` - NEW: 260 employees, 12 departments, 60 days attendance, 350+ leave requests
+### Departments
+```
+GET    /api/v1/departments      → list with hierarchy
+POST   /api/v1/departments      → create
+PATCH  /api/v1/departments/:id  → update
+DELETE /api/v1/departments/:id  → delete
+```
 
-### Verification
+### Holidays
+```
+GET    /api/v1/holidays      → list
+POST   /api/v1/holidays      → create
+PATCH  /api/v1/holidays/:id  → update
+DELETE /api/v1/holidays/:id  → delete
+```
+
+### Attendance
+```
+POST   /api/v1/attendance/check-in                    → clock in
+POST   /api/v1/attendance/check-out                   → clock out
+GET    /api/v1/attendance/records                     → own records
+GET    /api/v1/attendance/team/records                → team records (MANAGER, HR_ADMIN)
+GET    /api/v1/attendance/summary                     → period summary
+POST   /api/v1/attendance/regularization              → submit fix request
+GET    /api/v1/attendance/regularization              → own requests
+GET    /api/v1/attendance/team/regularization         → team requests (MANAGER, HR_ADMIN)
+PATCH  /api/v1/attendance/regularization/:id/approve → approve (MANAGER, HR_ADMIN)
+PATCH  /api/v1/attendance/regularization/:id/deny    → deny (MANAGER, HR_ADMIN)
+```
+
+### Leave
+```
+POST   /api/v1/leave/requests              → submit leave
+GET    /api/v1/leave/requests              → own requests
+GET    /api/v1/leave/team/requests         → team requests (MANAGER, HR_ADMIN)
+PATCH  /api/v1/leave/requests/:id/approve  → approve (MANAGER, HR_ADMIN)
+PATCH  /api/v1/leave/requests/:id/reject   → reject (MANAGER, HR_ADMIN)
+PATCH  /api/v1/leave/requests/:id/withdraw → withdraw own request
+GET    /api/v1/leave/balance               → leave balance
+❌ GET /api/v1/leave/types                → NOT IMPLEMENTED (UI will get 404)
+```
+
+### Analytics (HR_ADMIN, SUPER_ADMIN only)
+```
+GET /api/v1/analytics/summary
+GET /api/v1/analytics/attendance?range=7d|30d|90d
+GET /api/v1/analytics/headcount-by-department
+GET /api/v1/analytics/recent-activity
+GET /api/v1/analytics/leave-summary
+```
+
+### Reports
+```
+GET    /api/v1/reports/attendance
+GET    /api/v1/reports/leaves
+GET    /api/v1/reports/payroll
+POST   /api/v1/reports/schedule
+GET    /api/v1/reports/scheduled
+PATCH  /api/v1/reports/scheduled/:id
+DELETE /api/v1/reports/scheduled/:id
+GET    /api/v1/reports/export-history
+```
+
+### Export
+```
+POST /api/v1/export/employees
+POST /api/v1/export/attendance
+POST /api/v1/export/leave
+GET  /api/v1/export/:job_id/download
+GET  /api/v1/export/list
+```
+
+### Audit Logs
+```
+GET  /api/v1/audit-logs
+GET  /api/v1/audit-logs/:id
+POST /api/v1/audit-logs/dpia-report
+GET  /api/v1/audit-logs/export
+```
+
+### Settings
+```
+GET   /api/v1/settings/tenant
+PATCH /api/v1/settings/tenant                → HR_ADMIN, SUPER_ADMIN
+GET   /api/v1/settings/email-templates
+PATCH /api/v1/settings/email-templates/:type → HR_ADMIN, SUPER_ADMIN
+GET   /api/v1/settings/roles-permissions     → SUPER_ADMIN only
+PATCH /api/v1/settings/roles-permissions     → SUPER_ADMIN only
+```
+
+### Manager Dashboard (MANAGER, HR_ADMIN)
+```
+GET   /api/v1/manager/dashboard
+GET   /api/v1/manager/team
+GET   /api/v1/manager/team/attendance
+GET   /api/v1/manager/approvals
+PATCH /api/v1/manager/leave-requests/:id/decision
+PATCH /api/v1/manager/regularization-requests/:id/decision
+```
+
+### Employee Dashboard
+```
+GET /api/v1/employee/dashboard
+GET /api/v1/employee/documents
+GET /api/v1/employee/team
+GET /api/v1/attendance/today
+```
+
+### Logs (internal)
+```
+GET /api/v1/logs
+```
+
+---
+
+## Multi-Tenant Architecture (Updated 2026-05-22)
+
+### DB Architecture — Shared Database, Row-Level Isolation
+Every table has `tenantId`. All queries are scoped to the resolved tenant. This is the correct approach for scalable SaaS — one DB, many companies, fully isolated data.
+
+### Tenant Resolution — 4-Layer Priority Chain
+
+```
+Priority 1: Subdomain from Host header
+  acme.yourems.com → Tenant.slug = "acme"
+  (works once APP_DOMAIN env var is set and DNS is configured)
+
+Priority 2: X-Tenant-Key header
+  X-Tenant-Key: acme-corp-001 → Tenant.tenantKey = "acme-corp-001"
+  (for API clients, Postman, Swagger — always works)
+
+Priority 3: JWT payload tenantId
+  Authorization: Bearer <token> → tenantId decoded from JWT
+  (automatically used for all calls after login — no header needed)
+
+Priority 4: DEFAULT_TENANT_KEY env var
+  (for local dev/testing only)
+```
+
+### Login Flow — Smart Email Auto-Resolution
+- User provides email + password (no header required if email is unique)
+- System checks all tenants for this email:
+  - 1 tenant found → auto-resolves, logs in
+  - Multiple tenants → returns `AMBIGUOUS_EMAIL` error (provide X-Tenant-Key)
+  - 0 tenants → generic 401 (no email enumeration leak)
+- After login, JWT carries `tenantId` — all subsequent requests are automatic
+
+### Subdomain Routing (How to Enable)
+When you buy a domain like `yourems.com`:
+1. Set `APP_DOMAIN=yourems.com` in Render env vars
+2. Configure wildcard DNS: `*.yourems.com → Render service IP`
+3. Configure wildcard SSL on Render (or Cloudflare)
+4. Each tenant gets `{slug}.yourems.com` — e.g., `acme.yourems.com`
+5. No code change needed — `resolveTenant.js` already handles this
+
+---
+
+## Open Bugs
+
+| # | File | Bug | Impact |
+|---|------|-----|--------|
+| 1 | `leave.routes.js` | `/leave/types` endpoint missing | UI 404 on leave type dropdown |
+| 2 | `package.json` | `bullmq`, `ioredis`, `redis`, `playwright` in prod deps | Bloated Render install |
+| 3 | `prisma/seed.js` | `seedPassword = 'ChangeMe123!'` but live DB has `Password123!` | Re-seeding breaks test credentials |
+
+## Fixed Bugs (2026-05-22)
+- `analytics.routes.js` — removed double `resolveTenant` hook (was running 2x DB queries per analytics call)
+- `config/index.js` — fixed default DB URL (was `mysql://`, now `postgresql://`)
+- `config/index.js` — added `APP_DOMAIN` config for subdomain tenant resolution
+- `resolveTenant.js` — full 4-layer resolution (subdomain → header → JWT → default)
+- `resolveTenant.js` — added inactive tenant check (`deletedAt` guard)
+- `resolveTenant.js` — fixed base64 decode index (was decoding wrong JWT segment)
+
+---
+
+## Test Credentials (Live DB)
 ```bash
-node -c prisma/seed.js              # ✓ Valid syntax
-node -c prisma/seedLargeDemo.js    # ✓ Valid syntax
-npm run lint                         # ✓ No errors
+curl -X POST https://employee-management-system-2b9q.onrender.com/api/v1/auth/login \
+  -H "content-type: application/json" \
+  -H "x-tenant-key: acme-corp-001" \
+  -d '{"email":"hr@acme.test","password":"Password123!"}'
 ```
 
----
-
-## PART 3: ✅ Page 04 HR Admin Dashboard (Analytics)
-
-**Status**: COMPLETE (No changes needed)
-
-### Endpoints Verified
-- `GET /api/v1/analytics/summary` - Dashboard stats, cached
-- `GET /api/v1/analytics/attendance?range=7d|30d|90d` - Attendance summary
-- `GET /api/v1/analytics/headcount-by-department` - Department breakdown
-- `GET /api/v1/analytics/recent-activity` - Last 20 actions
-- `GET /api/v1/analytics/leave-summary` - Leave metrics
-
-### Response Format
-All endpoints return:
-```json
-{
-  "success": true,
-  "data": { /* endpoint-specific data */ },
-  "meta": { "cached": true/false }
-}
-```
-
----
-
-## PART 4: ✅ Page 05 Manager Dashboard (ROUTES UPDATED)
-
-**Status**: COMPLETE - Routes Renamed & PATCH Added
-
-### Old → New Routes
-| Old | New | Method |
-|-----|-----|--------|
-| `/dashboard/manager` | `/api/v1/manager/dashboard` | GET |
-| `/dashboard/manager/team` | `/api/v1/manager/team` | GET |
-| `/dashboard/manager/team-attendance` | `/api/v1/manager/team/attendance` | GET |
-| `/dashboard/manager/pending-approvals` | `/api/v1/manager/approvals` | GET |
-| `POST /dashboard/manager/approve-leave` | `PATCH /api/v1/manager/leave-requests/:id/decision` | PATCH |
-| `POST /dashboard/manager/approve-regularization` | `PATCH /api/v1/manager/regularization-requests/:id/decision` | PATCH |
-
-### Schema Fixes Applied
-- Service methods updated to use correct field names:
-  - `approverId` (instead of `approvedBy`)
-  - `decidedAt` (instead of `approvedAt`)
-  - `reviewerId` (instead of `approvedBy`)
-  - Added `approverComment` parameter
-
-### Files Updated
-- `src/modules/dashboard/manager.routes.js` - Routes renamed to /api/v1/manager/*
-- `src/modules/dashboard/manager.controller.js` - Handlers use path params `:id` instead of body
-- `src/modules/dashboard/manager.service.js` - Uses correct Prisma field names
-
----
-
-## PART 5: ✅ Page 06 Employee Dashboard (ROUTES UPDATED)
-
-**Status**: COMPLETE - Routes Renamed & Schema Fixed
-
-### Old → New Routes
-| Old | New | Module |
-|-----|-----|--------|
-| `/dashboard/employee` | `/api/v1/employee/dashboard` | Employee |
-| `/dashboard/employee/today` | `/api/v1/attendance/today` | Attendance |
-| `/dashboard/employee/check-in` | `/api/v1/attendance/check-in` | Attendance |
-| `/dashboard/employee/check-out` | `/api/v1/attendance/check-out` | Attendance |
-| `/dashboard/employee/balance` | `/api/v1/leave/balance` | Leave |
-| `/dashboard/employee/holidays` | `/api/v1/holidays` | Holidays |
-| `/dashboard/employee/documents` | `/api/v1/employee/documents` | Employee |
-| `/dashboard/employee/team` | `/api/v1/employee/team` | Employee |
-
-### Schema Fixes Applied
-- Changed all `checkInTime` → `checkInAt`
-- Changed all `checkOutTime` → `checkOutAt`
-- Updated performance test routes to match new paths
-
-### Files Updated
-- `src/modules/dashboard/employee.routes.js` - All routes renamed with proper modules
-- `src/modules/dashboard/employee.service.js` - All field references updated
-- `tests/performance.test.js` - Performance test routes updated
-
-### Response Format
-All endpoints return:
-```json
-{
-  "success": true,
-  "data": { /* endpoint-specific data */ },
-  "meta": { "cached": false }
-}
-```
-
----
-
-## PART 6: ⏳ Page 07 Employees List
-
-**Status**: PENDING - Awaiting Page 05/06 acceptance
-
-### Planned Endpoints
-- `GET /api/v1/employees` - List all employees (paginated)
-- `GET /api/v1/employees/:id` - Get employee details
-- `POST /api/v1/employees` - Create employee
-- `PATCH /api/v1/employees/:id` - Update employee
-- `DELETE /api/v1/employees/:id` - Soft delete employee
-- `GET /api/v1/employees/export/csv` - Export to CSV
-
-### Requirements
-- Pagination with limit/offset
-- Filters: department, employment status, location
-- Search: name, email, employee code
-- Performance: <200ms p95 for list
-
----
-
-## PART 7: ⏳ Performance Testing
-
-**Status**: PARTIAL - Test file ready, suite needs execution
-
-### Performance Tests Ready
-- Manager dashboard: p95 <150ms
-- Employee dashboard: p95 <120ms
-- Cached analytics: p95 <20ms
-
-### Performance Test Command
-```bash
-npm run perf:api              # Run smoke tests
-npm test -- tests/performance.test.js  # Run full suite
-```
-
-### Required p95 Targets
-| Endpoint | p95 Target | Notes |
-|----------|-----------|-------|
-| /api/v1/analytics/summary (cached) | <20ms | Should be in-memory |
-| /api/v1/manager/dashboard | <150ms | Complex aggregations |
-| /api/v1/manager/team/attendance | <150ms | Large date ranges |
-| /api/v1/employee/dashboard | <120ms | Simple queries |
-| /api/v1/attendance/today | <120ms | Single record lookup |
-
----
-
-## PART 8: ⏳ Coverage Matrix
-
-**Status**: PENDING - To be created after PART 9
-
-### Matrix to Create
-`docs/WIREFRAME_COVERAGE_MATRIX.md` - Track Pages 01-15 status
-
-### Template Structure
-```
-| Page | Route | Method | Status | Test Coverage | Docs | Notes |
-|------|-------|--------|--------|---------------|------|-------|
-```
-
----
-
-## PART 9: ⏳ Test Execution & Artifacts
-
-**Status**: READY - Awaiting database setup
-
-### Commands to Execute
-```bash
-npm run lint                    # Code style check
-npm run test:unit             # Unit tests
-npm run test:integration      # Integration tests
-npm run test:e2e              # E2E tests
-npm run db:seed               # Seed basic data
-npm run db:seed:large         # Seed large demo (260 employees)
-npm run api:capture           # Save API responses
-npm run perf:api              # Performance smoke tests
-npm run email:test            # Email provider test
-```
-
-### Output Artifacts to Save
-- `artifacts/test-results/` - Test results JSON
-- `artifacts/api-responses/` - All endpoint responses
-- `artifacts/performance/` - Performance metrics
-- `artifacts/newman/` - Newman collection runs
-
-### Lint Status
-- **Current**: ✅ PASS (0 errors)
-- No syntax issues found
-- ESLint compliant
-
----
-
-## Schema Changes Applied
-
-### AttendanceRecord
-```prisma
-- checkInTime → checkInAt
-- checkOutTime → checkOutAt
-+ workMode (OFFICE | WFH | HYBRID)
-+ totalMinutes (calculated from check times)
-+ locationJson (nullable)
-```
-
-### LeaveRequest
-```prisma
-- approvedBy → approverId
-- approvedAt → decidedAt
-+ approverComment (nullable)
-```
-
-### AttendanceRegularizationRequest
-```prisma
-- approvedBy → reviewerId
-+ reviewerComment (nullable)
-```
-
----
-
-## Critical Path Dependencies
-
-1. ✅ **PART 1-2**: Seed data, artifacts, scripts
-2. ✅ **PART 4-5**: Routes fixed, schema aligned
-3. ⏳ **PART 3**: Analytics endpoint confirmation
-4. ⏳ **PART 6-7**: Employee list + perf testing
-5. ⏳ **PART 8-9**: Documentation + test execution
-
----
-
-## Known Issues & Fixes Applied
-
-### Issue 1: Wrong Prisma Field Names
-**Status**: ✅ FIXED
-- All references to `checkInTime`/`checkOutTime` changed to `checkInAt`/`checkOutAt`
-- All references to `approvedBy`/`approvedAt` changed to `approverId`/`decidedAt`/`approverComment`
-- All references to `approvedBy` changed to `reviewerId`/`reviewerComment`
-
-### Issue 2: Route Naming Inconsistency
-**Status**: ✅ FIXED
-- Manager routes renamed from `/dashboard/manager/*` to `/api/v1/manager/*`
-- Employee routes split across modules: `/api/v1/employee/*`, `/api/v1/attendance/*`, `/api/v1/leave/*`, `/api/v1/holidays/*`
-
-### Issue 3: Approval Endpoints Method
-**Status**: ✅ FIXED
-- Changed from POST with body ID to PATCH with path parameter `:id`
-- Allows RESTful resource updates
-
-### Issue 4: Stale Data Prevention
-**Status**: ⏳ PENDING
-- Approval endpoints need cache invalidation logic
-- Pending approvals should disappear after decision
-- Leave balance should update immediately
-
----
-
-## Next Steps
-
-1. **IMMEDIATE** (This Session)
-   - ✅ Fix seed data schema
-   - ✅ Create capture scripts
-   - ✅ Rename routes to /api/v1/*
-
-2. **SHORT-TERM** (Next Session)
-   - Run database migration with fixed seed
-   - Execute API response capture
-   - Run performance baseline tests
-   - Fix any remaining schema issues
-
-3. **MEDIUM-TERM** (Full Sprint)
-   - Implement Page 07 (Employees List)
-   - Complete Pages 08-15
-   - Add cache invalidation logic
-   - Finalize documentation
-
----
-
-## Files Modified/Created
-
-### Created (New)
-- `scripts/captureApiResponses.js`
-- `scripts/perfApiSmoke.js`
-- `prisma/seedLargeDemo.js`
-- `IMPLEMENTATION_STATUS.md` (this file)
-- `artifacts/` folder structure
-
-### Modified
-- `prisma/seed.js` - Schema fixes
-- `src/modules/dashboard/manager.routes.js` - Route renaming
-- `src/modules/dashboard/manager.controller.js` - Path params
-- `src/modules/dashboard/manager.service.js` - Schema fields
-- `src/modules/dashboard/employee.routes.js` - Route renaming
-- `src/modules/dashboard/employee.service.js` - Schema fields
-- `tests/performance.test.js` - Route updates
-- `package.json` - Added npm scripts
-
----
-
-## Verification Checklist
-
-- [x] Lint passes (0 errors)
-- [x] Seed files syntax valid
-- [x] Routes correctly renamed
-- [x] Schema field names aligned
-- [ ] Database migrations tested
-- [ ] API responses captured
-- [ ] Performance targets verified
-- [ ] All tests passing
-- [ ] Documentation complete
-
----
-
-## Contact & Questions
-
-For questions about implementation status, refer to:
-- Issue tracking: Wireframes PDF (Pages 1-15)
-- Code review: Git commit messages
-- Architecture: `docs/api/` and `docs/backend/` directories
+| Role | Email | Password | Tenant Key |
+|------|-------|---------|------------|
+| SUPER_ADMIN | superadmin@acme.test | Password123! | acme-corp-001 |
+| HR_ADMIN | hr@acme.test | Password123! | acme-corp-001 |
+| MANAGER | aman@acme.test | Password123! | acme-corp-001 |
+| EMPLOYEE | priya@acme.test | Password123! | acme-corp-001 |
