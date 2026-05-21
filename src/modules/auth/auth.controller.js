@@ -75,7 +75,6 @@ export async function loginController(request, reply) {
       );
     }
 
-    // Set refresh token in HttpOnly cookie
     reply.setCookie(
       config.sessionCookieName,
       result.refreshToken,
@@ -88,9 +87,20 @@ export async function loginController(request, reply) {
       },
     );
 
+    reply.setCookie(
+      'accessToken',
+      result.accessToken,
+      {
+        httpOnly: true,
+        secure: config.isProduction,
+        sameSite: 'strict',
+        maxAge: 15 * 60,
+        path: '/',
+      },
+    );
+
     return reply.send(
       successResponse({
-        accessToken: result.accessToken,
         sessionId: result.sessionId,
         user: result.user,
         permissions: result.permissions,
@@ -144,9 +154,20 @@ export async function adminLoginController(request, reply) {
       },
     );
 
+    reply.setCookie(
+      'accessToken',
+      result.accessToken,
+      {
+        httpOnly: true,
+        secure: config.isProduction,
+        sameSite: 'strict',
+        maxAge: 15 * 60,
+        path: '/',
+      },
+    );
+
     return reply.send(
       successResponse({
-        accessToken: result.accessToken,
         sessionId: result.sessionId,
         user: result.user,
         permissions: result.permissions,
@@ -218,9 +239,20 @@ export async function refreshController(request, reply) {
       },
     );
 
+    reply.setCookie(
+      'accessToken',
+      result.accessToken,
+      {
+        httpOnly: true,
+        secure: config.isProduction,
+        sameSite: 'strict',
+        maxAge: 15 * 60,
+        path: '/',
+      },
+    );
+
     return reply.send(
       successResponse({
-        accessToken: result.accessToken,
         sessionId: result.sessionId,
       }),
     );
