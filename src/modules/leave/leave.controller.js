@@ -2,6 +2,16 @@ import { successResponse, errorResponse } from '../../utils/response.js';
 import * as leaveService from './leave.service.js';
 import * as leaveValidator from './leave.validator.js';
 
+export async function getLeaveTypes(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const types = await leaveService.getLeaveTypes(tenantId);
+    return reply.code(200).send(successResponse(types));
+  } catch (error) {
+    return reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, {}, request.id));
+  }
+}
+
 export async function createLeaveRequest(request, reply) {
   try {
     const tenantId = request.tenant.id;

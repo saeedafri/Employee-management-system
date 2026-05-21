@@ -3,7 +3,7 @@ import { hash } from 'argon2';
 
 const prisma = new PrismaClient();
 
-const seedPassword = 'ChangeMe123!';
+const seedPassword = 'Password123!';
 
 async function hashPassword(password) {
   return hash(password, {

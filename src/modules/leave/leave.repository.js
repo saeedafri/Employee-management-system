@@ -64,6 +64,21 @@ export async function getLeaveBalance(tenantId, employeeId, leaveTypeId) {
   });
 }
 
+export async function getLeaveTypes(tenantId) {
+  return prisma.leaveType.findMany({
+    where: { tenantId, isActive: true },
+    select: {
+      id: true,
+      name: true,
+      code: true,
+      annualAllowance: true,
+      carryForwardAllowed: true,
+      isPaid: true,
+    },
+    orderBy: { name: 'asc' },
+  });
+}
+
 export async function getLeaveType(tenantId, leaveTypeId) {
   return prisma.leaveType.findFirst({
     where: {

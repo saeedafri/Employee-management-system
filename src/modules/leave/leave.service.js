@@ -1,5 +1,9 @@
 import * as leaveRepository from './leave.repository.js';
 
+export async function getLeaveTypes(tenantId) {
+  return leaveRepository.getLeaveTypes(tenantId);
+}
+
 class AppError extends Error {
   constructor(message, code, statusCode = 400, details = {}) {
     super(message);

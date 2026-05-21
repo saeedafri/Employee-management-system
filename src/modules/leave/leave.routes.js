@@ -2,6 +2,37 @@ import { authenticate, authorize } from '../../middleware/authenticate.js';
 import * as leaveController from './leave.controller.js';
 
 export default async function leaveRoutes(fastify) {
+  fastify.get('/leave/types', {
+    schema: {
+      tags: ['Leave Management'],
+      description: 'Get all active leave types for this tenant',
+      security: [{ Bearer: [] }],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string' },
+                  name: { type: 'string' },
+                  code: { type: 'string' },
+                  annualAllowance: { type: 'integer' },
+                  carryForwardAllowed: { type: 'boolean' },
+                  isPaid: { type: 'boolean' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    onRequest: [authenticate],
+  }, (request, reply) => leaveController.getLeaveTypes(request, reply));
+
   fastify.post('/leave/requests', {
     schema: {
       tags: ['Leave Management'],
