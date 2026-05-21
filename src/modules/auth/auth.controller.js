@@ -179,42 +179,37 @@ export async function adminLoginController(request, reply) {
   }
 }
 
+function clearAuthCookies(reply) {
+  reply.clearCookie('accessToken', { path: '/' });
+  reply.clearCookie(config.sessionCookieName, { path: '/' });
+}
+
 export async function refreshController(request, reply) {
   try {
-    // Get refresh token from cookie
     const opaqueRefreshToken = request.cookies[config.sessionCookieName];
     if (!opaqueRefreshToken) {
+      clearAuthCookies(reply);
       return reply.code(401).send(
-        errorResponse(
-          'REFRESH_TOKEN_MISSING',
-          'Refresh token not found in cookies',
-          {},
-          request.id,
-        ),
+        errorResponse('REFRESH_TOKEN_MISSING', 'Refresh token not found in cookies', {}, request.id),
       );
     }
 
-    // Parse opaque refresh token format: sessionId.rawRefreshToken
     const parts = opaqueRefreshToken.split('.');
     if (parts.length !== 2) {
+      clearAuthCookies(reply);
       return reply.code(401).send(
-        errorResponse(
-          'INVALID_TOKEN_FORMAT',
-          'Invalid refresh token format',
-          {},
-          request.id,
-        ),
+        errorResponse('INVALID_TOKEN_FORMAT', 'Invalid refresh token format', {}, request.id),
       );
     }
 
     const [sessionId, rawRefreshToken] = parts;
 
-    // Derive tenant from the session itself — no header required.
     const session = await prisma.session.findUnique({
       where: { id: sessionId },
       select: { tenantId: true },
     });
     if (!session) {
+      clearAuthCookies(reply);
       return reply.code(401).send(
         errorResponse('INVALID_SESSION', 'Session not found', {}, request.id),
       );
@@ -258,6 +253,15 @@ export async function refreshController(request, reply) {
     );
   } catch (error) {
     request.log.error(error);
+    // Token mismatch / reuse / expired → clear both cookies so the browser
+    // treats the user as logged out immediately.
+    const authErrors = ['TOKEN_REUSE', 'SESSION_EXPIRED', 'SESSION_NOT_FOUND', 'INVALID_SESSION', 'TENANT_MISMATCH'];
+    if (error.code && authErrors.includes(error.code)) {
+      clearAuthCookies(reply);
+      return reply.code(401).send(
+        errorResponse(error.code, error.message, {}, request.id),
+      );
+    }
     throw error;
   }
 }

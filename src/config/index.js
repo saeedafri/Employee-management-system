@@ -10,7 +10,7 @@ export const config = {
   // JWT
   jwtSecret: process.env.JWT_SECRET || 'super_secret_key_change_in_production',
   accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
-  refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
+  refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d',
 
   // CORS
   corsOrigin: (process.env.CORS_ORIGIN || 'http://localhost:3000').split(','),
@@ -30,7 +30,7 @@ export const config = {
 
   // Session
   sessionCookieName: process.env.SESSION_COOKIE_NAME || 'refreshToken',
-  sessionMaxAgeDays: parseInt(process.env.SESSION_MAX_AGE_DAYS, 10) || 7,
+  sessionMaxAgeDays: parseInt(process.env.SESSION_MAX_AGE_DAYS, 10) || 30,
   defaultTenantKey: process.env.DEFAULT_TENANT_KEY || null,
 
   // Reset Password
