@@ -1,9 +1,10 @@
 # EMS — Wireframes → API Mapping (Production Ready)
 
-> **Verified live on Render: `2026-05-22`**  
+> **Verified live on Render: `2026-05-22`** (56/58 endpoints passing)  
 > Every endpoint below was curl-tested and returned the correct status code.  
 > API base: `https://employee-management-system-2b9q.onrender.com/api/v1`  
-> Swagger UI: `https://employee-management-system-2b9q.onrender.com/docs`
+> Swagger UI: `https://employee-management-system-2b9q.onrender.com/docs`  
+> Latest fix: `POST /attendance/regularization` 500 resolved (commit `f4afdc6`)
 
 ---
 
@@ -252,6 +253,7 @@ Location is optional. Returns `{ "id": "...", "checkInAt": "...", "geofenceValid
   }
 }
 ```
+> **Known issue**: Live data returns `manager: null, peers: []` for seeded employees — manager linkage not fully set in seed. The endpoint and schema are correct; the bug is in seed data only.
 
 ---
 
@@ -612,7 +614,8 @@ Only add X-Tenant-Key if you get AMBIGUOUS_EMAIL on login
 ✅ GET  /attendance/team/records, /attendance/team/records?month=YYYY-MM
 ✅ GET  /attendance/summary, /attendance/today, /attendance/regularization
 ✅ GET  /attendance/team/regularization
-✅ POST /attendance/check-in, /attendance/check-out, /attendance/regularization
+✅ POST /attendance/check-in, /attendance/check-out
+✅ POST /attendance/regularization  ← fixed in f4afdc6 (was 500 before 2026-05-22)
 ✅ PATCH /attendance/regularization/:id/approve, /deny
 
 ✅ GET  /employee/dashboard, /employee/documents, /employee/team
