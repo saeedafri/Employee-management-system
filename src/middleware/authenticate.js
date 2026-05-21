@@ -3,11 +3,12 @@ import { errorResponse } from '../utils/response.js';
 
 export async function authenticate(request, reply) {
   try {
-    // Strip "Bearer " prefix (case-insensitive) then extract just the JWT part
-    // (guards against users accidentally pasting extra JSON text after the token)
+    // Accept token from Authorization header (Swagger/Postman) OR accessToken cookie (browser)
     const raw = request.headers.authorization?.replace(/^Bearer\s+/i, '').trim() || '';
     const jwtMatch = raw.match(/^(eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)/);
-    const token = jwtMatch ? jwtMatch[1] : raw;
+    const headerToken = jwtMatch ? jwtMatch[1] : raw;
+    const token = headerToken || request.cookies?.accessToken || '';
+
     if (!token) {
       return reply.code(401).send(
         errorResponse(

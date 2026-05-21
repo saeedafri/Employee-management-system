@@ -48,10 +48,8 @@ function slugFromHost(host) {
  * authenticate() verifies properly; we only need tenantId here for routing.
  * A forged token is caught at authenticate() time before any data is touched.
  */
-function tenantIdFromAuthHeader(authHeader) {
-  if (!authHeader) return null;
-  const raw = authHeader.replace(/^Bearer\s+/i, '').trim();
-  const match = raw.match(/^eyJ[A-Za-z0-9_-]+\.(eyJ[A-Za-z0-9_-]+)\.[A-Za-z0-9_-]+/);
+function tenantIdFromJwt(jwt) {
+  const match = jwt?.match(/^eyJ[A-Za-z0-9_-]+\.(eyJ[A-Za-z0-9_-]+)\.[A-Za-z0-9_-]+/);
   if (!match) return null;
   try {
     const payload = JSON.parse(Buffer.from(match[1], 'base64url').toString('utf8'));
@@ -59,6 +57,12 @@ function tenantIdFromAuthHeader(authHeader) {
   } catch {
     return null;
   }
+}
+
+function tenantIdFromAuthHeader(authHeader) {
+  if (!authHeader) return null;
+  const raw = authHeader.replace(/^Bearer\s+/i, '').trim();
+  return tenantIdFromJwt(raw);
 }
 
 export async function resolveTenant(request, reply) {
@@ -71,9 +75,9 @@ export async function resolveTenant(request, reply) {
   // Layer 2: Explicit header key
   const tenantKey = !slug ? (request.headers['x-tenant-key'] || null) : null;
 
-  // Layer 3: JWT payload tenantId (skip if already have slug or key)
+  // Layer 3: JWT payload tenantId — from Authorization header OR accessToken cookie
   const tenantId = (!slug && !tenantKey)
-    ? tenantIdFromAuthHeader(request.headers.authorization)
+    ? (tenantIdFromAuthHeader(request.headers.authorization) || tenantIdFromJwt(request.cookies?.accessToken))
     : null;
 
   // Layer 4: Default key from env
