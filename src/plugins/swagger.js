@@ -400,8 +400,8 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           type: 'object',
           required: ['email', 'password'],
           properties: {
-            email:    { type: 'string', format: 'email', example: 'admin@testorg.com' },
-            password: { type: 'string', format: 'password', example: 'password123' },
+            email:    { type: 'string', format: 'email', example: 'superadmin@acme.test' },
+            password: { type: 'string', format: 'password', example: 'Password123!' },
           },
         },
         LoginResponse: {
