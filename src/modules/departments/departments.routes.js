@@ -26,8 +26,8 @@ export default async function departmentsRoutes(fastify) {
             type: 'object',
             properties: {
               success: { type: 'boolean' },
-              data: { type: 'array' },
-              meta: { type: 'object' },
+              data: { type: 'array', items: { type: 'object', additionalProperties: true } },
+              meta: { type: 'object', additionalProperties: true },
             },
           },
         },
@@ -57,8 +57,8 @@ export default async function departmentsRoutes(fastify) {
             type: 'object',
             properties: {
               success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
+              data: { type: 'object', additionalProperties: true },
+              meta: { type: 'object', additionalProperties: true },
             },
           },
         },
@@ -94,8 +94,8 @@ export default async function departmentsRoutes(fastify) {
             type: 'object',
             properties: {
               success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
+              data: { type: 'object', additionalProperties: true },
+              meta: { type: 'object', additionalProperties: true },
             },
           },
         },
@@ -122,8 +122,8 @@ export default async function departmentsRoutes(fastify) {
             type: 'object',
             properties: {
               success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
+              data: { type: 'object', additionalProperties: true },
+              meta: { type: 'object', additionalProperties: true },
             },
           },
         },

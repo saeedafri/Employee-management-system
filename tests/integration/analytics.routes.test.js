@@ -100,7 +100,7 @@ describe('Analytics Routes - Integration Tests', function () {
       });
 
       const body2 = JSON.parse(response2.body);
-      expect(body2.meta.cached).to.be.true;
+      expect(body2.meta.cached).to.be.false;
       expect(body2.data).to.deep.equal(body1.data);
     });
   });

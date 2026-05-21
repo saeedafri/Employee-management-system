@@ -17,8 +17,17 @@ export async function createTestApp() {
   return app;
 }
 
-// eslint-disable-next-line no-empty
 export async function cleanDatabase() {
+  const dbUrl = process.env.DATABASE_URL || '';
+  const isTestDb =
+    process.env.NODE_ENV === 'test' &&
+    (dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1') || dbUrl.includes('ems_test'));
+  if (!isTestDb) {
+    throw new Error(
+      'cleanDatabase() refused: NODE_ENV is not "test" or DATABASE_URL is not a local test DB. ' +
+      'Set NODE_ENV=test and point DATABASE_URL at a local database.',
+    );
+  }
   // Clean up test data (order matters for foreign keys)
   try {
     await prisma.auditLog.deleteMany({});

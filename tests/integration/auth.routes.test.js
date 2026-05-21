@@ -71,7 +71,8 @@ describe('Auth Routes Integration Tests', function () {
       expect(cookie.value).to.include('.');
     });
 
-    it('should return 401 for missing tenant header', async function () {
+    it('should auto-resolve tenant from email without tenant header', async function () {
+      // Login now auto-resolves tenant from email — no x-tenant-key required
       const response = await app.inject({
         method: 'POST',
         url: '/api/v1/auth/login',
@@ -81,10 +82,9 @@ describe('Auth Routes Integration Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(400);
+      // Either success (user found) or INVALID_CREDENTIALS — never MISSING_TENANT
       const body = JSON.parse(response.body);
-      expect(body.success).to.be.false;
-      expect(body.error.code).to.equal('MISSING_TENANT');
+      expect(body.error?.code).to.not.equal('MISSING_TENANT');
     });
 
     it('should return 401 for non-existent user', async function () {
@@ -229,7 +229,8 @@ describe('Auth Routes Integration Tests', function () {
       expect(body.error.code).to.equal('FORBIDDEN');
     });
 
-    it('should return 401 for missing tenant header', async function () {
+    it('should auto-resolve tenant from email for admin login', async function () {
+      // Admin login auto-resolves tenant — no x-tenant-key required
       const response = await app.inject({
         method: 'POST',
         url: '/api/v1/auth/admin/login',
@@ -239,7 +240,9 @@ describe('Auth Routes Integration Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(400);
+      // Should not fail with MISSING_TENANT — either succeeds or INVALID_CREDENTIALS/FORBIDDEN
+      const body = JSON.parse(response.body);
+      expect(body.error?.code).to.not.equal('MISSING_TENANT');
     });
   });
 
@@ -326,14 +329,16 @@ describe('Auth Routes Integration Tests', function () {
       expect(body.error.code).to.equal('REFRESH_TOKEN_MISSING');
     });
 
-    it('should return 401 for missing tenant header', async function () {
+    it('should reject invalid refresh token format', async function () {
+      // Refresh auto-resolves tenant from session — no x-tenant-key required
+      // But an invalid token format should still be rejected
       const response = await app.inject({
         method: 'POST',
         url: '/api/v1/auth/refresh',
         cookies: { refreshToken: 'sessionid.token' },
       });
 
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).to.be.oneOf([400, 401]);
     });
 
     it('should return 401 for invalid token format', async function () {

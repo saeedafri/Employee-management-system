@@ -30,7 +30,7 @@ export default async function holidaysRoutes(fastify) {
               data: {
                 type: 'object',
                 properties: {
-                  holidays: { type: 'array' },
+                  holidays: { type: 'array', items: { type: 'object', additionalProperties: true } },
                   total: { type: 'number' },
                 },
               },
@@ -64,8 +64,8 @@ export default async function holidaysRoutes(fastify) {
             type: 'object',
             properties: {
               success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
+              data: { type: 'object', additionalProperties: true },
+              meta: { type: 'object', additionalProperties: true },
             },
           },
         },
@@ -100,8 +100,8 @@ export default async function holidaysRoutes(fastify) {
             type: 'object',
             properties: {
               success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
+              data: { type: 'object', additionalProperties: true },
+              meta: { type: 'object', additionalProperties: true },
             },
           },
         },
@@ -128,8 +128,8 @@ export default async function holidaysRoutes(fastify) {
             type: 'object',
             properties: {
               success: { type: 'boolean' },
-              data: { type: 'object' },
-              meta: { type: 'object' },
+              data: { type: 'object', additionalProperties: true },
+              meta: { type: 'object', additionalProperties: true },
             },
           },
         },

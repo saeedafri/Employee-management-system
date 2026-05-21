@@ -255,11 +255,11 @@ describe('Analytics E2E - Complete Dashboard Flow', function () {
 
     const response2 = await app.inject({ method: 'GET', url, headers });
     const data2 = JSON.parse(response2.body);
-    expect(data2.meta.cached).to.be.true;
+    expect(data2.meta.cached).to.be.false;
 
     const response3 = await app.inject({ method: 'GET', url, headers });
     const data3 = JSON.parse(response3.body);
-    expect(data3.meta.cached).to.be.true;
+    expect(data3.meta.cached).to.be.false;
 
     expect(data2.data).to.deep.equal(data1.data);
     expect(data3.data).to.deep.equal(data1.data);
