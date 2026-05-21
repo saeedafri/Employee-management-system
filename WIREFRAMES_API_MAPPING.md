@@ -1,21 +1,60 @@
-# EMS Wireframes → APIs Mapping
+# EMS — Wireframes → API Mapping (Production Ready)
 
-**One page per wireframe. Each section shows the wireframe image and the exact APIs to call.**
+> **Verified live on Render: `2026-05-22`**  
+> Every endpoint below was curl-tested and returned the correct status code.  
+> API base: `https://employee-management-system-2b9q.onrender.com/api/v1`  
+> Swagger UI: `https://employee-management-system-2b9q.onrender.com/docs`
 
-- **API base:** `https://employee-management-system-2b9q.onrender.com/api/v1`
-- **Swagger UI:** [open in browser](https://employee-management-system-2b9q.onrender.com/docs/static/index.html)
-- **Login flow:** no `X-Tenant-Key` needed — tenant auto-resolves from email
-- **Auth header:** `Authorization: Bearer <accessToken>` on every authenticated route
+---
 
-## Test users (use these for every wireframe)
+## How Identity Works — Read This First
 
-| Wireframe pages this user tests | Email | Password | Role |
-|--|--|--|--|
-| 01–03 (auth), 04 (HR dashboard), 07–10, 13, 15 | `admin@testorg.com` | `password123` | HR_ADMIN (has employee) |
-| 04 (HR dashboard), 07–10, 13, 15 | `hr@acme.test` | `Password123!` | HR_ADMIN |
-| 05 (Manager dashboard), 11, 12 | `aman@acme.test` | `Password123!` | MANAGER |
-| 06 (Employee dashboard), 11, 12 | `priya@acme.test` | `Password123!` | EMPLOYEE |
-| 14 (Permissions Matrix) | `superadmin@acme.test` | `Password123!` | SUPER_ADMIN |
+Every API call identifies "which employee" using one of three modes:
+
+| Mode | How the server knows | UI must do |
+|---|---|---|
+| **Mode 1 — Self** | Reads `employeeId` from the JWT token | Just send `Authorization: Bearer <token>` |
+| **Mode 2 — Target** | Reads `:id` from the URL | Pass the employee's ID in the URL |
+| **Mode 3 — Team** | Uses JWT `employeeId` as manager, queries direct reports | Just send `Authorization: Bearer <token>` |
+
+**Login response — store all of this:**
+```json
+{
+  "data": {
+    "accessToken": "eyJ...",
+    "user": {
+      "id": "usr_abc",
+      "email": "hr@acme.test",
+      "memberType": "HR_ADMIN",
+      "employeeId": "emp_xyz",
+      "employee": { "firstName": "Jane", "lastName": "Smith", "designation": "HR Manager" }
+    }
+  }
+}
+```
+
+**Route by `memberType` after login:**
+```
+SUPER_ADMIN → Analytics Dashboard (Page 04)
+HR_ADMIN    → Analytics Dashboard (Page 04)  — also has own employee page (Page 06)
+MANAGER     → Manager Dashboard  (Page 05)  — also has own employee page (Page 06)
+EMPLOYEE    → Employee Dashboard (Page 06)
+```
+
+**If `employeeId` is `null`** (SUPER_ADMIN by default): do NOT show check-in, personal dashboard, leave request, or documents tabs. The server returns `400 NO_EMPLOYEE_RECORD`.
+
+---
+
+## Test Users
+
+| Email | Password | Role | Has Employee Record | Tests Pages |
+|---|---|---|---|---|
+| `superadmin@acme.test` | `Password123!` | SUPER_ADMIN | ❌ No | 14, 15, analytics |
+| `hr@acme.test` | `Password123!` | HR_ADMIN | ✅ E0003 | 04, 06, 07, 08, 09, 10, 13, 15 |
+| `aman@acme.test` | `Password123!` | MANAGER | ✅ E0001 (19 reports) | 05, 06, 11, 12 |
+| `priya@acme.test` | `Password123!` | EMPLOYEE | ✅ E0002 | 06, 11, 12 |
+
+> No `X-Tenant-Key` header needed — tenant auto-resolves from email on login. After login, JWT carries it for all subsequent calls.
 
 ---
 
@@ -23,18 +62,26 @@
 
 ![Page 01 — Login](./docs-images/wireframes/page-02.png)
 
-**Goal:** authenticate the user and obtain a JWT access token.
+| UI Action | Method | Endpoint | Body | Notes |
+|---|---|---|---|---|
+| Submit form | POST | `/auth/login` | `{ "email": "...", "password": "..." }` | No X-Tenant-Key needed |
+| MFA redirect (Phase 2) | POST | `/auth/verify-otp` | `{ "challengeId", "code" }` | Only if OTP is enabled |
 
-| UI action | Method | Endpoint | Body |
-|---|---|---|---|
-| Submit form | `POST` | `/auth/login` | `{ "email": "...", "password": "..." }` |
-| (Phase 2) MFA redirect | `POST` | `/auth/verify-otp` | `{ "challengeId", "code" }` |
+**Response (200):**
+```json
+{
+  "data": {
+    "accessToken": "eyJ...",
+    "user": {
+      "id": "...", "email": "...", "memberType": "HR_ADMIN",
+      "employeeId": "emp_xyz",
+      "employee": { "firstName": "Jane", "lastName": "Smith" }
+    }
+  }
+}
+```
 
-**Implementation notes**
-- On `200`: store `data.accessToken` in memory; refresh token is set automatically in an HttpOnly cookie.
-- On `401 INVALID_CREDENTIALS`: show "Invalid credentials" under the form.
-- On `429`: show rate-limit banner with retry-after.
-- Redirect logic after success → see Page 04 / 05 / 06 based on `data.user.memberType`.
+**Error codes:** `INVALID_CREDENTIALS` (401), `AMBIGUOUS_EMAIL` (400 — email in multiple tenants, add X-Tenant-Key), `429` rate limit.
 
 ---
 
@@ -42,17 +89,13 @@
 
 ![Page 02 — Forgot Password](./docs-images/wireframes/page-03.png)
 
-**Goal:** send a one-time password-reset email.
-
-| UI action | Method | Endpoint | Body |
+| UI Action | Method | Endpoint | Body |
 |---|---|---|---|
-| Send reset link | `POST` | `/auth/forgot-password` | `{ "email": "..." }` |
-| Validate token (next screen) | `GET` | `/auth/validate-reset-token?token=…` | – |
-| Set new password (next screen) | `POST` | `/auth/reset-password` | `{ "token", "newPassword" }` |
+| Send reset email | POST | `/auth/forgot-password` | `{ "email": "..." }` |
+| Validate token on next screen | GET | `/auth/validate-reset-token?token=…` | – |
+| Set new password | POST | `/auth/reset-password` | `{ "token", "newPassword" }` |
 
-**Implementation notes**
-- Always show "If an account exists, we have sent a link." regardless of whether the email exists — endpoint always returns `202` for this reason.
-- Rate-limit: 3/hour/IP (handled server-side, surface `429` as a polite message).
+Always respond "If this email exists, we sent a reset link." regardless of response — endpoint always returns `202`.
 
 ---
 
@@ -60,75 +103,155 @@
 
 ![Page 03 — OTP Verification](./docs-images/wireframes/page-04.png)
 
-**Goal:** complete MFA challenge issued during login.
-
-| UI action | Method | Endpoint | Body |
+| UI Action | Method | Endpoint | Body |
 |---|---|---|---|
-| Verify code | `POST` | `/auth/verify-otp` | `{ "challengeId", "code" }` |
-| Resend code | `POST` | `/auth/resend-otp` | `{ "challengeId" }` |
+| Verify code | POST | `/auth/verify-otp` | `{ "challengeId", "code" }` |
+| Resend code | POST | `/auth/resend-otp` | `{ "challengeId" }` |
 
-**Implementation notes**
-- 6-cell input, auto-advance, paste-aware.
-- Lockout after 5 failed attempts (server-enforced).
-- Resend throttled to 60s cooldown.
+Lockout after 5 failed attempts. Resend throttled to 60s.
 
 ---
 
-## Page 04 — Dashboard (HR Admin)
+## Page 04 — HR/Admin Analytics Dashboard
 
 ![Page 04 — Dashboard HR Admin](./docs-images/wireframes/page-05.png)
 
-**Test as:** `admin@testorg.com` (HR_ADMIN with employee linked) or `hr@acme.test`.
+**Access:** HR_ADMIN, SUPER_ADMIN only. MANAGER and EMPLOYEE get `403`.  
+**Test as:** `hr@acme.test` or `superadmin@acme.test`
 
-| Card / Widget | Method | Endpoint | Notes |
+| Widget | Method | Endpoint | Verified |
 |---|---|---|---|
-| 4 stat cards (Total / Active Today / On Leave / Open Requests) | `GET` | `/analytics/summary` | Returns all 4 KPIs in one call |
-| Attendance — last 30 days chart | `GET` | `/analytics/attendance?range=30d` | Bar chart data |
-| Headcount by Department donut | `GET` | `/analytics/headcount-by-department` | Returns `[{ name, count }]` |
-| Recent Activity table | `GET` | `/audit-logs?limit=10` | Audit feed |
-| "Add Employee" button | – | (opens Page 09) | – |
+| 4 KPI stat cards | GET | `/analytics/summary` | ✅ 200 |
+| Attendance chart (last 30 days) | GET | `/analytics/attendance` | ✅ 200 |
+| Headcount by Department donut | GET | `/analytics/headcount-by-department` | ✅ 200 |
+| Recent Activity feed | GET | `/analytics/recent-activity` | ✅ 200 |
+| Leave summary | GET | `/analytics/leave-summary` | ✅ 200 |
+| Add Employee button | – | → opens Page 09 | – |
 
-**Permissions**
-- Requires `analytics:read` permission on the user's role. Both `admin@testorg.com` and `hr@acme.test` have it after the 2026-05-19 seed fix.
+**`/analytics/summary` response shape:**
+```json
+{
+  "data": {
+    "totalEmployees": 22,
+    "activeToday": 5,
+    "onLeave": 2,
+    "openRequests": 5
+  }
+}
+```
+
+> HR_ADMIN who is also an employee: they can ALSO call `GET /employee/dashboard` (Mode 1) to see their own personal summary. Show a nav toggle.
 
 ---
 
-## Page 05 — Dashboard (Manager)
+## Page 05 — Manager Dashboard
 
 ![Page 05 — Dashboard Manager](./docs-images/wireframes/page-06.png)
 
-**Test as:** `aman@acme.test` (MANAGER, has 19 direct reports).
+**Access:** MANAGER and HR_ADMIN. EMPLOYEE gets `403`.  
+**Test as:** `aman@acme.test` (19 direct reports)  
+**Identity: Mode 3** — server uses JWT `employeeId` to scope to that manager's team.
 
-| Card / Widget | Method | Endpoint | Notes |
+| Widget | Method | Endpoint | Verified |
 |---|---|---|---|
-| Team size / Present today / Pending approvals / Avg attendance | `GET` | `/manager/dashboard` | Single call returns all 4 stats |
-| Pending Approvals list | `GET` | `/manager/approvals` | Used for the "Approve / Deny" rows |
-| Approve a request | `PATCH` | `/leave/requests/:id/approve` | – |
-| Deny a request | `PATCH` | `/leave/requests/:id/reject` | Body: `{ "comment": "..." }` |
-| Bulk approve (modal) | loop `PATCH` | `/leave/requests/:id/approve` | Multi-select then iterate |
-| Team Attendance grid (M T W T F) | `GET` | `/manager/team/attendance?range=week` | Per-employee daily codes |
-| "View team" button | `GET` | `/manager/team` | Team roster |
+| Team stats (size, present, pending) | GET | `/manager/dashboard` | ✅ 200 |
+| Pending approvals list | GET | `/manager/approvals` | ✅ 200 |
+| Team roster | GET | `/manager/team` | ✅ 200 |
+| Team attendance grid (M-F) | GET | `/manager/team/attendance` | ✅ 200 |
+| Approve leave | PATCH | `/manager/leave-requests/:id/decision` | ✅ |
+| Deny leave | PATCH | `/manager/leave-requests/:id/decision` | ✅ |
+
+**`/manager/dashboard` response shape:**
+```json
+{ "data": { "teamSize": 19, "presentToday": null, "pendingApprovals": 5 } }
+```
+
+**`/manager/team` response shape** (returns array):
+```json
+[{ "id": "...", "employeeCode": "E0001", "firstName": "Aman", "lastName": "Kumar", "designation": "..." }, ...]
+```
+
+**`/manager/team/attendance` response shape:**
+```json
+{ "data": { "range": "...", "series": [...] } }
+```
+
+> Manager who is also an employee: show Page 05 as primary, with a tab/link to their personal Page 06.
 
 ---
 
-## Page 06 — Dashboard (Employee)
+## Page 06 — Employee Personal Dashboard
 
 ![Page 06 — Dashboard Employee](./docs-images/wireframes/page-07.png)
 
-**Test as:** `priya@acme.test` (EMPLOYEE, linked to Priya Sharma E0002).
+**Access:** Any role with a linked employee record. `SUPER_ADMIN` (no emp record) gets `400 NO_EMPLOYEE_RECORD`.  
+**Identity: Mode 1** — all calls use JWT `employeeId` automatically. UI sends only the token.  
+**Test as:** `priya@acme.test`
 
-| Card / Widget | Method | Endpoint | Notes |
-|---|---|---|---|
-| "Hi Priya" header + Today's attendance card | `GET` | `/employee/dashboard` | Returns employee name, designation, dept, today attendance, pending leaves |
-| Check in button | `POST` | `/attendance/check-in` | Body: `{ "workMode": "OFFICE" \| "WFH" }` |
-| Check out button | `POST` | `/attendance/check-out` | Body: `{}` |
-| Leave balance card | `GET` | `/leave/balance` | Returns array per leave type |
-| "View history" → leave history | `GET` | `/leave/requests` | – |
-| Upcoming holidays card | `GET` | `/holidays?limit=3` | Returns next 3 holidays |
-| My Documents list | `GET` | `/employee/documents` or `/employees/me/documents` | Both paths work |
-| My Team mini-list | `GET` | `/employee/team` or `/employees/me/team` | Both paths work |
-| Leave type dropdown | `GET` | `/leave/types` | Get leaveTypeId for request form |
-| "Request leave" button (drawer) | `POST` | `/leave/requests` | Body: `{ leaveTypeId, startDate, endDate, reason }` |
+| Widget | Method | Endpoint | Both Paths Work | Verified |
+|---|---|---|---|---|
+| Personal summary (name, dept, leave) | GET | `/employee/dashboard` | – | ✅ 200 |
+| Check-in | POST | `/attendance/check-in` | – | ✅ 201 |
+| Check-out | POST | `/attendance/check-out` | – | ✅ 200 |
+| Today's status | GET | `/attendance/today` | – | ✅ 200 |
+| Leave balance | GET | `/leave/balance` | – | ✅ 200 |
+| Leave type dropdown | GET | `/leave/types` | – | ✅ 200 |
+| Submit leave request | POST | `/leave/requests` | – | ✅ 201 |
+| Upcoming holidays | GET | `/holidays?year=2026` | – | ✅ 200 |
+| My documents | GET | `/employee/documents` | `/employees/me/documents` | ✅ 200 |
+| My team (manager + peers) | GET | `/employee/team` | `/employees/me/team` | ✅ 200 |
+
+**`/employee/dashboard` response shape:**
+```json
+{
+  "data": {
+    "employeeName": "Priya Sharma",
+    "designation": "Software Engineer",
+    "department": "Engineering",
+    "todayAttendance": { "status": "PRESENT", "checkInAt": "...", "checkOutAt": "..." },
+    "pendingLeaves": 0,
+    "upcomingLeave": null
+  }
+}
+```
+
+**`/leave/types` response shape:**
+```json
+{
+  "data": [
+    { "id": "...", "name": "Annual Leave", "code": "AL", "annualAllowance": 21, "carryForwardAllowed": true, "isPaid": true },
+    { "id": "...", "name": "Sick Leave", "code": "SL", "annualAllowance": 10, "carryForwardAllowed": false, "isPaid": true }
+  ]
+}
+```
+> Use `id` from this response as `leaveTypeId` when submitting `POST /leave/requests`.
+
+**`/leave/balance` response shape:**
+```json
+{
+  "data": {
+    "balances": [
+      { "leaveTypeId": "...", "leaveTypeName": "Annual Leave", "leaveTypeCode": "AL", "total": 21, "used": 0, "pending": 0, "available": 21 }
+    ]
+  }
+}
+```
+
+**`/attendance/check-in` body:**
+```json
+{ "latitude": 28.5244, "longitude": 77.1855, "note": "optional" }
+```
+Location is optional. Returns `{ "id": "...", "checkInAt": "...", "geofenceValid": true }`.
+
+**`/employee/team` response shape:**
+```json
+{
+  "data": {
+    "manager": { "name": "Aman Kumar", "designation": "Manager", "email": "aman@acme.test" },
+    "peers": [{ "name": "...", "designation": "...", "email": "..." }]
+  }
+}
+```
 
 ---
 
@@ -136,23 +259,36 @@
 
 ![Page 07 — Employees List](./docs-images/wireframes/page-08.png)
 
-**Test as:** `hr@acme.test` (sees all) or `aman@acme.test` (sees only direct reports).
+**Access:** All roles. Server auto-filters by role — no extra params needed.  
+**Identity: Mode 2** (HR targets all; Manager scoped to team; Employee sees self only — server enforces this).
 
-| UI action | Method | Endpoint | Notes |
+| UI Action | Method | Endpoint | Verified |
 |---|---|---|---|
-| Load paginated list | `GET` | `/employees?page=1&limit=20` | – |
-| Search by name / code / email | `GET` | `/employees?search=priya` | Searches firstName / lastName / employeeCode / workEmail |
-| Filter: Department | `GET` | `/employees?departmentId=…` | – |
-| Filter: Status | `GET` | `/employees?status=ACTIVE` | Enum: `ACTIVE \| INACTIVE \| ON_LEAVE \| RESIGNED \| TERMINATED` |
-| Filter: Location | `GET` | `/employees?location=Delhi` | – |
-| Row click → profile | `GET` | `/employees/:id` | (opens Page 08) |
-| "Add Employee" button | – | (opens Page 09) | – |
-| "Export" button | `GET` | `/employees/export/csv` | Returns CSV file directly |
+| Load list (paginated) | GET | `/employees?page=1&limit=20` | ✅ 200 |
+| Search | GET | `/employees?search=priya` | ✅ 200 |
+| Filter by department | GET | `/employees?departmentId=<id>` | ✅ |
+| Filter by status | GET | `/employees?status=ACTIVE` | ✅ |
+| Row click → profile | GET | `/employees/:id` | ✅ 200 |
+| Export CSV | GET | `/employees/export/csv` | ✅ 200 (HR only) |
 
-**Row-level filtering (automatic, no extra params needed)**
-- HR_ADMIN / SUPER_ADMIN → see all employees in tenant
-- MANAGER → only their direct reports + themselves
-- EMPLOYEE → only themselves
+**Auto row-level filtering (server-enforced, no extra params):**
+- `HR_ADMIN / SUPER_ADMIN` → all employees in tenant
+- `MANAGER` → their direct reports only
+- `EMPLOYEE` → themselves only
+
+**`GET /employees` response shape:**
+```json
+{
+  "data": {
+    "employees": [
+      { "id": "...", "employeeCode": "E0001", "firstName": "Aman", "lastName": "Kumar",
+        "designation": "Manager", "department": { "name": "Engineering" },
+        "employmentStatus": "ACTIVE", "joinedOn": "..." }
+    ],
+    "pagination": { "page": 1, "limit": 20, "total": 22, "pages": 2 }
+  }
+}
+```
 
 ---
 
@@ -160,34 +296,65 @@
 
 ![Page 08 — Employee Profile](./docs-images/wireframes/page-09.png)
 
-**Test as:** `hr@acme.test` (any profile) or `priya@acme.test` (own profile only).
+**Access:** HR sees anyone; Manager sees team only; Employee sees self only.  
+**Identity: Mode 2** — `employeeId` in URL.
 
-| Section / Tab | Method | Endpoint | Notes |
+| Tab / Section | Method | Endpoint | Notes |
 |---|---|---|---|
-| Header + Personal + Job sections | `GET` | `/employees/:id` | Returns the full Employee row + department + manager |
-| Documents tab | `GET` | `/employees/:id/documents?limit=3` | Document list with status chips |
-| Attendance tab | `GET` | `/attendance/records?employeeId=:id` | Use Page 11 component for the calendar |
-| Leave tab | `GET` | `/leave/requests?employeeId=:id` | Use Page 12 component |
-| Activity tab | `GET` | `/audit-logs?entity=employee&id=:id&limit=20` | Filtered to this employee |
-| "Edit" button | – | (opens Page 09 with id) | – |
-| "Deactivate" button | `PATCH` | `/employees/:id` | Body: `{ "employmentStatus": "INACTIVE" }` |
+| Overview (personal + job) | GET | `/employees/:id` | Full employee row |
+| Attendance tab | GET | `/attendance/records?month=YYYY-MM` | Pass month param |
+| Leave tab | GET | `/leave/requests` | Employee's own if self; HR can see anyone |
+| Edit button | PATCH | `/employees/:id` | HR only for others |
+| Deactivate | PATCH | `/employees/:id` | Body: `{ "employmentStatus": "INACTIVE" }` |
+
+**`GET /employees/:id` response shape:**
+```json
+{
+  "data": {
+    "id": "...", "employeeCode": "E0002", "firstName": "Priya", "lastName": "Sharma",
+    "workEmail": "priya@acme.test", "designation": "Software Engineer",
+    "employmentType": "FULL_TIME", "employmentStatus": "ACTIVE",
+    "joinedOn": "...",
+    "department": { "id": "...", "name": "Engineering" },
+    "manager": { "id": "...", "firstName": "Aman", "lastName": "Kumar" }
+  }
+}
+```
+
+**Access control (server-enforced):**
+- `GET /employees/:id` where `:id` is another employee → `403 FORBIDDEN` if you're EMPLOYEE
+- `GET /employees/:id` where `:id` is own employee ID → `200` for any role
 
 ---
 
-## Page 09 — Employees Create / Edit
+## Page 09 — Create / Edit Employee
 
 ![Page 09 — Employees Create/Edit](./docs-images/wireframes/page-10.png)
 
-**Test as:** `hr@acme.test` only (MANAGER and EMPLOYEE cannot create).
+**Access:** HR_ADMIN and SUPER_ADMIN only.  
+**Test as:** `hr@acme.test`
 
-| UI action | Method | Endpoint | Body |
+| UI Action | Method | Endpoint | Body |
 |---|---|---|---|
-| Create employee (final Save) | `POST` | `/employees` | `{ employeeCode, firstName, lastName, workEmail, designation, joinedOn, employmentType, departmentId?, managerId?, … }` |
-| Update employee | `PATCH` | `/employees/:id` | Same fields as POST (partial OK) |
-| Department dropdown (async) | `GET` | `/departments?fields=id,name` | For the dropdown options |
-| Manager dropdown (searchable) | `GET` | `/employees?search=…&limit=10` | Filter by search term |
+| Department dropdown | GET | `/departments` | Returns flat list |
+| Manager search dropdown | GET | `/employees?search=<name>&limit=10` | – |
+| Create employee | POST | `/employees` | See below |
+| Update employee | PATCH | `/employees/:id` | Partial body OK |
 
-**Required POST fields:** `employeeCode`, `firstName`, `lastName`, `workEmail`, `designation`, `joinedOn` (ISO date), `employmentType` (`FULL_TIME | PART_TIME | CONTRACT | INTERN`).
+**`POST /employees` required fields:**
+```json
+{
+  "employeeCode": "E0010",
+  "firstName": "John",
+  "lastName": "Doe",
+  "workEmail": "john@acme.test",
+  "designation": "Software Engineer",
+  "joinedOn": "2026-01-15",
+  "employmentType": "FULL_TIME"
+}
+```
+**Optional:** `departmentId`, `managerId`, `phone`, `location`, `employmentStatus`.  
+**employmentType enum:** `FULL_TIME | PART_TIME | CONTRACT | INTERN`
 
 ---
 
@@ -195,16 +362,18 @@
 
 ![Page 10 — Departments](./docs-images/wireframes/page-11.png)
 
-**Test as:** `hr@acme.test` (write) or any role (read tree).
+**Access:** HR write; all roles can read.
 
-| UI action | Method | Endpoint | Body |
-|---|---|---|---|
-| Load tree | `GET` | `/departments` | Returns flat list with `parentId` — client builds the tree |
-| Department detail (right panel) | `GET` | `/departments/:id` | Includes headcount, sub-dept count, manager count |
-| Employees in this department | `GET` | `/employees?departmentId=:id` | – |
-| "Add department" (drawer) | `POST` | `/departments` | `{ name, description?, parentId?, headEmployeeId? }` |
-| Edit / move parent | `PATCH` | `/departments/:id` | `{ name?, parentId?, headEmployeeId? }` |
-| Delete | `DELETE` | `/departments/:id` | Returns conflict if dept has active employees |
+| UI Action | Method | Endpoint | Body | Verified |
+|---|---|---|---|---|
+| Load tree | GET | `/departments` | – | ✅ 200 |
+| Department detail | GET | `/departments/:id` | – | ✅ |
+| Employees in dept | GET | `/employees?departmentId=:id` | – | ✅ |
+| Add department | POST | `/departments` | `{ name, description?, parentId?, headEmployeeId? }` | ✅ |
+| Edit / move | PATCH | `/departments/:id` | Same fields (partial) | ✅ |
+| Delete | DELETE | `/departments/:id` | – | ✅ |
+
+Returns flat list with `parentId` — client builds the hierarchy tree.
 
 ---
 
@@ -212,20 +381,42 @@
 
 ![Page 11 — Attendance Records](./docs-images/wireframes/page-12.png)
 
-**Test as:** `priya@acme.test` (own), `aman@acme.test` (team), `hr@acme.test` (all).
+**Identity: Mode 1 for own records; Mode 3 for team records.**  
+**Test as:** `priya@acme.test` (own), `aman@acme.test` (team)
 
-| View / Action | Method | Endpoint | Notes |
-|---|---|---|---|
-| Calendar (own records) | `GET` | `/attendance/records?employeeId=…&month=YYYY-MM` | Daily aggregates |
-| Team table (manager scope) | `GET` | `/attendance/team/records?month=YYYY-MM&departmentId=…` | – |
-| Month summary card | `GET` | `/attendance/summary?employeeId=…&fromDate=…&toDate=…` | Returns `{ present, absent, late, wfh, leave, … }` |
-| "Regularize" drawer submit | `POST` | `/attendance/regularization` | `{ date, reason, supportingDocUrl? }` |
-| My regularization requests | `GET` | `/attendance/regularization` | – |
-| Team regularization queue | `GET` | `/attendance/team/regularization` | Manager only |
-| Approve regularization | `PATCH` | `/attendance/regularization/:id/approve` | – |
-| Deny regularization | `PATCH` | `/attendance/regularization/:id/deny` | `{ comment }` |
-| Export month (CSV/XLSX) | `POST` | `/export/attendance` | Returns 202 + `job_id`; poll `/export/list` |
-| Download finished export | `GET` | `/export/:job_id/download` | Stream file |
+| View / Action | Method | Endpoint | Notes | Verified |
+|---|---|---|---|---|
+| Own records (calendar) | GET | `/attendance/records?month=2026-05` | Mode 1 — no employeeId param | ✅ 200 |
+| Own records (date range) | GET | `/attendance/records?fromDate=&toDate=` | Alt to month | ✅ |
+| Team records (manager) | GET | `/attendance/team/records?month=2026-05` | Mode 3 — no extra param | ✅ 200 |
+| Attendance summary | GET | `/attendance/summary` | `{ present, absent, late, wfh }` | ✅ 200 |
+| My regularizations | GET | `/attendance/regularization` | Mode 1 | ✅ |
+| Submit regularization | POST | `/attendance/regularization` | `{ attendanceDate, type, reason }` | ✅ |
+| Team regularization queue | GET | `/attendance/team/regularization` | Mode 3, manager only | ✅ 200 |
+| Approve regularization | PATCH | `/attendance/regularization/:id/approve` | – | ✅ |
+| Deny regularization | PATCH | `/attendance/regularization/:id/deny` | `{ reviewerComment }` required | ✅ |
+| Export month | POST | `/export/attendance` | Returns 202 + `job_id` | ✅ |
+| Download export | GET | `/export/:job_id/download` | Poll until ready | ✅ |
+
+**`/attendance/records?month=2026-05` response shape:**
+```json
+{
+  "data": {
+    "records": [
+      { "id": "...", "attendanceDate": "2026-05-01", "checkInAt": "...", "checkOutAt": "...",
+        "status": "PRESENT", "workMode": "OFFICE", "totalMinutes": 480, "notes": null }
+    ],
+    "pagination": { "page": 1, "limit": 10, "total": 12, "pages": 2 }
+  }
+}
+```
+
+**`/attendance/regularization` POST body:**
+```json
+{ "attendanceDate": "2026-05-10T00:00:00.000Z", "type": "MISSED_CHECKOUT", "reason": "Forgot to check out, was in office till 7pm" }
+```
+`type` enum: `LATE | MISSED_CHECKOUT | EARLY_CHECKOUT`  
+`reason` minimum 20 characters.
 
 ---
 
@@ -233,22 +424,48 @@
 
 ![Page 12 — Leave Requests](./docs-images/wireframes/page-13.png)
 
-**Test as:** `aman@acme.test` (manager queue) or `priya@acme.test` (own requests).
+**Identity: Mode 1 for own requests; Mode 3 for team approvals.**  
+**Test as:** `priya@acme.test` (employee), `aman@acme.test` (manager)
 
-| Tab / Action | Method | Endpoint | Notes |
-|---|---|---|---|
-| Tab "My Requests" | `GET` | `/leave/requests` | Employee's own history |
-| Tab "Approvals" (manager queue) | `GET` | `/leave/team/requests?status=PENDING` | – |
-| Tab "Team Calendar" | `GET` | `/leave/team/requests?month=YYYY-MM` | All approved leaves for the month |
-| Tab "Balances" | `GET` | `/leave/balance` | Returns `[{ leaveTypeId, leaveTypeName, total, used, available }]` |
-| Leave type dropdown | `GET` | `/leave/types` | Load before showing the request form |
-| "Request leave" button (drawer) | `POST` | `/leave/requests` | `{ leaveTypeId, startDate, endDate, reason }` |
-| Approve | `PATCH` | `/leave/requests/:id/approve` | – |
-| Reject (with comment) | `PATCH` | `/leave/requests/:id/reject` | `{ approverComment }` |
-| Withdraw (own) | `PATCH` | `/leave/requests/:id/withdraw` | Only allowed if still PENDING |
-| Bulk approve | loop | `PATCH /leave/requests/:id/approve` | Multi-select |
+| Tab / Action | Method | Endpoint | Notes | Verified |
+|---|---|---|---|---|
+| Leave type dropdown | GET | `/leave/types` | Load first — provides leaveTypeId | ✅ 200 |
+| My Requests tab | GET | `/leave/requests` | Mode 1 — own requests only | ✅ 200 |
+| Team Approvals tab (manager) | GET | `/leave/team/requests?status=PENDING` | Mode 3 | ✅ 200 |
+| Team Calendar tab | GET | `/leave/team/requests?status=APPROVED` | All approved leaves | ✅ |
+| My balance | GET | `/leave/balance` | Mode 1 | ✅ 200 |
+| Submit leave request | POST | `/leave/requests` | Body below | ✅ 201 |
+| Approve | PATCH | `/leave/requests/:id/approve` | Manager/HR only | ✅ |
+| Reject | PATCH | `/leave/requests/:id/reject` | `{ "approverComment": "..." }` required | ✅ |
+| Withdraw (own only) | PATCH | `/leave/requests/:id/withdraw` | Must be PENDING status | ✅ |
 
-`leaveTypeId` for POST must come from `GET /leave/types` — returns `[{ id, name, code, annualAllowance, isPaid }]`.
+**`POST /leave/requests` body:**
+```json
+{
+  "leaveTypeId": "<id from GET /leave/types>",
+  "startDate": "2026-06-01T00:00:00.000Z",
+  "endDate": "2026-06-03T00:00:00.000Z",
+  "reason": "Family vacation"
+}
+```
+
+**Business rules (server-enforced):**
+- Cannot submit if insufficient leave balance → `400 INSUFFICIENT_BALANCE`
+- Cannot submit overlapping dates → `400 OVERLAPPING_LEAVE`
+- Can only withdraw PENDING requests → `400 INVALID_REQUEST_STATUS`
+
+**`/leave/requests` response shape:**
+```json
+{
+  "data": {
+    "requests": [
+      { "id": "...", "leaveTypeName": "Casual Leave", "startDate": "...", "endDate": "...",
+        "totalDays": 2, "status": "PENDING", "reason": "..." }
+    ],
+    "pagination": { "page": 1, "limit": 10, "total": 3, "pages": 1 }
+  }
+}
+```
 
 ---
 
@@ -256,18 +473,33 @@
 
 ![Page 13 — Holiday Calendar](./docs-images/wireframes/page-14.png)
 
-**Test as:** any role (read), `hr@acme.test` (write).
+**Access:** All roles read; HR_ADMIN/SUPER_ADMIN write.
 
-| UI action | Method | Endpoint | Body |
-|---|---|---|---|
-| Load year view | `GET` | `/holidays?year=2026` | Returns all holidays in the year |
-| Toggle list view | `GET` | `/holidays?year=2026&view=list` | – |
-| Add holiday (drawer) | `POST` | `/holidays` | `{ name, holidayDate, location?, isOptional? }` |
-| Edit holiday | `PATCH` | `/holidays/:id` | Same fields |
-| Delete holiday | `DELETE` | `/holidays/:id` | – |
-| Import `.ics` | `POST` | `/holidays/import` *(planned)* | Body: `{ icsFile }` |
+| UI Action | Method | Endpoint | Notes | Verified |
+|---|---|---|---|---|
+| Load year view | GET | `/holidays?year=2026` | Defaults to current year if omitted | ✅ 200 |
+| Load previous year | GET | `/holidays?year=2025` | – | ✅ 200 |
+| Add holiday | POST | `/holidays` | HR only | ✅ |
+| Edit holiday | PATCH | `/holidays/:id` | HR only | ✅ |
+| Delete holiday | DELETE | `/holidays/:id` | HR only | ✅ |
 
-> Use field name **`holidayDate`** (ISO date), **not** `date`. The Holiday model uses `holidayDate` — this was a bug we fixed on 2026-05-19.
+**`/holidays?year=2026` response shape:**
+```json
+{
+  "data": {
+    "holidays": [
+      { "name": "Independence Day", "holidayDate": "2026-08-15", "isOptional": false }
+    ],
+    "total": 3
+  }
+}
+```
+
+**`POST /holidays` body:**
+```json
+{ "name": "Diwali", "holidayDate": "2026-10-20", "location": "India", "isOptional": false }
+```
+> Field name is `holidayDate` (ISO date string), NOT `date`.
 
 ---
 
@@ -275,17 +507,12 @@
 
 ![Page 14 — Permissions Matrix](./docs-images/wireframes/page-15.png)
 
-**Test as:** `superadmin@acme.test` only. Other roles get `403 FORBIDDEN`.
+**Access:** SUPER_ADMIN only. All other roles get `403 FORBIDDEN`. ✅ Verified.
 
-| UI action | Method | Endpoint | Body |
+| UI Action | Method | Endpoint | Verified |
 |---|---|---|---|
-| Load full matrix | `GET` | `/settings/roles-permissions` | Returns `[{ role, permissions: { 'employees:read': true, ... } }]` |
-| Save changes (bulk) | `PATCH` | `/settings/roles-permissions` | Body: `{ roles: [{ roleId, permissions: [...] }] }` |
-| Add custom role | `POST` | `/settings/roles` *(planned)* | `{ name, basePermissions }` |
-
-**Safety rules (server-enforced):**
-- `SUPER_ADMIN` role cannot have `permissions:manage` unchecked.
-- Last `SUPER_ADMIN` user cannot be downgraded.
+| Load matrix | GET | `/settings/roles-permissions` | ✅ 200 (SA only) |
+| Save changes | PATCH | `/settings/roles-permissions` | ✅ |
 
 ---
 
@@ -293,64 +520,119 @@
 
 ![Page 15 — Settings](./docs-images/wireframes/page-16.png)
 
-**Test as:** `hr@acme.test` (most items) or `superadmin@acme.test` (all).
+**Access:** HR_ADMIN and SUPER_ADMIN.
 
-| Sidebar group → Item | Method | Endpoint | Notes |
+| Section → Item | Method | Endpoint | Verified |
 |---|---|---|---|
-| WORKSPACE → Company profile | `GET` / `PATCH` | `/settings/tenant` | Name, country, currency, timezone, fiscal year start |
-| WORKSPACE → Branding | – | (planned) | – |
-| WORKSPACE → Locale & timezone | `PATCH` | `/settings/tenant` | Same endpoint, partial body |
-| WORKSPACE → Working hours | `PATCH` | `/settings/tenant` | Body: `{ workingHoursStart, workingHoursEnd }` |
-| PEOPLE → Leave types | `GET` | `/settings/leave-types` *(planned)* | – |
-| PEOPLE → Holiday calendar | – | (links to Page 13) | – |
-| PEOPLE → Attendance rules | – | (planned) | – |
-| SECURITY → Authentication | – | (planned MFA toggle) | – |
-| SECURITY → Sessions & devices | `GET` | `/auth/sessions` | Returns all active sessions |
-|     Revoke a session | `DELETE` | `/auth/sessions/:sessionId` | – |
-|     Sign out all devices | `POST` | `/auth/logout-all` | – |
-| SECURITY → Audit log | `GET` | `/audit-logs` | Same data as Page 04 Activity card |
-| NOTIFICATIONS → Email templates | `GET` / `PATCH` | `/settings/email-templates` | Per-tenant overrides |
-| NOTIFICATIONS → In-app preferences | – | (planned) | – |
-| INTEGRATIONS → Email / Storage / Webhooks | – | (planned) | – |
-| BILLING → Plan / Invoices | – | (planned, Phase 2) | – |
+| Company profile (read) | GET | `/settings/tenant` | ✅ 200 |
+| Company profile (save) | PATCH | `/settings/tenant` | ✅ |
+| Email templates | GET | `/settings/email-templates` | ✅ |
+| Update template | PATCH | `/settings/email-templates/:type` | ✅ |
+| Audit log | GET | `/audit-logs` | ✅ 200 |
+| Active sessions | GET | `/auth/sessions` | ✅ |
+| Revoke a session | DELETE | `/auth/sessions/:sessionId` | ✅ |
+| Sign out all devices | POST | `/auth/logout-all` | ✅ |
 
 ---
 
-## Putting It All Together
+## Cross-Cutting APIs (Used on Multiple Pages)
 
-**Login flow (every wireframe except 01–03):**
+| Purpose | Method | Endpoint | Used By |
+|---|---|---|---|
+| Current user (topbar) | GET | `/auth/me` | All pages — returns memberType + employeeId |
+| Employee search (topbar) | GET | `/employees?search=&limit=10` | All pages |
+| Departments dropdown | GET | `/departments` | Pages 09, 10 |
+| Audit feed | GET | `/audit-logs?limit=10` | Pages 04, 15 |
+| Token refresh | POST | `/auth/refresh` | Any page on 401 — uses httpOnly cookie |
+| Logout | POST | `/auth/logout` | Topbar |
 
-```js
-// Step 1: log in once
-const r = await fetch('/api/v1/auth/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email, password })  // NO X-Tenant-Key needed
-});
-const { data } = await r.json();
-storeToken(data.accessToken);
+---
 
-// Step 2: route by role
-switch (data.user.memberType) {
-  case 'SUPER_ADMIN':
-  case 'HR_ADMIN':  goto('/dashboard/hr');        break;  // Page 04
-  case 'MANAGER':   goto('/dashboard/manager');   break;  // Page 05
-  case 'EMPLOYEE':  goto('/dashboard/employee');  break;  // Page 06
-}
+## Auth Headers Reference
 
-// Step 3: every subsequent call
-fetch('/api/v1/<endpoint>', {
-  headers: { Authorization: `Bearer ${token}` }
-});
-// No X-Tenant-Key — the JWT carries the tenant.
+```
+Every authenticated request:
+  Authorization: Bearer <accessToken>
+
+No X-Tenant-Key needed after login — JWT carries tenantId.
+
+Only add X-Tenant-Key if you get AMBIGUOUS_EMAIL on login
+(same email registered in multiple tenant companies).
 ```
 
-**Need to switch users while testing?**
-1. Call `POST /auth/logout`
-2. Call `POST /auth/login` with the next user
-3. Replace your stored token
+---
 
-**See also:**
-- [SWAGGER_TESTING_GUIDE.md](./SWAGGER_TESTING_GUIDE.md) — step-by-step Swagger walkthrough with screenshots
-- [EMS.postman_collection.json](./EMS.postman_collection.json) — Postman import
-- [UI_TEAM_GUIDE.md](./UI_TEAM_GUIDE.md) — same mapping in tabular form without images
+## Error Codes Reference
+
+| Code | HTTP | Meaning |
+|---|---|---|
+| `INVALID_CREDENTIALS` | 401 | Wrong email or password |
+| `INVALID_TOKEN` | 401 | JWT expired or malformed — call `/auth/refresh` |
+| `UNAUTHORIZED` | 401 | No Authorization header |
+| `FORBIDDEN` | 403 | Role not allowed for this endpoint |
+| `NO_EMPLOYEE_RECORD` | 400 | User has no employee profile — do not show employee tabs |
+| `AMBIGUOUS_EMAIL` | 400 | Email in multiple tenants — add X-Tenant-Key header |
+| `ALREADY_CHECKED_IN` | 400 | Cannot check in twice in one day |
+| `ALREADY_CHECKED_OUT` | 400 | Cannot check out twice in one day |
+| `INSUFFICIENT_BALANCE` | 400 | Not enough leave days available |
+| `OVERLAPPING_LEAVE` | 400 | Dates clash with existing approved/pending leave |
+| `INVALID_REQUEST_STATUS` | 400 | Action not valid for current status |
+
+---
+
+## Full API Status (Verified 2026-05-22)
+
+```
+✅ POST /auth/login, /auth/refresh, /auth/logout, /auth/logout-all
+✅ GET  /auth/me, /auth/sessions
+✅ POST /auth/forgot-password, /auth/reset-password, /auth/verify-otp
+
+✅ GET  /analytics/summary, /analytics/attendance
+✅ GET  /analytics/headcount-by-department, /analytics/recent-activity, /analytics/leave-summary
+
+✅ GET  /employees, /employees/:id, /employees/export/csv
+✅ POST /employees
+✅ PATCH /employees/:id
+✅ DELETE /employees/:id
+
+✅ GET  /departments, /departments/:id
+✅ POST /departments
+✅ PATCH /departments/:id
+✅ DELETE /departments/:id
+
+✅ GET  /holidays, /holidays?year=YYYY
+✅ POST /holidays, PATCH /holidays/:id, DELETE /holidays/:id
+
+✅ GET  /leave/types
+✅ GET  /leave/balance, /leave/requests, /leave/team/requests
+✅ POST /leave/requests
+✅ PATCH /leave/requests/:id/approve, /reject, /withdraw
+
+✅ GET  /attendance/records, /attendance/records?month=YYYY-MM
+✅ GET  /attendance/team/records, /attendance/team/records?month=YYYY-MM
+✅ GET  /attendance/summary, /attendance/today, /attendance/regularization
+✅ GET  /attendance/team/regularization
+✅ POST /attendance/check-in, /attendance/check-out, /attendance/regularization
+✅ PATCH /attendance/regularization/:id/approve, /deny
+
+✅ GET  /employee/dashboard, /employee/documents, /employee/team
+✅ GET  /employees/me/documents (alias), /employees/me/team (alias)
+
+✅ GET  /manager/dashboard, /manager/team, /manager/team/attendance, /manager/approvals
+✅ PATCH /manager/leave-requests/:id/decision
+
+✅ GET  /settings/tenant, /settings/email-templates
+✅ PATCH /settings/tenant, /settings/email-templates/:type
+✅ GET  /settings/roles-permissions (SUPER_ADMIN only)
+
+✅ GET  /audit-logs, /audit-logs/:id
+✅ GET  /reports/attendance, /reports/leaves
+✅ GET  /export/list, /export/:job_id/download
+✅ POST /export/employees, /export/attendance, /export/leave
+
+⚠️  /employee/dashboard → 400 NO_EMPLOYEE_RECORD for SUPER_ADMIN (expected — no emp record)
+⚠️  /attendance/team/records → 403 FORBIDDEN for EMPLOYEE (expected — correct access control)
+⚠️  /manager/dashboard → 403 FORBIDDEN for EMPLOYEE (expected)
+⚠️  /settings/roles-permissions → 403 FORBIDDEN for HR_ADMIN (expected — SUPER_ADMIN only)
+⚠️  /employee/documents returns [] — no upload endpoint exists yet (documents must be seeded directly)
+```
