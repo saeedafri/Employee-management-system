@@ -46,12 +46,17 @@
 
 ## Date Format — Definitive Answer
 
-**Both formats are accepted everywhere:**
-- `"2024-01-15"` (YYYY-MM-DD) ✅
-- `"2024-01-15T00:00:00.000Z"` (full ISO) ✅
+**Depends on the field — not uniform across all endpoints:**
 
-The server stores and returns dates as full ISO strings (`"2024-01-15T00:00:00.000Z"`).
-Use whichever format is easier from your forms — both work. The old doc warning about FST_ERR_VALIDATION was wrong.
+| Field | Validator | Accepts YYYY-MM-DD | Accepts full ISO |
+|-------|-----------|-------------------|-----------------|
+| `joinedOn`, `dateOfBirth` (employees) | `z.coerce.date()` | ✅ | ✅ |
+| `startDate`, `endDate` (leave requests) | `z.coerce.date()` | ✅ | ✅ |
+| `holidayDate` (holidays) | `z.string().date()` | ✅ | ❌ fails 422 |
+
+**Rule:** Use `"YYYY-MM-DD"` everywhere — it works for all fields. Full ISO (`"2026-10-20T00:00:00.000Z"`) fails on `holidayDate`.
+
+The server stores and returns all dates as full ISO strings (`"2024-01-15T00:00:00.000Z"`).
 
 ---
 
@@ -865,13 +870,15 @@ Payroll summary data.
   "logs": [
     {
       "id": "...",
-      "userId": "...",
+      "user_email": "hr@acme.test",
       "action": "UPDATE",
-      "entity": "Employee",
-      "entityId": "...",
-      "changes": {},
-      "ipAddress": "127.0.0.1",
-      "createdAt": "2026-05-22T12:00:00.000Z"
+      "entity_type": "Employee",
+      "entity_id": "...",
+      "old_value": null,
+      "new_value": {},
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0...",
+      "created_at": "2026-05-22T12:00:00.000Z"
     }
   ],
   "pagination": { "page": 1, "limit": 20, "total": 10, "pages": 1 }
@@ -879,6 +886,7 @@ Payroll summary data.
 ```
 
 > Shape is `data.logs[]` + `data.pagination` — NOT a flat `data[]` array.
+> All fields are **snake_case**: `user_email`, `entity_type`, `entity_id`, `old_value`, `new_value`, `ip_address`, `user_agent`, `created_at`.
 
 ### `GET /audit-logs/:id`
 Single audit log entry (direct object, not wrapped in `logs`).
