@@ -3,6 +3,15 @@ import * as repo from './employees.repository.js';
 import * as validator from './employees.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
+const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS']);
+const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
+
+function errorStatus(code) {
+  if (CONFLICT_CODES.has(code)) return 409;
+  if (NOT_FOUND_CODES.has(code)) return 404;
+  return 400;
+}
+
 export async function listEmployees(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
@@ -32,13 +41,12 @@ export async function getEmployee(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
 
-    // Permission: own data or HR/Admin
     if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
       return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee data', request.requestId));
     }
 
     const result = await service.getEmployee(id, tenantId);
-    reply.code(result.error ? 400 : 200).send(result);
+    reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }
@@ -47,7 +55,6 @@ export async function getEmployee(request, reply) {
 export async function createEmployee(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  // Only HR/Admin can create
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create employees', request.requestId));
   }
@@ -55,7 +62,7 @@ export async function createEmployee(request, reply) {
   try {
     const data = await validator.createEmployeeSchema.parseAsync(request.body);
     const result = await service.createEmployee(tenantId, data, user.id);
-    reply.code(result.error ? 400 : 201).send(result);
+    reply.code(result.error ? errorStatus(result.error.code) : 201).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }
@@ -67,14 +74,13 @@ export async function updateEmployee(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
 
-    // Permission: own data or HR/Admin
     if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
       return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot update other employee data', request.requestId));
     }
 
     const data = await validator.updateEmployeeSchema.parseAsync(request.body);
     const result = await service.updateEmployee(id, tenantId, data, user.id);
-    reply.code(result.error ? 400 : 200).send(result);
+    reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }
@@ -83,7 +89,6 @@ export async function updateEmployee(request, reply) {
 export async function deleteEmployee(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  // Only HR/Admin can delete
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete employees', request.requestId));
   }
@@ -91,12 +96,7 @@ export async function deleteEmployee(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
     const result = await service.deleteEmployee(id, tenantId);
-    if (result.error) {
-      const code = result.error.code;
-      const status = code === 'NOT_FOUND' ? 404 : code === 'EMPLOYEE_HAS_DEPENDENTS' ? 409 : 400;
-      return reply.code(status).send(result);
-    }
-    reply.code(200).send(result);
+    reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }

@@ -2,11 +2,18 @@ import * as service from './departments.service.js';
 import * as validator from './departments.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
+const CONFLICT_CODES = new Set(['DEPARTMENT_CYCLE', 'DEPARTMENT_NOT_EMPTY', 'DUPLICATE_CODE']);
+const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
+
+function errorStatus(code) {
+  if (CONFLICT_CODES.has(code)) return 409;
+  if (NOT_FOUND_CODES.has(code)) return 404;
+  return 400;
+}
+
 export async function listDepartments(request, reply) {
   const tenantId = request.tenant.id;
 
-  // List is readable by every authenticated user (used for filter dropdowns, profile pages, etc).
-  // Mutations below remain restricted to HR_ADMIN / SUPER_ADMIN.
   try {
     const query = await validator.listQuerySchema.parseAsync(request.query);
     const result = await service.listDepartments(tenantId, query);
@@ -26,7 +33,7 @@ export async function createDepartment(request, reply) {
   try {
     const data = await validator.createDepartmentSchema.parseAsync(request.body);
     const result = await service.createDepartment(tenantId, data, user.id);
-    reply.code(result.error ? 400 : 201).send(result);
+    reply.code(result.error ? errorStatus(result.error.code) : 201).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }
@@ -43,7 +50,7 @@ export async function updateDepartment(request, reply) {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
     const data = await validator.updateDepartmentSchema.parseAsync(request.body);
     const result = await service.updateDepartment(id, tenantId, data, user.id);
-    reply.code(result.error ? 400 : 200).send(result);
+    reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }
@@ -59,7 +66,7 @@ export async function deleteDepartment(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
     const result = await service.deleteDepartment(id, tenantId);
-    reply.code(result.error ? 400 : 200).send(result);
+    reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }

@@ -49,7 +49,6 @@ export default async function departmentsRoutes(fastify) {
             name: { type: 'string' },
             parentId: { type: 'string' },
             departmentCode: { type: 'string' },
-            budget: { type: 'number' },
           },
         },
         response: {
@@ -86,7 +85,6 @@ export default async function departmentsRoutes(fastify) {
             name: { type: 'string' },
             parentId: { type: 'string' },
             departmentCode: { type: 'string' },
-            budget: { type: 'number' },
           },
         },
         response: {
