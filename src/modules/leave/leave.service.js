@@ -122,8 +122,8 @@ export async function approveLeaveRequest(tenantId, leaveRequestId, approverId, 
   if (leaveRequest.status !== 'PENDING') {
     throw new AppError(
       `Cannot approve leave with status ${leaveRequest.status}`,
-      'INVALID_REQUEST_STATUS',
-      400,
+      'LEAVE_ALREADY_DECIDED',
+      409,
     );
   }
 
@@ -158,8 +158,8 @@ export async function rejectLeaveRequest(tenantId, leaveRequestId, approverId, c
   if (leaveRequest.status !== 'PENDING') {
     throw new AppError(
       `Cannot reject leave with status ${leaveRequest.status}`,
-      'INVALID_REQUEST_STATUS',
-      400,
+      'LEAVE_ALREADY_DECIDED',
+      409,
     );
   }
 
@@ -201,8 +201,8 @@ export async function withdrawLeaveRequest(tenantId, employeeId, leaveRequestId)
   if (leaveRequest.status !== 'PENDING') {
     throw new AppError(
       'Can only withdraw pending leave requests',
-      'INVALID_REQUEST_STATUS',
-      400,
+      'LEAVE_ALREADY_DECIDED',
+      409,
     );
   }
 

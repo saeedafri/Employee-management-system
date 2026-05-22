@@ -58,12 +58,27 @@ export async function updateEmailTemplate(tenantId, type, data) {
 }
 
 export async function getRolePermissions(tenantId) {
-  const rolePermissions = await settingsRepository.getRolePermissions(tenantId);
+  const matrix = await settingsRepository.getRolePermissions(tenantId);
 
-  return rolePermissions;
+  const roles = Object.keys(matrix);
+  const permissionSet = new Set(Object.values(matrix).flat());
+
+  return {
+    roles,
+    permissions: Array.from(permissionSet).sort(),
+    matrix,
+  };
 }
 
 export async function updateRolePermissions(tenantId, roleKey, permissions) {
+  if (roleKey === 'SUPER_ADMIN') {
+    throw new AppError(
+      'Cannot modify SUPER_ADMIN permissions',
+      'CANNOT_LOCK_OUT_SUPER_ADMIN',
+      403,
+    );
+  }
+
   try {
     await settingsRepository.updateRolePermissions(tenantId, roleKey, permissions);
 

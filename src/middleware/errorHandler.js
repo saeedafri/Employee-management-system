@@ -5,14 +5,31 @@ export async function errorHandler(error, request, reply) {
   const requestId = request.id;
   const logger = request.log;
 
+  // Fastify AJV schema validation errors
+  if (error.code === 'FST_ERR_VALIDATION' && error.validation) {
+    const details = error.validation.map((v) => ({
+      field: v.instancePath ? v.instancePath.replace(/^\//, '').replace(/\//g, '.') : (v.params?.missingProperty || 'unknown'),
+      message: v.message,
+    }));
+
+    return reply.code(422).send(
+      errorResponse(
+        'VALIDATION_ERROR',
+        'Request validation failed',
+        details,
+        requestId,
+      ),
+    );
+  }
+
   // Zod validation errors
   if (error instanceof ZodError) {
-    const details = error.errors.reduce((acc, err) => {
-      acc[err.path.join('.')] = err.message;
-      return acc;
-    }, {});
+    const details = error.errors.map((err) => ({
+      field: err.path.join('.'),
+      message: err.message,
+    }));
 
-    return reply.code(400).send(
+    return reply.code(422).send(
       errorResponse(
         'VALIDATION_ERROR',
         'Request validation failed',

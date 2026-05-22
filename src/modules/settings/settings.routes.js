@@ -84,7 +84,6 @@ export default async function settingsRoutes(fastify) {
           permissions: {
             type: 'array',
             items: { type: 'string' },
-            minItems: 1,
           },
         },
       },

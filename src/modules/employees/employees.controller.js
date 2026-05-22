@@ -91,7 +91,12 @@ export async function deleteEmployee(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
     const result = await service.deleteEmployee(id, tenantId);
-    reply.code(result.error ? 400 : 200).send(result);
+    if (result.error) {
+      const code = result.error.code;
+      const status = code === 'NOT_FOUND' ? 404 : code === 'EMPLOYEE_HAS_DEPENDENTS' ? 409 : 400;
+      return reply.code(status).send(result);
+    }
+    reply.code(200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }

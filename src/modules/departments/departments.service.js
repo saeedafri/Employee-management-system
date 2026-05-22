@@ -43,7 +43,7 @@ export async function updateDepartment(id, tenantId, data, _userId) {
 
     if (data.parentId && data.parentId !== existing.parentId) {
       if (await wouldCreateCircularParent(id, data.parentId, tenantId)) {
-        return errorResponse('CIRCULAR_PARENT', 'Cannot create circular parent relationship', null);
+        return errorResponse('DEPARTMENT_CYCLE', 'Cannot create circular parent relationship', null);
       }
       const parentExists = await repo.getDepartmentById(data.parentId, tenantId);
       if (!parentExists) {
@@ -74,12 +74,12 @@ export async function deleteDepartment(id, tenantId) {
 
     const employeeCount = await repo.getEmployeeCountInDepartment(id, tenantId);
     if (employeeCount > 0) {
-      return errorResponse('HAS_EMPLOYEES', `Cannot delete department with ${employeeCount} employees. Reassign employees first.`, null);
+      return errorResponse('DEPARTMENT_NOT_EMPTY', `Cannot delete department with ${employeeCount} employees. Reassign employees first.`, null);
     }
 
     const hasSubdepartments = await repo.hasSubdepartments(id, tenantId);
     if (hasSubdepartments) {
-      return errorResponse('HAS_SUBDEPARTMENTS', 'Cannot delete department with subdepartments', null);
+      return errorResponse('DEPARTMENT_NOT_EMPTY', 'Cannot delete department with subdepartments. Remove or reassign them first.', null);
     }
 
     const deleted = await repo.softDeleteDepartment(id, tenantId);

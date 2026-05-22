@@ -1,4 +1,5 @@
 import * as repo from './employees.repository.js';
+import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 
 export async function listEmployees(tenantId, filters) {
@@ -24,15 +25,14 @@ export async function getEmployee(employeeId, tenantId) {
 
 export async function createEmployee(tenantId, data, userId) {
   try {
-    // Check for duplicates
     const codeExists = await repo.checkEmployeeCodeExists(data.employeeCode, tenantId);
     if (codeExists) {
-      return errorResponse('DUPLICATE_CODE', 'Employee code already exists', null);
+      return errorResponse('DUPLICATE_EMPLOYEE_CODE', 'Employee code already exists', null);
     }
 
     const emailExists = await repo.checkWorkEmailExists(data.workEmail, tenantId);
     if (emailExists) {
-      return errorResponse('DUPLICATE_EMAIL', 'Work email already exists', null);
+      return errorResponse('DUPLICATE_WORK_EMAIL', 'Work email already exists', null);
     }
 
     const employee = await repo.createEmployee(tenantId, {
@@ -53,19 +53,17 @@ export async function updateEmployee(employeeId, tenantId, data, userId) {
       return errorResponse('NOT_FOUND', 'Employee not found', null);
     }
 
-    // Check for duplicate code (excluding self)
     if (data.employeeCode && data.employeeCode !== existing.employeeCode) {
       const codeExists = await repo.checkEmployeeCodeExists(data.employeeCode, tenantId, employeeId);
       if (codeExists) {
-        return errorResponse('DUPLICATE_CODE', 'Employee code already exists', null);
+        return errorResponse('DUPLICATE_EMPLOYEE_CODE', 'Employee code already exists', null);
       }
     }
 
-    // Check for duplicate email (excluding self)
     if (data.workEmail && data.workEmail !== existing.workEmail) {
       const emailExists = await repo.checkWorkEmailExists(data.workEmail, tenantId, employeeId);
       if (emailExists) {
-        return errorResponse('DUPLICATE_EMAIL', 'Work email already exists', null);
+        return errorResponse('DUPLICATE_WORK_EMAIL', 'Work email already exists', null);
       }
     }
 
@@ -85,6 +83,20 @@ export async function deleteEmployee(employeeId, tenantId) {
     const existing = await repo.getEmployeeById(employeeId, tenantId);
     if (!existing) {
       return errorResponse('NOT_FOUND', 'Employee not found', null);
+    }
+
+    // Block deletion if employee manages others or heads a department
+    const [managedCount, deptHeadCount] = await Promise.all([
+      prisma.employee.count({ where: { managerId: employeeId, tenantId, deletedAt: null } }),
+      prisma.department.count({ where: { headEmployeeId: employeeId, tenantId, deletedAt: null } }),
+    ]);
+
+    if (managedCount > 0 || deptHeadCount > 0) {
+      return errorResponse(
+        'EMPLOYEE_HAS_DEPENDENTS',
+        'Reassign direct reports and department head roles before deleting this employee',
+        { managedEmployees: managedCount, departmentsHeaded: deptHeadCount },
+      );
     }
 
     const deleted = await repo.softDeleteEmployee(employeeId, tenantId);
