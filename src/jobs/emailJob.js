@@ -19,6 +19,7 @@ if (isSmtpProvider) {
     host: config.smtpHost,
     port,
     secure: port === 465,
+    family: 4, // force IPv4 — Render has no IPv6 route to Gmail
     auth: config.smtpUser && config.smtpPass
       ? { user: config.smtpUser, pass: config.smtpPass }
       : undefined,

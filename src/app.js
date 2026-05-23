@@ -85,10 +85,11 @@ export async function createApp() {
     const nodemailer = (await import('nodemailer')).default;
     const { config: cfg } = await import('./config/index.js');
     const results = {};
-    for (const port of [465, 587]) {
+    for (const port of [587, 465]) {
       try {
         const t = nodemailer.createTransport({
           host: cfg.smtpHost, port, secure: port === 465,
+          family: 4, // force IPv4
           auth: { user: cfg.smtpUser, pass: cfg.smtpPass },
           tls: { rejectUnauthorized: false },
           connectionTimeout: 8000, greetingTimeout: 8000, socketTimeout: 8000,
