@@ -84,22 +84,28 @@ export async function createApp() {
   fastify.get('/debug/test-email', async (request, reply) => {
     const nodemailer = (await import('nodemailer')).default;
     const { config: cfg } = await import('./config/index.js');
-    try {
-      const t = nodemailer.createTransport({
-        host: cfg.smtpHost, port: cfg.smtpPort, secure: cfg.smtpPort === 465,
-        auth: { user: cfg.smtpUser, pass: cfg.smtpPass },
-        tls: { rejectUnauthorized: false },
-      });
-      await t.verify();
-      const info = await t.sendMail({
-        from: cfg.smtpFrom, to: 'mohammadsaeedafri9@gmail.com',
-        subject: 'EMS SMTP Debug — from Render',
-        html: '<h2>SMTP works from Render!</h2><p>Host: ' + cfg.smtpHost + ' Port: ' + cfg.smtpPort + '</p>',
-      });
-      return reply.send({ ok: true, messageId: info.messageId, host: cfg.smtpHost, port: cfg.smtpPort, user: cfg.smtpUser });
-    } catch (err) {
-      return reply.status(500).send({ ok: false, error: err.message, code: err.code, host: cfg.smtpHost, port: cfg.smtpPort });
+    const results = {};
+    for (const port of [465, 587]) {
+      try {
+        const t = nodemailer.createTransport({
+          host: cfg.smtpHost, port, secure: port === 465,
+          auth: { user: cfg.smtpUser, pass: cfg.smtpPass },
+          tls: { rejectUnauthorized: false },
+          connectionTimeout: 8000, greetingTimeout: 8000, socketTimeout: 8000,
+        });
+        await t.verify();
+        const info = await t.sendMail({
+          from: cfg.smtpFrom, to: 'mohammadsaeedafri9@gmail.com',
+          subject: `EMS SMTP Debug port ${port} — Render`,
+          html: `<h2>SMTP works on port ${port}!</h2>`,
+        });
+        results[`port_${port}`] = { ok: true, messageId: info.messageId };
+        break; // sent successfully, stop
+      } catch (err) {
+        results[`port_${port}`] = { ok: false, error: err.message, code: err.code };
+      }
     }
+    return reply.send({ host: cfg.smtpHost, user: cfg.smtpUser, results });
   });
 
   // Register swagger AFTER all routes are defined
