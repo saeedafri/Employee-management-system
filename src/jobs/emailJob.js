@@ -98,7 +98,6 @@ async function sendEmailDirect(to, subject, template, data) {
     if (isEtherealProvider) {
       const previewUrl = nodemailer.getTestMessageUrl(info);
       logger.info({ type: 'email_ethereal_preview', to, template, previewUrl });
-      console.log(`\n📧 Ethereal preview: ${previewUrl}\n`);
     } else {
       logger.info({ type: 'email_sent', to, template, messageId: info.messageId });
     }

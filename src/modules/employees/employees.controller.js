@@ -127,7 +127,6 @@ export async function uploadDocument(request, reply) {
 
     const { documentType = 'OTHER' } = request.query;
     const buffer = await data.toBuffer();
-    const ext = data.filename.split('.').pop() || 'bin';
     const publicId = `ems/${tenantId}/employees/${employeeId}/${generateId()}`;
 
     const uploaded = await uploadToCloudinary(buffer, {
