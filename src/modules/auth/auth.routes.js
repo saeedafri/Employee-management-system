@@ -105,19 +105,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-        202: {
-          type: 'object',
-          properties: {
-            data: { type: 'null' },
-            meta: {
-              type: 'object',
-              properties: {
-                message: { type: 'string' },
-              },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
     },
     rateLimit: {
       max: 5,
@@ -137,32 +126,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            data: {
-              type: 'object',
-              properties: {
-                valid: { type: 'boolean' },
-                expiresAt: { type: 'string', format: 'date-time' },
-                emailMasked: { type: 'string' },
-              },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-        400: {
-          type: 'object',
-          properties: {
-            error: {
-              type: 'object',
-              properties: {
-                code: { type: 'string' },
-                message: { type: 'string' },
-              },
-            },
-          },
-        },
-      },
     },
   }, async (request, reply) => passwordResetController.validateResetTokenController(request, reply));
 
@@ -194,31 +159,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            data: {
-              type: 'object',
-              properties: {
-                success: { type: 'boolean' },
-                message: { type: 'string' },
-              },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-        400: {
-          type: 'object',
-          properties: {
-            error: {
-              type: 'object',
-              properties: {
-                code: { type: 'string' },
-                message: { type: 'string' },
-              },
-            },
-          },
-        },
-      },
     },
     rateLimit: {
       max: 5,
@@ -239,67 +181,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            data: {
-              type: 'object',
-              oneOf: [
-                {
-                  properties: {
-                    valid: { type: 'boolean' },
-                    challengeId: { type: 'string' },
-                  },
-                },
-                {
-                  properties: {
-                    accessToken: { type: 'string' },
-                    sessionId: { type: 'string' },
-                    user: {
-                      type: 'object',
-                      properties: {
-                        id: { type: 'string' },
-                        email: { type: 'string' },
-                        memberType: { type: 'string' },
-                        employee: { type: 'object' },
-                      },
-                    },
-                    permissions: { type: 'array' },
-                  },
-                },
-              ],
-            },
-            meta: { type: 'object' },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-        400: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            error: {
-              type: 'object',
-              properties: {
-                code: { type: 'string' },
-                message: { type: 'string' },
-              },
-            },
-          },
-        },
-        429: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            error: {
-              type: 'object',
-              properties: {
-                code: { type: 'string' },
-                message: { type: 'string' },
-              },
-            },
-          },
-        },
-      },
     },
     rateLimit: {
       max: 5,
@@ -319,51 +202,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-        202: {
-          type: 'object',
-          properties: {
-            data: {
-              type: 'object',
-              properties: {
-                success: { type: 'boolean' },
-                destinationMasked: { type: 'string' },
-                expiresIn: { type: 'integer' },
-              },
-            },
-            meta: {
-              type: 'object',
-              properties: {
-                message: { type: 'string' },
-              },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-        400: {
-          type: 'object',
-          properties: {
-            error: {
-              type: 'object',
-              properties: {
-                code: { type: 'string' },
-                message: { type: 'string' },
-              },
-            },
-          },
-        },
-        429: {
-          type: 'object',
-          properties: {
-            error: {
-              type: 'object',
-              properties: {
-                code: { type: 'string' },
-                message: { type: 'string' },
-                details: { type: 'object' },
-              },
-            },
-          },
-        },
-      },
     },
     rateLimit: {
       max: 5,

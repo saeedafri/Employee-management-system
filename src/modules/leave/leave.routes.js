@@ -8,27 +8,8 @@ export default async function leaveRoutes(fastify) {
       description: 'Get all active leave types for this tenant',
       security: [{ Bearer: [] }],
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            data: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  name: { type: 'string' },
-                  code: { type: 'string' },
-                  annualAllowance: { type: 'integer' },
-                  carryForwardAllowed: { type: 'boolean' },
-                  isPaid: { type: 'boolean' },
-                },
-              },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
     },
     onRequest: [authenticate],
   }, (request, reply) => leaveController.getLeaveTypes(request, reply));

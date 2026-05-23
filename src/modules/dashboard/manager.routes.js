@@ -17,22 +17,7 @@ export async function managerDashboardRoutes(fastify) {
         tags: ['Manager Dashboard'],
         description: 'Get manager dashboard summary',
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  managerName: { type: 'string' },
-                  teamSize: { type: 'number' },
-                  pendingApprovals: { type: 'number' },
-                  todayAttendance: { type: 'object' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -46,26 +31,7 @@ export async function managerDashboardRoutes(fastify) {
         tags: ['Manager Dashboard'],
         description: 'Get manager team members',
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    id: { type: 'string' },
-                    employeeCode: { type: 'string' },
-                    firstName: { type: 'string' },
-                    lastName: { type: 'string' },
-                    designation: { type: 'string' },
-                  },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -85,20 +51,7 @@ export async function managerDashboardRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  range: { type: 'string' },
-                  series: { type: 'array' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -112,20 +65,7 @@ export async function managerDashboardRoutes(fastify) {
         tags: ['Manager Dashboard'],
         description: 'Get pending leave and regularization requests',
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  leaveRequests: { type: 'array' },
-                  regularizationRequests: { type: 'array' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -154,20 +94,7 @@ export async function managerDashboardRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  status: { type: 'string' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -196,20 +123,7 @@ export async function managerDashboardRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  status: { type: 'string' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },

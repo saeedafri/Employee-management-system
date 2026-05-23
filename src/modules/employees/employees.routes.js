@@ -29,20 +29,7 @@ export async function employeesRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  data: { type: 'array' },
-                  pagination: { type: 'object' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -63,14 +50,7 @@ export async function employeesRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -100,14 +80,7 @@ export async function employeesRoutes(fastify) {
           },
         },
         response: {
-          201: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          201: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -138,14 +111,7 @@ export async function employeesRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -166,14 +132,7 @@ export async function employeesRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -187,9 +146,7 @@ export async function employeesRoutes(fastify) {
         tags: ['Employees'],
         description: 'Export employees as CSV',
         response: {
-          200: {
-            type: 'string',
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },

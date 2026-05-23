@@ -15,23 +15,7 @@ export async function employeeDashboardRoutes(fastify) {
         tags: ['Employee Dashboard'],
         description: 'Get employee dashboard summary',
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  employeeName: { type: 'string' },
-                  designation: { type: 'string' },
-                  department: { type: 'string' },
-                  todayAttendance: { type: 'object' },
-                  pendingLeaves: { type: 'number' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -45,14 +29,7 @@ export async function employeeDashboardRoutes(fastify) {
         tags: ['Attendance'],
         description: 'Get today\'s attendance data',
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -68,30 +45,16 @@ export async function employeeDashboardRoutes(fastify) {
     tags: ['Employee'],
     description: 'Get your employee documents',
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          success: { type: 'boolean' },
-          data: { type: 'array' },
-          meta: { type: 'object' },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
-    },
   };
 
   const teamSchema = {
     tags: ['Employee'],
     description: 'Get your manager and team peers',
     response: {
-      200: {
-        type: 'object',
-        properties: {
-          success: { type: 'boolean' },
-          data: { type: 'object' },
-          meta: { type: 'object' },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
-    },
   };
 
   fastify.get('/employee/documents', { schema: documentsSchema }, getDocumentsHandler);

@@ -22,14 +22,7 @@ export default async function departmentsRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'array', items: { type: 'object', additionalProperties: true } },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -52,14 +45,7 @@ export default async function departmentsRoutes(fastify) {
           },
         },
         response: {
-          201: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          201: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -88,14 +74,7 @@ export default async function departmentsRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -116,14 +95,7 @@ export default async function departmentsRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },

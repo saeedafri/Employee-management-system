@@ -23,20 +23,7 @@ export default async function holidaysRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: {
-                type: 'object',
-                properties: {
-                  holidays: { type: 'array', items: { type: 'object', additionalProperties: true } },
-                  total: { type: 'number' },
-                },
-              },
-              meta: { type: 'object' },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -60,14 +47,7 @@ export default async function holidaysRoutes(fastify) {
           },
         },
         response: {
-          201: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          201: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -96,14 +76,7 @@ export default async function holidaysRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },
@@ -124,14 +97,7 @@ export default async function holidaysRoutes(fastify) {
           },
         },
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              success: { type: 'boolean' },
-              data: { type: 'object', additionalProperties: true },
-              meta: { type: 'object', additionalProperties: true },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
       },
     },

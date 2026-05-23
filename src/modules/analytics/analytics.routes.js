@@ -12,29 +12,8 @@ export default async function analyticsRoutes(fastify) {
       tags: ['Analytics'],
       description: 'Get HR admin dashboard summary with key metrics',
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            data: {
-              type: 'object',
-              properties: {
-                totalEmployees: { type: 'integer' },
-                activeToday: { type: 'integer' },
-                onLeaveToday: { type: 'integer' },
-                openRequests: { type: 'integer' },
-              },
-            },
-            meta: {
-              type: 'object',
-              properties: {
-                cached: { type: 'boolean' },
-                generatedAt: { type: 'string' },
-              },
-            },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getSummary);
@@ -50,34 +29,8 @@ export default async function analyticsRoutes(fastify) {
         },
       },
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            data: {
-              type: 'object',
-              properties: {
-                range: { type: 'string' },
-                series: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      date: { type: 'string' },
-                      present: { type: 'integer' },
-                      absent: { type: 'integer' },
-                      leave: { type: 'integer' },
-                      wfh: { type: 'integer' },
-                      halfDay: { type: 'integer' },
-                    },
-                  },
-                },
-              },
-            },
-            meta: { type: 'object' },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getAttendance);
@@ -87,26 +40,8 @@ export default async function analyticsRoutes(fastify) {
       tags: ['Analytics'],
       description: 'Get employee headcount by department',
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            data: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  departmentId: { type: 'string' },
-                  departmentName: { type: 'string' },
-                  employeeCount: { type: 'integer' },
-                  activeCount: { type: 'integer' },
-                },
-              },
-            },
-            meta: { type: 'object' },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getHeadcountByDepartment);
@@ -122,30 +57,8 @@ export default async function analyticsRoutes(fastify) {
         },
       },
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            data: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  actorName: { type: 'string' },
-                  action: { type: 'string' },
-                  entityType: { type: 'string' },
-                  entityId: { type: 'string' },
-                  resourceLabel: { type: 'string' },
-                  createdAt: { type: 'string' },
-                  createdAtIstDisplay: { type: 'string' },
-                },
-              },
-            },
-            meta: { type: 'object' },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getRecentActivity);
@@ -161,23 +74,8 @@ export default async function analyticsRoutes(fastify) {
         },
       },
       response: {
-        200: {
-          type: 'object',
-          properties: {
-            success: { type: 'boolean' },
-            data: {
-              type: 'object',
-              properties: {
-                pending: { type: 'integer' },
-                approved: { type: 'integer' },
-                rejected: { type: 'integer' },
-                withdrawn: { type: 'integer' },
-              },
-            },
-            meta: { type: 'object' },
-          },
+          200: { type: 'object', additionalProperties: true },
         },
-      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getLeaveSummary);
