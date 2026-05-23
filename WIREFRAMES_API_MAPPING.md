@@ -18,15 +18,18 @@ Every API call identifies "which employee" using one of three modes:
 | **Mode 2 — Target** | Reads `:id` from the URL | Pass the employee's ID in the URL |
 | **Mode 3 — Team** | Uses JWT `employeeId` as manager, queries direct reports | Just send `Authorization: Bearer <token>` |
 
-**Login flow (MFA enabled for all users):**
+**Login flow — two paths depending on user MFA setting:**
 ```
-1. POST /auth/login → returns { mfaRequired: true, challengeId, destinationMasked, expiresIn }
-2. User enters OTP from email
-3. POST /auth/verify-otp { challengeId, code } → returns { accessToken, user }
-4. Store accessToken — use in all subsequent requests
+MFA OFF (most users):
+  POST /auth/login → returns { accessToken, user } directly. Done.
+
+MFA ON (mohammadsaeedafri9@gmail.com):
+  POST /auth/login → returns { mfaRequired: true, challengeId, ... }
+  Check email for OTP code
+  POST /auth/verify-otp { challengeId, code } → returns { accessToken, user }
 ```
 
-**Login response from `/auth/verify-otp` — store all of this:**
+**Login response (no MFA) — store all of this:**
 ```json
 {
   "data": {
@@ -56,19 +59,17 @@ EMPLOYEE    → Employee Dashboard (Page 06)
 
 ## Test Users
 
-All users have MFA enabled. Login triggers OTP to the email listed below. All OTP emails deliver to `mohammadsaeedafri9@gmail.com`.
-
-| Login Email | Password | Role | Has Employee Record | Tests Pages |
-|---|---|---|---|---|
-| `mohammadsaeedafri9+superadmin@gmail.com` | `Password123!` | SUPER_ADMIN | ❌ No | 14, 15, analytics |
-| `mohammadsaeedafri9@gmail.com` | `Password123!` | HR_ADMIN | ✅ E0003 | 04, 06, 07, 08, 09, 10, 13, 15 |
-| `mohammadsaeedafri9+aman@gmail.com` | `Password123!` | MANAGER | ✅ E0001 (19 reports) | 05, 06, 11, 12 |
-| `mohammadsaeedafri9+priya@gmail.com` | `Password123!` | EMPLOYEE | ✅ E0002 | 06, 11, 12 |
-| `mohammadsaeedafri9+riya@gmail.com` | `Password123!` | MANAGER | ✅ | 05, 06 |
-| `mohammadsaeedafri9+dev1@gmail.com` | `Password123!` | EMPLOYEE | ✅ | 06 |
+| Login Email | Password | Role | MFA | Has Employee Record | Tests Pages |
+|---|---|---|---|---|---|
+| `superadmin@acme.test` | `Password123!` | SUPER_ADMIN | ❌ Off | ❌ No | 14, 15, analytics |
+| `mohammadsaeedafri9@gmail.com` | `Password123!` | HR_ADMIN | ✅ On | ✅ E0003 | 04, 06, 07, 08, 09, 10, 13, 15 |
+| `aman@acme.test` | `Password123!` | MANAGER | ❌ Off | ✅ E0001 (19 reports) | 05, 06, 11, 12 |
+| `priya@acme.test` | `Password123!` | EMPLOYEE | ❌ Off | ✅ E0002 | 06, 11, 12 |
+| `riya@acme.test` | `Password123!` | MANAGER | ❌ Off | ✅ | 05, 06 |
+| `dev1@acme.test` | `Password123!` | EMPLOYEE | ❌ Off | ✅ | 06 |
 
 > **X-Tenant-Key**: `acme-corp-001` — always include this header on login. After login, JWT carries it automatically.  
-> **MFA**: Login returns `mfaRequired: true` → check inbox at `mohammadsaeedafri9@gmail.com` for OTP → call `/auth/verify-otp`.
+> **MFA users**: `mohammadsaeedafri9@gmail.com` has MFA enabled — login returns `mfaRequired:true`, OTP delivered to that inbox. All other users log in directly and return `accessToken` immediately.
 
 ---
 
