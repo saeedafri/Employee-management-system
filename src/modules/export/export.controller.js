@@ -1,3 +1,6 @@
+import { createReadStream, existsSync } from 'fs';
+import { join } from 'path';
+import { config } from '../../config/index.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as exportService from './export.service.js';
 import * as exportValidator from './export.validator.js';
@@ -77,6 +80,12 @@ export async function exportLeave(request, reply) {
   }
 }
 
+const MIME_MAP = {
+  csv: 'text/csv',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  json: 'application/json',
+};
+
 export async function downloadExport(request, reply) {
   try {
     const tenantId = request.tenant.id;
@@ -84,13 +93,27 @@ export async function downloadExport(request, reply) {
 
     const status = await exportService.getExportStatus(job_id, tenantId);
 
-    if (status.status === 'SUCCESS' && status.file_url) {
-      return reply.download(status.file_url, {
-        'Content-Disposition': `attachment; filename="${job_id}.${status.format}"`,
-      });
+    if (status.status !== 'SUCCESS') {
+      return reply.send(successResponse(status));
     }
 
-    return reply.send(successResponse(status));
+    const ext = status.format === 'excel' ? 'xlsx' : status.format;
+    const exportsDir = config.exportsDir || '/tmp/exports';
+    const filepath = join(exportsDir, `${job_id}.${ext}`);
+
+    if (!existsSync(filepath)) {
+      return reply.status(404).send(
+        errorResponse('FILE_NOT_FOUND', 'Export file not found or has expired', {}, request.id),
+      );
+    }
+
+    const contentType = MIME_MAP[ext] || 'application/octet-stream';
+    const filename = `export-${job_id}.${ext}`;
+
+    reply
+      .type(contentType)
+      .header('Content-Disposition', `attachment; filename="${filename}"`)
+      .send(createReadStream(filepath));
   } catch (error) {
     request.log.error(error);
     if (error.code) {
