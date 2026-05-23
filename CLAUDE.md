@@ -1,5 +1,5 @@
 # EMS — Employee Management System (Backend)
-> Last deep-analysis: 2026-05-22
+> Last deep-analysis: 2026-05-23
 
 ## Project Overview
 Production-grade multi-tenant HRMS REST API. Fastify v4 + Prisma + PostgreSQL.  
@@ -15,7 +15,9 @@ Deployed on **Render**. GitHub: `github.com/saeedafri/Employee-management-system
 | DB | PostgreSQL (Render) |
 | Auth | JWT access tokens + refresh token rotation (httpOnly cookie) |
 | Password | Argon2id (type:2, memoryCost:19456, timeCost:2, parallelism:1) |
-| Email | SMTP via Nodemailer (Ethereal for dev) |
+| Email | SMTP via Nodemailer — Ethereal (dev, preview at ethereal.email), Gmail/Resend (prod) |
+| File Storage | Cloudinary (optional) — `CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET` env vars |
+| Export | Real XLSX via ExcelJS — styled headers, alternating rows, auto-width |
 | Queue | **REMOVED** — Redis/BullMQ removed; all ops are synchronous |
 | Docs | Swagger UI at `/docs` |
 | Deploy | Render Web Service + Render PostgreSQL |
@@ -64,9 +66,15 @@ postgresql://employee_m2e9_user:<password>@dpg-d85jt2p9rddc73af0so0-a.oregon-pos
 | HR_ADMIN | `hr@acme.test` | `Password123!` | acme-corp-001 |
 | MANAGER | `aman@acme.test` | `Password123!` | acme-corp-001 |
 | EMPLOYEE | `priya@acme.test` | `Password123!` | acme-corp-001 |
+| MANAGER | `riya@acme.test` | `Password123!` | acme-corp-001 |
+| EMPLOYEE | `dev1@acme.test` | `Password123!` | acme-corp-001 |
+| EMPLOYEE | `dev2@acme.test` | `Password123!` | acme-corp-001 |
+| EMPLOYEE | `fin1@acme.test` | `Password123!` | acme-corp-001 |
+| EMPLOYEE | `onleave@acme.test` | `Password123!` | acme-corp-001 |
 | HR_ADMIN | `admin@testorg.com` | `password123` | test-key-123456789 |
 
-> **CRITICAL**: `prisma/seed.js` has `seedPassword = 'ChangeMe123!'` but live DB was seeded with `Password123!`. Do NOT re-seed without updating seedPassword first. `seed.js` is wrong for production.
+> **Comprehensive seed** run on 2026-05-23: 79 employees, 23 leave requests (PENDING/APPROVED/DENIED/WITHDRAWN/CANCELLED), 523 attendance records (varied WFH/ABSENT/HALF_DAY), 8 leave types, 19 holidays, 6 sub-departments.
+> Run again anytime with `npm run db:seed:comprehensive` (additive, safe).
 
 ---
 
@@ -250,13 +258,13 @@ EMS/
 | GET | /reports/export-history |
 
 ### Export (`/api/v1/export/*`)
-| Method | Path |
-|--------|------|
-| POST | /export/employees |
-| POST | /export/attendance |
-| POST | /export/leave |
-| GET | /export/:job_id/download |
-| GET | /export/list |
+| Method | Path | Notes |
+|--------|------|-------|
+| POST | /export/employees | HR_ADMIN only. format: csv/excel/json |
+| POST | /export/attendance | HR_ADMIN only. requires from_date, to_date |
+| POST | /export/leave | HR_ADMIN only. requires from_date, to_date |
+| GET | /export/:job_id/download | streams file; 404 if expired |
+| GET | /export/list | paginated job list |
 
 ### Audit Logs (`/api/v1/audit-logs/*`)
 | Method | Path |
@@ -295,6 +303,13 @@ EMS/
 | GET | /employees/me/documents | alias for above (wireframe path) |
 | GET | /employee/team | manager + peers in same dept |
 | GET | /employees/me/team | alias for above (wireframe path) |
+
+### Employee Documents (`/api/v1/employees/:id/documents`)
+| Method | Path | Notes |
+|--------|------|-------|
+| POST | /employees/:id/documents | Upload file (multipart/form-data). Requires Cloudinary env vars. HR/Admin or own. |
+| GET | /employees/:id/documents | List documents. HR/Admin or own. |
+| DELETE | /employees/:id/documents/:docId | Delete document from DB + Cloudinary. HR/Admin only. |
 | GET | /attendance/today | today's check-in/out status |
 
 ### Logs (`/api/v1/logs`)
@@ -312,7 +327,7 @@ EMS/
 | Payroll | No Prisma model | No module dir, no routes |
 | Permissions API | `Permission`, `RolePermission`, `UserRole`, `Role` | Models exist, no CRUD API |
 | Resignations | `Resignation` | No module dir, no routes |
-| File/Document Upload | `EmployeeDocument` | GET list works; no upload endpoint (no file storage) |
+| File/Document Upload | `EmployeeDocument` | ✅ Upload/list/delete implemented — needs Cloudinary env vars in Render |
 | MFA enforcement | `OtpChallenge` | Flow works but NOT enforced by default |
 
 ---
@@ -391,9 +406,10 @@ Validator required `type` field (LATE/MISSED_CHECKOUT/EARLY_CHECKOUT) but `Atten
 ### ✅ FIXED — CI pipeline test job removed (2026-05-22)
 Tests require a local PostgreSQL with `ems_test` DB. No test DB in current CI config. Test job removed from `.github/workflows/ci.yml` until a proper test DB service is added. Lint + build + security audit still run on every push.
 
-### Remaining — File upload not implemented
-**Problem**: `EmployeeDocument` records exist in DB but there is no upload endpoint. Documents can only be read (GET), not created via API.  
-**Impact**: UI cannot let employees upload documents. The GET endpoint returns documents if they were seeded directly into DB.
+### ✅ FIXED — File upload implemented (2026-05-23)
+`POST /employees/:id/documents` (multipart/form-data), `GET /employees/:id/documents`, `DELETE /employees/:id/documents/:docId`.
+Uses Cloudinary for storage. Requires `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` on Render.
+Returns `503 STORAGE_NOT_CONFIGURED` if vars not set (graceful fallback).
 
 ### Remaining — Notifications module not built
 No `src/modules/notifications/` dir. `Notification` Prisma model exists but zero routes.
@@ -420,7 +436,7 @@ No `src/modules/resignations/` dir. `Resignation` Prisma model exists but zero r
 | Session | Refresh token rotation with family-ID reuse detection |
 | PasswordResetToken | Hashed reset tokens with TTL and IP tracking |
 | OtpChallenge | MFA OTP: rate-limited attempts, resend count, masked destination |
-| EmployeeDocument | Document metadata + verification status (no actual file storage implemented) |
+| EmployeeDocument | Document metadata + verification status. Upload to Cloudinary via POST /employees/:id/documents |
 | AttendanceRecord | Daily check-in/check-out per employee with workMode and location |
 | AttendanceRegularizationRequest | Employee request to fix missed/wrong attendance |
 | LeaveType | Tenant leave types (annual, sick, casual, etc.) |
@@ -492,24 +508,42 @@ CORS_ORIGIN=http://localhost:3000,http://localhost:3001,http://localhost:5173
 JWT_SECRET=<see .env file>
 ACCESS_TOKEN_EXPIRES_IN=15m
 REFRESH_TOKEN_EXPIRES_IN=7d
-SMTP_HOST=smtp.ethereal.email
+
+# Email (current = Ethereal fake SMTP, preview at https://ethereal.email/messages)
+EMAIL_PROVIDER=smtp
+SMTP_HOST=smtp.ethereal.email     # Change to smtp.gmail.com for real email
+SMTP_PORT=587                     # Use 465 for Resend/SSL
+SMTP_USER=<ethereal or gmail addr>
+SMTP_PASS=<ethereal pass or Gmail App Password>
+SMTP_FROM=<sender address>
+# For Gmail: 1) enable 2FA, 2) create App Password at myaccount.google.com/apppasswords
+# For Resend: SMTP_HOST=smtp.resend.com SMTP_PORT=465 SMTP_USER=resend SMTP_PASS=re_KEY SMTP_FROM=onboarding@resend.dev
+
+# File Storage — Cloudinary (needed for document upload endpoint)
+# CLOUDINARY_CLOUD_NAME=your-cloud-name
+# CLOUDINARY_API_KEY=your-api-key
+# CLOUDINARY_API_SECRET=your-api-secret
+
 RENDER_API_KEY=<see .env>
 GITHUB_TOKEN=<see .env>
 APP_NAME=EMS
 API_PREFIX=/api/v1
+API_URL=https://employee-management-system-2b9q.onrender.com/api/v1
+EXPORTS_DIR=/tmp/exports
 ```
 
 ---
 
 ## Development Commands
 ```bash
-npm run dev              # Local dev with --watch
-npm test                 # All tests (Mocha)
-npm run test:unit        # Unit tests only
-npm run test:integration # Integration tests only
-npm run test:coverage    # Coverage with c8
-npm run db:seed          # Seed (WARNING: seedPassword needs updating)
-npm run db:studio        # Prisma Studio (GUI)
+npm run dev                    # Local dev with --watch
+npm test                       # All tests (Mocha)
+npm run test:unit              # Unit tests only
+npm run test:integration       # Integration tests only
+npm run test:coverage          # Coverage with c8
+npm run db:seed                # Base seed (tenant, users, 65 employees, leave types, holidays)
+npm run db:seed:comprehensive  # Additive seed — sub-depts, leave in all statuses, 454 attendance records
+npm run db:studio              # Prisma Studio (GUI)
 npm run lint             # ESLint
 npm run format           # Prettier
 ```
