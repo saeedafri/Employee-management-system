@@ -56,6 +56,15 @@ export const config = {
   brevoApiKey: process.env.BREVO_API_KEY || '',
   brevoFrom: process.env.BREVO_FROM || 'noreply@acme.test',
 
+  // File Storage — Cloudinary
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+
+  // Exports
+  exportsDir: process.env.EXPORTS_DIR || '/tmp/exports',
+  apiUrl: process.env.API_URL || 'http://localhost:3000/api/v1',
+
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',
   isTesting: process.env.NODE_ENV === 'testing',

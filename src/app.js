@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cookiePlugin from '@fastify/cookie';
+import multipart from '@fastify/multipart';
 import { config } from './config/index.js';
 import prismaPlugin from './plugins/prisma.js';
 import { swaggerPlugin } from './plugins/swagger.js';
@@ -45,6 +46,7 @@ export async function createApp() {
   await fastify.register(corsPlugin);
   await fastify.register(helmetPlugin);
   await fastify.register(rateLimitPlugin);
+  await fastify.register(multipart, { limits: { fileSize: 10 * 1024 * 1024 } }); // 10 MB limit
 
   // Attach request logging
   await attachRequestLogging(fastify);

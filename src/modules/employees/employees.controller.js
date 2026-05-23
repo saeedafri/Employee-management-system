@@ -2,6 +2,9 @@ import * as service from './employees.service.js';
 import * as repo from './employees.repository.js';
 import * as validator from './employees.validator.js';
 import { errorResponse } from '../../utils/response.js';
+import { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
+import { prisma } from '../../plugins/prisma.js';
+import { generateId } from '../../utils/id.js';
 
 const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
@@ -99,6 +102,102 @@ export async function deleteEmployee(request, reply) {
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+  }
+}
+
+export async function uploadDocument(request, reply) {
+  const { user } = request;
+  const tenantId = request.tenant.id;
+  const { id: employeeId } = request.params;
+
+  // HR_ADMIN and SUPER_ADMIN can upload for anyone; employee can upload their own
+  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot upload documents for other employees', request.requestId));
+  }
+
+  if (!isCloudinaryConfigured()) {
+    return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'File storage is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET env vars.', request.requestId));
+  }
+
+  try {
+    const data = await request.file();
+    if (!data) {
+      return reply.code(400).send(errorResponse('NO_FILE', 'No file provided', request.requestId));
+    }
+
+    const { documentType = 'OTHER' } = request.query;
+    const buffer = await data.toBuffer();
+    const ext = data.filename.split('.').pop() || 'bin';
+    const publicId = `ems/${tenantId}/employees/${employeeId}/${generateId()}`;
+
+    const uploaded = await uploadToCloudinary(buffer, {
+      folder: `ems/${tenantId}/employees/${employeeId}`,
+      publicId,
+      resourceType: 'auto',
+    });
+
+    const doc = await prisma.employeeDocument.create({
+      data: {
+        tenantId,
+        employeeId,
+        documentType,
+        fileName: data.filename,
+        fileUrl: uploaded.url,
+        storageKey: uploaded.publicId,
+        mimeType: data.mimetype,
+        sizeBytes: uploaded.bytes,
+        uploadedById: user.id,
+        verificationStatus: 'PENDING',
+      },
+    });
+
+    reply.code(201).send({ success: true, data: doc });
+  } catch (err) {
+    reply.code(500).send(errorResponse('UPLOAD_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function listDocuments(request, reply) {
+  const { user } = request;
+  const tenantId = request.tenant.id;
+  const { id: employeeId } = request.params;
+
+  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view documents for other employees', request.requestId));
+  }
+
+  try {
+    const docs = await prisma.employeeDocument.findMany({
+      where: { tenantId, employeeId },
+      orderBy: { createdAt: 'desc' },
+    });
+    reply.code(200).send({ success: true, data: docs });
+  } catch (err) {
+    reply.code(500).send(errorResponse('QUERY_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function deleteDocument(request, reply) {
+  const { user } = request;
+  const tenantId = request.tenant.id;
+  const { id: employeeId, docId } = request.params;
+
+  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete documents', request.requestId));
+  }
+
+  try {
+    const doc = await prisma.employeeDocument.findFirst({ where: { id: docId, tenantId, employeeId } });
+    if (!doc) return reply.code(404).send(errorResponse('NOT_FOUND', 'Document not found', request.requestId));
+
+    if (doc.storageKey && isCloudinaryConfigured()) {
+      await deleteFromCloudinary(doc.storageKey);
+    }
+
+    await prisma.employeeDocument.delete({ where: { id: docId } });
+    reply.code(200).send({ success: true, message: 'Document deleted' });
+  } catch (err) {
+    reply.code(500).send(errorResponse('DELETE_ERROR', err.message, request.requestId));
   }
 }
 

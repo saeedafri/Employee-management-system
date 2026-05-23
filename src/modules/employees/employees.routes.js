@@ -1,4 +1,4 @@
-import { authenticate } from '../../middleware/authenticate.js';
+import { authenticate, authorize } from '../../middleware/authenticate.js';
 import {
   listEmployees,
   getEmployee,
@@ -6,6 +6,9 @@ import {
   updateEmployee,
   deleteEmployee,
   exportEmployees,
+  uploadDocument,
+  listDocuments,
+  deleteDocument,
 } from './employees.controller.js';
 
 export async function employeesRoutes(fastify) {
@@ -137,6 +140,70 @@ export async function employeesRoutes(fastify) {
       },
     },
     deleteEmployee,
+  );
+
+  // Document upload — multipart/form-data
+  fastify.post(
+    '/employees/:id/documents',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Upload a document for an employee (Cloudinary storage). Send as multipart/form-data.',
+        consumes: ['multipart/form-data'],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string' } },
+        },
+        querystring: {
+          type: 'object',
+          properties: {
+            documentType: {
+              type: 'string',
+              enum: ['PASSPORT', 'ID_CARD', 'RESUME', 'OFFER_LETTER', 'CONTRACT', 'CERTIFICATE', 'OTHER'],
+              default: 'OTHER',
+            },
+          },
+        },
+        response: { 201: { type: 'object', additionalProperties: true } },
+      },
+    },
+    uploadDocument,
+  );
+
+  fastify.get(
+    '/employees/:id/documents',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'List documents for an employee',
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string' } },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    listDocuments,
+  );
+
+  fastify.delete(
+    '/employees/:id/documents/:docId',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Delete an employee document (HR/Admin only)',
+        params: {
+          type: 'object',
+          required: ['id', 'docId'],
+          properties: { id: { type: 'string' }, docId: { type: 'string' } },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    },
+    deleteDocument,
   );
 
   fastify.get(
