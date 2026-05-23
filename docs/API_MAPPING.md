@@ -1,9 +1,9 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-05-23**
+> **Last verified: 2026-05-24**
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
-> Email: Resend HTTP API (OTP delivery live and tested)
+> Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
 
 ---
 
@@ -80,12 +80,13 @@ After login, two httpOnly cookies are set automatically:
 | Role | Email | Password | Notes |
 |------|-------|----------|-------|
 | SUPER_ADMIN | `superadmin@acme.test` | `Password123!` | No employee record — dashboard/attendance/leave calls won't work |
-| HR_ADMIN | `mohammadsaeedafri9@gmail.com` | `Password123!` | Full HR access + employee record E0003 |
-| MANAGER | `aman@acme.test` | `Password123!` | Sees own team (19 reports) |
+| HR_ADMIN | `mohammadsaeedafri9@gmail.com` | `Password123!` | Full HR access + employee record |
+| MANAGER | `aman@acme.test` | `Password123!` | Sees own team (~19 reports) |
 | EMPLOYEE | `priya@acme.test` | `Password123!` | Sees own data only |
+| EMPLOYEE | `dev1@acme.test` | `Password123!` | Engineering employee |
 
 > MFA is **disabled for all users** — `POST /auth/login` returns `accessToken` directly.  
-> OTP is only used in the **forgot-password flow** (`/auth/forgot-password` → email link → `/auth/reset-password`).
+> OTP is only used in the **forgot-password flow** (`/auth/forgot-password` → email OTP → `/auth/verify-otp` → `/auth/reset-password`).
 
 ---
 
@@ -247,7 +248,7 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
       "user": { "email": "aman@acme.test", "memberType": "MANAGER", "status": "ACTIVE" }
     }
   ],
-  "pagination": { "page": 1, "limit": 20, "total": 67, "pages": 4 }
+  "pagination": { "page": 1, "limit": 20, "total": 79, "pages": 4 }
 }
 ```
 
@@ -305,7 +306,7 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
   "firstName": "Jane",
   "lastName": "Doe",
   "workEmail": "jane.doe@acme.test",
-  "employeeCode": "E0010",
+  "employeeCode": "EMP-0082",
   "employmentType": "FULL_TIME",
   "joinedOn": "2024-01-15",
   "designation": "Software Engineer",
@@ -318,7 +319,8 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
 }
 ```
 
-> Dates: `"2024-01-15"` and `"2024-01-15T00:00:00.000Z"` both accepted.
+> `employeeCode` is **optional** — if omitted, auto-generated as `EMP-0001`, `EMP-0082`, etc.  
+> Format for new codes is `EMP-XXXX` (4-digit padded). Dates: `"2024-01-15"` also accepted.
 
 **Response:** 201, `data` = full employee object
 
@@ -531,7 +533,8 @@ Returns array of root departments. Each has a `children` array (populated if sub
 {
   "requests": [
     {
-      "id": "...",
+      "id": "cmpicb6vn000710lt...",
+      "referenceNo": "LVR-0019",
       "leaveTypeId": "...",
       "leaveTypeName": "Annual Leave",
       "startDate": "2026-06-15T00:00:00.000Z",
@@ -548,7 +551,9 @@ Returns array of root departments. Each has a `children` array (populated if sub
 }
 ```
 
-**Statuses:** `PENDING`, `APPROVED`, `DENIED`, `WITHDRAWN`
+> `referenceNo` is the human-friendly display ID (e.g. `LVR-0019`). Use `id` (CUID) for all API operations (approve, reject, etc.).
+
+**Statuses:** `PENDING`, `APPROVED`, `DENIED`, `WITHDRAWN`, `CANCELLED`
 
 ---
 
@@ -628,6 +633,29 @@ Returns array of root departments. Each has a `children` array (populated if sub
 
 ---
 
+### `POST /attendance/check-in` — Response `data`
+```json
+{
+  "id": "cmpi0p855000p...",
+  "referenceNo": "ATT-0068",
+  "checkInAt": "2026-05-23T07:18:56.632Z",
+  "geofenceValid": true,
+  "message": "Checked in successfully"
+}
+```
+
+### `POST /attendance/check-out` — Response `data`
+```json
+{
+  "id": "...",
+  "referenceNo": "ATT-0068",
+  "checkInAt": "2026-05-23T07:18:56.632Z",
+  "checkOutAt": "2026-05-23T17:30:00.000Z",
+  "durationMinutes": 611,
+  "message": "Checked out successfully"
+}
+```
+
 ### `GET /attendance/records`
 
 **Query params:** `page`, `limit`, `month` (YYYY-MM), `fromDate`, `toDate`
@@ -638,6 +666,7 @@ Returns array of root departments. Each has a `children` array (populated if sub
   "records": [
     {
       "id": "...",
+      "referenceNo": "ATT-0068",
       "attendanceDate": "2026-05-21T00:00:00.000Z",
       "checkInAt": "2026-05-21T09:12:13.605Z",
       "checkOutAt": "2026-05-21T18:30:00.000Z",
@@ -647,14 +676,26 @@ Returns array of root departments. Each has a `children` array (populated if sub
       "notes": null
     }
   ],
-  "pagination": { "page": 1, "limit": 10, "total": 23, "pages": 3 }
+  "pagination": { "page": 1, "limit": 10, "total": 523, "pages": 53 }
 }
 ```
+
+> `referenceNo` is the human-friendly display ID (e.g. `ATT-0068`). Use `id` (CUID) for API operations.
+
+---
+
+### `POST /attendance/regularization` — Response `data`
+```json
+{ "id": "...", "referenceNo": "REG-0001", "attendanceDate": "...", "status": "PENDING", "reason": "...", "createdAt": "..." }
+```
+
+### `GET /attendance/regularization` and `GET /attendance/team/regularization`
+Each record includes `referenceNo: "REG-XXXX"` alongside `id`.
 
 ---
 
 ### `GET /attendance/team/records`
-**Required roles:** MANAGER, HR_ADMIN. **Query:** `month` (YYYY-MM), `departmentId`. Same shape.
+**Required roles:** MANAGER, HR_ADMIN. **Query:** `month` (YYYY-MM), `departmentId`. Same shape (includes `referenceNo`).
 
 ---
 
@@ -698,6 +739,131 @@ Own regularization requests.
 
 ### `PATCH /attendance/regularization/:id/deny`
 **Required roles:** MANAGER, HR_ADMIN.
+
+---
+
+## Employee Documents
+
+### `POST /employees/:id/documents`
+Upload a document. **Content-Type:** `multipart/form-data`
+
+**Required roles:** HR_ADMIN, SUPER_ADMIN, or own employee record.  
+**Requires:** `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` env vars on Render.
+
+**Form fields:**
+| Field | Type | Required |
+|-------|------|----------|
+| `file` | File | Yes |
+| `documentType` | string | Yes (e.g. `ID_PROOF`, `OFFER_LETTER`, `CONTRACT`) |
+
+**Response `data`:**
+```json
+{
+  "id": "...", "documentType": "ID_PROOF", "fileName": "passport.pdf",
+  "fileUrl": "https://res.cloudinary.com/...", "verificationStatus": "PENDING",
+  "createdAt": "..."
+}
+```
+
+**Error codes:** `STORAGE_NOT_CONFIGURED` (503) if Cloudinary env vars not set.
+
+---
+
+### `GET /employees/:id/documents`
+**Required roles:** HR_ADMIN, SUPER_ADMIN, or own employee record.  
+**Response `data`:** `{ "documents": [...] }`
+
+---
+
+### `DELETE /employees/:id/documents/:docId`
+**Required roles:** HR_ADMIN, SUPER_ADMIN only. Deletes from DB + Cloudinary.
+
+---
+
+## Notifications
+
+All notification endpoints require authentication (Bearer token).
+
+### `GET /notifications`
+**Query params:** `page` (default 1), `limit` (default 20), `unreadOnly` (boolean, default false)
+
+**Response `data`:**
+```json
+{
+  "notifications": [
+    {
+      "id": "eff4d814ef802d78d6608745",
+      "type": "leave_requested",
+      "title": "New Leave Request",
+      "message": "Priya Sharma requested 1 day(s) of Annual Leave",
+      "metadataJson": { "leaveRequestId": "...", "employeeId": "..." },
+      "readAt": null,
+      "expiresAt": "2026-05-24T06:00:27.804Z",
+      "createdAt": "2026-05-23T18:00:27.806Z"
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 5, "pages": 1 }
+}
+```
+
+> Expired notifications (past `expiresAt`) are automatically excluded. TTL = 12 hours.
+
+**Notification types:**
+| Type | Who receives |
+|------|-------------|
+| `leave_requested` | Manager + HR_ADMINs + SUPER_ADMINs |
+| `leave_approved` | Employee who requested |
+| `leave_denied` | Employee who requested |
+| `leave_withdrawn` | Manager + HR_ADMINs + SUPER_ADMINs |
+| `attendance_checkin` | Employee + manager + SUPER_ADMINs |
+| `attendance_checkout` | Employee + manager + SUPER_ADMINs |
+| `regularization_requested` | Manager + HR_ADMINs + SUPER_ADMINs |
+| `regularization_approved` | Employee |
+| `regularization_denied` | Employee |
+
+---
+
+### `GET /notifications/unread-count`
+**Response `data`:** `{ "count": 3 }` — use for bell icon badge.
+
+---
+
+### `PATCH /notifications/:id/read`
+Mark one notification as read. **Response `data`:** updated notification object.  
+**Error:** `NOT_FOUND` (404) if notification doesn't belong to caller.
+
+---
+
+### `PATCH /notifications/read-all`
+Mark all as read. **Response `data`:** `{ "success": true }`
+
+---
+
+### `GET /notifications/stream`
+**Server-Sent Events** stream for real-time updates. EventSource cannot send custom headers, so pass token as query param:
+
+```
+GET /api/v1/notifications/stream?token=<accessToken>
+```
+
+**Events emitted:**
+| Event name | When | Payload |
+|------------|------|---------|
+| `notification` | New notification created for this user | `{ id, type, title, message, createdAt, metadata }` |
+| `analytics_update` | Any leave/attendance mutation (HR_ADMIN/SUPER_ADMIN only) | `{ tenantId, ts }` |
+
+**Frontend usage:**
+```js
+const es = new EventSource(`/api/v1/notifications/stream?token=${accessToken}`);
+es.addEventListener('notification', e => {
+  const n = JSON.parse(e.data); // add to bell icon
+});
+es.addEventListener('analytics_update', () => {
+  // refetch /analytics/summary, /analytics/attendance, etc.
+});
+```
+
+> SSE connections are in-memory — clients must auto-reconnect on disconnect. A 25-second heartbeat keeps the connection alive through proxies.
 
 ---
 
@@ -988,6 +1154,17 @@ Download completed export using `job_id` from the POST response.
 | `DEPARTMENT_CYCLE` | 409 | Setting parent would create circular chain |
 | `DEPARTMENT_NOT_EMPTY` | 409 | Dept has employees or sub-departments |
 | `LEAVE_ALREADY_DECIDED` | 409 | Leave request is not PENDING |
+| `ALREADY_CHECKED_IN` | 400 | Already checked in today |
+| `ALREADY_CHECKED_OUT` | 400 | Already checked out today |
+| `NO_CHECK_IN` | 400 | Checkout attempted without a check-in |
+| `INVALID_REQUEST_STATUS` | 400 | Regularization not PENDING |
+| `REGULARIZATION_NOT_FOUND` | 404 | Regularization request not found |
+| `NO_EMPLOYEE_RECORD` | 400 | User has no linked employee profile |
+| `OTP_INVALID` | 400 | OTP code is wrong |
+| `OTP_EXPIRED` | 400 | OTP has expired |
+| `OTP_LOCKED` | 429 | Too many OTP attempts |
+| `OTP_RESEND_COOLDOWN` | 429 | Resend requested too soon |
+| `STORAGE_NOT_CONFIGURED` | 503 | Cloudinary env vars missing — upload disabled |
 
 ---
 
@@ -1004,6 +1181,7 @@ Download completed export using `job_id` from the POST response.
 | `GET /holidays` | `data: { holidays: [...], total: N }` |
 | `GET /analytics/headcount-by-department` | `data: [...]` — flat array |
 | `GET /auth/sessions` | `data: [...]` — flat array |
+| `GET /notifications` | `data: { notifications: [...], pagination: {} }` |
 
 ---
 
@@ -1011,7 +1189,20 @@ Download completed export using `job_id` from the POST response.
 
 | Feature | Status |
 |---------|--------|
-| Document upload | GET list works, no POST upload (no file storage) |
-| Notifications | Prisma model exists, zero routes |
+| Document upload | ✅ Implemented — POST/GET/DELETE `/employees/:id/documents`. Requires Cloudinary env vars. |
+| Notifications | ✅ Implemented — GET/PATCH + SSE stream at `/notifications/stream` |
 | Resignations | Prisma model exists, zero routes |
 | Fine-grained permission enforcement | `authorize()` uses memberType enum, not the Permission tables |
+
+## Human-Friendly Reference Numbers
+
+All major entities now include a `referenceNo` display field in API responses:
+
+| Entity | Format | Example | Use in API calls |
+|--------|--------|---------|-----------------|
+| Leave Request | `LVR-XXXX` | `LVR-0025` | No — use `id` (CUID) |
+| Attendance Record | `ATT-XXXX` | `ATT-0068` | No — use `id` (CUID) |
+| Regularization | `REG-XXXX` | `REG-0001` | No — use `id` (CUID) |
+| Employee | `employeeCode` | `EMP-0080` | No — use `id` (CUID) |
+
+> `referenceNo` is display-only (for UI, tickets, support). All API operations (approve, reject, download, etc.) use the `id` field (CUID).
