@@ -82,6 +82,8 @@ export async function createApp() {
 
   // Temporary SMTP debug — remove after confirming email works
   fastify.get('/debug/test-email', async (request, reply) => {
+    const { default: dns } = await import('dns');
+    dns.setDefaultResultOrder('ipv4first');
     const nodemailer = (await import('nodemailer')).default;
     const { config: cfg } = await import('./config/index.js');
     const results = {};
@@ -89,7 +91,6 @@ export async function createApp() {
       try {
         const t = nodemailer.createTransport({
           host: cfg.smtpHost, port, secure: port === 465,
-          family: 4, // force IPv4
           auth: { user: cfg.smtpUser, pass: cfg.smtpPass },
           tls: { rejectUnauthorized: false },
           connectionTimeout: 8000, greetingTimeout: 8000, socketTimeout: 8000,

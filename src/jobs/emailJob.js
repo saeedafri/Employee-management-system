@@ -1,6 +1,11 @@
+import dns from 'dns';
 import nodemailer from 'nodemailer';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
+
+// Render has IPv6 addresses but no route to external IPv6 hosts (ENETUNREACH).
+// Force DNS to prefer IPv4 so nodemailer connects via smtp.gmail.com IPv4.
+dns.setDefaultResultOrder('ipv4first');
 
 const isMockProvider = config.emailProvider === 'mock';
 const isEtherealProvider =
