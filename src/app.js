@@ -80,27 +80,6 @@ export async function createApp() {
   fastify.get('/health', async () => ({ status: 'ok' }));
   fastify.get('/healthz', async () => ({ status: 'ok' }));
 
-  // Temporary debug endpoint — remove after confirming email works
-  fastify.get('/debug/test-email', async (request, reply) => {
-    const { Resend } = await import('resend');
-    const { config: cfg } = await import('./config/index.js');
-    if (!cfg.resendApiKey) {
-      return reply.status(500).send({ ok: false, error: 'RESEND_API_KEY not set' });
-    }
-    try {
-      const r = new Resend(cfg.resendApiKey);
-      const { data, error } = await r.emails.send({
-        from: 'EMS <onboarding@resend.dev>',
-        to: 'mohammadsaeedafri9@gmail.com',
-        subject: 'EMS Resend Debug — from Render',
-        html: '<h2>Resend works from Render!</h2><p>Email delivery is live.</p>',
-      });
-      if (error) return reply.status(500).send({ ok: false, error: error.message });
-      return reply.send({ ok: true, messageId: data.id });
-    } catch (err) {
-      return reply.status(500).send({ ok: false, error: err.message });
-    }
-  });
 
   // Register swagger AFTER all routes are defined
   await fastify.register(swaggerPlugin);
