@@ -10,8 +10,8 @@ export default async function reportsRoutes(fastify) {
       querystring: {
         type: 'object',
         properties: {
-          from_date: { type: 'string', format: 'date-time' },
-          to_date: { type: 'string', format: 'date-time' },
+          from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           department_id: { type: 'string' },
           format: { type: 'string', enum: ['json', 'csv'], default: 'json' },
         },
@@ -28,8 +28,8 @@ export default async function reportsRoutes(fastify) {
       querystring: {
         type: 'object',
         properties: {
-          from_date: { type: 'string', format: 'date-time' },
-          to_date: { type: 'string', format: 'date-time' },
+          from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           leave_type: { type: 'string' },
           department_id: { type: 'string' },
           format: { type: 'string', enum: ['json', 'csv'], default: 'json' },

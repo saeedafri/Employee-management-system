@@ -30,8 +30,8 @@ export default async function exportRoutes(fastify) {
         required: ['from_date', 'to_date'],
         properties: {
           format: { type: 'string', enum: ['csv', 'excel', 'json'], default: 'csv' },
-          from_date: { type: 'string', format: 'date-time' },
-          to_date: { type: 'string', format: 'date-time' },
+          from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           department_id: { type: 'string' },
         },
       },
@@ -49,8 +49,8 @@ export default async function exportRoutes(fastify) {
         required: ['from_date', 'to_date'],
         properties: {
           format: { type: 'string', enum: ['csv', 'excel', 'json'], default: 'csv' },
-          from_date: { type: 'string', format: 'date-time' },
-          to_date: { type: 'string', format: 'date-time' },
+          from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           leave_type: { type: 'string' },
           status: { type: 'string', enum: ['APPROVED', 'REJECTED', 'PENDING', 'WITHDRAWN', 'CANCELLED'] },
         },

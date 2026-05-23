@@ -20,8 +20,7 @@ export const getAttendanceRecordsSchema = z.object({
 
 export const regularizationRequestSchema = z.object({
   attendanceDate: z.coerce.date(),
-  type: z.enum(['LATE', 'MISSED_CHECKOUT', 'EARLY_CHECKOUT']),
-  reason: z.string().min(20, 'Reason must be at least 20 characters').max(500),
+  reason: z.string().min(10, 'Reason must be at least 10 characters').max(500),
 });
 
 export const getAttendanceSummarySchema = z.object({

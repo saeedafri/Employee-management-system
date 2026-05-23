@@ -46,15 +46,17 @@
 
 ## Date Format — Definitive Answer
 
-**Depends on the field — not uniform across all endpoints:**
+**Use `"YYYY-MM-DD"` everywhere. It works on all endpoints.**
 
-| Field | Validator | Accepts YYYY-MM-DD | Accepts full ISO |
-|-------|-----------|-------------------|-----------------|
-| `joinedOn`, `dateOfBirth` (employees) | `z.coerce.date()` | ✅ | ✅ |
-| `startDate`, `endDate` (leave requests) | `z.coerce.date()` | ✅ | ✅ |
-| `holidayDate` (holidays) | `z.string().date()` | ✅ | ❌ fails 422 |
+| Field | Accepts YYYY-MM-DD | Accepts full ISO |
+|-------|-------------------|-----------------|
+| `joinedOn`, `dateOfBirth` (employees) | ✅ | ✅ |
+| `startDate`, `endDate` (leave requests) | ✅ | ✅ |
+| `attendanceDate` (regularization) | ✅ | ✅ |
+| `fromDate`, `toDate`, `from_date`, `to_date` (all filters) | ✅ | ✅ |
+| `holidayDate` (holidays) | ✅ | ❌ fails 422 |
 
-**Rule:** Use `"YYYY-MM-DD"` everywhere — it works for all fields. Full ISO (`"2026-10-20T00:00:00.000Z"`) fails on `holidayDate`.
+Full ISO (`"2026-10-20T00:00:00.000Z"`) fails on `holidayDate` only — use YYYY-MM-DD there.
 
 The server stores and returns all dates as full ISO strings (`"2024-01-15T00:00:00.000Z"`).
 
@@ -672,7 +674,12 @@ Returns array of root departments. Each has a `children` array (populated if sub
 
 ### `POST /attendance/regularization`
 
-**Body:** `{ "attendanceDate": "2026-05-20", "reason": "Forgot to check in while in office" }`
+**Body:**
+```json
+{ "attendanceDate": "2026-05-20", "reason": "Forgot to check in while in office" }
+```
+
+> `type` field is NOT accepted (no column in DB). Only `attendanceDate` and `reason` are required.
 
 ### `GET /attendance/regularization`
 Own regularization requests.

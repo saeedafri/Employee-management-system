@@ -14,8 +14,8 @@ export default async function auditLogsRoutes(fastify) {
           limit: { type: 'integer', default: 10 },
           user_email: { type: 'string', format: 'email' },
           action: { type: 'string' },
-          from_date: { type: 'string', format: 'date-time' },
-          to_date: { type: 'string', format: 'date-time' },
+          from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
         },
       },
     },
@@ -47,8 +47,8 @@ export default async function auditLogsRoutes(fastify) {
         type: 'object',
         required: ['from_date', 'to_date'],
         properties: {
-          from_date: { type: 'string', format: 'date-time' },
-          to_date: { type: 'string', format: 'date-time' },
+          from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
         },
       },
     },
@@ -63,8 +63,8 @@ export default async function auditLogsRoutes(fastify) {
       querystring: {
         type: 'object',
         properties: {
-          from_date: { type: 'string', format: 'date-time' },
-          to_date: { type: 'string', format: 'date-time' },
+          from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           format: { type: 'string', enum: ['json', 'csv'], default: 'json' },
         },
       },
