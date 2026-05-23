@@ -1,8 +1,9 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-05-22 (local inject tests against live DB)**
+> **Last verified: 2026-05-23**
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
+> Email: Resend HTTP API (OTP delivery live and tested)
 
 ---
 
@@ -78,10 +79,13 @@ After login, two httpOnly cookies are set automatically:
 
 | Role | Email | Password | Notes |
 |------|-------|----------|-------|
-| SUPER_ADMIN | `superadmin@acme.test` | `Password123!` | No employee record — dashboard calls won't work |
-| HR_ADMIN | `hr@acme.test` | `Password123!` | Full HR access |
-| MANAGER | `aman@acme.test` | `Password123!` | Sees own team |
+| SUPER_ADMIN | `superadmin@acme.test` | `Password123!` | No employee record — dashboard/attendance/leave calls won't work |
+| HR_ADMIN | `mohammadsaeedafri9@gmail.com` | `Password123!` | Full HR access + employee record E0003 |
+| MANAGER | `aman@acme.test` | `Password123!` | Sees own team (19 reports) |
 | EMPLOYEE | `priya@acme.test` | `Password123!` | Sees own data only |
+
+> MFA is **disabled for all users** — `POST /auth/login` returns `accessToken` directly.  
+> OTP is only used in the **forgot-password flow** (`/auth/forgot-password` → email link → `/auth/reset-password`).
 
 ---
 
@@ -104,11 +108,11 @@ After login, two httpOnly cookies are set automatically:
 
 ### `POST /auth/login`
 
-No headers required. Tenant auto-resolved from email.
+Include `x-tenant-key: acme-corp-001` header. Returns token directly — no OTP step.
 
 **Body:**
 ```json
-{ "email": "hr@acme.test", "password": "Password123!" }
+{ "email": "superadmin@acme.test", "password": "Password123!" }
 ```
 
 **Response `data`:**
@@ -117,23 +121,24 @@ No headers required. Tenant auto-resolved from email.
   "accessToken": "eyJ...",
   "sessionId": "fbd3b38de534129c109d90f7",
   "user": {
-    "id": "cmpfypbqs000sunacwj0lfpx3",
-    "email": "hr@acme.test",
-    "memberType": "HR_ADMIN",
-    "employeeId": "cmpfypsvr001iunacpwa3m6cf",
-    "employee": { "...full employee object..." }
+    "id": "...",
+    "email": "superadmin@acme.test",
+    "memberType": "SUPER_ADMIN",
+    "employeeId": null,
+    "employee": null
   },
   "permissions": ["employees:read", "employees:write", "leave:approve", "..."]
 }
 ```
 
-> SUPER_ADMIN: `user.employee` is `null`, `employeeId` absent from JWT. Employee-specific endpoints (dashboard, attendance check-in, leave) will fail.
+> SUPER_ADMIN: `user.employee` is `null`, `employeeId` is `null`. Do not call employee-specific endpoints (dashboard, check-in, leave requests) for this role — returns `400 NO_EMPLOYEE_RECORD`.  
+> All other roles: `employeeId` is populated and employee endpoints work normally.
 
 **Error codes:**
 | Code | Status | When |
 |------|--------|------|
 | `INVALID_CREDENTIALS` | 401 | Wrong password / unknown email |
-| `AMBIGUOUS_EMAIL` | 400 | Email exists in multiple tenants — send `X-Tenant-Key` |
+| `AMBIGUOUS_EMAIL` | 400 | Email exists in multiple tenants — add `X-Tenant-Key` header |
 | `VALIDATION_ERROR` | 422 | Missing email or password |
 
 ---
@@ -199,7 +204,8 @@ Rate limited: 5/15 min.
 **Body:** `{ "token": "...", "password": "NewPass123!" }`
 
 ### `POST /auth/verify-otp`
-**Body:** `{ "challengeId": "...", "otp": "123456" }`
+Only used in MFA flow (not needed for standard login — MFA is disabled).  
+**Body:** `{ "challengeId": "...", "code": "123456" }` ← field is `code`, NOT `otp`  
 **Response `data`:** same shape as login
 
 ---
