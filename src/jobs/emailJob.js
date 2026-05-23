@@ -1,36 +1,9 @@
-import dns from 'dns';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 
-// Render has IPv6 addresses but no route to external IPv6 hosts (ENETUNREACH).
-// Force DNS to prefer IPv4 so nodemailer connects via smtp.gmail.com IPv4.
-dns.setDefaultResultOrder('ipv4first');
-
-const isMockProvider = config.emailProvider === 'mock';
-const isEtherealProvider =
-  config.emailProvider === 'ethereal' ||
-  (config.smtpHost || '').includes('ethereal.email');
-const isSmtpProvider =
-  config.emailProvider === 'smtp' ||
-  config.emailProvider === 'resend' ||
-  isEtherealProvider;
-
-let transporter;
-
-if (isSmtpProvider) {
-  const port = config.smtpPort;
-  transporter = nodemailer.createTransport({
-    host: config.smtpHost,
-    port,
-    secure: port === 465,
-    family: 4, // force IPv4 — Render has no IPv6 route to Gmail
-    auth: config.smtpUser && config.smtpPass
-      ? { user: config.smtpUser, pass: config.smtpPass }
-      : undefined,
-    tls: { rejectUnauthorized: false },
-  });
-}
+const resend = config.resendApiKey ? new Resend(config.resendApiKey) : null;
+const FROM = 'EMS <onboarding@resend.dev>';
 
 function renderEmailTemplate(template, data) {
   const brandColor = '#4F46E5';
@@ -80,35 +53,30 @@ function renderEmailTemplate(template, data) {
   return templateFn(data);
 }
 
-async function sendEmailDirect(to, subject, template, data) {
-  if (isMockProvider) {
-    logger.info({ type: 'email_mock', to, subject, template });
-    return { success: true, mock: true };
-  }
+async function sendEmail(to, subject, template, data) {
+  if (config.isTesting) return { success: true, devMode: true };
 
-  if (!transporter) {
-    logger.warn('Email provider not configured, skipping email');
-    return { success: false, reason: 'Email provider not configured' };
+  if (!resend) {
+    logger.warn({ type: 'email_skipped', reason: 'RESEND_API_KEY not set' });
+    return { success: false, reason: 'RESEND_API_KEY not configured' };
   }
 
   try {
     const html = renderEmailTemplate(template, data);
-    const info = await transporter.sendMail({
-      from: config.smtpFrom,
+    const { data: result, error } = await resend.emails.send({
+      from: FROM,
       to,
       subject,
       html,
     });
 
-    // For Ethereal, log the preview URL so developers can inspect the email
-    if (isEtherealProvider) {
-      const previewUrl = nodemailer.getTestMessageUrl(info);
-      logger.info({ type: 'email_ethereal_preview', to, template, previewUrl });
-    } else {
-      logger.info({ type: 'email_sent', to, template, messageId: info.messageId });
+    if (error) {
+      logger.error({ type: 'email_failed', to, template, error: error.message });
+      return { success: false, error: error.message };
     }
 
-    return { success: true, messageId: info.messageId };
+    logger.info({ type: 'email_sent', to, template, messageId: result.id });
+    return { success: true, messageId: result.id };
   } catch (err) {
     logger.error({ type: 'email_failed', to, template, error: err.message });
     return { success: false, error: err.message };
@@ -116,20 +84,10 @@ async function sendEmailDirect(to, subject, template, data) {
 }
 
 export async function enqueuePasswordResetEmail(to, resetToken, expiresInMinutes) {
-  if (config.isTesting) return { success: true, devMode: true };
-
   const resetUrl = `${config.frontendResetPasswordUrl}?token=${resetToken}`;
-  return sendEmailDirect(to, 'Reset Your EMS Password', 'password_reset', {
-    resetUrl,
-    expiresInMinutes,
-  });
+  return sendEmail(to, 'Reset Your EMS Password', 'password_reset', { resetUrl, expiresInMinutes });
 }
 
 export async function enqueueOtpEmail(to, code, expiresInMinutes) {
-  if (config.isTesting) return { success: true, devMode: true };
-
-  return sendEmailDirect(to, 'Your EMS OTP Code', 'otp_verification', {
-    code,
-    expiresInMinutes,
-  });
+  return sendEmail(to, 'Your EMS OTP Code', 'otp_verification', { code, expiresInMinutes });
 }

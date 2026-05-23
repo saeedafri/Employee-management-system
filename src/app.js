@@ -80,34 +80,26 @@ export async function createApp() {
   fastify.get('/health', async () => ({ status: 'ok' }));
   fastify.get('/healthz', async () => ({ status: 'ok' }));
 
-  // Temporary SMTP debug — remove after confirming email works
+  // Temporary debug endpoint — remove after confirming email works
   fastify.get('/debug/test-email', async (request, reply) => {
-    const { default: dns } = await import('dns');
-    dns.setDefaultResultOrder('ipv4first');
-    const nodemailer = (await import('nodemailer')).default;
+    const { Resend } = await import('resend');
     const { config: cfg } = await import('./config/index.js');
-    const results = {};
-    for (const port of [587, 465]) {
-      try {
-        const t = nodemailer.createTransport({
-          host: cfg.smtpHost, port, secure: port === 465,
-          auth: { user: cfg.smtpUser, pass: cfg.smtpPass },
-          tls: { rejectUnauthorized: false },
-          connectionTimeout: 8000, greetingTimeout: 8000, socketTimeout: 8000,
-        });
-        await t.verify();
-        const info = await t.sendMail({
-          from: cfg.smtpFrom, to: 'mohammadsaeedafri9@gmail.com',
-          subject: `EMS SMTP Debug port ${port} — Render`,
-          html: `<h2>SMTP works on port ${port}!</h2>`,
-        });
-        results[`port_${port}`] = { ok: true, messageId: info.messageId };
-        break; // sent successfully, stop
-      } catch (err) {
-        results[`port_${port}`] = { ok: false, error: err.message, code: err.code };
-      }
+    if (!cfg.resendApiKey) {
+      return reply.status(500).send({ ok: false, error: 'RESEND_API_KEY not set' });
     }
-    return reply.send({ host: cfg.smtpHost, user: cfg.smtpUser, results });
+    try {
+      const r = new Resend(cfg.resendApiKey);
+      const { data, error } = await r.emails.send({
+        from: 'EMS <onboarding@resend.dev>',
+        to: 'mohammadsaeedafri9@gmail.com',
+        subject: 'EMS Resend Debug — from Render',
+        html: '<h2>Resend works from Render!</h2><p>Email delivery is live.</p>',
+      });
+      if (error) return reply.status(500).send({ ok: false, error: error.message });
+      return reply.send({ ok: true, messageId: data.id });
+    } catch (err) {
+      return reply.status(500).send({ ok: false, error: err.message });
+    }
   });
 
   // Register swagger AFTER all routes are defined
