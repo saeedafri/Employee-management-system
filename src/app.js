@@ -80,6 +80,28 @@ export async function createApp() {
   fastify.get('/health', async () => ({ status: 'ok' }));
   fastify.get('/healthz', async () => ({ status: 'ok' }));
 
+  // Temporary SMTP debug — remove after confirming email works
+  fastify.get('/debug/test-email', async (request, reply) => {
+    const nodemailer = (await import('nodemailer')).default;
+    const { config: cfg } = await import('./config/index.js');
+    try {
+      const t = nodemailer.createTransport({
+        host: cfg.smtpHost, port: cfg.smtpPort, secure: cfg.smtpPort === 465,
+        auth: { user: cfg.smtpUser, pass: cfg.smtpPass },
+        tls: { rejectUnauthorized: false },
+      });
+      await t.verify();
+      const info = await t.sendMail({
+        from: cfg.smtpFrom, to: 'mohammadsaeedafri9@gmail.com',
+        subject: 'EMS SMTP Debug — from Render',
+        html: '<h2>SMTP works from Render!</h2><p>Host: ' + cfg.smtpHost + ' Port: ' + cfg.smtpPort + '</p>',
+      });
+      return reply.send({ ok: true, messageId: info.messageId, host: cfg.smtpHost, port: cfg.smtpPort, user: cfg.smtpUser });
+    } catch (err) {
+      return reply.status(500).send({ ok: false, error: err.message, code: err.code, host: cfg.smtpHost, port: cfg.smtpPort });
+    }
+  });
+
   // Register swagger AFTER all routes are defined
   await fastify.register(swaggerPlugin);
 
