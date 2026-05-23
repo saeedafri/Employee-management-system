@@ -3,8 +3,8 @@ import { prisma } from '../../plugins/prisma.js';
 export async function getEmployeesForExport(tenantId, filters = {}) {
   const where = { tenantId };
   if (filters.departmentId) where.departmentId = filters.departmentId;
-  if (filters.status) where.status = filters.status;
-  if (!filters.include_archived) where.isArchived = false;
+  if (filters.status) where.employmentStatus = filters.status;
+  if (!filters.include_archived) where.deletedAt = null;
 
   return prisma.employee.findMany({
     where,
@@ -13,13 +13,13 @@ export async function getEmployeesForExport(tenantId, filters = {}) {
       firstName: true,
       lastName: true,
       employeeCode: true,
-      email: true,
+      workEmail: true,
       phone: true,
-      status: true,
+      employmentStatus: true,
       departmentId: true,
       department: { select: { id: true, name: true } },
       designation: true,
-      joiningDate: true,
+      joinedOn: true,
       manager: { select: { id: true, firstName: true, lastName: true } },
       createdAt: true,
     },
@@ -48,16 +48,16 @@ export async function getAttendanceForExport(tenantId, filters = {}) {
           firstName: true,
           lastName: true,
           employeeCode: true,
-          email: true,
+          workEmail: true,
           department: { select: { name: true } },
         },
       },
       attendanceDate: true,
-      checkInTime: true,
-      checkOutTime: true,
+      checkInAt: true,
+      checkOutAt: true,
       status: true,
-      workingHours: true,
-      remarks: true,
+      totalMinutes: true,
+      notes: true,
     },
     orderBy: { attendanceDate: 'desc' },
   });
@@ -87,17 +87,17 @@ export async function getLeaveForExport(tenantId, filters = {}) {
           firstName: true,
           lastName: true,
           employeeCode: true,
-          email: true,
+          workEmail: true,
           department: { select: { name: true } },
         },
       },
       leaveType: { select: { name: true, code: true } },
       startDate: true,
       endDate: true,
-      numberOfDays: true,
+      totalDays: true,
       reason: true,
       status: true,
-      approvedBy: { select: { id: true, firstName: true, lastName: true } },
+      approverComment: true,
       createdAt: true,
     },
     orderBy: { startDate: 'desc' },

@@ -912,14 +912,42 @@ Single audit log entry (direct object, not wrapped in `logs`).
 ## Export
 
 ### `POST /export/employees`
-**Body:** `{ "format": "csv", "filters": {} }`
-**Response `data`:** `{ "jobId": "...", "status": "PENDING" }`
+**Body:** `{ "format": "csv" }` (format: csv | excel | json)
+
+**Response `data`:**
+```json
+{ "job_id": "uuid", "status": "PROCESSING", "estimated_completion_time": 2 }
+```
+
+### `POST /export/attendance`
+**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }`
+
+### `POST /export/leave`
+**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }`
 
 ### `GET /export/:job_id/download`
-Download completed export.
+Download completed export using `job_id` from the POST response.
 
 ### `GET /export/list`
-All export jobs for the tenant.
+**Response `data`:**
+```json
+{
+  "exports": [
+    {
+      "job_id": "uuid",
+      "export_type": "EMPLOYEES",
+      "format": "csv",
+      "status": "SUCCESS",
+      "file_url": null,
+      "created_at": "2026-05-23T...",
+      "completed_at": "2026-05-23T..."
+    }
+  ],
+  "pagination": { "page": 1, "limit": 10, "total": 6, "pages": 1 }
+}
+```
+
+> All export fields are **snake_case**: `job_id`, `export_type`, `file_url`, `created_at`, `completed_at`.
 
 ---
 
