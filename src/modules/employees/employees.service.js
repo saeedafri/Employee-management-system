@@ -23,8 +23,23 @@ export async function getEmployee(employeeId, tenantId) {
   }
 }
 
+async function generateEmployeeCode(tenantId) {
+  const count = await repo.countEmployees(tenantId);
+  let attempt = count + 1;
+  let code = `EMP-${String(attempt).padStart(4, '0')}`;
+  while (await repo.checkEmployeeCodeExists(code, tenantId)) {
+    attempt += 1;
+    code = `EMP-${String(attempt).padStart(4, '0')}`;
+  }
+  return code;
+}
+
 export async function createEmployee(tenantId, data, userId) {
   try {
+    if (!data.employeeCode) {
+      data.employeeCode = await generateEmployeeCode(tenantId);
+    }
+
     const codeExists = await repo.checkEmployeeCodeExists(data.employeeCode, tenantId);
     if (codeExists) {
       return errorResponse('DUPLICATE_EMPLOYEE_CODE', 'Employee code already exists', null);

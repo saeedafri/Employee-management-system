@@ -1,4 +1,10 @@
 import * as leaveRepository from './leave.repository.js';
+import {
+  notifyLeaveRequested,
+  notifyLeaveApproved,
+  notifyLeaveDenied,
+  notifyLeaveWithdrawn,
+} from '../../utils/notifier.js';
 
 export async function getLeaveTypes(tenantId) {
   return leaveRepository.getLeaveTypes(tenantId);
@@ -75,6 +81,8 @@ export async function createLeaveRequest(tenantId, employeeId, {
     pending: balance.pending + totalDays,
   });
 
+  notifyLeaveRequested(tenantId, employeeId, leaveRequest).catch(() => {});
+
   return leaveRequest;
 }
 
@@ -145,6 +153,8 @@ export async function approveLeaveRequest(tenantId, leaveRequestId, approverId, 
     used: balance.used + leaveRequest.totalDays,
   });
 
+  notifyLeaveApproved(tenantId, leaveRequest.employeeId, updated).catch(() => {});
+
   return updated;
 }
 
@@ -179,6 +189,8 @@ export async function rejectLeaveRequest(tenantId, leaveRequestId, approverId, c
   await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
     pending: balance.pending - leaveRequest.totalDays,
   });
+
+  notifyLeaveDenied(tenantId, leaveRequest.employeeId, updated).catch(() => {});
 
   return updated;
 }
@@ -219,6 +231,8 @@ export async function withdrawLeaveRequest(tenantId, employeeId, leaveRequestId)
   await leaveRepository.updateLeaveBalance(tenantId, employeeId, leaveRequest.leaveTypeId, {
     pending: balance.pending - leaveRequest.totalDays,
   });
+
+  notifyLeaveWithdrawn(tenantId, employeeId, updated).catch(() => {});
 
   return updated;
 }

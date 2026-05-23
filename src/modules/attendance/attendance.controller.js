@@ -24,6 +24,7 @@ export async function checkIn(request, reply) {
     return reply.status(201).send(
       successResponse({
         id: result.id,
+        referenceNo: result.referenceNo,
         checkInAt: result.checkInAt,
         geofenceValid: result.geofenceValid,
         message: 'Checked in successfully',
@@ -62,6 +63,7 @@ export async function checkOut(request, reply) {
     return reply.send(
       successResponse({
         id: result.id,
+        referenceNo: result.referenceNo,
         checkInAt: result.checkInAt,
         checkOutAt: result.checkOutAt,
         durationMinutes: result.durationMinutes,
@@ -92,6 +94,7 @@ export async function getAttendanceRecords(request, reply) {
       successResponse({
         records: records.map((r) => ({
           id: r.id,
+          referenceNo: r.referenceNo,
           attendanceDate: r.attendanceDate,
           checkInAt: r.checkInAt,
           checkOutAt: r.checkOutAt,
@@ -136,6 +139,7 @@ export async function getTeamAttendanceRecords(request, reply) {
       successResponse({
         records: records.map((r) => ({
           id: r.id,
+          referenceNo: r.referenceNo,
           employeeId: r.employeeId,
           employeeName: `${r.employee.firstName} ${r.employee.lastName}`,
           employeeCode: r.employee.employeeCode,
@@ -204,8 +208,8 @@ export async function submitRegularization(request, reply) {
     return reply.status(201).send(
       successResponse({
         id: regularization.id,
+        referenceNo: regularization.referenceNo,
         attendanceDate: regularization.attendanceDate,
-        type: regularization.type,
         status: regularization.status,
         reason: regularization.reason,
         createdAt: regularization.createdAt,
@@ -239,8 +243,8 @@ export async function getRegularizationRequests(request, reply) {
       successResponse({
         requests: requests.map((r) => ({
           id: r.id,
+          referenceNo: r.referenceNo,
           attendanceDate: r.attendanceDate,
-          type: r.type,
           reason: r.reason,
           status: r.status,
           reviewerComment: r.reviewerComment,
@@ -282,11 +286,11 @@ export async function getTeamRegularizationRequests(request, reply) {
       successResponse({
         requests: requests.map((r) => ({
           id: r.id,
+          referenceNo: r.referenceNo,
           employeeId: r.employeeId,
           employeeName: `${r.employee.firstName} ${r.employee.lastName}`,
           employeeCode: r.employee.employeeCode,
           attendanceDate: r.attendanceDate,
-          type: r.type,
           reason: r.reason,
           status: r.status,
           createdAt: r.createdAt,
@@ -334,6 +338,7 @@ export async function approveRegularization(request, reply) {
     return reply.send(
       successResponse({
         id: regularization.id,
+        referenceNo: regularization.referenceNo,
         status: regularization.status,
       }),
     );
@@ -372,6 +377,7 @@ export async function denyRegularization(request, reply) {
     return reply.send(
       successResponse({
         id: regularization.id,
+        referenceNo: regularization.referenceNo,
         status: regularization.status,
       }),
     );

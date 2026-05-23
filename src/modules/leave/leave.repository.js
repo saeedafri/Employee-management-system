@@ -26,6 +26,12 @@ export async function findLeaveRequest(tenantId, leaveRequestId) {
   });
 }
 
+function withRef(req) {
+  if (!req) return req;
+  const { seqNo, ...rest } = req;
+  return { ...rest, referenceNo: `LVR-${String(seqNo).padStart(4, '0')}` };
+}
+
 export async function getLeaveBalances(tenantId, employeeId) {
   return prisma.leaveBalance.findMany({
     where: {
@@ -115,7 +121,7 @@ export async function checkOverlappingLeaves(tenantId, employeeId, startDate, en
 }
 
 export async function createLeaveRequest(data) {
-  return prisma.leaveRequest.create({
+  const req = await prisma.leaveRequest.create({
     data,
     include: {
       employee: {
@@ -134,10 +140,11 @@ export async function createLeaveRequest(data) {
       },
     },
   });
+  return withRef(req);
 }
 
 export async function updateLeaveRequest(tenantId, leaveRequestId, data) {
-  return prisma.leaveRequest.update({
+  const req = await prisma.leaveRequest.update({
     where: {
       id: leaveRequestId,
       tenantId,
@@ -159,6 +166,7 @@ export async function updateLeaveRequest(tenantId, leaveRequestId, data) {
       },
     },
   });
+  return withRef(req);
 }
 
 export async function getEmployeeLeaveRequests(tenantId, employeeId, filters = {}) {
@@ -185,7 +193,7 @@ export async function getEmployeeLeaveRequests(tenantId, employeeId, filters = {
     if (toDate) where.startDate.lte = toDate;
   }
 
-  const [requests, total] = await Promise.all([
+  const [raw, total] = await Promise.all([
     prisma.leaveRequest.findMany({
       where,
       include: {
@@ -212,7 +220,7 @@ export async function getEmployeeLeaveRequests(tenantId, employeeId, filters = {
     prisma.leaveRequest.count({ where }),
   ]);
 
-  return { requests, total };
+  return { requests: raw.map(withRef), total };
 }
 
 export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters = {}) {
@@ -241,7 +249,7 @@ export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters 
     if (toDate) where.startDate.lte = toDate;
   }
 
-  const [requests, total] = await Promise.all([
+  const [raw, total] = await Promise.all([
     prisma.leaveRequest.findMany({
       where,
       include: {
@@ -276,7 +284,7 @@ export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters 
     prisma.leaveRequest.count({ where }),
   ]);
 
-  return { requests, total };
+  return { requests: raw.map(withRef), total };
 }
 
 export async function updateLeaveBalance(tenantId, employeeId, leaveTypeId, data) {

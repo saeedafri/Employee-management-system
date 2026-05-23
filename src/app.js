@@ -25,6 +25,7 @@ import reportsRoutes from './modules/reports/reports.routes.js';
 import exportRoutes from './modules/export/export.routes.js';
 import auditLogsRoutes from './modules/auditLogs/auditLogs.routes.js';
 import settingsRoutes from './modules/settings/settings.routes.js';
+import notificationsRoutes from './modules/notifications/notifications.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -72,6 +73,7 @@ export async function createApp() {
       await fastify.register(exportRoutes);
       await fastify.register(auditLogsRoutes);
       await fastify.register(settingsRoutes);
+      await fastify.register(notificationsRoutes);
     },
     { prefix: config.apiPrefix },
   );

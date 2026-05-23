@@ -68,9 +68,9 @@ export async function employeesRoutes(fastify) {
         description: 'Create new employee',
         body: {
           type: 'object',
-          required: ['employeeCode', 'firstName', 'lastName', 'workEmail', 'joinedOn'],
+          required: ['firstName', 'lastName', 'workEmail', 'joinedOn'],
           properties: {
-            employeeCode: { type: 'string' },
+            employeeCode: { type: 'string', description: 'Auto-generated as EMP-0001 if omitted' },
             firstName: { type: 'string' },
             lastName: { type: 'string' },
             workEmail: { type: 'string' },

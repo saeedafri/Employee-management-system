@@ -438,6 +438,7 @@ model EmployeeDocument {
 
 model AttendanceRecord {
   id            String   @id @default(cuid())
+  seqNo         Int      @default(autoincrement())
   tenantId      String
   employeeId    String
   attendanceDate DateTime
@@ -466,6 +467,7 @@ model AttendanceRecord {
 
 model AttendanceRegularizationRequest {
   id              String   @id @default(cuid())
+  seqNo           Int      @default(autoincrement())
   tenantId        String
   employeeId      String
   attendanceDate  DateTime
@@ -530,6 +532,7 @@ model LeaveBalance {
 
 model LeaveRequest {
   id              String   @id @default(cuid())
+  seqNo           Int      @default(autoincrement())
   tenantId        String
   employeeId      String
   leaveTypeId     String
@@ -650,15 +653,16 @@ model LogEntry {
 }
 
 model Notification {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   tenantId        String
   userId          String
-  type            String   // leave_approved, leave_rejected, etc.
+  type            String    // leave_approved, leave_rejected, etc.
   title           String
   message         String
-  metadataJson    Json?    // JSON context data
+  metadataJson    Json?     // JSON context data
   readAt          DateTime?
-  createdAt       DateTime @default(now())
+  expiresAt       DateTime? // TTL — auto-filtered after this time
+  createdAt       DateTime  @default(now())
 
   // Relations
   tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)

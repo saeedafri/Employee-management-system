@@ -1,4 +1,11 @@
 import * as attendanceRepository from './attendance.repository.js';
+import {
+  notifyCheckIn,
+  notifyCheckOut,
+  notifyRegularizationRequested,
+  notifyRegularizationApproved,
+  notifyRegularizationDenied,
+} from '../../utils/notifier.js';
 
 class AppError extends Error {
   constructor(message, code, statusCode = 400, details = {}) {
@@ -63,11 +70,16 @@ export async function checkIn(tenantId, employeeId, { latitude, longitude, note 
     });
   }
 
-  return {
+  const result = {
     id: attendanceRecord.id,
+    referenceNo: attendanceRecord.referenceNo,
     checkInAt: attendanceRecord.checkInAt,
     geofenceValid,
   };
+
+  notifyCheckIn(tenantId, employeeId, attendanceRecord).catch(() => {});
+
+  return result;
 }
 
 export async function checkOut(tenantId, employeeId, { note } = {}) {
@@ -99,12 +111,17 @@ export async function checkOut(tenantId, employeeId, { note } = {}) {
     },
   );
 
-  return {
+  const result = {
     id: attendanceRecord.id,
+    referenceNo: attendanceRecord.referenceNo,
     checkInAt: attendanceRecord.checkInAt,
     checkOutAt: attendanceRecord.checkOutAt,
     durationMinutes,
   };
+
+  notifyCheckOut(tenantId, employeeId, result).catch(() => {});
+
+  return result;
 }
 
 function monthToDateRange(month) {
@@ -178,6 +195,8 @@ export async function submitRegularizationRequest(tenantId, employeeId, {
     status: 'PENDING',
   });
 
+  notifyRegularizationRequested(tenantId, employeeId, request).catch(() => {});
+
   return request;
 }
 
@@ -232,6 +251,8 @@ export async function approveRegularization(tenantId, regularizationId, reviewer
 
   await attendanceRepository.updateAttendanceStatus(tenantId, request.employeeId, request.attendanceDate, 'PRESENT');
 
+  notifyRegularizationApproved(tenantId, request.employeeId, updated).catch(() => {});
+
   return updated;
 }
 
@@ -255,6 +276,8 @@ export async function denyRegularization(tenantId, regularizationId, reviewerId,
     reviewerId,
     reviewerComment: comment,
   });
+
+  notifyRegularizationDenied(tenantId, request.employeeId, updated).catch(() => {});
 
   return updated;
 }

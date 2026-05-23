@@ -31,6 +31,7 @@ export async function createLeaveRequest(request, reply) {
     return reply.status(201).send(
       successResponse({
         id: leaveRequest.id,
+        referenceNo: leaveRequest.referenceNo,
         leaveTypeId: leaveRequest.leaveTypeId,
         leaveTypeName: leaveRequest.leaveType.name,
         startDate: leaveRequest.startDate,
@@ -65,6 +66,7 @@ export async function getLeaveRequests(request, reply) {
       successResponse({
         requests: requests.map((r) => ({
           id: r.id,
+          referenceNo: r.referenceNo,
           leaveTypeId: r.leaveTypeId,
           leaveTypeName: r.leaveType.name,
           startDate: r.startDate,
@@ -118,6 +120,7 @@ export async function getTeamLeaveRequests(request, reply) {
       successResponse({
         requests: requests.map((r) => ({
           id: r.id,
+          referenceNo: r.referenceNo,
           employeeId: r.employeeId,
           employeeName: `${r.employee.firstName} ${r.employee.lastName}`,
           employeeCode: r.employee.employeeCode,
@@ -169,6 +172,7 @@ export async function approveLeaveRequest(request, reply) {
     return reply.send(
       successResponse({
         id: leaveRequest.id,
+        referenceNo: leaveRequest.referenceNo,
         status: leaveRequest.status,
         decidedAt: leaveRequest.decidedAt,
       }),
@@ -208,6 +212,7 @@ export async function rejectLeaveRequest(request, reply) {
     return reply.send(
       successResponse({
         id: leaveRequest.id,
+        referenceNo: leaveRequest.referenceNo,
         status: leaveRequest.status,
         decidedAt: leaveRequest.decidedAt,
       }),

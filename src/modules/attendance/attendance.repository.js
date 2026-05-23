@@ -1,5 +1,17 @@
 import { prisma } from '../../plugins/prisma.js';
 
+function attRef(r) {
+  if (!r) return r;
+  const { seqNo, ...rest } = r;
+  return { ...rest, referenceNo: `ATT-${String(seqNo).padStart(4, '0')}` };
+}
+
+function regRef(r) {
+  if (!r) return r;
+  const { seqNo, ...rest } = r;
+  return { ...rest, referenceNo: `REG-${String(seqNo).padStart(4, '0')}` };
+}
+
 export async function getTodayAttendance(tenantId, employeeId) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -19,18 +31,16 @@ export async function getTodayAttendance(tenantId, employeeId) {
 }
 
 export async function createAttendanceRecord(data) {
-  return prisma.attendanceRecord.create({
-    data,
-  });
+  const r = await prisma.attendanceRecord.create({ data });
+  return attRef(r);
 }
 
 export async function updateAttendanceRecord(tenantId, attendanceRecordId, data) {
-  return prisma.attendanceRecord.update({
-    where: {
-      id: attendanceRecordId,
-    },
+  const r = await prisma.attendanceRecord.update({
+    where: { id: attendanceRecordId },
     data,
   });
+  return attRef(r);
 }
 
 export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
@@ -49,19 +59,17 @@ export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
     if (toDate) where.attendanceDate.lte = toDate;
   }
 
-  const [records, total] = await Promise.all([
+  const [raw, total] = await Promise.all([
     prisma.attendanceRecord.findMany({
       where,
-      orderBy: {
-        attendanceDate: 'desc',
-      },
+      orderBy: { attendanceDate: 'desc' },
       take: limit,
       skip: offset,
     }),
     prisma.attendanceRecord.count({ where }),
   ]);
 
-  return { records, total };
+  return { records: raw.map(attRef), total };
 }
 
 export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filters = {}) {
@@ -82,7 +90,7 @@ export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filt
     if (toDate) where.attendanceDate.lte = toDate;
   }
 
-  const [records, total] = await Promise.all([
+  const [raw, total] = await Promise.all([
     prisma.attendanceRecord.findMany({
       where,
       include: {
@@ -95,16 +103,14 @@ export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filt
           },
         },
       },
-      orderBy: {
-        attendanceDate: 'desc',
-      },
+      orderBy: { attendanceDate: 'desc' },
       take: limit,
       skip: offset,
     }),
     prisma.attendanceRecord.count({ where }),
   ]);
 
-  return { records, total };
+  return { records: raw.map(attRef), total };
 }
 
 export async function getAttendanceSummary(tenantId, employeeId, fromDate, toDate) {
@@ -175,9 +181,8 @@ export async function getAttendanceSummary(tenantId, employeeId, fromDate, toDat
 }
 
 export async function createRegularizationRequest(data) {
-  return prisma.attendanceRegularizationRequest.create({
-    data,
-  });
+  const r = await prisma.attendanceRegularizationRequest.create({ data });
+  return regRef(r);
 }
 
 export async function findRegularizationRequest(tenantId, regularizationId) {
@@ -203,19 +208,17 @@ export async function getRegularizationRequests(tenantId, employeeId, filters = 
     where.status = status;
   }
 
-  const [requests, total] = await Promise.all([
+  const [raw, total] = await Promise.all([
     prisma.attendanceRegularizationRequest.findMany({
       where,
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
     }),
     prisma.attendanceRegularizationRequest.count({ where }),
   ]);
 
-  return { requests, total };
+  return { requests: raw.map(regRef), total };
 }
 
 export async function getTeamRegularizationRequests(tenantId, managerEmployeeId, filters = {}) {
@@ -234,7 +237,7 @@ export async function getTeamRegularizationRequests(tenantId, managerEmployeeId,
     where.status = status;
   }
 
-  const [requests, total] = await Promise.all([
+  const [raw, total] = await Promise.all([
     prisma.attendanceRegularizationRequest.findMany({
       where,
       include: {
@@ -247,25 +250,22 @@ export async function getTeamRegularizationRequests(tenantId, managerEmployeeId,
           },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc' },
       take: limit,
       skip: offset,
     }),
     prisma.attendanceRegularizationRequest.count({ where }),
   ]);
 
-  return { requests, total };
+  return { requests: raw.map(regRef), total };
 }
 
 export async function updateRegularizationRequest(tenantId, regularizationId, data) {
-  return prisma.attendanceRegularizationRequest.update({
-    where: {
-      id: regularizationId,
-    },
+  const r = await prisma.attendanceRegularizationRequest.update({
+    where: { id: regularizationId },
     data,
   });
+  return regRef(r);
 }
 
 export async function updateAttendanceStatus(tenantId, employeeId, attendanceDate, status) {

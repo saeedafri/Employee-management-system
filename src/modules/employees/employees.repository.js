@@ -117,6 +117,10 @@ export async function checkEmployeeCodeExists(employeeCode, _tenantId, excludeId
   return prisma.employee.findFirst({ where });
 }
 
+export async function countEmployees(tenantId) {
+  return prisma.employee.count({ where: { tenantId } });
+}
+
 export async function checkWorkEmailExists(workEmail, _tenantId, excludeId = null) {
   const where = { workEmail };
   if (excludeId) {

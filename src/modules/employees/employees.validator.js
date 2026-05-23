@@ -10,7 +10,7 @@ export const listQuerySchema = z.object({
 });
 
 export const createEmployeeSchema = z.object({
-  employeeCode: z.string().min(2).max(20),
+  employeeCode: z.string().min(2).max(20).optional(),
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
   workEmail: z.string().email(),
