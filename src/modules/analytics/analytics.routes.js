@@ -12,8 +12,8 @@ export default async function analyticsRoutes(fastify) {
       tags: ['Analytics'],
       description: 'Get HR admin dashboard summary with key metrics',
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getSummary);
@@ -29,8 +29,8 @@ export default async function analyticsRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getAttendance);
@@ -40,8 +40,8 @@ export default async function analyticsRoutes(fastify) {
       tags: ['Analytics'],
       description: 'Get employee headcount by department',
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getHeadcountByDepartment);
@@ -57,8 +57,8 @@ export default async function analyticsRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getRecentActivity);
@@ -74,8 +74,8 @@ export default async function analyticsRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
       rateLimit: { max: 100, timeWindow: '1 minute' },
     },
   }, analyticsController.getLeaveSummary);

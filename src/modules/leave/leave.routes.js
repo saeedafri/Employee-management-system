@@ -8,8 +8,8 @@ export default async function leaveRoutes(fastify) {
       description: 'Get all active leave types for this tenant',
       security: [{ Bearer: [] }],
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
     },
     onRequest: [authenticate],
   }, (request, reply) => leaveController.getLeaveTypes(request, reply));

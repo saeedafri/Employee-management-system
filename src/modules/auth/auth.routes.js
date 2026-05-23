@@ -105,8 +105,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
     },
     rateLimit: {
       max: 5,
@@ -126,8 +126,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
     },
   }, async (request, reply) => passwordResetController.validateResetTokenController(request, reply));
 
@@ -159,8 +159,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
     },
     rateLimit: {
       max: 5,
@@ -181,8 +181,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
     },
     rateLimit: {
       max: 5,
@@ -202,8 +202,8 @@ export default async function authRoutes(fastify) {
         },
       },
       response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+        200: { type: 'object', additionalProperties: true },
+      },
     },
     rateLimit: {
       max: 5,

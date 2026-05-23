@@ -45,16 +45,16 @@ export async function employeeDashboardRoutes(fastify) {
     tags: ['Employee'],
     description: 'Get your employee documents',
     response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+      200: { type: 'object', additionalProperties: true },
+    },
   };
 
   const teamSchema = {
     tags: ['Employee'],
     description: 'Get your manager and team peers',
     response: {
-          200: { type: 'object', additionalProperties: true },
-        },
+      200: { type: 'object', additionalProperties: true },
+    },
   };
 
   fastify.get('/employee/documents', { schema: documentsSchema }, getDocumentsHandler);
