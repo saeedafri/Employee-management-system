@@ -13,6 +13,7 @@
     "db:seed:comprehensive": "node prisma/seedComprehensive.js",
     "db:seed:large": "node prisma/seedLargeDemo.js",
     "db:seed:production": "node prisma/seedProductionData.js",
+    "db:seed:demo": "node prisma/seedDemo.js",
     "db:studio": "prisma studio",
     "test:performance": "mocha 'tests/performance.test.js'",
     "test": "mocha 'tests/**/*.test.js'",
