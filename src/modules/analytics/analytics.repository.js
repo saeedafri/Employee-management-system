@@ -115,43 +115,77 @@ export async function getAttendanceData(tenantId, range) {
 }
 
 export async function getHeadcountByDepartment(tenantId) {
-  const departments = await prisma.department.findMany({
-    where: { tenantId, deletedAt: null },
-    select: { id: true, name: true },
+  // Fetch all non-deleted depts and employee counts in 3 queries
+  const [departments, allDepts, employeeCounts, activeCounts] = await Promise.all([
+    prisma.department.findMany({
+      where: { tenantId, deletedAt: null, parentId: null },
+      select: { id: true, name: true },
+    }),
+    prisma.department.findMany({
+      where: { tenantId, deletedAt: null },
+      select: { id: true, parentId: true },
+    }),
+    prisma.employee.groupBy({
+      by: ['departmentId'],
+      where: { tenantId, deletedAt: null },
+      _count: { id: true },
+    }),
+    prisma.employee.groupBy({
+      by: ['departmentId'],
+      where: { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' },
+      _count: { id: true },
+    }),
+  ]);
+
+  // Build parent → [child dept ids] map for sub-dept rollup
+  const topIds = new Set(departments.map(d => d.id));
+  const subtreeIds = {};
+  topIds.forEach(id => { subtreeIds[id] = new Set([id]); });
+  allDepts.forEach(d => {
+    if (d.parentId && topIds.has(d.parentId)) subtreeIds[d.parentId].add(d.id);
   });
 
-  const employeeCounts = await prisma.employee.groupBy({
-    by: ['departmentId'],
-    where: { tenantId, deletedAt: null },
-    _count: { id: true },
-  });
-
-  const activeCounts = await prisma.employee.groupBy({
-    by: ['departmentId'],
-    where: { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' },
-    _count: { id: true },
-  });
-
-  const employeeMap = {};
+  // Build employee count maps
+  const empMap = {};
   const activeMap = {};
+  employeeCounts.forEach(e => { empMap[e.departmentId] = e._count.id; });
+  activeCounts.forEach(a => { activeMap[a.departmentId] = a._count.id; });
 
-  employeeCounts.forEach(e => {
-    employeeMap[e.departmentId] = e._count.id;
+  const result = departments.map(dept => {
+    const ids = subtreeIds[dept.id] || new Set([dept.id]);
+    let employeeCount = 0;
+    let activeCount = 0;
+    ids.forEach(id => {
+      employeeCount += empMap[id] || 0;
+      activeCount += activeMap[id] || 0;
+    });
+    return { departmentId: dept.id, departmentName: dept.name, employeeCount, activeCount };
   });
 
-  activeCounts.forEach(a => {
-    activeMap[a.departmentId] = a._count.id;
-  });
-
-  const result = departments.map(dept => ({
-    departmentId: dept.id,
-    departmentName: dept.name,
-    employeeCount: employeeMap[dept.id] || 0,
-    activeCount: activeMap[dept.id] || 0,
-  }));
-
-  return result;
+  return result.sort((a, b) => b.employeeCount - a.employeeCount);
 }
+
+const ACTION_LABELS = {
+  LOGIN: 'logged in',
+  LOGOUT: 'logged out',
+  MFA_LOGIN_INITIATED: 'initiated MFA login',
+  CREATE: 'created',
+  UPDATE: 'updated',
+  DELETE: 'deleted',
+  APPROVE: 'approved',
+  REJECT: 'rejected',
+  DENY: 'denied',
+  WITHDRAW: 'withdrew',
+  LEAVE_REQUEST_CREATED: 'submitted a leave request',
+  LEAVE_REQUEST_APPROVED: 'approved a leave request',
+  LEAVE_REQUEST_REJECTED: 'rejected a leave request',
+  LEAVE_REQUEST_WITHDRAWN: 'withdrew a leave request',
+  ATTENDANCE_CHECK_IN: 'checked in',
+  ATTENDANCE_CHECK_OUT: 'checked out',
+  REGULARIZATION_APPROVED: 'approved a regularization request',
+  REGULARIZATION_DENIED: 'denied a regularization request',
+  REGULARIZATION_REQUEST_CREATED: 'submitted a regularization request',
+};
 
 export async function getRecentActivity(tenantId, limit = 10) {
   const logs = await prisma.auditLog.findMany({
@@ -162,29 +196,50 @@ export async function getRecentActivity(tenantId, limit = 10) {
       entityType: true,
       entityId: true,
       createdAt: true,
-      actor: { select: { email: true } },
+      actor: {
+        select: {
+          email: true,
+          employee: { select: { firstName: true, lastName: true } },
+        },
+      },
     },
     orderBy: { createdAt: 'desc' },
     take: Math.min(limit, 50),
   });
 
   return logs.map(log => {
-    const actorEmail = log.actor?.email || 'System';
-    const [firstName] = actorEmail.split('@');
-    const actorName = firstName
-      .split('.')
-      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-      .join(' ');
+    let actorName = 'System';
+    let actorEmail = null;
+
+    if (log.actor) {
+      actorEmail = log.actor.email;
+      const emp = log.actor.employee;
+      if (emp) {
+        actorName = `${emp.firstName} ${emp.lastName}`.trim();
+      } else {
+        const [localPart] = log.actor.email.split('@');
+        actorName = localPart
+          .split('.')
+          .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+          .join(' ');
+      }
+    }
+
+    const actionLabel = ACTION_LABELS[log.action] || log.action.toLowerCase().replace(/_/g, ' ');
+    const description = `${actorName} ${actionLabel}`;
 
     return {
       id: log.id,
       actorName,
-      action: log.action.toLowerCase(),
+      actorEmail,
+      action: log.action,
+      actionLabel,
+      description,
       entityType: log.entityType,
       entityId: log.entityId,
-      resourceLabel: `${log.entityType} #${log.entityId.slice(0, 5).toUpperCase()}`,
       createdAt: log.createdAt.toISOString(),
-      createdAtIstDisplay: formatIstDate(log.createdAt),
+      timestamp: log.createdAt.toISOString(),
+      displayTime: formatIstDate(log.createdAt),
     };
   });
 }

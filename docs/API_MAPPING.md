@@ -782,88 +782,163 @@ Upload a document. **Content-Type:** `multipart/form-data`
 
 ## Notifications
 
-All notification endpoints require authentication (Bearer token).
+All notification endpoints require `Authorization: Bearer <token>` and `x-tenant-key` header (or JWT with tenantId).
+
+---
+
+### Notification Object Shape
+
+Every notification object has these fields:
+
+```json
+{
+  "id": "cmpicb6vn000710ltqbzcrpa0",
+  "type": "leave_requested",
+  "title": "New Leave Request",
+  "message": "Priya Sharma requested 1 day(s) of Annual Leave starting 2026-05-25",
+  "metadataJson": {
+    "leaveRequestId": "...",
+    "employeeId": "...",
+    "referenceNo": "LVR-0012"
+  },
+  "readAt": null,
+  "expiresAt": "2026-05-25T08:30:00.000Z",
+  "createdAt": "2026-05-24T20:30:00.000Z"
+}
+```
+
+- `readAt` — `null` means unread; ISO string when marked read
+- `expiresAt` — 12 hours after creation; expired notifications are auto-excluded from all responses
+- `metadataJson` — optional context for deep-linking (may be null)
+
+---
+
+### Notification Types & Visibility
+
+| Type | Title | Who receives it |
+|------|-------|----------------|
+| `leave_requested` | "New Leave Request" | Employee's manager + all HR_ADMINs + all SUPER_ADMINs |
+| `leave_approved` | "Leave Request Approved" | Employee who submitted the request |
+| `leave_denied` | "Leave Request Denied" | Employee who submitted the request |
+| `leave_withdrawn` | "Leave Request Withdrawn" | Employee's manager + all HR_ADMINs + all SUPER_ADMINs |
+| `attendance_checkin` | "Employee Checked In" | The employee themselves + their manager + all SUPER_ADMINs |
+| `attendance_checkout` | "Employee Checked Out" | The employee themselves + their manager + all SUPER_ADMINs |
+| `regularization_requested` | "Regularization Request" | Employee's manager + all HR_ADMINs + all SUPER_ADMINs |
+| `regularization_approved` | "Regularization Approved" | Employee who submitted the request |
+| `regularization_denied` | "Regularization Denied" | Employee who submitted the request |
+
+> **Privacy guarantee**: Employees only see their own notifications. Notifications about employee A are never visible to employee B.
+
+---
 
 ### `GET /notifications`
-**Query params:** `page` (default 1), `limit` (default 20), `unreadOnly` (boolean, default false)
+**Query params:** `page` (default 1), `limit` (default 20), `unreadOnly` (`true`/`false`, default false)
 
 **Response `data`:**
 ```json
 {
   "notifications": [
     {
-      "id": "eff4d814ef802d78d6608745",
+      "id": "...",
       "type": "leave_requested",
       "title": "New Leave Request",
-      "message": "Priya Sharma requested 1 day(s) of Annual Leave",
-      "metadataJson": { "leaveRequestId": "...", "employeeId": "..." },
+      "message": "Priya Sharma requested 1 day(s) of Annual Leave starting 2026-05-25",
+      "metadataJson": { "leaveRequestId": "...", "referenceNo": "LVR-0012" },
       "readAt": null,
-      "expiresAt": "2026-05-24T06:00:27.804Z",
-      "createdAt": "2026-05-23T18:00:27.806Z"
+      "expiresAt": "2026-05-25T08:30:00.000Z",
+      "createdAt": "2026-05-24T20:30:00.000Z"
     }
   ],
   "pagination": { "page": 1, "limit": 20, "total": 5, "pages": 1 }
 }
 ```
 
-> Expired notifications (past `expiresAt`) are automatically excluded. TTL = 12 hours.
-
-**Notification types:**
-| Type | Who receives |
-|------|-------------|
-| `leave_requested` | Manager + HR_ADMINs + SUPER_ADMINs |
-| `leave_approved` | Employee who requested |
-| `leave_denied` | Employee who requested |
-| `leave_withdrawn` | Manager + HR_ADMINs + SUPER_ADMINs |
-| `attendance_checkin` | Employee + manager + SUPER_ADMINs |
-| `attendance_checkout` | Employee + manager + SUPER_ADMINs |
-| `regularization_requested` | Manager + HR_ADMINs + SUPER_ADMINs |
-| `regularization_approved` | Employee |
-| `regularization_denied` | Employee |
+> Expired notifications (TTL 12 hours) are automatically excluded. Only the calling user's notifications are returned.
 
 ---
 
 ### `GET /notifications/unread-count`
-**Response `data`:** `{ "count": 3 }` — use for bell icon badge.
+Use this for the bell icon badge. Poll every 30–60 seconds if not using SSE.
+
+**Response `data`:** `{ "count": 3 }`
 
 ---
 
 ### `PATCH /notifications/:id/read`
-Mark one notification as read. **Response `data`:** updated notification object.  
-**Error:** `NOT_FOUND` (404) if notification doesn't belong to caller.
+Mark a single notification as read.
+
+**Response `data`:** the updated notification object (with `readAt` set to current timestamp).
+
+**Error:** `NOT_FOUND` (404) if the notification ID doesn't belong to the current user.
 
 ---
 
 ### `PATCH /notifications/read-all`
-Mark all as read. **Response `data`:** `{ "success": true }`
+Mark all of the current user's unread notifications as read at once.
+
+**Response `data`:** `{ "success": true }`
 
 ---
 
-### `GET /notifications/stream`
-**Server-Sent Events** stream for real-time updates. EventSource cannot send custom headers, so pass token as query param:
+### `GET /notifications/stream` — Real-Time SSE
+
+Server-Sent Events stream. The browser's `EventSource` API cannot send `Authorization` headers, so the token is passed as a query parameter instead:
 
 ```
 GET /api/v1/notifications/stream?token=<accessToken>
 ```
 
-**Events emitted:**
-| Event name | When | Payload |
-|------------|------|---------|
-| `notification` | New notification created for this user | `{ id, type, title, message, createdAt, metadata }` |
-| `analytics_update` | Any leave/attendance mutation (HR_ADMIN/SUPER_ADMIN only) | `{ tenantId, ts }` |
+**No request body. No `x-tenant-key` needed** (tenant is resolved from the JWT in `token`).
 
-**Frontend usage:**
+**Connection behavior:**
+- Server sends a 25-second heartbeat comment (`: heartbeat`) to keep the connection alive through proxies/Render
+- Client should handle `onerror` and reconnect automatically (EventSource does this natively)
+- Connection is in-memory — after a server restart, client must reconnect
+
+**Events emitted:**
+
+| Event name | Sent to | Payload |
+|------------|---------|---------|
+| `notification` | The specific user the notification belongs to | `{ id, type, title, message, createdAt, metadata }` |
+| `analytics_update` | All connected HR_ADMIN and SUPER_ADMIN users | `{ tenantId, ts }` — tells frontend to refetch analytics |
+
+**Full frontend implementation:**
 ```js
-const es = new EventSource(`/api/v1/notifications/stream?token=${accessToken}`);
-es.addEventListener('notification', e => {
-  const n = JSON.parse(e.data); // add to bell icon
+// Connect to SSE stream
+const es = new EventSource(
+  `/api/v1/notifications/stream?token=${accessToken}`
+);
+
+// Handle new notification — update bell icon
+es.addEventListener('notification', (e) => {
+  const notification = JSON.parse(e.data);
+  // notification has: { id, type, title, message, createdAt, metadata }
+  showBellNotification(notification);
+  incrementUnreadCount();
 });
+
+// Handle analytics update — HR admin / Super admin dashboard refresh
 es.addEventListener('analytics_update', () => {
-  // refetch /analytics/summary, /analytics/attendance, etc.
+  refetchDashboardData(); // re-call /analytics/summary, /analytics/attendance, etc.
 });
+
+// Auto-reconnect on disconnect (EventSource handles this natively)
+es.onerror = () => {
+  console.log('SSE disconnected, will auto-reconnect');
+};
+
+// Cleanup
+function disconnect() { es.close(); }
 ```
 
-> SSE connections are in-memory — clients must auto-reconnect on disconnect. A 25-second heartbeat keeps the connection alive through proxies.
+**When is `analytics_update` fired?**
+- Any leave request created, approved, rejected, or withdrawn
+- Any attendance check-in or check-out
+- Any regularization request created, approved, or denied
+
+> HR_ADMIN and SUPER_ADMIN users should listen for `analytics_update` and call all analytics endpoints again when received — this is what makes the Super Admin dashboard live without manual refresh.
+
+---
 
 ---
 
@@ -890,15 +965,67 @@ All require HR_ADMIN or SUPER_ADMIN.
 ```
 
 ### `GET /analytics/headcount-by-department`
-Array of: `{ "departmentId": "...", "departmentName": "Engineering", "employeeCount": 10, "activeCount": 8 }`
+**Top-level departments only** (sub-departments are excluded from this chart; their employees roll up into the parent). Sorted by `employeeCount` descending.
+
+```json
+{
+  "data": [
+    { "departmentId": "...", "departmentName": "Engineering", "employeeCount": 12, "activeCount": 10 },
+    { "departmentId": "...", "departmentName": "Sales",       "employeeCount": 9,  "activeCount": 9  }
+  ],
+  "meta": { "cached": false, "generatedAt": "2026-05-24T07:00:00.000Z" }
+}
+```
 
 ### `GET /analytics/leave-summary`
 ```json
-{ "pending": 0, "approved": 0, "rejected": 0, "withdrawn": 1 }
+{ "data": { "pending": 0, "approved": 4, "rejected": 1, "withdrawn": 1 }, "meta": { "cached": false, "generatedAt": "..." } }
 ```
 
 ### `GET /analytics/recent-activity`
-Array of recent activity events.
+Query params: `?limit=10` (max 50).
+
+Each activity item has:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Audit log ID |
+| `actorName` | string | Full name of the person who performed the action (e.g. `"Priya Sharma"`) |
+| `actorEmail` | string\|null | Email of the actor (null for system events) |
+| `action` | string | Raw action code (e.g. `LOGIN`, `LEAVE_REQUEST_CREATED`) |
+| `actionLabel` | string | Human-readable verb phrase (e.g. `"logged in"`, `"submitted a leave request"`) |
+| `description` | string | Full readable sentence: `"Priya Sharma submitted a leave request"` |
+| `entityType` | string | e.g. `User`, `LeaveRequest`, `AttendanceRecord` |
+| `entityId` | string | ID of the affected entity |
+| `createdAt` | ISO string | UTC timestamp |
+| `timestamp` | ISO string | Same as `createdAt` (alias for UI convenience) |
+| `displayTime` | string | IST-formatted time: `"24/05/2026 10:30:00 am IST"` |
+
+**Example response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "...",
+      "actorName": "Priya Sharma",
+      "actorEmail": "priya@acme.test",
+      "action": "LEAVE_REQUEST_CREATED",
+      "actionLabel": "submitted a leave request",
+      "description": "Priya Sharma submitted a leave request",
+      "entityType": "LeaveRequest",
+      "entityId": "...",
+      "createdAt": "2026-05-24T07:30:00.000Z",
+      "timestamp": "2026-05-24T07:30:00.000Z",
+      "displayTime": "24/05/2026 01:00:00 pm IST"
+    }
+  ],
+  "meta": { "cached": false, "generatedAt": "..." }
+}
+```
+
+**Known action codes:**
+`LOGIN`, `LOGOUT`, `MFA_LOGIN_INITIATED`, `CREATE`, `UPDATE`, `DELETE`, `APPROVE`, `REJECT`, `DENY`, `WITHDRAW`, `LEAVE_REQUEST_CREATED`, `LEAVE_REQUEST_APPROVED`, `LEAVE_REQUEST_REJECTED`, `LEAVE_REQUEST_WITHDRAWN`, `ATTENDANCE_CHECK_IN`, `ATTENDANCE_CHECK_OUT`, `REGULARIZATION_APPROVED`, `REGULARIZATION_DENIED`, `REGULARIZATION_REQUEST_CREATED`
 
 ---
 
