@@ -11,6 +11,16 @@ export async function listDepartments(tenantId, filters) {
   }
 }
 
+export async function getDepartment(id, tenantId) {
+  try {
+    const dept = await repo.getDepartmentDetail(id, tenantId);
+    if (!dept) return errorResponse('NOT_FOUND', 'Department not found', null);
+    return successResponse(dept, { cached: false });
+  } catch (error) {
+    return errorResponse('FETCH_ERROR', error.message, null);
+  }
+}
+
 export async function createDepartment(tenantId, data, _userId) {
   try {
     if (data.parentId) {

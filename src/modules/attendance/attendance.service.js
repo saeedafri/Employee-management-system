@@ -156,7 +156,7 @@ export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
 
 export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filters = {}) {
   const {
-    page = 1, limit = 10, month, fromDate, toDate,
+    page = 1, limit = 10, month, fromDate, toDate, employeeId,
   } = filters;
 
   const offset = (page - 1) * limit;
@@ -174,6 +174,7 @@ export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filt
     toDate: resolvedTo,
     limit,
     offset,
+    employeeId,
   });
 }
 

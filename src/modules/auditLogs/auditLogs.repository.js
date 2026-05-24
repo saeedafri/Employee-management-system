@@ -10,6 +10,12 @@ export async function getAuditLogs(tenantId, page = 1, limit = 10, filters = {})
   if (filters.action) {
     where.action = filters.action;
   }
+  if (filters.entity) {
+    where.entityType = filters.entity;
+  }
+  if (filters.entityId) {
+    where.entityId = filters.entityId;
+  }
   if (filters.fromDate || filters.toDate) {
     where.createdAt = {};
     if (filters.fromDate) where.createdAt.gte = filters.fromDate;

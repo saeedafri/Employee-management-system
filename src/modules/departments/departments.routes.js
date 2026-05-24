@@ -1,6 +1,7 @@
 import { authenticate } from '../../middleware/authenticate.js';
 import {
   listDepartments,
+  getDepartment,
   createDepartment,
   updateDepartment,
   deleteDepartment,
@@ -27,6 +28,19 @@ export default async function departmentsRoutes(fastify) {
       },
     },
     listDepartments,
+  );
+
+  fastify.get(
+    '/departments/:id',
+    {
+      schema: {
+        tags: ['Departments'],
+        description: 'Get department detail with headcount, sub-departments, and employee list',
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    getDepartment,
   );
 
   fastify.post(

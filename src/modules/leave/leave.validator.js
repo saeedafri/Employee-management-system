@@ -15,6 +15,7 @@ export const getLeaveRequestsSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(10),
   status: z.enum(['PENDING', 'APPROVED', 'DENIED', 'WITHDRAWN', 'CANCELLED']).optional(),
   leaveTypeId: z.string().optional(),
+  employeeId: z.string().optional(),
   fromDate: z.coerce.date().optional(),
   toDate: z.coerce.date().optional(),
 });

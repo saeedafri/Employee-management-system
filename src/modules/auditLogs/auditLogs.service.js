@@ -17,6 +17,8 @@ export async function getAuditLogs(tenantId, page, limit, filters) {
     {
       userEmail: filters.user_email,
       action: filters.action,
+      entity: filters.entity,
+      entityId: filters.entityId,
       fromDate: filters.from_date,
       toDate: filters.to_date,
     },

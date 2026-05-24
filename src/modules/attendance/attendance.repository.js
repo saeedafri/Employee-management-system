@@ -74,14 +74,14 @@ export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
 
 export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filters = {}) {
   const {
-    fromDate, toDate, limit = 10, offset = 0,
+    fromDate, toDate, limit = 10, offset = 0, employeeId,
   } = filters;
 
   const where = {
     tenantId,
-    employee: {
-      managerId: managerEmployeeId,
-    },
+    ...(employeeId
+      ? { employeeId }
+      : { employee: { managerId: managerEmployeeId } }),
   };
 
   if (fromDate || toDate) {

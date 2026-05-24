@@ -2,6 +2,17 @@ import * as service from './holidays.service.js';
 import * as validator from './holidays.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
+export async function getUpcomingHolidays(request, reply) {
+  const tenantId = request.tenant.id;
+  try {
+    const limit = parseInt(request.query.limit, 10) || 3;
+    const result = await service.getUpcomingHolidays(tenantId, limit);
+    reply.code(200).send(result);
+  } catch (error) {
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+  }
+}
+
 export async function listHolidays(request, reply) {
   const tenantId = request.tenant.id;
 

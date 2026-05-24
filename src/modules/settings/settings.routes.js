@@ -5,8 +5,9 @@ export default async function settingsRoutes(fastify) {
   fastify.get('/settings/tenant', {
     schema: {
       tags: ['Settings'],
-      description: 'Get tenant configuration',
+      description: 'Get tenant configuration including company identity fields',
       security: [{ Bearer: [] }],
+      response: { 200: { type: 'object', additionalProperties: true } },
     },
     onRequest: [authenticate],
   }, (request, reply) => settingsController.getTenantConfig(request, reply));
@@ -14,17 +15,27 @@ export default async function settingsRoutes(fastify) {
   fastify.patch('/settings/tenant', {
     schema: {
       tags: ['Settings'],
-      description: 'Update tenant configuration',
+      description: 'Update tenant configuration and company identity fields',
       security: [{ Bearer: [] }],
       body: {
         type: 'object',
         properties: {
+          // Tenant model fields
+          legalName: { type: 'string', minLength: 1 },
+          displayName: { type: 'string', minLength: 1 },
+          country: { type: 'string', minLength: 2 },
+          defaultCurrency: { type: 'string', minLength: 3, maxLength: 3 },
+          primaryContactEmail: { type: 'string', format: 'email' },
+          supportPhone: { type: 'string' },
+          logoUrl: { type: 'string' },
+          // TenantConfig operational fields
           company_name: { type: 'string', minLength: 1, maxLength: 255 },
           timezone: { type: 'string' },
           working_hours_start: { type: 'string', pattern: '^\\d{2}:\\d{2}$' },
           working_hours_end: { type: 'string', pattern: '^\\d{2}:\\d{2}$' },
         },
       },
+      response: { 200: { type: 'object', additionalProperties: true } },
     },
     onRequest: [authenticate, authorize(['HR_ADMIN'])],
   }, (request, reply) => settingsController.updateTenantConfig(request, reply));

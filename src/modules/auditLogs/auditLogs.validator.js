@@ -5,6 +5,8 @@ export const listAuditLogsSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(10),
   user_email: z.string().email().optional(),
   action: z.string().optional(),
+  entity: z.string().optional(),
+  entityId: z.string().optional(),
   from_date: z.coerce.date().optional(),
   to_date: z.coerce.date().optional(),
 });

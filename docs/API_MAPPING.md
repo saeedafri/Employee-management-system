@@ -1333,3 +1333,221 @@ All major entities now include a `referenceNo` display field in API responses:
 | Employee | `employeeCode` | `EMP-0080` | No — use `id` (CUID) |
 
 > `referenceNo` is display-only (for UI, tickets, support). All API operations (approve, reject, download, etc.) use the `id` field (CUID).
+
+---
+
+## New Endpoints (Added 2026-05-24 — Wireframe Gap Fill)
+
+### `GET /holidays/upcoming`
+Widget data for the employee dashboard.
+
+**Query:** `?limit=3` (default 3, max 10)
+
+**Response `data`:**
+```json
+{
+  "holidays": [
+    {
+      "id": "...",
+      "name": "Eid al-Adha",
+      "holidayDate": "2026-06-06T00:00:00.000Z",
+      "isOptional": false,
+      "location": null
+    }
+  ],
+  "total": 3
+}
+```
+
+---
+
+### `GET /employees/next-code`
+Used by the Create Employee form to pre-fill the employee code field.
+
+**Required roles:** HR_ADMIN, SUPER_ADMIN
+
+**Response `data`:** `{ "nextCode": "EMP-0081" }`
+
+---
+
+### `GET /departments/:id`
+Department detail panel — headcount, sub-departments, managers, employee list.
+
+**Response `data`:**
+```json
+{
+  "id": "...",
+  "name": "Engineering",
+  "departmentCode": "ENG",
+  "depth": 0,
+  "parentId": null,
+  "parent": null,
+  "headEmployee": { "id": "...", "firstName": "Aman", "lastName": "Sharma" },
+  "subDepartments": [
+    { "id": "...", "name": "Backend", "departmentCode": "BACK" }
+  ],
+  "totalHeadcount": 22,
+  "subDeptCount": 3,
+  "managerCount": 4,
+  "employees": [
+    {
+      "id": "...",
+      "firstName": "Priya",
+      "lastName": "Sharma",
+      "employeeCode": "E0002",
+      "designation": "Software Engineer",
+      "employmentStatus": "ACTIVE"
+    }
+  ]
+}
+```
+
+---
+
+### `GET /leave/types` — extended with CRUD
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/leave/types` | all authenticated | List active leave types |
+| POST | `/leave/types` | HR_ADMIN, SUPER_ADMIN | Create new leave type |
+| PATCH | `/leave/types/:id` | HR_ADMIN, SUPER_ADMIN | Update fields |
+| DELETE | `/leave/types/:id` | HR_ADMIN, SUPER_ADMIN | Soft-deactivate (sets isActive=false) |
+
+**POST body:**
+```json
+{ "name": "Bereavement Leave", "code": "BRVMT", "annualAllowance": 5, "isPaid": true, "carryForwardAllowed": false }
+```
+Required: `name`, `code`. Code must be unique per tenant. Once deactivated, code is freed for re-use.
+
+**Error codes:** `DUPLICATE_LEAVE_TYPE_CODE` (409)
+
+---
+
+### `GET /leave/team/requests` — now supports `?employeeId=`
+
+Add `?employeeId=<id>` to filter leave requests to a single employee (used on employee profile Leave tab).
+Other filters still apply: `status`, `fromDate`, `toDate`, `page`, `limit`.
+
+---
+
+### `GET /leave/team/calendar`
+Team calendar view — who is on leave in a given month.
+
+**Required roles:** MANAGER, HR_ADMIN  
+**Query:** `?month=2026-05` (YYYY-MM, defaults to current month)
+
+**Response `data`:**
+```json
+{
+  "month": "2026-05",
+  "employees": [
+    {
+      "id": "...",
+      "name": "Priya Sharma",
+      "employeeCode": "E0002",
+      "leaves": [
+        {
+          "id": "...",
+          "startDate": "2026-05-27T18:30:00.000Z",
+          "endDate": "2026-05-29T18:30:00.000Z",
+          "totalDays": 3,
+          "status": "PENDING",
+          "leaveType": "Annual Leave",
+          "leaveTypeCode": "ANNUAL"
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### `GET /leave/balance/me`
+Alias for `GET /leave/balance` — used by the employee dashboard widget. Same response shape.
+
+---
+
+### `POST /leave/requests/bulk-approve`
+**Required roles:** MANAGER, HR_ADMIN
+
+**Body:**
+```json
+{ "ids": ["id1", "id2"], "comment": "Approved in bulk" }
+```
+
+**Response `data`:**
+```json
+{
+  "results": [
+    { "id": "id1", "status": "approved", "referenceNo": "LVR-0044" },
+    { "id": "id2", "status": "failed", "error": "Cannot approve leave with status APPROVED" }
+  ],
+  "processed": 2
+}
+```
+
+Each request is processed independently — some can succeed and some fail. Check `status` per item.
+
+---
+
+### `POST /leave/requests/bulk-deny`
+Same shape as bulk-approve. `comment` is used as the rejection reason (required in spirit — defaults to "Bulk denied" if omitted).
+
+---
+
+### `GET /attendance/team/records` — now supports `?employeeId=`
+Add `?employeeId=<id>` to filter to a single employee (used on employee profile Attendance tab).
+
+---
+
+### `GET /audit-logs` — now supports `?entity=` and `?entityId=`
+Filter audit logs by entity type and/or entity ID.
+
+| Param | Example | Notes |
+|-------|---------|-------|
+| `entity` | `Employee` | Matches `entityType` field in DB |
+| `entityId` | `cmpfypq1h001eunacja7guack` | Filter to specific record |
+
+---
+
+### `GET /settings/tenant` — now includes Tenant identity fields
+
+Response now returns both company identity fields (from `Tenant` model) and operational config (from `TenantConfig`):
+
+```json
+{
+  "legalName": "Acme Corporation Pvt Ltd",
+  "displayName": "Acme",
+  "country": "India",
+  "defaultCurrency": "INR",
+  "primaryContactEmail": "hr@acme.test",
+  "supportPhone": "+91 11 40000000",
+  "logoUrl": null,
+  "company_name": "Acme Corp",
+  "timezone": "Asia/Kolkata",
+  "working_hours_start": "09:00",
+  "working_hours_end": "18:00",
+  "fiscal_year_start": 4
+}
+```
+
+### `PATCH /settings/tenant` — now accepts Tenant identity fields
+
+Extended body — any combination of:
+```json
+{
+  "legalName": "...",
+  "displayName": "...",
+  "country": "IN",
+  "defaultCurrency": "INR",
+  "primaryContactEmail": "hr@company.com",
+  "supportPhone": "+91...",
+  "logoUrl": "https://...",
+  "company_name": "...",
+  "timezone": "Asia/Kolkata",
+  "working_hours_start": "09:00",
+  "working_hours_end": "18:00"
+}
+```
+All fields optional. Returns the merged settings object (same shape as GET).

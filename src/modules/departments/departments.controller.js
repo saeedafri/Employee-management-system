@@ -2,6 +2,17 @@ import * as service from './departments.service.js';
 import * as validator from './departments.validator.js';
 import { errorResponse } from '../../utils/response.js';
 
+export async function getDepartment(request, reply) {
+  const tenantId = request.tenant.id;
+  try {
+    const { id } = request.params;
+    const result = await service.getDepartment(id, tenantId);
+    reply.code(result.error ? 404 : 200).send(result);
+  } catch (error) {
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+  }
+}
+
 const CONFLICT_CODES = new Set(['DEPARTMENT_CYCLE', 'DEPARTMENT_NOT_EMPTY', 'DUPLICATE_CODE']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
 

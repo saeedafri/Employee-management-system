@@ -23,6 +23,15 @@ export async function getEmployee(employeeId, tenantId) {
   }
 }
 
+export async function getNextEmployeeCode(tenantId) {
+  try {
+    const code = await generateEmployeeCode(tenantId);
+    return successResponse({ nextCode: code }, { cached: false });
+  } catch (error) {
+    return errorResponse('FETCH_ERROR', error.message, null);
+  }
+}
+
 async function generateEmployeeCode(tenantId) {
   const count = await repo.countEmployees(tenantId);
   let attempt = count + 1;

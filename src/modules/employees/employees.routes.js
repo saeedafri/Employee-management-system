@@ -207,6 +207,22 @@ export async function employeesRoutes(fastify) {
   );
 
   fastify.get(
+    '/employees/next-code',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Get the next auto-generated employee code (for Add Employee form)',
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    async (request, reply) => {
+      const { getNextEmployeeCode } = await import('./employees.service.js');
+      const result = await getNextEmployeeCode(request.tenant.id);
+      reply.code(200).send(result);
+    },
+  );
+
+  fastify.get(
     '/employees/export/csv',
     {
       schema: {

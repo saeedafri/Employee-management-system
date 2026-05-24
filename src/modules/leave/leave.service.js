@@ -10,6 +10,56 @@ export async function getLeaveTypes(tenantId) {
   return leaveRepository.getLeaveTypes(tenantId);
 }
 
+export async function getTeamCalendar(tenantId, managerEmployeeId, month) {
+  return leaveRepository.getTeamCalendar(tenantId, managerEmployeeId, month);
+}
+
+export async function bulkApproveLeaveRequests(tenantId, ids, approverId, comment) {
+  const results = [];
+  for (const id of ids) {
+    try {
+      const result = await approveLeaveRequest(tenantId, id, approverId, comment);
+      results.push({ id, status: 'approved', referenceNo: result.referenceNo });
+    } catch (err) {
+      results.push({ id, status: 'failed', error: err.message });
+    }
+  }
+  return results;
+}
+
+export async function bulkDenyLeaveRequests(tenantId, ids, approverId, comment) {
+  const results = [];
+  for (const id of ids) {
+    try {
+      const result = await rejectLeaveRequest(tenantId, id, approverId, comment || 'Bulk denied');
+      results.push({ id, status: 'denied', referenceNo: result.referenceNo });
+    } catch (err) {
+      results.push({ id, status: 'failed', error: err.message });
+    }
+  }
+  return results;
+}
+
+export async function createLeaveType(tenantId, data) {
+  const existing = await leaveRepository.getLeaveTypes(tenantId);
+  if (existing.find(lt => lt.code === data.code)) {
+    throw new AppError('Leave type code already exists', 'DUPLICATE_LEAVE_TYPE_CODE', 409);
+  }
+  return leaveRepository.createLeaveType(tenantId, data);
+}
+
+export async function updateLeaveType(tenantId, id, data) {
+  const result = await leaveRepository.updateLeaveType(tenantId, id, data);
+  if (!result) throw new AppError('Leave type not found', 'NOT_FOUND', 404);
+  return result;
+}
+
+export async function deleteLeaveType(tenantId, id) {
+  const result = await leaveRepository.deleteLeaveType(tenantId, id);
+  if (!result) throw new AppError('Leave type not found', 'NOT_FOUND', 404);
+  return result;
+}
+
 class AppError extends Error {
   constructor(message, code, statusCode = 400, details = {}) {
     super(message);
@@ -105,7 +155,7 @@ export async function getLeaveRequests(tenantId, employeeId, filters = {}) {
 
 export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters = {}) {
   const {
-    page = 1, limit = 10, status, leaveTypeId, fromDate, toDate,
+    page = 1, limit = 10, status, leaveTypeId, fromDate, toDate, employeeId,
   } = filters;
 
   const offset = (page - 1) * limit;
@@ -117,6 +167,7 @@ export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters 
     toDate,
     limit,
     offset,
+    employeeId,
   });
 }
 

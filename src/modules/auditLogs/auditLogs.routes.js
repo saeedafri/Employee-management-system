@@ -14,6 +14,8 @@ export default async function auditLogsRoutes(fastify) {
           limit: { type: 'integer', default: 10 },
           user_email: { type: 'string', format: 'email' },
           action: { type: 'string' },
+          entity: { type: 'string', description: 'Entity type e.g. Employee, LeaveRequest' },
+          entityId: { type: 'string', description: 'Entity ID — filter logs for one specific record' },
           from_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           to_date: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
         },

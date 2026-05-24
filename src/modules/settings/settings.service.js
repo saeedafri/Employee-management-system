@@ -10,27 +10,43 @@ class AppError extends Error {
 }
 
 export async function getTenantConfig(tenantId) {
-  const config = await settingsRepository.getTenantConfig(tenantId);
+  const { tenant, config } = await settingsRepository.getTenantConfig(tenantId);
 
   return {
-    company_name: config.companyName,
-    timezone: config.timezone,
-    working_hours_start: config.workingHoursStart,
-    working_hours_end: config.workingHoursEnd,
-    fiscal_year_start: config.fiscalYearStart,
+    // Tenant-level fields (company identity)
+    legalName: tenant?.legalName ?? null,
+    displayName: tenant?.displayName ?? null,
+    country: tenant?.country ?? null,
+    defaultCurrency: tenant?.defaultCurrency ?? null,
+    primaryContactEmail: tenant?.primaryContactEmail ?? null,
+    supportPhone: tenant?.supportPhone ?? null,
+    logoUrl: tenant?.logoUrl ?? null,
+    // TenantConfig operational fields
+    company_name: config?.companyName ?? tenant?.name ?? null,
+    timezone: config?.timezone ?? tenant?.timezone ?? null,
+    working_hours_start: config?.workingHoursStart ?? null,
+    working_hours_end: config?.workingHoursEnd ?? null,
+    fiscal_year_start: config?.fiscalYearStart ?? null,
   };
 }
 
 export async function updateTenantConfig(tenantId, data) {
-  const config = await settingsRepository.updateTenantConfig(tenantId, data);
+  const promises = [];
 
-  return {
-    company_name: config.companyName,
-    timezone: config.timezone,
-    working_hours_start: config.workingHoursStart,
-    working_hours_end: config.workingHoursEnd,
-    fiscal_year_start: config.fiscalYearStart,
-  };
+  const tenantFields = ['legalName', 'displayName', 'country', 'defaultCurrency', 'primaryContactEmail', 'supportPhone', 'logoUrl'];
+  const hasTenantFields = tenantFields.some((f) => data[f] !== undefined);
+  if (hasTenantFields) {
+    promises.push(settingsRepository.updateTenantFields(tenantId, data));
+  }
+
+  const configFields = ['company_name', 'timezone', 'working_hours_start', 'working_hours_end'];
+  const hasConfigFields = configFields.some((f) => data[f] !== undefined);
+  if (hasConfigFields) {
+    promises.push(settingsRepository.updateTenantConfig(tenantId, data));
+  }
+
+  await Promise.all(promises);
+  return getTenantConfig(tenantId);
 }
 
 export async function getEmailTemplates(tenantId) {

@@ -70,6 +70,79 @@ export async function getLeaveBalance(tenantId, employeeId, leaveTypeId) {
   });
 }
 
+export async function createLeaveType(tenantId, data) {
+  return prisma.leaveType.create({
+    data: { tenantId, name: data.name, code: data.code, annualAllowance: data.annualAllowance || 0, carryForwardAllowed: data.carryForwardAllowed || false, isPaid: data.isPaid !== false },
+  });
+}
+
+export async function updateLeaveType(tenantId, id, data) {
+  const existing = await prisma.leaveType.findFirst({ where: { id, tenantId } });
+  if (!existing) return null;
+  return prisma.leaveType.update({
+    where: { id },
+    data: {
+      ...(data.name !== undefined && { name: data.name }),
+      ...(data.annualAllowance !== undefined && { annualAllowance: data.annualAllowance }),
+      ...(data.carryForwardAllowed !== undefined && { carryForwardAllowed: data.carryForwardAllowed }),
+      ...(data.isPaid !== undefined && { isPaid: data.isPaid }),
+      ...(data.isActive !== undefined && { isActive: data.isActive }),
+    },
+  });
+}
+
+export async function deleteLeaveType(tenantId, id) {
+  const existing = await prisma.leaveType.findFirst({ where: { id, tenantId } });
+  if (!existing) return null;
+  return prisma.leaveType.update({ where: { id }, data: { isActive: false } });
+}
+
+export async function getTeamCalendar(tenantId, managerEmployeeId, month) {
+  const [year, mon] = month.split('-').map(Number);
+  const startDate = new Date(year, mon - 1, 1);
+  const endDate = new Date(year, mon, 0);
+
+  const teamEmployees = await prisma.employee.findMany({
+    where: { tenantId, managerId: managerEmployeeId, deletedAt: null },
+    select: { id: true, firstName: true, lastName: true, employeeCode: true },
+  });
+
+  if (teamEmployees.length === 0) return { month, employees: [] };
+
+  const employeeIds = teamEmployees.map(e => e.id);
+
+  const leaves = await prisma.leaveRequest.findMany({
+    where: {
+      tenantId,
+      employeeId: { in: employeeIds },
+      status: { in: ['APPROVED', 'PENDING'] },
+      startDate: { lte: endDate },
+      endDate: { gte: startDate },
+    },
+    include: { leaveType: { select: { name: true, code: true } } },
+  });
+
+  const leaveMap = {};
+  leaves.forEach(lr => {
+    if (!leaveMap[lr.employeeId]) leaveMap[lr.employeeId] = [];
+    leaveMap[lr.employeeId].push(lr);
+  });
+
+  return {
+    month,
+    employees: teamEmployees.map(emp => ({
+      id: emp.id,
+      name: `${emp.firstName} ${emp.lastName}`,
+      employeeCode: emp.employeeCode,
+      leaves: (leaveMap[emp.id] || []).map(lr => ({
+        id: lr.id, startDate: lr.startDate, endDate: lr.endDate,
+        totalDays: lr.totalDays, status: lr.status,
+        leaveType: lr.leaveType.name, leaveTypeCode: lr.leaveType.code,
+      })),
+    })),
+  };
+}
+
 export async function getLeaveTypes(tenantId) {
   return prisma.leaveType.findMany({
     where: { tenantId, isActive: true },
@@ -225,14 +298,14 @@ export async function getEmployeeLeaveRequests(tenantId, employeeId, filters = {
 
 export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters = {}) {
   const {
-    status, leaveTypeId, fromDate, toDate, limit = 10, offset = 0,
+    status, leaveTypeId, fromDate, toDate, limit = 10, offset = 0, employeeId,
   } = filters;
 
   const where = {
     tenantId,
-    employee: {
-      managerId: managerEmployeeId,
-    },
+    ...(employeeId
+      ? { employeeId }
+      : { employee: { managerId: managerEmployeeId } }),
   };
 
   if (status) {

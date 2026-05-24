@@ -27,6 +27,46 @@ export async function getDepartmentById(id, tenantId) {
   });
 }
 
+export async function getDepartmentDetail(id, tenantId) {
+  const dept = await prisma.department.findFirst({
+    where: { id, tenantId, deletedAt: null },
+    include: {
+      headEmployee: { select: { id: true, firstName: true, lastName: true } },
+      parent: { select: { id: true, name: true } },
+      subDepartments: { where: { deletedAt: null }, select: { id: true, name: true, departmentCode: true } },
+    },
+  });
+  if (!dept) return null;
+
+  const [allDepts, employees, subDeptCount, totalHeadcount, managerCount] = await Promise.all([
+    prisma.department.findMany({ where: { tenantId, deletedAt: null }, select: { id: true, parentId: true } }),
+    prisma.employee.findMany({
+      where: { tenantId, departmentId: id, deletedAt: null },
+      select: { id: true, firstName: true, lastName: true, employeeCode: true, designation: true, employmentStatus: true },
+      orderBy: { firstName: 'asc' },
+      take: 50,
+    }),
+    prisma.department.count({ where: { tenantId, parentId: id, deletedAt: null } }),
+    (async () => {
+      const subtreeIds = new Set([id]);
+      const allD = await prisma.department.findMany({ where: { tenantId, deletedAt: null }, select: { id: true, parentId: true } });
+      allD.forEach(d => { if (d.parentId === id) subtreeIds.add(d.id); });
+      return prisma.employee.count({ where: { tenantId, departmentId: { in: [...subtreeIds] }, deletedAt: null } });
+    })(),
+    prisma.employee.count({
+      where: { tenantId, departmentId: id, deletedAt: null, managedEmployees: { some: { deletedAt: null } } },
+    }),
+  ]);
+
+  return {
+    id: dept.id, name: dept.name, departmentCode: dept.departmentCode,
+    depth: dept.depth, parentId: dept.parentId, parent: dept.parent,
+    headEmployee: dept.headEmployee, subDepartments: dept.subDepartments,
+    totalHeadcount, subDeptCount, managerCount,
+    employees,
+  };
+}
+
 export async function createDepartment(tenantId, data) {
   return prisma.department.create({
     data: {

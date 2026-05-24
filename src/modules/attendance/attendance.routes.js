@@ -66,6 +66,7 @@ export default async function attendanceRoutes(fastify) {
           month: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$', description: 'Filter by month, e.g. 2025-06' },
           fromDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           toDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          employeeId: { type: 'string', description: 'Filter by specific employee ID (HR/Manager only)' },
         },
       },
     },

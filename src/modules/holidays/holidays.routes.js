@@ -1,6 +1,7 @@
 import { authenticate } from '../../middleware/authenticate.js';
 import {
   listHolidays,
+  getUpcomingHolidays,
   createHoliday,
   updateHoliday,
   deleteHoliday,
@@ -28,6 +29,19 @@ export default async function holidaysRoutes(fastify) {
       },
     },
     listHolidays,
+  );
+
+  fastify.get(
+    '/holidays/upcoming',
+    {
+      schema: {
+        tags: ['Holidays'],
+        description: 'Get upcoming holidays (employee dashboard widget)',
+        querystring: { type: 'object', properties: { limit: { type: 'integer', default: 3, minimum: 1, maximum: 10 } } },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    getUpcomingHolidays,
   );
 
   fastify.post(

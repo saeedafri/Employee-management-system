@@ -63,6 +63,15 @@ export async function updateHoliday(id, tenantId, data) {
   }
 }
 
+export async function getUpcomingHolidays(tenantId, limit) {
+  try {
+    const holidays = await repo.getUpcomingHolidays(tenantId, Math.min(limit || 3, 10));
+    return successResponse({ holidays, total: holidays.length }, { cached: false });
+  } catch (error) {
+    return errorResponse('LIST_ERROR', error.message, null);
+  }
+}
+
 export async function deleteHoliday(id, tenantId) {
   try {
     const existing = await repo.getHolidayById(id, tenantId);

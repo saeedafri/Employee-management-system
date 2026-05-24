@@ -54,6 +54,16 @@ export async function deleteHoliday(id, _tenantId) {
   });
 }
 
+export async function getUpcomingHolidays(tenantId, limit = 3) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return prisma.holiday.findMany({
+    where: { tenantId, holidayDate: { gte: today } },
+    orderBy: { holidayDate: 'asc' },
+    take: limit,
+  });
+}
+
 export async function checkHolidayExists(tenantId, holidayDate, location = null, excludeId = null) {
   const where = {
     tenantId,

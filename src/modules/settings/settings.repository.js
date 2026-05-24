@@ -1,26 +1,46 @@
 import { prisma } from '../../plugins/prisma.js';
 
 export async function getTenantConfig(tenantId) {
-  let config = await prisma.tenantConfig.findUnique({
-    where: { tenantId },
-  });
-
-  if (!config) {
-    const tenant = await prisma.tenant.findUnique({
+  const [tenant, config] = await Promise.all([
+    prisma.tenant.findUnique({
       where: { id: tenantId },
-      select: { name: true, timezone: true },
-    });
-
-    config = await prisma.tenantConfig.create({
-      data: {
-        tenantId,
-        companyName: tenant.name,
-        timezone: tenant.timezone,
+      select: {
+        id: true,
+        name: true,
+        legalName: true,
+        displayName: true,
+        country: true,
+        defaultCurrency: true,
+        primaryContactEmail: true,
+        supportPhone: true,
+        logoUrl: true,
+        timezone: true,
       },
+    }),
+    prisma.tenantConfig.findUnique({ where: { tenantId } }),
+  ]);
+
+  if (!config && tenant) {
+    const created = await prisma.tenantConfig.create({
+      data: { tenantId, companyName: tenant.name, timezone: tenant.timezone },
     });
+    return { tenant, config: created };
   }
 
-  return config;
+  return { tenant, config };
+}
+
+export async function updateTenantFields(tenantId, data) {
+  const updateData = {};
+  if (data.legalName !== undefined) updateData.legalName = data.legalName;
+  if (data.displayName !== undefined) updateData.displayName = data.displayName;
+  if (data.country !== undefined) updateData.country = data.country;
+  if (data.defaultCurrency !== undefined) updateData.defaultCurrency = data.defaultCurrency;
+  if (data.primaryContactEmail !== undefined) updateData.primaryContactEmail = data.primaryContactEmail;
+  if (data.supportPhone !== undefined) updateData.supportPhone = data.supportPhone;
+  if (data.logoUrl !== undefined) updateData.logoUrl = data.logoUrl;
+  if (Object.keys(updateData).length === 0) return null;
+  return prisma.tenant.update({ where: { id: tenantId }, data: updateData });
 }
 
 export async function updateTenantConfig(tenantId, data) {

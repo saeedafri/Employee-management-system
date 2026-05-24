@@ -277,3 +277,85 @@ export async function getLeaveBalance(request, reply) {
     throw error;
   }
 }
+
+export async function getTeamCalendar(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const managerEmployeeId = request.user.employeeId;
+    const month = request.query.month || new Date().toISOString().slice(0, 7);
+
+    if (!managerEmployeeId) {
+      return reply.status(400).send(errorResponse('NO_EMPLOYEE_ID', 'User has no employee profile', {}, request.id));
+    }
+
+    const data = await leaveService.getTeamCalendar(tenantId, managerEmployeeId, month);
+    return reply.send(successResponse(data));
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
+
+export async function createLeaveType(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const type = await leaveService.createLeaveType(tenantId, request.body);
+    return reply.status(201).send(successResponse(type));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) return reply.status(error.statusCode || 400).send(errorResponse(error.code, error.message, error.details, request.id));
+    throw error;
+  }
+}
+
+export async function updateLeaveType(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const { id } = request.params;
+    const type = await leaveService.updateLeaveType(tenantId, id, request.body);
+    return reply.send(successResponse(type));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) return reply.status(error.statusCode || 400).send(errorResponse(error.code, error.message, error.details, request.id));
+    throw error;
+  }
+}
+
+export async function deleteLeaveType(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const { id } = request.params;
+    await leaveService.deleteLeaveType(tenantId, id);
+    return reply.send(successResponse({ id, status: 'deactivated' }));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) return reply.status(error.statusCode || 400).send(errorResponse(error.code, error.message, error.details, request.id));
+    throw error;
+  }
+}
+
+export async function bulkApproveLeave(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const approverId = request.user.id;
+    const { ids, comment } = request.body;
+    const results = await leaveService.bulkApproveLeaveRequests(tenantId, ids, approverId, comment);
+    return reply.send(successResponse({ results, processed: results.length }));
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
+
+export async function bulkDenyLeave(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const approverId = request.user.id;
+    const { ids, comment } = request.body;
+    const results = await leaveService.bulkDenyLeaveRequests(tenantId, ids, approverId, comment);
+    return reply.send(successResponse({ results, processed: results.length }));
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
