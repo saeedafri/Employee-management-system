@@ -35,10 +35,10 @@ export async function getNextEmployeeCode(tenantId) {
 async function generateEmployeeCode(tenantId) {
   const count = await repo.countEmployees(tenantId);
   let attempt = count + 1;
-  let code = `EMP-${String(attempt).padStart(4, '0')}`;
+  let code = `E${String(attempt).padStart(4, '0')}`;
   while (await repo.checkEmployeeCodeExists(code, tenantId)) {
     attempt += 1;
-    code = `EMP-${String(attempt).padStart(4, '0')}`;
+    code = `E${String(attempt).padStart(4, '0')}`;
   }
   return code;
 }

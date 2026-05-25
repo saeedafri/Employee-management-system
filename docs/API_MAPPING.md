@@ -1551,3 +1551,489 @@ Extended body — any combination of:
 }
 ```
 All fields optional. Returns the merged settings object (same shape as GET).
+
+---
+
+## New Endpoints — Implemented 2026-05-25 (UI Team Requests)
+
+> All routes below are live. Auth: Bearer token or `accessToken` cookie. Tenant resolved from JWT.
+
+---
+
+### Notifications
+
+#### `GET /notifications`
+
+**Roles:** any authenticated user.
+
+**Query params:**
+| Param | Type | Default | Notes |
+|-------|------|---------|-------|
+| `page` | integer | 1 | |
+| `limit` | integer | 20 | |
+| `unreadOnly` | boolean | false | Filter unread only |
+| `since` | ISO timestamp | — | Return items newer than this (polling) |
+
+**Response `data`:**
+```json
+{
+  "notifications": [
+    {
+      "id": "n_01",
+      "type": "LEAVE_APPROVED",
+      "title": "Your leave request was approved",
+      "body": "Aman Kumar approved your annual leave.",
+      "entityType": "LeaveRequest",
+      "entityId": "lr_99",
+      "actionUrl": "/leave?tab=my-requests&id=lr_99",
+      "isRead": false,
+      "createdAt": "2026-05-22T09:12:00.000Z"
+    }
+  ],
+  "unreadCount": 4,
+  "pagination": { "page": 1, "limit": 20, "total": 27, "pages": 2 }
+}
+```
+
+#### `POST /notifications/:id/read`
+Mark a single notification read.
+**Response:** `{ "id": "n_01", "isRead": true }`
+
+#### `PATCH /notifications/:id/read`
+Alias — same as POST above.
+
+#### `POST /notifications/read-all`
+Mark all notifications read for the caller.
+**Response:** `{ "markedRead": 7 }`
+
+#### `PATCH /notifications/read-all`
+Alias — same as POST above.
+
+---
+
+### Global Search
+
+#### `GET /search?q=<query>`
+
+**Roles:** any authenticated user. Permission-aware — employees see only self + direct reports.
+
+**Query params:**
+| Param | Type | Default | Notes |
+|-------|------|---------|-------|
+| `q` | string | required | Min 1 char |
+| `types` | string | all | Comma-separated: `employee,department,leave,holiday` |
+| `limit` | integer | 8 | Max 20 |
+
+**Response `data`:**
+```json
+{
+  "results": [
+    {
+      "type": "employee",
+      "id": "emp_...",
+      "label": "Priya Sharma",
+      "sublabel": "Senior Engineer · Engineering",
+      "url": "/employees/emp_..."
+    },
+    {
+      "type": "department",
+      "id": "dep_...",
+      "label": "Engineering",
+      "sublabel": "14 employees",
+      "url": "/departments?id=dep_..."
+    }
+  ],
+  "groupedCounts": { "employee": 5, "department": 1, "leave": 2 }
+}
+```
+
+---
+
+### Employees
+
+#### `GET /employees/next-code`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN.
+
+**Response:** `{ "code": "E0081" }`
+
+Format: `E` + 4-digit zero-padded number. Auto-increments, skips existing codes.
+
+#### `POST /employees/bulk/deactivate`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN.
+
+**Body:** `{ "ids": ["emp_a", "emp_b"] }`
+
+**Response `data`:**
+```json
+{
+  "succeeded": ["emp_a"],
+  "failed": [{ "id": "emp_b", "code": "EMPLOYEE_HAS_DEPENDENTS", "message": "Has 3 direct reports." }]
+}
+```
+
+#### `POST /employees/bulk/export`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN.
+
+**Body:** `{ "ids": ["emp_a"], "format": "csv" }` — format: `csv | excel | json`, default `csv`.
+
+**Response:** `{ "jobId": "...", "status": "PENDING" }`
+
+#### `POST /employees/:id/documents/presign`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN, or self.
+
+**Body:**
+```json
+{
+  "filename": "Aadhaar.pdf",
+  "contentType": "application/pdf",
+  "size": 2415616,
+  "category": "AADHAAR"
+}
+```
+`category` enum: `OFFER_LETTER | AADHAAR | PAN | BANK | CONTRACT | OTHER`
+
+**Response `data`:**
+```json
+{
+  "uploadUrl": "/api/v1/employees/:id/documents",
+  "method": "POST",
+  "headers": { "Content-Type": "multipart/form-data" },
+  "documentId": "doc_pending_..."
+}
+```
+> **Deviation from S3 presign:** Cloudinary does not support unauthenticated PUT presign URLs. `uploadUrl` points to our own multipart endpoint. Upload via `POST` with `multipart/form-data`, then call `/confirm`.
+
+#### `POST /employees/:id/documents/:documentId/confirm`
+
+Call after file upload completes. Returns the confirmed document record.
+
+**Response 201:** document object (same shape as GET /employees/:id/documents items).
+
+#### `GET /employees/:id/documents/:documentId/download`
+
+**Response 302:** redirect to short-lived signed download URL.
+
+---
+
+### Departments
+
+#### `GET /departments/:id/employees`
+
+**Roles:** any authenticated user.
+
+**Query params:** `page` (default 1), `limit` (default 20), `search` (optional name filter).
+
+**Response `data`:**
+```json
+{
+  "data": [
+    {
+      "id": "emp_...",
+      "firstName": "Priya",
+      "lastName": "Sharma",
+      "employeeCode": "E0001",
+      "designation": "Senior Engineer",
+      "employmentStatus": "ACTIVE"
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 14, "pages": 1 }
+}
+```
+
+#### `POST /departments/:id/reassign-and-delete`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN.
+
+Reassigns all active employees to the target department, then soft-deletes the source department. Atomic transaction.
+
+**Body:** `{ "reassignEmployeesTo": "dep_target_id" }`
+
+**Response `data`:** `{ "id": "dep_old_id", "status": "archived", "reassignedEmployees": 14 }`
+
+**Errors:**
+| Code | Status | When |
+|-------|--------|------|
+| `INVALID_TARGET` | 400 | Target doesn't exist |
+| `SAME_DEPARTMENT` | 400 | Source = target |
+
+---
+
+### Leave
+
+#### `GET /leave/team/coverage`
+
+**Roles:** MANAGER, HR_ADMIN, SUPER_ADMIN.
+
+**Query params:** `date` (YYYY-MM-DD, required), `departmentId` (optional filter).
+
+**Response `data`:**
+```json
+{
+  "date": "2026-06-15",
+  "totalTeam": 12,
+  "onLeave": 4,
+  "available": 8,
+  "coveragePercent": 67,
+  "thresholdPercent": 70,
+  "isBelowThreshold": true
+}
+```
+
+#### `POST /leave/requests/bulk/approve`
+
+**Roles:** MANAGER, HR_ADMIN.
+
+**Body:** `{ "ids": ["lr_a", "lr_b"], "comment": "Approved in bulk" }` — comment optional.
+
+**Response `data`:**
+```json
+{
+  "succeeded": ["lr_a"],
+  "failed": [{ "id": "lr_b", "code": "LEAVE_ALREADY_DECIDED", "message": "Already decided." }]
+}
+```
+
+#### `POST /leave/requests/bulk/reject`
+
+Same shape as bulk/approve.
+
+> **Note:** Legacy paths `POST /leave/requests/bulk-approve` and `POST /leave/requests/bulk-deny` remain active as aliases.
+
+---
+
+### Attendance
+
+#### `GET /attendance/team/weekly`
+
+**Roles:** MANAGER, HR_ADMIN, SUPER_ADMIN.
+
+**Query params:** `weekStart` (YYYY-MM-DD, defaults to current Mon), `departmentId` (optional).
+
+**Response `data`:**
+```json
+{
+  "weekStart": "2026-05-25",
+  "members": [
+    {
+      "employeeId": "emp_...",
+      "name": "P. Sharma",
+      "designation": "Sr Engineer",
+      "days": [
+        { "date": "2026-05-25", "code": "P" },
+        { "date": "2026-05-26", "code": "L" },
+        { "date": "2026-05-27", "code": "A" },
+        { "date": "2026-05-28", "code": "W" },
+        { "date": "2026-05-29", "code": "O" }
+      ]
+    }
+  ]
+}
+```
+
+**`code` enum:** `P` (Present) | `A` (Absent) | `L` (Leave) | `W` (WFH) | `H` (Half-day) | `O` (Holiday/weekend).
+
+---
+
+### Settings
+
+All settings endpoints use **`snake_case`** field names.
+
+#### `GET /settings/branding` · `PATCH /settings/branding`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN (PATCH). Any admin (GET).
+
+**Response / PATCH body (any subset):**
+```json
+{
+  "logo_url": "https://cdn.../logo.png",
+  "primary_color_hex": "#3b5cff"
+}
+```
+
+PATCH via `multipart/form-data` with field `logo` (image ≤ 1 MB PNG/SVG), or JSON with `logo_url`.
+
+#### `GET /settings/attendance-rules` · `PATCH /settings/attendance-rules`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN.
+
+```json
+{
+  "work_week_days": ["MON", "TUE", "WED", "THU", "FRI"],
+  "late_after": "09:30",
+  "half_day_threshold_minutes": 240,
+  "full_day_threshold_minutes": 480,
+  "regularization_window_days": 7,
+  "geo_fencing_enabled": false
+}
+```
+
+#### `GET /settings/security/auth` · `PATCH /settings/security/auth`
+
+**Roles:** SUPER_ADMIN only.
+
+```json
+{
+  "password_min_length": 12,
+  "password_require_symbol": true,
+  "password_require_number": true,
+  "session_idle_timeout_minutes": 60,
+  "mfa_policy": "OPTIONAL",
+  "sso_enabled": false
+}
+```
+
+`mfa_policy` enum: `OPTIONAL | REQUIRED_ADMINS | REQUIRED_ALL`
+
+#### `GET /settings/notifications/preferences` · `PATCH /settings/notifications/preferences`
+
+**Scope:** per-caller (not per-tenant). Each user sees/updates their own prefs.
+
+```json
+{
+  "channels": { "in_app": true, "email": true },
+  "events": {
+    "leave_approved":            ["in_app", "email"],
+    "leave_rejected":            ["in_app", "email"],
+    "leave_requested":           ["in_app"],
+    "attendance_regularization": ["in_app", "email"]
+  }
+}
+```
+
+#### `GET /settings/leave-types` · `POST /settings/leave-types` · `PATCH /settings/leave-types/:id` · `DELETE /settings/leave-types/:id`
+
+Same as the existing `/leave/types` alias. POST creates a new leave type:
+
+**POST body:**
+```json
+{
+  "name": "Bereavement",
+  "code": "BEREAVEMENT",
+  "annualAllowance": 5,
+  "carryForwardAllowed": false,
+  "isPaid": true,
+  "color": "#94a3b8"
+}
+```
+
+**Errors:** `DUPLICATE_LEAVE_TYPE_CODE` (409), `LEAVE_TYPE_IN_USE` (409 on DELETE if balances exist).
+
+#### Custom Roles
+
+##### `POST /settings/roles`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN.
+
+**Body:** `{ "name": "Recruiter", "key": "RECRUITER", "permissions": ["employees:read"] }`
+
+**Response 201:** `{ "key": "RECRUITER", "name": "Recruiter", "permissions": [...] }`
+
+**Error:** `DUPLICATE_ROLE_KEY` (409).
+
+##### `DELETE /settings/roles/:key`
+
+**Response:** `{ "key": "RECRUITER", "status": "deleted" }`
+
+**Error:** `ROLE_IN_USE` (409) if users assigned to this role.
+
+##### `POST /settings/roles/:key/users`
+
+**Body:** `{ "userIds": ["usr_a", "usr_b"] }`
+
+**Response:** `{ "assigned": ["usr_a", "usr_b"] }`
+
+---
+
+### Dashboard Analytics
+
+#### `GET /analytics/summary` — Extended with deltas
+
+Response now includes an additive `deltas` block (existing top-level fields unchanged):
+
+```json
+{
+  "totalEmployees": 80,
+  "activeToday": 62,
+  "onLeaveToday": 5,
+  "openRequests": 3,
+  "deltas": {
+    "totalEmployees": { "delta": 2, "deltaLabel": "vs last month" },
+    "activeToday":    { "deltaPercent": 3.1 },
+    "onLeaveToday":   { "delta": 1 },
+    "openRequests":   { "urgent": 0 }
+  }
+}
+```
+
+#### `GET /analytics/recent-activity` — Extended with entity labels
+
+Each activity item now includes human-readable `entity_label` and `entity_url`:
+
+```json
+{
+  "id": "audit_...",
+  "user_email": "hr@acme.test",
+  "action": "UPDATE",
+  "entity_type": "Employee",
+  "entity_id": "cmpfypq1h001eunacja7guack",
+  "entity_label": "E0001 · Aman Kumar",
+  "entity_url": "/employees/cmpfypq1h001eunacja7guack",
+  "created_at": "2026-05-22T..."
+}
+```
+
+If entity was deleted: `entity_label: "<type> (deleted)"`, `entity_url: null`.
+
+#### `GET /manager/dashboard` — Extended
+
+Added `approvalBreakdown`, `presentToday`, `avgAttendancePercent`:
+
+```json
+{
+  "managerName": "Aman Kumar",
+  "teamSize": 19,
+  "pendingApprovals": 5,
+  "approvalBreakdown": { "leave": 3, "regularization": 2 },
+  "presentToday": 11,
+  "avgAttendancePercent": 94,
+  "todayAttendance": {}
+}
+```
+
+#### `GET /employee/dashboard` — Extended
+
+Added `todayAttendance` (camelCase field names) and `leaveBalanceSummary` (top-3 active types):
+
+```json
+{
+  "employeeName": "Priya Sharma",
+  "designation": "Senior Engineer",
+  "department": "Engineering",
+  "pendingLeaves": 0,
+  "todayAttendance": {
+    "checkedInAt": "2026-05-25T09:14:00.000Z",
+    "checkedOutAt": null,
+    "workMode": "WFH",
+    "status": "PRESENT"
+  },
+  "leaveBalanceSummary": [
+    { "code": "CASUAL",  "name": "Casual", "available": 6 },
+    { "code": "SICK",    "name": "Sick",   "available": 4 },
+    { "code": "ANNUAL",  "name": "Earned", "available": 12 }
+  ]
+}
+```
+
+---
+
+## Not Yet Implemented (Deferred)
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| `POST /auth/otp/initiate` | ❌ Not built | MFA challenge initiation. Current flow: `POST /auth/verify-otp` still works for existing users with OTP challenges. |
+| `POST /holidays/import` (.ics) | ❌ Not built | Requires .ics parsing library — flagged as separate ticket. |
+| Full S3 presign flow | ⚠️ Deviated | Cloudinary doesn't support anonymous PUT presign. Our presign returns our multipart endpoint instead. |

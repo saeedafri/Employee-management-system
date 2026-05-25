@@ -38,7 +38,7 @@ export async function getDepartmentDetail(id, tenantId) {
   });
   if (!dept) return null;
 
-  const [allDepts, employees, subDeptCount, totalHeadcount, managerCount] = await Promise.all([
+  const [, employees, subDeptCount, totalHeadcount, managerCount] = await Promise.all([
     prisma.department.findMany({ where: { tenantId, deletedAt: null }, select: { id: true, parentId: true } }),
     prisma.employee.findMany({
       where: { tenantId, departmentId: id, deletedAt: null },

@@ -590,22 +590,37 @@ Note: `type` field is not accepted (no DB column).
 
 ## API Coverage Summary
 
+> **Updated 2026-05-25** — includes all UI-team requests from `BACKEND_API_REQUESTS.md`
+
 | Screen | APIs | Status |
 |--------|------|--------|
-| Login | 1 | ✅ All covered |
-| Employee Dashboard | 4 | ✅ All covered |
-| Manager Dashboard | 4 | ✅ All covered |
-| Employee List | 1 | ✅ All covered |
-| Create Employee | 4 | ✅ All covered |
-| Employee Profile | 5 | ✅ All covered |
-| Departments | 5 | ✅ All covered |
+| Login / Forgot Password | 3 | ✅ All covered |
+| Employee Dashboard | 6 | ✅ All covered (todayAttendance + leaveBalanceSummary added) |
+| Manager Dashboard | 5 | ✅ All covered (approvalBreakdown + presentToday added) |
+| Employee List | 3 | ✅ All covered (bulk deactivate + bulk export added) |
+| Create Employee | 5 | ✅ All covered (next-code + presign/confirm added) |
+| Employee Profile | 7 | ✅ All covered (documents download + delete added) |
+| Departments | 7 | ✅ All covered (dept employees + reassign-and-delete added) |
 | My Leave Requests | 5 | ✅ All covered |
-| Team Leave (Manager) | 7 | ✅ All covered |
-| Leave Types (HR Admin) | 4 | ✅ All covered |
+| Team Leave (Manager) | 9 | ✅ All covered (team/coverage + bulk approve/reject added) |
+| Leave Types (HR Admin) | 6 | ✅ All covered (POST/PATCH/DELETE leave-types via settings added) |
 | My Attendance | 7 | ✅ All covered |
-| Team Attendance | 5 | ✅ All covered |
-| Holidays | 4 | ✅ All covered |
-| Analytics | 5 | ✅ All covered |
+| Team Attendance | 7 | ✅ All covered (team/weekly grid added) |
+| Holidays | 4 | ✅ Covered (.ics import deferred — separate ticket) |
+| Analytics | 7 | ✅ All covered (deltas + entity labels added) |
+| Notifications (topbar) | 4 | ✅ All covered (GET + read + read-all) |
+| Global Search (topbar) | 1 | ✅ All covered |
 | Audit Logs | 3 | ✅ All covered |
-| Settings | 4 | ✅ All covered |
-| **Total** | **68** | **✅ 100% covered** |
+| Settings — Branding | 2 | ✅ All covered |
+| Settings — Attendance Rules | 2 | ✅ All covered |
+| Settings — Auth / Security | 2 | ✅ All covered |
+| Settings — Notification Prefs | 2 | ✅ All covered |
+| Settings — Custom Roles | 3 | ✅ All covered |
+| **Total** | **99** | **✅ 97% covered (2 deferred)** |
+
+### Deferred (not yet implemented)
+
+| Feature | Reason |
+|---------|--------|
+| `POST /auth/otp/initiate` | MFA challenge initiation — existing `/auth/verify-otp` flow still functional |
+| `POST /holidays/import` (.ics) | Requires .ics parsing — separate ticket |
