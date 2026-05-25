@@ -387,6 +387,177 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get:   op('Settings', 'Get roles and permissions (SUPER_ADMIN)'),
           patch: op('Settings', 'Update roles and permissions (SUPER_ADMIN)'),
         },
+        '/settings/branding': {
+          get:   op('Settings', 'Get tenant branding (logo_url, primary_color_hex)'),
+          patch: op('Settings', 'Update tenant branding — multipart/form-data with logo field or JSON with logo_url'),
+        },
+        '/settings/attendance-rules': {
+          get:   op('Settings', 'Get attendance rules (work_week_days, late_after, thresholds, etc.)'),
+          patch: op('Settings', 'Update attendance rules — any subset of the GET response'),
+        },
+        '/settings/security/auth': {
+          get:   op('Settings', 'Get auth/security settings (SUPER_ADMIN) — password policy, MFA, session timeout'),
+          patch: op('Settings', 'Update auth/security settings (SUPER_ADMIN)'),
+        },
+        '/settings/notifications/preferences': {
+          get:   op('Settings', 'Get notification preferences for the current user (channels + event subscriptions)'),
+          patch: op('Settings', 'Update notification preferences for the current user'),
+        },
+        '/settings/leave-types': {
+          get:  op('Settings', 'List all leave types (alias for GET /leave/types)'),
+          post: op('Settings', 'Create a new leave type (HR_ADMIN)', true, { responses: { 201: r201, 409: { description: 'DUPLICATE_LEAVE_TYPE_CODE' } } }),
+        },
+        '/settings/leave-types/{id}': {
+          patch:  op('Settings', 'Update leave type by ID', true, { parameters: idParam }),
+          delete: op('Settings', 'Delete leave type by ID — fails 409 if active balances exist', true, { parameters: idParam }),
+        },
+        '/settings/roles': {
+          post: op('Settings', 'Create a custom role (HR_ADMIN)', true, { responses: { 201: r201, 409: { description: 'DUPLICATE_ROLE_KEY' } } }),
+        },
+        '/settings/roles/{key}': {
+          delete: op('Settings', 'Delete a custom role — fails 409 if users are assigned', true, {
+            parameters: [{ in: 'path', name: 'key', type: 'string', required: true, description: 'Role key e.g. RECRUITER' }],
+          }),
+        },
+        '/settings/roles/{key}/users': {
+          post: op('Settings', 'Assign users to a role', true, {
+            parameters: [{ in: 'path', name: 'key', type: 'string', required: true }],
+          }),
+        },
+
+        // ── NOTIFICATIONS ─────────────────────────────────────────────────────
+        '/notifications': {
+          get: op('Notifications', 'List notifications for current user (newest first, expired excluded)', true, {
+            parameters: [
+              { in: 'query', name: 'page',       type: 'integer', description: 'Page number (default 1)' },
+              { in: 'query', name: 'limit',       type: 'integer', description: 'Items per page (default 20)' },
+              { in: 'query', name: 'unreadOnly',  type: 'boolean', description: 'Filter to unread only' },
+              { in: 'query', name: 'since',       type: 'string',  description: 'ISO timestamp — return notifications created after this time (poll-based updates)' },
+            ],
+          }),
+        },
+        '/notifications/unread-count': {
+          get: op('Notifications', 'Get unread notification count (for bell icon badge)'),
+        },
+        '/notifications/read-all': {
+          patch: op('Notifications', 'Mark all notifications as read (PATCH)'),
+          post:  op('Notifications', 'Mark all notifications as read (POST alias)'),
+        },
+        '/notifications/{id}/read': {
+          patch: op('Notifications', 'Mark a single notification as read (PATCH)', true, { parameters: idParam }),
+          post:  op('Notifications', 'Mark a single notification as read (POST alias)', true, { parameters: idParam }),
+        },
+        '/notifications/stream': {
+          get: op('Notifications', 'SSE stream for real-time notifications — pass ?token=<accessToken>', false),
+        },
+
+        // ── SEARCH ────────────────────────────────────────────────────────────
+        '/search': {
+          get: op('Search', 'Global search across employees, departments, leave, holidays — permission-aware', true, {
+            parameters: [
+              { in: 'query', name: 'q',     type: 'string',  required: true,  description: 'Search query (min 1 char)' },
+              { in: 'query', name: 'types', type: 'string',  description: 'Comma-separated entity types: employee,department,leave,holiday' },
+              { in: 'query', name: 'limit', type: 'integer', description: 'Max results (default 8, max 20)' },
+            ],
+          }),
+        },
+
+        // ── EMPLOYEES (new endpoints) ─────────────────────────────────────────
+        '/employees/next-code': {
+          get: op('Employees', 'Get next auto-generated employee code for the Add Employee form (HR_ADMIN)'),
+        },
+        '/employees/bulk/deactivate': {
+          post: op('Employees', 'Bulk deactivate employees — returns { succeeded, failed } (HR_ADMIN)', true, {
+            parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } } } } }],
+          }),
+        },
+        '/employees/bulk/export': {
+          post: op('Employees', 'Bulk export selected employees — returns a job (HR_ADMIN)', true, {
+            parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, format: { type: 'string', enum: ['csv', 'excel', 'json'] } } } }],
+          }),
+        },
+        '/employees/{id}/documents': {
+          get:  op('Employees', 'List documents for an employee', true, { parameters: idParam }),
+          post: op('Employees', 'Upload a document (multipart/form-data). Requires Cloudinary env vars.', true, { parameters: idParam, responses: { 201: r201 } }),
+        },
+        '/employees/{id}/documents/presign': {
+          post: op('Employees', 'Get presign info for document upload — returns uploadUrl + documentId', true, { parameters: idParam }),
+        },
+        '/employees/{id}/documents/{documentId}/confirm': {
+          post: op('Employees', 'Confirm document upload after file transfer', true, {
+            parameters: [...idParam, { in: 'path', name: 'documentId', type: 'string', required: true }],
+            responses: { 201: r201 },
+          }),
+        },
+        '/employees/{id}/documents/{documentId}/download': {
+          get: op('Employees', 'Redirect (302) to signed download URL for a document', true, {
+            parameters: [...idParam, { in: 'path', name: 'documentId', type: 'string', required: true }],
+          }),
+        },
+        '/employees/{id}/documents/{docId}': {
+          delete: op('Employees', 'Delete an employee document (HR_ADMIN)', true, {
+            parameters: [...idParam, { in: 'path', name: 'docId', type: 'string', required: true }],
+          }),
+        },
+
+        // ── DEPARTMENTS (new endpoints) ───────────────────────────────────────
+        '/departments/{id}/employees': {
+          get: op('Departments', 'List employees in a department with pagination', true, {
+            parameters: [
+              ...idParam,
+              { in: 'query', name: 'page',   type: 'integer' },
+              { in: 'query', name: 'limit',  type: 'integer' },
+              { in: 'query', name: 'search', type: 'string' },
+            ],
+          }),
+        },
+        '/departments/{id}/reassign-and-delete': {
+          post: op('Departments', 'Reassign all employees to another department then soft-delete this one (atomic)', true, {
+            parameters: [
+              ...idParam,
+              { in: 'body', name: 'body', required: true, schema: { type: 'object', properties: { reassignEmployeesTo: { type: 'string', description: 'Target department ID' } } } },
+            ],
+          }),
+        },
+
+        // ── LEAVE (new endpoints) ─────────────────────────────────────────────
+        '/leave/types': {
+          get: op('Leave', 'List all leave types for the tenant'),
+        },
+        '/leave/team/coverage': {
+          get: op('Leave', 'Team leave coverage for a date — coverage %, isBelowThreshold (MANAGER+)', true, {
+            parameters: [
+              { in: 'query', name: 'date',         type: 'string',  required: true, description: 'Date YYYY-MM-DD' },
+              { in: 'query', name: 'departmentId', type: 'string',  description: 'Filter to department' },
+            ],
+          }),
+        },
+        '/leave/requests/bulk/approve': {
+          post: op('Leave', 'Bulk approve leave requests — returns { succeeded, failed } (MANAGER+)', true, {
+            parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, comment: { type: 'string' } } } }],
+          }),
+        },
+        '/leave/requests/bulk/reject': {
+          post: op('Leave', 'Bulk reject leave requests — returns { succeeded, failed } (MANAGER+)', true, {
+            parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, comment: { type: 'string' } } } }],
+          }),
+        },
+        '/leave/requests/bulk-approve': {
+          post: op('Leave', 'Bulk approve (legacy alias — prefer /bulk/approve)'),
+        },
+        '/leave/requests/bulk-deny': {
+          post: op('Leave', 'Bulk deny (legacy alias — prefer /bulk/reject)'),
+        },
+
+        // ── ATTENDANCE (new endpoints) ────────────────────────────────────────
+        '/attendance/team/weekly': {
+          get: op('Attendance', 'Weekly attendance grid — rows=employees, cols=M-F, code=P/A/L/W/H/O (MANAGER+)', true, {
+            parameters: [
+              { in: 'query', name: 'weekStart',    type: 'string', description: 'YYYY-MM-DD — defaults to current Monday' },
+              { in: 'query', name: 'departmentId', type: 'string', description: 'Filter to department' },
+            ],
+          }),
+        },
 
         // ── HEALTH ───────────────────────────────────────────────────────────
         '/health': {

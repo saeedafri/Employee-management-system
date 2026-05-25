@@ -75,9 +75,9 @@ export async function resolveTenant(request, reply) {
   // Layer 2: Explicit header key
   const tenantKey = !slug ? (request.headers['x-tenant-key'] || null) : null;
 
-  // Layer 3: JWT payload tenantId — from Authorization header OR accessToken cookie
+  // Layer 3: JWT payload tenantId — from Authorization header, accessToken cookie, or ?token= query param (SSE)
   const tenantId = (!slug && !tenantKey)
-    ? (tenantIdFromAuthHeader(request.headers.authorization) || tenantIdFromJwt(request.cookies?.accessToken))
+    ? (tenantIdFromAuthHeader(request.headers.authorization) || tenantIdFromJwt(request.cookies?.accessToken) || tenantIdFromJwt(request.query?.token))
     : null;
 
   // Layer 4: Default key from env
