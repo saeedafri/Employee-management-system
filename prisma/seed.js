@@ -191,10 +191,10 @@ async function main() {
   const [engineeringDept, , hrDept] = depts;
   console.log(`✅ Departments: ${depts.length}`);
 
-  // Upsert core Employees
+  // Upsert core Employees — update userId so re-runs re-link correctly
   const managerEmployee = await prisma.employee.upsert({
     where: { tenantId_employeeCode: { tenantId: tenant.id, employeeCode: 'E0001' } },
-    update: {},
+    update: { userId: managerUser.id },
     create: {
       tenantId: tenant.id, userId: managerUser.id, employeeCode: 'E0001',
       firstName: 'Aman', lastName: 'Kumar', workEmail: 'aman@acme.test',
@@ -210,7 +210,7 @@ async function main() {
 
   const employeeEmployee = await prisma.employee.upsert({
     where: { tenantId_employeeCode: { tenantId: tenant.id, employeeCode: 'E0002' } },
-    update: {},
+    update: { userId: employeeUser.id },
     create: {
       tenantId: tenant.id, userId: employeeUser.id, employeeCode: 'E0002',
       firstName: 'Priya', lastName: 'Sharma', workEmail: 'priya@acme.test',
@@ -226,7 +226,7 @@ async function main() {
 
   const hrEmployee = await prisma.employee.upsert({
     where: { tenantId_employeeCode: { tenantId: tenant.id, employeeCode: 'E0003' } },
-    update: {},
+    update: { userId: hrAdminUser.id },
     create: {
       tenantId: tenant.id, userId: hrAdminUser.id, employeeCode: 'E0003',
       firstName: 'HR', lastName: 'Admin', workEmail: 'hr@acme.test',
@@ -237,6 +237,11 @@ async function main() {
       createdBy: superAdminUser.id,
     },
   });
+
+  // Clear any stale employeeId links before re-assigning (makes seed idempotent across user changes)
+  await prisma.user.updateMany({ where: { employeeId: managerEmployee.id, NOT: { id: managerUser.id } }, data: { employeeId: null } });
+  await prisma.user.updateMany({ where: { employeeId: employeeEmployee.id, NOT: { id: employeeUser.id } }, data: { employeeId: null } });
+  await prisma.user.updateMany({ where: { employeeId: hrEmployee.id, NOT: { id: hrAdminUser.id } }, data: { employeeId: null } });
 
   // Link employeeId back to user
   await prisma.user.update({ where: { id: managerUser.id }, data: { employeeId: managerEmployee.id } });
