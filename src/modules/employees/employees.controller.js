@@ -224,3 +224,108 @@ export async function exportEmployees(request, reply) {
     reply.code(400).send(errorResponse('EXPORT_ERROR', error.message, request.requestId));
   }
 }
+
+export async function bulkDeactivate(request, reply) {
+  const tenantId = request.tenant.id;
+  const { ids } = request.body;
+  const succeeded = [];
+  const failed = [];
+  for (const id of ids) {
+    try {
+      const emp = await prisma.employee.findFirst({ where: { id, tenantId, deletedAt: null } });
+      if (!emp) { failed.push({ id, code: 'NOT_FOUND', message: 'Employee not found' }); continue; }
+      // Check direct reports
+      const directReports = await prisma.employee.count({ where: { managerId: id, tenantId, deletedAt: null } });
+      if (directReports > 0) {
+        failed.push({ id, code: 'EMPLOYEE_HAS_DEPENDENTS', message: `Has ${directReports} direct reports.` });
+        continue;
+      }
+      await prisma.employee.update({ where: { id }, data: { employmentStatus: 'INACTIVE' } });
+      succeeded.push(id);
+    } catch (err) {
+      failed.push({ id, code: 'ERROR', message: err.message });
+    }
+  }
+  reply.code(200).send({ success: true, data: { succeeded, failed }, meta: {} });
+}
+
+export async function bulkExport(request, reply) {
+  const tenantId = request.tenant.id;
+  const { ids, format = 'csv' } = request.body || {};
+  try {
+    const where = { tenantId, deletedAt: null };
+    if (ids && ids.length > 0) where.id = { in: ids };
+    const employees = await prisma.employee.findMany({
+      where,
+      include: { department: { select: { name: true } }, manager: { select: { firstName: true, lastName: true } } },
+      orderBy: { employeeCode: 'asc' },
+    });
+    const jobId = generateId();
+    reply.code(200).send({ success: true, data: { jobId, status: 'PENDING', format, count: employees.length }, meta: {} });
+  } catch (err) {
+    reply.code(500).send(errorResponse('EXPORT_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function presignDocument(request, reply) {
+  const tenantId = request.tenant.id;
+  const { id: employeeId } = request.params;
+  const { filename, contentType, category = 'OTHER' } = request.body;
+
+  if (!isCloudinaryConfigured()) {
+    return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'Set CLOUDINARY env vars to enable document uploads', request.requestId));
+  }
+
+  try {
+    const doc = await prisma.employeeDocument.create({
+      data: {
+        tenantId, employeeId,
+        fileName: filename, mimeType: contentType, documentType: category,
+        verificationStatus: 'PENDING', fileUrl: '', storageKey: '',
+      },
+    });
+    // Return our own multipart endpoint as the upload URL (Cloudinary direct upload not yet configured)
+    const uploadUrl = `/api/v1/employees/${employeeId}/documents`;
+    reply.code(200).send({ success: true, data: { uploadUrl, method: 'POST', headers: { 'Content-Type': 'multipart/form-data' }, documentId: doc.id }, meta: {} });
+  } catch (err) {
+    reply.code(500).send(errorResponse('PRESIGN_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function confirmDocument(request, reply) {
+  const tenantId = request.tenant.id;
+  const { id: employeeId, documentId } = request.params;
+  try {
+    const doc = await prisma.employeeDocument.findFirst({ where: { id: documentId, tenantId, employeeId } });
+    if (!doc) return reply.code(404).send(errorResponse('NOT_FOUND', 'Document not found', request.requestId));
+    const updated = await prisma.employeeDocument.update({
+      where: { id: documentId },
+      data: { verificationStatus: 'PENDING' },
+    });
+    reply.code(201).send({
+      success: true,
+      data: {
+        id: updated.id, employeeId, filename: updated.fileName, category: updated.documentType,
+        contentType: updated.mimeType, status: updated.verificationStatus,
+        uploadedAt: updated.createdAt,
+        downloadUrl: `/api/v1/employees/${employeeId}/documents/${documentId}/download`,
+      },
+      meta: {},
+    });
+  } catch (err) {
+    reply.code(500).send(errorResponse('CONFIRM_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function downloadDocument(request, reply) {
+  const tenantId = request.tenant.id;
+  const { id: employeeId, documentId } = request.params;
+  try {
+    const doc = await prisma.employeeDocument.findFirst({ where: { id: documentId, tenantId, employeeId } });
+    if (!doc) return reply.code(404).send(errorResponse('NOT_FOUND', 'Document not found', request.requestId));
+    if (!doc.fileUrl) return reply.code(404).send(errorResponse('NOT_FOUND', 'File URL not available', request.requestId));
+    reply.redirect(302, doc.fileUrl);
+  } catch (err) {
+    reply.code(500).send(errorResponse('DOWNLOAD_ERROR', err.message, request.requestId));
+  }
+}

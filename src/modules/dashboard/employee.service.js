@@ -27,14 +27,17 @@ export async function getEmployeeDashboard(employeeId, tenantId) {
       },
     });
 
-    // Get pending leave requests count
-    const pendingLeaves = await prisma.leaveRequest.count({
-      where: {
-        employeeId,
-        tenantId,
-        status: 'PENDING',
-      },
-    });
+    // Get pending leave requests count + leave balances in parallel
+    const [pendingLeaves, leaveBalances] = await Promise.all([
+      prisma.leaveRequest.count({
+        where: { employeeId, tenantId, status: 'PENDING' },
+      }),
+      prisma.leaveBalance.findMany({
+        where: { employeeId, tenantId },
+        include: { leaveType: { select: { name: true, code: true, isActive: true } } },
+        orderBy: { leaveType: { annualAllowance: 'desc' } },
+      }),
+    ]);
 
     // Get upcoming leave
     const upcomingLeave = await prisma.leaveRequest.findFirst({
@@ -48,16 +51,27 @@ export async function getEmployeeDashboard(employeeId, tenantId) {
       orderBy: { startDate: 'asc' },
     });
 
+    const leaveBalanceSummary = leaveBalances
+      .filter(b => b.leaveType.isActive !== false)
+      .slice(0, 3)
+      .map(b => ({
+        code: b.leaveType.code,
+        name: b.leaveType.name,
+        available: b.balance - b.used,
+      }));
+
     return successResponse({
       employeeName: `${employee.firstName} ${employee.lastName}`,
       designation: employee.designation,
       department: employee.department?.name,
       todayAttendance: todayAttendance ? {
+        checkedInAt: todayAttendance.checkInAt,
+        checkedOutAt: todayAttendance.checkOutAt,
+        workMode: todayAttendance.workMode || null,
         status: todayAttendance.status,
-        checkInAt: todayAttendance.checkInAt,
-        checkOutAt: todayAttendance.checkOutAt,
       } : null,
       pendingLeaves,
+      leaveBalanceSummary,
       upcomingLeave: upcomingLeave ? {
         leaveType: upcomingLeave.leaveType.name,
         startDate: upcomingLeave.startDate,

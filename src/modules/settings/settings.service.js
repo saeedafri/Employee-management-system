@@ -109,3 +109,15 @@ export async function updateRolePermissions(tenantId, roleKey, permissions) {
     throw error;
   }
 }
+
+export async function getBranding(tenantId) { return settingsRepository.getBranding(tenantId); }
+export async function updateBranding(tenantId, data) { return settingsRepository.updateBranding(tenantId, data); }
+export async function getAttendanceRules(tenantId) { return settingsRepository.getAttendanceRules(tenantId); }
+export async function updateAttendanceRules(tenantId, data) { return settingsRepository.updateAttendanceRules(tenantId, data); }
+export async function getAuthSettings(tenantId) { return settingsRepository.getAuthSettings(tenantId); }
+export async function updateAuthSettings(tenantId, data) { return settingsRepository.updateAuthSettings(tenantId, data); }
+export async function getNotificationPreferences(tenantId, userId) { return settingsRepository.getNotificationPreferences(tenantId, userId); }
+export async function updateNotificationPreferences(tenantId, userId, data) { return settingsRepository.updateNotificationPreferences(tenantId, userId, data); }
+export async function createRole(tenantId, data) { return settingsRepository.createRole(tenantId, data); }
+export async function deleteRole(tenantId, key) { return settingsRepository.deleteRole(tenantId, key); }
+export async function assignUsersToRole(tenantId, key, userIds) { return settingsRepository.assignUsersToRole(tenantId, key, userIds); }

@@ -6,10 +6,12 @@ export async function listNotifications(request, reply) {
   const { sub: userId } = request.user;
   const { page, limit, unreadOnly } = request.query;
 
+  const { since } = request.query;
   const result = await service.listNotifications(tenantId, userId, {
     page: page ? parseInt(page, 10) : 1,
     limit: limit ? parseInt(limit, 10) : 20,
     unreadOnly: unreadOnly === 'true' || unreadOnly === true,
+    since: since || null,
   });
 
   return reply.send(successResponse(result));

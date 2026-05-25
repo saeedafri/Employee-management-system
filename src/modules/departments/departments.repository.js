@@ -139,3 +139,44 @@ export async function hasSubdepartments(deptId, tenantId) {
   });
   return count > 0;
 }
+
+export async function reassignAndDelete(id, tenantId, targetDeptId) {
+  const [reassigned] = await prisma.$transaction([
+    prisma.employee.updateMany({
+      where: { departmentId: id, tenantId, deletedAt: null },
+      data: { departmentId: targetDeptId },
+    }),
+    prisma.department.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    }),
+  ]);
+  return { reassigned: reassigned.count };
+}
+
+export async function getDepartmentEmployees(deptId, tenantId, page = 1, limit = 20, search) {
+  const skip = (page - 1) * limit;
+  const where = { tenantId, departmentId: deptId, deletedAt: null };
+  if (search) {
+    where.OR = [
+      { firstName: { contains: search, mode: 'insensitive' } },
+      { lastName: { contains: search, mode: 'insensitive' } },
+      { employeeCode: { contains: search, mode: 'insensitive' } },
+    ];
+  }
+  const [data, total] = await Promise.all([
+    prisma.employee.findMany({
+      where,
+      select: {
+        id: true, employeeCode: true, firstName: true, lastName: true,
+        designation: true, employmentStatus: true, joinedOn: true,
+        user: { select: { email: true } },
+      },
+      orderBy: { employeeCode: 'asc' },
+      skip,
+      take: limit,
+    }),
+    prisma.employee.count({ where }),
+  ]);
+  return { data, pagination: { page, limit, total, pages: Math.ceil(total / limit) } };
+}

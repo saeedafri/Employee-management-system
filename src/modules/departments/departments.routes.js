@@ -5,6 +5,8 @@ import {
   createDepartment,
   updateDepartment,
   deleteDepartment,
+  reassignAndDelete,
+  getDepartmentEmployees,
 } from './departments.controller.js';
 
 export default async function departmentsRoutes(fastify) {
@@ -114,5 +116,44 @@ export default async function departmentsRoutes(fastify) {
       },
     },
     deleteDepartment,
+  );
+
+  fastify.post(
+    '/departments/:id/reassign-and-delete',
+    {
+      schema: {
+        tags: ['Departments'],
+        description: 'Reassign all employees to another department, then archive this one',
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        body: {
+          type: 'object',
+          required: ['reassignEmployeesTo'],
+          properties: { reassignEmployeesTo: { type: 'string' } },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    reassignAndDelete,
+  );
+
+  fastify.get(
+    '/departments/:id/employees',
+    {
+      schema: {
+        tags: ['Departments'],
+        description: 'List employees in a department (paginated)',
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        querystring: {
+          type: 'object',
+          properties: {
+            page: { type: 'integer', default: 1 },
+            limit: { type: 'integer', default: 20 },
+            search: { type: 'string' },
+          },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    getDepartmentEmployees,
   );
 }

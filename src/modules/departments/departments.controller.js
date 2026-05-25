@@ -82,3 +82,31 @@ export async function deleteDepartment(request, reply) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
   }
 }
+
+export async function reassignAndDelete(request, reply) {
+  const { user } = request; const tenantId = request.tenant.id;
+  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', request.requestId));
+  }
+  try {
+    const { id } = request.params;
+    const { reassignEmployeesTo } = request.body;
+    if (!reassignEmployeesTo) return reply.code(400).send(errorResponse('VALIDATION_ERROR', 'reassignEmployeesTo is required', request.requestId));
+    const result = await service.reassignAndDeleteDepartment(id, tenantId, reassignEmployeesTo);
+    reply.code(result.error ? 400 : 200).send(result);
+  } catch (error) {
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+  }
+}
+
+export async function getDepartmentEmployees(request, reply) {
+  const tenantId = request.tenant.id;
+  try {
+    const { id } = request.params;
+    const { page = 1, limit = 20, search } = request.query;
+    const result = await service.getDepartmentEmployees(id, tenantId, parseInt(page, 10), parseInt(limit, 10), search);
+    reply.code(result.error ? 404 : 200).send(result);
+  } catch (error) {
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+  }
+}

@@ -394,3 +394,38 @@ export async function getLeaveRequestsByDate(tenantId, startDate, endDate) {
     },
   });
 }
+
+export async function getTeamCoverage(tenantId, date, departmentId) {
+  const dateObj = new Date(date);
+  dateObj.setHours(0, 0, 0, 0);
+
+  const employeeWhere = { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' };
+  if (departmentId) employeeWhere.departmentId = departmentId;
+
+  const [totalTeam, onLeaveCount] = await Promise.all([
+    prisma.employee.count({ where: employeeWhere }),
+    prisma.leaveRequest.count({
+      where: {
+        tenantId,
+        status: 'APPROVED',
+        startDate: { lte: dateObj },
+        endDate: { gte: dateObj },
+        ...(departmentId ? { employee: { departmentId } } : {}),
+      },
+    }),
+  ]);
+
+  const available = totalTeam - onLeaveCount;
+  const coveragePercent = totalTeam > 0 ? Math.round((available / totalTeam) * 100) : 100;
+  const thresholdPercent = 70;
+
+  return {
+    date,
+    totalTeam,
+    onLeave: onLeaveCount,
+    available,
+    coveragePercent,
+    thresholdPercent,
+    isBelowThreshold: coveragePercent < thresholdPercent,
+  };
+}

@@ -2,11 +2,12 @@ import { prisma } from '../../plugins/prisma.js';
 
 const ACTIVE_FILTER = { OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] };
 
-export async function getNotifications(tenantId, userId, { limit = 20, offset = 0, unreadOnly = false }) {
+export async function getNotifications(tenantId, userId, { limit = 20, offset = 0, unreadOnly = false, since = null }) {
   const where = { tenantId, userId, ...ACTIVE_FILTER };
   if (unreadOnly) where.readAt = null;
+  if (since) where.createdAt = { gt: new Date(since) };
 
-  const [notifications, total] = await Promise.all([
+  const [notifications, total, unreadCount] = await Promise.all([
     prisma.notification.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -24,9 +25,10 @@ export async function getNotifications(tenantId, userId, { limit = 20, offset = 
       },
     }),
     prisma.notification.count({ where }),
+    prisma.notification.count({ where: { tenantId, userId, readAt: null, ...ACTIVE_FILTER } }),
   ]);
 
-  return { notifications, total };
+  return { notifications, total, unreadCount };
 }
 
 export async function getUnreadCount(tenantId, userId) {
@@ -47,10 +49,11 @@ export async function markRead(tenantId, userId, notificationId) {
 }
 
 export async function markAllRead(tenantId, userId) {
-  return prisma.notification.updateMany({
+  const result = await prisma.notification.updateMany({
     where: { tenantId, userId, readAt: null },
     data: { readAt: new Date() },
   });
+  return result.count;
 }
 
 export async function deleteExpired() {

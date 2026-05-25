@@ -131,3 +131,23 @@ export async function updateRolePermissions(request, reply) {
     throw error;
   }
 }
+const wrap = (fn) => async (req, rep) => {
+  try { return rep.send(successResponse(await fn(req, rep))); }
+  catch (e) { return rep.status(e.statusCode || 500).send(errorResponse(e.code || 'ERROR', e.message, {}, req.id)); }
+};
+
+export const getBranding = wrap(async (req) => settingsService.getBranding(req.tenant.id));
+export const updateBranding = wrap(async (req) => settingsService.updateBranding(req.tenant.id, req.body));
+export const getAttendanceRules = wrap(async (req) => settingsService.getAttendanceRules(req.tenant.id));
+export const updateAttendanceRules = wrap(async (req) => settingsService.updateAttendanceRules(req.tenant.id, req.body));
+export const getAuthSettings = wrap(async (req) => settingsService.getAuthSettings(req.tenant.id));
+export const updateAuthSettings = wrap(async (req) => settingsService.updateAuthSettings(req.tenant.id, req.body));
+export const getNotificationPreferences = wrap(async (req) => settingsService.getNotificationPreferences(req.tenant.id, req.user.sub));
+export const updateNotificationPreferences = wrap(async (req) => settingsService.updateNotificationPreferences(req.tenant.id, req.user.sub, req.body));
+export const getLeaveTypes = wrap(async (req) => { const { getLeaveTypes: fn } = await import('../leave/leave.service.js'); return fn(req.tenant.id); });
+export const createLeaveType = wrap(async (req) => { const { createLeaveType: fn } = await import('../leave/leave.service.js'); return fn(req.tenant.id, req.body); });
+export const updateLeaveType = wrap(async (req) => { const { updateLeaveType: fn } = await import('../leave/leave.service.js'); return fn(req.tenant.id, req.params.id, req.body); });
+export const deleteLeaveType = wrap(async (req, rep) => { const { deleteLeaveType: fn } = await import('../leave/leave.service.js'); const r = await fn(req.tenant.id, req.params.id); rep.code(200); return r; });
+export const createRole = wrap(async (req, rep) => { rep.code(201); return settingsService.createRole(req.tenant.id, req.body); });
+export const deleteRole = wrap(async (req) => settingsService.deleteRole(req.tenant.id, req.params.key));
+export const assignUsersToRole = wrap(async (req) => settingsService.assignUsersToRole(req.tenant.id, req.params.key, req.body.userIds));

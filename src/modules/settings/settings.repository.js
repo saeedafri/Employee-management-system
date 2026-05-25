@@ -187,3 +187,118 @@ export async function updateRolePermissions(tenantId, roleKey, permissions) {
 
   return role;
 }
+
+async function getSetting(tenantId, groupKey, settingKey, defaultVal) {
+  const row = await prisma.setting.findUnique({ where: { tenantId_groupKey_settingKey: { tenantId, groupKey, settingKey } } });
+  return row ? row.valueJson : defaultVal;
+}
+
+async function upsertSetting(tenantId, groupKey, settingKey, value) {
+  return prisma.setting.upsert({
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey, settingKey } },
+    update: { valueJson: value },
+    create: { tenantId, groupKey, settingKey, valueJson: value },
+  });
+}
+
+export async function getBranding(tenantId) {
+  const tenant = await prisma.tenant.findUnique({ where: { id: tenantId }, select: { logoUrl: true } });
+  const extra = await getSetting(tenantId, 'branding', 'colors', { primary_color_hex: '#3b5cff' });
+  return { logo_url: tenant?.logoUrl || null, primary_color_hex: extra?.primary_color_hex || '#3b5cff' };
+}
+
+export async function updateBranding(tenantId, data) {
+  if (data.logo_url !== undefined) await prisma.tenant.update({ where: { id: tenantId }, data: { logoUrl: data.logo_url } });
+  if (data.primary_color_hex) await upsertSetting(tenantId, 'branding', 'colors', { primary_color_hex: data.primary_color_hex });
+  return getBranding(tenantId);
+}
+
+const DEFAULT_ATTENDANCE_RULES = {
+  work_week_days: ['MON', 'TUE', 'WED', 'THU', 'FRI'],
+  late_after: '09:30',
+  half_day_threshold_minutes: 240,
+  full_day_threshold_minutes: 480,
+  regularization_window_days: 7,
+  geo_fencing_enabled: false,
+};
+
+export async function getAttendanceRules(tenantId) {
+  const val = await getSetting(tenantId, 'attendance', 'rules', DEFAULT_ATTENDANCE_RULES);
+  return { ...DEFAULT_ATTENDANCE_RULES, ...val };
+}
+
+export async function updateAttendanceRules(tenantId, data) {
+  const current = await getAttendanceRules(tenantId);
+  const updated = { ...current, ...data };
+  await upsertSetting(tenantId, 'attendance', 'rules', updated);
+  return updated;
+}
+
+const DEFAULT_AUTH_SETTINGS = {
+  password_min_length: 8,
+  password_require_symbol: false,
+  password_require_number: true,
+  session_idle_timeout_minutes: 60,
+  mfa_policy: 'OPTIONAL',
+  sso_enabled: false,
+};
+
+export async function getAuthSettings(tenantId) {
+  const val = await getSetting(tenantId, 'security', 'auth', DEFAULT_AUTH_SETTINGS);
+  return { ...DEFAULT_AUTH_SETTINGS, ...val };
+}
+
+export async function updateAuthSettings(tenantId, data) {
+  const current = await getAuthSettings(tenantId);
+  const updated = { ...current, ...data };
+  await upsertSetting(tenantId, 'security', 'auth', updated);
+  return updated;
+}
+
+const DEFAULT_NOTIFICATION_PREFS = {
+  channels: { in_app: true, email: true },
+  events: {
+    leave_approved: ['in_app', 'email'],
+    leave_rejected: ['in_app', 'email'],
+    leave_requested: ['in_app'],
+    attendance_regularization: ['in_app', 'email'],
+  },
+};
+
+export async function getNotificationPreferences(tenantId, userId) {
+  const val = await prisma.setting.findUnique({ where: { tenantId_groupKey_settingKey: { tenantId, groupKey: `notifications_user_${userId}`, settingKey: 'preferences' } } });
+  return val ? { ...DEFAULT_NOTIFICATION_PREFS, ...val.valueJson } : DEFAULT_NOTIFICATION_PREFS;
+}
+
+export async function updateNotificationPreferences(tenantId, userId, data) {
+  const current = await getNotificationPreferences(tenantId, userId);
+  const updated = { ...current, ...data };
+  await prisma.setting.upsert({
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: `notifications_user_${userId}`, settingKey: 'preferences' } },
+    update: { valueJson: updated },
+    create: { tenantId, groupKey: `notifications_user_${userId}`, settingKey: 'preferences', valueJson: updated },
+  });
+  return updated;
+}
+
+export async function createRole(tenantId, data) {
+  const existing = await prisma.role.findFirst({ where: { key: data.key, tenantId } });
+  if (existing) throw Object.assign(new Error('Role key already exists'), { code: 'DUPLICATE_ROLE_KEY', statusCode: 409 });
+  return prisma.role.create({ data: { tenantId, key: data.key, name: data.name, isSystem: false } });
+}
+
+export async function deleteRole(tenantId, key) {
+  const role = await prisma.role.findFirst({ where: { key, tenantId } });
+  if (!role) throw Object.assign(new Error('Role not found'), { code: 'NOT_FOUND', statusCode: 404 });
+  const inUse = await prisma.userRole.count({ where: { roleId: role.id } });
+  if (inUse > 0) throw Object.assign(new Error('Role is in use'), { code: 'ROLE_IN_USE', statusCode: 409 });
+  await prisma.role.delete({ where: { id: role.id } });
+  return { key, status: 'deleted' };
+}
+
+export async function assignUsersToRole(tenantId, key, userIds) {
+  const role = await prisma.role.findFirst({ where: { key, tenantId } });
+  if (!role) throw Object.assign(new Error('Role not found'), { code: 'NOT_FOUND', statusCode: 404 });
+  await prisma.userRole.createMany({ data: userIds.map(uid => ({ userId: uid, roleId: role.id })), skipDuplicates: true });
+  return { assigned: userIds };
+}

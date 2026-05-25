@@ -9,6 +9,11 @@ import {
   uploadDocument,
   listDocuments,
   deleteDocument,
+  bulkDeactivate,
+  bulkExport,
+  presignDocument,
+  confirmDocument,
+  downloadDocument,
 } from './employees.controller.js';
 
 export async function employeesRoutes(fastify) {
@@ -234,5 +239,95 @@ export async function employeesRoutes(fastify) {
       },
     },
     exportEmployees,
+  );
+
+  // ── Bulk operations ──────────────────────────────────────────────────────────
+
+  fastify.post(
+    '/employees/bulk/deactivate',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Bulk deactivate employees (HR_ADMIN only)',
+        body: {
+          type: 'object',
+          required: ['ids'],
+          properties: { ids: { type: 'array', items: { type: 'string' }, minItems: 1 } },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    },
+    bulkDeactivate,
+  );
+
+  fastify.post(
+    '/employees/bulk/export',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Bulk export selected employees (HR_ADMIN only)',
+        body: {
+          type: 'object',
+          properties: {
+            ids: { type: 'array', items: { type: 'string' } },
+            format: { type: 'string', enum: ['csv', 'excel', 'json'], default: 'csv' },
+          },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    },
+    bulkExport,
+  );
+
+  // ── Document presign / confirm / download ────────────────────────────────────
+
+  fastify.post(
+    '/employees/:id/documents/presign',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Get a pre-signed upload URL for a document (Cloudinary-based)',
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        body: {
+          type: 'object',
+          required: ['filename', 'contentType'],
+          properties: {
+            filename: { type: 'string' },
+            contentType: { type: 'string' },
+            size: { type: 'integer' },
+            category: { type: 'string', enum: ['OFFER_LETTER', 'AADHAAR', 'PAN', 'BANK', 'CONTRACT', 'OTHER'], default: 'OTHER' },
+          },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    presignDocument,
+  );
+
+  fastify.post(
+    '/employees/:id/documents/:documentId/confirm',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Confirm a document upload after PUT to storage URL',
+        params: { type: 'object', required: ['id', 'documentId'], properties: { id: { type: 'string' }, documentId: { type: 'string' } } },
+        response: { 201: { type: 'object', additionalProperties: true } },
+      },
+    },
+    confirmDocument,
+  );
+
+  fastify.get(
+    '/employees/:id/documents/:documentId/download',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Redirect to a temporary signed download URL for a document',
+        params: { type: 'object', required: ['id', 'documentId'], properties: { id: { type: 'string' }, documentId: { type: 'string' } } },
+      },
+    },
+    downloadDocument,
   );
 }

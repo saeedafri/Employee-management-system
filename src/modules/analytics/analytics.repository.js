@@ -35,38 +35,45 @@ export async function getSummaryData(tenantId) {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const [totalEmployees, activeToday, onLeaveToday, pendingLeaves, pendingRegularizations] = await Promise.all([
-    prisma.employee.count({
-      where: { tenantId, deletedAt: null },
-    }),
+  // Last month boundaries for deltas
+  const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+  const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999);
+
+  const [
+    totalEmployees, activeToday, onLeaveToday, pendingLeaves, pendingRegularizations,
+    lastMonthEmployees, lastMonthOnLeave,
+  ] = await Promise.all([
+    prisma.employee.count({ where: { tenantId, deletedAt: null } }),
     prisma.attendanceRecord.count({
-      where: {
-        tenantId,
-        attendanceDate: { gte: today, lt: tomorrow },
-        status: 'PRESENT',
-      },
+      where: { tenantId, attendanceDate: { gte: today, lt: tomorrow }, status: 'PRESENT' },
     }),
     prisma.leaveRequest.count({
-      where: {
-        tenantId,
-        status: 'APPROVED',
-        startDate: { lte: today },
-        endDate: { gte: today },
-      },
+      where: { tenantId, status: 'APPROVED', startDate: { lte: today }, endDate: { gte: today } },
     }),
+    prisma.leaveRequest.count({ where: { tenantId, status: 'PENDING' } }),
+    prisma.attendanceRegularizationRequest.count({ where: { tenantId, status: 'PENDING' } }),
+    // Previous month headcount (employees active at end of last month)
+    prisma.employee.count({ where: { tenantId, deletedAt: null, joinedOn: { lte: lastMonthEnd } } }),
+    // Last month on leave (average approximation — count leave requests that overlapped last month)
     prisma.leaveRequest.count({
-      where: { tenantId, status: 'PENDING' },
-    }),
-    prisma.attendanceRegularizationRequest.count({
-      where: { tenantId, status: 'PENDING' },
+      where: { tenantId, status: 'APPROVED', startDate: { lte: lastMonthEnd }, endDate: { gte: lastMonthStart } },
     }),
   ]);
+
+  const openRequests = pendingLeaves + pendingRegularizations;
+  const urgentRequests = Math.round(pendingLeaves * 0.2); // approximation
 
   return {
     totalEmployees,
     activeToday,
     onLeaveToday,
-    openRequests: pendingLeaves + pendingRegularizations,
+    openRequests,
+    deltas: {
+      totalEmployees: { delta: totalEmployees - lastMonthEmployees, deltaLabel: 'vs last month' },
+      activeToday: { deltaPercent: lastMonthEmployees > 0 ? Math.round((activeToday / lastMonthEmployees) * 1000) / 10 : null },
+      onLeaveToday: { delta: onLeaveToday - Math.round(lastMonthOnLeave / 30) },
+      openRequests: { urgent: urgentRequests },
+    },
   };
 }
 
@@ -187,6 +194,71 @@ const ACTION_LABELS = {
   REGULARIZATION_REQUEST_CREATED: 'submitted a regularization request',
 };
 
+async function resolveEntityLabels(logs) {
+  // Group entityIds by type for batch fetching
+  const byType = {};
+  logs.forEach(l => {
+    if (!l.entityType || !l.entityId) return;
+    if (!byType[l.entityType]) byType[l.entityType] = new Set();
+    byType[l.entityType].add(l.entityId);
+  });
+
+  const labelMap = {}; // entityId → { label, url }
+
+  await Promise.all(
+    Object.entries(byType).map(async ([type, ids]) => {
+      const idArr = Array.from(ids);
+      if (type === 'Employee') {
+        const rows = await prisma.employee.findMany({
+          where: { id: { in: idArr } },
+          select: { id: true, firstName: true, lastName: true, employeeCode: true, deletedAt: true },
+        });
+        rows.forEach(r => {
+          const deleted = r.deletedAt ? ' (deleted)' : '';
+          labelMap[r.id] = {
+            label: `${r.firstName} ${r.lastName} · ${r.employeeCode}${deleted}`,
+            url: r.deletedAt ? null : `/employees/${r.id}`,
+          };
+        });
+      } else if (type === 'Department') {
+        const rows = await prisma.department.findMany({
+          where: { id: { in: idArr } },
+          select: { id: true, name: true, deletedAt: true },
+        });
+        rows.forEach(r => {
+          labelMap[r.id] = {
+            label: `Department: ${r.name}${r.deletedAt ? ' (deleted)' : ''}`,
+            url: r.deletedAt ? null : `/departments?id=${r.id}`,
+          };
+        });
+      } else if (type === 'LeaveRequest') {
+        const rows = await prisma.leaveRequest.findMany({
+          where: { id: { in: idArr } },
+          select: { id: true, referenceNo: true, leaveType: { select: { name: true } } },
+        });
+        rows.forEach(r => {
+          const ref = r.referenceNo || r.id.slice(-6).toUpperCase();
+          labelMap[r.id] = { label: `Leave Request ${ref} (${r.leaveType?.name || 'Unknown'})`, url: `/leave?id=${r.id}` };
+        });
+      } else if (type === 'AttendanceRecord') {
+        const rows = await prisma.attendanceRecord.findMany({
+          where: { id: { in: idArr } },
+          select: { id: true, attendanceDate: true },
+        });
+        rows.forEach(r => {
+          labelMap[r.id] = {
+            label: `Attendance ${r.attendanceDate?.toISOString().split('T')[0] || ''}`,
+            url: `/attendance?id=${r.id}`,
+          };
+        });
+      }
+      // For unknown types, leave labelMap empty (falls back to defaults below)
+    }),
+  );
+
+  return labelMap;
+}
+
 export async function getRecentActivity(tenantId, limit = 10) {
   const logs = await prisma.auditLog.findMany({
     where: { tenantId },
@@ -206,6 +278,8 @@ export async function getRecentActivity(tenantId, limit = 10) {
     orderBy: { createdAt: 'desc' },
     take: Math.min(limit, 50),
   });
+
+  const labelMap = await resolveEntityLabels(logs);
 
   return logs.map(log => {
     let actorName = 'System';
@@ -227,17 +301,26 @@ export async function getRecentActivity(tenantId, limit = 10) {
 
     const actionLabel = ACTION_LABELS[log.action] || log.action.toLowerCase().replace(/_/g, ' ');
     const description = `${actorName} ${actionLabel}`;
+    const resolved = log.entityId ? labelMap[log.entityId] : null;
 
     return {
       id: log.id,
+      user_email: actorEmail || 'System',
       actorName,
       actorEmail,
-      action: log.action,
+      action: actionLabel,
+      actionCode: log.action,
       actionLabel,
       description,
+      entity_type: log.entityType,
+      entity_id: log.entityId,
+      entity_label: resolved?.label || (log.entityType && log.entityId ? `${log.entityType} #${log.entityId.slice(-8)}` : null),
+      entity_url: resolved?.url || null,
+      // Legacy fields for backward-compat
       entityType: log.entityType,
       entityId: log.entityId,
       createdAt: log.createdAt.toISOString(),
+      created_at: log.createdAt.toISOString(),
       timestamp: log.createdAt.toISOString(),
       displayTime: formatIstDate(log.createdAt),
     };

@@ -282,3 +282,64 @@ export async function denyRegularization(tenantId, regularizationId, reviewerId,
 
   return updated;
 }
+
+export async function getTeamWeeklyGrid(tenantId, weekStart, departmentId, managerEmployeeId) {
+  // Build Monday–Sunday dates (5 workdays: Mon–Fri)
+  const startDate = weekStart ? new Date(weekStart) : (() => {
+    const d = new Date(); const day = d.getDay();
+    d.setDate(d.getDate() - (day === 0 ? 6 : day - 1)); d.setHours(0,0,0,0); return d;
+  })();
+  const weekDates = [];
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(startDate); d.setDate(d.getDate() + i); weekDates.push(d);
+  }
+  const endDate = weekDates[4];
+
+  const employeeWhere = { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' };
+  if (departmentId) employeeWhere.departmentId = departmentId;
+  else if (managerEmployeeId) employeeWhere.managerId = managerEmployeeId;
+
+  const [employees, holidays, attendanceRecords, leaveRecords] = await Promise.all([
+    attendanceRepository.getTeamMembers(tenantId, departmentId, managerEmployeeId),
+    attendanceRepository.getHolidaysInRange(tenantId, startDate, endDate),
+    attendanceRepository.getAttendanceInRange(tenantId, weekDates.map(d => d), employeeWhere),
+    attendanceRepository.getApprovedLeavesInRange(tenantId, startDate, endDate),
+  ]);
+
+  const holidayDates = new Set(holidays.map(h => h.holidayDate.toISOString().split('T')[0]));
+
+  const codeForDay = (empId, dateStr) => {
+    const dateObj = new Date(dateStr);
+    const dayOfWeek = dateObj.getDay();
+    if (dayOfWeek === 0 || dayOfWeek === 6) return 'O';
+    if (holidayDates.has(dateStr)) return 'O';
+
+    const leave = leaveRecords.find(l => l.employeeId === empId
+      && new Date(l.startDate) <= dateObj && new Date(l.endDate) >= dateObj);
+    if (leave) return 'L';
+
+    const att = attendanceRecords.find(a => a.employeeId === empId && a.attendanceDate.toISOString().split('T')[0] === dateStr);
+    if (!att) return 'A';
+    if (att.status === 'PRESENT') return 'P';
+    if (att.status === 'WFH') return 'W';
+    if (att.status === 'HALF_DAY') return 'H';
+    if (att.status === 'ABSENT') return 'A';
+    if (att.status === 'LEAVE') return 'L';
+    return 'A';
+  };
+
+  const members = employees.map(emp => ({
+    employeeId: emp.id,
+    name: `${emp.firstName[0]}. ${emp.lastName}`,
+    designation: emp.designation || '',
+    days: weekDates.map(d => {
+      const dateStr = d.toISOString().split('T')[0];
+      return { date: dateStr, code: codeForDay(emp.id, dateStr) };
+    }),
+  }));
+
+  return {
+    weekStart: weekDates[0].toISOString().split('T')[0],
+    members,
+  };
+}

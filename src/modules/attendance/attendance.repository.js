@@ -288,3 +288,40 @@ export async function updateAttendanceStatus(tenantId, employeeId, attendanceDat
     },
   });
 }
+
+export async function getTeamMembers(tenantId, departmentId, managerId) {
+  const where = { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' };
+  if (departmentId) where.departmentId = departmentId;
+  else if (managerId) where.managerId = managerId;
+  return prisma.employee.findMany({
+    where,
+    select: { id: true, firstName: true, lastName: true, designation: true },
+    orderBy: { employeeCode: 'asc' },
+    take: 100,
+  });
+}
+
+export async function getHolidaysInRange(tenantId, startDate, endDate) {
+  return prisma.holiday.findMany({
+    where: { tenantId, holidayDate: { gte: startDate, lte: endDate } },
+    select: { holidayDate: true },
+  });
+}
+
+export async function getAttendanceInRange(tenantId, dates, employeeWhere) {
+  const employees = await prisma.employee.findMany({ where: employeeWhere, select: { id: true } });
+  if (employees.length === 0) return [];
+  const empIds = employees.map(e => e.id);
+  const startDate = dates[0]; const endDate = dates[dates.length - 1];
+  return prisma.attendanceRecord.findMany({
+    where: { tenantId, employeeId: { in: empIds }, attendanceDate: { gte: startDate, lte: endDate } },
+    select: { employeeId: true, attendanceDate: true, status: true },
+  });
+}
+
+export async function getApprovedLeavesInRange(tenantId, startDate, endDate) {
+  return prisma.leaveRequest.findMany({
+    where: { tenantId, status: 'APPROVED', startDate: { lte: endDate }, endDate: { gte: startDate } },
+    select: { employeeId: true, startDate: true, endDate: true },
+  });
+}

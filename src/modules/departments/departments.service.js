@@ -133,3 +133,30 @@ function buildDepartmentTree(departments) {
 
   return roots.sort((a, b) => a.name.localeCompare(b.name));
 }
+
+export async function reassignAndDeleteDepartment(id, tenantId, reassignEmployeesTo) {
+  try {
+    if (id === reassignEmployeesTo) {
+      return errorResponse('SAME_DEPARTMENT', 'Target department cannot be the same as source', null);
+    }
+    const target = await repo.getDepartmentById(reassignEmployeesTo, tenantId);
+    if (!target || target.deletedAt) {
+      return errorResponse('INVALID_TARGET', 'Target department does not exist or is being deleted', null);
+    }
+    const { reassigned } = await repo.reassignAndDelete(id, tenantId, reassignEmployeesTo);
+    return successResponse({ id, status: 'archived', reassignedEmployees: reassigned }, { cached: false });
+  } catch (error) {
+    return errorResponse('OPERATION_ERROR', error.message, null);
+  }
+}
+
+export async function getDepartmentEmployees(id, tenantId, page, limit, search) {
+  try {
+    const dept = await repo.getDepartmentById(id, tenantId);
+    if (!dept) return errorResponse('NOT_FOUND', 'Department not found', null);
+    const result = await repo.getDepartmentEmployees(id, tenantId, page, limit, search);
+    return successResponse(result, { cached: false });
+  } catch (error) {
+    return errorResponse('FETCH_ERROR', error.message, null);
+  }
+}

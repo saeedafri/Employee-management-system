@@ -73,6 +73,23 @@ export default async function attendanceRoutes(fastify) {
     onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
   }, (request, reply) => attendanceController.getTeamAttendanceRecords(request, reply));
 
+  fastify.get('/attendance/team/weekly', {
+    schema: {
+      tags: ['Attendance'],
+      description: 'Weekly attendance grid for the team (M-F per employee). Used by manager dashboard.',
+      security: [{ Bearer: [] }],
+      querystring: {
+        type: 'object',
+        properties: {
+          weekStart: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$', description: 'Monday of the week (YYYY-MM-DD). Defaults to current week.' },
+          departmentId: { type: 'string' },
+        },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+  }, (request, reply) => attendanceController.getTeamWeekly(request, reply));
+
   fastify.get('/attendance/summary', {
     schema: {
       tags: ['Attendance'],

@@ -391,3 +391,16 @@ export async function denyRegularization(request, reply) {
     throw error;
   }
 }
+
+export async function getTeamWeekly(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const { weekStart, departmentId } = request.query;
+    const managerEmployeeId = request.user.memberType === 'MANAGER' ? request.user.employeeId : null;
+    const result = await attendanceService.getTeamWeeklyGrid(tenantId, weekStart || null, departmentId || null, managerEmployeeId);
+    return reply.send(successResponse(result));
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}

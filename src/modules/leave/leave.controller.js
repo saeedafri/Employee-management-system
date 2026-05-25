@@ -334,13 +334,23 @@ export async function deleteLeaveType(request, reply) {
   }
 }
 
+function splitBulkResults(results) {
+  const succeeded = results.filter(r => r.status !== 'failed').map(r => r.id);
+  const failed = results.filter(r => r.status === 'failed').map(r => ({
+    id: r.id,
+    code: r.code || 'ERROR',
+    message: r.error || 'Unknown error',
+  }));
+  return { succeeded, failed };
+}
+
 export async function bulkApproveLeave(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const approverId = request.user.id;
     const { ids, comment } = request.body;
     const results = await leaveService.bulkApproveLeaveRequests(tenantId, ids, approverId, comment);
-    return reply.send(successResponse({ results, processed: results.length }));
+    return reply.send(successResponse(splitBulkResults(results)));
   } catch (error) {
     request.log.error(error);
     throw error;
@@ -353,7 +363,20 @@ export async function bulkDenyLeave(request, reply) {
     const approverId = request.user.id;
     const { ids, comment } = request.body;
     const results = await leaveService.bulkDenyLeaveRequests(tenantId, ids, approverId, comment);
-    return reply.send(successResponse({ results, processed: results.length }));
+    return reply.send(successResponse(splitBulkResults(results)));
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
+
+export async function getTeamCoverage(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const { date, departmentId } = request.query;
+    if (!date) return reply.status(400).send(errorResponse('VALIDATION_ERROR', 'date is required', {}, request.id));
+    const result = await leaveService.getTeamCoverage(tenantId, date, departmentId);
+    return reply.send(successResponse(result));
   } catch (error) {
     request.log.error(error);
     throw error;

@@ -69,8 +69,9 @@ export async function getManagerDashboard(managerId, tenantId) {
       managerName: `${manager.firstName} ${manager.lastName}`,
       teamSize,
       pendingApprovals: pendingLeaves + pendingRegularizations,
-      pendingLeaves,
-      pendingRegularizations,
+      approvalBreakdown: { leave: pendingLeaves, regularization: pendingRegularizations },
+      presentToday: attendanceSummary.present,
+      avgAttendancePercent: teamSize > 0 ? Math.round((attendanceSummary.present / teamSize) * 100) : 0,
       todayAttendance: attendanceSummary,
     }, { cached: false });
   } catch (error) {

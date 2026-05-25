@@ -310,3 +310,7 @@ export async function getLeaveBalance(tenantId, employeeId) {
 
   return result;
 }
+
+export async function getTeamCoverage(tenantId, date, departmentId) {
+  return leaveRepository.getTeamCoverage(tenantId, date, departmentId || null);
+}

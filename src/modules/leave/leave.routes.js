@@ -144,6 +144,26 @@ export default async function leaveRoutes(fastify) {
     onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
   }, (request, reply) => leaveController.getTeamCalendar(request, reply));
 
+  // ── Team coverage ────────────────────────────────────────────────────────────
+
+  fastify.get('/leave/team/coverage', {
+    schema: {
+      tags: ['Leave Management'],
+      description: 'Check team coverage for a given date — warns when on-leave count exceeds threshold',
+      security: [{ Bearer: [] }],
+      querystring: {
+        type: 'object',
+        required: ['date'],
+        properties: {
+          date: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$', description: 'YYYY-MM-DD' },
+          departmentId: { type: 'string' },
+        },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+  }, (request, reply) => leaveController.getTeamCoverage(request, reply));
+
   // ── Bulk actions ─────────────────────────────────────────────────────────────
 
   fastify.post('/leave/requests/bulk-approve', {
@@ -168,6 +188,43 @@ export default async function leaveRoutes(fastify) {
     schema: {
       tags: ['Leave Management'],
       description: 'Bulk deny multiple leave requests (managers only)',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['ids'],
+        properties: {
+          ids: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          comment: { type: 'string' },
+        },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+  }, (request, reply) => leaveController.bulkDenyLeave(request, reply));
+
+  // UI-team canonical paths (slash-separated — same handlers)
+  fastify.post('/leave/requests/bulk/approve', {
+    schema: {
+      tags: ['Leave Management'],
+      description: 'Bulk approve leave requests — canonical path for UI team',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['ids'],
+        properties: {
+          ids: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          comment: { type: 'string' },
+        },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+  }, (request, reply) => leaveController.bulkApproveLeave(request, reply));
+
+  fastify.post('/leave/requests/bulk/reject', {
+    schema: {
+      tags: ['Leave Management'],
+      description: 'Bulk reject leave requests — canonical path for UI team',
       security: [{ Bearer: [] }],
       body: {
         type: 'object',

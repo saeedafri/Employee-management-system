@@ -7,7 +7,7 @@ export default async function notificationsRoutes(fastify) {
   fastify.get('/notifications', {
     schema: {
       tags: ['Notifications'],
-      description: 'List notifications for the current user (newest first, expired excluded)',
+      description: 'List notifications for the current user (newest first, expired excluded). Supports ?since=ISO for poll-based updates.',
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
@@ -15,6 +15,7 @@ export default async function notificationsRoutes(fastify) {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 20 },
           unreadOnly: { type: 'boolean', default: false },
+          since: { type: 'string', description: 'ISO timestamp — return only notifications created after this time' },
         },
       },
       response: { 200: { type: 'object', additionalProperties: true } },
@@ -32,37 +33,55 @@ export default async function notificationsRoutes(fastify) {
     onRequest: [authenticate],
   }, controller.getUnreadCount);
 
+  // PATCH (original) + POST alias (UI team uses POST)
   fastify.patch('/notifications/:id/read', {
     schema: {
       tags: ['Notifications'],
-      description: 'Mark a single notification as read',
+      description: 'Mark a single notification as read (PATCH)',
       security: [{ Bearer: [] }],
-      params: {
-        type: 'object',
-        required: ['id'],
-        properties: { id: { type: 'string' } },
-      },
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
     onRequest: [authenticate],
   }, controller.markRead);
 
+  fastify.post('/notifications/:id/read', {
+    schema: {
+      tags: ['Notifications'],
+      description: 'Mark a single notification as read (POST alias)',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate],
+  }, controller.markRead);
+
+  // PATCH (original) + POST alias
   fastify.patch('/notifications/read-all', {
     schema: {
       tags: ['Notifications'],
-      description: 'Mark all notifications as read',
+      description: 'Mark all notifications as read (PATCH)',
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
     onRequest: [authenticate],
   }, controller.markAllRead);
 
-  // SSE endpoint — EventSource in browser cannot send custom headers,
-  // so token is accepted as a query param.
+  fastify.post('/notifications/read-all', {
+    schema: {
+      tags: ['Notifications'],
+      description: 'Mark all notifications as read (POST alias)',
+      security: [{ Bearer: [] }],
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate],
+  }, controller.markAllRead);
+
+  // SSE endpoint
   fastify.get('/notifications/stream', {
     schema: {
       tags: ['Notifications'],
-      description: 'Server-Sent Events stream for real-time notifications and analytics refresh. Pass accessToken as query param.',
+      description: 'Server-Sent Events stream for real-time notifications. Pass accessToken as query param.',
       querystring: {
         type: 'object',
         properties: {
@@ -88,14 +107,13 @@ export default async function notificationsRoutes(fastify) {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'X-Accel-Buffering': 'no', // disable nginx buffering on Render
+      'X-Accel-Buffering': 'no',
     });
 
     reply.raw.write(': connected\n\n');
 
     addClient(userId, reply);
 
-    // Heartbeat to keep connection alive through proxies / Render idle timeout
     const heartbeat = setInterval(() => {
       try {
         reply.raw.write(': heartbeat\n\n');
@@ -109,7 +127,6 @@ export default async function notificationsRoutes(fastify) {
       removeClient(userId, reply);
     });
 
-    // Keep Fastify from auto-closing the response
     await new Promise(() => {});
   });
 }
