@@ -15,7 +15,7 @@ describe('Employees Routes Integration Tests', function () {
   let testTenant;
   let hrUser, managerUser, employeeUser, otherEmployeeUser;
   let hrEmployee, managerEmployee, employee, otherEmployee;
-  let hrToken, managerToken, employeeToken, otherEmployeeToken;
+  let hrToken, managerToken, employeeToken;
 
   before(async function () {
     app = await createTestApp();
@@ -92,7 +92,7 @@ describe('Employees Routes Integration Tests', function () {
     hrToken = await login('hr@example.com');
     managerToken = await login('manager@example.com');
     employeeToken = await login('employee@example.com');
-    otherEmployeeToken = await login('other@example.com');
+    await login('other@example.com');
   });
 
   after(async function () {
