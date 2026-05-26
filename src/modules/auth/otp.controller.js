@@ -6,7 +6,7 @@ import * as authService from './auth.service.js';
 
 export async function verifyOtpController(request, reply) {
   try {
-    const { id: tenantId } = request.tenant;
+    const tenantId = request.tenant?.id || null;
     const { challengeId, code } = await otpValidator.verifyOtpSchema.parseAsync(request.body);
     const ip = request.ip;
     const userAgent = request.headers['user-agent'] || '';
@@ -55,7 +55,7 @@ export async function verifyOtpController(request, reply) {
 
 export async function resendOtpController(request, reply) {
   try {
-    const { id: tenantId } = request.tenant;
+    const tenantId = request.tenant?.id || null;
     const { challengeId } = await otpValidator.resendOtpSchema.parseAsync(request.body);
 
     // Get challenge to find the user email

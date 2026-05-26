@@ -535,6 +535,6 @@ describe('Export Routes Integration Tests', function () {
 });
 
 async function generateTestToken(userId, tenantId) {
-  const { generateToken } = await import('../../src/utils/token.js');
-  return generateToken({ userId, tenantId, memberType: 'HR_ADMIN' }, '1h');
+  const { createAccessToken } = await import('../../src/utils/token.js');
+  return createAccessToken({ userId, tenantId, memberType: 'HR_ADMIN' }, '1h');
 }

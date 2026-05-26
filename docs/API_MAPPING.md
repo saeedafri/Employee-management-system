@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-05-24**
+> **Last verified: 2026-05-27**
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
@@ -96,7 +96,7 @@ After login, two httpOnly cookies are set automatically:
 |-----------|--------|
 | Success GET/PATCH/DELETE | 200 |
 | Success POST (create) | 201 |
-| Validation error (missing/invalid fields) | 422 |
+| Validation error (missing/invalid fields) | 400 |
 | Conflict (duplicate, cycle, not-empty) | 409 |
 | Not found | 404 |
 | Auth/token missing or invalid | 401 |

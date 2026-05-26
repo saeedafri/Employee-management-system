@@ -43,7 +43,8 @@ describe('Error Handler Middleware', function () {
 
     expect(mockReply.statusCode).to.equal(400);
     expect(mockReply.data.error.code).to.equal('VALIDATION_ERROR');
-    expect(mockReply.data.error.details).to.have.property('email');
+    expect(mockReply.data.error.details).to.be.an('array').with.lengthOf(1);
+    expect(mockReply.data.error.details[0].field).to.equal('email');
   });
 
   it('should handle custom app errors', async function () {

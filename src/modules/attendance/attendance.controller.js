@@ -212,6 +212,7 @@ export async function submitRegularization(request, reply) {
         id: regularization.id,
         referenceNo: regularization.referenceNo,
         attendanceDate: regularization.attendanceDate,
+        type: regularization.type,
         status: regularization.status,
         reason: regularization.reason,
         createdAt: regularization.createdAt,
