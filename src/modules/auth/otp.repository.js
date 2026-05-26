@@ -3,9 +3,8 @@ export async function createOtpChallenge(db, data) {
 }
 
 export async function findOtpChallengeByChallengeId(db, tenantId, challengeId) {
-  return db.otpChallenge.findFirst({
-    where: { tenantId, challengeId },
-  });
+  const where = tenantId ? { tenantId, challengeId } : { challengeId };
+  return db.otpChallenge.findFirst({ where });
 }
 
 export async function findOtpChallengeById(db, id) {
