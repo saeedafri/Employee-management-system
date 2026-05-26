@@ -239,21 +239,20 @@ export async function getHolidays(tenantId) {
 
 export async function getDocuments(employeeId, tenantId) {
   try {
-    const documents = await prisma.employeeDocument.findMany({
+    const docs = await prisma.employeeDocument.findMany({
       where: { employeeId, tenantId },
-      select: {
-        id: true,
-        documentType: true,
-        fileName: true,
-        fileUrl: true,
-        mimeType: true,
-        sizeBytes: true,
-        verificationStatus: true,
-        createdAt: true,
-      },
+      select: { id: true, documentType: true, fileName: true, fileUrl: true, mimeType: true, sizeBytes: true, verificationStatus: true, createdAt: true },
       orderBy: { createdAt: 'desc' },
     });
-    return successResponse(documents, { cached: false });
+    const documents = docs.map(d => ({
+      id: d.id,
+      filename: d.fileName,
+      category: d.documentType,
+      sizeBytes: d.sizeBytes,
+      status: d.verificationStatus || 'PENDING',
+      uploadedAt: d.createdAt,
+    }));
+    return successResponse({ documents }, { cached: false });
   } catch (error) {
     return errorResponse('ERROR', error.message, null);
   }

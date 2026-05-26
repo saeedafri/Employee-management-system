@@ -123,6 +123,9 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/auth/reset-password': {
           post: op('Authentication', 'Reset password using token', false),
         },
+        '/auth/otp/initiate': {
+          post: op('Authentication', 'Send/resend OTP for a challenge (public) — MFA and forgot-password flows', false),
+        },
         '/auth/verify-otp': {
           post: op('Authentication', 'Verify OTP code', false),
         },
@@ -171,6 +174,19 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/holidays/{id}': {
           patch:  op('Holidays', 'Update holiday', true, { parameters: idParam }),
           delete: op('Holidays', 'Delete holiday', true, { parameters: idParam }),
+        },
+        '/holidays/import': {
+          post: op('Holidays', 'Upload .ics file to import holidays (HR_ADMIN) — returns jobId for preview/commit', true, { responses: { 202: { description: 'Accepted' } } }),
+        },
+        '/holidays/import/{jobId}/preview': {
+          get: op('Holidays', 'Preview candidates from import job before committing', true, {
+            parameters: [{ in: 'path', name: 'jobId', type: 'string', required: true }],
+          }),
+        },
+        '/holidays/import/{jobId}/commit': {
+          post: op('Holidays', 'Commit import job — writes holidays to DB', true, {
+            parameters: [{ in: 'path', name: 'jobId', type: 'string', required: true }],
+          }),
         },
 
         // ── ATTENDANCE ───────────────────────────────────────────────────────
@@ -550,6 +566,12 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
 
         // ── ATTENDANCE (new endpoints) ────────────────────────────────────────
+        '/attendance/regularization/{id}/documents': {
+          post: op('Attendance', 'Upload supporting doc for a regularization request (PDF/JPG/PNG/DOC/DOCX ≤5 MB)', true, {
+            parameters: idParam,
+            responses: { 201: { description: 'Uploaded' } },
+          }),
+        },
         '/attendance/team/weekly': {
           get: op('Attendance', 'Weekly attendance grid — rows=employees, cols=M-F, code=P/A/L/W/H/O (MANAGER+)', true, {
             parameters: [

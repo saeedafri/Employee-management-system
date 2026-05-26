@@ -1,10 +1,13 @@
-import { authenticate } from '../../middleware/authenticate.js';
+import { authenticate, authorize } from '../../middleware/authenticate.js';
 import {
   listHolidays,
   getUpcomingHolidays,
   createHoliday,
   updateHoliday,
   deleteHoliday,
+  importHolidays,
+  previewImport,
+  commitImport,
 } from './holidays.controller.js';
 
 export default async function holidaysRoutes(fastify) {
@@ -117,4 +120,38 @@ export default async function holidaysRoutes(fastify) {
     },
     deleteHoliday,
   );
+
+  fastify.post('/holidays/import', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Upload a .ics file to import holidays (HR_ADMIN). Returns a jobId for preview/commit flow.',
+      consumes: ['multipart/form-data'],
+      security: [{ Bearer: [] }],
+      response: { 202: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+  }, importHolidays);
+
+  fastify.get('/holidays/import/:jobId/preview', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Preview candidates from an import job before committing',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+  }, previewImport);
+
+  fastify.post('/holidays/import/:jobId/commit', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Commit a previewed import job — creates/overwrites holidays in DB',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
+      body: { type: 'object', properties: { overwriteExisting: { type: 'boolean', default: false } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+  }, commitImport);
 }

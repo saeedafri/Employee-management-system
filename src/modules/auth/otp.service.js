@@ -319,3 +319,33 @@ export async function resendOtp(tenantId, challengeId, email) {
     throw emailError;
   }
 }
+
+export async function initiateOtp(challengeId) {
+  // Lookup by challengeId alone (no tenant — unauthenticated endpoint)
+  const challenge = await prisma.otpChallenge.findFirst({ where: { challengeId } });
+  if (!challenge) throw { code: 'CHALLENGE_NOT_FOUND', message: 'Challenge not found or expired', statusCode: 404 };
+  if (challenge.consumedAt || new Date() > challenge.expiresAt)
+    throw { code: 'CHALLENGE_NOT_FOUND', message: 'Challenge has expired', statusCode: 404 };
+  if (challenge.resendCount >= challenge.maxResends)
+    throw { code: 'MAX_RESENDS', message: 'Maximum resend attempts reached', statusCode: 429 };
+  if (challenge.lastSentAt && Date.now() - challenge.lastSentAt.getTime() < 60000)
+    throw { code: 'RESEND_TOO_SOON', message: 'Please wait 60 seconds before requesting again', statusCode: 429 };
+
+  const code = generateOtpCode();
+  const codeHash = hashSHA256(code);
+  await prisma.otpChallenge.update({
+    where: { id: challenge.id },
+    data: { codeHash, resendCount: challenge.resendCount + 1, lastSentAt: new Date() },
+  });
+
+  const user = await prisma.user.findUnique({ where: { id: challenge.userId }, select: { email: true } });
+  if (user) await enqueueOtpEmail(user.email, code, 10);
+
+  const now = new Date();
+  return {
+    challengeId: challenge.challengeId,
+    deliveryMethod: challenge.deliveryChannel,
+    expiresAt: challenge.expiresAt,
+    resendAvailableAt: new Date(now.getTime() + 60000),
+  };
+}

@@ -24,6 +24,7 @@ const TENANT_OPTIONAL_ROUTES = new Set([
   '/api/v1/auth/reset-password/validate',
   '/api/v1/auth/verify-otp',
   '/api/v1/auth/resend-otp',
+  '/api/v1/auth/otp/initiate',
 ]);
 
 /**

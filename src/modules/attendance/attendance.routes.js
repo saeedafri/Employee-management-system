@@ -199,4 +199,16 @@ export default async function attendanceRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
   }, (request, reply) => attendanceController.denyRegularization(request, reply));
+
+  fastify.post('/attendance/regularization/:id/documents', {
+    schema: {
+      tags: ['Attendance'],
+      description: 'Upload supporting document for a regularization request (PDF/JPG/PNG/DOC/DOCX, max 5 MB)',
+      security: [{ Bearer: [] }],
+      consumes: ['multipart/form-data'],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      response: { 201: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate],
+  }, (request, reply) => attendanceController.uploadRegularizationDocument(request, reply));
 }

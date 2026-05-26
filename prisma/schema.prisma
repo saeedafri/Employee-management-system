@@ -475,6 +475,7 @@ model AttendanceRegularizationRequest {
   status          AttendanceRegularizationStatus @default(PENDING)
   reviewerId      String?
   reviewerComment String?
+  documentUrl     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

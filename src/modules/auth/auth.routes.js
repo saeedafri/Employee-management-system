@@ -168,6 +168,23 @@ export default async function authRoutes(fastify) {
     },
   }, async (request, reply) => passwordResetController.resetPasswordController(request, reply));
 
+  fastify.post('/auth/otp/initiate', {
+    schema: {
+      tags: ['OTP Verification'],
+      description: 'Send or re-send OTP for an existing challenge (public). Used in forgot-password / MFA flows.',
+      body: { type: 'object', required: ['challengeId'], properties: { challengeId: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+  }, async (request, reply) => {
+    const { initiateOtp } = await import('./otp.service.js');
+    try {
+      const result = await initiateOtp(request.body.challengeId);
+      return reply.send({ success: true, data: result, meta: {} });
+    } catch (err) {
+      return reply.code(err.statusCode || 400).send({ success: false, error: { code: err.code, message: err.message } });
+    }
+  });
+
   fastify.post('/auth/verify-otp', {
     schema: {
       tags: ['OTP Verification'],
