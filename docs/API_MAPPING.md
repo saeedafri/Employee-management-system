@@ -2037,3 +2037,42 @@ Added `todayAttendance` (camelCase field names) and `leaveBalanceSummary` (top-3
 | `POST /auth/otp/initiate` | ❌ Not built | MFA challenge initiation. Current flow: `POST /auth/verify-otp` still works for existing users with OTP challenges. |
 | `POST /holidays/import` (.ics) | ❌ Not built | Requires .ics parsing library — flagged as separate ticket. |
 | Full S3 presign flow | ⚠️ Deviated | Cloudinary doesn't support anonymous PUT presign. Our presign returns our multipart endpoint instead. |
+
+---
+
+## New Endpoints — Implemented 2026-05-26 (UI Team api_to_be_created.md)
+
+### `POST /auth/otp/initiate` — Public
+Send or resend OTP for an existing challenge. Used in MFA and forgot-password flows.
+**Body:** `{ "challengeId": "uuid" }`
+**Response:** `{ challengeId, deliveryMethod, expiresAt, resendAvailableAt }`
+**Errors:** `CHALLENGE_NOT_FOUND` (404), `RESEND_TOO_SOON` (429), `MAX_RESENDS` (429)
+
+### `POST /holidays/import` — HR_ADMIN, SUPER_ADMIN
+Upload `.ics` file. Returns `{ jobId, previewUrl }`. Job lives 15 min in memory.
+**Response 202:** `{ jobId: "imp_xxxx", previewUrl: "/api/v1/holidays/import/imp_xxxx/preview" }`
+**Errors:** `INVALID_FILE_TYPE` (422), `FILE_TOO_LARGE` (422), `PARSE_ERROR` (400)
+
+### `GET /holidays/import/:jobId/preview` — HR_ADMIN, SUPER_ADMIN
+**Response:** `{ candidates: [{ name, date, isOptional, willOverwrite }], summary: { new, overwrites, skipped } }`
+**Error:** `JOB_NOT_FOUND` (404)
+
+### `POST /holidays/import/:jobId/commit` — HR_ADMIN, SUPER_ADMIN
+**Body:** `{ "overwriteExisting": true }`
+**Response:** `{ imported, overwritten, skipped }`
+**Errors:** `JOB_NOT_FOUND` (404), `ALREADY_COMMITTED` (409)
+
+### `GET /employee/documents` — any authenticated (own only)
+Self-service document list for the logged-in employee.
+**Response:** `{ documents: [{ id, filename, category, sizeBytes, status, uploadedAt }] }`
+Status enum: `VERIFIED | PENDING | REJECTED`
+
+### `GET /employee/dashboard` — leaveBalanceSummary ✅ live
+Field `leaveBalanceSummary` confirmed present: top-3 active leave types ordered by allowance desc.
+`[{ code, name, available }]`
+
+### `POST /attendance/regularization/:id/documents` — EMPLOYEE, MANAGER (own)
+Attach supporting doc to a regularization request. One doc per request.
+**Body:** `multipart/form-data` field `document` (PDF/JPG/PNG/DOC/DOCX, max 5 MB)
+**Response 201:** `{ documentUrl: "https://res.cloudinary.com/..." }`
+**Errors:** `REGULARIZATION_NOT_FOUND` (404), `DOCUMENT_ALREADY_EXISTS` (409), `INVALID_FILE_TYPE` (422), `FILE_TOO_LARGE` (422), `STORAGE_NOT_CONFIGURED` (503)
