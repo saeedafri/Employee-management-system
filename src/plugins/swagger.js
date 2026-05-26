@@ -74,7 +74,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
       schemes: [config.isDevelopment ? 'http' : 'https'],
       securityDefinitions: {
         Bearer:    { type: 'apiKey', name: 'Authorization', in: 'header', description: 'Only needed for curl/Postman. In Swagger, just call POST /auth/login first — the accessToken cookie is set automatically and all requests use it. For curl: paste "Bearer eyJ..." here.' },
-        TenantKey: { type: 'apiKey', name: 'X-Tenant-Key',  in: 'header', description: 'Tenant key for your organisation. Test value: test-key-123456789' },
+        TenantKey: { type: 'apiKey', name: 'X-Tenant-Key',  in: 'header', description: 'Tenant key for your organisation. Seed value: acme-corp-001' },
       },
       paths: {
 

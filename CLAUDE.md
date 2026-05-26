@@ -570,3 +570,13 @@ curl -X POST https://employee-management-system-2b9q.onrender.com/api/v1/auth/lo
 7. Commit and push to GitHub when work is done (explicit permission granted)
 8. **Never commit to Bitbucket**
 9. Memory/analysis files stay in this project folder only — not global
+
+## Mandatory Engineering Habits (EMS only — enforced on EVERY change)
+10. **API_MAPPING.md** — update `docs/API_MAPPING.md` on every API add/change/delete. Keep field names, auth roles, request/response shapes accurate.
+11. **Zero-regression tests** — run `npm test` (or relevant integration test) before every commit. Fix all failures before pushing. Never push a red test suite.
+12. **Swagger first** — every new or changed endpoint must be reflected in `src/plugins/swagger.js` with correct field names, required params, and response shape. Test via Swagger UI at `/docs` after deploy.
+13. **Git identity** — always commit as `mohdsaeedafri@coresight.com` / `Mohd Saeed Afri`. Never change git config. Current config is already correct — verify with `git config user.email` before committing if unsure.
+14. **Monitor GitHub Actions after every push** — check `https://github.com/saeedafri/Employee-management-system/actions` after every push. If the pipeline fails, fix it before doing anything else. Use `gh run list --limit 3` to check status.
+15. **Images always WebP** — any image upload endpoint must convert to WebP before storing (use `sharp`). Never store raw JPEG/PNG in Cloudinary.
+16. **Test on Render after deploy** — after every Render deploy, smoke-test the changed endpoints on `https://employee-management-system-2b9q.onrender.com/api/v1` before reporting done.
+17. **Employee-scoped data isolation** — always verify that employee-role users can only see their own data, manager-role can see their team, HR/admin can see all. Test each role separately when adding filtered endpoints.

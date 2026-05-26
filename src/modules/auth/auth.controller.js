@@ -4,6 +4,54 @@ import { prisma } from '../../plugins/prisma.js';
 import * as authService from './auth.service.js';
 import * as authValidator from './auth.validator.js';
 
+async function resolveLoginTenantId(request, reply, email) {
+  // Resolve tenant. Priority:
+  //   1. Explicit X-Tenant-Key header (already resolved by resolveTenant middleware)
+  //   2. Auto-resolve from email when the email exists in exactly one tenant.
+  let tenantId = request.tenant?.id;
+  const explicitTenantHeader = !!request.headers['x-tenant-key'];
+
+  const candidateUsers = await prisma.user.findMany({
+    where: { email, deletedAt: null },
+    select: { tenantId: true },
+  });
+
+  if (candidateUsers.length === 0) {
+    return {
+      response: reply.code(401).send(
+        errorResponse('INVALID_CREDENTIALS', 'Invalid credentials', {}, request.id),
+      ),
+    };
+  }
+
+  if (!explicitTenantHeader) {
+    if (candidateUsers.length === 1) {
+      tenantId = candidateUsers[0].tenantId;
+    } else {
+      return {
+        response: reply.code(400).send(
+          errorResponse(
+            'AMBIGUOUS_EMAIL',
+            'This email is registered in multiple organizations. Supply X-Tenant-Key header to disambiguate.',
+            {},
+            request.id,
+          ),
+        ),
+      };
+    }
+  }
+
+  if (!tenantId) {
+    return {
+      response: reply.code(400).send(
+        errorResponse('TENANT_MISSING', 'Tenant context not found', {}, request.id),
+      ),
+    };
+  }
+
+  return { tenantId };
+}
+
 export async function loginController(request, reply) {
   try {
     const body = authValidator.loginSchema.parse(request.body);
@@ -12,51 +60,12 @@ export async function loginController(request, reply) {
     const ipAddress = request.ip;
     const userAgent = request.headers['user-agent'];
 
-    // Resolve tenant. Priority:
-    //   1. Explicit X-Tenant-Key header (already resolved by resolveTenant middleware)
-    //   2. Auto-resolve from email — if an explicit header was NOT supplied or matched no user,
-    //      and the email exists in exactly one tenant, use that tenant.
-    let tenantId = request.tenant?.id;
-    const explicitTenantHeader = !!request.headers['x-tenant-key'];
-
-    const candidateUsers = await prisma.user.findMany({
-      where: { email, deletedAt: null },
-      select: { tenantId: true },
-    });
-
-    if (candidateUsers.length === 0) {
-      // No user with this email anywhere — generic 401 (do not leak tenant existence)
-      return reply.code(401).send(
-        errorResponse('INVALID_CREDENTIALS', 'Invalid credentials', {}, request.id),
-      );
-    }
-
-    if (!explicitTenantHeader) {
-      if (candidateUsers.length === 1) {
-        // Single tenant for this email — auto-resolve, no header needed
-        tenantId = candidateUsers[0].tenantId;
-      } else {
-        // Email exists in multiple tenants — caller MUST disambiguate with X-Tenant-Key
-        return reply.code(400).send(
-          errorResponse(
-            'AMBIGUOUS_EMAIL',
-            'This email is registered in multiple organizations. Supply X-Tenant-Key header to disambiguate.',
-            {},
-            request.id,
-          ),
-        );
-      }
-    }
-
-    if (!tenantId) {
-      return reply.code(400).send(
-        errorResponse('TENANT_MISSING', 'Tenant context not found', {}, request.id),
-      );
-    }
+    const tenantResolution = await resolveLoginTenantId(request, reply, email);
+    if (tenantResolution.response) return tenantResolution.response;
 
     const result = await authService.login(
       prisma,
-      tenantId,
+      tenantResolution.tenantId,
       email,
       password,
       ipAddress,
@@ -121,22 +130,12 @@ export async function adminLoginController(request, reply) {
     const ipAddress = request.ip;
     const userAgent = request.headers['user-agent'];
 
-    // Get tenant from request context (set by resolveTenant middleware)
-    const tenantId = request.tenant?.id;
-    if (!tenantId) {
-      return reply.code(400).send(
-        errorResponse(
-          'TENANT_MISSING',
-          'Tenant context not found',
-          {},
-          request.id,
-        ),
-      );
-    }
+    const tenantResolution = await resolveLoginTenantId(request, reply, email);
+    if (tenantResolution.response) return tenantResolution.response;
 
     const result = await authService.adminLogin(
       prisma,
-      tenantId,
+      tenantResolution.tenantId,
       email,
       password,
       ipAddress,

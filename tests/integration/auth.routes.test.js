@@ -230,7 +230,6 @@ describe('Auth Routes Integration Tests', function () {
     });
 
     it('should auto-resolve tenant from email for admin login', async function () {
-      // Admin login auto-resolves tenant — no x-tenant-key required
       const response = await app.inject({
         method: 'POST',
         url: '/api/v1/auth/admin/login',
@@ -240,9 +239,10 @@ describe('Auth Routes Integration Tests', function () {
         },
       });
 
-      // Should not fail with MISSING_TENANT — either succeeds or INVALID_CREDENTIALS/FORBIDDEN
+      expect(response.statusCode).to.equal(200);
       const body = JSON.parse(response.body);
-      expect(body.error?.code).to.not.equal('MISSING_TENANT');
+      expect(body.success).to.be.true;
+      expect(body.data).to.have.property('accessToken');
     });
   });
 
