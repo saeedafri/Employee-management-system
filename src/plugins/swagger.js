@@ -168,8 +168,18 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── HOLIDAYS ─────────────────────────────────────────────────────────
         '/holidays': {
-          get:  op('Holidays', 'List all holidays'),
-          post: op('Holidays', 'Create holiday', true, { responses: { 201: r201 } }),
+          get:  op('Holidays', 'List all holidays', true, {
+            parameters: [
+              { in: 'query', name: 'year', type: 'number', description: 'Year (default current year)' },
+              { in: 'query', name: 'country', type: 'string' },
+            ],
+          }),
+          post: op('Holidays', 'Create holiday (HR_ADMIN)', true, { responses: { 201: r201 } }),
+        },
+        '/holidays/upcoming': {
+          get: op('Holidays', 'Upcoming holidays — widget for employee dashboard (limit 1–10, default 3)', true, {
+            parameters: [{ in: 'query', name: 'limit', type: 'integer', description: 'Max holidays to return (default 3)' }],
+          }),
         },
         '/holidays/{id}': {
           patch:  op('Holidays', 'Update holiday', true, { parameters: idParam }),
@@ -270,7 +280,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── DASHBOARD ────────────────────────────────────────────────────────
         '/employee/dashboard': {
-          get: op('Dashboard', 'Employee personal dashboard'),
+          get: op('Dashboard', 'Employee personal dashboard — summary, attendance today, leave balance, upcoming holidays, recent docs'),
         },
         '/attendance/today': {
           get: op('Dashboard', 'Today\'s attendance status for current employee'),
@@ -482,6 +492,19 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/employees/next-code': {
           get: op('Employees', 'Get next auto-generated employee code for the Add Employee form (HR_ADMIN)'),
         },
+        '/employees/me/documents': {
+          get: op('Employees', 'Get current user\'s own documents (alias for /employee/documents)'),
+        },
+        '/employees/me/team': {
+          get: op('Employees', 'Get current user\'s team (alias for /employee/team)'),
+        },
+        '/employees/{id}/photo': {
+          post:   op('Employees', 'Upload / replace profile photo — any image format, auto-converted to WebP 800×800. HR/Admin or own.', true, {
+            parameters: idParam,
+            responses: { 200: r200, 400: r400, 403: r403, 503: { description: 'Storage not configured' } },
+          }),
+          delete: op('Employees', 'Delete profile photo for an employee. HR/Admin or own.', true, { parameters: idParam }),
+        },
         '/employees/bulk/deactivate': {
           post: op('Employees', 'Bulk deactivate employees — returns { succeeded, failed } (HR_ADMIN)', true, {
             parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } } } } }],
@@ -539,6 +562,17 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         // ── LEAVE (new endpoints) ─────────────────────────────────────────────
         '/leave/types': {
           get: op('Leave', 'List all leave types for the tenant'),
+        },
+        '/leave/balance/me': {
+          get: op('Leave', 'Get leave balance for current employee (alias for /leave/balance)'),
+        },
+        '/leave/team/calendar': {
+          get: op('Leave', 'Team leave calendar — list of who is on leave for a month (MANAGER+)', true, {
+            parameters: [
+              { in: 'query', name: 'month', type: 'string', description: 'YYYY-MM — defaults to current month' },
+              { in: 'query', name: 'departmentId', type: 'string' },
+            ],
+          }),
         },
         '/leave/team/coverage': {
           get: op('Leave', 'Team leave coverage for a date — coverage %, isBelowThreshold (MANAGER+)', true, {

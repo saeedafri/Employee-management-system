@@ -14,6 +14,8 @@ import {
   presignDocument,
   confirmDocument,
   downloadDocument,
+  uploadPhoto,
+  deletePhoto,
 } from './employees.controller.js';
 
 export async function employeesRoutes(fastify) {
@@ -317,6 +319,35 @@ export async function employeesRoutes(fastify) {
       },
     },
     confirmDocument,
+  );
+
+  // ── Profile photo ────────────────────────────────────────────────────────────
+
+  fastify.post(
+    '/employees/:id/photo',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Upload / replace profile photo — any image format accepted, converted to WebP 800×800 automatically. HR/Admin or own employee.',
+        consumes: ['multipart/form-data'],
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    uploadPhoto,
+  );
+
+  fastify.delete(
+    '/employees/:id/photo',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Delete profile photo for an employee. HR/Admin or own employee.',
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    deletePhoto,
   );
 
   fastify.get(

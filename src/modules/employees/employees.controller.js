@@ -5,6 +5,7 @@ import { errorResponse } from '../../utils/response.js';
 import { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
 import { prisma } from '../../plugins/prisma.js';
 import { generateId } from '../../utils/id.js';
+import sharp from 'sharp';
 
 const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
@@ -329,5 +330,87 @@ export async function downloadDocument(request, reply) {
     reply.redirect(302, doc.fileUrl);
   } catch (err) {
     reply.code(500).send(errorResponse('DOWNLOAD_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function uploadPhoto(request, reply) {
+  const { user } = request;
+  const tenantId = request.tenant.id;
+  const { id: employeeId } = request.params;
+
+  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot upload photo for other employees', request.requestId));
+  }
+
+  if (!isCloudinaryConfigured()) {
+    return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'Set CLOUDINARY env vars to enable photo uploads', request.requestId));
+  }
+
+  const emp = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
+  if (!emp) return reply.code(404).send(errorResponse('NOT_FOUND', 'Employee not found', request.requestId));
+
+  try {
+    const data = await request.file();
+    if (!data) return reply.code(400).send(errorResponse('NO_FILE', 'No file provided', request.requestId));
+
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowed.includes(data.mimetype)) {
+      return reply.code(400).send(errorResponse('INVALID_FILE_TYPE', 'Only JPEG, PNG, WebP, GIF allowed', request.requestId));
+    }
+
+    const raw = await data.toBuffer();
+
+    // Convert any image format to WebP (800×800 max, quality 85)
+    const webpBuffer = await sharp(raw)
+      .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 85 })
+      .toBuffer();
+
+    // Delete old photo from Cloudinary if exists
+    if (emp.profilePhotoUrl) {
+      const oldKey = emp.profilePhotoUrl.match(/\/ems\/[^?]+/)?.[0]?.slice(1);
+      if (oldKey) await deleteFromCloudinary(oldKey, 'image').catch(() => {});
+    }
+
+    const fileId = generateId();
+    const uploaded = await uploadToCloudinary(webpBuffer, {
+      folder: `ems/${tenantId}/photos`,
+      publicId: fileId,
+      resourceType: 'image',
+    });
+
+    const updated = await prisma.employee.update({
+      where: { id: employeeId },
+      data: { profilePhotoUrl: uploaded.url },
+      select: { id: true, profilePhotoUrl: true },
+    });
+
+    reply.code(200).send({ success: true, data: updated });
+  } catch (err) {
+    reply.code(500).send(errorResponse('UPLOAD_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function deletePhoto(request, reply) {
+  const { user } = request;
+  const tenantId = request.tenant.id;
+  const { id: employeeId } = request.params;
+
+  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot delete photo for other employees', request.requestId));
+  }
+
+  const emp = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
+  if (!emp) return reply.code(404).send(errorResponse('NOT_FOUND', 'Employee not found', request.requestId));
+  if (!emp.profilePhotoUrl) return reply.code(404).send(errorResponse('NOT_FOUND', 'No profile photo to delete', request.requestId));
+
+  try {
+    const oldKey = emp.profilePhotoUrl.match(/\/ems\/[^?]+/)?.[0]?.slice(1);
+    if (oldKey && isCloudinaryConfigured()) await deleteFromCloudinary(oldKey, 'image').catch(() => {});
+
+    await prisma.employee.update({ where: { id: employeeId }, data: { profilePhotoUrl: null } });
+    reply.code(200).send({ success: true, message: 'Profile photo deleted' });
+  } catch (err) {
+    reply.code(500).send(errorResponse('DELETE_ERROR', err.message, request.requestId));
   }
 }

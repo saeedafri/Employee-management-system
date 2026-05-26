@@ -2076,3 +2076,47 @@ Attach supporting doc to a regularization request. One doc per request.
 **Body:** `multipart/form-data` field `document` (PDF/JPG/PNG/DOC/DOCX, max 5 MB)
 **Response 201:** `{ documentUrl: "https://res.cloudinary.com/..." }`
 **Errors:** `REGULARIZATION_NOT_FOUND` (404), `DOCUMENT_ALREADY_EXISTS` (409), `INVALID_FILE_TYPE` (422), `FILE_TOO_LARGE` (422), `STORAGE_NOT_CONFIGURED` (503)
+
+---
+
+## 2026-05-26 Batch — Profile Photos + Swagger Completeness
+
+### `POST /employees/:id/photo` — HR_ADMIN, SUPER_ADMIN, own employee ✅ live
+Upload or replace an employee's profile photo.  
+**Body:** `multipart/form-data` field `file` — any image format (JPEG/PNG/WebP/GIF).  
+**Behavior:** Image is automatically resized to max 800×800 and converted to **WebP format** before storage.  
+Old photo is automatically deleted from Cloudinary before uploading new one.  
+**Response 200:** `{ success: true, data: { id, profilePhotoUrl } }`
+
+### `DELETE /employees/:id/photo` — HR_ADMIN, SUPER_ADMIN, own employee ✅ live
+Delete an employee's profile photo from Cloudinary and clear the `profilePhotoUrl` field.  
+**Response 200:** `{ success: true, message: "Profile photo deleted" }`
+
+### `GET /employees/:id` — profilePhotoUrl now included ✅
+`Employee` response now includes `profilePhotoUrl` (nullable string — Cloudinary WebP URL or null).
+
+### `GET /holidays/upcoming` ✅ live (was missing from Swagger)
+**Query:** `?limit=3` (1–10)  
+Returns upcoming holidays for the employee dashboard widget.
+
+### `GET /employees/me/documents` ✅ live alias
+Same as `GET /employee/documents` — returns current user's documents.
+
+### `GET /employees/me/team` ✅ live alias
+Same as `GET /employee/team` — returns current user's team.
+
+### `GET /leave/balance/me` ✅ live alias
+Same as `GET /leave/balance` — returns current employee's leave balance.
+
+### `GET /leave/team/calendar` ✅ live (was missing from Swagger)
+**Query:** `?month=YYYY-MM&departmentId=<id>`  
+Returns who is on leave for a given month. MANAGER+ only.
+
+---
+
+## Schema Change: Employee.profilePhotoUrl
+New nullable field `profilePhotoUrl String?` added to `Employee` model.  
+Applied via `npx prisma db push` (no migration needed — additive change).  
+All 201 employees seeded with unique WebP avatar images (colored initials avatars).  
+Seed script: `npm run db:seed:photos`
+

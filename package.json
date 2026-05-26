@@ -28,7 +28,8 @@
     "email:test": "node scripts/sendTestEmail.js",
     "seed:test-email-user": "node scripts/seedTestEmailUser.js",
     "api:capture": "node scripts/captureApiResponses.js",
-    "perf:api": "node scripts/perfApiSmoke.js"
+    "perf:api": "node scripts/perfApiSmoke.js",
+    "db:seed:photos": "node prisma/seedPhotos.js"
   },
   "keywords": [
     "employee-management",
@@ -58,6 +59,7 @@
     "pino": "^8.17.2",
     "pino-pretty": "^10.3.1",
     "resend": "^6.12.3",
+    "sharp": "^0.34.5",
     "uuid": "^14.0.0",
     "zod": "^3.23.8"
   },

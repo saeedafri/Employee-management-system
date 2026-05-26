@@ -222,6 +222,7 @@ model Employee {
   employmentType          EmploymentType @default(FULL_TIME)
   employmentStatus        EmploymentStatus @default(ACTIVE)
   location                String?
+  profilePhotoUrl         String?
   payCurrency             String     @default("INR")
   createdBy               String?
   updatedBy               String?
