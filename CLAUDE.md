@@ -403,13 +403,16 @@ Redis removed — analytics no longer caches. Updated `analytics.routes.test.js`
 Login auto-resolves tenant from email — `MISSING_TENANT` is never returned. Updated 3 tests in `auth.routes.test.js`.
 ### ✅ FIXED — `POST /attendance/regularization` always 500 (2026-05-22)
 Validator required `type` field (LATE/MISSED_CHECKOUT/EARLY_CHECKOUT) but `AttendanceRegularizationRequest` Prisma model has no `type` column. Stripped from service insert in `attendance.service.js`.
-### ✅ FIXED — CI pipeline test job removed (2026-05-22)
-Tests require a local PostgreSQL with `ems_test` DB. No test DB in current CI config. Test job removed from `.github/workflows/ci.yml` until a proper test DB service is added. Lint + build + security audit still run on every push.
+### ✅ FIXED — CI pipeline test job re-enabled with PostgreSQL service container (2026-05-27)
+`.github/workflows/ci.yml` now has a `test` job with a `postgres:16` service container (`ems_test` DB). Runs `prisma migrate deploy` then `npm test` on every push. Requires no external DB.
 
 ### ✅ FIXED — File upload implemented (2026-05-23)
 `POST /employees/:id/documents` (multipart/form-data), `GET /employees/:id/documents`, `DELETE /employees/:id/documents/:docId`.
 Uses Cloudinary for storage. Requires `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` on Render.
 Returns `503 STORAGE_NOT_CONFIGURED` if vars not set (graceful fallback).
+
+### Remaining — Cloudinary not configured on Render (2026-05-27 production check)
+All 65 employees have `profilePhotoUrl: null`. `GET /employees/:id/documents` returns `[]` for all employees including Aman, Priya, HR Admin. Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` in Render env vars to enable photo and document upload. Endpoints already implemented and return `503 STORAGE_NOT_CONFIGURED` gracefully until then.
 
 ### Remaining — Notifications module not built
 No `src/modules/notifications/` dir. `Notification` Prisma model exists but zero routes.
@@ -497,7 +500,7 @@ tests/
 ├── otp-email-flow.test.js
 └── password-reset-flow.test.js
 ```
-**Note**: No test files for employees, departments, holidays modules (integration tests may be missing for them).
+**Note**: No test files for departments, holidays modules. `tests/integration/employees.routes.test.js` added 2026-05-27 — covers role isolation (EMPLOYEE/MANAGER/HR), document access control, photo 403 enforcement, soft delete.
 
 ---
 
