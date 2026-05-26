@@ -114,6 +114,13 @@ enum ExportType {
   LEAVE
 }
 
+enum RegularizationType {
+  LATE
+  MISSED_CHECKOUT
+  EARLY_CHECKOUT
+  OTHER
+}
+
 // Models
 model Tenant {
   id                  String   @id @default(cuid())
@@ -472,6 +479,7 @@ model AttendanceRegularizationRequest {
   tenantId        String
   employeeId      String
   attendanceDate  DateTime
+  type            RegularizationType @default(LATE)
   reason          String
   status          AttendanceRegularizationStatus @default(PENDING)
   reviewerId      String?

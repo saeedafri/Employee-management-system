@@ -116,7 +116,8 @@ export default async function attendanceRoutes(fastify) {
         required: ['attendanceDate', 'reason'],
         properties: {
           attendanceDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
-          reason: { type: 'string' },
+          type: { type: 'string', enum: ['LATE', 'MISSED_CHECKOUT', 'EARLY_CHECKOUT', 'OTHER'], default: 'LATE' },
+          reason: { type: 'string', minLength: 10 },
         },
       },
     },

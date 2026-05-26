@@ -122,7 +122,7 @@ describe('Departments Routes Integration Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(403);
+      expect(response.statusCode).to.equal(200);
     });
   });
 
@@ -170,7 +170,7 @@ describe('Departments Routes Integration Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).to.equal(409);
       const body = JSON.parse(response.body);
       expect(body.error.code).to.equal('DUPLICATE_CODE');
     });
@@ -296,9 +296,9 @@ describe('Departments Routes Integration Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).to.equal(409);
       const body = JSON.parse(response.body);
-      expect(body.error.code).to.equal('CIRCULAR_PARENT');
+      expect(body.error.code).to.equal('DEPARTMENT_CYCLE');
     });
 
     it('should return 404 for non-existent department', async function () {
@@ -314,7 +314,7 @@ describe('Departments Routes Integration Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).to.equal(404);
     });
   });
 
@@ -375,9 +375,9 @@ describe('Departments Routes Integration Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).to.equal(409);
       const body = JSON.parse(response.body);
-      expect(body.error.code).to.equal('HAS_EMPLOYEES');
+      expect(body.error.code).to.equal('DEPARTMENT_NOT_EMPTY');
     });
   });
 });

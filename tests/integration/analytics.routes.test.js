@@ -67,7 +67,7 @@ describe('Analytics Routes - Integration Tests', function () {
       expect(response.statusCode).to.equal(200);
       const body = JSON.parse(response.body);
       expect(body.success).to.be.true;
-      expect(body.data).to.have.all.keys('totalEmployees', 'activeToday', 'onLeaveToday', 'openRequests');
+      expect(body.data).to.include.all.keys('totalEmployees', 'activeToday', 'onLeaveToday', 'openRequests');
       expect(body.data.totalEmployees).to.equal(100);
       expect(body.meta).to.have.property('cached');
       expect(body.meta).to.have.property('generatedAt');

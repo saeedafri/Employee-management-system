@@ -186,12 +186,13 @@ export async function getAttendanceSummary(tenantId, employeeId, fromDate, toDat
 }
 
 export async function submitRegularizationRequest(tenantId, employeeId, {
-  attendanceDate, reason,
+  attendanceDate, reason, type,
 }) {
   const request = await attendanceRepository.createRegularizationRequest({
     tenantId,
     employeeId,
     attendanceDate: new Date(attendanceDate),
+    type: type || 'LATE',
     reason,
     status: 'PENDING',
   });

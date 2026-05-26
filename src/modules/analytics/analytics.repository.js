@@ -319,7 +319,9 @@ export async function getRecentActivity(tenantId, limit = 10) {
       // Legacy fields for backward-compat
       entityType: log.entityType,
       entityId: log.entityId,
+      resourceLabel: resolved?.label || (log.entityType && log.entityId ? `${log.entityType} #${log.entityId.slice(-8)}` : null),
       createdAt: log.createdAt.toISOString(),
+      createdAtIstDisplay: `${formatIstDate(log.createdAt)} IST`,
       created_at: log.createdAt.toISOString(),
       timestamp: log.createdAt.toISOString(),
       displayTime: formatIstDate(log.createdAt),
