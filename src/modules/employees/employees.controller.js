@@ -191,7 +191,8 @@ export async function deleteDocument(request, reply) {
     if (!doc) return reply.code(404).send(errorResponse('NOT_FOUND', 'Document not found', request.requestId));
 
     if (doc.storageKey && isCloudinaryConfigured()) {
-      await deleteFromCloudinary(doc.storageKey);
+      const resourceType = doc.mimeType?.startsWith('image/') ? 'image' : 'raw';
+      await deleteFromCloudinary(doc.storageKey, resourceType);
     }
 
     await prisma.employeeDocument.delete({ where: { id: docId } });
