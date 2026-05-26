@@ -114,7 +114,7 @@ describe('Employees Routes Integration Tests', function () {
       });
       expect(res.statusCode).to.equal(200);
       const body = JSON.parse(res.body);
-      expect(body.data.employees.length).to.be.at.least(4);
+      expect(body.data.data.length).to.be.at.least(4);
     });
 
     it('MANAGER sees self + direct reports only', async function () {
@@ -128,7 +128,7 @@ describe('Employees Routes Integration Tests', function () {
       });
       expect(res.statusCode).to.equal(200);
       const body = JSON.parse(res.body);
-      const ids = body.data.employees.map((e) => e.id);
+      const ids = body.data.data.map((e) => e.id);
       expect(ids).to.include(managerEmployee.id);
       expect(ids).to.include(employee.id);
       expect(ids).not.to.include(otherEmployee.id);
@@ -146,7 +146,7 @@ describe('Employees Routes Integration Tests', function () {
       });
       expect(res.statusCode).to.equal(200);
       const body = JSON.parse(res.body);
-      const ids = body.data.employees.map((e) => e.id);
+      const ids = body.data.data.map((e) => e.id);
       expect(ids).to.deep.equal([employee.id]);
     });
   });
@@ -437,7 +437,7 @@ describe('Employees Routes Integration Tests', function () {
       });
       expect(res.statusCode).to.equal(200);
       const updated = await prisma.employee.findUnique({ where: { id: employee.id } });
-      expect(updated.deletedAt).to.not.be.null;
+      expect(updated.employmentStatus).to.equal('TERMINATED');
     });
 
     it('EMPLOYEE cannot delete an employee — 403', async function () {
