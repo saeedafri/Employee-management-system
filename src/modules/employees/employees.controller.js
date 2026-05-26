@@ -127,25 +127,26 @@ export async function uploadDocument(request, reply) {
 
     const { documentType = 'OTHER' } = request.query;
     const buffer = await data.toBuffer();
-    const publicId = `ems/${tenantId}/employees/${employeeId}/${generateId()}`;
+    // Use publicId as just the filename within folder to avoid doubled paths
+    const fileId = generateId();
 
     const uploaded = await uploadToCloudinary(buffer, {
       folder: `ems/${tenantId}/employees/${employeeId}`,
-      publicId,
+      publicId: fileId,
       resourceType: 'auto',
     });
 
     const doc = await prisma.employeeDocument.create({
       data: {
-        tenantId,
-        employeeId,
+        tenant: { connect: { id: tenantId } },
+        employee: { connect: { id: employeeId } },
         documentType,
         fileName: data.filename,
         fileUrl: uploaded.url,
         storageKey: uploaded.publicId,
         mimeType: data.mimetype,
         sizeBytes: uploaded.bytes,
-        uploadedById: user.id,
+        uploadedBy: { connect: { id: user.sub } },
         verificationStatus: 'PENDING',
       },
     });
