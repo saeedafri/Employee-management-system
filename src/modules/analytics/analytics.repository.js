@@ -234,10 +234,10 @@ async function resolveEntityLabels(logs) {
       } else if (type === 'LeaveRequest') {
         const rows = await prisma.leaveRequest.findMany({
           where: { id: { in: idArr } },
-          select: { id: true, referenceNo: true, leaveType: { select: { name: true } } },
+          select: { id: true, seqNo: true, leaveType: { select: { name: true } } },
         });
         rows.forEach(r => {
-          const ref = r.referenceNo || r.id.slice(-6).toUpperCase();
+          const ref = r.seqNo ? `LR-${String(r.seqNo).padStart(4, '0')}` : r.id.slice(-6).toUpperCase();
           labelMap[r.id] = { label: `Leave Request ${ref} (${r.leaveType?.name || 'Unknown'})`, url: `/leave?id=${r.id}` };
         });
       } else if (type === 'AttendanceRecord') {
