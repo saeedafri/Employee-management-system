@@ -279,7 +279,7 @@ describe('Employees Routes Integration Tests', function () {
           fileName: 'offer.pdf',
           fileUrl: 'https://cloudinary.example.com/offer.pdf',
           documentType: 'OFFER_LETTER',
-          fileSize: 1024,
+          sizeBytes: 1024,
           mimeType: 'application/pdf',
         },
       });
@@ -336,7 +336,7 @@ describe('Employees Routes Integration Tests', function () {
           fileName: 'contract.pdf',
           fileUrl: 'https://cloudinary.example.com/contract.pdf',
           documentType: 'CONTRACT',
-          fileSize: 2048,
+          sizeBytes: 2048,
           mimeType: 'application/pdf',
         },
       });

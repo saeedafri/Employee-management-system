@@ -48,6 +48,9 @@ export async function cleanDatabase() {
     await prisma.attendanceRecord.deleteMany({});
   } catch {} // eslint-disable-line no-empty
   try {
+    await prisma.employeeDocument.deleteMany({});
+  } catch {} // eslint-disable-line no-empty
+  try {
     await prisma.employee.deleteMany({});
   } catch {} // eslint-disable-line no-empty
   try {
