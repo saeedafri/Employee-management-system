@@ -98,13 +98,15 @@ export async function verifyOtp(tenantId, challengeId, code) {
   const challenge = await otpRepository.findOtpChallengeByChallengeId(prisma, tenantId, challengeId);
 
   if (!challenge) {
-    await otpRepository.createAuditLog(prisma, {
-      tenantId,
-      actorUserId: null,
-      action: 'OTP_VERIFICATION_FAILED',
-      entityType: 'OtpChallenge',
-      entityId: 'unknown',
-    });
+    if (tenantId) {
+      await otpRepository.createAuditLog(prisma, {
+        tenantId,
+        actorUserId: null,
+        action: 'OTP_VERIFICATION_FAILED',
+        entityType: 'OtpChallenge',
+        entityId: 'unknown',
+      });
+    }
     throw {
       code: 'OTP_CHALLENGE_NOT_FOUND',
       message: 'OTP challenge not found',

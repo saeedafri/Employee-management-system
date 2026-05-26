@@ -44,7 +44,7 @@ export async function queueEmployeeExport(tenantId, userId, filters) {
 
   return {
     job_id: jobId,
-    status: 'PROCESSING',
+    status: 'QUEUED',
     estimated_completion_time: estimatedTime,
   };
 }
@@ -80,7 +80,7 @@ export async function queueAttendanceExport(tenantId, userId, filters) {
 
   return {
     job_id: jobId,
-    status: 'PROCESSING',
+    status: 'QUEUED',
     estimated_completion_time: estimatedTime,
   };
 }
@@ -116,7 +116,7 @@ export async function queueLeaveExport(tenantId, userId, filters) {
 
   return {
     job_id: jobId,
-    status: 'PROCESSING',
+    status: 'QUEUED',
     estimated_completion_time: estimatedTime,
   };
 }

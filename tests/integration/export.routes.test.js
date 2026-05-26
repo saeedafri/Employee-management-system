@@ -112,7 +112,7 @@ describe('Export Routes Integration Tests', function () {
         email: 'user@example.com',
         memberType: 'EMPLOYEE',
       });
-      const userToken = await generateTestToken(regularUser.id, testTenant.id);
+      const userToken = await generateTestToken(regularUser.id, testTenant.id, 'EMPLOYEE');
 
       const response = await app.inject({
         method: 'POST',
@@ -373,7 +373,7 @@ describe('Export Routes Integration Tests', function () {
         email: 'user@example.com',
         memberType: 'EMPLOYEE',
       });
-      const userToken = await generateTestToken(regularUser.id, testTenant.id);
+      const userToken = await generateTestToken(regularUser.id, testTenant.id, 'EMPLOYEE');
 
       const response = await app.inject({
         method: 'GET',
@@ -500,6 +500,7 @@ describe('Export Routes Integration Tests', function () {
         const response = await app.inject({
           method: endpoint.method,
           url: endpoint.url,
+          headers: { 'x-tenant-key': testTenant.tenantKey },
           payload: endpoint.payload,
         });
 
@@ -512,7 +513,7 @@ describe('Export Routes Integration Tests', function () {
         email: 'manager@example.com',
         memberType: 'MANAGER',
       });
-      const managerToken = await generateTestToken(managerUser.id, testTenant.id);
+      const managerToken = await generateTestToken(managerUser.id, testTenant.id, 'MANAGER');
 
       const endpoints = [
         { method: 'POST', url: '/api/v1/export/employees', payload: { format: 'csv' } },
@@ -534,7 +535,7 @@ describe('Export Routes Integration Tests', function () {
   });
 });
 
-async function generateTestToken(userId, tenantId) {
+async function generateTestToken(userId, tenantId, memberType = 'HR_ADMIN') {
   const { createAccessToken } = await import('../../src/utils/token.js');
-  return createAccessToken({ userId, tenantId, memberType: 'HR_ADMIN' }, '1h');
+  return createAccessToken({ userId, tenantId, memberType }, '1h');
 }
