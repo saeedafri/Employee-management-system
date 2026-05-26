@@ -331,36 +331,91 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── REPORTS ──────────────────────────────────────────────────────────
         '/reports/attendance': {
-          get: op('Reports', 'Attendance report'),
+          get: op('Reports', 'Attendance report', true, {
+            parameters: [
+              { in: 'query', name: 'from_date', type: 'string', description: 'YYYY-MM-DD' },
+              { in: 'query', name: 'to_date', type: 'string', description: 'YYYY-MM-DD' },
+              { in: 'query', name: 'department_id', type: 'string' },
+              { in: 'query', name: 'format', type: 'string', description: 'json | csv (default json)' },
+            ],
+          }),
         },
         '/reports/leaves': {
-          get: op('Reports', 'Leave report'),
+          get: op('Reports', 'Leave report', true, {
+            parameters: [
+              { in: 'query', name: 'from_date', type: 'string', description: 'YYYY-MM-DD' },
+              { in: 'query', name: 'to_date', type: 'string', description: 'YYYY-MM-DD' },
+              { in: 'query', name: 'leave_type', type: 'string' },
+              { in: 'query', name: 'department_id', type: 'string' },
+              { in: 'query', name: 'format', type: 'string', description: 'json | csv' },
+            ],
+          }),
         },
         '/reports/payroll': {
-          get: op('Reports', 'Payroll report (SUPER_ADMIN only)'),
+          get: op('Reports', 'Payroll report (SUPER_ADMIN only) — requires month + year query params', true, {
+            parameters: [
+              { in: 'query', name: 'month', type: 'integer', required: true, description: '1–12' },
+              { in: 'query', name: 'year',  type: 'integer', required: true, description: 'e.g. 2026' },
+              { in: 'query', name: 'department_id', type: 'string' },
+            ],
+          }),
         },
         '/reports/schedule': {
-          post: op('Reports', 'Schedule a recurring report', true, { responses: { 201: r201 } }),
+          post: op('Reports', 'Schedule a recurring report', true, {
+            responses: { 201: r201 },
+            parameters: [{ in: 'body', name: 'body', required: true, schema: {
+              type: 'object',
+              required: ['report_type', 'frequency', 'email_recipients'],
+              properties: {
+                report_type: { type: 'string', enum: ['attendance', 'leaves', 'payroll'], description: 'Use snake_case: attendance | leaves | payroll' },
+                frequency: { type: 'string', enum: ['WEEKLY', 'MONTHLY'] },
+                email_recipients: { type: 'array', items: { type: 'string', format: 'email' }, description: 'List of recipient emails' },
+              },
+            }}],
+          }),
         },
         '/reports/scheduled': {
-          get: op('Reports', 'List scheduled reports'),
+          get: op('Reports', 'List scheduled reports', true, {
+            parameters: [
+              { in: 'query', name: 'page', type: 'integer' },
+              { in: 'query', name: 'limit', type: 'integer' },
+            ],
+          }),
         },
         '/reports/scheduled/{id}': {
-          patch:  op('Reports', 'Update scheduled report', true, { parameters: idParam }),
+          patch:  op('Reports', 'Update scheduled report', true, {
+            parameters: [...idParam, { in: 'body', name: 'body', schema: {
+              type: 'object',
+              properties: {
+                frequency: { type: 'string', enum: ['WEEKLY', 'MONTHLY'] },
+                email_recipients: { type: 'array', items: { type: 'string', format: 'email' } },
+                is_active: { type: 'boolean' },
+              },
+            }}],
+          }),
           delete: op('Reports', 'Delete scheduled report', true, { parameters: idParam }),
         },
         '/reports/export-history': {
-          get: op('Reports', 'Export history list'),
+          get: op('Reports', 'Export history list', true, {
+            parameters: [
+              { in: 'query', name: 'page', type: 'integer' },
+              { in: 'query', name: 'limit', type: 'integer' },
+              { in: 'query', name: 'status', type: 'string', description: 'SUCCESS | FAILED' },
+            ],
+          }),
         },
 
         // ── AUDIT LOGS ───────────────────────────────────────────────────────
         '/audit-logs': {
           get: op('Audit Logs', 'List audit logs with filters', true, {
             parameters: [
-              { in: 'query', name: 'page',       type: 'number' },
-              { in: 'query', name: 'limit',      type: 'number' },
-              { in: 'query', name: 'entityType', type: 'string' },
-              { in: 'query', name: 'action',     type: 'string' },
+              { in: 'query', name: 'page',       type: 'integer' },
+              { in: 'query', name: 'limit',      type: 'integer' },
+              { in: 'query', name: 'user_email', type: 'string', description: 'Filter by actor email' },
+              { in: 'query', name: 'action',     type: 'string', description: 'e.g. CREATE, UPDATE, DELETE' },
+              { in: 'query', name: 'entity',     type: 'string', description: 'e.g. EMPLOYEE, LEAVE' },
+              { in: 'query', name: 'from_date',  type: 'string', description: 'YYYY-MM-DD' },
+              { in: 'query', name: 'to_date',    type: 'string', description: 'YYYY-MM-DD' },
             ],
           }),
         },
@@ -368,10 +423,25 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Audit Logs', 'Get audit log by ID', true, { parameters: idParam }),
         },
         '/audit-logs/dpia-report': {
-          post: op('Audit Logs', 'Generate GDPR DPIA report'),
+          post: op('Audit Logs', 'Generate GDPR DPIA report — requires from_date + to_date in body', true, {
+            parameters: [{ in: 'body', name: 'body', required: true, schema: {
+              type: 'object',
+              required: ['from_date', 'to_date'],
+              properties: {
+                from_date: { type: 'string', format: 'date', description: 'YYYY-MM-DD' },
+                to_date:   { type: 'string', format: 'date', description: 'YYYY-MM-DD' },
+              },
+            }}],
+          }),
         },
         '/audit-logs/export': {
-          get: op('Audit Logs', 'Export audit logs'),
+          get: op('Audit Logs', 'Export audit logs — streams file (CSV or JSON with Content-Disposition)', true, {
+            parameters: [
+              { in: 'query', name: 'from_date', type: 'string', description: 'YYYY-MM-DD' },
+              { in: 'query', name: 'to_date',   type: 'string', description: 'YYYY-MM-DD' },
+              { in: 'query', name: 'format',    type: 'string', description: 'json (default) | csv' },
+            ],
+          }),
         },
 
         // ── ADMIN / SYSTEM LOGS ──────────────────────────────────────────────

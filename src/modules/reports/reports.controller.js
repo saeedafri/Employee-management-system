@@ -62,7 +62,7 @@ export async function getPayrollReport(request, reply) {
 export async function scheduleReport(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const userId = request.user.id;
+    const userId = request.user.sub;
 
     const body = reportsValidator.scheduleReportSchema.parse(request.body);
 
