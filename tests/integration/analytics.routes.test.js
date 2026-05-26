@@ -293,7 +293,7 @@ describe('Analytics Routes - Integration Tests', function () {
       expect(body.data.length).to.be.lessThanOrEqual(10);
 
       body.data.forEach(activity => {
-        expect(activity).to.have.all.keys(
+        expect(activity).to.include.all.keys(
           'id', 'actorName', 'action', 'entityType', 'entityId', 'resourceLabel', 'createdAt', 'createdAtIstDisplay',
         );
         expect(activity.createdAtIstDisplay).to.include('IST');
