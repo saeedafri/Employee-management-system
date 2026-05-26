@@ -301,10 +301,10 @@ export async function getLeaveBalance(tenantId, employeeId) {
       leaveTypeId: b.leaveTypeId,
       leaveTypeName: b.leaveType.name,
       leaveTypeCode: b.leaveType.code,
-      total: b.balance + b.used + b.pending,
+      total: b.balance + b.used,
       used: b.used,
       pending: b.pending,
-      available: b.balance,
+      available: b.balance - b.used - b.pending,
     })),
   };
 

@@ -439,7 +439,7 @@ describe('Attendance Management Routes Integration Tests', function () {
         payload: {
           attendanceDate,
           type: 'LATE',
-          reason: 'Short reason',
+          reason: 'Brief',
         },
       });
 

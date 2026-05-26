@@ -124,6 +124,7 @@ describe('Audit Logs Routes Integration Tests', function () {
       const response = await app.inject({
         method: 'GET',
         url: '/api/v1/audit-logs',
+        headers: { 'x-tenant-key': testTenant.tenantKey },
       });
 
       expect(response.statusCode).to.equal(401);

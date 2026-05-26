@@ -35,7 +35,7 @@ describe('Export Routes Integration Tests', function () {
 
     adminToken = await generateTestToken(adminUser.id, testTenant.id);
 
-    testEmployee = await createTestEmployee(testTenant.id, {
+    testEmployee = await createTestEmployee(testTenant.id, null, {
       firstName: 'John',
       lastName: 'Doe',
       departmentId: testDepartment.id,

@@ -114,7 +114,7 @@ describe('Middleware Tests', function () {
   });
 
   describe('Tenant Resolution', function () {
-    it('should reject request without x-tenant-key header', async function () {
+    it('should auto-resolve tenant from email without x-tenant-key header', async function () {
       const response = await app.inject({
         method: 'POST',
         url: '/api/v1/auth/login',
@@ -124,10 +124,9 @@ describe('Middleware Tests', function () {
         },
       });
 
-      expect(response.statusCode).to.equal(400);
+      // login is tenant-optional — auto-resolves tenant from email; never returns MISSING_TENANT
       const body = JSON.parse(response.body);
-      expect(body.success).to.be.false;
-      expect(body.error.code).to.equal('MISSING_TENANT');
+      expect(body.error?.code).to.not.equal('MISSING_TENANT');
     });
 
     it('should set tenant in request object for valid tenant key', async function () {

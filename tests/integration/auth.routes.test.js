@@ -64,7 +64,7 @@ describe('Auth Routes Integration Tests', function () {
         },
       });
 
-      expect(response.cookies).to.have.lengthOf(1);
+      expect(response.cookies).to.have.lengthOf(2);
       const cookie = response.cookies[0];
       expect(cookie.httpOnly).to.be.true;
       expect(cookie.sameSite).to.equal('Strict');

@@ -90,6 +90,7 @@ describe('Settings Routes Integration Tests', function () {
       const response = await app.inject({
         method: 'GET',
         url: '/api/v1/settings/tenant',
+        headers: { 'x-tenant-key': testTenant.tenantKey },
       });
 
       expect(response.statusCode).to.equal(401);
@@ -229,19 +230,23 @@ describe('Settings Routes Integration Tests', function () {
 
   describe('PATCH /api/v1/settings/roles-permissions', function () {
     beforeEach(async function () {
-      const permission = await prisma.permission.findFirst({
-        select: { id: true, key: true },
+      await prisma.permission.deleteMany({});
+      await prisma.permission.create({
+        data: {
+          key: 'EMPLOYEE_VIEW',
+          module: 'employees',
+          description: 'View employees',
+        },
       });
 
-      if (!permission) {
-        await prisma.permission.create({
-          data: {
-            key: 'EMPLOYEE_VIEW',
-            module: 'employees',
-            description: 'View employees',
-          },
-        });
-      }
+      await prisma.role.deleteMany({ where: { tenantId: testTenant.id } });
+      await prisma.role.create({
+        data: {
+          tenantId: testTenant.id,
+          key: 'HR_ADMIN',
+          name: 'HR Admin',
+        },
+      });
     });
 
     it('should update role permissions as SUPER_ADMIN', async function () {
