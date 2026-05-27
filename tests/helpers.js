@@ -19,6 +19,14 @@ export async function createTestApp() {
 
 export async function cleanDatabase() {
   const dbUrl = process.env.DATABASE_URL || '';
+  // Hard block: never touch production/staging databases
+  const isProductionUrl = dbUrl.includes('render.com') || dbUrl.includes('railway.app') ||
+    dbUrl.includes('supabase.co') || dbUrl.includes('neon.tech') || dbUrl.includes('planetscale');
+  if (isProductionUrl) {
+    throw new Error(
+      `cleanDatabase() BLOCKED: DATABASE_URL points to a production host. Refusing to wipe. URL contains: ${dbUrl.split('@')[1]?.split('/')[0] || 'unknown host'}`,
+    );
+  }
   const isTestDb =
     process.env.NODE_ENV === 'test' &&
     (dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1') || dbUrl.includes('ems_test'));
