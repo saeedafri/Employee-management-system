@@ -378,6 +378,7 @@ async function main() {
     await prisma.tenantConfig.create({
       data: {
         tenantId,
+        companyName: 'Acme Corp',
         workDaysPerWeek: 5,
         workHoursPerDay: 9,
         workStartTime: '09:00',
