@@ -1,4 +1,5 @@
 import * as service from './payroll.service.js';
+import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 
 function handleError(reply, err) {
@@ -12,28 +13,28 @@ function handleError(reply, err) {
 
 export async function getComponents(request, reply) {
   try {
-    const data = await service.getComponents(request.server.prisma, request.tenantId, request.query);
+    const data = await service.getComponents(prisma, request.tenantId, request.query);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function createComponent(request, reply) {
   try {
-    const data = await service.createComponent(request.server.prisma, request.tenantId, request.body);
+    const data = await service.createComponent(prisma, request.tenantId, request.body);
     reply.code(201).send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function updateComponent(request, reply) {
   try {
-    const data = await service.updateComponent(request.server.prisma, request.params.id, request.tenantId, request.body);
+    const data = await service.updateComponent(prisma, request.params.id, request.tenantId, request.body);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function deleteComponent(request, reply) {
   try {
-    const data = await service.deleteComponent(request.server.prisma, request.params.id, request.tenantId);
+    const data = await service.deleteComponent(prisma, request.params.id, request.tenantId);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
@@ -42,35 +43,35 @@ export async function deleteComponent(request, reply) {
 
 export async function getPayGroups(request, reply) {
   try {
-    const data = await service.getPayGroups(request.server.prisma, request.tenantId);
+    const data = await service.getPayGroups(prisma, request.tenantId);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function createPayGroup(request, reply) {
   try {
-    const data = await service.createPayGroup(request.server.prisma, request.tenantId, request.body);
+    const data = await service.createPayGroup(prisma, request.tenantId, request.body);
     reply.code(201).send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function updatePayGroup(request, reply) {
   try {
-    const data = await service.updatePayGroup(request.server.prisma, request.params.id, request.tenantId, request.body);
+    const data = await service.updatePayGroup(prisma, request.params.id, request.tenantId, request.body);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function deletePayGroup(request, reply) {
   try {
-    const data = await service.deletePayGroup(request.server.prisma, request.params.id, request.tenantId);
+    const data = await service.deletePayGroup(prisma, request.params.id, request.tenantId);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function getPaySchedules(request, reply) {
   try {
-    const data = await service.getPaySchedules(request.server.prisma, request.tenantId);
+    const data = await service.getPaySchedules(prisma, request.tenantId);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
@@ -80,7 +81,7 @@ export async function getPaySchedules(request, reply) {
 export async function getEmployeeSalary(request, reply) {
   try {
     const data = await service.getEmployeeSalary(
-      request.server.prisma, request.params.employeeId, request.tenantId, request.user,
+      prisma, request.params.employeeId, request.tenantId, request.user,
     );
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -89,7 +90,7 @@ export async function getEmployeeSalary(request, reply) {
 export async function setEmployeeSalary(request, reply) {
   try {
     const data = await service.setEmployeeSalary(
-      request.server.prisma, request.params.employeeId, request.tenantId, request.body,
+      prisma, request.params.employeeId, request.tenantId, request.body,
     );
     reply.code(201).send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -100,7 +101,7 @@ export async function setEmployeeSalary(request, reply) {
 export async function getEmployeePayslips(request, reply) {
   try {
     const data = await service.getEmployeePayslips(
-      request.server.prisma, request.params.employeeId, request.tenantId, request.user, request.query,
+      prisma, request.params.employeeId, request.tenantId, request.user, request.query,
     );
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -109,7 +110,7 @@ export async function getEmployeePayslips(request, reply) {
 export async function getEmployeePayslip(request, reply) {
   try {
     const data = await service.getEmployeePayslip(
-      request.server.prisma, request.params.employeeId, request.params.payslipId, request.tenantId, request.user,
+      prisma, request.params.employeeId, request.params.payslipId, request.tenantId, request.user,
     );
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -119,28 +120,28 @@ export async function getEmployeePayslip(request, reply) {
 
 export async function getPayrollRuns(request, reply) {
   try {
-    const data = await service.getPayrollRuns(request.server.prisma, request.tenantId, request.query);
+    const data = await service.getPayrollRuns(prisma, request.tenantId, request.query);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function createPayrollRun(request, reply) {
   try {
-    const data = await service.createPayrollRun(request.server.prisma, request.tenantId, request.user.userId, request.body);
+    const data = await service.createPayrollRun(prisma, request.tenantId, request.user.userId, request.body);
     reply.code(201).send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function getPayrollRun(request, reply) {
   try {
-    const data = await service.getPayrollRun(request.server.prisma, request.params.id, request.tenantId);
+    const data = await service.getPayrollRun(prisma, request.params.id, request.tenantId);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function calculatePayrollRun(request, reply) {
   try {
-    const data = await service.calculatePayrollRun(request.server.prisma, request.params.id, request.tenantId);
+    const data = await service.calculatePayrollRun(prisma, request.params.id, request.tenantId);
     reply.code(202).send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
@@ -148,7 +149,7 @@ export async function calculatePayrollRun(request, reply) {
 export async function approvePayrollRun(request, reply) {
   try {
     const data = await service.approvePayrollRun(
-      request.server.prisma, request.params.id, request.tenantId, request.user.userId, request.body,
+      prisma, request.params.id, request.tenantId, request.user.userId, request.body,
     );
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -156,14 +157,14 @@ export async function approvePayrollRun(request, reply) {
 
 export async function markRunPaid(request, reply) {
   try {
-    const data = await service.markRunPaid(request.server.prisma, request.params.id, request.tenantId, request.body);
+    const data = await service.markRunPaid(prisma, request.params.id, request.tenantId, request.body);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function cancelPayrollRun(request, reply) {
   try {
-    const data = await service.cancelPayrollRun(request.server.prisma, request.params.id, request.tenantId, request.body);
+    const data = await service.cancelPayrollRun(prisma, request.params.id, request.tenantId, request.body);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
@@ -172,7 +173,7 @@ export async function cancelPayrollRun(request, reply) {
 
 export async function getRunPayslips(request, reply) {
   try {
-    const data = await service.getRunPayslips(request.server.prisma, request.params.runId, request.tenantId, request.query);
+    const data = await service.getRunPayslips(prisma, request.params.runId, request.tenantId, request.query);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
@@ -180,7 +181,7 @@ export async function getRunPayslips(request, reply) {
 export async function getRunPayslip(request, reply) {
   try {
     const data = await service.getRunPayslip(
-      request.server.prisma, request.params.runId, request.params.payslipId, request.tenantId,
+      prisma, request.params.runId, request.params.payslipId, request.tenantId,
     );
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -189,7 +190,7 @@ export async function getRunPayslip(request, reply) {
 export async function updateRunPayslip(request, reply) {
   try {
     const data = await service.updateRunPayslip(
-      request.server.prisma, request.params.runId, request.params.payslipId, request.tenantId, request.body,
+      prisma, request.params.runId, request.params.payslipId, request.tenantId, request.body,
     );
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -197,7 +198,7 @@ export async function updateRunPayslip(request, reply) {
 
 export async function exportRunPayslips(request, reply) {
   try {
-    const csv = await service.exportRunPayslips(request.server.prisma, request.params.runId, request.tenantId);
+    const csv = await service.exportRunPayslips(prisma, request.params.runId, request.tenantId);
     reply
       .header('Content-Type', 'text/csv')
       .header('Content-Disposition', `attachment; filename="payroll-${request.params.runId}.csv"`)
