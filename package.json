@@ -29,7 +29,8 @@
     "seed:test-email-user": "node scripts/seedTestEmailUser.js",
     "api:capture": "node scripts/captureApiResponses.js",
     "perf:api": "node scripts/perfApiSmoke.js",
-    "db:seed:photos": "node prisma/seedPhotos.js"
+    "db:seed:photos": "node prisma/seedPhotos.js",
+    "db:seed:ui": "node prisma/seedUIData.js"
   },
   "keywords": [
     "employee-management",
