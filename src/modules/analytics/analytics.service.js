@@ -76,6 +76,26 @@ export async function getLeaveSummary(tenantId, range = '30d') {
   };
 }
 
+export async function getWorkforceTrend(tenantId, range = '6m') {
+  const { data } = await fetchData(() => repo.getWorkforceTrend(tenantId, range));
+  return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
+}
+
+export async function getAttrition(tenantId, range = '6m') {
+  const { data } = await fetchData(() => repo.getAttrition(tenantId, range));
+  return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
+}
+
+export async function getPayrollCost(tenantId, range = '6m') {
+  const { data } = await fetchData(() => repo.getPayrollCost(tenantId, range));
+  return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
+}
+
+export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null) {
+  const { data } = await fetchData(() => repo.getDepartmentPerformance(tenantId, range, managerEmployeeId));
+  return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
+}
+
 export async function invalidateAnalyticsCache(tenantId) {
   logger.info(`Cache invalidation skipped (Redis not available for tenant ${tenantId})`);
 }

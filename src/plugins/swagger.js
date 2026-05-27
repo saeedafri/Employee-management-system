@@ -277,6 +277,18 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/analytics/leave-summary': {
           get: op('Analytics', 'Leave summary analytics'),
         },
+        '/analytics/workforce-trend': {
+          get: op('Analytics', 'Monthly workforce trend — headcount, hires, exits, net change. ?range=6m|12m|2y. HR_ADMIN/SUPER_ADMIN only.'),
+        },
+        '/analytics/attrition': {
+          get: op('Analytics', 'Attrition rate trend over time. ?range=6m|12m|2y. HR_ADMIN/SUPER_ADMIN only.'),
+        },
+        '/analytics/payroll-cost': {
+          get: op('Analytics', 'Monthly payroll cost trend. ?range=6m|12m. HR_ADMIN/SUPER_ADMIN only.'),
+        },
+        '/analytics/department-performance': {
+          get: op('Analytics', 'Department performance metrics. ?range=30d|90d. MANAGER sees own dept only; HR_ADMIN/SUPER_ADMIN see all.'),
+        },
 
         // ── DASHBOARD ────────────────────────────────────────────────────────
         '/employee/dashboard': {

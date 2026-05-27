@@ -1029,6 +1029,92 @@ Each activity item has:
 
 ---
 
+### `GET /analytics/workforce-trend`
+**Roles:** HR_ADMIN, SUPER_ADMIN. Query: `?range=6m|12m|2y` (default `6m`).
+
+Returns month-by-month headcount, hires, exits, and net change.
+
+```json
+{
+  "success": true,
+  "data": [
+    { "month": "2025-12", "monthLabel": "Dec 2025", "headcount": 70, "hires": 0, "exits": 0, "netChange": 0 }
+  ],
+  "meta": { "generatedAt": "2026-05-28T..." }
+}
+```
+
+---
+
+### `GET /analytics/attrition`
+**Roles:** HR_ADMIN, SUPER_ADMIN. Query: `?range=6m|12m|2y` (default `6m`).
+
+Returns attrition rate trend over time.
+
+```json
+{
+  "success": true,
+  "data": {
+    "currentMonthRate": 0,
+    "rollingAnnualRate": 0,
+    "trend": [
+      { "month": "2025-12", "monthLabel": "Dec 2025", "rate": 0, "exits": 0 }
+    ]
+  },
+  "meta": { "generatedAt": "..." }
+}
+```
+
+---
+
+### `GET /analytics/payroll-cost`
+**Roles:** HR_ADMIN, SUPER_ADMIN. Query: `?range=6m|12m` (default `6m`).
+
+Returns monthly payroll cost trend (estimated from headcount — no payroll module yet).
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "month": "2025-12", "monthLabel": "Dec 2025",
+      "totalNet": 4928000, "totalGross": 5600000,
+      "employeeCount": 70, "avgNetPerEmployee": 70400
+    }
+  ],
+  "meta": { "generatedAt": "..." }
+}
+```
+
+---
+
+### `GET /analytics/department-performance`
+**Roles:** HR_ADMIN, SUPER_ADMIN see all departments. MANAGER sees only their own department. EMPLOYEE: 403.
+Query: `?range=30d|90d` (default `30d`).
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "departmentId": "...", "departmentName": "Engineering",
+      "headcount": 12, "attendanceRate": 80.7, "leaveRate": 0,
+      "pendingApprovals": 35, "avgTenureMonths": 68.4
+    }
+  ],
+  "meta": { "generatedAt": "..." }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `attendanceRate` | number | % of present/WFH days in range |
+| `leaveRate` | number | % of working days on approved leave |
+| `pendingApprovals` | number | Tenant-wide pending leave + regularization requests |
+| `avgTenureMonths` | number | Average months since `joinedOn` for active employees |
+
+---
+
 ## Settings
 
 ### `GET /settings/tenant`

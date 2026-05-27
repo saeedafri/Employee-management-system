@@ -329,6 +329,216 @@ export async function getRecentActivity(tenantId, limit = 10) {
   });
 }
 
+// ── Phase 2 analytics ────────────────────────────────────────────────────────
+
+function getRangeMonths(range) {
+  const map = { '6m': 6, '12m': 12, '2y': 24 };
+  return map[range] || 6;
+}
+
+function monthLabel(year, month) {
+  const d = new Date(year, month - 1, 1);
+  return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+}
+
+function monthKey(year, month) {
+  return `${year}-${String(month).padStart(2, '0')}`;
+}
+
+export async function getWorkforceTrend(tenantId, range = '6m') {
+  const months = getRangeMonths(range);
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
+
+  const [allEmployees] = await Promise.all([
+    prisma.employee.findMany({
+      where: { tenantId },
+      select: { joinedOn: true, deletedAt: true, employmentStatus: true },
+    }),
+  ]);
+
+  const result = [];
+  for (let i = 0; i < months; i++) {
+    const mStart = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+    const mEnd = new Date(mStart.getFullYear(), mStart.getMonth() + 1, 0, 23, 59, 59, 999);
+    const yr = mStart.getFullYear();
+    const mo = mStart.getMonth() + 1;
+
+    let headcount = 0, hires = 0, exits = 0;
+    for (const emp of allEmployees) {
+      const joined = emp.joinedOn ? new Date(emp.joinedOn) : null;
+      const left   = emp.deletedAt ? new Date(emp.deletedAt) : null;
+      if (joined && joined <= mEnd && (!left || left > mEnd)) headcount++;
+      if (joined && joined >= mStart && joined <= mEnd) hires++;
+      if (left && left >= mStart && left <= mEnd) exits++;
+    }
+
+    result.push({ month: monthKey(yr, mo), monthLabel: monthLabel(yr, mo), headcount, hires, exits, netChange: hires - exits });
+  }
+  return result;
+}
+
+export async function getAttrition(tenantId, range = '6m') {
+  const months = getRangeMonths(range);
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
+
+  const employees = await prisma.employee.findMany({
+    where: { tenantId },
+    select: { joinedOn: true, deletedAt: true },
+  });
+
+  let totalExits = 0;
+  const trend = [];
+
+  for (let i = 0; i < months; i++) {
+    const mStart = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+    const mEnd   = new Date(mStart.getFullYear(), mStart.getMonth() + 1, 0, 23, 59, 59, 999);
+    const yr = mStart.getFullYear();
+    const mo = mStart.getMonth() + 1;
+
+    let headcount = 0, exits = 0;
+    for (const emp of employees) {
+      const joined = emp.joinedOn ? new Date(emp.joinedOn) : null;
+      const left   = emp.deletedAt ? new Date(emp.deletedAt) : null;
+      if (joined && joined <= mEnd && (!left || left > mEnd)) headcount++;
+      if (left && left >= mStart && left <= mEnd) exits++;
+    }
+    totalExits += exits;
+    const rate = headcount > 0 ? Math.round((exits / headcount) * 1000) / 10 : 0;
+    trend.push({ month: monthKey(yr, mo), monthLabel: monthLabel(yr, mo), rate, exits });
+  }
+
+  const avgHeadcount = trend.reduce((s, t) => s + (t.exits + (trend[0]?.exits || 0)), 0) || 0;
+  const rollingAnnualRate = avgHeadcount > 0 ? Math.round((totalExits / months * 12) * 10) / 10 : 0;
+  const currentMonthRate = trend.length > 0 ? trend[trend.length - 1].rate : 0;
+
+  return { currentMonthRate, rollingAnnualRate, trend };
+}
+
+export async function getPayrollCost(tenantId, range = '6m') {
+  const months = getRangeMonths(range);
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
+
+  const allEmployees = await prisma.employee.findMany({
+    where: { tenantId },
+    select: { joinedOn: true, deletedAt: true, employmentType: true },
+  });
+
+  // Estimate: FULL_TIME avg 80000/month gross, PART_TIME/CONTRACT avg 40000/month
+  const avgGrossMap = { FULL_TIME: 80000, PART_TIME: 40000, CONTRACT: 40000 };
+
+  const result = [];
+  for (let i = 0; i < months; i++) {
+    const mStart = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+    const mEnd   = new Date(mStart.getFullYear(), mStart.getMonth() + 1, 0, 23, 59, 59, 999);
+    const yr = mStart.getFullYear();
+    const mo = mStart.getMonth() + 1;
+
+    let totalGross = 0, activeCount = 0;
+    for (const emp of allEmployees) {
+      const joined = emp.joinedOn ? new Date(emp.joinedOn) : null;
+      const left   = emp.deletedAt ? new Date(emp.deletedAt) : null;
+      if (joined && joined <= mEnd && (!left || left > mEnd)) {
+        activeCount++;
+        totalGross += avgGrossMap[emp.employmentType] || 80000;
+      }
+    }
+
+    const totalNet = Math.round(totalGross * 0.88 * 100) / 100;
+    const avgNetPerEmployee = activeCount > 0 ? Math.round(totalNet / activeCount * 100) / 100 : 0;
+
+    result.push({
+      month: monthKey(yr, mo),
+      monthLabel: monthLabel(yr, mo),
+      totalNet: Math.round(totalNet * 100) / 100,
+      totalGross: Math.round(totalGross * 100) / 100,
+      employeeCount: activeCount,
+      avgNetPerEmployee,
+    });
+  }
+  return result;
+}
+
+export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null) {
+  const days = range === '90d' ? 90 : 30;
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+
+  let deptWhere;
+  if (managerEmployeeId) {
+    const managerEmp = await prisma.employee.findFirst({
+      where: { id: managerEmployeeId },
+      select: { departmentId: true },
+    });
+    deptWhere = managerEmp?.departmentId
+      ? { tenantId, deletedAt: null, id: managerEmp.departmentId }
+      : { tenantId, deletedAt: null, id: '__none__' };
+  } else {
+    deptWhere = { tenantId, deletedAt: null, parentId: null };
+  }
+
+  const [departments, empGroups, attnRecords, leaveRecords, pendingLeaveCount, pendingRegCount] = await Promise.all([
+    prisma.department.findMany({ where: deptWhere, select: { id: true, name: true } }),
+    prisma.employee.groupBy({
+      by: ['departmentId'],
+      where: { tenantId, deletedAt: null },
+      _count: { id: true },
+    }),
+    prisma.attendanceRecord.findMany({
+      where: { tenantId, attendanceDate: { gte: since } },
+      select: { employeeId: true, status: true },
+    }),
+    prisma.leaveRequest.findMany({
+      where: { tenantId, status: 'APPROVED', startDate: { gte: since } },
+      select: { employeeId: true, totalDays: true },
+    }),
+    prisma.leaveRequest.count({ where: { tenantId, status: 'PENDING' } }),
+    prisma.attendanceRegularizationRequest.count({ where: { tenantId, status: 'PENDING' } }),
+  ]);
+
+  const empMap = {};
+  empGroups.forEach(e => { empMap[e.departmentId] = e._count.id; });
+
+  const empDeptMap = {};
+  const allEmps = await prisma.employee.findMany({
+    where: { tenantId, deletedAt: null },
+    select: { id: true, departmentId: true, joinedOn: true },
+  });
+  allEmps.forEach(e => { empDeptMap[e.id] = e.departmentId; });
+
+  return departments.map(dept => {
+    const headcount = empMap[dept.id] || 0;
+    const deptEmpIds = new Set(allEmps.filter(e => e.departmentId === dept.id).map(e => e.id));
+    const deptAttn = attnRecords.filter(r => deptEmpIds.has(r.employeeId));
+    const presentDays = deptAttn.filter(r => ['PRESENT','WFH'].includes(r.status)).length;
+    const totalDays = deptAttn.length;
+    const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 1000) / 10 : 0;
+
+    const deptLeaveDays = leaveRecords.filter(r => deptEmpIds.has(r.employeeId)).reduce((s, r) => s + (r.totalDays || 0), 0);
+    const leaveRate = headcount > 0 ? Math.round((deptLeaveDays / (headcount * days)) * 1000) / 10 : 0;
+
+    const deptEmpsArr = allEmps.filter(e => e.departmentId === dept.id);
+    const avgTenureMonths = deptEmpsArr.length > 0
+      ? Math.round(deptEmpsArr.reduce((s, e) => {
+          if (!e.joinedOn) return s;
+          return s + (Date.now() - new Date(e.joinedOn).getTime()) / (1000 * 60 * 60 * 24 * 30.44);
+        }, 0) / deptEmpsArr.length * 10) / 10
+      : 0;
+
+    return {
+      departmentId: dept.id,
+      departmentName: dept.name,
+      headcount,
+      attendanceRate,
+      leaveRate,
+      pendingApprovals: pendingLeaveCount + pendingRegCount,
+      avgTenureMonths,
+    };
+  }).filter(d => d.headcount > 0);
+}
+
 export async function getLeaveSummary(tenantId, range) {
   const days = getRangeDays(range);
   const endDate = new Date();

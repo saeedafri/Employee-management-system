@@ -65,3 +65,52 @@ export async function getLeaveSummary(request, reply) {
     throw error;
   }
 }
+
+export async function getWorkforceTrend(request, reply) {
+  try {
+    const { id: tenantId } = request.tenant;
+    const range = ['6m', '12m', '2y'].includes(request.query.range) ? request.query.range : '6m';
+    const result = await analyticsService.getWorkforceTrend(tenantId, range);
+    return reply.send(result);
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
+
+export async function getAttrition(request, reply) {
+  try {
+    const { id: tenantId } = request.tenant;
+    const range = ['6m', '12m', '2y'].includes(request.query.range) ? request.query.range : '6m';
+    const result = await analyticsService.getAttrition(tenantId, range);
+    return reply.send(result);
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
+
+export async function getPayrollCost(request, reply) {
+  try {
+    const { id: tenantId } = request.tenant;
+    const range = ['6m', '12m'].includes(request.query.range) ? request.query.range : '6m';
+    const result = await analyticsService.getPayrollCost(tenantId, range);
+    return reply.send(result);
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
+
+export async function getDepartmentPerformance(request, reply) {
+  try {
+    const { id: tenantId } = request.tenant;
+    const range = ['30d', '90d'].includes(request.query.range) ? request.query.range : '30d';
+    const managerEmployeeId = request.user.memberType === 'MANAGER' ? request.user.employeeId : null;
+    const result = await analyticsService.getDepartmentPerformance(tenantId, range, managerEmployeeId);
+    return reply.send(result);
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
