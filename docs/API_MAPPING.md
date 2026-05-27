@@ -2469,3 +2469,64 @@ Applied via `npx prisma db push` (no migration needed — additive change).
 All 201 employees seeded with unique WebP avatar images (colored initials avatars).  
 Seed script: `npm run db:seed:photos`
 
+
+---
+
+## Phase 2 — Domain 1-3: Payroll Module (25 endpoints)
+**Added:** 2026-05-28 | **Roles:** HR_ADMIN/SUPER_ADMIN (unless noted)
+
+### Salary Components
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/components` | HR,SA | `?active=true\|false`. Returns array of component objects |
+| POST | `/payroll/components` | HR,SA | 201. Required: name, code (UPPER_SNAKE_CASE), type, calculationType, taxable. 409 CODE_EXISTS |
+| PATCH | `/payroll/components/:id` | HR,SA | code is immutable → 400 CODE_IMMUTABLE |
+| DELETE | `/payroll/components/:id` | SA only | 409 COMPONENT_IN_USE if referenced by pay groups |
+
+**Component shape:** `{ id, name, code, type(EARNING|DEDUCTION|BENEFIT|REIMBURSEMENT), calculationType(FLAT|PERCENTAGE|FORMULA), value, basisCode, formula, taxable, active, displayOrder, description, createdAt, updatedAt }`
+
+### Pay Groups
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/groups` | HR,SA | Returns groups with `components[]` and `employeeCount` |
+| POST | `/payroll/groups` | HR,SA | 201. Required: name, code. Optional: components[]{componentId, overrideCalculationType, overrideValue, overrideFormula} |
+| PATCH | `/payroll/groups/:id` | HR,SA | code immutable. Replaces components array if provided |
+| DELETE | `/payroll/groups/:id` | SA only | 409 GROUP_HAS_EMPLOYEES with `{employeeCount}` in details |
+| GET | `/payroll/schedules` | HR,SA | Returns BIWEEKLY/WEEKLY groups as schedule records |
+
+### Employee Salary Config
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/employees/:employeeId/salary` | HR,SA,EMP(own) | EMP sees own with bankAccountNumber masked (XXXX1234). Includes calculatedComponents[], history[] |
+| POST | `/payroll/employees/:employeeId/salary` | HR,SA | 201. Required: payGroupId, annualCtc, effectiveFrom. Closes previous record's effectiveTo |
+| PATCH | `/payroll/employees/:employeeId/salary` | HR,SA | 201. Always creates new history record, never edits in place |
+
+### Employee Payslips (self-service)
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/employees/:employeeId/payslips` | HR,SA,EMP(own) | `?page&limit&year`. Paginated list. EMPLOYEE sees own only. |
+| GET | `/payroll/employees/:employeeId/payslips/:payslipId` | HR,SA,EMP(own) | Full detail: earnings[], deductions[], oneTimeAdditions[], oneTimeDeductions[], attendance fields |
+
+### Payroll Runs
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/runs` | HR,SA | `?page&limit&year&status`. Paginated. status: DRAFT\|CALCULATING\|REVIEW\|APPROVED\|PAID\|CANCELLED |
+| POST | `/payroll/runs` | HR,SA | 201. Required: period (YYYY-MM). 409 RUN_EXISTS if non-CANCELLED run exists |
+| GET | `/payroll/runs/:id` | HR,SA | Includes `summary.byDepartment[]` and `summary.warnings[]` |
+| POST | `/payroll/runs/:id/calculate` | HR,SA | 202. DRAFT→REVIEW. Computes payslips for all employees with salary config |
+| POST | `/payroll/runs/:id/approve` | HR,SA | 200. REVIEW→APPROVED. Body: `{notes}` |
+| PATCH | `/payroll/runs/:id/mark-paid` | HR,SA | 200. APPROVED→PAID. Body: `{paidAt, paymentReference}`. Updates all payslips to PAID |
+| POST | `/payroll/runs/:id/cancel` | SA only | 200. Cannot cancel PAID runs. Body: `{reason}` |
+
+### Run Payslips
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/runs/:runId/payslips` | HR,SA | `?page&limit&departmentId&search`. Lists payslips in run |
+| GET | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Full detail same shape as employee self-service detail |
+| PATCH | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Add one-time adjustments. Body: `{oneTimeAdditions[], oneTimeDeductions[], notes}`. Recalculates net |
+| GET | `/payroll/runs/:runId/export` | HR,SA | `Content-Type: text/csv`. Payroll register download |
+
+### Formula Language (for FORMULA calculationType)
+Variables: any component code (e.g. BASIC, HRA), CTC (annualCtc/12), GROSS (sum of EARNINGs), NET (GROSS - DEDUCTIONs)
+Functions: MIN, MAX, IF, ROUND, FLOOR, CEIL, ABS
+Example: `"IF(BASIC > 15000, 200, 0)"` (professional tax)
