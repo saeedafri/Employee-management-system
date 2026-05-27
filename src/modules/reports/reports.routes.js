@@ -46,7 +46,6 @@ export default async function reportsRoutes(fastify) {
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
-        required: ['month', 'year'],
         properties: {
           month: { type: 'integer', minimum: 1, maximum: 12 },
           year: { type: 'integer', minimum: 2000, maximum: 2100 },
@@ -64,15 +63,13 @@ export default async function reportsRoutes(fastify) {
       security: [{ Bearer: [] }],
       body: {
         type: 'object',
-        required: ['report_type', 'frequency', 'email_recipients'],
+        required: ['frequency'],
         properties: {
+          reportType: { type: 'string', enum: ['attendance', 'leaves', 'payroll'] },
           report_type: { type: 'string', enum: ['attendance', 'leaves', 'payroll'] },
           frequency: { type: 'string', enum: ['WEEKLY', 'MONTHLY'] },
-          email_recipients: {
-            type: 'array',
-            items: { type: 'string', format: 'email' },
-            minItems: 1,
-          },
+          emailRecipients: { type: 'array', items: { type: 'string', format: 'email' }, minItems: 1 },
+          email_recipients: { type: 'array', items: { type: 'string', format: 'email' }, minItems: 1 },
         },
       },
     },

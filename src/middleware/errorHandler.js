@@ -5,6 +5,13 @@ export async function errorHandler(error, request, reply) {
   const requestId = request.id;
   const logger = request.log;
 
+  // Fastify body-parse errors (empty JSON body, wrong content-type, etc.)
+  if (error.code && error.code.startsWith('FST_ERR_CTP')) {
+    return reply.code(400).send(
+      errorResponse('INVALID_REQUEST', 'Invalid or malformed request body', null, requestId),
+    );
+  }
+
   // Fastify AJV schema validation errors
   if (error.code === 'FST_ERR_VALIDATION' && error.validation) {
     const details = error.validation.map((v) => ({
