@@ -2505,7 +2505,7 @@ Seed script: `npm run db:seed:photos`
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/payroll/employees/:employeeId/payslips` | HR,SA,EMP(own) | `?page&limit&year`. Paginated list. EMPLOYEE sees own only. |
-| GET | `/payroll/employees/:employeeId/payslips/:payslipId` | HR,SA,EMP(own) | Full detail: earnings[], deductions[], oneTimeAdditions[], oneTimeDeductions[], attendance fields |
+| GET | `/payroll/employees/:employeeId/payslips/:payslipId` | HR,SA,EMP(own) | Full detail: earnings[], deductions[], oneTimeAdditions[], oneTimeDeductions[], attendance fields, `documentUrl` (Cloudinary WebP URL or null) |
 
 ### Payroll Runs
 | Method | Path | Roles | Notes |
@@ -2522,7 +2522,7 @@ Seed script: `npm run db:seed:photos`
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/payroll/runs/:runId/payslips` | HR,SA | `?page&limit&departmentId&search`. Lists payslips in run |
-| GET | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Full detail same shape as employee self-service detail |
+| GET | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Full detail same shape as employee self-service detail. Includes `documentUrl` |
 | PATCH | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Add one-time adjustments. Body: `{oneTimeAdditions[], oneTimeDeductions[], notes}`. Recalculates net |
 | GET | `/payroll/runs/:runId/export` | HR,SA | `Content-Type: text/csv`. Payroll register download |
 

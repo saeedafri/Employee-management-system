@@ -375,6 +375,7 @@ function fmtPayslipDetail(ps) {
     paymentDate: ps.paymentDate ? ps.paymentDate.toISOString().split('T')[0] : null,
     paymentReference: ps.paymentReference ?? null,
     payrollRunId: ps.payrollRunId,
+    documentUrl: ps.documentUrl ?? null,
     generatedAt: ps.generatedAt,
   };
 }
