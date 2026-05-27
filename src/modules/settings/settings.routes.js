@@ -9,7 +9,7 @@ export default async function settingsRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
   }, (request, reply) => settingsController.getTenantConfig(request, reply));
 
   fastify.patch('/settings/tenant', {

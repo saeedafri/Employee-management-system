@@ -473,6 +473,7 @@ export async function getCurrentUser(db, userId) {
     id: user.id,
     email: user.email,
     memberType: user.memberType,
+    tenantId: user.tenantId,
     employeeId: user.employee?.id,
     status: user.status,
     employee: user.employee,

@@ -124,6 +124,7 @@ export async function employeesRoutes(fastify) {
           200: { type: 'object', additionalProperties: true },
         },
       },
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
     },
     updateEmployee,
   );

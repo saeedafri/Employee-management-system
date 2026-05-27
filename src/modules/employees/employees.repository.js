@@ -50,7 +50,7 @@ export async function listEmployees(tenantId, filters = {}) {
 
 export async function getEmployeeById(employeeId, tenantId) {
   return prisma.employee.findFirst({
-    where: { id: employeeId, tenantId },
+    where: { id: employeeId, tenantId, deletedAt: null },
     include: {
       user: { select: { email: true, memberType: true, status: true, mfaEnabled: true } },
       department: { select: { id: true, name: true } },
@@ -94,7 +94,7 @@ export async function updateEmployee(employeeId, tenantId, data) {
 export async function softDeleteEmployee(employeeId) {
   return prisma.employee.update({
     where: { id: employeeId },
-    data: { employmentStatus: 'TERMINATED', updatedBy: 'system' },
+    data: { employmentStatus: 'TERMINATED', deletedAt: new Date(), updatedBy: 'system' },
   });
 }
 
