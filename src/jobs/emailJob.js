@@ -1,9 +1,22 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 
-const resend = config.resendApiKey ? new Resend(config.resendApiKey) : null;
-const FROM = 'EMS <onboarding@resend.dev>';
+let transporter = null;
+
+function getTransporter() {
+  if (transporter) return transporter;
+  transporter = nodemailer.createTransport({
+    host: config.smtpHost,
+    port: config.smtpPort,
+    secure: config.smtpPort === 465,
+    auth: {
+      user: config.smtpUser,
+      pass: config.smtpPass,
+    },
+  });
+  return transporter;
+}
 
 function renderEmailTemplate(template, data) {
   const brandColor = '#4F46E5';
@@ -56,27 +69,22 @@ function renderEmailTemplate(template, data) {
 async function sendEmail(to, subject, template, data) {
   if (config.isTesting) return { success: true, devMode: true };
 
-  if (!resend) {
-    logger.warn({ type: 'email_skipped', reason: 'RESEND_API_KEY not set' });
-    return { success: false, reason: 'RESEND_API_KEY not configured' };
+  if (!config.smtpUser || !config.smtpPass) {
+    logger.warn({ type: 'email_skipped', reason: 'SMTP not configured' });
+    return { success: false, reason: 'SMTP not configured' };
   }
 
   try {
     const html = renderEmailTemplate(template, data);
-    const { data: result, error } = await resend.emails.send({
-      from: FROM,
+    const info = await getTransporter().sendMail({
+      from: `EMS <${config.smtpFrom}>`,
       to,
       subject,
       html,
     });
 
-    if (error) {
-      logger.error({ type: 'email_failed', to, template, error: error.message });
-      return { success: false, error: error.message };
-    }
-
-    logger.info({ type: 'email_sent', to, template, messageId: result.id });
-    return { success: true, messageId: result.id };
+    logger.info({ type: 'email_sent', to, template, messageId: info.messageId });
+    return { success: true, messageId: info.messageId };
   } catch (err) {
     logger.error({ type: 'email_failed', to, template, error: err.message });
     return { success: false, error: err.message };
