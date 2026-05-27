@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "NODE_ENV=development node --watch src/server.js",
     "start": "NODE_ENV=production node src/server.js",
+    "build": "prisma generate",
     "postinstall": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:prod": "prisma migrate deploy",
@@ -31,7 +32,8 @@
     "api:capture": "node scripts/captureApiResponses.js",
     "perf:api": "node scripts/perfApiSmoke.js",
     "db:seed:photos": "node prisma/seedPhotos.js",
-    "db:seed:ui": "node prisma/seedUIData.js"
+    "db:seed:ui": "node prisma/seedUIData.js",
+    "db:seed:payroll": "node prisma/seedPayroll.mjs"
   },
   "keywords": [
     "employee-management",
