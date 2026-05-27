@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-05-27** (bulk approve live-tested)
+> **Last verified: 2026-05-27** (bulk approve live-tested + null balance fix deployed)
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
@@ -1486,16 +1486,19 @@ Alias for `GET /leave/balance` — used by the employee dashboard widget. Same r
 }
 ```
 
-- `succeeded` — array of IDs that were successfully approved
-- `failed` — array of `{ id, code, message }` for each that couldn't be processed
+- `succeeded` — flat array of string IDs successfully approved
+- `failed` — array of `{ id, code, message }` for each that failed
 - Each request is processed independently — partial success is normal
+- `code` is always `"ERROR"` in failed items (no per-item error codes)
 
-**Live-verified:** `POST /api/v1/leave/requests/bulk/approve` returns 200 with this shape. Already-approved IDs appear in `failed` with `"Cannot approve leave with status APPROVED"`.
+> **Fixed 2026-05-27:** No longer crashes with `"Cannot read properties of null (reading 'pending')"` when a leave request has no LeaveBalance record (common with seeded/imported data). Balance update is safely skipped; approve still succeeds.
 
 ---
 
 ### `POST /leave/requests/bulk-deny` (also: `POST /leave/requests/bulk/reject`)
-Same response shape as bulk-approve. `comment` is used as the rejection reason (optional — defaults to "Bulk denied" if omitted).
+Same response shape as bulk-approve. `comment` optional — defaults to `"Bulk denied"` if omitted.
+
+> Same null-balance fix applied — deny no longer crashes on requests without a LeaveBalance row.
 
 ---
 
@@ -1795,20 +1798,36 @@ Reassigns all active employees to the target department, then soft-deletes the s
 **Response `data`:**
 ```json
 {
-  "succeeded": ["lr_a"],
+  "succeeded": ["lr_a", "lr_c"],
   "failed": [{ "id": "lr_b", "code": "ERROR", "message": "Cannot approve leave with status APPROVED" }]
 }
 ```
 
-- `succeeded` — flat array of string IDs that were approved
-- `failed[].code` — always `"ERROR"` (not a specific error code per item)
-- `failed[].message` — human-readable reason (e.g. `"Cannot approve leave with status APPROVED"`)
+- `succeeded` — flat array of string IDs that were successfully approved
+- `failed[].code` — always `"ERROR"` (not a specific code per item)
+- `failed[].message` — human-readable reason
+
+**Common failure messages:**
+| Message | Cause |
+|---------|-------|
+| `Cannot approve leave with status APPROVED` | Already approved |
+| `Cannot approve leave with status DENIED` | Already rejected |
+| `Leave request not found` | ID doesn't exist or belongs to another tenant |
+
+> **Fixed 2026-05-27:** Requests approved/rejected/withdrawn where no LeaveBalance row exists (seeded data) no longer crash with `"Cannot read properties of null (reading 'pending')"`. Balance update is safely skipped when no balance record exists.
 
 **Also available at:** `POST /leave/requests/bulk-approve` (legacy kebab path — same handler).
 
 #### `POST /leave/requests/bulk/reject`
 
-Same response shape as bulk/approve. `comment` optional — defaults to "Bulk denied".
+Same response shape as bulk/approve. `comment` optional — defaults to `"Bulk denied"`.
+
+**Common failure messages:**
+| Message | Cause |
+|---------|-------|
+| `Cannot reject leave with status DENIED` | Already rejected |
+| `Cannot reject leave with status APPROVED` | Already approved |
+| `Leave request not found` | ID not found |
 
 **Also available at:** `POST /leave/requests/bulk-deny` (legacy kebab path — same handler).
 
