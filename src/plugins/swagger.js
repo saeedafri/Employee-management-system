@@ -460,6 +460,67 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
 
+        // ── PAYROLL ──────────────────────────────────────────────────────────
+        '/payroll/components': {
+          get:  op('Payroll', 'List salary components. HR_ADMIN/SUPER_ADMIN. ?active=true|false', true),
+          post: op('Payroll', 'Create salary component. HR_ADMIN/SUPER_ADMIN. Required: name, code, type, calculationType, taxable', true, { responses: { 201: r201, 400: r400, 409: { description: 'CODE_EXISTS' } } }),
+        },
+        '/payroll/components/{id}': {
+          patch:  op('Payroll', 'Update component. code is immutable.', true, { parameters: idParam }),
+          delete: op('Payroll', 'Delete component. SUPER_ADMIN only.', true, { parameters: idParam, responses: { 200: r200, 403: r403, 409: { description: 'COMPONENT_IN_USE' } } }),
+        },
+        '/payroll/groups': {
+          get:  op('Payroll', 'List pay groups with components. HR_ADMIN/SUPER_ADMIN.', true),
+          post: op('Payroll', 'Create pay group. Required: name, code. Optional: currency, paySchedule, components[]', true, { responses: { 201: r201 } }),
+        },
+        '/payroll/groups/{id}': {
+          patch:  op('Payroll', 'Update pay group. code is immutable.', true, { parameters: idParam }),
+          delete: op('Payroll', 'Delete pay group. SUPER_ADMIN only.', true, { parameters: idParam, responses: { 200: r200, 403: r403, 409: { description: 'GROUP_HAS_EMPLOYEES' } } }),
+        },
+        '/payroll/schedules': {
+          get: op('Payroll', 'List non-monthly pay schedules. HR_ADMIN/SUPER_ADMIN.', true),
+        },
+        '/payroll/employees/{employeeId}/salary': {
+          get:   op('Payroll', 'Get employee salary config. HR sees full; EMPLOYEE sees own (bank masked). ?employeeId in path.', true),
+          post:  op('Payroll', 'Set employee salary. HR_ADMIN/SUPER_ADMIN. Required: payGroupId, annualCtc, effectiveFrom. Creates history.', true, { responses: { 201: r201 } }),
+          patch: op('Payroll', 'Update employee salary. Creates new record, closes old. Same as POST but all fields optional.', true, { responses: { 201: r201 } }),
+        },
+        '/payroll/employees/{employeeId}/payslips': {
+          get: op('Payroll', 'List employee payslips. HR sees any; EMPLOYEE sees own. ?page&limit&year', true),
+        },
+        '/payroll/employees/{employeeId}/payslips/{payslipId}': {
+          get: op('Payroll', 'Get payslip detail with earnings/deductions breakdown.', true),
+        },
+        '/payroll/runs': {
+          get:  op('Payroll', 'List payroll runs. HR_ADMIN/SUPER_ADMIN. ?page&limit&year&status', true),
+          post: op('Payroll', 'Initiate payroll run. Required: period (YYYY-MM). 409 if non-cancelled run exists for period.', true, { responses: { 201: r201, 409: { description: 'RUN_EXISTS' } } }),
+        },
+        '/payroll/runs/{id}': {
+          get: op('Payroll', 'Get payroll run detail with summary (byDepartment, warnings).', true, { parameters: idParam }),
+        },
+        '/payroll/runs/{id}/calculate': {
+          post: op('Payroll', 'Calculate run (DRAFT → REVIEW). Builds payslips for all employees with salary config. Returns 202.', true, { parameters: idParam, responses: { 202: r201 } }),
+        },
+        '/payroll/runs/{id}/approve': {
+          post: op('Payroll', 'Approve run (REVIEW → APPROVED). HR_ADMIN/SUPER_ADMIN. Optional: notes', true, { parameters: idParam }),
+        },
+        '/payroll/runs/{id}/mark-paid': {
+          patch: op('Payroll', 'Mark run PAID (APPROVED → PAID). HR_ADMIN/SUPER_ADMIN. Optional: paidAt, paymentReference', true, { parameters: idParam }),
+        },
+        '/payroll/runs/{id}/cancel': {
+          post: op('Payroll', 'Cancel run. SUPER_ADMIN only. Cannot cancel PAID runs.', true, { parameters: idParam }),
+        },
+        '/payroll/runs/{runId}/payslips': {
+          get: op('Payroll', 'List payslips in run. HR_ADMIN/SUPER_ADMIN. ?page&limit&departmentId&search', true),
+        },
+        '/payroll/runs/{runId}/payslips/{payslipId}': {
+          get:   op('Payroll', 'Get payslip detail within a run.', true),
+          patch: op('Payroll', 'Add one-time adjustments (bonus/deduction) to payslip. Body: oneTimeAdditions[], oneTimeDeductions[], notes', true),
+        },
+        '/payroll/runs/{runId}/export': {
+          get: op('Payroll', 'Export payroll register as CSV. Returns Content-Type: text/csv.', true),
+        },
+
         // ── AUDIT LOGS ───────────────────────────────────────────────────────
         '/audit-logs': {
           get: op('Audit Logs', 'List audit logs with filters', true, {
