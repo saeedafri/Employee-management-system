@@ -499,8 +499,6 @@ export async function getAttendanceAbsenteeism(tenantId, { startDate, endDate, d
 
 export async function getLeaveUtilization(tenantId, { year, departmentId, leaveTypeId } = {}) {
   const yr = year ? parseInt(year, 10) : new Date().getFullYear();
-  const startDate = new Date(yr, 0, 1);
-  const endDate   = new Date(yr, 11, 31, 23, 59, 59, 999);
 
   const empWhere = { tenantId, deletedAt: null };
   if (departmentId) empWhere.departmentId = departmentId;
@@ -508,7 +506,7 @@ export async function getLeaveUtilization(tenantId, { year, departmentId, leaveT
   const balanceWhere = { employee: empWhere };
   if (leaveTypeId) balanceWhere.leaveTypeId = leaveTypeId;
 
-  const [employees, leaveTypes, balances, requests] = await Promise.all([
+  const [employees, leaveTypes, balances] = await Promise.all([
     prisma.employee.findMany({
       where: empWhere,
       select: { id: true, firstName: true, lastName: true },
@@ -517,10 +515,6 @@ export async function getLeaveUtilization(tenantId, { year, departmentId, leaveT
     prisma.leaveBalance.findMany({
       where: balanceWhere,
       select: { employeeId: true, leaveTypeId: true, balance: true, used: true, pending: true },
-    }),
-    prisma.leaveRequest.findMany({
-      where: { tenantId, status: 'APPROVED', startDate: { gte: startDate, lte: endDate } },
-      select: { employeeId: true, leaveTypeId: true, totalDays: true },
     }),
   ]);
 

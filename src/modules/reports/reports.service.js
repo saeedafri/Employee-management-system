@@ -310,7 +310,7 @@ export async function getPayrollCtcAnalysis(tenantId, filters) {
   return { meta: reportMeta('CTC Analysis Report', filters), ...data };
 }
 
-export async function exportReport(tenantId, userId, { reportType, format, filters }) {
+export async function exportReport(tenantId, userId, { reportType, format, filters: _filters }) {
   const VALID_TYPES = [
     'workforce/headcount', 'workforce/turnover', 'workforce/demographics',
     'attendance/summary', 'attendance/absenteeism',

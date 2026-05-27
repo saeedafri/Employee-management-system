@@ -12,6 +12,7 @@ const productionHosts = ['render.com', 'supabase.co', 'railway.app', 'neon.tech'
 const isProductionDb = productionHosts.some((h) => dbUrl.includes(h));
 if (isProductionDb) {
   const host = dbUrl.split('@')[1]?.split('/')[0] || 'unknown host';
+  // eslint-disable-next-line no-console
   console.error(`\n⛔  BLOCKED: DATABASE_URL points to production (${host}).\n    npm test must run against a local test DB.\n    Set DATABASE_URL=postgresql://localhost:5432/ems_test and NODE_ENV=test.\n`);
   process.exit(1);
 }

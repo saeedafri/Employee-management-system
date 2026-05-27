@@ -522,9 +522,9 @@ export async function getDepartmentPerformance(tenantId, range = '30d', managerE
     const deptEmpsArr = allEmps.filter(e => e.departmentId === dept.id);
     const avgTenureMonths = deptEmpsArr.length > 0
       ? Math.round(deptEmpsArr.reduce((s, e) => {
-          if (!e.joinedOn) return s;
-          return s + (Date.now() - new Date(e.joinedOn).getTime()) / (1000 * 60 * 60 * 24 * 30.44);
-        }, 0) / deptEmpsArr.length * 10) / 10
+        if (!e.joinedOn) return s;
+        return s + (Date.now() - new Date(e.joinedOn).getTime()) / (1000 * 60 * 60 * 24 * 30.44);
+      }, 0) / deptEmpsArr.length * 10) / 10
       : 0;
 
     return {
