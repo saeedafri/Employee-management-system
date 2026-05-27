@@ -13,12 +13,8 @@
 
 import { PrismaClient } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
-import { createCanvas } from 'canvas';
 import sharp from 'sharp';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import path from 'path';
-import { readFileSync, existsSync } from 'fs';
 
 dotenv.config();
 

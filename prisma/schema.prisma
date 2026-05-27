@@ -1008,6 +1008,7 @@ model Payslip {
   oneTimeAdditionsJson Json?
   oneTimeDeductionsJson Json?
   notes                String?
+  documentUrl          String?
   generatedAt          DateTime?
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt
