@@ -379,13 +379,11 @@ async function main() {
       data: {
         tenantId,
         companyName: 'Acme Corp',
-        workDaysPerWeek: 5,
-        workHoursPerDay: 9,
-        workStartTime: '09:00',
-        workEndTime: '18:00',
-        fiscalYearStart: '04-01',
-        fiscalYearEnd: '03-31',
-        weekendDays: ['SATURDAY', 'SUNDAY'],
+        timezone: 'Asia/Kolkata',
+        workingHoursStart: '09:00',
+        workingHoursEnd: '18:00',
+        fiscalYearStart: 4,
+        fiscalYearEnd: 3,
       },
     });
     console.log('  ✓ Tenant config created');

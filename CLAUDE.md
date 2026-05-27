@@ -1,5 +1,5 @@
 # EMS — Employee Management System (Backend)
-> Last deep-analysis: 2026-05-23
+> Last deep-analysis: 2026-05-27
 
 ## Project Overview
 Production-grade multi-tenant HRMS REST API. Fastify v4 + Prisma + PostgreSQL.  
@@ -15,7 +15,7 @@ Deployed on **Render**. GitHub: `github.com/saeedafri/Employee-management-system
 | DB | PostgreSQL (Render) |
 | Auth | JWT access tokens + refresh token rotation (httpOnly cookie) |
 | Password | Argon2id (type:2, memoryCost:19456, timeCost:2, parallelism:1) |
-| Email | SMTP via Nodemailer — Ethereal (dev, preview at ethereal.email), Gmail/Resend (prod) |
+| Email | **Resend** (HTTP API via `RESEND_API_KEY`) — `emailJob.js` uses Resend directly; `EMAIL_PROVIDER` env var not used by password reset/OTP flows |
 | File Storage | Cloudinary (optional) — `CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET` env vars |
 | Export | Real XLSX via ExcelJS — styled headers, alternating rows, auto-width |
 | Queue | **REMOVED** — Redis/BullMQ removed; all ops are synchronous |
@@ -317,18 +317,41 @@ EMS/
 |--------|------|
 | GET | /logs |
 
+### Notifications (`/api/v1/notifications/*`)
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | /notifications | List notifications (own). `?page&limit&unreadOnly&since` |
+| GET | /notifications/unread-count | Bell-icon badge count |
+| PATCH | /notifications/:id/read | Mark single read |
+| POST | /notifications/:id/read | Alias (UI-team compat) |
+| PATCH | /notifications/read-all | Mark all read |
+| POST | /notifications/read-all | Alias (UI-team compat) |
+| GET | /notifications/stream | SSE stream — pass `?token=<accessToken>` |
+
+### Search (`/api/v1/search`)
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | /search | `?q=<term>` — searches employees, departments, leave, holidays |
+
 ---
 
-## NOT IMPLEMENTED ❌ (Prisma models exist, no src/modules/ directory)
+## Module Status
 
-| Feature | Prisma Model | Status |
-|---------|-------------|--------|
-| Notifications | `Notification` | No module dir, no routes, not in app.js |
-| Payroll | No Prisma model | No module dir, no routes |
-| Permissions API | `Permission`, `RolePermission`, `UserRole`, `Role` | Models exist, no CRUD API |
-| Resignations | `Resignation` | No module dir, no routes |
-| File/Document Upload | `EmployeeDocument` | ✅ Upload/list/delete implemented — needs Cloudinary env vars in Render |
-| MFA enforcement | `OtpChallenge` | Flow works but NOT enforced by default |
+### ✅ FULLY IMPLEMENTED (registered in app.js)
+| Feature | Module Path | Notes |
+|---------|------------|-------|
+| Notifications | `src/modules/notifications/` | List, unread-count, mark-read, mark-all-read, SSE stream at `/notifications/stream` |
+| Search | `src/modules/search/` | `GET /search?q=` — searches employees, departments, leave, holidays |
+| File/Document Upload | `EmployeeDocument` | POST/GET/DELETE `/employees/:id/documents` — needs Cloudinary env vars |
+| MFA / OTP | `OtpChallenge` | Flow works but NOT enforced by default |
+
+### ❌ NOT IMPLEMENTED (directory exists but empty)
+| Feature | Directory | Status |
+|---------|-----------|--------|
+| Payroll | `src/modules/payroll/` | Empty dir — no routes, no Prisma model |
+| Permissions CRUD | `src/modules/permissions/` | Empty dir — models exist, no API |
+| Resignations | `src/modules/resignations/` | Empty dir — `Resignation` Prisma model exists |
+| Files (generic) | `src/modules/files/` | Empty dir — use `/employees/:id/documents` instead |
 
 ---
 

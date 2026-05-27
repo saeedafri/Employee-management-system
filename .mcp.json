@@ -11,14 +11,15 @@
       }
     },
     "render": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-render"
-      ],
-      "env": {
-        "RENDER_API_KEY": "${RENDER_API_KEY}"
+      "type": "http",
+      "url": "https://mcp.render.com/mcp",
+      "headers": {
+        "Authorization": "Bearer rnd_HjKa30DlOa75z7X8yJefXNf90f6o"
       }
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=ovqqisdmkwrghchblkom"
     }
   }
 }
