@@ -1251,6 +1251,78 @@ Payroll summary data.
 
 ---
 
+### Phase 2 Report Endpoints (Domain 4)
+
+All Phase 2 report endpoints require **HR_ADMIN or SUPER_ADMIN**. All responses follow the shape:
+```json
+{ "success": true, "data": { "meta": { "reportName": "...", "generatedAt": "...", "filters": {} }, "summary": {}, "chartData": [], "tableData": { "items": [], "pagination": {} } } }
+```
+
+#### `GET /reports/workforce/headcount`
+Query: `?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&departmentId=`
+- `data.summary`: `currentHeadcount`, `changeFromStart`, `changePercent`, `netHires`, `netExits`
+- `data.chartData[]`: `month`, `monthLabel`, `headcount`, `hires`, `exits`
+- `data.tableData.items[]`: `departmentName`, `startHeadcount`, `endHeadcount`, `hires`, `exits`, `changePercent`
+
+#### `GET /reports/workforce/turnover`
+Query: `?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&departmentId=`
+- `data.summary`: `totalExits`, `voluntaryExits`, `involuntaryExits`, `averageHeadcount`, `attritionRate`
+- `data.chartData[]`: `month`, `monthLabel`, `exits`, `attritionRate`
+- `data.tableData.items[]`: `employeeId`, `employeeCode`, `employeeName`, `departmentName`, `designation`, `exitDate`, `exitType`, `tenure`
+
+#### `GET /reports/workforce/demographics`
+Query: `?departmentId=`
+- `data.byEmploymentType[]`: `type`, `count`, `percent`
+- `data.byGender[]`: `gender`, `count`, `percent`
+- `data.byDepartment[]`: `departmentName`, `count`, `percent`
+
+#### `GET /reports/attendance/summary`
+Query: `?month=YYYY-MM&departmentId=&page=1&limit=20`
+- `data.summary`: `month`, `totalWorkingDays`, `avgAttendancePercent`, `totalPresent`, `totalAbsent`, `totalLeave`
+- `data.tableData.items[]`: `employeeId`, `employeeCode`, `employeeName`, `departmentName`, `presentDays`, `absentDays`, `leaveDays`, `wfhDays`, `halfDays`, `lateDays`, `attendancePercent`
+
+#### `GET /reports/attendance/absenteeism`
+Query: `?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&departmentId=`
+- `data.chartData[]`: `month`, `monthLabel`, `absenteeismRate`, `absences`, `employees`
+- `data.tableData.items[]`: `employeeId`, `employeeName`, `absentDays`, `unauthorizedAbsences`, `leaveDays`, `absenteeismRate`
+
+#### `GET /reports/leave/utilization`
+Query: `?year=2026&departmentId=&leaveTypeId=`
+- `data.summary`: `year`, `totalAllocated`, `totalTaken`, `totalPending`, `utilizationRate`, `avgDaysPerEmployee`
+- `data.chartData[]`: `leaveTypeName`, `leaveTypeCode`, `allocated`, `taken`, `pending`, `utilizationRate`
+- `data.tableData.items[]`: `employeeId`, `employeeName`, per-leave-type fields (e.g. `annual_leaveAllocated`, `annual_leaveTaken`, `annual_leaveBalance`)
+
+#### `GET /reports/leave/pending`
+Query: `?departmentId=&leaveTypeId=&page=1&limit=20`
+- `data.tableData.items[]`: `id`, `referenceNo`, `employeeName`, `leaveTypeName`, `startDate`, `endDate`, `totalDays`, `reason`, `appliedAt`, `daysPending`
+
+#### `GET /reports/payroll/summary`
+Query: `?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&departmentId=`
+- `data.summary`: `totalPayrollCost`, `avgMonthlyPayroll`, `totalEmployees`, `currency`, `monthsIncluded`
+- `data.chartData[]`: `month`, `monthLabel`, `totalGross`, `totalDeductions`, `totalNet`, `employeeCount`
+- `data.tableData.items[]`: `departmentName`, `employeeCount`, `totalGross`, `totalDeductions`, `totalNet`, `avgNetPerEmployee`
+
+> **Note:** Payroll cost is estimated from headcount (no payroll module yet). FULL_TIME: 80,000/month, PART_TIME/CONTRACT: 40,000/month, INTERNSHIP: 20,000/month gross.
+
+#### `GET /reports/payroll/ctc-analysis`
+Query: `?departmentId=`
+- `data.bands[]`: `label`, `count`, `percent` (4 bands: <₹5L, ₹5L–₹10L, ₹10L–₹20L, >₹20L)
+- `data.percentiles`: `p25`, `p50`, `p75`, `p90`
+
+#### `POST /reports/export`
+**Body:**
+```json
+{ "reportType": "workforce/headcount", "format": "CSV", "filters": {} }
+```
+Valid `reportType` values: `workforce/headcount`, `workforce/turnover`, `workforce/demographics`, `attendance/summary`, `attendance/absenteeism`, `leave/utilization`, `leave/pending`, `payroll/summary`, `payroll/ctc-analysis`
+
+Returns 202:
+```json
+{ "success": true, "data": { "jobId": "...", "status": "PENDING", "message": "Export queued. Use /export/:job_id/download once ready." } }
+```
+
+---
+
 ## Audit Logs
 
 ### `GET /audit-logs`

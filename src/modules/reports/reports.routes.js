@@ -151,4 +151,98 @@ export default async function reportsRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(['HR_ADMIN'])],
   }, (request, reply) => reportsController.getExportHistory(request, reply));
+
+  // ── Domain 4 — Phase 2 Reports ─────────────────────────────────────────────
+
+  const adminRoles = ['HR_ADMIN', 'SUPER_ADMIN'];
+  const commonQs = {
+    type: 'object',
+    properties: {
+      startDate:    { type: 'string', description: 'YYYY-MM-DD' },
+      endDate:      { type: 'string', description: 'YYYY-MM-DD' },
+      departmentId: { type: 'string' },
+    },
+  };
+
+  fastify.get('/reports/workforce/headcount', {
+    schema: { tags: ['Reports'], description: 'Headcount over time — monthly headcount, hires, exits per dept', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getWorkforceHeadcount(req, rep));
+
+  fastify.get('/reports/workforce/turnover', {
+    schema: { tags: ['Reports'], description: 'Attrition/turnover — exits over the period', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getWorkforceTurnover(req, rep));
+
+  fastify.get('/reports/workforce/demographics', {
+    schema: {
+      tags: ['Reports'], description: 'Breakdown by employment type, gender, department', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { departmentId: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getWorkforceDemographics(req, rep));
+
+  fastify.get('/reports/attendance/summary', {
+    schema: {
+      tags: ['Reports'], description: 'Monthly attendance summary per employee', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { month: { type: 'string', description: 'YYYY-MM' }, departmentId: { type: 'string' }, page: { type: 'integer', default: 1 }, limit: { type: 'integer', default: 20 } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getAttendanceSummaryReport(req, rep));
+
+  fastify.get('/reports/attendance/absenteeism', {
+    schema: { tags: ['Reports'], description: 'Absenteeism trend — unauthorized absences over time', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getAttendanceAbsenteeism(req, rep));
+
+  fastify.get('/reports/leave/utilization', {
+    schema: {
+      tags: ['Reports'], description: 'Leave utilization — how much allocated leave is being used', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { year: { type: 'string' }, departmentId: { type: 'string' }, leaveTypeId: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getLeaveUtilization(req, rep));
+
+  fastify.get('/reports/leave/pending', {
+    schema: {
+      tags: ['Reports'], description: 'All pending leave requests across the org', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { departmentId: { type: 'string' }, leaveTypeId: { type: 'string' }, page: { type: 'integer', default: 1 }, limit: { type: 'integer', default: 20 } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getLeavePending(req, rep));
+
+  fastify.get('/reports/payroll/summary', {
+    schema: { tags: ['Reports'], description: 'Payroll cost by month and department', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getPayrollSummaryReport(req, rep));
+
+  fastify.get('/reports/payroll/ctc-analysis', {
+    schema: {
+      tags: ['Reports'], description: 'CTC band distribution and salary percentile analysis', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { departmentId: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getPayrollCtcAnalysis(req, rep));
+
+  fastify.post('/reports/export', {
+    schema: {
+      tags: ['Reports'], description: 'Export a report as CSV', security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['reportType'],
+        properties: {
+          reportType: { type: 'string', description: 'e.g. workforce/headcount, attendance/summary, leave/pending, payroll/summary' },
+          format: { type: 'string', enum: ['CSV'], default: 'CSV' },
+          filters: { type: 'object', additionalProperties: true },
+        },
+      },
+      response: { 202: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.exportReport(req, rep));
 }

@@ -417,6 +417,49 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
 
+        // ── PHASE 2 REPORTS ───────────────────────────────────────────────────
+        '/reports/workforce/headcount': {
+          get: op('Reports', 'Headcount over time — monthly headcount, hires, exits per dept. HR_ADMIN/SUPER_ADMIN only. ?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&departmentId=', true),
+        },
+        '/reports/workforce/turnover': {
+          get: op('Reports', 'Attrition/turnover — exits over the period with per-employee table. HR_ADMIN/SUPER_ADMIN only.', true),
+        },
+        '/reports/workforce/demographics': {
+          get: op('Reports', 'Breakdown by employment type, gender, department. HR_ADMIN/SUPER_ADMIN only. ?departmentId=', true),
+        },
+        '/reports/attendance/summary': {
+          get: op('Reports', 'Monthly attendance summary per employee. HR_ADMIN/SUPER_ADMIN only. ?month=YYYY-MM&departmentId=&page=&limit=', true),
+        },
+        '/reports/attendance/absenteeism': {
+          get: op('Reports', 'Absenteeism trend — unauthorized absences over time. HR_ADMIN/SUPER_ADMIN only.', true),
+        },
+        '/reports/leave/utilization': {
+          get: op('Reports', 'Leave utilization — how much allocated leave is being used. HR_ADMIN/SUPER_ADMIN only. ?year=&departmentId=&leaveTypeId=', true),
+        },
+        '/reports/leave/pending': {
+          get: op('Reports', 'All pending leave requests across the org. HR_ADMIN/SUPER_ADMIN only. ?departmentId=&leaveTypeId=&page=&limit=', true),
+        },
+        '/reports/payroll/summary': {
+          get: op('Reports', 'Payroll cost by month and department. HR_ADMIN/SUPER_ADMIN only.', true),
+        },
+        '/reports/payroll/ctc-analysis': {
+          get: op('Reports', 'CTC band distribution and salary percentile analysis. HR_ADMIN/SUPER_ADMIN only. ?departmentId=', true),
+        },
+        '/reports/export': {
+          post: op('Reports', 'Export a report as CSV. HR_ADMIN/SUPER_ADMIN only. reportType: workforce/headcount|workforce/turnover|workforce/demographics|attendance/summary|attendance/absenteeism|leave/utilization|leave/pending|payroll/summary|payroll/ctc-analysis', true, {
+            responses: { 202: r201 },
+            parameters: [{ in: 'body', name: 'body', required: true, schema: {
+              type: 'object',
+              required: ['reportType'],
+              properties: {
+                reportType: { type: 'string', description: 'e.g. workforce/headcount, attendance/summary' },
+                format: { type: 'string', enum: ['CSV'], default: 'CSV' },
+                filters: { type: 'object', additionalProperties: true },
+              },
+            }}],
+          }),
+        },
+
         // ── AUDIT LOGS ───────────────────────────────────────────────────────
         '/audit-logs': {
           get: op('Audit Logs', 'List audit logs with filters', true, {

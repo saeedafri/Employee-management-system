@@ -258,3 +258,72 @@ export async function getExportHistory(tenantId, page, limit, status) {
     page,
   };
 }
+
+// ── Domain 4 service wrappers ─────────────────────────────────────────────────
+
+function reportMeta(reportName, filters) {
+  return { reportName, generatedAt: new Date().toISOString(), filters };
+}
+
+export async function getWorkforceHeadcount(tenantId, filters) {
+  const data = await reportsRepository.getWorkforceHeadcount(tenantId, filters);
+  return { meta: reportMeta('Headcount Report', filters), ...data };
+}
+
+export async function getWorkforceTurnover(tenantId, filters) {
+  const data = await reportsRepository.getWorkforceTurnover(tenantId, filters);
+  return { meta: reportMeta('Workforce Turnover Report', filters), ...data };
+}
+
+export async function getWorkforceDemographics(tenantId, filters) {
+  const data = await reportsRepository.getWorkforceDemographics(tenantId, filters);
+  return { meta: reportMeta('Workforce Demographics Report', filters), ...data };
+}
+
+export async function getAttendanceSummaryReport(tenantId, filters) {
+  const data = await reportsRepository.getAttendanceSummaryReport(tenantId, filters);
+  return { meta: reportMeta('Attendance Summary Report', filters), ...data };
+}
+
+export async function getAttendanceAbsenteeism(tenantId, filters) {
+  const data = await reportsRepository.getAttendanceAbsenteeism(tenantId, filters);
+  return { meta: reportMeta('Absenteeism Report', filters), ...data };
+}
+
+export async function getLeaveUtilization(tenantId, filters) {
+  const data = await reportsRepository.getLeaveUtilization(tenantId, filters);
+  return { meta: reportMeta('Leave Utilization Report', filters), ...data };
+}
+
+export async function getLeavePending(tenantId, filters) {
+  const data = await reportsRepository.getLeavePending(tenantId, filters);
+  return { meta: reportMeta('Pending Leave Report', filters), ...data };
+}
+
+export async function getPayrollSummaryReport(tenantId, filters) {
+  const data = await reportsRepository.getPayrollSummaryReport(tenantId, filters);
+  return { meta: reportMeta('Payroll Summary Report', filters), ...data };
+}
+
+export async function getPayrollCtcAnalysis(tenantId, filters) {
+  const data = await reportsRepository.getPayrollCtcAnalysis(tenantId, filters);
+  return { meta: reportMeta('CTC Analysis Report', filters), ...data };
+}
+
+export async function exportReport(tenantId, userId, { reportType, format, filters }) {
+  const VALID_TYPES = [
+    'workforce/headcount', 'workforce/turnover', 'workforce/demographics',
+    'attendance/summary', 'attendance/absenteeism',
+    'leave/utilization', 'leave/pending',
+    'payroll/summary', 'payroll/ctc-analysis',
+  ];
+  if (!VALID_TYPES.includes(reportType)) {
+    throw new AppError('Invalid reportType', 'INVALID_REPORT_TYPE', 400);
+  }
+  if (format !== 'CSV') {
+    throw new AppError('Only CSV format is supported', 'UNSUPPORTED_FORMAT', 400);
+  }
+
+  const exportRecord = await reportsRepository.createReportExport(tenantId, userId, reportType, format);
+  return { jobId: exportRecord.id, status: 'PENDING', message: 'Export queued. Use /export/:job_id/download once ready.' };
+}
