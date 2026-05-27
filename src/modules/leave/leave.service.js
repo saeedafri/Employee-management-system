@@ -199,10 +199,12 @@ export async function approveLeaveRequest(tenantId, leaveRequestId, approverId, 
     leaveRequest.leaveTypeId,
   );
 
-  await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
-    pending: balance.pending - leaveRequest.totalDays,
-    used: balance.used + leaveRequest.totalDays,
-  });
+  if (balance) {
+    await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
+      pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+      used: balance.used + leaveRequest.totalDays,
+    });
+  }
 
   notifyLeaveApproved(tenantId, leaveRequest.employeeId, updated).catch(() => {});
 
@@ -237,9 +239,11 @@ export async function rejectLeaveRequest(tenantId, leaveRequestId, approverId, c
     leaveRequest.leaveTypeId,
   );
 
-  await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
-    pending: balance.pending - leaveRequest.totalDays,
-  });
+  if (balance) {
+    await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
+      pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+    });
+  }
 
   notifyLeaveDenied(tenantId, leaveRequest.employeeId, updated).catch(() => {});
 
@@ -279,9 +283,11 @@ export async function withdrawLeaveRequest(tenantId, employeeId, leaveRequestId)
     leaveRequest.leaveTypeId,
   );
 
-  await leaveRepository.updateLeaveBalance(tenantId, employeeId, leaveRequest.leaveTypeId, {
-    pending: balance.pending - leaveRequest.totalDays,
-  });
+  if (balance) {
+    await leaveRepository.updateLeaveBalance(tenantId, employeeId, leaveRequest.leaveTypeId, {
+      pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+    });
+  }
 
   notifyLeaveWithdrawn(tenantId, employeeId, updated).catch(() => {});
 
