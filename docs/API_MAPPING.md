@@ -2058,17 +2058,7 @@ Added `todayAttendance` (camelCase field names) and `leaveBalanceSummary` (top-3
 
 ---
 
-## Not Yet Implemented (Deferred)
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| `POST /auth/otp/initiate` | ❌ Not built | MFA challenge initiation. Current flow: `POST /auth/verify-otp` still works for existing users with OTP challenges. |
-| `POST /holidays/import` (.ics) | ❌ Not built | Requires .ics parsing library — flagged as separate ticket. |
-| Full S3 presign flow | ⚠️ Deviated | Cloudinary doesn't support anonymous PUT presign. Our presign returns our multipart endpoint instead. |
-
----
-
-## New Endpoints — Implemented 2026-05-26 (UI Team api_to_be_created.md)
+## New Endpoints — Implemented 2026-05-27 (UI Team api_to_be_created.md)
 
 ### `POST /auth/otp/initiate` — Public
 Send or resend OTP for an existing challenge. Used in MFA and forgot-password flows.

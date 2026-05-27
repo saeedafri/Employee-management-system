@@ -396,34 +396,50 @@ export async function denyRegularization(request, reply) {
 }
 
 export async function uploadRegularizationDocument(request, reply) {
-  const tenantId = request.tenant.id;
-  const { employeeId } = request.user;
-  const { id } = request.params;
+  try {
+    const tenantId = request.tenant.id;
+    const { employeeId } = request.user;
+    const { id } = request.params;
 
-  if (!employeeId) return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'No employee linked to your account', {}, request.id));
+    if (!employeeId) return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'No employee linked to your account', {}, request.id));
 
-  const reg = await prisma.attendanceRegularizationRequest.findFirst({ where: { id, tenantId } });
-  if (!reg) return reply.code(404).send(errorResponse('REGULARIZATION_NOT_FOUND', 'Regularization request not found', {}, request.id));
-  if (reg.employeeId !== employeeId) return reply.code(403).send(errorResponse('FORBIDDEN', 'Not your regularization request', {}, request.id));
-  if (reg.documentUrl) return reply.code(409).send(errorResponse('DOCUMENT_ALREADY_EXISTS', 'A document is already attached to this request', {}, request.id));
+    const reg = await prisma.attendanceRegularizationRequest.findFirst({ where: { id, tenantId } });
+    if (!reg) return reply.code(404).send(errorResponse('REGULARIZATION_NOT_FOUND', 'Regularization request not found', {}, request.id));
+    if (reg.employeeId !== employeeId) return reply.code(403).send(errorResponse('FORBIDDEN', 'Not your regularization request', {}, request.id));
+    if (reg.documentUrl) return reply.code(409).send(errorResponse('DOCUMENT_ALREADY_EXISTS', 'A document is already attached to this request', {}, request.id));
 
-  if (!isCloudinaryConfigured()) return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'File storage not configured', {}, request.id));
+    if (!isCloudinaryConfigured()) return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'File storage not configured', {}, request.id));
 
-  const data = await request.file();
-  if (!data) return reply.code(422).send(errorResponse('INVALID_FILE_TYPE', 'No file uploaded', {}, request.id));
+    const data = await request.file();
+    if (!data) return reply.code(422).send(errorResponse('INVALID_FILE_TYPE', 'No file uploaded', {}, request.id));
 
-  const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-  if (!allowed.includes(data.mimetype)) return reply.code(422).send(errorResponse('INVALID_FILE_TYPE', 'File must be PDF, JPG, PNG, DOC or DOCX', {}, request.id));
+    const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowed.includes(data.mimetype)) return reply.code(422).send(errorResponse('INVALID_FILE_TYPE', 'File must be PDF, JPG, PNG, DOC or DOCX', {}, request.id));
 
-  const chunks = [];
-  for await (const chunk of data.file) chunks.push(chunk);
-  const buffer = Buffer.concat(chunks);
-  if (buffer.length > 5 * 1024 * 1024) return reply.code(422).send(errorResponse('FILE_TOO_LARGE', 'File exceeds 5 MB limit', {}, request.id));
+    const chunks = [];
+    for await (const chunk of data.file) chunks.push(chunk);
+    const buffer = Buffer.concat(chunks);
+    if (buffer.length > 5 * 1024 * 1024) return reply.code(422).send(errorResponse('FILE_TOO_LARGE', 'File exceeds 5 MB limit', {}, request.id));
 
-  const uploaded = await uploadToCloudinary(buffer, { folder: `attendance/regularization/${id}`, resourceType: 'auto' });
-  await prisma.attendanceRegularizationRequest.update({ where: { id }, data: { documentUrl: uploaded.url } });
+    let uploaded;
+    try {
+      uploaded = await uploadToCloudinary(buffer, { folder: `ems/regularization/${id}`, resourceType: 'auto' });
+    } catch (uploadErr) {
+      request.log.error({ uploadErr }, 'Cloudinary upload failed');
+      return reply.code(502).send(errorResponse('UPLOAD_FAILED', 'File upload failed. Please try again.', {}, request.id));
+    }
+    await prisma.attendanceRegularizationRequest.update({ where: { id }, data: { documentUrl: uploaded.url } });
 
-  return reply.code(201).send(successResponse({ documentUrl: uploaded.url }));
+    return reply.code(201).send(successResponse({ documentUrl: uploaded.url }));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) {
+      return reply.status(error.statusCode || 400).send(
+        errorResponse(error.code, error.message, error.details, request.id),
+      );
+    }
+    throw error;
+  }
 }
 
 export async function getTeamWeekly(request, reply) {
