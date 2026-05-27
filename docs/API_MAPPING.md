@@ -2058,42 +2058,215 @@ Added `todayAttendance` (camelCase field names) and `leaveBalanceSummary` (top-3
 
 ---
 
-## New Endpoints — Implemented 2026-05-27 (UI Team api_to_be_created.md)
+## UI-Requested Endpoints — All Live ✅ (2026-05-28, fully tested end-to-end)
 
-### `POST /auth/otp/initiate` — Public
-Send or resend OTP for an existing challenge. Used in MFA and forgot-password flows.
-**Body:** `{ "challengeId": "uuid" }`
-**Response:** `{ challengeId, deliveryMethod, expiresAt, resendAvailableAt }`
-**Errors:** `CHALLENGE_NOT_FOUND` (404), `RESEND_TOO_SOON` (429), `MAX_RESENDS` (429)
+> All 7 endpoints from `api_to_be_created.md` are implemented and tested.
+> MSW mock handlers can be removed.
 
-### `POST /holidays/import` — HR_ADMIN, SUPER_ADMIN
-Upload `.ics` file. Returns `{ jobId, previewUrl }`. Job lives 15 min in memory.
-**Response 202:** `{ jobId: "imp_xxxx", previewUrl: "/api/v1/holidays/import/imp_xxxx/preview" }`
-**Errors:** `INVALID_FILE_TYPE` (422), `FILE_TOO_LARGE` (422), `PARSE_ERROR` (400)
+---
 
-### `GET /holidays/import/:jobId/preview` — HR_ADMIN, SUPER_ADMIN
-**Response:** `{ candidates: [{ name, date, isOptional, willOverwrite }], summary: { new, overwrites, skipped } }`
-**Error:** `JOB_NOT_FOUND` (404)
+### `POST /auth/otp/initiate` — Public ✅
 
-### `POST /holidays/import/:jobId/commit` — HR_ADMIN, SUPER_ADMIN
-**Body:** `{ "overwriteExisting": true }`
-**Response:** `{ imported, overwritten, skipped }`
-**Errors:** `JOB_NOT_FOUND` (404), `ALREADY_COMMITTED` (409)
+Send or resend OTP for an existing MFA challenge. Required when login returns `mfaRequired: true`.
 
-### `GET /employee/documents` — any authenticated (own only)
-Self-service document list for the logged-in employee.
-**Response:** `{ documents: [{ id, filename, category, sizeBytes, status, uploadedAt }] }`
-Status enum: `VERIFIED | PENDING | REJECTED`
+**Request body:**
+```json
+{ "challengeId": "c74f9dc8-55c2-47f7-a081-a73d01681886" }
+```
 
-### `GET /employee/dashboard` — leaveBalanceSummary ✅ live
-Field `leaveBalanceSummary` confirmed present: top-3 active leave types ordered by allowance desc.
-`[{ code, name, available }]`
+**Success response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "challengeId": "c74f9dc8-...",
+    "deliveryMethod": "EMAIL",
+    "expiresAt": "2026-05-27T18:43:43.526Z",
+    "resendAvailableAt": "2026-05-27T18:35:05.325Z"
+  },
+  "meta": {}
+}
+```
 
-### `POST /attendance/regularization/:id/documents` — EMPLOYEE, MANAGER (own)
-Attach supporting doc to a regularization request. One doc per request.
-**Body:** `multipart/form-data` field `document` (PDF/JPG/PNG/DOC/DOCX, max 5 MB)
-**Response 201:** `{ documentUrl: "https://res.cloudinary.com/..." }`
-**Errors:** `REGULARIZATION_NOT_FOUND` (404), `DOCUMENT_ALREADY_EXISTS` (409), `INVALID_FILE_TYPE` (422), `FILE_TOO_LARGE` (422), `STORAGE_NOT_CONFIGURED` (503)
+**Error responses:**
+
+| HTTP | Code | When |
+|------|------|------|
+| 404 | `CHALLENGE_NOT_FOUND` | challengeId unknown or expired |
+| 429 | `RESEND_TOO_SOON` | Called within 60 seconds of last send |
+| 429 | `MAX_RESENDS` | More than 3 resend attempts on this challenge |
+
+**How OTP challenges are created:** Login with a user that has `mfaEnabled: true` — the login response returns `{ mfaRequired: true, challengeId }` instead of tokens. Currently no users have MFA enabled by default.
+
+---
+
+### `POST /holidays/import` — HR_ADMIN, SUPER_ADMIN ✅
+
+Upload `.ics` iCalendar file to bulk-import holidays. Two-step: upload → preview → commit.
+
+**Request:** `multipart/form-data`, field `file`, `.ics` / `text/calendar`, max 1 MB.
+
+**Success response (202):**
+```json
+{
+  "success": true,
+  "data": {
+    "jobId": "imp_89eff8fa",
+    "previewUrl": "/api/v1/holidays/import/imp_89eff8fa/preview"
+  },
+  "meta": {}
+}
+```
+
+**Error responses:**
+
+| HTTP | Code | When |
+|------|------|------|
+| 403 | `FORBIDDEN` | MANAGER or EMPLOYEE role |
+| 422 | `INVALID_FILE_TYPE` | Not a `.ics` / `text/calendar` file |
+| 422 | `FILE_TOO_LARGE` | File exceeds 1 MB |
+| 400 | `PARSE_ERROR` | Malformed `.ics` content |
+
+**Notes:** Job is held in memory with 15-min TTL. No DB writes until commit.
+
+---
+
+### `GET /holidays/import/:jobId/preview` — HR_ADMIN, SUPER_ADMIN ✅
+
+Preview candidates from an upload job before committing.
+
+**Success response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "candidates": [
+      { "name": "Test Holiday A", "date": "2027-03-01", "isOptional": false, "willOverwrite": false },
+      { "name": "Test Holiday B", "date": "2027-04-01", "isOptional": true,  "willOverwrite": false }
+    ],
+    "summary": { "new": 2, "overwrites": 0, "skipped": 0 }
+  },
+  "meta": {}
+}
+```
+
+- `willOverwrite: true` → a holiday already exists for that date in this tenant
+- `isOptional` → mapped from `TRANSP:TRANSPARENT` in the `.ics`
+
+**Error:** `404 JOB_NOT_FOUND`
+
+---
+
+### `POST /holidays/import/:jobId/commit` — HR_ADMIN, SUPER_ADMIN ✅
+
+Persist holidays from a previewed import job to the DB.
+
+**Request body:**
+```json
+{ "overwriteExisting": true }
+```
+- `overwriteExisting: true` → upsert holidays that already exist for the same date
+- `overwriteExisting: false` → skip holidays whose date already exists (count in `skipped`)
+
+**Success response (200):**
+```json
+{
+  "success": true,
+  "data": { "imported": 3, "overwritten": 0, "skipped": 0 },
+  "meta": {}
+}
+```
+
+**Error responses:**
+
+| HTTP | Code | When |
+|------|------|------|
+| 404 | `JOB_NOT_FOUND` | jobId expired or never existed |
+| 409 | `ALREADY_COMMITTED` | commit called twice on same job |
+
+---
+
+### `GET /employee/documents` — any authenticated (own employee record only) ✅
+
+Self-service document list for the logged-in user's employee profile.
+
+**Success response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "documents": [
+      {
+        "id": "doc_a1b2c3",
+        "filename": "Aadhaar Card.pdf",
+        "category": "AADHAAR",
+        "sizeBytes": 2415616,
+        "status": "VERIFIED",
+        "uploadedAt": "2026-01-15T10:00:00.000Z"
+      }
+    ]
+  },
+  "meta": {}
+}
+```
+
+**Notes:**
+- Returns `documents: []` if the employee has no documents — never errors on empty list.
+- `status` enum: `VERIFIED | PENDING | REJECTED`
+- `400 NO_EMPLOYEE_RECORD` if user has no linked employee record (e.g. SUPER_ADMIN with no employee profile).
+- Distinct from `GET /employees/:id/documents` (HR admin, any employee).
+
+---
+
+### `GET /employee/dashboard` — leaveBalanceSummary field ✅
+
+Field `leaveBalanceSummary` is present in the live response. Top-3 active leave types.
+
+**Shape in response:**
+```json
+"leaveBalanceSummary": [
+  { "code": "ANNUAL", "name": "Annual Leave", "available": 21 },
+  { "code": "CASUAL", "name": "Casual Leave", "available": 10 },
+  { "code": "SICK",   "name": "Sick Leave",   "available": 10 }
+]
+```
+
+Returns `[]` if employee has no leave balance records.
+
+---
+
+### `POST /attendance/regularization/:id/documents` — EMPLOYEE, MANAGER (own requests only) ✅
+
+Attach a supporting document to a regularization request. One document per request.
+
+**Request:** `multipart/form-data`
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `document` | File | Yes | PDF, JPG, PNG, DOC, DOCX. Max 5 MB. Field name `file` also accepted. |
+
+**Success response (201):**
+```json
+{
+  "success": true,
+  "data": {
+    "documentUrl": "https://res.cloudinary.com/dmljxhmio/image/upload/v1.../document.png"
+  },
+  "meta": {}
+}
+```
+
+**Error responses:**
+
+| HTTP | Code | When |
+|------|------|------|
+| 403 | `FORBIDDEN` | HR/SA trying to upload on another employee's request |
+| 404 | `REGULARIZATION_NOT_FOUND` | `:id` unknown or not in this tenant |
+| 409 | `DOCUMENT_ALREADY_EXISTS` | Document already attached to this request |
+| 422 | `INVALID_FILE_TYPE` | Not PDF/JPG/PNG/DOC/DOCX |
+| 422 | `FILE_TOO_LARGE` | Exceeds 5 MB |
+| 502 | `UPLOAD_FAILED` | Cloudinary upload error (transient) |
+| 503 | `STORAGE_NOT_CONFIGURED` | Cloudinary env vars not set on server |
 
 ---
 
