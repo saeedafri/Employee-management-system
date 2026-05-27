@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-05-27**
+> **Last verified: 2026-05-27** (bulk approve live-tested)
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
@@ -1215,7 +1215,7 @@ Single audit log entry (direct object, not wrapped in `logs`).
 
 **Response `data`:**
 ```json
-{ "job_id": "uuid", "status": "PROCESSING", "estimated_completion_time": 2 }
+{ "job_id": "uuid", "status": "QUEUED", "estimated_completion_time": 2 }
 ```
 
 ### `POST /export/attendance`
@@ -1468,7 +1468,7 @@ Alias for `GET /leave/balance` — used by the employee dashboard widget. Same r
 
 ---
 
-### `POST /leave/requests/bulk-approve`
+### `POST /leave/requests/bulk-approve` (also: `POST /leave/requests/bulk/approve`)
 **Required roles:** MANAGER, HR_ADMIN
 
 **Body:**
@@ -1479,20 +1479,23 @@ Alias for `GET /leave/balance` — used by the employee dashboard widget. Same r
 **Response `data`:**
 ```json
 {
-  "results": [
-    { "id": "id1", "status": "approved", "referenceNo": "LVR-0044" },
-    { "id": "id2", "status": "failed", "error": "Cannot approve leave with status APPROVED" }
-  ],
-  "processed": 2
+  "succeeded": ["id1"],
+  "failed": [
+    { "id": "id2", "code": "ERROR", "message": "Cannot approve leave with status APPROVED" }
+  ]
 }
 ```
 
-Each request is processed independently — some can succeed and some fail. Check `status` per item.
+- `succeeded` — array of IDs that were successfully approved
+- `failed` — array of `{ id, code, message }` for each that couldn't be processed
+- Each request is processed independently — partial success is normal
+
+**Live-verified:** `POST /api/v1/leave/requests/bulk/approve` returns 200 with this shape. Already-approved IDs appear in `failed` with `"Cannot approve leave with status APPROVED"`.
 
 ---
 
-### `POST /leave/requests/bulk-deny`
-Same shape as bulk-approve. `comment` is used as the rejection reason (required in spirit — defaults to "Bulk denied" if omitted).
+### `POST /leave/requests/bulk-deny` (also: `POST /leave/requests/bulk/reject`)
+Same response shape as bulk-approve. `comment` is used as the rejection reason (optional — defaults to "Bulk denied" if omitted).
 
 ---
 
@@ -1793,15 +1796,21 @@ Reassigns all active employees to the target department, then soft-deletes the s
 ```json
 {
   "succeeded": ["lr_a"],
-  "failed": [{ "id": "lr_b", "code": "LEAVE_ALREADY_DECIDED", "message": "Already decided." }]
+  "failed": [{ "id": "lr_b", "code": "ERROR", "message": "Cannot approve leave with status APPROVED" }]
 }
 ```
 
+- `succeeded` — flat array of string IDs that were approved
+- `failed[].code` — always `"ERROR"` (not a specific error code per item)
+- `failed[].message` — human-readable reason (e.g. `"Cannot approve leave with status APPROVED"`)
+
+**Also available at:** `POST /leave/requests/bulk-approve` (legacy kebab path — same handler).
+
 #### `POST /leave/requests/bulk/reject`
 
-Same shape as bulk/approve.
+Same response shape as bulk/approve. `comment` optional — defaults to "Bulk denied".
 
-> **Note:** Legacy paths `POST /leave/requests/bulk-approve` and `POST /leave/requests/bulk-deny` remain active as aliases.
+**Also available at:** `POST /leave/requests/bulk-deny` (legacy kebab path — same handler).
 
 ---
 
