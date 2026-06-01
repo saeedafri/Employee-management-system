@@ -9,6 +9,9 @@ const r400 = { description: 'Bad Request' };
 const r401 = { description: 'Unauthorized' };
 const r403 = { description: 'Forbidden' };
 const idParam = [{ in: 'path', name: 'id', type: 'string', required: true, description: 'Resource ID' }];
+const pathParam = (name, desc) => ({ in: 'path', name, type: 'string', required: true, description: desc });
+const queryParam = (name, type, desc) => ({ in: 'query', name, type, required: false, description: desc });
+const pageQuery = [queryParam('page', 'integer', 'Page (default 1)'), queryParam('limit', 'integer', 'Per page')];
 
 function op(tag, summary, security = true, extra = {}) {
   return { tags: [tag], summary, security: security ? sec : undefined, responses: { 200: r200, 401: r401, 403: r403 }, ...extra };
@@ -481,15 +484,15 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Payroll', 'List non-monthly pay schedules. HR_ADMIN/SUPER_ADMIN.', true),
         },
         '/payroll/employees/{employeeId}/salary': {
-          get:   op('Payroll', 'Get employee salary config. HR sees full; EMPLOYEE sees own (bank masked). ?employeeId in path.', true),
-          post:  op('Payroll', 'Set employee salary. HR_ADMIN/SUPER_ADMIN. Required: payGroupId, annualCtc, effectiveFrom. Creates history.', true, { responses: { 201: r201 } }),
-          patch: op('Payroll', 'Update employee salary. Creates new record, closes old. Same as POST but all fields optional.', true, { responses: { 201: r201 } }),
+          get:   op('Payroll', 'Get employee salary config. HR sees full; EMPLOYEE sees own (bank masked).', true, { parameters: [pathParam('employeeId', 'Employee ID')] }),
+          post:  op('Payroll', 'Set employee salary. HR_ADMIN/SUPER_ADMIN. Required: payGroupId, annualCtc, effectiveFrom. Creates history.', true, { parameters: [pathParam('employeeId', 'Employee ID')], responses: { 201: r201 } }),
+          patch: op('Payroll', 'Update employee salary. Creates new record, closes old. Same as POST but all fields optional.', true, { parameters: [pathParam('employeeId', 'Employee ID')], responses: { 201: r201 } }),
         },
         '/payroll/employees/{employeeId}/payslips': {
-          get: op('Payroll', 'List employee payslips. HR sees any; EMPLOYEE sees own. ?page&limit&year', true),
+          get: op('Payroll', 'List employee payslips. HR sees any; EMPLOYEE sees own.', true, { parameters: [pathParam('employeeId', 'Employee ID'), ...pageQuery, queryParam('year', 'string', 'Filter by year e.g. 2026')] }),
         },
         '/payroll/employees/{employeeId}/payslips/{payslipId}': {
-          get: op('Payroll', 'Get payslip detail with earnings/deductions breakdown. Response includes `documentUrl` — direct Cloudinary WebP link to the downloadable payslip (null if not generated yet).', true),
+          get: op('Payroll', 'Get payslip detail with earnings/deductions breakdown. Response includes `documentUrl` — direct Cloudinary WebP link to the downloadable payslip (null if not generated yet).', true, { parameters: [pathParam('employeeId', 'Employee ID'), pathParam('payslipId', 'Payslip ID')] }),
         },
         '/payroll/runs': {
           get:  op('Payroll', 'List payroll runs. HR_ADMIN/SUPER_ADMIN. ?page&limit&year&status', true),
@@ -511,14 +514,14 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Payroll', 'Cancel run. SUPER_ADMIN only. Cannot cancel PAID runs.', true, { parameters: idParam }),
         },
         '/payroll/runs/{runId}/payslips': {
-          get: op('Payroll', 'List payslips in run. HR_ADMIN/SUPER_ADMIN. ?page&limit&departmentId&search', true),
+          get: op('Payroll', 'List payslips in run. HR_ADMIN/SUPER_ADMIN.', true, { parameters: [pathParam('runId', 'Payroll run ID'), ...pageQuery, queryParam('departmentId', 'string', 'Filter by department'), queryParam('search', 'string', 'Search by name/code')] }),
         },
         '/payroll/runs/{runId}/payslips/{payslipId}': {
-          get:   op('Payroll', 'Get payslip detail within a run. Response includes `documentUrl` — direct Cloudinary WebP link to the downloadable payslip (null if not generated yet).', true),
-          patch: op('Payroll', 'Add one-time adjustments (bonus/deduction) to payslip. Body: oneTimeAdditions[], oneTimeDeductions[], notes', true),
+          get:   op('Payroll', 'Get payslip detail within a run. Response includes `documentUrl` — direct Cloudinary WebP link to the downloadable payslip (null if not generated yet).', true, { parameters: [pathParam('runId', 'Payroll run ID'), pathParam('payslipId', 'Payslip ID')] }),
+          patch: op('Payroll', 'Add one-time adjustments (bonus/deduction) to payslip. Body: oneTimeAdditions[], oneTimeDeductions[], notes', true, { parameters: [pathParam('runId', 'Payroll run ID'), pathParam('payslipId', 'Payslip ID')] }),
         },
         '/payroll/runs/{runId}/export': {
-          get: op('Payroll', 'Export payroll register as CSV. Returns Content-Type: text/csv.', true),
+          get: op('Payroll', 'Export payroll register as CSV. Returns Content-Type: text/csv.', true, { parameters: [pathParam('runId', 'Payroll run ID')] }),
         },
 
         // ── AUDIT LOGS ───────────────────────────────────────────────────────
