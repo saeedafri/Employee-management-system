@@ -489,7 +489,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Payroll', 'List employee payslips. HR sees any; EMPLOYEE sees own. ?page&limit&year', true),
         },
         '/payroll/employees/{employeeId}/payslips/{payslipId}': {
-          get: op('Payroll', 'Get payslip detail with earnings/deductions breakdown.', true),
+          get: op('Payroll', 'Get payslip detail with earnings/deductions breakdown. Response includes `documentUrl` — direct Cloudinary WebP link to the downloadable payslip (null if not generated yet).', true),
         },
         '/payroll/runs': {
           get:  op('Payroll', 'List payroll runs. HR_ADMIN/SUPER_ADMIN. ?page&limit&year&status', true),
@@ -514,7 +514,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Payroll', 'List payslips in run. HR_ADMIN/SUPER_ADMIN. ?page&limit&departmentId&search', true),
         },
         '/payroll/runs/{runId}/payslips/{payslipId}': {
-          get:   op('Payroll', 'Get payslip detail within a run.', true),
+          get:   op('Payroll', 'Get payslip detail within a run. Response includes `documentUrl` — direct Cloudinary WebP link to the downloadable payslip (null if not generated yet).', true),
           patch: op('Payroll', 'Add one-time adjustments (bonus/deduction) to payslip. Body: oneTimeAdditions[], oneTimeDeductions[], notes', true),
         },
         '/payroll/runs/{runId}/export': {
