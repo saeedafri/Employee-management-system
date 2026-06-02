@@ -74,6 +74,7 @@ export async function createDepartment(tenantId, data) {
       name: data.name,
       departmentCode: data.departmentCode,
       parentId: data.parentId || null,
+      headEmployeeId: data.headEmployeeId || null,
     },
     include: {
       headEmployee: { select: { id: true, firstName: true, lastName: true } },
@@ -83,11 +84,24 @@ export async function createDepartment(tenantId, data) {
   });
 }
 
+export async function getEmployeeForTenant(employeeId, tenantId) {
+  return prisma.employee.findFirst({
+    where: { id: employeeId, tenantId, deletedAt: null },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      managedDepartments: { where: { deletedAt: null }, select: { id: true } },
+    },
+  });
+}
+
 export async function updateDepartment(id, tenantId, data) {
   const updateData = {};
   if (data.name !== undefined) updateData.name = data.name;
   if (data.parentId !== undefined) updateData.parentId = data.parentId;
   if (data.departmentCode !== undefined) updateData.departmentCode = data.departmentCode;
+  if (data.headEmployeeId !== undefined) updateData.headEmployeeId = data.headEmployeeId || null;
   updateData.updatedAt = new Date();
 
   return prisma.department.update({

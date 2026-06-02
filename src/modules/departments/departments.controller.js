@@ -13,7 +13,7 @@ export async function getDepartment(request, reply) {
   }
 }
 
-const CONFLICT_CODES = new Set(['DEPARTMENT_CYCLE', 'DEPARTMENT_NOT_EMPTY', 'DUPLICATE_CODE']);
+const CONFLICT_CODES = new Set(['DEPARTMENT_CYCLE', 'DEPARTMENT_NOT_EMPTY', 'DUPLICATE_CODE', 'HEAD_EMPLOYEE_TAKEN']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
 
 function errorStatus(code) {

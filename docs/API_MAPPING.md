@@ -377,13 +377,18 @@ Returns array of root departments. Each has a `children` array (populated if sub
   "parentId": null,
   "name": "Customer Success",
   "departmentCode": "CUS",
-  "headEmployeeId": null,
+  "headEmployeeId": "emp_123",
   "depth": 0,
-  "headEmployee": null,
+  "headEmployee": { "id": "emp_123", "firstName": "Priya", "lastName": "Sharma" },
+  "headEmployeeFirstName": "Priya",
+  "headEmployeeLastName": "Sharma",
+  "headEmployeeName": "Priya Sharma",
   "_count": { "employees": 7 },
   "children": []
 }
 ```
+
+> `headEmployee` is the nested object; `headEmployeeFirstName` / `headEmployeeLastName` / `headEmployeeName` (concatenated) are convenience fields for table rendering. All four are `null` when no head is set.
 
 > Tree is server-built. `children[]` is populated when sub-departments exist. If all departments are root-level, all `children` arrays are empty — build nothing client-side, the server returns the tree.
 
@@ -393,22 +398,44 @@ Returns array of root departments. Each has a `children` array (populated if sub
 
 **Body:**
 ```json
-{ "name": "Marketing", "departmentCode": "MKT", "parentId": null }
+{ "name": "Marketing", "departmentCode": "MKT", "parentId": null, "headEmployeeId": "emp_123" }
 ```
 
 > `budget` field does NOT exist in the database. Do not send it.
+> `headEmployeeId` is optional — pass an employee ID in this tenant to set the department head, or omit/`null` for none.
 
-**Response:** 201, `data` = department object
+**Response:** 201, `data` = department object (includes `headEmployee` + `headEmployeeFirstName` / `headEmployeeLastName` / `headEmployeeName`)
 
-**Error codes:** `DUPLICATE_CODE` (409), `INVALID_PARENT` (400)
+**Error codes:** `DUPLICATE_CODE` (409), `INVALID_PARENT` (400), `INVALID_HEAD_EMPLOYEE` (400), `HEAD_EMPLOYEE_TAKEN` (409)
 
 ---
 
 ### `PATCH /departments/:id`
 
-**Body:** any subset
+**Body:** any subset of `name`, `departmentCode`, `parentId`, `headEmployeeId`.
 
-**Response:** 200, `data` = updated department
+```json
+{ "name": "Backend Engineering", "departmentCode": "ENG-BE", "parentId": "...", "headEmployeeId": "emp_123" }
+```
+
+> Set `headEmployeeId` to assign the department head; pass `null` to clear it. The response always echoes the nested `headEmployee` object plus the flat `headEmployeeFirstName` / `headEmployeeLastName` / `headEmployeeName` fields.
+
+**Response:** 200, `data` = updated department:
+```json
+{
+  "id": "...",
+  "name": "Backend Engineering",
+  "departmentCode": "ENG-BE",
+  "parentId": "...",
+  "headEmployeeId": "emp_123",
+  "headEmployee": { "id": "emp_123", "firstName": "Priya", "lastName": "Sharma" },
+  "headEmployeeFirstName": "Priya",
+  "headEmployeeLastName": "Sharma",
+  "headEmployeeName": "Priya Sharma",
+  "parent": { "id": "...", "name": "Engineering" },
+  "_count": { "employees": 1 }
+}
+```
 
 **Error codes:**
 | Code | Status | When |
@@ -417,6 +444,8 @@ Returns array of root departments. Each has a `children` array (populated if sub
 | `DEPARTMENT_CYCLE` | 409 | Setting parentId would create a cycle |
 | `INVALID_PARENT` | 400 | Parent department doesn't exist |
 | `DUPLICATE_CODE` | 409 | Code taken by another department |
+| `INVALID_HEAD_EMPLOYEE` | 400 | `headEmployeeId` is not an employee in this tenant |
+| `HEAD_EMPLOYEE_TAKEN` | 409 | That employee already heads another department |
 
 ---
 

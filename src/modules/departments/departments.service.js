@@ -1,10 +1,24 @@
 import * as repo from './departments.repository.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 
+// Flatten the headEmployee relation into the convenience fields the UI consumes.
+function withHeadEmployeeName(dept) {
+  if (!dept) return dept;
+  const he = dept.headEmployee;
+  const firstName = he?.firstName ?? null;
+  const lastName = he?.lastName ?? null;
+  return {
+    ...dept,
+    headEmployeeFirstName: firstName,
+    headEmployeeLastName: lastName,
+    headEmployeeName: he ? [firstName, lastName].filter(Boolean).join(' ') : null,
+  };
+}
+
 export async function listDepartments(tenantId, filters) {
   try {
     const departments = await repo.listDepartments(tenantId, filters);
-    const tree = buildDepartmentTree(departments);
+    const tree = buildDepartmentTree(departments.map(withHeadEmployeeName));
     return successResponse(tree, { cached: false });
   } catch (error) {
     return errorResponse('LIST_ERROR', error.message, null);
@@ -15,7 +29,7 @@ export async function getDepartment(id, tenantId) {
   try {
     const dept = await repo.getDepartmentDetail(id, tenantId);
     if (!dept) return errorResponse('NOT_FOUND', 'Department not found', null);
-    return successResponse(dept, { cached: false });
+    return successResponse(withHeadEmployeeName(dept), { cached: false });
   } catch (error) {
     return errorResponse('FETCH_ERROR', error.message, null);
   }
@@ -37,11 +51,30 @@ export async function createDepartment(tenantId, data, _userId) {
       }
     }
 
+    if (data.headEmployeeId) {
+      const headCheck = await validateHeadEmployee(data.headEmployeeId, tenantId, null);
+      if (headCheck) return headCheck;
+    }
+
     const department = await repo.createDepartment(tenantId, data);
-    return successResponse(department, { cached: false });
+    return successResponse(withHeadEmployeeName(department), { cached: false });
   } catch (error) {
     return errorResponse('CREATE_ERROR', error.message, null);
   }
+}
+
+// Returns an errorResponse if the head employee is invalid, otherwise null.
+async function validateHeadEmployee(headEmployeeId, tenantId, departmentId) {
+  const emp = await repo.getEmployeeForTenant(headEmployeeId, tenantId);
+  if (!emp) {
+    return errorResponse('INVALID_HEAD_EMPLOYEE', 'Head employee does not exist in this tenant', null);
+  }
+  // headEmployeeId is @unique — block assigning someone who already heads another department.
+  const headsOther = emp.managedDepartments.some(d => d.id !== departmentId);
+  if (headsOther) {
+    return errorResponse('HEAD_EMPLOYEE_TAKEN', 'This employee already heads another department', null);
+  }
+  return null;
 }
 
 export async function updateDepartment(id, tenantId, data, _userId) {
@@ -68,8 +101,13 @@ export async function updateDepartment(id, tenantId, data, _userId) {
       }
     }
 
+    if (data.headEmployeeId) {
+      const headCheck = await validateHeadEmployee(data.headEmployeeId, tenantId, id);
+      if (headCheck) return headCheck;
+    }
+
     const department = await repo.updateDepartment(id, tenantId, data);
-    return successResponse(department, { cached: false });
+    return successResponse(withHeadEmployeeName(department), { cached: false });
   } catch (error) {
     return errorResponse('UPDATE_ERROR', error.message, null);
   }

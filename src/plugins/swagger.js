@@ -161,11 +161,17 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── DEPARTMENTS ──────────────────────────────────────────────────────
         '/departments': {
-          get:  op('Departments', 'List all departments'),
-          post: op('Departments', 'Create department', true, { responses: { 201: r201 } }),
+          get:  op('Departments', 'List all departments (hierarchical tree). Each node includes headEmployee plus flat headEmployeeFirstName / headEmployeeLastName / headEmployeeName.'),
+          post: op('Departments', 'Create department (HR_ADMIN/SUPER_ADMIN). headEmployeeId optional — must be an employee in this tenant who does not already head another department.', true, {
+            responses: { 201: r201, 400: r400, 409: { description: 'Duplicate code or head employee already heads another department' } },
+            parameters: [{ in: 'body', name: 'body', required: true, schema: { $ref: '#/definitions/DepartmentInput' } }],
+          }),
         },
         '/departments/{id}': {
-          patch:  op('Departments', 'Update department', true, { parameters: idParam }),
+          patch:  op('Departments', 'Update department (HR_ADMIN/SUPER_ADMIN). Send headEmployeeId to set the department head (null to clear). Response echoes headEmployee object plus headEmployeeFirstName / headEmployeeLastName / headEmployeeName.', true, {
+            responses: { 200: r200, 400: r400, 404: { description: 'Department not found' }, 409: { description: 'Duplicate code, circular parent, or head employee already heads another department' } },
+            parameters: [...idParam, { in: 'body', name: 'body', required: true, schema: { $ref: '#/definitions/DepartmentInput' } }],
+          }),
           delete: op('Departments', 'Delete department', true, { parameters: idParam }),
         },
 
@@ -863,6 +869,42 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             oldValuesJson: { type: 'object' }, newValuesJson: { type: 'object' },
             ipAddress: { type: 'string' }, userAgent: { type: 'string' },
             createdAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        DepartmentInput: {
+          type: 'object',
+          required: ['name'],
+          properties: {
+            name:           { type: 'string', example: 'Backend Engineering' },
+            departmentCode: { type: 'string', example: 'ENG-BE' },
+            parentId:       { type: 'string', description: 'Parent department ID (null/omit for top-level)', example: 'cmpo9988d000yxf8l5v0onjc6' },
+            headEmployeeId: { type: 'string', description: 'Employee ID of the department head. Pass null to clear. Must belong to this tenant and not already head another department.', example: 'cmpo99i9o001gxf8ln1rh63oy' },
+          },
+        },
+        DepartmentResponse: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: true },
+            data: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' }, tenantId: { type: 'string' }, parentId: { type: 'string' },
+                name: { type: 'string', example: 'Backend Engineering' },
+                departmentCode: { type: 'string', example: 'ENG-BE' },
+                headEmployeeId: { type: 'string', example: 'cmpo99i9o001gxf8ln1rh63oy' },
+                headEmployee: {
+                  type: 'object',
+                  properties: { id: { type: 'string' }, firstName: { type: 'string', example: 'Priya' }, lastName: { type: 'string', example: 'Sharma' } },
+                },
+                headEmployeeFirstName: { type: 'string', example: 'Priya' },
+                headEmployeeLastName:  { type: 'string', example: 'Sharma' },
+                headEmployeeName:      { type: 'string', example: 'Priya Sharma' },
+                depth: { type: 'integer' },
+                parent: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' } } },
+                _count: { type: 'object', properties: { employees: { type: 'integer' } } },
+              },
+            },
+            meta: { type: 'object', properties: { cached: { type: 'boolean', example: false } } },
           },
         },
       },
