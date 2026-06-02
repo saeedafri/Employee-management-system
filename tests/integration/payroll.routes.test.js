@@ -5,7 +5,7 @@ import { prisma } from '../../src/plugins/prisma.js';
 describe('Payroll Routes Integration Tests', function () {
   this.timeout(30000);
 
-  let app, tenant, saUser, hrUser, managerUser, empUser;
+  let app, tenant, empUser;
   let saToken, hrToken, managerToken, empToken;
   let empRecord, empRecord2;
 
@@ -17,9 +17,9 @@ describe('Payroll Routes Integration Tests', function () {
     await cleanDatabase();
     tenant = await createTestTenant();
 
-    saUser = await createTestUser(tenant.id, { email: 'sa@test.com', memberType: 'SUPER_ADMIN' });
-    hrUser = await createTestUser(tenant.id, { email: 'hr@test.com', memberType: 'HR_ADMIN' });
-    managerUser = await createTestUser(tenant.id, { email: 'mgr@test.com', memberType: 'MANAGER' });
+    await createTestUser(tenant.id, { email: 'sa@test.com', memberType: 'SUPER_ADMIN' });
+    await createTestUser(tenant.id, { email: 'hr@test.com', memberType: 'HR_ADMIN' });
+    await createTestUser(tenant.id, { email: 'mgr@test.com', memberType: 'MANAGER' });
     empUser = await createTestUser(tenant.id, { email: 'emp@test.com', memberType: 'EMPLOYEE' });
 
     empRecord = await createTestEmployee(tenant.id, empUser.id, { employeeCode: 'EMP001' });
