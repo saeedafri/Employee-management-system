@@ -129,11 +129,37 @@ export async function updateReview(tenantId, employeeId, data) {
     throw err;
   }
 
-  return repo.updateReview(review.id, {
+  const updated = await repo.updateReview(review.id, {
     ...data,
     status: 'Calibrated',
     managerComplete: true,
   });
+
+  const [employees, reviewers] = await Promise.all([
+    prisma.employee.findMany({
+      where: { id: { in: [updated.employeeId] } },
+      select: { id: true, firstName: true, lastName: true, department: { select: { name: true } } },
+    }),
+    updated.reviewerId
+      ? prisma.employee.findMany({
+          where: { id: { in: [updated.reviewerId] } },
+          select: { id: true, firstName: true, lastName: true },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const emp = employees[0];
+  const reviewer = reviewers[0] || null;
+  return {
+    employeeId: updated.employeeId,
+    employeeName: emp ? `${emp.firstName} ${emp.lastName}` : 'Unknown',
+    department: emp?.department?.name || 'Unknown',
+    reviewerName: reviewer ? `${reviewer.firstName} ${reviewer.lastName}` : null,
+    status: updated.status,
+    rating: updated.rating,
+    selfComplete: updated.selfComplete,
+    managerComplete: updated.managerComplete,
+  };
 }
 
 export async function createGoal(tenantId, data) {

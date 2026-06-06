@@ -26,6 +26,7 @@ export default async function assetsRoutes(fastify) {
         properties: {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 20 },
+          status: { type: 'string' },
         },
       },
       response: { 200: { type: 'object', additionalProperties: true } },

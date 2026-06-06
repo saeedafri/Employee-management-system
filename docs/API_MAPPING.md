@@ -2653,7 +2653,7 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | GET | `/assets/summary` | HR,SA,MGR | `{ totalAssets, assigned, available, inRepair, utilizationPct, avgRepairDays }` |
 | GET | `/assets` | HR,SA,MGR | Paginated. `?type` (Laptop\|Monitor\|Phone\|Other), `?status` (Assigned\|Available\|Repair\|Retired) |
 | POST | `/assets` | HR,SA | 201. Required: `tag, name, type`. Optional: `assignedTo: {employeeId, name}, assignedSince`. 409 if tag exists |
-| GET | `/assets/requests` | HR,SA,MGR | Paginated. Returns `{ requests[], pagination }` |
+| GET | `/assets/requests` | HR,SA,MGR | Paginated. `?status (Pending\|Approved\|Fulfilled\|Declined)`. Returns `{ requests[], pagination }` |
 | PATCH | `/assets/requests/:id/approve` | HR,SA | 200 `{ id, status: "Approved" }`. 409 if not Pending |
 | PATCH | `/assets/requests/:id/decline` | HR,SA | 200 `{ id, status: "Declined" }`. Body: `{ reason? }`. 409 if not Pending |
 | GET | `/assets/employees` | HR,SA,MGR | Returns `[{ employeeId, name }]` — active employees |
@@ -2673,7 +2673,7 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | POST | `/announcements` | HR,SA,MGR | 201. Required: `title, body, category`. Optional: `channelId, audience, isPinned, authorName, authorRole`. 403 if EMPLOYEE |
 | GET | `/announcements/channels` | All | `{ channels: [{id, name, postCount, category}] }` |
 | GET | `/announcements/events` | All | `{ events: [{id, date, title, meta}] }` |
-| POST | `/announcements/events` | HR,SA,MGR | 201. Required: `date (YYYY-MM-DD), title, meta` |
+| POST | `/announcements/events` | HR,SA | 201. Required: `date (YYYY-MM-DD), title, meta` |
 | PATCH | `/announcements/:id/pin` | HR,SA | Pins this announcement, demotes existing pinned. 404 if not found |
 | PATCH | `/announcements/:id/unpin` | HR,SA | `{ unpinned: true }`. 409 if not currently pinned. 404 if not found |
 
@@ -2683,3 +2683,155 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 Variables: any component code (e.g. BASIC, HRA), CTC (annualCtc/12), GROSS (sum of EARNINGs), NET (GROSS - DEDUCTIONs)
 Functions: MIN, MAX, IF, ROUND, FLOOR, CEIL, ABS
 Example: `"IF(BASIC > 15000, 200, 0)"` (professional tax)
+
+---
+
+## Domain E — Departments (headEmployeeId extension)
+
+> **Status: LIVE ✅** — merged with departments module (2026-05-27)
+
+`POST /departments` and `PATCH /departments/:id` both accept `headEmployeeId` in the request body.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `headEmployeeId` | `string \| null` | Optional. Employee must be ACTIVE. Setting null clears the head. |
+| `headEmployeeFirstName` | `string \| null` | Informational — sent by UI for denormalization, not stored separately |
+| `headEmployeeLastName` | `string \| null` | Informational — sent by UI for denormalization, not stored separately |
+
+**New error code:** `422 INVALID_HEAD_EMPLOYEE` — employee not found or not ACTIVE in this tenant.
+**New error code:** `422 HEAD_EMPLOYEE_TAKEN` — employee already heads another department.
+
+Response shape (both POST + PATCH): full department object with `headEmployeeId`, `headEmployeeFirstName`, `headEmployeeLastName`, `headEmployeeName`.
+
+---
+
+## Domain F — Payroll Global Implementation (Phase 3 Extended)
+
+> **Status: MSW-ONLY ⚠️ — No live backend. All endpoints are handled by frontend MSW mock handlers.**
+> When a backend endpoint ships, disable the corresponding MSW handler (flip `NEXT_PUBLIC_USE_MOCKS=false` or delete from `src/mocks/handlers/index.ts`). No app-code change required.
+> **Money:** all amounts are integer minor units + ISO 4217 `currency` field. **Casing:** camelCase.
+
+### F.1 — Localization
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/countries` | HR,SA | Supported countries: `{ code, name, currency, locale, fiscalYearStartMonth }[]` |
+| GET | `/payroll/legal-entities` | HR,SA | List legal entities |
+| POST | `/payroll/legal-entities` | SA | Create legal entity |
+| PATCH | `/payroll/legal-entities/:id` | SA | Update legal entity |
+| GET | `/payroll/countries/:code/bank-schema` | HR,SA | Country-specific bank form field definitions (`DynamicForm` schema) |
+
+### F.2 — Salary component extensions
+`POST/PATCH /payroll/components` gains: `type (EMPLOYER_CONTRIBUTION added)`, `statutoryTag`, `prorate`, `payInPeriods`.
+
+### F.3 — Statutory & tax engine
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/statutory-packs` | HR,SA | `?country=` filter |
+| GET | `/payroll/statutory-packs/:id` | HR,SA | Single pack |
+| POST | `/payroll/statutory-packs` | SA | 409 PACK_VERSION_EXISTS, 422 INVALID_PACK |
+| PATCH | `/payroll/statutory-packs/:id` | SA | |
+
+### F.4 — Employee payroll
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/employees/:id/ytd` | HR,SA | `?fy=YYYY-YY`. YTD ledger: grossEarnings, taxableIncome, taxDeducted, netPay, contributions |
+| GET | `/payroll/employees/:id/tax-declaration` | HR,SA,EMP | `?fy=YYYY-YY` |
+| POST | `/payroll/employees/:id/tax-declaration` | HR,SA,EMP | Replace declaration |
+| PATCH | `/payroll/employees/:id/tax-declaration` | HR,SA | Merge regime/items, set proofStatus |
+| GET | `/payroll/employees/:id/loans` | HR,SA | List loans + schedules |
+| POST | `/payroll/employees/:id/loans` | HR,SA | Create loan. 422 INVALID_LOAN |
+| PATCH | `/payroll/employees/:id/loans/:loanId` | HR,SA | `{ action: "foreclose" }` |
+
+### F.5 — Payroll runs
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| POST | `/payroll/runs/:id/calculate` | HR,SA | Real compute. `?dryRun=true` for sandbox (no persist) |
+| GET | `/payroll/runs/:runId/inputs` | HR,SA | Run inputs per employee (lopDays, leaveDays, otHours, variablePay, oneTime) |
+| PATCH | `/payroll/runs/:runId/inputs/:employeeId` | HR,SA | Partial update one employee's input |
+| POST | `/payroll/runs/:runId/inputs/import` | HR,SA | CSV import. Returns `{ updated, skipped, errors[] }` |
+| GET | `/payroll/runs/:id/fnf` | HR,SA | FnF settlement breakdown |
+| GET | `/payroll/roster` | HR,SA | Active employees for run-subject picker |
+
+### F.6 — Claims & variable pay
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/reimbursement-claims` | HR,SA | `?employeeId=&status=` |
+| POST | `/payroll/reimbursement-claims` | HR,SA | 422 CLAIM_OVER_CAP |
+| PATCH | `/payroll/reimbursement-claims/:id` | HR,SA | `{ status: Approved\|Rejected }` |
+| GET | `/payroll/reimbursement-categories` | HR,SA | `{ code, label, monthlyCap }[]` |
+
+### F.7 — Garnishments
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/employees/:id/garnishments` | HR,SA | Sorted by priority |
+| POST | `/payroll/employees/:id/garnishments` | HR,SA | 422 INVALID_GARNISHMENT |
+| PATCH | `/payroll/employees/:id/garnishments/:garnishmentId` | HR,SA | |
+| DELETE | `/payroll/employees/:id/garnishments/:garnishmentId` | HR,SA | 404 if missing |
+
+### F.8 — Global employment models
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/workers` | HR,SA | `?classification=EMPLOYEE\|CONTRACTOR\|EOR` |
+| PATCH | `/payroll/workers/:id` | HR,SA | `{ classification }` re-classify |
+| GET | `/payroll/contractor-invoices` | HR,SA | `?workerId=&status=` |
+| POST | `/payroll/contractor-invoices` | HR,SA | 422 INVALID_WORKER |
+| PATCH | `/payroll/contractor-invoices/:id` | HR,SA | Approve/pay |
+| GET | `/payroll/cost-summary` | HR,SA | `?groupBy=entity\|currency\|classification` |
+
+### F.9 — Disbursement
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/runs/:id/payment-batch` | HR,SA | Latest batch or null |
+| POST | `/payroll/runs/:id/payment-batch` | HR,SA | 422 RUN_NOT_PAYABLE |
+| GET | `/payroll/runs/:id/bank-file` | HR,SA | `?format=NACH\|ACH\|SEPA\|BACS`. File download |
+| GET | `/payroll/payment-batches/:id/status` | HR,SA | Per-payslip statuses |
+| POST | `/payroll/payment-batches/:id/reconcile` | HR,SA | Simulate bank callback |
+
+### F.10 — Documents & events
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/payslip-templates` | HR,SA | Single tenant template |
+| PATCH | `/payroll/payslip-templates` | HR,SA | Update sections/fields/logo |
+| POST | `/payroll/runs/:id/publish` | HR,SA | 422 RUN_NOT_PUBLISHABLE |
+| GET | `/payroll/event-catalogue` | HR,SA | Subscribable event types |
+| GET | `/payroll/events` | HR,SA | `?runId=`. Recent events |
+| GET | `/payroll/employees/:id/tax-form` | HR,SA,EMP | `?fy=&type=FORM16\|W2\|P60` |
+
+### F.11 — Accounting
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/runs/:id/journal` | HR,SA | Double-entry journal for a run |
+| GET | `/payroll/runs/:id/journal/export` | HR,SA | `?format=TALLY\|QUICKBOOKS\|CSV`. File download |
+
+### F.12 — Statutory filing & registers
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/runs/:id/statutory-return` | HR,SA | `?type=ECR\|24Q\|RTI`. Text file download |
+| GET | `/payroll/runs/:id/register` | HR,SA | `?type=SALARY\|STATUTORY\|BANK_ADVICE\|VARIANCE`. Self-describing columns |
+| GET | `/payroll/runs/:id/register/export` | HR,SA | CSV download of register |
+| POST | `/payroll/runs/:id/approvals/:level` | HR,SA | Multi-level approval. 403 SELF_APPROVAL |
+| GET | `/payroll/runs/:id/variance` | HR,SA | Per-employee net delta vs prior REGULAR run |
+| GET | `/payroll/runs/:id/audit` | HR,SA | Audit log entries for the run |
+| POST | `/payroll/runs/:id/payslips/:slipId/recalculate` | HR,SA | Deterministic single-payslip recompute |
+
+### F.13 — Onboarding & migration
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/pay-calendars` | HR,SA | List pay calendars |
+| POST | `/payroll/pay-calendars` | HR,SA | Create. Required: name, legalEntityId, frequency |
+| PATCH | `/payroll/pay-calendars/:id` | HR,SA | Update |
+| GET | `/payroll/opening-balances` | HR,SA | List opening YTD balances |
+| POST | `/payroll/employees/:id/opening-balances` | HR,SA | Idempotent per (employeeId, fiscalYear) |
+| GET | `/payroll/migration/historical-payslips` | HR,SA | List imported payslips |
+| POST | `/payroll/migration/historical-payslips` | HR,SA | Bulk import. Returns `{ imported, failed, errors[] }` |
+| POST | `/payroll/runs/:id/parallel-reconcile` | HR,SA | Diff computed vs legacy net. Returns MATCH/MISMATCH/MISSING |
+| GET | `/payroll/migration/status` | HR,SA | Migration state + sandbox mode |
+| PATCH | `/payroll/migration/status` | HR,SA | `{ sandboxMode?, goLivePeriod? }` |
+
+### F.14 — Compliance reporting
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/reports/pay-equity` | HR,SA | `?groupBy=gender\|level\|location`. Mean/median gap by group |
+| GET | `/payroll/reports/audit-pack` | HR,SA | `?runId=`. Downloadable JSON audit assurance pack |
+| GET | `/payroll/settings/data-policy` | HR,SA | Per-country data residency & retention |
+| PATCH | `/payroll/settings/data-policy` | HR,SA | `{ defaultRetentionYears?, policies? }` |

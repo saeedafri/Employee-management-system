@@ -41,11 +41,12 @@ export async function findAssetByTag(tenantId, tag) {
   return prisma.asset.findUnique({ where: { tenantId_tag: { tenantId, tag } } });
 }
 
-export async function getRequests(tenantId, { page, limit }) {
+export async function getRequests(tenantId, { page, limit, status }) {
   const skip = (page - 1) * limit;
+  const where = { tenantId, ...(status && { status }) };
   const [requests, total] = await Promise.all([
-    prisma.assetRequest.findMany({ where: { tenantId }, skip, take: limit, orderBy: { requestedAt: 'desc' } }),
-    prisma.assetRequest.count({ where: { tenantId } }),
+    prisma.assetRequest.findMany({ where, skip, take: limit, orderBy: { requestedAt: 'desc' } }),
+    prisma.assetRequest.count({ where }),
   ]);
   return { requests, total };
 }

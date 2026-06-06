@@ -59,7 +59,7 @@ export default async function announcementsRoutes(fastify) {
       },
       response: { 201: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, authorize(HR_ONLY)],
   }, controller.createEvent);
 
   fastify.post('/announcements', {

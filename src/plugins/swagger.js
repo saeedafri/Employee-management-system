@@ -879,7 +879,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Assets', 'Add a new asset — status=Assigned if assignedTo provided (HR_ADMIN)', true, { responses: { 201: r201, 409: { description: 'Duplicate tag' } } }),
         },
         '/assets/requests': {
-          get: op('Assets', 'List asset requests — paginated', true, { parameters: pageQuery }),
+          get: op('Assets', 'List asset requests — paginated, ?status filter (Pending|Approved|Fulfilled|Declined)', true, { parameters: [...pageQuery, queryParam('status', 'string', 'Pending|Approved|Fulfilled|Declined')] }),
         },
         '/assets/requests/{id}/approve': {
           patch: op('Assets', 'Approve asset request — 409 if not Pending (HR_ADMIN)', true, { parameters: idParam }),
@@ -910,7 +910,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/announcements/events': {
           get:  op('Announcements', 'List upcoming events'),
-          post: op('Announcements', 'Create an event (HR_ADMIN, MANAGER)', true, { responses: { 201: r201 } }),
+          post: op('Announcements', 'Create an event (HR_ADMIN, SUPER_ADMIN only)', true, { responses: { 201: r201 } }),
         },
         '/announcements/{id}/pin': {
           patch: op('Announcements', 'Pin announcement — demotes any existing pinned one (HR_ADMIN)', true, { parameters: idParam }),

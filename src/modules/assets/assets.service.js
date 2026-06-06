@@ -135,7 +135,7 @@ export async function recallAsset(tenantId, id) {
 export async function getRequests(tenantId, query) {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 20;
-  const { requests, total } = await repo.getRequests(tenantId, { page, limit });
+  const { requests, total } = await repo.getRequests(tenantId, { page, limit, status: query.status });
   return {
     requests: requests.map(shapeRequest),
     pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
