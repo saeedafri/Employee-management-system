@@ -810,6 +810,112 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
 
+        // ── RECRUITMENT ──────────────────────────────────────────────────────
+        '/recruitment/summary': {
+          get: op('Recruitment', 'Recruitment pipeline summary (HR_ADMIN, SUPER_ADMIN, MANAGER)'),
+        },
+        '/recruitment/openings': {
+          get:  op('Recruitment', 'List job openings — paginated, ?status filter', true, { parameters: [...pageQuery, queryParam('status', 'string', 'Open|Closing|On hold|Closed')] }),
+          post: op('Recruitment', 'Create a job opening (HR_ADMIN, SUPER_ADMIN)', true, { responses: { 201: r201 } }),
+        },
+        '/recruitment/openings/{id}': {
+          patch: op('Recruitment', 'Update a job opening (HR_ADMIN, SUPER_ADMIN)', true, { parameters: idParam }),
+        },
+        '/recruitment/candidates': {
+          get: op('Recruitment', 'List candidates — paginated, ?openingId, ?stage filters', true, { parameters: [...pageQuery, queryParam('openingId', 'string', 'Filter by opening'), queryParam('stage', 'string', 'Filter by stage')] }),
+        },
+        '/recruitment/candidates/{id}/advance': {
+          post: op('Recruitment', 'Advance candidate to next stage — 409 if hired, 422 if invalid transition', true, { parameters: idParam }),
+        },
+        '/recruitment/candidates/{id}/rating': {
+          patch: op('Recruitment', 'Rate a candidate 1-5 (HR_ADMIN, SUPER_ADMIN, MANAGER)', true, {
+            parameters: idParam,
+            responses: { 200: r200, 422: { description: 'Rating out of range' }, 404: { description: 'Not found' } },
+          }),
+        },
+        '/recruitment/recruiters': {
+          get: op('Recruitment', 'List HR recruiters for this tenant (HR_ADMIN users with employee profiles)'),
+        },
+
+        // ── PERFORMANCE ──────────────────────────────────────────────────────
+        '/performance/cycles/active': {
+          get: op('Performance', 'Get the active performance cycle — returns null if none'),
+        },
+        '/performance/summary': {
+          get: op('Performance', 'Performance overview stats (reviewsComplete, goalsOnTrackPct, avgRating, etc.)'),
+        },
+        '/performance/reviews': {
+          get: op('Performance', 'List performance reviews — paginated, enriched with employee/reviewer names', true, { parameters: pageQuery }),
+        },
+        '/performance/goals': {
+          get:  op('Performance', 'List performance goals — paginated, enriched with employee names', true, { parameters: pageQuery }),
+          post: op('Performance', 'Create a performance goal', true, { responses: { 201: r201 } }),
+        },
+        '/performance/calibration': {
+          get: op('Performance', 'Rating distribution for calibration view (HR_ADMIN, SUPER_ADMIN)'),
+        },
+        '/performance/employees': {
+          get: op('Performance', 'List employees for performance assignment'),
+        },
+        '/performance/reviews/{employeeId}': {
+          patch: op('Performance', 'Set rating for a review — sets status=Calibrated, 409 if already calibrated', true, {
+            parameters: [pathParam('employeeId', 'Employee ID')],
+            responses: { 200: r200, 404: { description: 'Review not found' }, 409: { description: 'Already calibrated' } },
+          }),
+        },
+
+        // ── ASSETS ───────────────────────────────────────────────────────────
+        '/assets/summary': {
+          get: op('Assets', 'Asset inventory summary (totalAssets, assigned, available, inRepair, utilizationPct)'),
+        },
+        '/assets': {
+          get:  op('Assets', 'List assets — paginated, ?type, ?status filters', true, { parameters: [...pageQuery, queryParam('type', 'string', 'Laptop|Monitor|Phone|Other'), queryParam('status', 'string', 'Assigned|Available|Repair|Retired')] }),
+          post: op('Assets', 'Add a new asset — status=Assigned if assignedTo provided (HR_ADMIN)', true, { responses: { 201: r201, 409: { description: 'Duplicate tag' } } }),
+        },
+        '/assets/requests': {
+          get: op('Assets', 'List asset requests — paginated', true, { parameters: pageQuery }),
+        },
+        '/assets/requests/{id}/approve': {
+          patch: op('Assets', 'Approve asset request — 409 if not Pending (HR_ADMIN)', true, { parameters: idParam }),
+        },
+        '/assets/requests/{id}/decline': {
+          patch: op('Assets', 'Decline asset request — 409 if not Pending, optional reason (HR_ADMIN)', true, { parameters: idParam }),
+        },
+        '/assets/employees': {
+          get: op('Assets', 'List employees for asset assignment dropdown'),
+        },
+        '/assets/{id}/status': {
+          patch: op('Assets', 'Change asset status to Available|Repair|Retired — clears assignedTo (HR_ADMIN)', true, { parameters: idParam }),
+        },
+        '/assets/{id}/assign': {
+          patch: op('Assets', 'Assign asset to employee — sets status=Assigned, 409 if Retired (HR_ADMIN)', true, { parameters: idParam }),
+        },
+        '/assets/{id}/recall': {
+          patch: op('Assets', 'Recall asset — sets status=Available, clears assignedTo (HR_ADMIN)', true, { parameters: idParam }),
+        },
+
+        // ── ANNOUNCEMENTS ─────────────────────────────────────────────────────
+        '/announcements': {
+          get:  op('Announcements', 'List announcements feed — pinned item + feed array, ?channelId filter', true, { parameters: [...pageQuery, queryParam('channelId', 'string', 'Filter by channel')] }),
+          post: op('Announcements', 'Post an announcement — 403 if EMPLOYEE role (HR_ADMIN, MANAGER)', true, { responses: { 201: r201, 403: r403 } }),
+        },
+        '/announcements/channels': {
+          get: op('Announcements', 'List announcement channels'),
+        },
+        '/announcements/events': {
+          get:  op('Announcements', 'List upcoming events'),
+          post: op('Announcements', 'Create an event (HR_ADMIN, MANAGER)', true, { responses: { 201: r201 } }),
+        },
+        '/announcements/{id}/pin': {
+          patch: op('Announcements', 'Pin announcement — demotes any existing pinned one (HR_ADMIN)', true, { parameters: idParam }),
+        },
+        '/announcements/{id}/unpin': {
+          patch: op('Announcements', 'Unpin announcement — 409 if not currently pinned (HR_ADMIN)', true, {
+            parameters: idParam,
+            responses: { 200: r200, 409: { description: 'Not pinned' } },
+          }),
+        },
+
         // ── HEALTH ───────────────────────────────────────────────────────────
         '/health': {
           get: { tags: ['Health'], summary: 'Server health check', responses: { 200: r200 } },

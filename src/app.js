@@ -28,6 +28,10 @@ import settingsRoutes from './modules/settings/settings.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
 import searchRoutes from './modules/search/search.routes.js';
 import payrollRoutes from './modules/payroll/payroll.routes.js';
+import recruitmentRoutes from './modules/recruitment/recruitment.routes.js';
+import performanceRoutes from './modules/performance/performance.routes.js';
+import assetsRoutes from './modules/assets/assets.routes.js';
+import announcementsRoutes from './modules/announcements/announcements.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -78,6 +82,10 @@ export async function createApp() {
       await fastify.register(notificationsRoutes);
       await fastify.register(searchRoutes);
       await fastify.register(payrollRoutes);
+      await fastify.register(recruitmentRoutes);
+      await fastify.register(performanceRoutes);
+      await fastify.register(assetsRoutes);
+      await fastify.register(announcementsRoutes);
     },
     { prefix: config.apiPrefix },
   );

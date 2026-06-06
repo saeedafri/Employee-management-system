@@ -205,6 +205,16 @@ model Tenant {
   employeeSalaries           EmployeeSalary[]
   payrollRuns                PayrollRun[]
   payslips                   Payslip[]
+  jobOpenings                JobOpening[]
+  candidates                 Candidate[]
+  performanceCycles          PerformanceCycle[]
+  performanceReviews         PerformanceReview[]
+  performanceGoals           PerformanceGoal[]
+  assets                     Asset[]
+  assetRequests              AssetRequest[]
+  announcementChannels       AnnouncementChannel[]
+  announcements              Announcement[]
+  announcementEvents         AnnouncementEvent[]
 
   @@index([deletedAt])
 }
@@ -1024,4 +1034,218 @@ model Payslip {
   @@index([employeeId])
   @@index([tenantId, period])
   @@index([status])
+}
+
+// ── Recruitment Module ─────────────────────────────────────────────────────────
+
+model JobOpening {
+  id              String   @id @default(cuid())
+  tenantId        String
+  title           String
+  department      String
+  location        String
+  employmentType  String   // FULL_TIME | PART_TIME | CONTRACT | INTERNSHIP
+  applicantCount  Int      @default(0)
+  currentStage    String   @default("Applied")
+  status          String   @default("Open") // Open | Closing | On hold | Closed
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  candidates      Candidate[]
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+}
+
+model Candidate {
+  id          String   @id @default(cuid())
+  tenantId    String
+  openingId   String
+  name        String
+  role        String
+  email       String
+  stage       String   @default("applied") // applied | screening | interview | offer | hired
+  rating      Int      @default(0)          // 0-5
+  daysInStage Int      @default(0)
+  isReferral  Boolean  @default(false)
+  appliedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  opening     JobOpening @relation(fields: [openingId], references: [id], onDelete: Cascade)
+  tenant      Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([openingId])
+  @@index([tenantId, stage])
+}
+
+// ── Performance Module ─────────────────────────────────────────────────────────
+
+model PerformanceCycle {
+  id                String   @id @default(cuid())
+  tenantId          String
+  name              String
+  selfReviewDue     DateTime
+  managerReviewDue  DateTime
+  calibrationDate   DateTime
+  progressPct       Int      @default(0)
+  status            String   @default("In progress") // Upcoming | In progress | Calibrating | Closed
+  startedAt         DateTime @default(now())
+
+  // Relations
+  reviews           PerformanceReview[]
+  goals             PerformanceGoal[]
+  tenant            Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+}
+
+model PerformanceReview {
+  id              String   @id @default(cuid())
+  tenantId        String
+  cycleId         String
+  employeeId      String
+  reviewerId      String?
+  status          String   @default("Not started") // Not started | Self review | Manager review | Calibrated
+  rating          String?  // Exceeds | Strong | Meets | Developing | Below
+  selfComplete    Boolean  @default(false)
+  managerComplete Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  cycle           PerformanceCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, cycleId, employeeId])
+  @@index([tenantId])
+  @@index([cycleId])
+  @@index([employeeId])
+}
+
+model PerformanceGoal {
+  id          String   @id @default(cuid())
+  tenantId    String
+  cycleId     String?
+  employeeId  String
+  title       String
+  progressPct Int      @default(0)
+  dueDate     DateTime
+  status      String   @default("On track") // On track | At risk | Done
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  cycle       PerformanceCycle? @relation(fields: [cycleId], references: [id], onDelete: SetNull)
+  tenant      Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([cycleId])
+  @@index([employeeId])
+}
+
+// ── Assets Module ──────────────────────────────────────────────────────────────
+
+model Asset {
+  id              String   @id @default(cuid())
+  tenantId        String
+  tag             String
+  name            String
+  type            String   // Laptop | Monitor | Phone | Other
+  status          String   @default("Available") // Assigned | Available | Repair | Retired
+  assignedToId    String?
+  assignedToName  String?
+  assignedSince   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  requests        AssetRequest[]
+  tenant          Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, tag])
+  @@index([tenantId])
+  @@index([tenantId, status])
+}
+
+model AssetRequest {
+  id              String   @id @default(cuid())
+  tenantId        String
+  requestedById   String
+  requestedByName String
+  assetId         String?
+  item            String
+  reason          String
+  status          String   @default("Pending") // Pending | Approved | Fulfilled | Declined
+  declineReason   String?
+  requestedAt     DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  asset           Asset?  @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  tenant          Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+}
+
+// ── Announcements Module ───────────────────────────────────────────────────────
+
+model AnnouncementChannel {
+  id            String   @id @default(cuid())
+  tenantId      String
+  name          String
+  category      String   // Company | People | Product | IT | Office
+  postCount     Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  // Relations
+  announcements Announcement[]
+  tenant        Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  tenantId    String
+  channelId   String
+  category    String
+  title       String
+  body        String
+  authorName  String
+  authorRole  String?
+  audience    String   @default("All employees")
+  readCount   Int      @default(0)
+  isPinned    Boolean  @default(false)
+  postedAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  channel     AnnouncementChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  tenant      Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, isPinned])
+  @@index([channelId])
+}
+
+model AnnouncementEvent {
+  id        String   @id @default(cuid())
+  tenantId  String
+  date      String   // YYYY-MM-DD
+  title     String
+  meta      String
+  createdAt DateTime @default(now())
+
+  // Relations
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, date])
 }

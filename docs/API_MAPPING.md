@@ -2608,6 +2608,77 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | PATCH | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Add one-time adjustments. Body: `{oneTimeAdditions[], oneTimeDeductions[], notes}`. Recalculates net |
 | GET | `/payroll/runs/:runId/export` | HR,SA | `Content-Type: text/csv`. Payroll register download |
 
+---
+
+## Domain A — Recruitment (`/recruitment/*`)
+
+> **Added: 2026-06-06** (Phase 3)
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/recruitment/summary` | HR,SA,MGR | `{ openRequisitions, activeCandidates, interviewsThisWeek, avgDaysToHire, closingThisWeek, interviewsToday }` |
+| GET | `/recruitment/openings` | HR,SA,MGR | Paginated. `?status` filter: Open\|Closing\|On hold\|Closed. Returns `{ openings[], pagination }` |
+| POST | `/recruitment/openings` | HR,SA | 201. Required: `title, department, location, employmentType` |
+| PATCH | `/recruitment/openings/:id` | HR,SA | 200. Any subset of opening fields. 404 if not found |
+| GET | `/recruitment/candidates` | HR,SA,MGR | Paginated. `?openingId, ?stage`. Returns `{ candidates[], pagination }` — candidate has `tag=openingId` |
+| POST | `/recruitment/candidates/:id/advance` | HR,SA,MGR | Advances stage: applied→screening→interview→offer→hired. 409 if hired, 422 if invalid |
+| PATCH | `/recruitment/candidates/:id/rating` | HR,SA,MGR | Body: `{ rating: 1-5 }`. 422 if out of range, 404 if not found |
+| GET | `/recruitment/recruiters` | HR,SA,MGR | Returns HR_ADMIN users with employee profiles `{ recruiters: [{id, name, email}] }` |
+
+---
+
+## Domain B — Performance (`/performance/*`)
+
+> **Added: 2026-06-06** (Phase 3)
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/performance/cycles/active` | HR,SA,MGR | Returns active cycle or `null` if none. Fields: `id, name, selfReviewDue, managerReviewDue, calibrationDate, progressPct, status, startedAt` |
+| GET | `/performance/summary` | HR,SA,MGR | `{ reviewsComplete, reviewsTotal, goalsOnTrackPct, goalsOnTrackDelta, avgRating, overdueReviews }` |
+| GET | `/performance/reviews` | HR,SA,MGR | Paginated. Enriched: `{ employeeId, employeeName, department, reviewerName, status, rating, selfComplete, managerComplete }` |
+| GET | `/performance/goals` | HR,SA,MGR | Paginated. Enriched: `{ id, employeeId, employeeName, title, progressPct, dueDate, status }` |
+| GET | `/performance/calibration` | HR,SA | `{ totalReviewed, distribution: [{rating, count, pct}], notes: [{tone, title, body}] }` |
+| GET | `/performance/employees` | HR,SA,MGR | `{ employees: [{id, name, department}] }` — active employees |
+| PATCH | `/performance/reviews/:employeeId` | HR,SA,MGR | Body: `{ rating: Exceeds\|Strong\|Meets\|Developing\|Below }`. Sets status=Calibrated. 404/409/422 |
+| POST | `/performance/goals` | HR,SA,MGR | 201. Required: `employeeId, title, dueDate`. Optional: `progressPct` |
+
+---
+
+## Domain C — Assets (`/assets/*`)
+
+> **Added: 2026-06-06** (Phase 3)
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/assets/summary` | HR,SA,MGR | `{ totalAssets, assigned, available, inRepair, utilizationPct, avgRepairDays }` |
+| GET | `/assets` | HR,SA,MGR | Paginated. `?type` (Laptop\|Monitor\|Phone\|Other), `?status` (Assigned\|Available\|Repair\|Retired) |
+| POST | `/assets` | HR,SA | 201. Required: `tag, name, type`. Optional: `assignedTo: {employeeId, name}, assignedSince`. 409 if tag exists |
+| GET | `/assets/requests` | HR,SA,MGR | Paginated. Returns `{ requests[], pagination }` |
+| PATCH | `/assets/requests/:id/approve` | HR,SA | 200 `{ id, status: "Approved" }`. 409 if not Pending |
+| PATCH | `/assets/requests/:id/decline` | HR,SA | 200 `{ id, status: "Declined" }`. Body: `{ reason? }`. 409 if not Pending |
+| GET | `/assets/employees` | HR,SA,MGR | Returns `[{ employeeId, name }]` — active employees |
+| PATCH | `/assets/:id/status` | HR,SA | Body: `{ status: Available\|Repair\|Retired }`. Clears assignedTo. 404 if not found |
+| PATCH | `/assets/:id/assign` | HR,SA | Body: `{ employeeId, name, since? }`. Sets status=Assigned. 404 if not found, 409 if Retired |
+| PATCH | `/assets/:id/recall` | HR,SA | Sets status=Available, clears assignedTo. 404 if not found |
+
+---
+
+## Domain D — Announcements (`/announcements/*`)
+
+> **Added: 2026-06-06** (Phase 3)
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/announcements` | All | `?channelId, ?page, ?limit`. Returns `{ pinned: <ann or null>, feed: [], pagination }`. Author shape: `{ name, role }` |
+| POST | `/announcements` | HR,SA,MGR | 201. Required: `title, body, category`. Optional: `channelId, audience, isPinned, authorName, authorRole`. 403 if EMPLOYEE |
+| GET | `/announcements/channels` | All | `{ channels: [{id, name, postCount, category}] }` |
+| GET | `/announcements/events` | All | `{ events: [{id, date, title, meta}] }` |
+| POST | `/announcements/events` | HR,SA,MGR | 201. Required: `date (YYYY-MM-DD), title, meta` |
+| PATCH | `/announcements/:id/pin` | HR,SA | Pins this announcement, demotes existing pinned. 404 if not found |
+| PATCH | `/announcements/:id/unpin` | HR,SA | `{ unpinned: true }`. 409 if not currently pinned. 404 if not found |
+
+---
+
 ### Formula Language (for FORMULA calculationType)
 Variables: any component code (e.g. BASIC, HRA), CTC (annualCtc/12), GROSS (sum of EARNINGs), NET (GROSS - DEDUCTIONs)
 Functions: MIN, MAX, IF, ROUND, FLOOR, CEIL, ABS
