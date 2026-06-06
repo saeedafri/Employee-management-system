@@ -50,7 +50,13 @@ export async function getCandidates(tenantId, query) {
   };
 }
 
-export async function advanceCandidate(tenantId, id) {
+export async function advanceCandidate(tenantId, id, requestedStage) {
+  if (!STAGE_ORDER.includes(requestedStage)) {
+    const err = new Error(`stage must be one of: ${STAGE_ORDER.join(', ')}`);
+    err.code = 'VALIDATION_ERROR';
+    err.statusCode = 422;
+    throw err;
+  }
   const candidate = await repo.getCandidateById(tenantId, id);
   if (!candidate) {
     const err = new Error('Candidate not found');
@@ -65,14 +71,14 @@ export async function advanceCandidate(tenantId, id) {
     throw err;
   }
   const currentIdx = STAGE_ORDER.indexOf(candidate.stage);
-  if (currentIdx === -1 || currentIdx === STAGE_ORDER.length - 1) {
-    const err = new Error('Cannot advance beyond hired stage');
-    err.code = 'INVALID_STAGE_TRANSITION';
+  const expectedNext = STAGE_ORDER[currentIdx + 1];
+  if (requestedStage !== expectedNext) {
+    const err = new Error(`Cannot skip stages. Current: ${candidate.stage}, expected next: ${expectedNext}`);
+    err.code = 'VALIDATION_ERROR';
     err.statusCode = 422;
     throw err;
   }
-  const nextStage = STAGE_ORDER[currentIdx + 1];
-  const updated = await repo.advanceCandidate(id, nextStage);
+  const updated = await repo.advanceCandidate(id, expectedNext);
   return { id: updated.id, stage: updated.stage, daysInStage: updated.daysInStage };
 }
 

@@ -53,7 +53,7 @@ export async function getCandidates(request, reply) {
 
 export async function advanceCandidate(request, reply) {
   try {
-    const data = await service.advanceCandidate(request.tenant.id, request.params.id);
+    const data = await service.advanceCandidate(request.tenant.id, request.params.id, request.body.stage);
     return reply.send(successResponse(data));
   } catch (err) {
     request.log.error(err);

@@ -99,6 +99,11 @@ export default async function recruitmentRoutes(fastify) {
       summary: 'Advance candidate to next stage',
       security: [{ Bearer: [] }],
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        required: ['stage'],
+        properties: { stage: { type: 'string' } },
+      },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
     onRequest: [authenticate, authorize(HR_MANAGER)],
@@ -113,7 +118,7 @@ export default async function recruitmentRoutes(fastify) {
       body: {
         type: 'object',
         required: ['rating'],
-        properties: { rating: { type: 'integer', minimum: 1, maximum: 5 } },
+        properties: { rating: { type: 'integer' } },
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },

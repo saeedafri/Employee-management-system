@@ -35,6 +35,7 @@ export default async function performanceRoutes(fastify) {
         properties: {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 50 },
+          status: { type: 'string' },
         },
       },
       response: { 200: { type: 'object', additionalProperties: true } },
@@ -52,6 +53,7 @@ export default async function performanceRoutes(fastify) {
         properties: {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 50 },
+          status: { type: 'string' },
         },
       },
       response: { 200: { type: 'object', additionalProperties: true } },
@@ -88,7 +90,7 @@ export default async function performanceRoutes(fastify) {
       body: {
         type: 'object',
         properties: {
-          rating: { type: 'string', enum: ['Exceeds', 'Strong', 'Meets', 'Developing', 'Below'] },
+          rating: { type: 'string' },
         },
       },
       response: { 200: { type: 'object', additionalProperties: true } },
