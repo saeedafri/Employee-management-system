@@ -28,20 +28,22 @@ export async function getSummary(tenantId) {
   return { reviewsComplete, reviewsTotal, goalsOnTrackPct, goalsOnTrackDelta: 6, avgRating, overdueReviews };
 }
 
-export async function getReviews(tenantId, { page, limit }) {
+export async function getReviews(tenantId, { page, limit, status }) {
   const skip = (page - 1) * limit;
+  const where = { tenantId, ...(status && { status }) };
   const [reviews, total] = await Promise.all([
-    prisma.performanceReview.findMany({ where: { tenantId }, skip, take: limit, orderBy: { createdAt: 'desc' } }),
-    prisma.performanceReview.count({ where: { tenantId } }),
+    prisma.performanceReview.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+    prisma.performanceReview.count({ where }),
   ]);
   return { reviews, total };
 }
 
-export async function getGoals(tenantId, { page, limit }) {
+export async function getGoals(tenantId, { page, limit, status }) {
   const skip = (page - 1) * limit;
+  const where = { tenantId, ...(status && { status }) };
   const [goals, total] = await Promise.all([
-    prisma.performanceGoal.findMany({ where: { tenantId }, skip, take: limit, orderBy: { createdAt: 'desc' } }),
-    prisma.performanceGoal.count({ where: { tenantId } }),
+    prisma.performanceGoal.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+    prisma.performanceGoal.count({ where }),
   ]);
   return { goals, total };
 }

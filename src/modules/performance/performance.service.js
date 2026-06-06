@@ -24,7 +24,7 @@ export async function getReviews(tenantId, query) {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 50;
 
-  const { reviews, total } = await repo.getReviews(tenantId, { page, limit });
+  const { reviews, total } = await repo.getReviews(tenantId, { page, limit, status: query.status });
 
   const employeeIds = [...new Set(reviews.map(r => r.employeeId))];
   const reviewerIds = [...new Set(reviews.map(r => r.reviewerId).filter(Boolean))];
@@ -67,7 +67,7 @@ export async function getGoals(tenantId, query) {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 50;
 
-  const { goals, total } = await repo.getGoals(tenantId, { page, limit });
+  const { goals, total } = await repo.getGoals(tenantId, { page, limit, status: query.status });
 
   const employeeIds = [...new Set(goals.map(g => g.employeeId))];
   const employees = await prisma.employee.findMany({
