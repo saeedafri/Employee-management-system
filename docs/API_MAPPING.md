@@ -2621,7 +2621,7 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | POST | `/recruitment/openings` | HR,SA | 201. Required: `title, department, location, employmentType` |
 | PATCH | `/recruitment/openings/:id` | HR,SA | 200. Any subset of opening fields. 404 if not found |
 | GET | `/recruitment/candidates` | HR,SA,MGR | Paginated. `?openingId, ?stage`. Returns `{ candidates[], pagination }` — candidate has `tag=openingId` |
-| POST | `/recruitment/candidates/:id/advance` | HR,SA,MGR | Advances stage: applied→screening→interview→offer→hired. 409 if hired, 422 if invalid |
+| POST | `/recruitment/candidates/:id/advance` | HR,SA,MGR | Body: `{ stage }` — must be exact next stage. Sequence: applied→screening→interview→offer→hired. 409 if hired, 422 if invalid stage name or skip |
 | PATCH | `/recruitment/candidates/:id/rating` | HR,SA,MGR | Body: `{ rating: 1-5 }`. 422 if out of range, 404 if not found |
 | GET | `/recruitment/recruiters` | HR,SA,MGR | Returns HR_ADMIN users with employee profiles `{ recruiters: [{id, name, email}] }` |
 
@@ -2635,8 +2635,8 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 |--------|------|-------|-------|
 | GET | `/performance/cycles/active` | HR,SA,MGR | Returns active cycle or `null` if none. Fields: `id, name, selfReviewDue, managerReviewDue, calibrationDate, progressPct, status, startedAt` |
 | GET | `/performance/summary` | HR,SA,MGR | `{ reviewsComplete, reviewsTotal, goalsOnTrackPct, goalsOnTrackDelta, avgRating, overdueReviews }` |
-| GET | `/performance/reviews` | HR,SA,MGR | Paginated. Enriched: `{ employeeId, employeeName, department, reviewerName, status, rating, selfComplete, managerComplete }` |
-| GET | `/performance/goals` | HR,SA,MGR | Paginated. Enriched: `{ id, employeeId, employeeName, title, progressPct, dueDate, status }` |
+| GET | `/performance/reviews` | HR,SA,MGR | Paginated. `?status` (Not started\|Self review\|Manager review\|Calibrated). Enriched: `{ employeeId, employeeName, department, reviewerName, status, rating, selfComplete, managerComplete }` |
+| GET | `/performance/goals` | HR,SA,MGR | Paginated. `?status` (On track\|At risk\|Done). Enriched: `{ id, employeeId, employeeName, title, progressPct, dueDate, status }` |
 | GET | `/performance/calibration` | HR,SA | `{ totalReviewed, distribution: [{rating, count, pct}], notes: [{tone, title, body}] }` |
 | GET | `/performance/employees` | HR,SA,MGR | `{ employees: [{id, name, department}] }` — active employees |
 | PATCH | `/performance/reviews/:employeeId` | HR,SA,MGR | Body: `{ rating: Exceeds\|Strong\|Meets\|Developing\|Below }`. Sets status=Calibrated. 404/409/422 |

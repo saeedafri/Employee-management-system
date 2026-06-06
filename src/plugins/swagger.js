@@ -825,7 +825,13 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Recruitment', 'List candidates — paginated, ?openingId, ?stage filters', true, { parameters: [...pageQuery, queryParam('openingId', 'string', 'Filter by opening'), queryParam('stage', 'string', 'Filter by stage')] }),
         },
         '/recruitment/candidates/{id}/advance': {
-          post: op('Recruitment', 'Advance candidate to next stage — 409 if hired, 422 if invalid transition', true, { parameters: idParam }),
+          post: op('Recruitment', 'Advance candidate to next stage — body: {stage} must be exact next stage. 409 if hired, 422 if invalid/skip', true, {
+            parameters: [
+              ...idParam,
+              { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['stage'], properties: { stage: { type: 'string', enum: ['screening', 'interview', 'offer', 'hired'] } } } },
+            ],
+            responses: { 200: r200, 409: { description: 'Already hired' }, 422: { description: 'Invalid or skipped stage' } },
+          }),
         },
         '/recruitment/candidates/{id}/rating': {
           patch: op('Recruitment', 'Rate a candidate 1-5 (HR_ADMIN, SUPER_ADMIN, MANAGER)', true, {
@@ -845,10 +851,10 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Performance', 'Performance overview stats (reviewsComplete, goalsOnTrackPct, avgRating, etc.)'),
         },
         '/performance/reviews': {
-          get: op('Performance', 'List performance reviews — paginated, enriched with employee/reviewer names', true, { parameters: pageQuery }),
+          get: op('Performance', 'List performance reviews — paginated, ?status filter (Not started|Self review|Manager review|Calibrated)', true, { parameters: [...pageQuery, queryParam('status', 'string', 'Not started|Self review|Manager review|Calibrated')] }),
         },
         '/performance/goals': {
-          get:  op('Performance', 'List performance goals — paginated, enriched with employee names', true, { parameters: pageQuery }),
+          get:  op('Performance', 'List performance goals — paginated, ?status filter (On track|At risk|Done)', true, { parameters: [...pageQuery, queryParam('status', 'string', 'On track|At risk|Done')] }),
           post: op('Performance', 'Create a performance goal', true, { responses: { 201: r201 } }),
         },
         '/performance/calibration': {
