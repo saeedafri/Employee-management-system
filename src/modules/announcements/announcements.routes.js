@@ -2,7 +2,6 @@ import { authenticate, authorize } from '../../middleware/authenticate.js';
 import * as controller from './announcements.controller.js';
 
 export default async function announcementsRoutes(fastify) {
-  const ALL_AUTH = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER', 'EMPLOYEE', 'AUDITOR'];
   const HR_MANAGER = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER'];
   const HR_ONLY = ['HR_ADMIN', 'SUPER_ADMIN'];
 
