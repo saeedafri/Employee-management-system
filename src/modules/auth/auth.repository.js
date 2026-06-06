@@ -1,4 +1,10 @@
 export async function findUserByEmail(db, tenantId, email) {
+  if (!tenantId) {
+    return db.user.findFirst({
+      where: { email },
+      include: { employee: true, userRoles: { include: { role: { select: { name: true } } } } },
+    });
+  }
   return db.user.findUnique({
     where: { tenantId_email: { tenantId, email } },
     include: {

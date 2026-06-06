@@ -4,7 +4,7 @@ import * as authValidator from './auth.validator.js';
 
 export async function forgotPasswordController(request, reply) {
   try {
-    const { id: tenantId } = request.tenant;
+    const tenantId = request.tenant?.id ?? null;
 
     const { email } = await authValidator.forgotPasswordSchema.parseAsync(request.body);
     const ip = request.ip;
@@ -26,7 +26,7 @@ export async function forgotPasswordController(request, reply) {
 
 export async function validateResetTokenController(request, reply) {
   try {
-    const { id: tenantId } = request.tenant;
+    const tenantId = request.tenant?.id ?? null;
     const { token } = await authValidator.validateResetTokenSchema.parseAsync(request.query);
 
     const result = await passwordResetService.validateResetToken(tenantId, token);
