@@ -51,6 +51,13 @@ export async function getTimesheet(request, reply) {
   const { week, employeeId } = request.query;
   const resolvedEmployeeId = employeeId || request.user.employeeId;
   const weekStart = week || getMonday(new Date()).toISOString().slice(0, 10);
+  // Accounts with no Employee record (e.g. SUPER_ADMIN) have no personal
+  // timesheet. Return a clear 400 instead of letting Prisma throw a 500.
+  if (!resolvedEmployeeId) {
+    return reply
+      .code(400)
+      .send(errorResponse('NO_EMPLOYEE_RECORD', 'This account has no employee record. Pass ?employeeId to view a specific timesheet.', {}, request.id));
+  }
   const sheet = await service.getTimesheet(request.tenant.id, resolvedEmployeeId, weekStart);
   return reply.send(successResponse(sheet));
 }

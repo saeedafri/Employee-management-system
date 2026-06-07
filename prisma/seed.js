@@ -150,7 +150,21 @@ async function main() {
     create: { tenantId: tenant.id, email: 'priya@acme.test', passwordHash: pwHash, memberType: 'EMPLOYEE', status: 'ACTIVE' },
   });
 
-  console.log('✅ Users: 4 seed users');
+  // HR_ADMIN login using the project owner's real email (for UI/Playwright testing)
+  const hrGmailUser = await prisma.user.upsert({
+    where: { tenantId_email: { tenantId: tenant.id, email: 'mohammadsaeedafri9@gmail.com' } },
+    update: { passwordHash: pwHash, status: 'ACTIVE' },
+    create: { tenantId: tenant.id, email: 'mohammadsaeedafri9@gmail.com', passwordHash: pwHash, memberType: 'HR_ADMIN', status: 'ACTIVE' },
+  });
+
+  // dev1 EMPLOYEE login (listed as a test account; previously only in comprehensive seed)
+  const dev1User = await prisma.user.upsert({
+    where: { tenantId_email: { tenantId: tenant.id, email: 'dev1@acme.test' } },
+    update: { passwordHash: pwHash, status: 'ACTIVE' },
+    create: { tenantId: tenant.id, email: 'dev1@acme.test', passwordHash: pwHash, memberType: 'EMPLOYEE', status: 'ACTIVE' },
+  });
+
+  console.log('✅ Users: 6 seed users');
 
   // Assign roles to users (idempotent)
   for (const [userId, roleId] of [
@@ -158,6 +172,8 @@ async function main() {
     [hrAdminUser.id, hrAdminRole.id],
     [managerUser.id, managerRole.id],
     [employeeUser.id, employeeRole.id],
+    [hrGmailUser.id, hrAdminRole.id],
+    [dev1User.id, employeeRole.id],
   ]) {
     await prisma.userRole.upsert({
       where: { userId_roleId: { userId, roleId } },
