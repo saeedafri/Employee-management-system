@@ -7,7 +7,7 @@
         "@modelcontextprotocol/server-github"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
       }
     },
     "render": {
@@ -20,6 +20,13 @@
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=ovqqisdmkwrghchblkom"
+    },
+    "hostinger-api": {
+      "command": "hostinger-api-mcp",
+      "env": {
+        "DEBUG": "false",
+        "API_TOKEN": "KSg8h0jfTwqGvysj7HVsgsDGHsCNjQxFYDXxf65ud29223ce"
+      }
     }
   }
 }
