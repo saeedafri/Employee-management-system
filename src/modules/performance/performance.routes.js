@@ -36,6 +36,7 @@ export default async function performanceRoutes(fastify) {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 50 },
           status: { type: 'string' },
+          departmentId: { type: 'string' },
         },
       },
       response: { 200: { type: 'object', additionalProperties: true } },

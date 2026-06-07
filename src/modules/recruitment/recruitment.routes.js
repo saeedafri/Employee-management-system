@@ -96,7 +96,7 @@ export default async function recruitmentRoutes(fastify) {
   fastify.post('/recruitment/candidates/:id/advance', {
     schema: {
       tags: ['Recruitment'],
-      summary: 'Advance candidate to next stage',
+      summary: 'Advance candidate to next stage (HR_ADMIN, SUPER_ADMIN only)',
       security: [{ Bearer: [] }],
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       body: {
@@ -106,7 +106,7 @@ export default async function recruitmentRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, authorize(HR_ONLY)],
   }, controller.advanceCandidate);
 
   fastify.patch('/recruitment/candidates/:id/rating', {

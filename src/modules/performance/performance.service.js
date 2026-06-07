@@ -24,7 +24,16 @@ export async function getReviews(tenantId, query) {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 50;
 
-  const { reviews, total } = await repo.getReviews(tenantId, { page, limit, status: query.status });
+  let deptEmployeeIds;
+  if (query.departmentId) {
+    const deptEmployees = await prisma.employee.findMany({
+      where: { tenantId, departmentId: query.departmentId, deletedAt: null },
+      select: { id: true },
+    });
+    deptEmployeeIds = deptEmployees.map(e => e.id);
+  }
+
+  const { reviews, total } = await repo.getReviews(tenantId, { page, limit, status: query.status, employeeIds: deptEmployeeIds });
 
   const employeeIds = [...new Set(reviews.map(r => r.employeeId))];
   const reviewerIds = [...new Set(reviews.map(r => r.reviewerId).filter(Boolean))];
@@ -142,9 +151,9 @@ export async function updateReview(tenantId, employeeId, data) {
     }),
     updated.reviewerId
       ? prisma.employee.findMany({
-          where: { id: { in: [updated.reviewerId] } },
-          select: { id: true, firstName: true, lastName: true },
-        })
+        where: { id: { in: [updated.reviewerId] } },
+        select: { id: true, firstName: true, lastName: true },
+      })
       : Promise.resolve([]),
   ]);
 

@@ -215,6 +215,11 @@ model Tenant {
   announcementChannels       AnnouncementChannel[]
   announcements              Announcement[]
   announcementEvents         AnnouncementEvent[]
+  timesheetProjects          TimesheetProject[]
+  timesheetTasks             TimesheetTask[]
+  timesheets                 Timesheet[]
+  timeEntries                TimeEntry[]
+  timesheetSettings          TimesheetSettings?
 
   @@index([deletedAt])
 }
@@ -1248,4 +1253,108 @@ model AnnouncementEvent {
 
   @@index([tenantId])
   @@index([tenantId, date])
+}
+
+// ─── Domain G: Timesheets ────────────────────────────────────────────────────
+
+model TimesheetProject {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  code        String
+  clientName  String?
+  status      String   @default("ACTIVE") // ACTIVE | ARCHIVED
+  billable    Boolean  @default(true)
+  defaultRate Float    @default(0)
+  memberIds   String   @default("[]") // JSON-encoded array of employee IDs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant  Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tasks   TimesheetTask[]
+  entries TimeEntry[]
+
+  @@index([tenantId])
+}
+
+model TimesheetTask {
+  id        String   @id @default(cuid())
+  tenantId  String
+  projectId String
+  name      String
+  billable  Boolean  @default(true)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant  Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  project TimesheetProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  entries TimeEntry[]
+
+  @@index([tenantId])
+  @@index([projectId])
+}
+
+model Timesheet {
+  id           String    @id @default(cuid())
+  tenantId     String
+  employeeId   String
+  weekStart    String    // YYYY-MM-DD (Monday)
+  weekEnd      String    // YYYY-MM-DD (Sunday)
+  status       String    @default("DRAFT") // DRAFT | SUBMITTED | APPROVED | REJECTED
+  totalHours   Float     @default(0)
+  submittedAt  DateTime?
+  decidedBy    String?
+  decidedAt    DateTime?
+  comment      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  tenant   Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  entries  TimeEntry[]
+
+  @@unique([tenantId, employeeId, weekStart])
+  @@index([tenantId])
+  @@index([employeeId])
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  tenantId    String
+  timesheetId String
+  employeeId  String
+  projectId   String
+  taskId      String?
+  date        String   // YYYY-MM-DD
+  hours       Float
+  billable    Boolean  @default(true)
+  note        String?
+  source      String   @default("MANUAL") // MANUAL | TIMER
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant     Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  timesheet  Timesheet        @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+  project    TimesheetProject @relation(fields: [projectId], references: [id])
+  task       TimesheetTask?   @relation(fields: [taskId], references: [id])
+
+  @@index([tenantId])
+  @@index([timesheetId])
+  @@index([employeeId])
+}
+
+model TimesheetSettings {
+  id                     String   @id @default(cuid())
+  tenantId               String   @unique
+  standardWeeklyHours    Float    @default(40)
+  overtimeThresholdHours Float    @default(40)
+  roundingMinutes        Int      @default(15)
+  approvalRequired       Boolean  @default(true)
+  unloggedHoursPolicy    String   @default("FLAG") // IGNORE | FLAG | DEDUCT
+  billableDefault        Boolean  @default(true)
+  updatedAt              DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }

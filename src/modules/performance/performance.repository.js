@@ -28,9 +28,13 @@ export async function getSummary(tenantId) {
   return { reviewsComplete, reviewsTotal, goalsOnTrackPct, goalsOnTrackDelta: 6, avgRating, overdueReviews };
 }
 
-export async function getReviews(tenantId, { page, limit, status }) {
+export async function getReviews(tenantId, { page, limit, status, employeeIds }) {
   const skip = (page - 1) * limit;
-  const where = { tenantId, ...(status && { status }) };
+  const where = {
+    tenantId,
+    ...(status && { status }),
+    ...(employeeIds && { employeeId: { in: employeeIds } }),
+  };
   const [reviews, total] = await Promise.all([
     prisma.performanceReview.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
     prisma.performanceReview.count({ where }),

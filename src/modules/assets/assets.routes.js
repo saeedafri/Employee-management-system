@@ -2,7 +2,6 @@ import { authenticate, authorize } from '../../middleware/authenticate.js';
 import * as controller from './assets.controller.js';
 
 export default async function assetsRoutes(fastify) {
-  const HR_MANAGER = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER'];
   const HR_ONLY = ['HR_ADMIN', 'SUPER_ADMIN'];
 
   fastify.get('/assets/summary', {
@@ -12,7 +11,7 @@ export default async function assetsRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, authorize(HR_ONLY)],
   }, controller.getSummary);
 
   // NOTE: /assets/requests and /assets/employees must come BEFORE /assets/:id
@@ -31,7 +30,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, authorize(HR_ONLY)],
   }, controller.getRequests);
 
   fastify.get('/assets/employees', {
@@ -41,7 +40,7 @@ export default async function assetsRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, authorize(HR_ONLY)],
   }, controller.getEmployees);
 
   fastify.get('/assets', {
@@ -60,7 +59,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, authorize(HR_ONLY)],
   }, controller.getAssets);
 
   fastify.post('/assets', {
