@@ -349,6 +349,21 @@ function fmtPayslipSummary(ps) {
   };
 }
 
+// Payslip line items are consumed by the UI's PayslipLine contract
+// ({ code, name, amount, taxable }). Stored JSON uses monthlyAmount, so emit
+// both: `amount` (what the UI reads) and `monthlyAmount` (back-compat).
+function normalizePayslipLine(l) {
+  const amount = l.amount ?? l.monthlyAmount ?? 0;
+  return {
+    code: l.code ?? null,
+    name: l.name ?? l.code ?? '',
+    type: l.type ?? null,
+    amount,
+    monthlyAmount: amount,
+    taxable: l.taxable ?? false,
+  };
+}
+
 function fmtPayslipDetail(ps) {
   return {
     id: ps.id, period: ps.period, periodLabel: monthLabel(ps.period),
@@ -362,8 +377,8 @@ function fmtPayslipDetail(ps) {
       panNumber: null,
     } : undefined,
     company: ps.tenant ? { name: ps.tenant.name, address: null, logoUrl: ps.tenant.logoUrl ?? null } : undefined,
-    earnings: ps.earningsJson ?? [],
-    deductions: ps.deductionsJson ?? [],
+    earnings: (ps.earningsJson ?? []).map(normalizePayslipLine),
+    deductions: (ps.deductionsJson ?? []).map(normalizePayslipLine),
     oneTimeAdditions: ps.oneTimeAdditionsJson ?? [],
     oneTimeDeductions: ps.oneTimeDeductionsJson ?? [],
     grossEarnings: Number(ps.grossEarnings),

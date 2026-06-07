@@ -486,15 +486,17 @@ async function main() {
             grossEarnings: pd.gross, totalDeductions: pd.deductions, netPay: pd.net,
             workingDays: 22, presentDays: 22, leaveDays: 0, lopDays: 0,
             status: 'PAID', paymentDate: new Date(`${rp.period}-28`),
+            // Line items carry both `amount` (UI PayslipLine contract) and
+            // `monthlyAmount` (back-compat) + `taxable`.
             earningsJson: [
-              { code: 'BASIC', name: 'Basic Salary', monthlyAmount: Math.round(pd.gross * 0.5) },
-              { code: 'HRA', name: 'House Rent Allowance', monthlyAmount: Math.round(pd.gross * 0.2) },
-              { code: 'CONVEYANCE', name: 'Conveyance Allowance', monthlyAmount: 1600 },
-              { code: 'MEDICAL', name: 'Medical Allowance', monthlyAmount: 1250 },
+              { code: 'BASIC', name: 'Basic Salary', type: 'EARNING', amount: Math.round(pd.gross * 0.5), monthlyAmount: Math.round(pd.gross * 0.5), taxable: true },
+              { code: 'HRA', name: 'House Rent Allowance', type: 'EARNING', amount: Math.round(pd.gross * 0.2), monthlyAmount: Math.round(pd.gross * 0.2), taxable: false },
+              { code: 'CONVEYANCE', name: 'Conveyance Allowance', type: 'EARNING', amount: 1600, monthlyAmount: 1600, taxable: false },
+              { code: 'MEDICAL', name: 'Medical Allowance', type: 'BENEFIT', amount: 1250, monthlyAmount: 1250, taxable: false },
             ],
             deductionsJson: [
-              { code: 'PF', name: 'Provident Fund', monthlyAmount: Math.round(pd.gross * 0.05) },
-              { code: 'TDS', name: 'Income Tax (TDS)', monthlyAmount: pd.deductions - Math.round(pd.gross * 0.05) },
+              { code: 'PF', name: 'Provident Fund', type: 'DEDUCTION', amount: Math.round(pd.gross * 0.05), monthlyAmount: Math.round(pd.gross * 0.05), taxable: false },
+              { code: 'TDS', name: 'Income Tax (TDS)', type: 'DEDUCTION', amount: pd.deductions - Math.round(pd.gross * 0.05), monthlyAmount: pd.deductions - Math.round(pd.gross * 0.05), taxable: false },
             ],
             documentUrl: docUrl,
             generatedAt: new Date(`${rp.period}-28`),
