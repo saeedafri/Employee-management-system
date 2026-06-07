@@ -42,3 +42,4 @@ temp/
 # Testing
 .mocha/
 test-results.json
+.mcp.json
