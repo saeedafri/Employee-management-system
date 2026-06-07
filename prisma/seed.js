@@ -369,6 +369,166 @@ async function main() {
   }
   console.log('✅ Attendance records for core employees (30 days)');
 
+  // ── Payroll Seed ────────────────────────────────────────────────────────────
+
+  // Salary Components
+  const componentDefs = [
+    { code: 'BASIC', name: 'Basic Salary', type: 'EARNING', calculationType: 'FLAT', value: 50000, taxable: true, displayOrder: 1 },
+    { code: 'HRA', name: 'House Rent Allowance', type: 'EARNING', calculationType: 'PERCENTAGE', value: 40, basisCode: 'BASIC', taxable: false, displayOrder: 2 },
+    { code: 'CONVEYANCE', name: 'Conveyance Allowance', type: 'EARNING', calculationType: 'FLAT', value: 1600, taxable: false, displayOrder: 3 },
+    { code: 'MEDICAL', name: 'Medical Allowance', type: 'BENEFIT', calculationType: 'FLAT', value: 1250, taxable: false, displayOrder: 4 },
+    { code: 'PF', name: 'Provident Fund (Employee)', type: 'DEDUCTION', calculationType: 'PERCENTAGE', value: 12, basisCode: 'BASIC', taxable: false, displayOrder: 5 },
+    { code: 'TDS', name: 'Income Tax (TDS)', type: 'DEDUCTION', calculationType: 'FLAT', value: 5000, taxable: false, displayOrder: 6 },
+  ];
+  const createdComponents = [];
+  for (const c of componentDefs) {
+    const comp = await prisma.salaryComponent.upsert({
+      where: { tenantId_code: { tenantId: tenant.id, code: c.code } },
+      update: {},
+      create: { tenantId: tenant.id, ...c },
+    });
+    createdComponents.push(comp);
+  }
+  console.log(`✅ Salary components: ${createdComponents.length}`);
+
+  // Pay Group
+  const payGroup = await prisma.payGroup.upsert({
+    where: { tenantId_code: { tenantId: tenant.id, code: 'STANDARD' } },
+    update: {},
+    create: { tenantId: tenant.id, name: 'Standard Pay Group', code: 'STANDARD', currency: 'INR', paySchedule: 'MONTHLY', active: true },
+  });
+  // Link components to pay group
+  for (const comp of createdComponents) {
+    await prisma.payGroupComponent.upsert({
+      where: { payGroupId_componentId: { payGroupId: payGroup.id, componentId: comp.id } },
+      update: {},
+      create: { payGroupId: payGroup.id, componentId: comp.id },
+    });
+  }
+  console.log(`✅ Pay group: ${payGroup.code}`);
+
+  // Employee Salary Records
+  const salaryRecords = [
+    { employee: hrEmployee, annualCtc: 1200000, bank: 'SBI' },
+    { employee: managerEmployee, annualCtc: 1800000, bank: 'HDFC' },
+    { employee: employeeEmployee, annualCtc: 900000, bank: 'ICICI' },
+  ];
+  for (const sr of salaryRecords) {
+    const existing = await prisma.employeeSalary.findFirst({
+      where: { tenantId: tenant.id, employeeId: sr.employee.id, effectiveTo: null },
+    });
+    if (!existing) {
+      await prisma.employeeSalary.create({
+        data: {
+          tenantId: tenant.id, employeeId: sr.employee.id, payGroupId: payGroup.id,
+          annualCtc: sr.annualCtc, effectiveFrom: new Date('2026-01-01'),
+          bankName: sr.bank, bankAccountNumber: '0001234567890', bankIfscCode: 'SBIN0001234',
+        },
+      });
+    }
+  }
+  console.log('✅ Employee salary configs');
+
+  // Payroll Runs + Payslips (Mar / Apr / May 2026 — PAID)
+  const runPeriods = [
+    { period: '2026-03', label: 'March 2026' },
+    { period: '2026-04', label: 'April 2026' },
+    { period: '2026-05', label: 'May 2026' },
+  ];
+  const cloudinaryBase = 'https://res.cloudinary.com/dmljxhmio/image/upload/v1748437200/ems/payslips';
+  for (const rp of runPeriods) {
+    let run = await prisma.payrollRun.findFirst({
+      where: { tenantId: tenant.id, period: rp.period, status: { not: 'CANCELLED' } },
+    });
+    if (!run) {
+      run = await prisma.payrollRun.create({
+        data: {
+          tenantId: tenant.id, period: rp.period, status: 'PAID',
+          employeeCount: 3, currency: 'INR',
+          totalGross: 230050, totalDeductions: 30000, totalNet: 200050,
+          initiatedById: hrAdminUser.id, approvedById: superAdminUser.id,
+          paidAt: new Date(`${rp.period}-28`),
+        },
+      });
+    }
+    // Payslips for core employees
+    const payslipDefs = [
+      { employee: hrEmployee, gross: 90000, deductions: 11000, net: 79000, code: 'E0003' },
+      { employee: managerEmployee, gross: 100000, deductions: 12000, net: 88000, code: 'E0001' },
+      { employee: employeeEmployee, gross: 75000, deductions: 9000, net: 66000, code: 'E0002' },
+    ];
+    for (const pd of payslipDefs) {
+      const existingPs = await prisma.payslip.findUnique({
+        where: { payrollRunId_employeeId: { payrollRunId: run.id, employeeId: pd.employee.id } },
+      });
+      if (!existingPs) {
+        const docUrl = `${cloudinaryBase}/payslip_${pd.code}_${rp.period.replace('-', '_')}.webp`;
+        await prisma.payslip.create({
+          data: {
+            tenantId: tenant.id, payrollRunId: run.id, employeeId: pd.employee.id,
+            period: rp.period, currency: 'INR',
+            grossEarnings: pd.gross, totalDeductions: pd.deductions, netPay: pd.net,
+            workingDays: 22, presentDays: 22, leaveDays: 0, lopDays: 0,
+            status: 'PAID', paymentDate: new Date(`${rp.period}-28`),
+            earningsJson: [
+              { code: 'BASIC', name: 'Basic Salary', monthlyAmount: Math.round(pd.gross * 0.5) },
+              { code: 'HRA', name: 'House Rent Allowance', monthlyAmount: Math.round(pd.gross * 0.2) },
+              { code: 'CONVEYANCE', name: 'Conveyance Allowance', monthlyAmount: 1600 },
+              { code: 'MEDICAL', name: 'Medical Allowance', monthlyAmount: 1250 },
+            ],
+            deductionsJson: [
+              { code: 'PF', name: 'Provident Fund', monthlyAmount: Math.round(pd.gross * 0.05) },
+              { code: 'TDS', name: 'Income Tax (TDS)', monthlyAmount: pd.deductions - Math.round(pd.gross * 0.05) },
+            ],
+            documentUrl: docUrl,
+            generatedAt: new Date(`${rp.period}-28`),
+          },
+        });
+      }
+    }
+  }
+  console.log('✅ Payroll runs (Mar/Apr/May 2026) + payslips');
+
+  // Legal Entity
+  await prisma.legalEntity.upsert({
+    where: { id: `le_${tenant.id}_in` },
+    update: {},
+    create: {
+      id: `le_${tenant.id}_in`,
+      tenantId: tenant.id, name: 'Acme India Pvt Ltd', country: 'IN', currency: 'INR',
+      fiscalYearStartMonth: 4, timezone: 'Asia/Kolkata', locale: 'en-IN',
+      registrationIds: { PF: 'MHBAN1234567', PAN: 'AAAAA1234A', ESI: '12345678901234' },
+    },
+  });
+  console.log('✅ Legal entity: Acme India');
+
+  // Statutory Pack
+  const packData = {
+    rounding: { mode: 'NEAREST', precision: 0 },
+    proration: { basis: 'CALENDAR_DAYS' },
+    taxRegimes: [{ code: 'IN_NEW_REGIME', fiscalYear: '2026-27', currency: 'INR', standardDeduction: 7500000, slabs: [{ from: 0, to: 40000000, rate: 0 }, { from: 40000000, to: 80000000, rate: 5 }, { from: 80000000, to: null, rate: 30 }], cess: { rate: 4 } }],
+    contributionSchemes: [{ code: 'IN_EPF', name: "Employees' Provident Fund", wageBaseTag: 'PF_WAGE', wageCeiling: 1500000, employee: { rate: 12, component: 'PF' }, employer: { rate: 12, component: 'PF_ER' } }],
+    localTaxes: [{ code: 'IN_MH_PT', name: 'Professional Tax (Maharashtra)', component: 'PROF_TAX', slabs: [{ from: 0, to: 750000, amount: 0 }, { from: 750000, to: null, amount: 20000 }] }],
+    statutoryComponents: ['PF', 'PF_ER', 'TDS'],
+  };
+  const packExists = await prisma.statutoryPack.findUnique({
+    where: { tenantId_country_version: { tenantId: tenant.id, country: 'IN', version: '2026.1' } },
+  });
+  if (!packExists) {
+    await prisma.statutoryPack.create({
+      data: { tenantId: tenant.id, country: 'IN', version: '2026.1', effectiveFrom: new Date('2026-04-01'), packData },
+    });
+  }
+  console.log('✅ Statutory pack: IN 2026.1');
+
+  // Pay Calendar
+  await prisma.payCalendar.upsert({
+    where: { tenantId_code: { tenantId: tenant.id, code: 'IN_MONTHLY' } },
+    update: {},
+    create: { tenantId: tenant.id, name: 'India Monthly Payroll', code: 'IN_MONTHLY', country: 'IN', paySchedule: 'MONTHLY', firstPayDate: '2026-01-28' },
+  });
+  console.log('✅ Pay calendar: IN_MONTHLY');
+
   console.log('\n🎉 Seeding complete!');
   console.log(`
 Seed Users (password: ${seedPassword}):

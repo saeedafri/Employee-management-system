@@ -773,3 +773,85 @@ export async function exportRunPayslipsCsv(prisma, runId, tenantId) {
 
   return header + rows;
 }
+
+// ── Phase 3: Legal Entities ───────────────────────────────────────────────────
+
+export async function getLegalEntities(prisma, tenantId) {
+  return prisma.legalEntity.findMany({ where: { tenantId }, orderBy: { createdAt: 'asc' } });
+}
+
+export async function createLegalEntity(prisma, tenantId, data) {
+  return prisma.legalEntity.create({
+    data: {
+      tenantId,
+      name: data.name, country: data.country || 'IN', currency: data.currency || 'INR',
+      fiscalYearStartMonth: data.fiscalYearStartMonth || 4, timezone: data.timezone || 'Asia/Kolkata',
+      locale: data.locale || 'en-IN', registrationIds: data.registrationIds || {},
+      statutoryPackId: data.statutoryPackId || null, payCalendarId: data.payCalendarId || null,
+    },
+  });
+}
+
+export async function updateLegalEntity(prisma, id, tenantId, data) {
+  const existing = await prisma.legalEntity.findFirst({ where: { id, tenantId } });
+  if (!existing) return null;
+  return prisma.legalEntity.update({ where: { id }, data });
+}
+
+// ── Phase 3: Statutory Packs ──────────────────────────────────────────────────
+
+export async function getStatutoryPacks(prisma, tenantId, country) {
+  return prisma.statutoryPack.findMany({
+    where: { tenantId, ...(country && { country }) },
+    orderBy: [{ country: 'asc' }, { effectiveFrom: 'desc' }],
+  });
+}
+
+export async function getStatutoryPackById(prisma, id, tenantId) {
+  return prisma.statutoryPack.findFirst({ where: { id, tenantId } });
+}
+
+export async function createStatutoryPack(prisma, tenantId, data) {
+  return prisma.statutoryPack.create({
+    data: {
+      tenantId, country: data.country, version: data.version,
+      effectiveFrom: new Date(data.effectiveFrom),
+      effectiveTo: data.effectiveTo ? new Date(data.effectiveTo) : null,
+      packData: data.packData,
+    },
+  });
+}
+
+export async function updateStatutoryPack(prisma, id, tenantId, data) {
+  const existing = await prisma.statutoryPack.findFirst({ where: { id, tenantId } });
+  if (!existing) return null;
+  return prisma.statutoryPack.update({
+    where: { id },
+    data: {
+      ...(data.effectiveTo !== undefined && { effectiveTo: data.effectiveTo ? new Date(data.effectiveTo) : null }),
+      ...(data.packData && { packData: data.packData }),
+    },
+  });
+}
+
+// ── Phase 3: Pay Calendars ────────────────────────────────────────────────────
+
+export async function getPayCalendars(prisma, tenantId) {
+  return prisma.payCalendar.findMany({ where: { tenantId }, orderBy: { createdAt: 'asc' } });
+}
+
+export async function createPayCalendar(prisma, tenantId, data) {
+  return prisma.payCalendar.create({
+    data: {
+      tenantId, name: data.name, code: data.code.toUpperCase(),
+      country: data.country || 'IN', paySchedule: data.paySchedule || 'MONTHLY',
+      firstPayDate: data.firstPayDate || null,
+    },
+  });
+}
+
+export async function updatePayCalendar(prisma, id, tenantId, data) {
+  const existing = await prisma.payCalendar.findFirst({ where: { id, tenantId } });
+  if (!existing) return null;
+  return prisma.payCalendar.update({ where: { id }, data });
+}

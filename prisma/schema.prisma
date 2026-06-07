@@ -220,6 +220,15 @@ model Tenant {
   timesheets                 Timesheet[]
   timeEntries                TimeEntry[]
   timesheetSettings          TimesheetSettings?
+  legalEntities              LegalEntity[]
+  statutoryPacks             StatutoryPack[]
+  payCalendars               PayCalendar[]
+  taxDeclarations            TaxDeclaration[]
+  employeeLoans              EmployeeLoan[]
+  payrollInputs              PayrollInput[]
+  openingBalances            OpeningBalance[]
+  historicalPayslips         HistoricalPayslip[]
+  migrationStatus            MigrationStatus?
 
   @@index([deletedAt])
 }
@@ -308,6 +317,11 @@ model Employee {
   resignations            Resignation[]
   salaries                EmployeeSalary[]
   payslips                Payslip[]
+  taxDeclarations         TaxDeclaration[]
+  employeeLoans           EmployeeLoan[]
+  payrollInputs           PayrollInput[]
+  openingBalances         OpeningBalance[]
+  historicalPayslips      HistoricalPayslip[]
 
   @@unique([tenantId, employeeCode])
   @@unique([tenantId, workEmail])
@@ -991,10 +1005,11 @@ model PayrollRun {
   updatedAt        DateTime         @updatedAt
 
   // Relations
-  tenant          Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  initiatedByUser User?      @relation("runInitiatedBy", fields: [initiatedById], references: [id], onDelete: SetNull)
-  approvedByUser  User?      @relation("runApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  initiatedByUser User?         @relation("runInitiatedBy", fields: [initiatedById], references: [id], onDelete: SetNull)
+  approvedByUser  User?         @relation("runApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
   payslips        Payslip[]
+  inputs          PayrollInput[]
 
   @@index([tenantId])
   @@index([tenantId, status])
@@ -1039,6 +1054,173 @@ model Payslip {
   @@index([employeeId])
   @@index([tenantId, period])
   @@index([status])
+}
+
+// ── Payroll Phase 3 Models ──────────────────────────────────────────────────────
+
+model LegalEntity {
+  id                   String   @id @default(cuid())
+  tenantId             String
+  name                 String
+  country              String   @default("IN")
+  currency             String   @default("INR")
+  fiscalYearStartMonth Int      @default(4)
+  timezone             String   @default("Asia/Kolkata")
+  locale               String   @default("en-IN")
+  registrationIds      Json     @default("{}")
+  statutoryPackId      String?
+  payCalendarId        String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+}
+
+model StatutoryPack {
+  id            String    @id @default(cuid())
+  tenantId      String
+  country       String
+  version       String
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  packData      Json
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, country, version])
+  @@index([tenantId])
+  @@index([tenantId, country])
+}
+
+model TaxDeclaration {
+  id         String   @id @default(cuid())
+  tenantId   String
+  employeeId String
+  fiscalYear String
+  regime     String   @default("IN_NEW_REGIME")
+  items      Json     @default("[]")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, employeeId, fiscalYear])
+  @@index([tenantId])
+  @@index([employeeId])
+}
+
+model EmployeeLoan {
+  id          String   @id @default(cuid())
+  tenantId    String
+  employeeId  String
+  amount      Decimal  @db.Decimal(15, 2)
+  balance     Decimal  @db.Decimal(15, 2)
+  emiAmount   Decimal  @db.Decimal(15, 2)
+  startPeriod String
+  endPeriod   String?
+  status      String   @default("ACTIVE")
+  schedule    Json     @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([employeeId])
+}
+
+model PayrollInput {
+  id                String   @id @default(cuid())
+  tenantId          String
+  runId             String
+  employeeId        String
+  lopDays           Float    @default(0)
+  otHours           Float    @default(0)
+  variablePay       Decimal? @db.Decimal(15, 2)
+  oneTimeAdditions  Json?
+  oneTimeDeductions Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant   Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  run      PayrollRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  employee Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, employeeId])
+  @@index([tenantId])
+  @@index([runId])
+}
+
+model PayCalendar {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  code        String
+  country     String   @default("IN")
+  paySchedule String   @default("MONTHLY")
+  firstPayDate String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+}
+
+model OpeningBalance {
+  id              String   @id @default(cuid())
+  tenantId        String
+  employeeId      String
+  fiscalYear      String
+  grossEarnings   Decimal  @db.Decimal(15, 2)
+  taxableIncome   Decimal  @db.Decimal(15, 2)
+  taxDeducted     Decimal  @db.Decimal(15, 2)
+  totalDeductions Decimal  @db.Decimal(15, 2)
+  netPay          Decimal  @db.Decimal(15, 2)
+  contributions   Json     @default("{}")
+  importedAt      DateTime @default(now())
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, employeeId, fiscalYear])
+  @@index([tenantId])
+}
+
+model HistoricalPayslip {
+  id              String   @id @default(cuid())
+  tenantId        String
+  employeeId      String
+  employeeCode    String
+  period          String
+  grossEarnings   Decimal  @db.Decimal(15, 2)
+  totalDeductions Decimal  @db.Decimal(15, 2)
+  netPay          Decimal  @db.Decimal(15, 2)
+  importedAt      DateTime @default(now())
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([employeeId])
+}
+
+model MigrationStatus {
+  id                  String    @id @default(cuid())
+  tenantId            String    @unique
+  sandboxMode         Boolean   @default(true)
+  goLivePeriod        String?
+  lastReconciledRunId String?
+  updatedAt           DateTime  @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 // ── Recruitment Module ─────────────────────────────────────────────────────────

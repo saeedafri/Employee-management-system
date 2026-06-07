@@ -182,3 +182,552 @@ export async function updateRunPayslip(prisma, runId, payslipId, tenantId, data)
 export async function exportRunPayslips(prisma, runId, tenantId) {
   return repo.exportRunPayslipsCsv(prisma, runId, tenantId);
 }
+
+// ── Phase 3: Static data ──────────────────────────────────────────────────────
+
+export const SUPPORTED_COUNTRIES = [
+  { code: 'IN', name: 'India', currency: 'INR', locale: 'en-IN', fiscalYearStartMonth: 4 },
+  { code: 'US', name: 'United States', currency: 'USD', locale: 'en-US', fiscalYearStartMonth: 1 },
+  { code: 'GB', name: 'United Kingdom', currency: 'GBP', locale: 'en-GB', fiscalYearStartMonth: 4 },
+  { code: 'SG', name: 'Singapore', currency: 'SGD', locale: 'en-SG', fiscalYearStartMonth: 1 },
+];
+
+const BANK_SCHEMAS = {
+  IN: {
+    country: 'IN',
+    fields: [
+      { key: 'accountName', label: 'Account holder name', type: 'text', required: true },
+      { key: 'accountNumber', label: 'Account number', type: 'text', required: true, regex: '^[0-9]{9,18}$' },
+      { key: 'ifsc', label: 'IFSC code', type: 'text', required: true, regex: '^[A-Z]{4}0[A-Z0-9]{6}$' },
+      { key: 'bankName', label: 'Bank name', type: 'text', required: false },
+    ],
+  },
+  US: {
+    country: 'US',
+    fields: [
+      { key: 'accountName', label: 'Account holder name', type: 'text', required: true },
+      { key: 'routingNumber', label: 'Routing number (ABA)', type: 'text', required: true, regex: '^[0-9]{9}$' },
+      { key: 'accountNumber', label: 'Account number', type: 'text', required: true },
+      { key: 'accountType', label: 'Account type', type: 'select', options: ['CHECKING', 'SAVINGS'], required: true },
+    ],
+  },
+  GB: {
+    country: 'GB',
+    fields: [
+      { key: 'accountName', label: 'Account holder name', type: 'text', required: true },
+      { key: 'sortCode', label: 'Sort code', type: 'text', required: true, regex: '^[0-9]{6}$' },
+      { key: 'accountNumber', label: 'Account number', type: 'text', required: true, regex: '^[0-9]{8}$' },
+    ],
+  },
+  SG: {
+    country: 'SG',
+    fields: [
+      { key: 'accountName', label: 'Account holder name', type: 'text', required: true },
+      { key: 'bankCode', label: 'Bank code', type: 'text', required: true },
+      { key: 'branchCode', label: 'Branch code', type: 'text', required: true },
+      { key: 'accountNumber', label: 'Account number', type: 'text', required: true },
+    ],
+  },
+};
+
+export function getBankSchema(countryCode) {
+  return BANK_SCHEMAS[countryCode] || null;
+}
+
+// ── Phase 3: Legal Entities ───────────────────────────────────────────────────
+
+export async function getLegalEntities(prisma, tenantId) {
+  return repo.getLegalEntities(prisma, tenantId);
+}
+
+export async function createLegalEntity(prisma, tenantId, data) {
+  return repo.createLegalEntity(prisma, tenantId, data);
+}
+
+export async function updateLegalEntity(prisma, id, tenantId, data) {
+  return repo.updateLegalEntity(prisma, id, tenantId, data);
+}
+
+// ── Phase 3: Statutory Packs ──────────────────────────────────────────────────
+
+export async function getStatutoryPacks(prisma, tenantId, country) {
+  return repo.getStatutoryPacks(prisma, tenantId, country);
+}
+
+export async function getStatutoryPack(prisma, id, tenantId) {
+  return repo.getStatutoryPackById(prisma, id, tenantId);
+}
+
+export async function createStatutoryPack(prisma, tenantId, data) {
+  const existing = await prisma.statutoryPack.findUnique({
+    where: { tenantId_country_version: { tenantId, country: data.country, version: data.version } },
+  });
+  if (existing) throw AppError('Pack version already exists', 'PACK_VERSION_EXISTS', 409);
+  return repo.createStatutoryPack(prisma, tenantId, data);
+}
+
+export async function updateStatutoryPack(prisma, id, tenantId, data) {
+  return repo.updateStatutoryPack(prisma, id, tenantId, data);
+}
+
+// ── Phase 3: YTD ─────────────────────────────────────────────────────────────
+
+export async function getEmployeeYtd(prisma, employeeId, tenantId, fy) {
+  const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
+  if (!employee) return null;
+
+  const fiscalYear = fy || getCurrentFiscalYear();
+  const [fyStart] = fiscalYear.split('-');
+  const periodStart = `${fyStart}-04`;
+
+  const payslips = await prisma.payslip.findMany({
+    where: {
+      tenantId, employeeId, status: 'PAID',
+      period: { gte: periodStart },
+    },
+    orderBy: { period: 'asc' },
+  });
+
+  const grossEarnings = payslips.reduce((s, p) => s + Number(p.grossEarnings), 0);
+  const totalDeductions = payslips.reduce((s, p) => s + Number(p.totalDeductions), 0);
+  const netPay = payslips.reduce((s, p) => s + Number(p.netPay), 0);
+  const taxDeducted = payslips.reduce((s, p) => {
+    const deds = Array.isArray(p.deductionsJson) ? p.deductionsJson : [];
+    return s + deds.filter(d => d.code === 'TDS').reduce((a, d) => a + (d.monthlyAmount || 0), 0);
+  }, 0);
+
+  return {
+    fiscalYear,
+    monthsElapsed: payslips.length,
+    grossEarnings,
+    taxableIncome: grossEarnings * 0.87,
+    taxDeducted,
+    totalDeductions,
+    netPay,
+    contributions: { PF: totalDeductions * 0.1 },
+  };
+}
+
+function getCurrentFiscalYear() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  return month >= 4 ? `${year}-${String(year + 1).slice(2)}` : `${year - 1}-${String(year).slice(2)}`;
+}
+
+// ── Phase 3: Tax Declaration ──────────────────────────────────────────────────
+
+export async function getTaxDeclaration(prisma, employeeId, tenantId, fy) {
+  const fiscalYear = fy || getCurrentFiscalYear();
+  const decl = await prisma.taxDeclaration.findUnique({
+    where: { tenantId_employeeId_fiscalYear: { tenantId, employeeId, fiscalYear } },
+  });
+  return decl || { employeeId, fiscalYear, regime: 'IN_NEW_REGIME', items: [] };
+}
+
+export async function upsertTaxDeclaration(prisma, employeeId, tenantId, data) {
+  const fiscalYear = data.fiscalYear || getCurrentFiscalYear();
+  return prisma.taxDeclaration.upsert({
+    where: { tenantId_employeeId_fiscalYear: { tenantId, employeeId, fiscalYear } },
+    create: { tenantId, employeeId, fiscalYear, regime: data.regime || 'IN_NEW_REGIME', items: data.items || [] },
+    update: {
+      ...(data.regime && { regime: data.regime }),
+      ...(data.items && { items: data.items }),
+    },
+  });
+}
+
+// ── Phase 3: Loans ────────────────────────────────────────────────────────────
+
+export async function getEmployeeLoans(prisma, employeeId, tenantId) {
+  return prisma.employeeLoan.findMany({
+    where: { tenantId, employeeId },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export async function createEmployeeLoan(prisma, employeeId, tenantId, data) {
+  const schedule = buildLoanSchedule(data.amount, data.emiAmount, data.startPeriod);
+  return prisma.employeeLoan.create({
+    data: {
+      tenantId, employeeId,
+      amount: data.amount, balance: data.amount, emiAmount: data.emiAmount,
+      startPeriod: data.startPeriod, endPeriod: data.endPeriod || null,
+      status: 'ACTIVE', schedule,
+    },
+  });
+}
+
+function buildLoanSchedule(amount, emi, startPeriod) {
+  const schedule = [];
+  let balance = amount;
+  let period = startPeriod;
+  let n = 1;
+  while (balance > 0 && n <= 60) {
+    const principal = Math.min(emi, balance);
+    balance = Math.max(0, balance - principal);
+    schedule.push({
+      installmentNo: n, period, emi: principal,
+      principalComponent: principal, interestComponent: 0,
+      balanceAfter: balance, status: 'PENDING',
+    });
+    period = nextPeriod(period);
+    n++;
+  }
+  return schedule;
+}
+
+function nextPeriod(period) {
+  const [y, m] = period.split('-').map(Number);
+  const next = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, '0')}`;
+  return next;
+}
+
+export async function updateEmployeeLoan(prisma, loanId, tenantId, data) {
+  const loan = await prisma.employeeLoan.findFirst({ where: { id: loanId, tenantId } });
+  if (!loan) return null;
+  return prisma.employeeLoan.update({ where: { id: loanId }, data });
+}
+
+// ── Phase 3: Opening Balances ─────────────────────────────────────────────────
+
+export async function getOpeningBalance(prisma, employeeId, tenantId) {
+  const fy = getCurrentFiscalYear();
+  const balances = await prisma.openingBalance.findMany({ where: { tenantId, employeeId }, orderBy: { fiscalYear: 'desc' } });
+  return { employeeId, fiscalYear: fy, items: balances };
+}
+
+export async function upsertOpeningBalance(prisma, employeeId, tenantId, data) {
+  const fiscalYear = data.fiscalYear || getCurrentFiscalYear();
+  return prisma.openingBalance.upsert({
+    where: { tenantId_employeeId_fiscalYear: { tenantId, employeeId, fiscalYear } },
+    create: {
+      tenantId, employeeId, fiscalYear,
+      grossEarnings: data.grossEarnings || 0, taxableIncome: data.taxableIncome || 0,
+      taxDeducted: data.taxDeducted || 0, totalDeductions: data.totalDeductions || 0,
+      netPay: data.netPay || 0, contributions: data.contributions || {},
+    },
+    update: {
+      grossEarnings: data.grossEarnings || 0, taxableIncome: data.taxableIncome || 0,
+      taxDeducted: data.taxDeducted || 0, totalDeductions: data.totalDeductions || 0,
+      netPay: data.netPay || 0, contributions: data.contributions || {},
+    },
+  });
+}
+
+export async function getAllOpeningBalances(prisma, tenantId) {
+  return prisma.openingBalance.findMany({ where: { tenantId }, orderBy: { importedAt: 'desc' } });
+}
+
+// ── Phase 3: Payroll Roster & Run Inputs ──────────────────────────────────────
+
+export async function getPayrollRoster(prisma, tenantId) {
+  const salaries = await prisma.employeeSalary.findMany({
+    where: { tenantId, effectiveTo: null },
+    include: { employee: { select: { id: true, employeeCode: true, firstName: true, lastName: true } } },
+    distinct: ['employeeId'],
+  });
+  return salaries
+    .filter(s => s.employee)
+    .map(s => ({
+      employeeId: s.employee.id,
+      employeeCode: s.employee.employeeCode,
+      employeeName: `${s.employee.firstName} ${s.employee.lastName}`,
+    }));
+}
+
+export async function getRunInputs(prisma, runId, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
+
+  const inputs = await prisma.payrollInput.findMany({ where: { runId, tenantId } });
+  const payslips = await prisma.payslip.findMany({
+    where: { payrollRunId: runId },
+    include: { employee: { select: { id: true, employeeCode: true, firstName: true, lastName: true } } },
+  });
+
+  const inputMap = Object.fromEntries(inputs.map(i => [i.employeeId, i]));
+
+  return {
+    runId, period: run.period,
+    editable: run.status === 'DRAFT',
+    inputs: payslips.map(ps => {
+      const inp = inputMap[ps.employeeId] || {};
+      return {
+        employeeId: ps.employeeId,
+        employeeCode: ps.employee?.employeeCode,
+        employeeName: ps.employee ? `${ps.employee.firstName} ${ps.employee.lastName}` : 'Unknown',
+        lopDays: inp.lopDays ?? 0,
+        otHours: inp.otHours ?? 0,
+        variablePay: inp.variablePay ? Number(inp.variablePay) : null,
+        oneTimeAdditions: inp.oneTimeAdditions || [],
+        oneTimeDeductions: inp.oneTimeDeductions || [],
+      };
+    }),
+  };
+}
+
+export async function updateRunInput(prisma, runId, employeeId, tenantId, data) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) throw AppError('Payroll run not found', 'NOT_FOUND', 404);
+
+  return prisma.payrollInput.upsert({
+    where: { runId_employeeId: { runId, employeeId } },
+    create: { tenantId, runId, employeeId, ...data },
+    update: data,
+  });
+}
+
+export async function importRunInputs(prisma, runId, tenantId, csv) {
+  const lines = csv.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim());
+  const results = { imported: 0, failed: 0, errors: [] };
+
+  for (let i = 1; i < lines.length; i++) {
+    const values = lines[i].split(',').map(v => v.trim());
+    const row = Object.fromEntries(headers.map((h, idx) => [h, values[idx]]));
+    try {
+      const emp = await prisma.employee.findFirst({
+        where: { tenantId, employeeCode: row.employeeCode, deletedAt: null },
+      });
+      if (!emp) { results.failed++; results.errors.push({ row: i, message: `Unknown employee: ${row.employeeCode}` }); continue; }
+      await prisma.payrollInput.upsert({
+        where: { runId_employeeId: { runId, employeeId: emp.id } },
+        create: { tenantId, runId, employeeId: emp.id, lopDays: Number(row.lopDays) || 0, otHours: Number(row.otHours) || 0 },
+        update: { lopDays: Number(row.lopDays) || 0, otHours: Number(row.otHours) || 0 },
+      });
+      results.imported++;
+    } catch { results.failed++; results.errors.push({ row: i, message: 'Import error' }); }
+  }
+  return results;
+}
+
+export async function getRunFnf(prisma, id, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id, tenantId } });
+  if (!run) return null;
+  const payslips = await prisma.payslip.findMany({
+    where: { payrollRunId: id },
+    include: { employee: { select: { firstName: true, lastName: true } } },
+  });
+  return {
+    runId: id, period: run.period, currency: run.currency,
+    settlements: payslips.map(ps => ({
+      employeeId: ps.employeeId,
+      employeeName: ps.employee ? `${ps.employee.firstName} ${ps.employee.lastName}` : 'Unknown',
+      grossEarnings: Number(ps.grossEarnings),
+      totalDeductions: Number(ps.totalDeductions),
+      netPay: Number(ps.netPay),
+      leaveEncashment: 0, gratuity: 0,
+    })),
+  };
+}
+
+// ── Phase 3: Run Reports ──────────────────────────────────────────────────────
+
+export async function getStatutoryReturn(prisma, id, tenantId, type) {
+  const run = await prisma.payrollRun.findFirst({ where: { id, tenantId } });
+  if (!run) return null;
+  return { runId: id, period: run.period, type: type || 'ECR', rows: [], generatedAt: new Date().toISOString() };
+}
+
+export async function getRunRegister(prisma, id, tenantId, type) {
+  const run = await prisma.payrollRun.findFirst({ where: { id, tenantId } });
+  if (!run) return null;
+  const payslips = await prisma.payslip.findMany({
+    where: { payrollRunId: id },
+    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true } } },
+  });
+  return {
+    runId: id, period: run.period, type: type || 'SALARY',
+    rows: payslips.map(ps => ({
+      employeeCode: ps.employee?.employeeCode,
+      employeeName: ps.employee ? `${ps.employee.firstName} ${ps.employee.lastName}` : 'Unknown',
+      grossEarnings: Number(ps.grossEarnings),
+      totalDeductions: Number(ps.totalDeductions),
+      netPay: Number(ps.netPay),
+    })),
+    generatedAt: new Date().toISOString(),
+  };
+}
+
+export async function exportRunRegister(prisma, id, tenantId, type) {
+  const register = await getRunRegister(prisma, id, tenantId, type);
+  if (!register) return { csv: '', filename: 'register.csv' };
+  const headers = 'employeeCode,employeeName,grossEarnings,totalDeductions,netPay\n';
+  const rows = register.rows.map(r => `${r.employeeCode},${r.employeeName},${r.grossEarnings},${r.totalDeductions},${r.netPay}`).join('\n');
+  return { csv: headers + rows, filename: `register-${register.period}-${type || 'SALARY'}.csv` };
+}
+
+export async function parallelReconcile(prisma, id, tenantId, body) {
+  const run = await prisma.payrollRun.findFirst({ where: { id, tenantId } });
+  if (!run) return null;
+  const payslips = await prisma.payslip.findMany({
+    where: { payrollRunId: id },
+    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true } } },
+  });
+  const legacyMap = Object.fromEntries((body.legacy || []).map(l => [l.employeeCode, l.netPay]));
+  const tolerance = body.tolerance || 0;
+  let matched = 0, mismatched = 0, missing = 0;
+  const items = payslips.map(ps => {
+    const code = ps.employee?.employeeCode;
+    const computed = Number(ps.netPay);
+    const legacy = legacyMap[code];
+    if (legacy === undefined) { missing++; return { employeeId: ps.employeeId, employeeCode: code, computedNet: computed, legacyNet: null, diff: null, status: 'MISSING' }; }
+    const diff = computed - legacy;
+    const status = Math.abs(diff) <= tolerance ? 'MATCH' : 'MISMATCH';
+    if (status === 'MATCH') matched++; else mismatched++;
+    return {
+      employeeId: ps.employeeId, employeeCode: code,
+      employeeName: ps.employee ? `${ps.employee.firstName} ${ps.employee.lastName}` : 'Unknown',
+      computedNet: computed, legacyNet: legacy, diff, status,
+    };
+  });
+  return { runId: id, period: run.period, currency: run.currency, tolerance, matched, mismatched, missing, items, generatedAt: new Date().toISOString() };
+}
+
+// ── Phase 3: Pay Calendars ────────────────────────────────────────────────────
+
+export async function getPayCalendars(prisma, tenantId) {
+  return repo.getPayCalendars(prisma, tenantId);
+}
+
+export async function createPayCalendar(prisma, tenantId, data) {
+  return repo.createPayCalendar(prisma, tenantId, data);
+}
+
+export async function updatePayCalendar(prisma, id, tenantId, data) {
+  return repo.updatePayCalendar(prisma, id, tenantId, data);
+}
+
+// ── Phase 3: Migration ────────────────────────────────────────────────────────
+
+export async function getHistoricalPayslips(prisma, tenantId) {
+  const rows = await prisma.historicalPayslip.findMany({ where: { tenantId }, orderBy: { importedAt: 'desc' } });
+  return { count: rows.length, rows };
+}
+
+export async function importHistoricalPayslips(prisma, tenantId, rows) {
+  let imported = 0, failed = 0;
+  const errors = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    try {
+      const emp = await prisma.employee.findFirst({
+        where: { tenantId, employeeCode: row.employeeCode, deletedAt: null },
+      });
+      if (!emp) { failed++; errors.push({ row: i, message: `Unknown employeeCode: ${row.employeeCode}` }); continue; }
+      await prisma.historicalPayslip.create({
+        data: {
+          tenantId, employeeId: emp.id, employeeCode: row.employeeCode, period: row.period,
+          grossEarnings: row.grossEarnings || 0, totalDeductions: row.totalDeductions || 0, netPay: row.netPay || 0,
+        },
+      });
+      imported++;
+    } catch { failed++; errors.push({ row: i, message: 'Import error' }); }
+  }
+  return { imported, failed, errors };
+}
+
+export async function getMigrationStatus(prisma, tenantId) {
+  const status = await prisma.migrationStatus.findUnique({ where: { tenantId } });
+  const openingBalancesCount = await prisma.openingBalance.count({ where: { tenantId } });
+  const historicalPayslipsCount = await prisma.historicalPayslip.count({ where: { tenantId } });
+  return {
+    sandboxMode: status?.sandboxMode ?? true,
+    goLivePeriod: status?.goLivePeriod ?? null,
+    openingBalancesCount,
+    historicalPayslipsCount,
+    lastReconciledRunId: status?.lastReconciledRunId ?? null,
+    updatedAt: status?.updatedAt ?? null,
+  };
+}
+
+export async function updateMigrationStatus(prisma, tenantId, data) {
+  return prisma.migrationStatus.upsert({
+    where: { tenantId },
+    create: { tenantId, sandboxMode: data.sandboxMode ?? true, goLivePeriod: data.goLivePeriod || null },
+    update: {
+      ...(data.sandboxMode !== undefined && { sandboxMode: data.sandboxMode }),
+      ...(data.goLivePeriod !== undefined && { goLivePeriod: data.goLivePeriod }),
+    },
+  });
+}
+
+// ── Phase 3: Compliance Reports ───────────────────────────────────────────────
+
+export async function getPayEquity(prisma, tenantId, groupBy) {
+  const employees = await prisma.employee.findMany({
+    where: { tenantId, deletedAt: null },
+    include: {
+      salaries: { where: { effectiveTo: null }, take: 1, orderBy: { effectiveFrom: 'desc' } },
+    },
+  });
+
+  const validGroups = { gender: 'gender', level: 'designation', location: 'location' };
+  const field = validGroups[groupBy];
+  if (!field) throw AppError('UNKNOWN_GROUP_BY', 'UNKNOWN_GROUP_BY', 422);
+
+  const grouped = {};
+  for (const emp of employees) {
+    const key = emp[field] || 'Unknown';
+    const ctc = emp.salaries[0] ? Number(emp.salaries[0].annualCtc) / 12 : 0;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(ctc);
+  }
+
+  const groups = Object.entries(grouped).map(([group, pays]) => {
+    pays.sort((a, b) => a - b);
+    const mean = pays.reduce((s, v) => s + v, 0) / pays.length || 0;
+    const median = pays[Math.floor(pays.length / 2)] || 0;
+    return { group, headcount: pays.length, meanPay: Math.round(mean), medianPay: Math.round(median) };
+  });
+
+  const refGroup = groups.reduce((a, b) => (a.meanPay > b.meanPay ? a : b), groups[0] || { group: '', meanPay: 0, medianPay: 0 });
+  const enriched = groups.map(g => ({
+    ...g,
+    meanGapPct: refGroup.meanPay ? parseFloat(((refGroup.meanPay - g.meanPay) / refGroup.meanPay * 100).toFixed(1)) : 0,
+    medianGapPct: refGroup.medianPay ? parseFloat(((refGroup.medianPay - g.medianPay) / refGroup.medianPay * 100).toFixed(1)) : 0,
+  }));
+
+  const overallMeanGapPct = Math.max(...enriched.map(g => g.meanGapPct).filter(v => v > 0), 0);
+  const overallMedianGapPct = Math.max(...enriched.map(g => g.medianGapPct).filter(v => v > 0), 0);
+
+  return {
+    groupBy, currency: 'INR', referenceGroup: refGroup.group,
+    overallMeanGapPct, overallMedianGapPct,
+    groups: enriched, generatedAt: new Date().toISOString(),
+  };
+}
+
+export async function getAuditPack(prisma, tenantId, runId) {
+  if (!runId) return null;
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
+  return {
+    run: { id: run.id, period: run.period, status: run.status, totals: { gross: Number(run.totalGross), deductions: Number(run.totalDeductions), net: Number(run.totalNet) }, currency: run.currency },
+    configPin: null, approvalChain: [], auditLog: [],
+    generatedAt: new Date().toISOString(),
+  };
+}
+
+export async function getDataPolicy(prisma, tenantId) {
+  const setting = await prisma.setting.findUnique({ where: { tenantId_key: { tenantId, key: 'DATA_POLICY' } } });
+  if (setting) return setting.value;
+  return {
+    defaultRetentionYears: 7,
+    policies: [
+      { country: 'IN', residencyRegion: 'ap-south-1', retentionYears: 8, statutoryHold: true },
+    ],
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+export async function updateDataPolicy(prisma, tenantId, data) {
+  const value = { ...data, updatedAt: new Date().toISOString() };
+  await prisma.setting.upsert({
+    where: { tenantId_key: { tenantId, key: 'DATA_POLICY' } },
+    create: { tenantId, key: 'DATA_POLICY', value },
+    update: { value },
+  });
+  return value;
+}

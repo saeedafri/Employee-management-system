@@ -2707,9 +2707,10 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 
 ## Domain F — Payroll Global Implementation (Phase 3 Extended)
 
-> **Status: MSW-ONLY ⚠️ — No live backend. All endpoints are handled by frontend MSW mock handlers.**
-> When a backend endpoint ships, disable the corresponding MSW handler (flip `NEXT_PUBLIC_USE_MOCKS=false` or delete from `src/mocks/handlers/index.ts`). No app-code change required.
-> **Money:** all amounts are integer minor units + ISO 4217 `currency` field. **Casing:** camelCase.
+> **Status: LIVE ✅ — Backend implemented. All F.1/F.3/F.4/F.5/F.9/F.12/F.13/F.14 endpoints are live.**
+> F.6 (Claims), F.7 (Garnishments), F.8 (Global employment), F.10 (Documents), F.11 (Accounting) are MSW-only — no live backend.
+> **Added: 2026-06-07** | **Money:** amounts in major units (INR). **Casing:** camelCase.
+> **Seed data available:** 3 payroll runs (Mar/Apr/May 2026 — PAID), payslips for core employees, legal entity (Acme India), statutory pack (IN 2026.1), pay calendar.
 
 ### F.1 — Localization
 | Method | Path | Roles | Notes |
@@ -2835,3 +2836,46 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 | GET | `/payroll/reports/audit-pack` | HR,SA | `?runId=`. Downloadable JSON audit assurance pack |
 | GET | `/payroll/settings/data-policy` | HR,SA | Per-country data residency & retention |
 | PATCH | `/payroll/settings/data-policy` | HR,SA | `{ defaultRetentionYears?, policies? }` |
+
+---
+
+## Domain G — Timesheets (`/timesheets/*`)
+
+> **Added: 2026-06-07** | **Status: LIVE ✅** | **Roles:** HR=HR_ADMIN/SUPER_ADMIN, MGR=MANAGER, ALL=all authenticated
+
+### Projects & Tasks
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/timesheets/projects` | ALL | `?memberId=<employeeId|"self">`. List projects visible to member |
+| POST | `/timesheets/projects` | HR,SA | Required: name, code. Optional: clientName, billable, defaultRate, memberIds[] |
+| PATCH | `/timesheets/projects/:id` | HR,SA | code immutable |
+| DELETE | `/timesheets/projects/:id` | HR,SA | Archives if has entries, deletes if empty |
+| GET | `/timesheets/projects/:id/tasks` | ALL | List tasks for project |
+| POST | `/timesheets/projects/:id/tasks` | HR,SA | Required: name |
+| PATCH | `/timesheets/tasks/:id` | HR,SA | Update task (name, billable, active) |
+
+### Weekly Timesheet & Entries
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/timesheets` | ALL | `?week=YYYY-MM-DD&employeeId=`. Auto-creates DRAFT if absent |
+| POST | `/timesheets/entries` | ALL | Required: weekStart, projectId, date, hours. Rejects if sheet SUBMITTED/APPROVED |
+| PATCH | `/timesheets/entries/:id` | ALL | Update hours, billable, note, taskId |
+| DELETE | `/timesheets/entries/:id` | ALL | Recalculates sheet total |
+
+### Submit & Approve
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| POST | `/timesheets/:id/submit` | ALL | DRAFT/REJECTED → SUBMITTED. 422 if empty |
+| GET | `/timesheets/approvals` | HR,SA,MGR | `?status=SUBMITTED`. Manager/HR approval queue |
+| POST | `/timesheets/:id/approve` | HR,SA,MGR | SUBMITTED → APPROVED. Body: `{comment}` |
+| POST | `/timesheets/:id/reject` | HR,SA,MGR | SUBMITTED → REJECTED. Required: comment |
+
+### Summary & Settings
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/timesheets/summary` | HR,SA,MGR | `?range=30d|90d&employeeId=`. Utilization summary |
+| GET | `/timesheets/settings` | HR,SA | Timesheet config (standardWeeklyHours, overtimeThreshold, etc.) |
+| PATCH | `/timesheets/settings` | HR,SA | Update timesheet settings |
+
+**Timesheet shape:** `{ id, employeeId, weekStart, weekEnd, status(DRAFT/SUBMITTED/APPROVED/REJECTED), totalHours, billableHours, overtimeHours, standardHours, entries[] }`
+**Entry shape:** `{ id, timesheetId, projectId, taskId?, date, hours, billable, note, source(MANUAL/TIMER) }`

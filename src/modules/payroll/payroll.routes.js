@@ -327,4 +327,416 @@ export default async function payrollRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.exportRunPayslips);
+
+  // ── Phase 3: Localization ───────────────────────────────────────────────────
+
+  fastify.get('/payroll/countries', {
+    schema: { tags: ['Payroll'], description: 'List supported payroll countries', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getCountries);
+
+  fastify.get('/payroll/countries/:code/bank-schema', {
+    schema: {
+      tags: ['Payroll'], description: 'Get bank account field schema for a country', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['code'], properties: { code: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getBankSchema);
+
+  fastify.get('/payroll/legal-entities', {
+    schema: { tags: ['Payroll'], description: 'List legal entities', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getLegalEntities);
+
+  fastify.post('/payroll/legal-entities', {
+    schema: {
+      tags: ['Payroll'], description: 'Create legal entity', security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['name', 'country'],
+        properties: {
+          name: { type: 'string' }, country: { type: 'string' }, currency: { type: 'string' },
+          fiscalYearStartMonth: { type: 'integer' }, timezone: { type: 'string' }, locale: { type: 'string' },
+          registrationIds: { type: 'object', additionalProperties: true },
+          statutoryPackId: { type: 'string' }, payCalendarId: { type: 'string' },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(superOnly)],
+  }, ctrl.createLegalEntity);
+
+  fastify.patch('/payroll/legal-entities/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Update legal entity', security: [{ Bearer: [] }],
+      params: idParam,
+      body: { type: 'object', additionalProperties: true },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(superOnly)],
+  }, ctrl.updateLegalEntity);
+
+  // ── Phase 3: Statutory Packs ────────────────────────────────────────────────
+
+  fastify.get('/payroll/statutory-packs', {
+    schema: {
+      tags: ['Payroll'], description: 'List statutory packs', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { country: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getStatutoryPacks);
+
+  fastify.get('/payroll/statutory-packs/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Get statutory pack by id', security: [{ Bearer: [] }],
+      params: idParam, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getStatutoryPack);
+
+  fastify.post('/payroll/statutory-packs', {
+    schema: {
+      tags: ['Payroll'], description: 'Create statutory pack (SUPER_ADMIN)', security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['country', 'version', 'effectiveFrom', 'packData'],
+        properties: {
+          country: { type: 'string' }, version: { type: 'string' },
+          effectiveFrom: { type: 'string' }, effectiveTo: { type: 'string' },
+          packData: { type: 'object', additionalProperties: true },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(superOnly)],
+  }, ctrl.createStatutoryPack);
+
+  fastify.patch('/payroll/statutory-packs/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Update statutory pack (SUPER_ADMIN)', security: [{ Bearer: [] }],
+      params: idParam,
+      body: { type: 'object', additionalProperties: true },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(superOnly)],
+  }, ctrl.updateStatutoryPack);
+
+  // ── Phase 3: Employee Payroll ───────────────────────────────────────────────
+
+  fastify.get('/payroll/employees/:id/ytd', {
+    schema: {
+      tags: ['Payroll'], description: 'Get year-to-date earnings summary for employee', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      querystring: { type: 'object', properties: { fy: { type: 'string', description: 'YYYY-YY fiscal year' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.getEmployeeYtd);
+
+  fastify.get('/payroll/employees/:id/tax-declaration', {
+    schema: {
+      tags: ['Payroll'], description: 'Get tax declaration for employee', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      querystring: { type: 'object', properties: { fy: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.getTaxDeclaration);
+
+  fastify.post('/payroll/employees/:id/tax-declaration', {
+    schema: {
+      tags: ['Payroll'], description: 'Create/replace tax declaration', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        required: ['fiscalYear'],
+        properties: {
+          fiscalYear: { type: 'string' }, regime: { type: 'string' },
+          items: { type: 'array', items: { type: 'object', additionalProperties: true } },
+        },
+      },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.upsertTaxDeclaration);
+
+  fastify.patch('/payroll/employees/:id/tax-declaration', {
+    schema: {
+      tags: ['Payroll'], description: 'Patch tax declaration (HR updates proofStatus)', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: { type: 'object', additionalProperties: true },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.upsertTaxDeclaration);
+
+  fastify.get('/payroll/employees/:id/loans', {
+    schema: {
+      tags: ['Payroll'], description: 'List loans for employee', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.getEmployeeLoans);
+
+  fastify.post('/payroll/employees/:id/loans', {
+    schema: {
+      tags: ['Payroll'], description: 'Create loan for employee', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        required: ['amount', 'emiAmount', 'startPeriod'],
+        properties: {
+          amount: { type: 'number' }, emiAmount: { type: 'number' },
+          startPeriod: { type: 'string' }, endPeriod: { type: 'string' },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.createEmployeeLoan);
+
+  fastify.patch('/payroll/employees/:id/loans/:loanId', {
+    schema: {
+      tags: ['Payroll'], description: 'Update loan status/details', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id', 'loanId'], properties: { id: { type: 'string' }, loanId: { type: 'string' } } },
+      body: { type: 'object', additionalProperties: true },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updateEmployeeLoan);
+
+  fastify.get('/payroll/employees/:id/opening-balances', {
+    schema: {
+      tags: ['Payroll'], description: 'Get YTD opening balance for employee', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getOpeningBalance);
+
+  fastify.post('/payroll/employees/:id/opening-balances', {
+    schema: {
+      tags: ['Payroll'], description: 'Set opening balance for first-run accuracy', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        required: ['fiscalYear'],
+        properties: {
+          fiscalYear: { type: 'string' }, grossEarnings: { type: 'number' },
+          taxableIncome: { type: 'number' }, taxDeducted: { type: 'number' },
+          totalDeductions: { type: 'number' }, netPay: { type: 'number' },
+          contributions: { type: 'object', additionalProperties: true },
+        },
+      },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.upsertOpeningBalance);
+
+  // ── Phase 3: Run Inputs ─────────────────────────────────────────────────────
+
+  fastify.get('/payroll/roster', {
+    schema: {
+      tags: ['Payroll'], description: 'Employees eligible for payroll (have salary config)', security: [{ Bearer: [] }],
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayrollRoster);
+
+  fastify.get('/payroll/runs/:runId/inputs', {
+    schema: {
+      tags: ['Payroll'], description: 'List per-employee inputs for a payroll run', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['runId'], properties: { runId: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getRunInputs);
+
+  fastify.patch('/payroll/runs/:runId/inputs/:employeeId', {
+    schema: {
+      tags: ['Payroll'], description: 'Update a single employee payroll input', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['runId', 'employeeId'], properties: { runId: { type: 'string' }, employeeId: { type: 'string' } } },
+      body: {
+        type: 'object',
+        properties: {
+          lopDays: { type: 'number' }, otHours: { type: 'number' }, variablePay: { type: 'number' },
+          oneTimeAdditions: { type: 'array', items: { type: 'object', additionalProperties: true } },
+          oneTimeDeductions: { type: 'array', items: { type: 'object', additionalProperties: true } },
+        },
+      },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updateRunInput);
+
+  fastify.post('/payroll/runs/:runId/inputs/import', {
+    schema: {
+      tags: ['Payroll'], description: 'Bulk-import run inputs from CSV', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['runId'], properties: { runId: { type: 'string' } } },
+      body: { type: 'object', required: ['csv'], properties: { csv: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.importRunInputs);
+
+  fastify.get('/payroll/runs/:id/fnf', {
+    schema: {
+      tags: ['Payroll'], description: 'Get full-and-final settlement for a run', security: [{ Bearer: [] }],
+      params: idParam, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getRunFnf);
+
+  // ── Phase 3: Run Reports ────────────────────────────────────────────────────
+
+  fastify.get('/payroll/runs/:id/statutory-return', {
+    schema: {
+      tags: ['Payroll'], description: 'Get statutory return for a run (ECR / 24Q / RTI)', security: [{ Bearer: [] }],
+      params: idParam,
+      querystring: { type: 'object', properties: { type: { type: 'string', enum: ['ECR', '24Q', 'RTI'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getStatutoryReturn);
+
+  fastify.get('/payroll/runs/:id/register', {
+    schema: {
+      tags: ['Payroll'], description: 'Get payroll register for a run', security: [{ Bearer: [] }],
+      params: idParam,
+      querystring: { type: 'object', properties: { type: { type: 'string', enum: ['SALARY', 'STATUTORY', 'BANK_ADVICE', 'VARIANCE'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getRunRegister);
+
+  fastify.get('/payroll/runs/:id/register/export', {
+    schema: {
+      tags: ['Payroll'], description: 'Export payroll register', security: [{ Bearer: [] }],
+      params: idParam,
+      querystring: { type: 'object', properties: { type: { type: 'string' } } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.exportRunRegister);
+
+  fastify.post('/payroll/runs/:id/parallel-reconcile', {
+    schema: {
+      tags: ['Payroll'], description: 'Parallel-run reconciliation against legacy figures', security: [{ Bearer: [] }],
+      params: idParam,
+      body: {
+        type: 'object',
+        required: ['legacy'],
+        properties: {
+          tolerance: { type: 'number' },
+          legacy: { type: 'array', items: { type: 'object', properties: { employeeCode: { type: 'string' }, netPay: { type: 'number' } } } },
+        },
+      },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.parallelReconcile);
+
+  // ── Phase 3: Pay Calendars ──────────────────────────────────────────────────
+
+  fastify.get('/payroll/pay-calendars', {
+    schema: { tags: ['Payroll'], description: 'List pay calendars', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayCalendars);
+
+  fastify.post('/payroll/pay-calendars', {
+    schema: {
+      tags: ['Payroll'], description: 'Create pay calendar', security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['name', 'code'],
+        properties: {
+          name: { type: 'string' }, code: { type: 'string' }, country: { type: 'string' },
+          paySchedule: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+          firstPayDate: { type: 'string' },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.createPayCalendar);
+
+  fastify.patch('/payroll/pay-calendars/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Update pay calendar', security: [{ Bearer: [] }],
+      params: idParam,
+      body: { type: 'object', additionalProperties: true },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updatePayCalendar);
+
+  // ── Phase 3: Migration ──────────────────────────────────────────────────────
+
+  fastify.get('/payroll/opening-balances', {
+    schema: { tags: ['Payroll'], description: 'List all opening balances', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getAllOpeningBalances);
+
+  fastify.get('/payroll/migration/historical-payslips', {
+    schema: { tags: ['Payroll'], description: 'List imported historical payslips', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getHistoricalPayslips);
+
+  fastify.post('/payroll/migration/historical-payslips', {
+    schema: {
+      tags: ['Payroll'], description: 'Bulk-import historical payslips', security: [{ Bearer: [] }],
+      body: { type: 'object', required: ['rows'], properties: { rows: { type: 'array', items: { type: 'object', additionalProperties: true } } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.importHistoricalPayslips);
+
+  fastify.get('/payroll/migration/status', {
+    schema: { tags: ['Payroll'], description: 'Get migration status', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getMigrationStatus);
+
+  fastify.patch('/payroll/migration/status', {
+    schema: {
+      tags: ['Payroll'], description: 'Update migration status (sandbox/goLivePeriod)', security: [{ Bearer: [] }],
+      body: { type: 'object', properties: { sandboxMode: { type: 'boolean' }, goLivePeriod: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updateMigrationStatus);
+
+  // ── Phase 3: Compliance Reports ─────────────────────────────────────────────
+
+  fastify.get('/payroll/reports/pay-equity', {
+    schema: {
+      tags: ['Payroll'], description: 'Pay equity / gender-pay-gap analysis', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { groupBy: { type: 'string', enum: ['gender', 'level', 'location'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayEquity);
+
+  fastify.get('/payroll/reports/audit-pack', {
+    schema: {
+      tags: ['Payroll'], description: 'Download audit assurance pack for a run', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { runId: { type: 'string' } } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getAuditPack);
+
+  fastify.get('/payroll/settings/data-policy', {
+    schema: { tags: ['Payroll'], description: 'Get data residency & retention policy', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getDataPolicy);
+
+  fastify.patch('/payroll/settings/data-policy', {
+    schema: {
+      tags: ['Payroll'], description: 'Update data policy', security: [{ Bearer: [] }],
+      body: { type: 'object', properties: { defaultRetentionYears: { type: 'integer' }, policies: { type: 'array', items: { type: 'object', additionalProperties: true } } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updateDataPolicy);
 }
