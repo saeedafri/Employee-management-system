@@ -2705,137 +2705,1268 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 
 ---
 
-## Domain F — Payroll Global Implementation (Phase 3 Extended)
+## Domain F — Payroll (`/payroll/*`)
 
-> **Status: LIVE ✅ — Backend implemented. All F.1/F.3/F.4/F.5/F.9/F.12/F.13/F.14 endpoints are live.**
-> F.6 (Claims), F.7 (Garnishments), F.8 (Global employment), F.10 (Documents), F.11 (Accounting) are MSW-only — no live backend.
-> **Added: 2026-06-07** | **Money:** amounts in major units (INR). **Casing:** camelCase.
-> **Seed data available:** 3 payroll runs (Mar/Apr/May 2026 — PAID), payslips for core employees, legal entity (Acme India), statutory pack (IN 2026.1), pay calendar.
+> **Status: LIVE ✅**  
+> F.1–F.5, F.8, F.9, F.12–F.14 endpoints are **live on Render**.  
+> F.6 (Claims), F.7 (Garnishments), F.10 (Documents), F.11 (Accounting) are **MSW-only** (no live backend).  
+> **Money:** major units (e.g. `1800000` = ₹18,00,000). **Casing:** camelCase throughout.  
+> **Auth:** Bearer token required on every endpoint. Role codes: HR=HR_ADMIN, SA=SUPER_ADMIN, MGR=MANAGER, EMP=EMPLOYEE.
 
-### F.1 — Localization
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/countries` | HR,SA | Supported countries: `{ code, name, currency, locale, fiscalYearStartMonth }[]` |
-| GET | `/payroll/legal-entities` | HR,SA | List legal entities |
-| POST | `/payroll/legal-entities` | SA | Create legal entity |
-| PATCH | `/payroll/legal-entities/:id` | SA | Update legal entity |
-| GET | `/payroll/countries/:code/bank-schema` | HR,SA | Country-specific bank form field definitions (`DynamicForm` schema) |
+---
 
-### F.2 — Salary component extensions
-`POST/PATCH /payroll/components` gains: `type (EMPLOYER_CONTRIBUTION added)`, `statutoryTag`, `prorate`, `payInPeriods`.
+### F.1 — Salary Components
 
-### F.3 — Statutory & tax engine
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/statutory-packs` | HR,SA | `?country=` filter |
-| GET | `/payroll/statutory-packs/:id` | HR,SA | Single pack |
-| POST | `/payroll/statutory-packs` | SA | 409 PACK_VERSION_EXISTS, 422 INVALID_PACK |
-| PATCH | `/payroll/statutory-packs/:id` | SA | |
+#### `GET /payroll/components`
+**Roles:** HR, SA  
+**Query:** `?active=true|false`
 
-### F.4 — Employee payroll
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/employees/:id/ytd` | HR,SA | `?fy=YYYY-YY`. YTD ledger: grossEarnings, taxableIncome, taxDeducted, netPay, contributions |
-| GET | `/payroll/employees/:id/tax-declaration` | HR,SA,EMP | `?fy=YYYY-YY` |
-| POST | `/payroll/employees/:id/tax-declaration` | HR,SA,EMP | Replace declaration |
-| PATCH | `/payroll/employees/:id/tax-declaration` | HR,SA | Merge regime/items, set proofStatus |
-| GET | `/payroll/employees/:id/loans` | HR,SA | List loans + schedules |
-| POST | `/payroll/employees/:id/loans` | HR,SA | Create loan. 422 INVALID_LOAN |
-| PATCH | `/payroll/employees/:id/loans/:loanId` | HR,SA | `{ action: "foreclose" }` |
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "comp-basic",
+      "code": "BASIC",
+      "name": "Basic Salary",
+      "type": "EARNING",
+      "calculationType": "PERCENTAGE",
+      "value": 40,
+      "basisCode": "CTC",
+      "taxable": true,
+      "active": true,
+      "displayOrder": 1,
+      "description": "Basic salary — 40% of CTC"
+    },
+    {
+      "id": "comp-hra",
+      "code": "HRA",
+      "name": "House Rent Allowance",
+      "type": "EARNING",
+      "calculationType": "PERCENTAGE",
+      "value": 20,
+      "basisCode": "BASIC",
+      "taxable": false,
+      "active": true,
+      "displayOrder": 2,
+      "description": "HRA — 20% of Basic"
+    },
+    {
+      "id": "comp-epf",
+      "code": "EPF_EE",
+      "name": "Employee PF Contribution",
+      "type": "DEDUCTION",
+      "calculationType": "PERCENTAGE",
+      "value": 12,
+      "basisCode": "BASIC",
+      "taxable": false,
+      "active": true,
+      "displayOrder": 5,
+      "description": null
+    },
+    {
+      "id": "comp-epf-er",
+      "code": "EPF_ER",
+      "name": "EPF Employer Contribution",
+      "type": "EMPLOYER_CONTRIBUTION",
+      "calculationType": "PERCENTAGE",
+      "value": 12,
+      "basisCode": null,
+      "taxable": false,
+      "active": true,
+      "displayOrder": 10,
+      "description": "EPF Employer Contribution"
+    },
+    {
+      "id": "comp-pbonus",
+      "code": "PERF_BONUS",
+      "name": "Performance Bonus",
+      "type": "VARIABLE",
+      "calculationType": "PERCENTAGE",
+      "value": 10,
+      "basisCode": null,
+      "taxable": true,
+      "active": true,
+      "displayOrder": 14,
+      "description": "Performance Bonus"
+    }
+  ],
+  "meta": {}
+}
+```
 
-### F.5 — Payroll runs
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| POST | `/payroll/runs/:id/calculate` | HR,SA | Real compute. `?dryRun=true` for sandbox (no persist) |
-| GET | `/payroll/runs/:runId/inputs` | HR,SA | Run inputs per employee (lopDays, leaveDays, otHours, variablePay, oneTime) |
-| PATCH | `/payroll/runs/:runId/inputs/:employeeId` | HR,SA | Partial update one employee's input |
-| POST | `/payroll/runs/:runId/inputs/import` | HR,SA | CSV import. Returns `{ updated, skipped, errors[] }` |
-| GET | `/payroll/runs/:id/fnf` | HR,SA | FnF settlement breakdown |
-| GET | `/payroll/roster` | HR,SA | Active employees for run-subject picker |
+**All 6 `type` values:** `EARNING` | `DEDUCTION` | `BENEFIT` | `REIMBURSEMENT` | `EMPLOYER_CONTRIBUTION` | `VARIABLE`  
+**`calculationType` values:** `FLAT` | `PERCENTAGE` | `FORMULA`  
+**Rule:** `PERCENTAGE` type requires `basisCode` (e.g. `"CTC"`, `"BASIC"`, `"GROSS"`). `FLAT` does not.
 
-### F.6 — Claims & variable pay
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/reimbursement-claims` | HR,SA | `?employeeId=&status=` |
-| POST | `/payroll/reimbursement-claims` | HR,SA | 422 CLAIM_OVER_CAP |
-| PATCH | `/payroll/reimbursement-claims/:id` | HR,SA | `{ status: Approved\|Rejected }` |
-| GET | `/payroll/reimbursement-categories` | HR,SA | `{ code, label, monthlyCap }[]` |
+---
 
-### F.7 — Garnishments
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/employees/:id/garnishments` | HR,SA | Sorted by priority |
-| POST | `/payroll/employees/:id/garnishments` | HR,SA | 422 INVALID_GARNISHMENT |
-| PATCH | `/payroll/employees/:id/garnishments/:garnishmentId` | HR,SA | |
-| DELETE | `/payroll/employees/:id/garnishments/:garnishmentId` | HR,SA | 404 if missing |
+#### `POST /payroll/components`
+**Roles:** HR, SA  
+**Status:** 201
 
-### F.8 — Global employment models
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/workers` | HR,SA | `?classification=EMPLOYEE\|CONTRACTOR\|EOR` |
-| PATCH | `/payroll/workers/:id` | HR,SA | `{ classification }` re-classify |
-| GET | `/payroll/contractor-invoices` | HR,SA | `?workerId=&status=` |
-| POST | `/payroll/contractor-invoices` | HR,SA | 422 INVALID_WORKER |
-| PATCH | `/payroll/contractor-invoices/:id` | HR,SA | Approve/pay |
-| GET | `/payroll/cost-summary` | HR,SA | `?groupBy=entity\|currency\|classification` |
+**Request body (EARNING, PERCENTAGE):**
+```json
+{
+  "name": "Basic Salary",
+  "code": "BASIC",
+  "type": "EARNING",
+  "calculationType": "PERCENTAGE",
+  "value": 40,
+  "basisCode": "CTC",
+  "taxable": true,
+  "active": true,
+  "displayOrder": 1,
+  "description": "Basic salary"
+}
+```
 
-### F.9 — Disbursement
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/runs/:id/payment-batch` | HR,SA | Latest batch or null |
-| POST | `/payroll/runs/:id/payment-batch` | HR,SA | 422 RUN_NOT_PAYABLE |
-| GET | `/payroll/runs/:id/bank-file` | HR,SA | `?format=NACH\|ACH\|SEPA\|BACS`. File download |
-| GET | `/payroll/payment-batches/:id/status` | HR,SA | Per-payslip statuses |
-| POST | `/payroll/payment-batches/:id/reconcile` | HR,SA | Simulate bank callback |
+**Request body (DEDUCTION, FLAT):**
+```json
+{
+  "name": "Professional Tax",
+  "code": "PT",
+  "type": "DEDUCTION",
+  "calculationType": "FLAT",
+  "value": 200,
+  "taxable": false,
+  "active": true,
+  "displayOrder": 6
+}
+```
 
-### F.10 — Documents & events
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/payslip-templates` | HR,SA | Single tenant template |
-| PATCH | `/payroll/payslip-templates` | HR,SA | Update sections/fields/logo |
-| POST | `/payroll/runs/:id/publish` | HR,SA | 422 RUN_NOT_PUBLISHABLE |
-| GET | `/payroll/event-catalogue` | HR,SA | Subscribable event types |
-| GET | `/payroll/events` | HR,SA | `?runId=`. Recent events |
-| GET | `/payroll/employees/:id/tax-form` | HR,SA,EMP | `?fy=&type=FORM16\|W2\|P60` |
+**Request body (EMPLOYER_CONTRIBUTION):**
+```json
+{
+  "name": "EPF Employer Contribution",
+  "code": "EPF_ER",
+  "type": "EMPLOYER_CONTRIBUTION",
+  "calculationType": "FLAT",
+  "value": 5000,
+  "taxable": false,
+  "active": true
+}
+```
 
-### F.11 — Accounting
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/runs/:id/journal` | HR,SA | Double-entry journal for a run |
-| GET | `/payroll/runs/:id/journal/export` | HR,SA | `?format=TALLY\|QUICKBOOKS\|CSV`. File download |
+**Request body (VARIABLE):**
+```json
+{
+  "name": "Performance Bonus",
+  "code": "PERF_BONUS",
+  "type": "VARIABLE",
+  "calculationType": "FLAT",
+  "value": 10000,
+  "taxable": true,
+  "active": true
+}
+```
 
-### F.12 — Statutory filing & registers
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/runs/:id/statutory-return` | HR,SA | `?type=ECR\|24Q\|RTI`. Text file download |
-| GET | `/payroll/runs/:id/register` | HR,SA | `?type=SALARY\|STATUTORY\|BANK_ADVICE\|VARIANCE`. Self-describing columns |
-| GET | `/payroll/runs/:id/register/export` | HR,SA | CSV download of register |
-| POST | `/payroll/runs/:id/approvals/:level` | HR,SA | Multi-level approval. 403 SELF_APPROVAL |
-| GET | `/payroll/runs/:id/variance` | HR,SA | Per-employee net delta vs prior REGULAR run |
-| GET | `/payroll/runs/:id/audit` | HR,SA | Audit log entries for the run |
-| POST | `/payroll/runs/:id/payslips/:slipId/recalculate` | HR,SA | Deterministic single-payslip recompute |
+**Response 201:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "cmq4xxxxxxxxxxxx",
+    "tenantId": "...",
+    "code": "BASIC",
+    "name": "Basic Salary",
+    "type": "EARNING",
+    "calculationType": "PERCENTAGE",
+    "value": 40,
+    "basisCode": "CTC",
+    "taxable": true,
+    "active": true,
+    "displayOrder": 1,
+    "description": "Basic salary",
+    "createdAt": "2026-06-08T00:00:00.000Z"
+  },
+  "meta": {}
+}
+```
 
-### F.13 — Onboarding & migration
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/pay-calendars` | HR,SA | List pay calendars |
-| POST | `/payroll/pay-calendars` | HR,SA | Create. Required: name, legalEntityId, frequency |
-| PATCH | `/payroll/pay-calendars/:id` | HR,SA | Update |
-| GET | `/payroll/opening-balances` | HR,SA | List opening YTD balances |
-| POST | `/payroll/employees/:id/opening-balances` | HR,SA | Idempotent per (employeeId, fiscalYear) |
-| GET | `/payroll/migration/historical-payslips` | HR,SA | List imported payslips |
-| POST | `/payroll/migration/historical-payslips` | HR,SA | Bulk import. Returns `{ imported, failed, errors[] }` |
-| POST | `/payroll/runs/:id/parallel-reconcile` | HR,SA | Diff computed vs legacy net. Returns MATCH/MISMATCH/MISSING |
-| GET | `/payroll/migration/status` | HR,SA | Migration state + sandbox mode |
-| PATCH | `/payroll/migration/status` | HR,SA | `{ sandboxMode?, goLivePeriod? }` |
+**Errors:**
+- `409 COMPONENT_CODE_EXISTS` — code already in use for this tenant
+- `422 VALIDATION_ERROR` — missing required field or invalid enum value
 
-### F.14 — Compliance reporting
-| Method | Path | Roles | Notes |
-|--------|------|-------|-------|
-| GET | `/payroll/reports/pay-equity` | HR,SA | `?groupBy=gender\|level\|location`. Mean/median gap by group |
-| GET | `/payroll/reports/audit-pack` | HR,SA | `?runId=`. Downloadable JSON audit assurance pack |
-| GET | `/payroll/settings/data-policy` | HR,SA | Per-country data residency & retention |
-| PATCH | `/payroll/settings/data-policy` | HR,SA | `{ defaultRetentionYears?, policies? }` |
+---
+
+#### `PATCH /payroll/components/:id`
+**Roles:** HR, SA  
+**Note:** `code` is immutable.
+
+**Request body (any subset):**
+```json
+{
+  "name": "Updated Basic Salary",
+  "value": 45,
+  "active": false
+}
+```
+
+**Response 200:** same shape as POST 201.
+
+---
+
+### F.2 — Pay Groups
+
+#### `GET /payroll/groups`
+**Roles:** HR, SA
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "pg-001",
+      "code": "DEFAULT",
+      "name": "Default Pay Group",
+      "currency": "INR",
+      "paySchedule": "MONTHLY",
+      "active": true,
+      "components": [
+        {
+          "componentId": "comp-basic",
+          "code": "BASIC",
+          "name": "Basic Salary",
+          "type": "EARNING",
+          "calculationType": "PERCENTAGE",
+          "value": 40,
+          "basisCode": "CTC",
+          "overrideCalculationType": null,
+          "overrideValue": null
+        }
+      ]
+    }
+  ],
+  "meta": {}
+}
+```
+
+---
+
+#### `POST /payroll/groups`
+**Roles:** HR, SA
+
+**Request body:**
+```json
+{
+  "name": "Senior Engineering Pay Group",
+  "code": "SENIOR_ENG",
+  "currency": "INR",
+  "paySchedule": "MONTHLY",
+  "description": "For L4 and above engineers",
+  "active": true,
+  "components": [
+    { "componentId": "comp-basic", "overrideValue": null },
+    { "componentId": "comp-hra" },
+    { "componentId": "comp-epf" }
+  ]
+}
+```
+
+**Response 201:** same shape as GET item.
+
+---
+
+### F.3 — Legal Entities
+
+#### `GET /payroll/legal-entities`
+**Roles:** HR, SA
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "le-acme-in",
+      "name": "Acme India Pvt Ltd",
+      "country": "IN",
+      "currency": "INR",
+      "fiscalYearStartMonth": 4,
+      "timezone": "Asia/Kolkata",
+      "locale": "en-IN",
+      "registrationIds": { "pan": "AAACA1234C", "tan": "DELA12345B", "gstin": "07AAACA1234C1Z5" },
+      "statutoryPackId": "pack-in-2026",
+      "payCalendarId": "cal-in-monthly",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "le-acme-us",
+      "name": "Acme Technologies Inc",
+      "country": "US",
+      "currency": "USD",
+      "fiscalYearStartMonth": 1,
+      "timezone": "America/New_York",
+      "locale": "en-US",
+      "registrationIds": { "ein": "12-3456789", "suta": "CA-987654" },
+      "statutoryPackId": "pack-us-2026",
+      "payCalendarId": "cal-us-biweekly"
+    }
+  ],
+  "meta": {}
+}
+```
+
+---
+
+#### `POST /payroll/legal-entities`
+**Roles:** SA only
+
+**Request body:**
+```json
+{
+  "name": "Acme Singapore Pte Ltd",
+  "country": "SG",
+  "currency": "SGD",
+  "fiscalYearStartMonth": 1,
+  "timezone": "Asia/Singapore",
+  "locale": "en-SG",
+  "registrationIds": { "uen": "202012345A", "gst": "M90123456A" },
+  "statutoryPackId": "pack-sg-2026",
+  "payCalendarId": "cal-sg-monthly"
+}
+```
+
+**Response 201:** same shape as GET item.
+
+---
+
+### F.4 — Statutory Packs
+
+#### `GET /payroll/statutory-packs`
+**Roles:** HR, SA  
+**Query:** `?country=IN` (optional)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "pack-in-2026",
+      "country": "IN",
+      "version": "2026.1",
+      "effectiveFrom": "2026-04-01T00:00:00.000Z",
+      "effectiveTo": null,
+      "rounding": "nearest_rupee",
+      "proration": "working_days",
+      "taxRegimes": [
+        { "code": "NEW", "name": "New Tax Regime", "default": true,
+          "slabs": [
+            { "from": 0, "to": 300000, "rate": 0 },
+            { "from": 300001, "to": 600000, "rate": 5 },
+            { "from": 600001, "to": 900000, "rate": 10 },
+            { "from": 900001, "to": 1200000, "rate": 15 },
+            { "from": 1200001, "to": 1500000, "rate": 20 },
+            { "from": 1500001, "to": null, "rate": 30 }
+          ]
+        }
+      ],
+      "contributionSchemes": [
+        { "code": "EPF", "name": "Employee Provident Fund",
+          "employeeRate": 12, "employerRate": 12, "wageBase": 15000 },
+        { "code": "ESI", "name": "Employee State Insurance",
+          "employeeRate": 0.75, "employerRate": 3.25, "wageBase": 21000 }
+      ],
+      "statutoryComponents": [
+        { "code": "EPF_EE", "name": "PF Employee", "type": "DEDUCTION" },
+        { "code": "EPF_ER", "name": "PF Employer", "type": "EMPLOYER_CONTRIBUTION" },
+        { "code": "ESI_EE", "name": "ESI Employee", "type": "DEDUCTION" },
+        { "code": "TDS", "name": "Income Tax (TDS)", "type": "DEDUCTION" }
+      ]
+    }
+  ],
+  "meta": {}
+}
+```
+
+> **Note:** `packData` JSON column is flattened to top-level fields in the response. The DB stores `packData: { rounding, proration, taxRegimes, contributionSchemes, ... }` but the API returns all those keys directly on the object.
+
+---
+
+#### `POST /payroll/statutory-packs`
+**Roles:** SA only
+
+**Request body:**
+```json
+{
+  "country": "IN",
+  "version": "2026.2",
+  "effectiveFrom": "2026-10-01",
+  "effectiveTo": null,
+  "packData": {
+    "rounding": "nearest_rupee",
+    "proration": "working_days",
+    "taxRegimes": [
+      { "code": "NEW", "name": "New Tax Regime", "default": true,
+        "slabs": [{ "from": 0, "to": 400000, "rate": 0 }] }
+    ],
+    "contributionSchemes": [
+      { "code": "EPF", "employeeRate": 12, "employerRate": 12, "wageBase": 15000 }
+    ],
+    "statutoryComponents": [
+      { "code": "EPF_EE", "name": "PF Employee", "type": "DEDUCTION" }
+    ]
+  }
+}
+```
+
+**Errors:**  
+- `409 PACK_VERSION_EXISTS` — country + version combo already exists
+
+---
+
+### F.5 — Pay Calendars
+
+#### `GET /payroll/pay-calendars`
+**Roles:** HR, SA
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "cal-in-monthly",
+      "name": "India Monthly Payroll",
+      "code": "IN_MONTHLY",
+      "country": "IN",
+      "paySchedule": "MONTHLY",
+      "firstPayDate": "2026-01-31",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "cal-us-biweekly",
+      "name": "US Bi-Weekly Payroll",
+      "code": "US_BIWEEKLY",
+      "country": "US",
+      "paySchedule": "BIWEEKLY",
+      "firstPayDate": "2026-01-10"
+    }
+  ],
+  "meta": {}
+}
+```
+
+**`paySchedule` values:** `MONTHLY` | `BIWEEKLY` | `WEEKLY`
+
+---
+
+#### `POST /payroll/pay-calendars`
+**Request body:**
+```json
+{
+  "name": "India Monthly Payroll",
+  "code": "IN_MONTHLY",
+  "country": "IN",
+  "paySchedule": "MONTHLY",
+  "firstPayDate": "2026-01-31"
+}
+```
+
+---
+
+### F.6 — Employee Salary Config
+
+#### `GET /payroll/employees/:employeeId/salary`
+**Roles:** HR, SA (full bank details) | EMPLOYEE (own, masked bank)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "cmq42gfzu009y117d...",
+    "employeeId": "cmq3cxlim001egfijd7jy32pt",
+    "payGroupId": "pg-001",
+    "annualCtc": 1800000,
+    "effectiveFrom": "2026-01-01T00:00:00.000Z",
+    "effectiveTo": null,
+    "bankName": "HDFC",
+    "bankAccountNumber": "50100123456789",
+    "bankIfscCode": "HDFC0001234",
+    "bankAccountName": "Aman Kumar",
+    "currency": "INR",
+    "calculatedComponents": [
+      { "code": "BASIC", "name": "Basic Salary", "type": "EARNING", "monthlyAmount": 60000, "taxable": true },
+      { "code": "HRA", "name": "House Rent Allowance", "type": "EARNING", "monthlyAmount": 12000, "taxable": false },
+      { "code": "EPF_EE", "name": "Employee PF Contribution", "type": "DEDUCTION", "monthlyAmount": 7200, "taxable": false }
+    ]
+  },
+  "meta": {}
+}
+```
+
+> **EMPLOYEE self-view:** `bankAccountNumber` is masked as `"XXXXXX6789"`.
+
+---
+
+#### `POST /payroll/employees/:employeeId/salary`
+**Roles:** HR, SA  
+**Status:** 201
+
+**Request body:**
+```json
+{
+  "payGroupId": "pg-001",
+  "annualCtc": 1800000,
+  "effectiveFrom": "2026-01-01",
+  "bankName": "HDFC",
+  "bankAccountNumber": "50100123456789",
+  "bankIfscCode": "HDFC0001234",
+  "bankAccountName": "Aman Kumar"
+}
+```
+
+**Notes:**
+- Creates a new salary record and closes the old one (`effectiveTo` = today)
+- `PATCH /payroll/employees/:employeeId/salary` — same body, same behavior (creates history)
+
+---
+
+### F.7 — Employee YTD & Tax Declaration
+
+#### `GET /payroll/employees/:id/ytd`
+**Roles:** HR, SA, EMPLOYEE (own only)  
+**Query:** `?fy=2026-27` (fiscal year, defaults to current FY)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "employeeId": "cmq3cxlim001egfijd7jy32pt",
+    "fiscalYear": "2026-27",
+    "monthsElapsed": 2,
+    "grossEarnings": 200000,
+    "taxableIncome": 180000,
+    "taxDeducted": 12000,
+    "totalDeductions": 24000,
+    "netPay": 176000,
+    "contributions": {
+      "pf": 14400,
+      "esi": 0
+    },
+    "currency": "INR"
+  },
+  "meta": {}
+}
+```
+
+---
+
+#### `GET /payroll/employees/:id/tax-declaration`
+**Roles:** HR, SA, EMPLOYEE (own)  
+**Query:** `?fy=2025-26`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "td-001",
+    "employeeId": "cmq3cxlim001egfijd7jy32pt",
+    "fiscalYear": "2025-26",
+    "regime": "NEW",
+    "proofStatus": null,
+    "items": [
+      { "section": "80C", "description": "PPF Contribution", "amount": 150000 },
+      { "section": "80D", "description": "Health Insurance Premium", "amount": 25000 }
+    ],
+    "createdAt": "2026-01-15T00:00:00.000Z"
+  },
+  "meta": {}
+}
+```
+
+---
+
+#### `POST /payroll/employees/:id/tax-declaration`
+**Roles:** HR, SA, EMPLOYEE (own)
+
+**Request body:**
+```json
+{
+  "fiscalYear": "2026-27",
+  "regime": "NEW",
+  "items": [
+    { "section": "80C", "description": "PPF Contribution", "amount": 150000 },
+    { "section": "80D", "description": "Health Insurance Premium", "amount": 25000 },
+    { "section": "HRA", "description": "House Rent Allowance", "amount": 120000 }
+  ]
+}
+```
+
+**Notes:** replaces the existing declaration for that `(employeeId, fiscalYear)` pair.  
+`regime` values: `NEW` | `OLD`
+
+---
+
+### F.8 — Employee Loans
+
+#### `GET /payroll/employees/:id/loans`
+**Roles:** HR, SA, EMPLOYEE (own)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "loan-001",
+      "employeeId": "cmq3cxlim001egfijd7jy32pt",
+      "amount": 100000,
+      "balance": 65000,
+      "emiAmount": 5000,
+      "startPeriod": "2025-10",
+      "endPeriod": "2026-09",
+      "status": "ACTIVE",
+      "schedule": { "frequency": "MONTHLY", "deductFromPayroll": true },
+      "createdAt": "2025-10-01T00:00:00.000Z"
+    }
+  ],
+  "meta": {}
+}
+```
+
+**`status` values:** `ACTIVE` | `CLOSED` | `FORECLOSED` | `OVERDUE`
+
+---
+
+#### `POST /payroll/employees/:id/loans`
+**Roles:** HR, SA
+
+**Request body:**
+```json
+{
+  "amount": 100000,
+  "emiAmount": 5000,
+  "startPeriod": "2026-07",
+  "endPeriod": "2027-06"
+}
+```
+
+**Response 201:** same shape as GET item.
+
+---
+
+### F.9 — Payroll Runs
+
+#### `GET /payroll/runs`
+**Roles:** HR, SA  
+**Query:** `?page=1&limit=10&year=2026&status=PAID`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "runs": [
+      {
+        "id": "run-nov-2026",
+        "period": "2026-11",
+        "status": "REVIEW",
+        "employeeCount": 7,
+        "totalGross": 501200,
+        "totalDeductions": 77000,
+        "totalNet": 424200,
+        "currency": "INR",
+        "processedAt": "2026-06-08T00:00:00.000Z",
+        "createdAt": "2026-06-08T00:00:00.000Z"
+      },
+      {
+        "id": "run-may-2026",
+        "period": "2026-05",
+        "status": "PAID",
+        "employeeCount": 3,
+        "totalGross": 230050,
+        "totalDeductions": 30000,
+        "totalNet": 200050,
+        "currency": "INR",
+        "processedAt": null
+      }
+    ],
+    "pagination": { "page": 1, "limit": 10, "total": 7, "pages": 1 }
+  },
+  "meta": {}
+}
+```
+
+**`status` values:** `DRAFT` | `CALCULATING` | `REVIEW` | `APPROVED` | `PAID` | `CANCELLED`
+
+---
+
+#### `POST /payroll/runs`
+**Roles:** HR, SA
+
+**Request body:**
+```json
+{
+  "period": "2026-08",
+  "includeAllActiveEmployees": true
+}
+```
+
+**Response 201:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "run-aug-2026",
+    "period": "2026-08",
+    "status": "DRAFT",
+    "employeeCount": 0,
+    "totalGross": 0,
+    "totalDeductions": 0,
+    "totalNet": 0,
+    "currency": "INR",
+    "createdAt": "2026-06-08T00:00:00.000Z"
+  },
+  "meta": {}
+}
+```
+
+**Errors:**
+- `409 RUN_EXISTS` — non-CANCELLED run for this period already exists
+
+---
+
+#### `POST /payroll/runs/:id/calculate`
+**Roles:** HR, SA  
+**Status:** 202 (async calculation)
+
+**Request body:** `{}` (empty)
+
+**Response 202:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "run-aug-2026",
+    "period": "2026-08",
+    "status": "REVIEW",
+    "employeeCount": 7,
+    "totalGross": 490000,
+    "totalDeductions": 68000,
+    "totalNet": 422000,
+    "currency": "INR"
+  },
+  "meta": {}
+}
+```
+
+**Notes:** transitions run from `DRAFT` → `REVIEW`. Computes payslips for all employees with a salary config linked to this tenant.
+
+---
+
+#### `POST /payroll/runs/:id/approve`
+**Roles:** HR, SA
+
+**Request body:**
+```json
+{ "notes": "Approved by HR Admin for August 2026" }
+```
+
+**Response 200:** run object with `status: "APPROVED"`.
+
+---
+
+#### `PATCH /payroll/runs/:id/mark-paid`
+**Roles:** HR, SA
+
+**Request body:**
+```json
+{
+  "paidAt": "2026-08-31",
+  "paymentReference": "NEFT/2026/08/ACME"
+}
+```
+
+**Response 200:** run object with `status: "PAID"`. All payslips updated to `PAID`.
+
+---
+
+### F.10 — Employee Payslips (Self-Service)
+
+#### `GET /payroll/employees/:employeeId/payslips`
+**Roles:** HR, SA (any employee) | EMPLOYEE (own only)  
+**Query:** `?page=1&limit=12&year=2026`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "payslip-nov-aman",
+        "period": "2026-11",
+        "status": "PENDING",
+        "grossEarnings": 71600,
+        "totalDeductions": 11000,
+        "netPay": 60600,
+        "currency": "INR",
+        "documentUrl": null
+      },
+      {
+        "id": "payslip-may-aman",
+        "period": "2026-05",
+        "status": "PAID",
+        "grossEarnings": 65000,
+        "totalDeductions": 9500,
+        "netPay": 55500,
+        "currency": "INR",
+        "documentUrl": "https://res.cloudinary.com/..."
+      }
+    ],
+    "pagination": { "page": 1, "limit": 12, "total": 3, "pages": 1 }
+  },
+  "meta": {}
+}
+```
+
+> **`documentUrl`:** `null` for payslips generated by the live `/calculate` API (numbers computed, no PDF rendered). Only seeded historical payslips (Mar/Apr/May 2026) carry Cloudinary document URLs.
+
+---
+
+#### `GET /payroll/employees/:employeeId/payslips/:payslipId`
+**Roles:** HR, SA, EMPLOYEE (own)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "payslip-nov-aman",
+    "employeeId": "cmq3cxlim001egfijd7jy32pt",
+    "payrollRunId": "run-nov-2026",
+    "period": "2026-11",
+    "status": "PENDING",
+    "grossEarnings": 71600,
+    "totalDeductions": 11000,
+    "netPay": 60600,
+    "currency": "INR",
+    "documentUrl": null,
+    "earningsJson": [
+      { "code": "BASIC", "name": "Basic Salary", "type": "EARNING", "amount": 60000, "taxable": true },
+      { "code": "HRA", "name": "HRA", "type": "EARNING", "amount": 12000, "taxable": false }
+    ],
+    "deductionsJson": [
+      { "code": "EPF_EE", "name": "PF Employee", "type": "DEDUCTION", "amount": 7200, "taxable": false },
+      { "code": "PT", "name": "Professional Tax", "type": "DEDUCTION", "amount": 200, "taxable": false }
+    ]
+  },
+  "meta": {}
+}
+```
+
+---
+
+### F.11 — Run Payslips (HR View)
+
+#### `GET /payroll/runs/:runId/payslips`
+**Roles:** HR, SA  
+**Query:** `?page=1&limit=20&departmentId=xxx&search=Aman`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "payslips": [
+      {
+        "id": "payslip-nov-aman",
+        "employeeId": "cmq3...",
+        "employeeName": "Aman Kumar",
+        "department": "Engineering",
+        "period": "2026-11",
+        "grossEarnings": 71600,
+        "totalDeductions": 11000,
+        "netPay": 60600,
+        "status": "PENDING",
+        "currency": "INR"
+      }
+    ],
+    "summary": { "totalGross": 490000, "totalDeductions": 68000, "totalNet": 422000 },
+    "pagination": { "page": 1, "limit": 20, "total": 7, "pages": 1 }
+  },
+  "meta": {}
+}
+```
+
+---
+
+#### `PATCH /payroll/runs/:runId/payslips/:payslipId`
+**Roles:** HR, SA — add one-time adjustments
+
+**Request body:**
+```json
+{
+  "oneTimeAdditions": [
+    { "description": "Festival Bonus", "amount": 5000 }
+  ],
+  "oneTimeDeductions": [
+    { "description": "Canteen Recovery", "amount": 500 }
+  ],
+  "notes": "August adjustment"
+}
+```
+
+---
+
+### F.12 — Global Workforce (Workers, Cost Summary, Contractor Invoices)
+
+> **Status: LIVE ✅ as of 2026-06-08.** Previously MSW-only — now fully backed by Render DB.  
+> Workers are derived from `Employee.employmentType` (no separate model).
+
+#### `GET /payroll/workers`
+**Roles:** HR, SA  
+**Query:** `?classification=EMPLOYEE|CONTRACTOR|EOR` (optional filter)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "cmq3cxlim001egfijd7jy32pt",
+      "employeeCode": "E0001",
+      "name": "Aman Kumar",
+      "classification": "EMPLOYEE",
+      "country": "IN",
+      "currency": "INR",
+      "legalEntityId": null,
+      "legalEntityName": null,
+      "monthlyCost": 15000000,
+      "riskFlag": null,
+      "active": true
+    },
+    {
+      "id": "cmq3cxlim002fghij8kz43qu",
+      "employeeCode": "E0007",
+      "name": "Diego Ramirez",
+      "classification": "CONTRACTOR",
+      "country": "US",
+      "currency": "USD",
+      "legalEntityId": null,
+      "legalEntityName": null,
+      "monthlyCost": 0,
+      "riskFlag": null,
+      "active": true
+    }
+  ],
+  "meta": {}
+}
+```
+
+**`classification` values:** `EMPLOYEE` | `CONTRACTOR` | `EOR`  
+**`monthlyCost`:** minor units (e.g. `15000000` = ₹1,50,000). Derived from `annualCtc / 12 * 100`.
+
+---
+
+#### `PATCH /payroll/workers/:id`
+**Roles:** HR, SA  
+**`:id`** = employee ID
+
+**Request body:**
+```json
+{ "classification": "CONTRACTOR" }
+```
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "cmq3cxlim002fghij8kz43qu",
+    "classification": "CONTRACTOR",
+    "employmentType": "CONTRACT"
+  },
+  "meta": {}
+}
+```
+
+**Notes:** updates `Employee.employmentType`. `CONTRACTOR` → `CONTRACT`, `EMPLOYEE` → `FULL_TIME`.
+
+---
+
+#### `GET /payroll/cost-summary`
+**Roles:** HR, SA  
+**Query:** `?groupBy=classification` (default) | `entity` | `currency`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "groupBy": "classification",
+    "baseCurrency": "INR",
+    "totalBaseCost": 4500000,
+    "totalWorkers": 7,
+    "groups": [
+      {
+        "key": "EMPLOYEE",
+        "workerCount": 6,
+        "baseAmount": 4200000
+      },
+      {
+        "key": "CONTRACTOR",
+        "workerCount": 1,
+        "baseAmount": 300000
+      }
+    ],
+    "fxRates": { "INR": 1, "USD": 83, "EUR": 90, "GBP": 105, "AED": 22, "SGD": 62 }
+  },
+  "meta": {}
+}
+```
+
+**Notes:**
+- All amounts in INR (or base currency of tenant)
+- FX conversion: `monthlyCost_local × FX_rate → INR`
+- `groupBy=entity` groups by employee `location` field
+- `groupBy=currency` groups by `Employee.payCurrency`
+
+---
+
+#### `GET /payroll/contractor-invoices`
+**Roles:** HR, SA  
+**Query:** `?workerId=<employeeId>&status=SUBMITTED`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "cinv-abc123",
+      "workerId": "cmq3cxlim002fghij8kz43qu",
+      "workerName": "Diego Ramirez",
+      "period": "2026-06",
+      "amount": 500000,
+      "currency": "INR",
+      "withholdingPct": 10,
+      "netPayable": 450000,
+      "status": "SUBMITTED",
+      "payoutRef": null,
+      "submittedAt": "2026-06-02T00:00:00.000Z",
+      "decidedAt": null
+    }
+  ],
+  "meta": {}
+}
+```
+
+**`status` values:** `SUBMITTED` | `APPROVED` | `PAID` | `VOIDED`
+
+---
+
+#### `POST /payroll/contractor-invoices`
+**Roles:** HR, SA  
+**Status:** 201
+
+**Request body:**
+```json
+{
+  "workerId": "cmq3cxlim002fghij8kz43qu",
+  "workerName": "Diego Ramirez",
+  "period": "2026-07",
+  "amount": 550000,
+  "currency": "INR",
+  "withholdingPct": 10
+}
+```
+
+**Response 201:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "cinv-newid",
+    "workerId": "cmq3cxlim002fghij8kz43qu",
+    "workerName": "Diego Ramirez",
+    "period": "2026-07",
+    "amount": 550000,
+    "currency": "INR",
+    "withholdingPct": 10,
+    "netPayable": 495000,
+    "status": "SUBMITTED",
+    "payoutRef": null,
+    "submittedAt": "2026-06-08T15:00:00.000Z",
+    "decidedAt": null
+  },
+  "meta": {}
+}
+```
+
+---
+
+#### `PATCH /payroll/contractor-invoices/:id`
+**Roles:** HR, SA
+
+**Request body (approve):**
+```json
+{ "status": "APPROVED" }
+```
+
+**Request body (mark paid):**
+```json
+{
+  "status": "PAID",
+  "payoutRef": "NEFT/2026/07/RAMIREZ"
+}
+```
+
+**Response 200:** updated invoice object.
+
+---
+
+### F.13 — Payroll Roster
+
+#### `GET /payroll/roster`
+**Roles:** HR, SA
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "employees": [
+      {
+        "id": "cmq3cxlim001egfijd7jy32pt",
+        "employeeCode": "E0001",
+        "name": "Aman Kumar",
+        "department": "Engineering",
+        "payGroup": "Default Pay Group",
+        "annualCtc": 1800000,
+        "currency": "INR"
+      }
+    ],
+    "total": 7
+  },
+  "meta": {}
+}
+```
+
+---
+
+### F.14 — Run Inputs
+
+#### `GET /payroll/runs/:runId/inputs`
+**Roles:** HR, SA
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "inputs": [
+      {
+        "employeeId": "cmq3cxlim001egfijd7jy32pt",
+        "employeeName": "Aman Kumar",
+        "lopDays": 0,
+        "leaveDays": 2,
+        "otHours": 0,
+        "variablePay": 0,
+        "oneTimeAdditions": [],
+        "oneTimeDeductions": []
+      }
+    ]
+  },
+  "meta": {}
+}
+```
+
+---
+
+#### `PATCH /payroll/runs/:runId/inputs/:employeeId`
+**Roles:** HR, SA
+
+**Request body (any subset):**
+```json
+{
+  "lopDays": 1,
+  "variablePay": 5000,
+  "oneTimeAdditions": [
+    { "description": "Spot Award", "amount": 2000 }
+  ]
+}
+```
+
+---
+
+### F.15 — Migration
+
+#### `GET /payroll/migration/status`
+**Roles:** HR, SA
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "sandboxMode": false,
+    "goLivePeriod": "2026-04",
+    "historicalPayslipsImported": 0,
+    "openingBalancesSet": 4,
+    "totalEmployees": 7
+  },
+  "meta": {}
+}
+```
+
+---
+
+#### `PATCH /payroll/migration/status`
+**Request body:**
+```json
+{
+  "sandboxMode": false,
+  "goLivePeriod": "2026-04"
+}
+```
+
+---
+
+### F.16 — Compliance Reporting
+
+#### `GET /payroll/reports/pay-equity`
+**Roles:** HR, SA  
+**Query:** `?groupBy=gender|level|location`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "groupBy": "gender",
+    "groups": [
+      { "key": "MALE", "count": 5, "meanCtc": 1650000, "medianCtc": 1500000 },
+      { "key": "FEMALE", "count": 4, "meanCtc": 1400000, "medianCtc": 1350000 }
+    ],
+    "gapPct": 15.2,
+    "currency": "INR"
+  },
+  "meta": {}
+}
+```
+
+---
+
+### F.17 — MSW-Only Endpoints (NOT live on backend)
+
+These endpoints exist only as frontend mocks (MSW). Calling them on Render returns **404**.
+
+| Section | Endpoints |
+|---------|-----------|
+| **F.6 Claims** | `GET/POST /payroll/reimbursement-claims`, `PATCH /payroll/reimbursement-claims/:id`, `GET /payroll/reimbursement-categories` |
+| **F.7 Garnishments** | `GET/POST /payroll/employees/:id/garnishments`, `PATCH/DELETE /payroll/employees/:id/garnishments/:id` |
+| **F.10 Documents** | `GET /payroll/payslip-templates`, `PATCH /payroll/payslip-templates`, `POST /payroll/runs/:id/publish`, `GET /payroll/event-catalogue`, `GET /payroll/events`, `GET /payroll/employees/:id/tax-form` |
+| **F.11 Accounting** | `GET /payroll/runs/:id/journal`, `GET /payroll/runs/:id/journal/export` |
+| **F.9 Disbursement** | `GET/POST /payroll/runs/:id/payment-batch`, `GET /payroll/runs/:id/bank-file`, `GET/POST /payroll/payment-batches/:id/*` |
 
 ---
 
