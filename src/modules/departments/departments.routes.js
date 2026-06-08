@@ -56,7 +56,7 @@ export default async function departmentsRoutes(fastify) {
           required: ['name'],
           properties: {
             name: { type: 'string' },
-            parentId: { type: 'string' },
+            parentId: { type: 'string', nullable: true },
             departmentCode: { type: 'string' },
             headEmployeeId: { type: 'string', nullable: true },
           },
@@ -86,7 +86,7 @@ export default async function departmentsRoutes(fastify) {
           type: 'object',
           properties: {
             name: { type: 'string' },
-            parentId: { type: 'string' },
+            parentId: { type: 'string', nullable: true },
             departmentCode: { type: 'string' },
             headEmployeeId: { type: 'string', nullable: true },
           },
