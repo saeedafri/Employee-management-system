@@ -573,7 +573,14 @@ export async function getRunRegister(prisma, id, tenantId, type) {
   if (!run) return null;
   const payslips = await prisma.payslip.findMany({
     where: { payrollRunId: id },
-    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true, bankName: true, bankAccountNumber: true } } },
+    include: {
+      employee: {
+        select: {
+          employeeCode: true, firstName: true, lastName: true,
+          salaries: { select: { bankName: true, bankAccountNumber: true, bankIfscCode: true, effectiveTo: true }, orderBy: { effectiveFrom: 'desc' }, take: 1 },
+        },
+      },
+    },
   });
   const registerType = type || 'SALARY';
   const columns = REGISTER_COLUMNS[registerType] ?? REGISTER_COLUMNS.SALARY;
@@ -588,13 +595,14 @@ export async function getRunRegister(prisma, id, tenantId, type) {
       netPay: Number(ps.netPay),
     };
     if (registerType === 'STATUTORY') {
-      const lines = Array.isArray(ps.deductionLines) ? ps.deductionLines : [];
+      const lines = Array.isArray(ps.deductionsJson) ? ps.deductionsJson : [];
       const pfEmp = lines.find(l => l.code === 'PF_EMPLOYEE')?.amount ?? 0;
       const pfEmpr = lines.find(l => l.code === 'PF_EMPLOYER')?.amount ?? 0;
       return { ...base, pfEmployee: Number(pfEmp), pfEmployer: Number(pfEmpr) };
     }
     if (registerType === 'BANK_ADVICE') {
-      return { ...base, bankName: ps.employee?.bankName ?? '—', accountNumber: ps.employee?.bankAccountNumber ?? '—' };
+      const sal = ps.employee?.salaries?.[0];
+      return { ...base, bankName: sal?.bankName ?? '—', accountNumber: sal?.bankAccountNumber ?? '—', ifscCode: sal?.bankIfscCode ?? '—' };
     }
     if (registerType === 'VARIANCE') {
       return { ...base, previousNet: Number(ps.netPay), currentNet: Number(ps.netPay), variance: 0 };
