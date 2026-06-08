@@ -711,8 +711,8 @@ export async function getAuditPack(prisma, tenantId, runId) {
 }
 
 export async function getDataPolicy(prisma, tenantId) {
-  const setting = await prisma.setting.findUnique({ where: { tenantId_key: { tenantId, key: 'DATA_POLICY' } } });
-  if (setting) return setting.value;
+  const setting = await prisma.setting.findUnique({ where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'data-policy' } } });
+  if (setting) return setting.valueJson;
   return {
     defaultRetentionYears: 7,
     policies: [
@@ -725,9 +725,9 @@ export async function getDataPolicy(prisma, tenantId) {
 export async function updateDataPolicy(prisma, tenantId, data) {
   const value = { ...data, updatedAt: new Date().toISOString() };
   await prisma.setting.upsert({
-    where: { tenantId_key: { tenantId, key: 'DATA_POLICY' } },
-    create: { tenantId, key: 'DATA_POLICY', value },
-    update: { value },
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'data-policy' } },
+    create: { tenantId, groupKey: 'payroll', settingKey: 'data-policy', valueJson: value },
+    update: { valueJson: value },
   });
   return value;
 }
@@ -840,9 +840,9 @@ export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classifi
 
 export async function listContractorInvoices(prisma, tenantId, params = {}) {
   const setting = await prisma.setting.findUnique({
-    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
   });
-  const invoices = (setting?.value ?? []).filter((i) => {
+  const invoices = (setting?.valueJson ?? []).filter((i) => {
     if (params.workerId && i.workerId !== params.workerId) return false;
     if (params.status && i.status !== params.status) return false;
     return true;
@@ -867,22 +867,22 @@ export async function createContractorInvoice(prisma, tenantId, data) {
     decidedAt: null,
   };
   const setting = await prisma.setting.findUnique({
-    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
   });
-  const invoices = [invoice, ...(setting?.value ?? [])];
+  const invoices = [invoice, ...(setting?.valueJson ?? [])];
   await prisma.setting.upsert({
-    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
-    create: { tenantId, key: 'CONTRACTOR_INVOICES', value: invoices },
-    update: { value: invoices },
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
+    create: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices', valueJson: invoices },
+    update: { valueJson: invoices },
   });
   return invoice;
 }
 
 export async function updateContractorInvoice(prisma, tenantId, invoiceId, data) {
   const setting = await prisma.setting.findUnique({
-    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
   });
-  const invoices = setting?.value ?? [];
+  const invoices = setting?.valueJson ?? [];
   const idx = invoices.findIndex((i) => i.id === invoiceId);
   if (idx === -1) throw AppError('Invoice not found', 'NOT_FOUND', 404);
   invoices[idx] = {
@@ -891,9 +891,9 @@ export async function updateContractorInvoice(prisma, tenantId, invoiceId, data)
     decidedAt: data.status && data.status !== 'SUBMITTED' ? new Date().toISOString() : invoices[idx].decidedAt,
   };
   await prisma.setting.upsert({
-    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
-    create: { tenantId, key: 'CONTRACTOR_INVOICES', value: invoices },
-    update: { value: invoices },
+    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
+    create: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices', valueJson: invoices },
+    update: { valueJson: invoices },
   });
   return invoices[idx];
 }
