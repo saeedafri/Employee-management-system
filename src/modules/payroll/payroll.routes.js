@@ -27,7 +27,7 @@ export default async function payrollRoutes(fastify) {
         properties: {
           name: { type: 'string', maxLength: 100 },
           code: { type: 'string', maxLength: 30 },
-          type: { type: 'string', enum: ['EARNING', 'DEDUCTION', 'BENEFIT', 'REIMBURSEMENT'] },
+          type: { type: 'string', enum: ['EARNING', 'DEDUCTION', 'BENEFIT', 'REIMBURSEMENT', 'EMPLOYER_CONTRIBUTION', 'VARIABLE'] },
           calculationType: { type: 'string', enum: ['FLAT', 'PERCENTAGE', 'FORMULA'] },
           value: { type: 'number' },
           basisCode: { type: 'string' },

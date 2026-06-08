@@ -126,6 +126,8 @@ enum ComponentType {
   DEDUCTION
   BENEFIT
   REIMBURSEMENT
+  EMPLOYER_CONTRIBUTION
+  VARIABLE
 }
 
 enum CalculationType {
