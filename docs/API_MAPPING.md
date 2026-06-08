@@ -4008,8 +4008,29 @@ These endpoints exist only as frontend mocks (MSW). Calling them on Render retur
 | GET | `/timesheets/settings` | HR,SA | Timesheet config (standardWeeklyHours, overtimeThreshold, etc.) |
 | PATCH | `/timesheets/settings` | HR,SA | Update timesheet settings |
 
-**Timesheet shape:** `{ id, employeeId, weekStart, weekEnd, status(DRAFT/SUBMITTED/APPROVED/REJECTED), totalHours, billableHours, overtimeHours, standardHours, entries[] }`
+**Timesheet shape:** `{ id, employeeId, employeeName, weekStart, weekEnd, status(DRAFT/SUBMITTED/APPROVED/REJECTED), totalHours, billableHours, overtimeHours, standardHours, submittedAt, decidedBy, decidedAt, comment, entries[] }`
 **Entry shape:** `{ id, timesheetId, projectId, taskId?, date, hours, billable, note, source(MANUAL/TIMER) }`
+
+**`GET /timesheets/approvals` response:** Array of timesheet objects. Each includes `employeeName` (enriched from Employee table — required by ApprovalTab UI).
+
+**`GET /timesheets/summary` response:**
+```json
+{
+  "totalHours": 2993.75,
+  "billableHours": 2581.25,
+  "nonBillableHours": 412.5,
+  "overtimeHours": 0,
+  "utilizationPct": 86,
+  "byProject": [{ "projectId", "projectName", "hours", "billableHours" }],
+  "byEmployee": [{ "employeeId", "employeeName", "employeeCode", "hours", "billableHours", "utilizationPct" }]
+}
+```
+`byEmployee` is non-empty when time entries exist in the range (fixes "No logged hours" in Utilization report).
+
+**`GET /payroll/runs/:id/register?type=SALARY` columns:** `employeeCode, employeeName, department, grossEarnings, totalDeductions, netPay, employerCost`
+- `department`: from `employee.department.name`
+- `employerCost`: grossEarnings × 1.13 (gross + employer contributions)
+- `summary`: includes `totalGross`, `totalDeductions`, `totalNet`, `totalEmployerCost`, `employeeCount`
 
 ---
 
