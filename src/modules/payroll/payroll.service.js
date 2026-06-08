@@ -996,13 +996,16 @@ export async function approveRunLevel(prisma, runId, tenantId, level, body) {
 export async function getRunVariance(prisma, runId, tenantId) {
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) return null;
-  const payslips = await prisma.payslip.findMany({ where: { runId, tenantId } });
+  const payslips = await prisma.payslip.findMany({
+    where: { payrollRunId: runId, tenantId },
+    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true } } },
+  });
   // Compare with previous run
   const prevRun = await prisma.payrollRun.findFirst({
     where: { tenantId, status: { in: ['PAID', 'APPROVED'] }, id: { not: runId } },
     orderBy: { createdAt: 'desc' },
   });
-  const prevPayslips = prevRun ? await prisma.payslip.findMany({ where: { runId: prevRun.id, tenantId } }) : [];
+  const prevPayslips = prevRun ? await prisma.payslip.findMany({ where: { payrollRunId: prevRun.id, tenantId } }) : [];
   const prevMap = new Map(prevPayslips.map(p => [p.employeeId, p]));
 
   const rows = payslips.map(p => {
@@ -1012,8 +1015,8 @@ export async function getRunVariance(prisma, runId, tenantId) {
     const diff = curNet - prevNet;
     return {
       employeeId: p.employeeId,
-      employeeCode: p.employeeCode,
-      employeeName: p.employeeName,
+      employeeCode: p.employee?.employeeCode || null,
+      employeeName: p.employee ? `${p.employee.firstName} ${p.employee.lastName}`.trim() : null,
       currentNet: curNet,
       previousNet: prevNet,
       variance: diff,
@@ -1048,7 +1051,7 @@ export async function getRunAudit(prisma, runId, tenantId) {
 }
 
 export async function recalculatePayslip(prisma, runId, payslipId, tenantId, actor) {
-  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, runId, tenantId } });
+  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, payrollRunId: runId, tenantId } });
   if (!payslip) return null;
   const updated = await prisma.payslip.update({
     where: { id: payslipId },
@@ -1061,7 +1064,7 @@ export async function recalculatePayslip(prisma, runId, payslipId, tenantId, act
 }
 
 export async function holdPayslip(prisma, runId, payslipId, tenantId, body) {
-  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, runId, tenantId } });
+  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, payrollRunId: runId, tenantId } });
   if (!payslip) return null;
   return await prisma.payslip.update({
     where: { id: payslipId },
@@ -1070,11 +1073,11 @@ export async function holdPayslip(prisma, runId, payslipId, tenantId, body) {
 }
 
 export async function releasePayslip(prisma, runId, payslipId, tenantId) {
-  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, runId, tenantId } });
+  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, payrollRunId: runId, tenantId } });
   if (!payslip) return null;
   return await prisma.payslip.update({
     where: { id: payslipId },
-    data: { status: 'CALCULATED', heldAt: null, holdReason: null },
+    data: { status: 'PENDING', heldAt: null, holdReason: null },
   });
 }
 
@@ -1122,8 +1125,11 @@ export async function createPaymentBatch(prisma, runId, tenantId) {
   const { generateId } = await import('../../utils/id.js');
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) throw AppError('Run not found', 'NOT_FOUND', 404);
-  const payslips = await prisma.payslip.findMany({ where: { runId, tenantId, status: { not: 'HELD' } } });
-  const lines = payslips.map(p => ({ employeeId: p.employeeId, employeeCode: p.employeeCode, name: p.employeeName, netPay: Number(p.netPay), accountNumber: 'XXXX', ifsc: 'XXXX0000000', status: 'PENDING' }));
+  const payslips = await prisma.payslip.findMany({
+    where: { payrollRunId: runId, tenantId, status: { not: 'HELD' } },
+    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true } } },
+  });
+  const lines = payslips.map(p => ({ employeeId: p.employeeId, employeeCode: p.employee?.employeeCode || '', name: p.employee ? `${p.employee.firstName} ${p.employee.lastName}`.trim() : '', netPay: Number(p.netPay), accountNumber: 'XXXX', ifsc: 'XXXX0000000', status: 'PENDING' }));
   const batch = await prisma.paymentBatch.create({
     data: {
       id: generateId(),
@@ -1204,7 +1210,7 @@ export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
   if (!employee) return null;
   const currentFY = fy || `${new Date().getFullYear() - 1}-${String(new Date().getFullYear()).slice(2)}`;
   const payslips = await prisma.payslip.findMany({ where: { employeeId, tenantId } });
-  const grossAnnual = payslips.reduce((s, p) => s + Number(p.grossPay || 0), 0);
+  const grossAnnual = payslips.reduce((s, p) => s + Number(p.grossEarnings || 0), 0);
   const netAnnual = payslips.reduce((s, p) => s + Number(p.netPay || 0), 0);
   const taxDeducted = payslips.reduce((s, p) => s + Number(p.totalDeductions || 0), 0);
   return {
@@ -1324,12 +1330,18 @@ export async function deleteGarnishment(prisma, garnishmentId, employeeId, tenan
 export async function getRunJournal(prisma, runId, tenantId) {
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) return null;
-  const payslips = await prisma.payslip.findMany({ where: { runId, tenantId } });
-  const entries = payslips.flatMap(p => [
-    { account: 'Salary Expense', debit: Number(p.grossPay || 0), credit: 0, employeeId: p.employeeId, description: `Gross pay - ${p.employeeName}` },
-    { account: 'Tax Payable', debit: 0, credit: Number(p.totalDeductions || 0), employeeId: p.employeeId, description: `Tax/deductions - ${p.employeeName}` },
-    { account: 'Salaries Payable', debit: 0, credit: Number(p.netPay || 0), employeeId: p.employeeId, description: `Net pay - ${p.employeeName}` },
-  ]);
+  const payslips = await prisma.payslip.findMany({
+    where: { payrollRunId: runId, tenantId },
+    include: { employee: { select: { firstName: true, lastName: true } } },
+  });
+  const entries = payslips.flatMap(p => {
+    const name = p.employee ? `${p.employee.firstName} ${p.employee.lastName}`.trim() : p.employeeId;
+    return [
+      { account: 'Salary Expense', debit: Number(p.grossEarnings || 0), credit: 0, employeeId: p.employeeId, description: `Gross pay - ${name}` },
+      { account: 'Tax Payable', debit: 0, credit: Number(p.totalDeductions || 0), employeeId: p.employeeId, description: `Tax/deductions - ${name}` },
+      { account: 'Salaries Payable', debit: 0, credit: Number(p.netPay || 0), employeeId: p.employeeId, description: `Net pay - ${name}` },
+    ];
+  });
   return {
     runId,
     period: run.period,
