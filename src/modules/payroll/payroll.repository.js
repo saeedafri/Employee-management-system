@@ -815,15 +815,42 @@ export async function updateLegalEntity(prisma, id, tenantId, data) {
 
 // ── Phase 3: Statutory Packs ──────────────────────────────────────────────────
 
+// The StatutoryPack contract is flat: rounding/proration/taxRegimes/
+// contributionSchemes/localTaxes/statutoryComponents live at the top level (the
+// UI reads pack.taxRegimes.length etc). Storage nests them under packData, so
+// spread it back out and guarantee the array fields exist.
+function fmtStatutoryPack(p) {
+  const data = p.packData || {};
+  return {
+    id: p.id,
+    tenantId: p.tenantId,
+    country: p.country,
+    version: p.version,
+    effectiveFrom: p.effectiveFrom ? p.effectiveFrom.toISOString().slice(0, 10) : null,
+    effectiveTo: p.effectiveTo ? p.effectiveTo.toISOString().slice(0, 10) : null,
+    rounding: data.rounding ?? null,
+    proration: data.proration ?? null,
+    taxRegimes: data.taxRegimes ?? [],
+    contributionSchemes: data.contributionSchemes ?? [],
+    localTaxes: data.localTaxes ?? [],
+    statutoryComponents: data.statutoryComponents ?? [],
+    minimumWages: data.minimumWages ?? [],
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt,
+  };
+}
+
 export async function getStatutoryPacks(prisma, tenantId, country) {
-  return prisma.statutoryPack.findMany({
+  const rows = await prisma.statutoryPack.findMany({
     where: { tenantId, ...(country && { country }) },
     orderBy: [{ country: 'asc' }, { effectiveFrom: 'desc' }],
   });
+  return rows.map(fmtStatutoryPack);
 }
 
 export async function getStatutoryPackById(prisma, id, tenantId) {
-  return prisma.statutoryPack.findFirst({ where: { id, tenantId } });
+  const row = await prisma.statutoryPack.findFirst({ where: { id, tenantId } });
+  return row ? fmtStatutoryPack(row) : null;
 }
 
 export async function createStatutoryPack(prisma, tenantId, data) {
