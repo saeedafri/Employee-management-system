@@ -816,9 +816,9 @@ export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classifi
 
     const classification = toWorkerClassification(e.employmentType);
     const key =
-      groupBy === 'currency' ? currency :
-      groupBy === 'entity' ? (e.location || 'Unknown') :
-      classification;
+          groupBy === 'currency' ? currency :
+            groupBy === 'entity' ? (e.location || 'Unknown') :
+              classification;
 
     totalBaseCost += monthlyBase;
     totalWorkers += 1;
