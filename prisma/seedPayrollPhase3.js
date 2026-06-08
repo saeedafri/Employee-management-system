@@ -143,14 +143,14 @@ async function main() {
     const existingEvent = await prisma.payrollEvent.findFirst({ where: { tenantId, runId: run.id } });
     if (existingEvent) continue;
     const eventsForRun = [
-      { type: 'payroll.run.created', summary: `Run ${run.name} created` },
-      { type: 'payroll.run.calculated', summary: `Calculations completed for ${run.name}` },
+      { type: 'payroll.run.created', summary: `Run ${run.period} created` },
+      { type: 'payroll.run.calculated', summary: `Calculations completed for ${run.period}` },
     ];
     if (run.status === 'APPROVED' || run.status === 'PAID') {
-      eventsForRun.push({ type: 'payroll.run.approved', summary: `Run ${run.name} approved` });
+      eventsForRun.push({ type: 'payroll.run.approved', summary: `Run ${run.period} approved` });
     }
     if (run.status === 'PAID') {
-      eventsForRun.push({ type: 'payroll.run.paid', summary: `Run ${run.name} marked as paid` });
+      eventsForRun.push({ type: 'payroll.run.paid', summary: `Run ${run.period} marked as paid` });
     }
     for (const ev of eventsForRun) {
       await prisma.payrollEvent.create({

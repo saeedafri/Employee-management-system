@@ -1000,7 +1000,7 @@ export async function getRunVariance(prisma, runId, tenantId) {
   // Compare with previous run
   const prevRun = await prisma.payrollRun.findFirst({
     where: { tenantId, status: { in: ['PAID', 'APPROVED'] }, id: { not: runId } },
-    orderBy: { periodStart: 'desc' },
+    orderBy: { createdAt: 'desc' },
   });
   const prevPayslips = prevRun ? await prisma.payslip.findMany({ where: { runId: prevRun.id, tenantId } }) : [];
   const prevMap = new Map(prevPayslips.map(p => [p.employeeId, p]));
@@ -1039,7 +1039,7 @@ export async function getRunAudit(prisma, runId, tenantId) {
   const events = await prisma.payrollEvent.findMany({ where: { runId, tenantId }, orderBy: { createdAt: 'asc' } });
   return {
     runId,
-    period: `${run.periodStart?.toISOString?.().slice(0,10)} – ${run.periodEnd?.toISOString?.().slice(0,10)}`,
+    period: run.period,
     status: run.status,
     approvals: run.approvalsJson ?? [],
     timeline: events.map(e => ({ id: e.id, type: e.type, summary: e.summary, createdAt: e.createdAt })),
@@ -1082,8 +1082,8 @@ export async function importInputsFromTimesheets(prisma, runId, tenantId) {
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) return null;
   const timesheets = await prisma.timesheet.findMany({
-    where: { tenantId, periodStart: { gte: run.periodStart }, periodEnd: { lte: run.periodEnd }, status: 'APPROVED' },
-    include: { employee: { select: { id: true, fullName: true } } },
+    where: { tenantId, status: 'APPROVED' },
+    include: { employee: { select: { id: true, firstName: true, lastName: true } } },
   }).catch(() => []);
   const imported = timesheets.length;
   await prisma.payrollEvent.create({
@@ -1210,7 +1210,7 @@ export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
   return {
     formType: type,
     fiscalYear: currentFY,
-    employee: { id: employee.id, name: employee.fullName, employeeCode: employee.employeeCode, pan: employee.taxId || 'XXXXX0000X' },
+    employee: { id: employee.id, name: `${employee.firstName} ${employee.lastName}`.trim(), employeeCode: employee.employeeCode, pan: employee.taxId || 'XXXXX0000X' },
     employer: { name: 'Acme Corp', tan: 'MUMB00000B' },
     incomeDetails: { grossIncome: grossAnnual, netTaxableIncome: grossAnnual, taxDeducted },
     downloadUrl: null,
@@ -1332,7 +1332,7 @@ export async function getRunJournal(prisma, runId, tenantId) {
   ]);
   return {
     runId,
-    period: `${run.periodStart?.toISOString?.().slice(0,10)} – ${run.periodEnd?.toISOString?.().slice(0,10)}`,
+    period: run.period,
     totalDebit: entries.reduce((s, e) => s + e.debit, 0),
     totalCredit: entries.reduce((s, e) => s + e.credit, 0),
     entries,
