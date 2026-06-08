@@ -242,7 +242,7 @@ export default async function payrollRoutes(fastify) {
   fastify.post('/payroll/runs/:id/calculate', {
     schema: {
       tags: ['Payroll'], description: 'Trigger payroll calculation (DRAFT → REVIEW)', security: [{ Bearer: [] }],
-      params: idParam, body: { type: 'object' }, response: { 202: obj },
+      params: idParam, body: { type: 'object', additionalProperties: true }, response: { 202: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.calculatePayrollRun);
@@ -864,7 +864,7 @@ export default async function payrollRoutes(fastify) {
     schema: {
       tags: ['Payroll'], description: 'Release a held payslip', security: [{ Bearer: [] }],
       params: { type: 'object', required: ['runId', 'payslipId'], properties: { runId: { type: 'string' }, payslipId: { type: 'string' } } },
-      body: { type: 'object' },
+      body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
@@ -873,7 +873,7 @@ export default async function payrollRoutes(fastify) {
   fastify.post('/payroll/runs/:id/inputs/from-timesheets', {
     schema: {
       tags: ['Payroll'], description: 'Pre-fill OT/LOP from approved timesheets in the run period', security: [{ Bearer: [] }],
-      params: idParam, body: { type: 'object' }, response: { 200: obj },
+      params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.importInputsFromTimesheets);
@@ -881,7 +881,7 @@ export default async function payrollRoutes(fastify) {
   fastify.post('/payroll/runs/:id/publish', {
     schema: {
       tags: ['Payroll'], description: 'Publish run payslips to employees', security: [{ Bearer: [] }],
-      params: idParam, body: { type: 'object' }, response: { 200: obj },
+      params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.publishRun);
@@ -915,7 +915,7 @@ export default async function payrollRoutes(fastify) {
   fastify.post('/payroll/runs/:id/payment-batch', {
     schema: {
       tags: ['Payroll'], description: 'Create payment batch for an approved run', security: [{ Bearer: [] }],
-      params: idParam, body: { type: 'object' }, response: { 201: obj },
+      params: idParam, body: { type: 'object', additionalProperties: true }, response: { 201: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.createPaymentBatch);
@@ -940,7 +940,7 @@ export default async function payrollRoutes(fastify) {
   fastify.post('/payroll/payment-batches/:id/reconcile', {
     schema: {
       tags: ['Payroll'], description: 'Simulate bank reconciliation', security: [{ Bearer: [] }],
-      params: idParam, body: { type: 'object' }, response: { 200: obj },
+      params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.reconcilePaymentBatch);
