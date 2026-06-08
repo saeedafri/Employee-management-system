@@ -530,22 +530,98 @@ export async function getStatutoryReturn(prisma, id, tenantId, type) {
   return { runId: id, period: run.period, type: type || 'ECR', rows: [], generatedAt: new Date().toISOString() };
 }
 
+function periodLabel(period) {
+  const [year, month] = period.split('-').map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
+
+const REGISTER_COLUMNS = {
+  SALARY: [
+    { key: 'employeeCode', label: 'Code', align: 'left', kind: 'text' },
+    { key: 'employeeName', label: 'Employee', align: 'left', kind: 'text' },
+    { key: 'grossEarnings', label: 'Gross', align: 'right', kind: 'money' },
+    { key: 'totalDeductions', label: 'Deductions', align: 'right', kind: 'money' },
+    { key: 'netPay', label: 'Net Pay', align: 'right', kind: 'money' },
+  ],
+  STATUTORY: [
+    { key: 'employeeCode', label: 'Code', align: 'left', kind: 'text' },
+    { key: 'employeeName', label: 'Employee', align: 'left', kind: 'text' },
+    { key: 'grossEarnings', label: 'Gross', align: 'right', kind: 'money' },
+    { key: 'pfEmployee', label: 'PF (Employee)', align: 'right', kind: 'money' },
+    { key: 'pfEmployer', label: 'PF (Employer)', align: 'right', kind: 'money' },
+    { key: 'totalDeductions', label: 'Total Deductions', align: 'right', kind: 'money' },
+    { key: 'netPay', label: 'Net Pay', align: 'right', kind: 'money' },
+  ],
+  BANK_ADVICE: [
+    { key: 'employeeCode', label: 'Code', align: 'left', kind: 'text' },
+    { key: 'employeeName', label: 'Employee', align: 'left', kind: 'text' },
+    { key: 'bankName', label: 'Bank', align: 'left', kind: 'text' },
+    { key: 'accountNumber', label: 'Account No.', align: 'left', kind: 'text' },
+    { key: 'netPay', label: 'Net Pay', align: 'right', kind: 'money' },
+  ],
+  VARIANCE: [
+    { key: 'employeeCode', label: 'Code', align: 'left', kind: 'text' },
+    { key: 'employeeName', label: 'Employee', align: 'left', kind: 'text' },
+    { key: 'previousNet', label: 'Previous Net', align: 'right', kind: 'money' },
+    { key: 'currentNet', label: 'Current Net', align: 'right', kind: 'money' },
+    { key: 'variance', label: 'Variance', align: 'right', kind: 'money' },
+  ],
+};
+
 export async function getRunRegister(prisma, id, tenantId, type) {
   const run = await prisma.payrollRun.findFirst({ where: { id, tenantId } });
   if (!run) return null;
   const payslips = await prisma.payslip.findMany({
     where: { payrollRunId: id },
-    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true } } },
+    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true, bankName: true, bankAccountNumber: true } } },
   });
-  return {
-    runId: id, period: run.period, type: type || 'SALARY',
-    rows: payslips.map(ps => ({
-      employeeCode: ps.employee?.employeeCode,
+  const registerType = type || 'SALARY';
+  const columns = REGISTER_COLUMNS[registerType] ?? REGISTER_COLUMNS.SALARY;
+  const currency = run.currency || 'INR';
+
+  const rows = payslips.map(ps => {
+    const base = {
+      employeeCode: ps.employee?.employeeCode ?? '',
       employeeName: ps.employee ? `${ps.employee.firstName} ${ps.employee.lastName}` : 'Unknown',
       grossEarnings: Number(ps.grossEarnings),
       totalDeductions: Number(ps.totalDeductions),
       netPay: Number(ps.netPay),
-    })),
+    };
+    if (registerType === 'STATUTORY') {
+      const lines = Array.isArray(ps.deductionLines) ? ps.deductionLines : [];
+      const pfEmp = lines.find(l => l.code === 'PF_EMPLOYEE')?.amount ?? 0;
+      const pfEmpr = lines.find(l => l.code === 'PF_EMPLOYER')?.amount ?? 0;
+      return { ...base, pfEmployee: Number(pfEmp), pfEmployer: Number(pfEmpr) };
+    }
+    if (registerType === 'BANK_ADVICE') {
+      return { ...base, bankName: ps.employee?.bankName ?? '—', accountNumber: ps.employee?.bankAccountNumber ?? '—' };
+    }
+    if (registerType === 'VARIANCE') {
+      return { ...base, previousNet: Number(ps.netPay), currentNet: Number(ps.netPay), variance: 0 };
+    }
+    return base;
+  });
+
+  const totalGross = rows.reduce((s, r) => s + r.grossEarnings, 0);
+  const totalDeductions = rows.reduce((s, r) => s + r.totalDeductions, 0);
+  const totalNet = rows.reduce((s, r) => s + r.netPay, 0);
+
+  const summary = [
+    { label: 'Employees', value: String(rows.length) },
+    { label: 'Total Gross', value: totalGross.toLocaleString('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }) },
+    { label: 'Total Deductions', value: totalDeductions.toLocaleString('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }) },
+    { label: 'Total Net Pay', value: totalNet.toLocaleString('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }) },
+  ];
+
+  return {
+    register: registerType,
+    runId: id,
+    period: run.period,
+    periodLabel: periodLabel(run.period),
+    currency,
+    columns,
+    rows,
+    summary,
     generatedAt: new Date().toISOString(),
   };
 }
@@ -553,8 +629,9 @@ export async function getRunRegister(prisma, id, tenantId, type) {
 export async function exportRunRegister(prisma, id, tenantId, type) {
   const register = await getRunRegister(prisma, id, tenantId, type);
   if (!register) return { csv: '', filename: 'register.csv' };
-  const headers = 'employeeCode,employeeName,grossEarnings,totalDeductions,netPay\n';
-  const rows = register.rows.map(r => `${r.employeeCode},${r.employeeName},${r.grossEarnings},${r.totalDeductions},${r.netPay}`).join('\n');
+  const colKeys = register.columns.map(c => c.key);
+  const headers = colKeys.join(',') + '\n';
+  const rows = register.rows.map(r => colKeys.map(k => r[k] ?? '').join(',')).join('\n');
   return { csv: headers + rows, filename: `register-${register.period}-${type || 'SALARY'}.csv` };
 }
 
