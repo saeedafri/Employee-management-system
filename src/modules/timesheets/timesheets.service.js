@@ -1,4 +1,5 @@
 import * as repo from './timesheets.repository.js';
+import { prisma } from '../../plugins/prisma.js';
 
 function fmtProject(p) {
   return {
@@ -15,7 +16,7 @@ function fmtProject(p) {
   };
 }
 
-function fmtSheet(sheet, settings) {
+function fmtSheet(sheet, settings, employeeName) {
   const standardHours = settings?.standardWeeklyHours ?? 40;
   const totalHours = sheet.totalHours ?? 0;
   const overtimeHours = Math.max(0, totalHours - standardHours);
@@ -24,6 +25,7 @@ function fmtSheet(sheet, settings) {
   return {
     id: sheet.id,
     employeeId: sheet.employeeId,
+    employeeName: employeeName ?? '',
     weekStart: sheet.weekStart,
     weekEnd: sheet.weekEnd,
     status: sheet.status,
@@ -48,6 +50,18 @@ function fmtSheet(sheet, settings) {
       source: e.source,
     })),
   };
+}
+
+async function enrichSheetsWithNames(sheets) {
+  const empIds = [...new Set(sheets.map(s => s.employeeId))];
+  const emps = empIds.length > 0
+    ? await prisma.employee.findMany({
+        where: { id: { in: empIds } },
+        select: { id: true, firstName: true, lastName: true },
+      })
+    : [];
+  const empById = Object.fromEntries(emps.map(e => [e.id, `${e.firstName} ${e.lastName}`.trim()]));
+  return empById;
 }
 
 // ── Projects ──────────────────────────────────────────────────────────────────
@@ -179,7 +193,8 @@ export async function rejectTimesheet(tenantId, id, decidedBy, comment) {
 export async function getApprovals(tenantId, status) {
   const settings = await repo.getSettings(tenantId);
   const sheets = await repo.getPendingTimesheets(tenantId, status || 'SUBMITTED');
-  return sheets.map(s => fmtSheet(s, settings));
+  const empById = await enrichSheetsWithNames(sheets);
+  return sheets.map(s => fmtSheet(s, settings, empById[s.employeeId]));
 }
 
 // ── Summary & Settings ────────────────────────────────────────────────────────
