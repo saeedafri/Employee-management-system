@@ -513,3 +513,49 @@ export async function updateDataPolicy(request, reply) {
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
+
+// ── Global Workforce ─────────────────────────────────────────────────────────
+
+export async function listWorkers(request, reply) {
+  try {
+    const { classification } = request.query;
+    const data = await service.listWorkers(prisma, request.tenant.id, classification);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function updateWorkerClassification(request, reply) {
+  try {
+    const data = await service.updateWorkerClassification(prisma, request.tenant.id, request.params.id, request.body.classification);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getWorkerCostSummary(request, reply) {
+  try {
+    const groupBy = request.query.groupBy || 'classification';
+    const data = await service.getWorkerCostSummary(prisma, request.tenant.id, groupBy);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function listContractorInvoices(request, reply) {
+  try {
+    const data = await service.listContractorInvoices(prisma, request.tenant.id, request.query);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function createContractorInvoice(request, reply) {
+  try {
+    const data = await service.createContractorInvoice(prisma, request.tenant.id, request.body);
+    reply.code(201).send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function updateContractorInvoice(request, reply) {
+  try {
+    const data = await service.updateContractorInvoice(prisma, request.tenant.id, request.params.id, request.body);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}

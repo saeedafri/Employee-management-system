@@ -731,3 +731,169 @@ export async function updateDataPolicy(prisma, tenantId, data) {
   });
   return value;
 }
+
+// ── Global Workforce ─────────────────────────────────────────────────────────
+
+function toWorkerClassification(employmentType) {
+  if (employmentType === 'CONTRACT') return 'CONTRACTOR';
+  return 'EMPLOYEE';
+}
+
+export async function listWorkers(prisma, tenantId, classification) {
+  const employees = await prisma.employee.findMany({
+    where: {
+      tenantId,
+      deletedAt: null,
+      employmentStatus: { in: ['ACTIVE', 'ON_LEAVE'] },
+    },
+    include: {
+      salaries: {
+        where: { effectiveTo: null },
+        orderBy: { effectiveFrom: 'desc' },
+        take: 1,
+      },
+    },
+  });
+
+  let workers = employees.map((e) => {
+    const salary = e.salaries?.[0];
+    const monthlyCostMinorUnits = salary
+      ? Math.round((Number(salary.annualCtc) / 12) * 100)
+      : 0;
+    return {
+      id: e.id,
+      employeeCode: e.employeeCode,
+      name: `${e.firstName} ${e.lastName}`,
+      classification: toWorkerClassification(e.employmentType),
+      country: e.location?.slice(0, 2)?.toUpperCase() || 'IN',
+      currency: e.payCurrency || 'INR',
+      legalEntityId: null,
+      legalEntityName: null,
+      monthlyCost: monthlyCostMinorUnits,
+      riskFlag: null,
+      active: true,
+    };
+  });
+
+  if (classification) {
+    workers = workers.filter((w) => w.classification === classification);
+  }
+  return workers;
+}
+
+export async function updateWorkerClassification(prisma, tenantId, employeeId, classification) {
+  const emp = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
+  if (!emp) throw AppError('Employee not found', 'NOT_FOUND', 404);
+
+  const newType = classification === 'CONTRACTOR' ? 'CONTRACT' : 'FULL_TIME';
+  const updated = await prisma.employee.update({
+    where: { id: employeeId },
+    data: { employmentType: newType, updatedAt: new Date() },
+  });
+  return { id: updated.id, classification, employmentType: updated.employmentType };
+}
+
+export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classification') {
+  const employees = await prisma.employee.findMany({
+    where: { tenantId, deletedAt: null, employmentStatus: { in: ['ACTIVE', 'ON_LEAVE'] } },
+    include: {
+      salaries: { where: { effectiveTo: null }, take: 1, orderBy: { effectiveFrom: 'desc' } },
+    },
+  });
+
+  const FX_RATES = { INR: 1, USD: 83, EUR: 90, GBP: 105, AED: 22, SGD: 62 };
+  const BASE_CURRENCY = 'INR';
+
+  const map = new Map();
+  let totalBaseCost = 0;
+  let totalWorkers = 0;
+
+  for (const e of employees) {
+    const salary = e.salaries?.[0];
+    const currency = e.payCurrency || 'INR';
+    const monthlyLocal = salary ? Number(salary.annualCtc) / 12 : 0;
+    const monthlyBase = Math.round(monthlyLocal * (FX_RATES[currency] ?? 1));
+
+    const classification = toWorkerClassification(e.employmentType);
+    const key =
+      groupBy === 'currency' ? currency :
+      groupBy === 'entity' ? (e.location || 'Unknown') :
+      classification;
+
+    totalBaseCost += monthlyBase;
+    totalWorkers += 1;
+    const g = map.get(key) ?? { key, workerCount: 0, baseAmount: 0 };
+    g.workerCount += 1;
+    g.baseAmount += monthlyBase;
+    map.set(key, g);
+  }
+
+  return {
+    groupBy,
+    baseCurrency: BASE_CURRENCY,
+    totalBaseCost,
+    totalWorkers,
+    groups: [...map.values()].sort((a, b) => b.baseAmount - a.baseAmount),
+    fxRates: FX_RATES,
+  };
+}
+
+export async function listContractorInvoices(prisma, tenantId, params = {}) {
+  const setting = await prisma.setting.findUnique({
+    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+  });
+  const invoices = (setting?.value ?? []).filter((i) => {
+    if (params.workerId && i.workerId !== params.workerId) return false;
+    if (params.status && i.status !== params.status) return false;
+    return true;
+  });
+  return invoices;
+}
+
+export async function createContractorInvoice(prisma, tenantId, data) {
+  const { generateId } = await import('../../utils/id.js');
+  const invoice = {
+    id: generateId(),
+    workerId: data.workerId,
+    workerName: data.workerName || null,
+    period: data.period,
+    amount: data.amount,
+    currency: data.currency || 'INR',
+    withholdingPct: data.withholdingPct ?? 0,
+    netPayable: Math.round(data.amount * (1 - (data.withholdingPct ?? 0) / 100)),
+    status: 'SUBMITTED',
+    payoutRef: null,
+    submittedAt: new Date().toISOString(),
+    decidedAt: null,
+  };
+  const setting = await prisma.setting.findUnique({
+    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+  });
+  const invoices = [invoice, ...(setting?.value ?? [])];
+  await prisma.setting.upsert({
+    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+    create: { tenantId, key: 'CONTRACTOR_INVOICES', value: invoices },
+    update: { value: invoices },
+  });
+  return invoice;
+}
+
+export async function updateContractorInvoice(prisma, tenantId, invoiceId, data) {
+  const setting = await prisma.setting.findUnique({
+    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+  });
+  const invoices = setting?.value ?? [];
+  const idx = invoices.findIndex((i) => i.id === invoiceId);
+  if (idx === -1) throw AppError('Invoice not found', 'NOT_FOUND', 404);
+  invoices[idx] = {
+    ...invoices[idx],
+    ...data,
+    decidedAt: data.status && data.status !== 'SUBMITTED' ? new Date().toISOString() : invoices[idx].decidedAt,
+  };
+  await prisma.setting.upsert({
+    where: { tenantId_key: { tenantId, key: 'CONTRACTOR_INVOICES' } },
+    create: { tenantId, key: 'CONTRACTOR_INVOICES', value: invoices },
+    update: { value: invoices },
+  });
+  return invoices[idx];
+}

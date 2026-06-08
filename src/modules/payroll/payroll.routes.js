@@ -739,4 +739,76 @@ export default async function payrollRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.updateDataPolicy);
+
+  // ── Global Workforce ────────────────────────────────────────────────────────
+
+  fastify.get('/payroll/workers', {
+    schema: {
+      tags: ['Payroll'], description: 'List all workers (employees + contractors + EOR) with monthly cost', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { classification: { type: 'string', enum: ['EMPLOYEE', 'CONTRACTOR', 'EOR'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.listWorkers);
+
+  fastify.patch('/payroll/workers/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Update worker classification', security: [{ Bearer: [] }],
+      params: idParam,
+      body: { type: 'object', required: ['classification'], properties: { classification: { type: 'string', enum: ['EMPLOYEE', 'CONTRACTOR', 'EOR'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updateWorkerClassification);
+
+  fastify.get('/payroll/cost-summary', {
+    schema: {
+      tags: ['Payroll'], description: 'Consolidated people cost summary (FX-normalized to base currency)', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { groupBy: { type: 'string', enum: ['classification', 'entity', 'currency'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getWorkerCostSummary);
+
+  fastify.get('/payroll/contractor-invoices', {
+    schema: {
+      tags: ['Payroll'], description: 'List contractor invoices', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { workerId: { type: 'string' }, status: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.listContractorInvoices);
+
+  fastify.post('/payroll/contractor-invoices', {
+    schema: {
+      tags: ['Payroll'], description: 'Submit a contractor invoice', security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['workerId', 'period', 'amount'],
+        properties: {
+          workerId: { type: 'string' }, period: { type: 'string' },
+          amount: { type: 'number' }, currency: { type: 'string' },
+          withholdingPct: { type: 'number' }, workerName: { type: 'string' },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.createContractorInvoice);
+
+  fastify.patch('/payroll/contractor-invoices/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Approve / pay / void a contractor invoice', security: [{ Bearer: [] }],
+      params: idParam,
+      body: {
+        type: 'object',
+        properties: {
+          status: { type: 'string', enum: ['SUBMITTED', 'APPROVED', 'PAID', 'VOIDED'] },
+          payoutRef: { type: 'string' },
+        },
+      },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updateContractorInvoice);
 }
