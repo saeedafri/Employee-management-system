@@ -924,7 +924,7 @@ export default async function payrollRoutes(fastify) {
     schema: {
       tags: ['Payroll'], description: 'Download bank file for a run', security: [{ Bearer: [] }],
       params: idParam,
-      querystring: { type: 'object', properties: { format: { type: 'string', enum: ['NACH', 'ACH', 'SEPA', 'BACS'] } } },
+      querystring: { type: 'object', properties: { format: { type: 'string', enum: ['NACH', 'ACH', 'SEPA', 'BACS', 'CSV'] } } },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.downloadBankFile);
