@@ -168,19 +168,16 @@ async function main() {
   let lbCreated = 0;
   for (const emp of allEmployees) {
     for (const lt of leaveTypes) {
-      const existing = await prisma.leaveBalance.findFirst({
-        where: { tenantId, employeeId: emp.id, leaveTypeId: lt.id },
+      const result = await prisma.leaveBalance.upsert({
+        where: { tenantId_employeeId_leaveTypeId: { tenantId, employeeId: emp.id, leaveTypeId: lt.id } },
+        update: {},
+        create: {
+          tenantId, employeeId: emp.id, leaveTypeId: lt.id,
+          balance: lt.code === 'ANNUAL' ? 18 : lt.code === 'SICK' ? 8 : 10,
+          used: 0, pending: 0,
+        },
       });
-      if (!existing) {
-        await prisma.leaveBalance.create({
-          data: {
-            tenantId, employeeId: emp.id, leaveTypeId: lt.id,
-            balance: lt.code === 'ANNUAL' ? 18 : lt.code === 'SICK' ? 8 : 10,
-            used: 0, pending: 0,
-          },
-        });
-        lbCreated++;
-      }
+      if (result) lbCreated++;
     }
   }
   console.log(`  ✓ Leave balances created: ${lbCreated}`);

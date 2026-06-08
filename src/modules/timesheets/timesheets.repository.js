@@ -176,7 +176,10 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
 
   const entries = await prisma.timeEntry.findMany({
     where,
-    include: { project: true },
+    include: {
+      project: true,
+      employee: { select: { id: true, firstName: true, lastName: true, employeeCode: true } },
+    },
   });
 
   const totalHours = entries.reduce((s, e) => s + e.hours, 0);
@@ -184,13 +187,32 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
   const nonBillableHours = totalHours - billableHours;
 
   const projectMap = {};
+  const employeeMap = {};
   for (const e of entries) {
     if (!projectMap[e.projectId]) {
       projectMap[e.projectId] = { projectId: e.projectId, projectName: e.project?.name || 'Unknown', hours: 0, billableHours: 0 };
     }
     projectMap[e.projectId].hours += e.hours;
     if (e.billable) projectMap[e.projectId].billableHours += e.hours;
+
+    if (!employeeMap[e.employeeId]) {
+      const emp = e.employee;
+      employeeMap[e.employeeId] = {
+        employeeId: e.employeeId,
+        employeeName: emp ? `${emp.firstName} ${emp.lastName}`.trim() : 'Unknown',
+        employeeCode: emp?.employeeCode ?? '',
+        hours: 0,
+        billableHours: 0,
+      };
+    }
+    employeeMap[e.employeeId].hours += e.hours;
+    if (e.billable) employeeMap[e.employeeId].billableHours += e.hours;
   }
+
+  const byEmployee = Object.values(employeeMap).map(emp => ({
+    ...emp,
+    utilizationPct: emp.hours > 0 ? Math.round((emp.billableHours / emp.hours) * 100) : 0,
+  }));
 
   return {
     totalHours,
@@ -199,7 +221,7 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
     overtimeHours: 0,
     utilizationPct: totalHours > 0 ? Math.round((billableHours / totalHours) * 100) : 0,
     byProject: Object.values(projectMap),
-    byEmployee: [],
+    byEmployee,
   };
 }
 

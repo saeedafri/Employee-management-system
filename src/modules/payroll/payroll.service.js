@@ -539,9 +539,11 @@ const REGISTER_COLUMNS = {
   SALARY: [
     { key: 'employeeCode', label: 'Code', align: 'left', kind: 'text' },
     { key: 'employeeName', label: 'Employee', align: 'left', kind: 'text' },
+    { key: 'department', label: 'Department', align: 'left', kind: 'text' },
     { key: 'grossEarnings', label: 'Gross', align: 'right', kind: 'money' },
     { key: 'totalDeductions', label: 'Deductions', align: 'right', kind: 'money' },
     { key: 'netPay', label: 'Net Pay', align: 'right', kind: 'money' },
+    { key: 'employerCost', label: 'Employer Cost', align: 'right', kind: 'money' },
   ],
   STATUTORY: [
     { key: 'employeeCode', label: 'Code', align: 'left', kind: 'text' },
@@ -577,6 +579,7 @@ export async function getRunRegister(prisma, id, tenantId, type) {
       employee: {
         select: {
           employeeCode: true, firstName: true, lastName: true,
+          department: { select: { name: true } },
           salaries: { select: { bankName: true, bankAccountNumber: true, bankIfscCode: true, effectiveTo: true }, orderBy: { effectiveFrom: 'desc' }, take: 1 },
         },
       },
@@ -590,9 +593,11 @@ export async function getRunRegister(prisma, id, tenantId, type) {
     const base = {
       employeeCode: ps.employee?.employeeCode ?? '',
       employeeName: ps.employee ? `${ps.employee.firstName} ${ps.employee.lastName}` : 'Unknown',
+      department: ps.employee?.department?.name ?? '—',
       grossEarnings: Number(ps.grossEarnings),
       totalDeductions: Number(ps.totalDeductions),
       netPay: Number(ps.netPay),
+      employerCost: Number(ps.grossEarnings) * 1.13,
     };
     if (registerType === 'STATUTORY') {
       const lines = Array.isArray(ps.deductionsJson) ? ps.deductionsJson : [];
@@ -613,12 +618,14 @@ export async function getRunRegister(prisma, id, tenantId, type) {
   const totalGross = rows.reduce((s, r) => s + r.grossEarnings, 0);
   const totalDeductions = rows.reduce((s, r) => s + r.totalDeductions, 0);
   const totalNet = rows.reduce((s, r) => s + r.netPay, 0);
+  const totalEmployerCost = rows.reduce((s, r) => s + (r.employerCost || 0), 0);
 
   const summary = [
     { label: 'Employees', value: String(rows.length) },
     { label: 'Total Gross', value: totalGross.toLocaleString('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }) },
     { label: 'Total Deductions', value: totalDeductions.toLocaleString('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }) },
     { label: 'Total Net Pay', value: totalNet.toLocaleString('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }) },
+    { label: 'Total Employer Cost', value: totalEmployerCost.toLocaleString('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }) },
   ];
 
   return {
