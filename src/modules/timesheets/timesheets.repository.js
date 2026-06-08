@@ -176,10 +176,7 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
 
   const entries = await prisma.timeEntry.findMany({
     where,
-    include: {
-      project: true,
-      employee: { select: { id: true, firstName: true, lastName: true, employeeCode: true } },
-    },
+    include: { project: true },
   });
 
   const totalHours = entries.reduce((s, e) => s + e.hours, 0);
@@ -196,23 +193,31 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
     if (e.billable) projectMap[e.projectId].billableHours += e.hours;
 
     if (!employeeMap[e.employeeId]) {
-      const emp = e.employee;
-      employeeMap[e.employeeId] = {
-        employeeId: e.employeeId,
-        employeeName: emp ? `${emp.firstName} ${emp.lastName}`.trim() : 'Unknown',
-        employeeCode: emp?.employeeCode ?? '',
-        hours: 0,
-        billableHours: 0,
-      };
+      employeeMap[e.employeeId] = { employeeId: e.employeeId, hours: 0, billableHours: 0 };
     }
     employeeMap[e.employeeId].hours += e.hours;
     if (e.billable) employeeMap[e.employeeId].billableHours += e.hours;
   }
 
-  const byEmployee = Object.values(employeeMap).map(emp => ({
-    ...emp,
-    utilizationPct: emp.hours > 0 ? Math.round((emp.billableHours / emp.hours) * 100) : 0,
-  }));
+  // Fetch employee names for all unique employeeIds
+  const empIds = Object.keys(employeeMap);
+  const empRecords = empIds.length > 0
+    ? await prisma.employee.findMany({
+        where: { id: { in: empIds } },
+        select: { id: true, firstName: true, lastName: true, employeeCode: true },
+      })
+    : [];
+  const empById = Object.fromEntries(empRecords.map(e => [e.id, e]));
+
+  const byEmployee = Object.values(employeeMap).map(row => {
+    const emp = empById[row.employeeId];
+    return {
+      ...row,
+      employeeName: emp ? `${emp.firstName} ${emp.lastName}`.trim() : 'Unknown',
+      employeeCode: emp?.employeeCode ?? '',
+      utilizationPct: row.hours > 0 ? Math.round((row.billableHours / row.hours) * 100) : 0,
+    };
+  });
 
   return {
     totalHours,
