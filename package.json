@@ -33,7 +33,10 @@
     "perf:api": "node scripts/perfApiSmoke.js",
     "db:seed:photos": "node prisma/seedPhotos.js",
     "db:seed:ui": "node prisma/seedUIData.js",
-    "db:seed:payroll": "node prisma/seedPayroll.mjs"
+    "db:seed:payroll": "node prisma/seedPayroll.mjs",
+    "db:seed:phase3": "node prisma/seedPhase3Rich.js",
+    "db:seed:phase3:payroll": "node prisma/seedPayrollPhase3.js",
+    "db:seed:timesheets": "node prisma/seedTimesheets.js"
   },
   "keywords": [
     "employee-management",

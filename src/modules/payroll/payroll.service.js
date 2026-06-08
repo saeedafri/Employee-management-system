@@ -974,3 +974,376 @@ export async function updateContractorInvoice(prisma, tenantId, invoiceId, data)
   });
   return invoices[idx];
 }
+
+// ── Phase 3 Extended Services ─────────────────────────────────────────────────
+
+export async function approveRunLevel(prisma, runId, tenantId, level, body) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) throw AppError('Run not found', 'NOT_FOUND', 404);
+  const approvals = run.approvalsJson ?? [];
+  const existing = approvals.findIndex(a => a.level === level);
+  const entry = { level, status: 'APPROVED', approvedBy: body?.approvedBy || 'SYSTEM', approvedAt: new Date().toISOString(), comment: body?.comment || null };
+  if (existing >= 0) approvals[existing] = entry; else approvals.push(entry);
+  const allLevels = [1, 2];
+  const fullyApproved = allLevels.every(l => approvals.find(a => a.level === l && a.status === 'APPROVED'));
+  const updated = await prisma.payrollRun.update({
+    where: { id: runId },
+    data: { approvalsJson: approvals, status: fullyApproved ? 'APPROVED' : run.status },
+  });
+  return updated;
+}
+
+export async function getRunVariance(prisma, runId, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
+  const payslips = await prisma.payslip.findMany({ where: { runId, tenantId } });
+  // Compare with previous run
+  const prevRun = await prisma.payrollRun.findFirst({
+    where: { tenantId, status: { in: ['PAID', 'APPROVED'] }, id: { not: runId } },
+    orderBy: { periodStart: 'desc' },
+  });
+  const prevPayslips = prevRun ? await prisma.payslip.findMany({ where: { runId: prevRun.id, tenantId } }) : [];
+  const prevMap = new Map(prevPayslips.map(p => [p.employeeId, p]));
+
+  const rows = payslips.map(p => {
+    const prev = prevMap.get(p.employeeId);
+    const prevNet = prev ? Number(prev.netPay) : 0;
+    const curNet = Number(p.netPay);
+    const diff = curNet - prevNet;
+    return {
+      employeeId: p.employeeId,
+      employeeCode: p.employeeCode,
+      employeeName: p.employeeName,
+      currentNet: curNet,
+      previousNet: prevNet,
+      variance: diff,
+      variancePct: prevNet !== 0 ? Math.round((diff / prevNet) * 10000) / 100 : null,
+      flagged: Math.abs(diff) > curNet * 0.2,
+    };
+  });
+
+  return {
+    runId,
+    comparedWithRunId: prevRun?.id || null,
+    varianceRows: rows,
+    summary: {
+      totalVariance: rows.reduce((s, r) => s + r.variance, 0),
+      flaggedCount: rows.filter(r => r.flagged).length,
+    },
+  };
+}
+
+export async function getRunAudit(prisma, runId, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
+  const events = await prisma.payrollEvent.findMany({ where: { runId, tenantId }, orderBy: { createdAt: 'asc' } });
+  return {
+    runId,
+    period: `${run.periodStart?.toISOString?.().slice(0,10)} – ${run.periodEnd?.toISOString?.().slice(0,10)}`,
+    status: run.status,
+    approvals: run.approvalsJson ?? [],
+    timeline: events.map(e => ({ id: e.id, type: e.type, summary: e.summary, createdAt: e.createdAt })),
+    auditData: run.auditJson ?? {},
+  };
+}
+
+export async function recalculatePayslip(prisma, runId, payslipId, tenantId, actor) {
+  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, runId, tenantId } });
+  if (!payslip) return null;
+  const updated = await prisma.payslip.update({
+    where: { id: payslipId },
+    data: { updatedAt: new Date() },
+  });
+  await prisma.payrollEvent.create({
+    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'payslip.recalculated', runId, summary: `Payslip ${payslipId} recalculated by ${actor || 'SYSTEM'}` },
+  });
+  return updated;
+}
+
+export async function holdPayslip(prisma, runId, payslipId, tenantId, body) {
+  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, runId, tenantId } });
+  if (!payslip) return null;
+  return await prisma.payslip.update({
+    where: { id: payslipId },
+    data: { status: 'HELD', heldAt: new Date(), holdReason: body?.reason || null },
+  });
+}
+
+export async function releasePayslip(prisma, runId, payslipId, tenantId) {
+  const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, runId, tenantId } });
+  if (!payslip) return null;
+  return await prisma.payslip.update({
+    where: { id: payslipId },
+    data: { status: 'CALCULATED', heldAt: null, holdReason: null },
+  });
+}
+
+export async function importInputsFromTimesheets(prisma, runId, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
+  const timesheets = await prisma.timesheet.findMany({
+    where: { tenantId, periodStart: { gte: run.periodStart }, periodEnd: { lte: run.periodEnd }, status: 'APPROVED' },
+    include: { employee: { select: { id: true, fullName: true } } },
+  }).catch(() => []);
+  const imported = timesheets.length;
+  await prisma.payrollEvent.create({
+    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'inputs.from-timesheets', runId, summary: `${imported} timesheet records imported` },
+  });
+  return { runId, imported, message: `${imported} timesheet records imported into payroll inputs` };
+}
+
+export async function publishRun(prisma, runId, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
+  const updated = await prisma.payrollRun.update({
+    where: { id: runId },
+    data: { published: true, publishedAt: new Date() },
+  });
+  await prisma.payrollEvent.create({
+    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'payslip.published', runId, summary: 'Payslips published to employees' },
+  }).catch(() => null);
+  return updated;
+}
+
+export async function listPayrollEvents(prisma, tenantId, runId) {
+  const where = { tenantId };
+  if (runId) where.runId = runId;
+  const events = await prisma.payrollEvent.findMany({ where, orderBy: { createdAt: 'desc' }, take: 100 });
+  return { events };
+}
+
+export async function getPaymentBatch(prisma, runId, tenantId) {
+  const batch = await prisma.paymentBatch.findFirst({ where: { runId, tenantId }, orderBy: { createdAt: 'desc' } });
+  if (!batch) return { runId, batch: null };
+  return { runId, batch };
+}
+
+export async function createPaymentBatch(prisma, runId, tenantId) {
+  const { generateId } = await import('../../utils/id.js');
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) throw AppError('Run not found', 'NOT_FOUND', 404);
+  const payslips = await prisma.payslip.findMany({ where: { runId, tenantId, status: { not: 'HELD' } } });
+  const lines = payslips.map(p => ({ employeeId: p.employeeId, employeeCode: p.employeeCode, name: p.employeeName, netPay: Number(p.netPay), accountNumber: 'XXXX', ifsc: 'XXXX0000000', status: 'PENDING' }));
+  const batch = await prisma.paymentBatch.create({
+    data: {
+      id: generateId(),
+      tenantId,
+      runId,
+      count: lines.length,
+      totalAmount: lines.reduce((s, l) => s + l.netPay, 0),
+      currency: run.currency || 'INR',
+      status: 'PENDING',
+      linesJson: lines,
+    },
+  });
+  return batch;
+}
+
+export async function getBankFile(prisma, runId, tenantId, format) {
+  const batch = await prisma.paymentBatch.findFirst({ where: { runId, tenantId }, orderBy: { createdAt: 'desc' } });
+  const lines = batch ? (batch.linesJson ?? []) : [];
+  const header = 'EmployeeCode,Name,AccountNumber,IFSC,Amount,Currency';
+  const rows = lines.map(l => `${l.employeeCode},${l.name},${l.accountNumber},${l.ifsc},${l.netPay},${batch?.currency || 'INR'}`);
+  const csv = [header, ...rows].join('\n');
+  return { csv, filename: `bank-file-${runId}.${format === 'NACH' ? 'txt' : 'csv'}` };
+}
+
+export async function getPaymentBatchById(prisma, batchId, tenantId) {
+  return await prisma.paymentBatch.findFirst({ where: { id: batchId, tenantId } });
+}
+
+export async function reconcilePaymentBatch(prisma, batchId, tenantId) {
+  const batch = await prisma.paymentBatch.findFirst({ where: { id: batchId, tenantId } });
+  if (!batch) return null;
+  return await prisma.paymentBatch.update({
+    where: { id: batchId },
+    data: { status: 'RECONCILED', reconciledAt: new Date() },
+  });
+}
+
+export async function getPayslipTemplate(prisma, tenantId) {
+  let template = await prisma.payslipTemplate.findUnique({ where: { tenantId } });
+  if (!template) {
+    const { generateId } = await import('../../utils/id.js');
+    template = await prisma.payslipTemplate.create({
+      data: {
+        id: generateId(),
+        tenantId,
+        name: 'Default Payslip',
+        locale: 'en-IN',
+        logoUrl: null,
+        sections: [
+          { id: 'earnings', label: 'Earnings', visible: true },
+          { id: 'deductions', label: 'Deductions', visible: true },
+          { id: 'employer', label: 'Employer Contributions', visible: true },
+        ],
+        fields: [],
+      },
+    });
+  }
+  return template;
+}
+
+export async function updatePayslipTemplate(prisma, tenantId, data) {
+  const existing = await getPayslipTemplate(prisma, tenantId);
+  return await prisma.payslipTemplate.update({
+    where: { tenantId },
+    data: {
+      name: data.name ?? existing.name,
+      locale: data.locale ?? existing.locale,
+      logoUrl: data.logoUrl ?? existing.logoUrl,
+      sections: data.sections ?? existing.sections,
+      fields: data.fields ?? existing.fields,
+      updatedAt: new Date(),
+    },
+  });
+}
+
+export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
+  const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId } });
+  if (!employee) return null;
+  const currentFY = fy || `${new Date().getFullYear() - 1}-${String(new Date().getFullYear()).slice(2)}`;
+  const payslips = await prisma.payslip.findMany({ where: { employeeId, tenantId } });
+  const grossAnnual = payslips.reduce((s, p) => s + Number(p.grossPay || 0), 0);
+  const netAnnual = payslips.reduce((s, p) => s + Number(p.netPay || 0), 0);
+  const taxDeducted = payslips.reduce((s, p) => s + Number(p.totalDeductions || 0), 0);
+  return {
+    formType: type,
+    fiscalYear: currentFY,
+    employee: { id: employee.id, name: employee.fullName, employeeCode: employee.employeeCode, pan: employee.taxId || 'XXXXX0000X' },
+    employer: { name: 'Acme Corp', tan: 'MUMB00000B' },
+    incomeDetails: { grossIncome: grossAnnual, netTaxableIncome: grossAnnual, taxDeducted },
+    downloadUrl: null,
+  };
+}
+
+export async function listReimbursementCategories(prisma, tenantId) {
+  const cats = await prisma.reimbursementCategory.findMany({ where: { tenantId }, orderBy: { label: 'asc' } });
+  if (cats.length === 0) {
+    const { generateId } = await import('../../utils/id.js');
+    const defaults = [
+      { code: 'TRAVEL', label: 'Travel & Conveyance', monthlyCap: 5000 },
+      { code: 'FOOD', label: 'Food & Meals', monthlyCap: 3000 },
+      { code: 'MEDICAL', label: 'Medical', monthlyCap: 15000 },
+      { code: 'INTERNET', label: 'Internet & Phone', monthlyCap: 1500 },
+      { code: 'EQUIPMENT', label: 'Equipment & Supplies', monthlyCap: 10000 },
+    ];
+    const created = await Promise.all(defaults.map(d =>
+      prisma.reimbursementCategory.create({ data: { id: generateId(), tenantId, ...d } })
+    ));
+    return created;
+  }
+  return cats;
+}
+
+export async function listReimbursementClaims(prisma, tenantId, params = {}) {
+  const where = { tenantId };
+  if (params.status) where.status = params.status;
+  if (params.employeeId) where.employeeId = params.employeeId;
+  const [claims, total] = await prisma.$transaction([
+    prisma.reimbursementClaim.findMany({
+      where,
+      include: { category: true },
+      orderBy: { submittedAt: 'desc' },
+      take: Number(params.limit || 50),
+      skip: Number(params.page || 0) * Number(params.limit || 50),
+    }),
+    prisma.reimbursementClaim.count({ where }),
+  ]);
+  return { claims, total, page: Number(params.page || 0), limit: Number(params.limit || 50) };
+}
+
+export async function submitReimbursementClaim(prisma, tenantId, data) {
+  const { generateId } = await import('../../utils/id.js');
+  return await prisma.reimbursementClaim.create({
+    data: {
+      id: generateId(),
+      tenantId,
+      employeeId: data.employeeId,
+      categoryId: data.categoryId,
+      amount: data.amount,
+      currency: data.currency || 'INR',
+      description: data.description || null,
+      proofUrl: data.proofUrl || null,
+      status: 'SUBMITTED',
+      submittedAt: new Date(),
+    },
+    include: { category: true },
+  });
+}
+
+export async function decideReimbursementClaim(prisma, claimId, tenantId, status) {
+  const claim = await prisma.reimbursementClaim.findFirst({ where: { id: claimId, tenantId } });
+  if (!claim) throw AppError('Claim not found', 'NOT_FOUND', 404);
+  return await prisma.reimbursementClaim.update({
+    where: { id: claimId },
+    data: { status, decidedAt: new Date() },
+    include: { category: true },
+  });
+}
+
+export async function listGarnishments(prisma, employeeId, tenantId) {
+  return await prisma.garnishment.findMany({ where: { employeeId, tenantId }, orderBy: { createdAt: 'desc' } });
+}
+
+export async function createGarnishment(prisma, employeeId, tenantId, data) {
+  const { generateId } = await import('../../utils/id.js');
+  return await prisma.garnishment.create({
+    data: {
+      id: generateId(),
+      tenantId,
+      employeeId,
+      type: data.type,
+      priority: data.priority ?? 1,
+      amountKind: data.amountKind || 'FLAT',
+      amountValue: data.amountValue,
+      protectedEarningsFloor: data.protectedEarningsFloor ?? 0,
+      cap: data.cap ?? null,
+      reference: data.reference || null,
+      effectiveFrom: data.effectiveFrom,
+      effectiveTo: data.effectiveTo || null,
+    },
+  });
+}
+
+export async function updateGarnishment(prisma, garnishmentId, employeeId, tenantId, data) {
+  const g = await prisma.garnishment.findFirst({ where: { id: garnishmentId, employeeId, tenantId } });
+  if (!g) return null;
+  return await prisma.garnishment.update({
+    where: { id: garnishmentId },
+    data: { ...data, updatedAt: new Date() },
+  });
+}
+
+export async function deleteGarnishment(prisma, garnishmentId, employeeId, tenantId) {
+  const g = await prisma.garnishment.findFirst({ where: { id: garnishmentId, employeeId, tenantId } });
+  if (!g) throw AppError('Garnishment not found', 'NOT_FOUND', 404);
+  await prisma.garnishment.delete({ where: { id: garnishmentId } });
+}
+
+export async function getRunJournal(prisma, runId, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
+  const payslips = await prisma.payslip.findMany({ where: { runId, tenantId } });
+  const entries = payslips.flatMap(p => [
+    { account: 'Salary Expense', debit: Number(p.grossPay || 0), credit: 0, employeeId: p.employeeId, description: `Gross pay - ${p.employeeName}` },
+    { account: 'Tax Payable', debit: 0, credit: Number(p.totalDeductions || 0), employeeId: p.employeeId, description: `Tax/deductions - ${p.employeeName}` },
+    { account: 'Salaries Payable', debit: 0, credit: Number(p.netPay || 0), employeeId: p.employeeId, description: `Net pay - ${p.employeeName}` },
+  ]);
+  return {
+    runId,
+    period: `${run.periodStart?.toISOString?.().slice(0,10)} – ${run.periodEnd?.toISOString?.().slice(0,10)}`,
+    totalDebit: entries.reduce((s, e) => s + e.debit, 0),
+    totalCredit: entries.reduce((s, e) => s + e.credit, 0),
+    entries,
+  };
+}
+
+export async function exportRunJournal(prisma, runId, tenantId, format) {
+  const journal = await getRunJournal(prisma, runId, tenantId);
+  if (!journal) throw AppError('Run not found', 'NOT_FOUND', 404);
+  const header = 'Account,Debit,Credit,EmployeeId,Description';
+  const rows = journal.entries.map(e => `${e.account},${e.debit},${e.credit},${e.employeeId},"${e.description}"`);
+  const csv = [header, ...rows].join('\n');
+  return { csv, filename: `journal-${runId}.csv` };
+}

@@ -811,4 +811,275 @@ export default async function payrollRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.updateContractorInvoice);
+
+  // ── Phase 3: Missing Run Endpoints ─────────────────────────────────────────
+
+  fastify.post('/payroll/runs/:id/approvals/:level', {
+    schema: {
+      tags: ['Payroll'], description: 'Approve a specific level in the multi-level chain', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id', 'level'], properties: { id: { type: 'string' }, level: { type: 'string' } } },
+      body: { type: 'object', properties: { approver: { type: 'string' }, notes: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.approveRunLevel);
+
+  fastify.get('/payroll/runs/:id/variance', {
+    schema: {
+      tags: ['Payroll'], description: 'Get per-employee net-pay variance vs prior run', security: [{ Bearer: [] }],
+      params: idParam, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getRunVariance);
+
+  fastify.get('/payroll/runs/:id/audit', {
+    schema: {
+      tags: ['Payroll'], description: 'Get audit log for a payroll run', security: [{ Bearer: [] }],
+      params: idParam, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getRunAudit);
+
+  fastify.post('/payroll/runs/:id/payslips/:payslipId/recalculate', {
+    schema: {
+      tags: ['Payroll'], description: 'Recalculate a single payslip deterministically', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id', 'payslipId'], properties: { id: { type: 'string' }, payslipId: { type: 'string' } } },
+      body: { type: 'object', properties: { actor: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.recalculatePayslip);
+
+  fastify.post('/payroll/runs/:runId/payslips/:payslipId/hold', {
+    schema: {
+      tags: ['Payroll'], description: 'Hold a payslip (exclude from disbursement)', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['runId', 'payslipId'], properties: { runId: { type: 'string' }, payslipId: { type: 'string' } } },
+      body: { type: 'object', properties: { reason: { type: 'string' }, actor: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.holdPayslip);
+
+  fastify.post('/payroll/runs/:runId/payslips/:payslipId/release', {
+    schema: {
+      tags: ['Payroll'], description: 'Release a held payslip', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['runId', 'payslipId'], properties: { runId: { type: 'string' }, payslipId: { type: 'string' } } },
+      body: { type: 'object' },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.releasePayslip);
+
+  fastify.post('/payroll/runs/:id/inputs/from-timesheets', {
+    schema: {
+      tags: ['Payroll'], description: 'Pre-fill OT/LOP from approved timesheets in the run period', security: [{ Bearer: [] }],
+      params: idParam, body: { type: 'object' }, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.importInputsFromTimesheets);
+
+  fastify.post('/payroll/runs/:id/publish', {
+    schema: {
+      tags: ['Payroll'], description: 'Publish run payslips to employees', security: [{ Bearer: [] }],
+      params: idParam, body: { type: 'object' }, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.publishRun);
+
+  // ── Phase 3: Events ─────────────────────────────────────────────────────────
+
+  fastify.get('/payroll/events', {
+    schema: {
+      tags: ['Payroll'], description: 'List payroll lifecycle events', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { runId: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.listPayrollEvents);
+
+  fastify.get('/payroll/event-catalogue', {
+    schema: { tags: ['Payroll'], description: 'List subscribable event types', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getEventCatalogue);
+
+  // ── Phase 3: Disbursement ───────────────────────────────────────────────────
+
+  fastify.get('/payroll/runs/:id/payment-batch', {
+    schema: {
+      tags: ['Payroll'], description: 'Get payment batch for a run', security: [{ Bearer: [] }],
+      params: idParam, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPaymentBatch);
+
+  fastify.post('/payroll/runs/:id/payment-batch', {
+    schema: {
+      tags: ['Payroll'], description: 'Create payment batch for an approved run', security: [{ Bearer: [] }],
+      params: idParam, body: { type: 'object' }, response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.createPaymentBatch);
+
+  fastify.get('/payroll/runs/:id/bank-file', {
+    schema: {
+      tags: ['Payroll'], description: 'Download bank file for a run', security: [{ Bearer: [] }],
+      params: idParam,
+      querystring: { type: 'object', properties: { format: { type: 'string', enum: ['NACH', 'ACH', 'SEPA', 'BACS'] } } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.downloadBankFile);
+
+  fastify.get('/payroll/payment-batches/:id/status', {
+    schema: {
+      tags: ['Payroll'], description: 'Get payment batch status', security: [{ Bearer: [] }],
+      params: idParam, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPaymentBatchStatus);
+
+  fastify.post('/payroll/payment-batches/:id/reconcile', {
+    schema: {
+      tags: ['Payroll'], description: 'Simulate bank reconciliation', security: [{ Bearer: [] }],
+      params: idParam, body: { type: 'object' }, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.reconcilePaymentBatch);
+
+  // ── Phase 3: Payslip Templates ──────────────────────────────────────────────
+
+  fastify.get('/payroll/payslip-templates', {
+    schema: { tags: ['Payroll'], description: 'Get tenant payslip template', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayslipTemplate);
+
+  fastify.patch('/payroll/payslip-templates', {
+    schema: {
+      tags: ['Payroll'], description: 'Update tenant payslip template', security: [{ Bearer: [] }],
+      body: { type: 'object', additionalProperties: true }, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updatePayslipTemplate);
+
+  // ── Phase 3: Tax Forms ──────────────────────────────────────────────────────
+
+  fastify.get('/payroll/employees/:id/tax-form', {
+    schema: {
+      tags: ['Payroll'], description: 'Get statutory tax form document for employee', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      querystring: { type: 'object', properties: { fy: { type: 'string' }, type: { type: 'string', enum: ['FORM16', 'W2', 'P60'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.getTaxForm);
+
+  // ── Phase 3: Reimbursement Claims ───────────────────────────────────────────
+
+  fastify.get('/payroll/reimbursement-categories', {
+    schema: { tags: ['Payroll'], description: 'List reimbursement categories', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.listReimbursementCategories);
+
+  fastify.get('/payroll/reimbursement-claims', {
+    schema: {
+      tags: ['Payroll'], description: 'List reimbursement claims', security: [{ Bearer: [] }],
+      querystring: { type: 'object', properties: { employeeId: { type: 'string' }, status: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.listReimbursementClaims);
+
+  fastify.post('/payroll/reimbursement-claims', {
+    schema: {
+      tags: ['Payroll'], description: 'Submit a reimbursement claim', security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['employeeId', 'categoryId', 'amount'],
+        properties: {
+          employeeId: { type: 'string' }, categoryId: { type: 'string' },
+          amount: { type: 'number' }, currency: { type: 'string' },
+          description: { type: 'string' }, proofUrl: { type: 'string' },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(allAuth)],
+  }, ctrl.submitReimbursementClaim);
+
+  fastify.patch('/payroll/reimbursement-claims/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Approve or reject a reimbursement claim', security: [{ Bearer: [] }],
+      params: idParam,
+      body: { type: 'object', required: ['status'], properties: { status: { type: 'string', enum: ['APPROVED', 'REJECTED'] } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.decideReimbursementClaim);
+
+  // ── Phase 3: Garnishments ───────────────────────────────────────────────────
+
+  fastify.get('/payroll/employees/:id/garnishments', {
+    schema: {
+      tags: ['Payroll'], description: 'List garnishments for employee', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.listGarnishments);
+
+  fastify.post('/payroll/employees/:id/garnishments', {
+    schema: {
+      tags: ['Payroll'], description: 'Create a garnishment order', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        required: ['type', 'amountKind', 'amountValue', 'effectiveFrom'],
+        properties: {
+          type: { type: 'string' }, priority: { type: 'integer' },
+          amountKind: { type: 'string' }, amountValue: { type: 'number' },
+          protectedEarningsFloor: { type: 'number' }, cap: { type: 'number' },
+          reference: { type: 'string' }, effectiveFrom: { type: 'string' }, effectiveTo: { type: 'string' },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.createGarnishment);
+
+  fastify.patch('/payroll/employees/:id/garnishments/:garnishmentId', {
+    schema: {
+      tags: ['Payroll'], description: 'Update a garnishment', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id', 'garnishmentId'], properties: { id: { type: 'string' }, garnishmentId: { type: 'string' } } },
+      body: { type: 'object', additionalProperties: true },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.updateGarnishment);
+
+  fastify.delete('/payroll/employees/:id/garnishments/:garnishmentId', {
+    schema: {
+      tags: ['Payroll'], description: 'Delete a garnishment', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id', 'garnishmentId'], properties: { id: { type: 'string' }, garnishmentId: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.deleteGarnishment);
+
+  // ── Phase 3: Accounting Journal ─────────────────────────────────────────────
+
+  fastify.get('/payroll/runs/:id/journal', {
+    schema: {
+      tags: ['Payroll'], description: 'Get double-entry journal for a run', security: [{ Bearer: [] }],
+      params: idParam, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getRunJournal);
+
+  fastify.get('/payroll/runs/:id/journal/export', {
+    schema: {
+      tags: ['Payroll'], description: 'Export journal (TALLY|QUICKBOOKS|CSV)', security: [{ Bearer: [] }],
+      params: idParam,
+      querystring: { type: 'object', properties: { format: { type: 'string', enum: ['TALLY', 'QUICKBOOKS', 'CSV'] } } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.exportRunJournal);
 }

@@ -4010,3 +4010,79 @@ These endpoints exist only as frontend mocks (MSW). Calling them on Render retur
 
 **Timesheet shape:** `{ id, employeeId, weekStart, weekEnd, status(DRAFT/SUBMITTED/APPROVED/REJECTED), totalHours, billableHours, overtimeHours, standardHours, entries[] }`
 **Entry shape:** `{ id, timesheetId, projectId, taskId?, date, hours, billable, note, source(MANUAL/TIMER) }`
+
+---
+
+## Phase 3 Extended — Additional Payroll Endpoints (F.17 Updated → Now LIVE)
+
+> **Added: 2026-06-08** | All endpoints below are now **LIVE** on Render. The F.17 "MSW-Only" section above is now superseded.
+
+### F.6 — Reimbursement Claims & Categories
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/reimbursement-categories` | HR,SA | List all claim categories with monthly caps |
+| GET | `/payroll/reimbursement-claims` | HR,SA | `?status=SUBMITTED|APPROVED|REJECTED&employeeId=&page=&limit=` |
+| POST | `/payroll/reimbursement-claims` | ALL | Body: `{employeeId, categoryId, amount, currency, description, proofUrl}` |
+| PATCH | `/payroll/reimbursement-claims/:id` | HR,SA | Body: `{status: "APPROVED"|"REJECTED"}` |
+
+**Response shape:** `{ claim: { id, employeeId, categoryId, amount, currency, description, status, submittedAt, decidedAt, category: { code, label, monthlyCap } } }`
+
+### F.7 — Garnishments
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/employees/:id/garnishments` | HR,SA | List garnishments for employee |
+| POST | `/payroll/employees/:id/garnishments` | HR,SA | Body: `{type, amountKind, amountValue, effectiveFrom, priority?, protectedEarningsFloor?, cap?, reference?, effectiveTo?}` |
+| PATCH | `/payroll/employees/:id/garnishments/:garnishmentId` | HR,SA | Partial update |
+| DELETE | `/payroll/employees/:id/garnishments/:garnishmentId` | HR,SA | Hard delete |
+
+**Garnishment shape:** `{ id, employeeId, type(COURT_ORDER|LOAN_RECOVERY|TAX_LEVY|CHILD_SUPPORT), priority, amountKind(FLAT|PERCENTAGE), amountValue, protectedEarningsFloor, cap, reference, effectiveFrom, effectiveTo }`
+
+### F.8 — Run Approvals, Variance & Audit
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| POST | `/payroll/runs/:id/approvals/:level` | HR,SA | Body: `{approvedBy, comment}`. Level 1 or 2 |
+| GET | `/payroll/runs/:id/variance` | HR,SA | Variance vs previous run — flags >20% change |
+| GET | `/payroll/runs/:id/audit` | HR,SA | Full audit trail with timeline events |
+| POST | `/payroll/runs/:id/payslips/:payslipId/recalculate` | HR,SA | Re-run calculation for single payslip |
+| POST | `/payroll/runs/:runId/payslips/:payslipId/hold` | HR,SA | Body: `{reason}`. Sets status=HELD |
+| POST | `/payroll/runs/:runId/payslips/:payslipId/release` | HR,SA | Releases held payslip back to CALCULATED |
+| POST | `/payroll/runs/:id/inputs/from-timesheets` | HR,SA | Imports approved timesheet hours into run inputs |
+
+### F.9 — Disbursement & Payment Batch
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/runs/:id/payment-batch` | HR,SA | Get existing payment batch for run |
+| POST | `/payroll/runs/:id/payment-batch` | HR,SA | Create payment batch (skips HELD payslips) |
+| GET | `/payroll/runs/:id/bank-file` | HR,SA | `?format=NACH|CSV`. Returns flat file for bank upload |
+| GET | `/payroll/payment-batches/:id/status` | HR,SA | Get batch by ID with status |
+| POST | `/payroll/payment-batches/:id/reconcile` | HR,SA | Mark batch RECONCILED |
+
+### F.10 — Payslip Publishing & Templates
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| POST | `/payroll/runs/:id/publish` | HR,SA | Publish payslips to employees (sets published=true) |
+| GET | `/payroll/payslip-templates` | HR,SA | Get (or auto-create) payslip template |
+| PATCH | `/payroll/payslip-templates` | HR,SA | Update sections, fields, logo, locale |
+
+**Template shape:** `{ id, tenantId, name, locale, logoUrl, sections: [{id, label, visible, order}], fields: [{key, label, visible}] }`
+
+### F.11 — Accounting Journal
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/runs/:id/journal` | HR,SA | Debit/credit journal for the run |
+| GET | `/payroll/runs/:id/journal/export` | HR,SA | `?format=CSV`. Download journal as CSV |
+
+**Journal shape:** `{ runId, period, totalDebit, totalCredit, entries: [{account, debit, credit, employeeId, description}] }`
+
+### F.12 — Events & Catalogue
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/events` | HR,SA | `?runId=`. List payroll events (audit feed) |
+| GET | `/payroll/event-catalogue` | HR,SA | Static list of all event types with descriptions |
+
+### F.13 — Tax Forms
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/employees/:id/tax-form` | HR,SA | `?type=FORM16|W2|P60&fy=YYYY-YY`. Returns tax form summary |
+
+**Tax form shape:** `{ formType, fiscalYear, employee: {id, name, employeeCode, pan}, employer: {name, tan}, incomeDetails: {grossIncome, netTaxableIncome, taxDeducted}, downloadUrl }`

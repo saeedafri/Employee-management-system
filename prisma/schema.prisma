@@ -159,95 +159,102 @@ enum PayslipStatus {
 
 // Models
 model Tenant {
-  id                  String   @id @default(cuid())
-  tenantKey           String   @unique // For header-based tenant resolution
-  slug                String?  @unique // For subdomain-based tenant resolution
+  id                  String    @id @default(cuid())
+  tenantKey           String    @unique // For header-based tenant resolution
+  slug                String?   @unique // For subdomain-based tenant resolution
   name                String
   legalName           String
   displayName         String
   country             String
-  defaultCurrency     String   @default("INR")
-  timezone            String   @default("Asia/Kolkata")
-  fiscalYearStart     Int      @default(4) // April 1
+  defaultCurrency     String    @default("INR")
+  timezone            String    @default("Asia/Kolkata")
+  fiscalYearStart     Int       @default(4) // April 1
   primaryContactEmail String
   supportPhone        String?
   logoUrl             String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
   deletedAt           DateTime?
 
   // Relations
-  users                      User[]
-  employees                  Employee[]
-  departments                Department[]
-  roles                      Role[]
-  sessions                   Session[]
-  passwordResetTokens        PasswordResetToken[]
-  otpChallenges              OtpChallenge[]
-  employeeDocuments          EmployeeDocument[]
-  attendanceRecords          AttendanceRecord[]
-  attendanceRegularizations  AttendanceRegularizationRequest[]
-  leaveTypes                 LeaveType[]
-  leaveBalances              LeaveBalance[]
-  leaveRequests              LeaveRequest[]
-  holidays                   Holiday[]
-  resignations               Resignation[]
-  auditLogs                  AuditLog[]
-  logEntries                 LogEntry[]
-  notifications              Notification[]
-  savedViews                 SavedView[]
-  settings                   Setting[]
-  scheduledReports           ScheduledReport[]
-  reportExports              ReportExport[]
-  exportJobs                 ExportJob[]
-  tenantConfigs              TenantConfig[]
-  emailTemplates             EmailTemplate[]
-  salaryComponents           SalaryComponent[]
-  payGroups                  PayGroup[]
-  employeeSalaries           EmployeeSalary[]
-  payrollRuns                PayrollRun[]
-  payslips                   Payslip[]
-  jobOpenings                JobOpening[]
-  candidates                 Candidate[]
-  performanceCycles          PerformanceCycle[]
-  performanceReviews         PerformanceReview[]
-  performanceGoals           PerformanceGoal[]
-  assets                     Asset[]
-  assetRequests              AssetRequest[]
-  announcementChannels       AnnouncementChannel[]
-  announcements              Announcement[]
-  announcementEvents         AnnouncementEvent[]
-  timesheetProjects          TimesheetProject[]
-  timesheetTasks             TimesheetTask[]
-  timesheets                 Timesheet[]
-  timeEntries                TimeEntry[]
-  timesheetSettings          TimesheetSettings?
-  legalEntities              LegalEntity[]
-  statutoryPacks             StatutoryPack[]
-  payCalendars               PayCalendar[]
-  taxDeclarations            TaxDeclaration[]
-  employeeLoans              EmployeeLoan[]
-  payrollInputs              PayrollInput[]
-  openingBalances            OpeningBalance[]
-  historicalPayslips         HistoricalPayslip[]
-  migrationStatus            MigrationStatus?
+  users                     User[]
+  employees                 Employee[]
+  departments               Department[]
+  roles                     Role[]
+  sessions                  Session[]
+  passwordResetTokens       PasswordResetToken[]
+  otpChallenges             OtpChallenge[]
+  employeeDocuments         EmployeeDocument[]
+  attendanceRecords         AttendanceRecord[]
+  attendanceRegularizations AttendanceRegularizationRequest[]
+  leaveTypes                LeaveType[]
+  leaveBalances             LeaveBalance[]
+  leaveRequests             LeaveRequest[]
+  holidays                  Holiday[]
+  resignations              Resignation[]
+  auditLogs                 AuditLog[]
+  logEntries                LogEntry[]
+  notifications             Notification[]
+  savedViews                SavedView[]
+  settings                  Setting[]
+  scheduledReports          ScheduledReport[]
+  reportExports             ReportExport[]
+  exportJobs                ExportJob[]
+  tenantConfigs             TenantConfig[]
+  emailTemplates            EmailTemplate[]
+  salaryComponents          SalaryComponent[]
+  payGroups                 PayGroup[]
+  employeeSalaries          EmployeeSalary[]
+  payrollRuns               PayrollRun[]
+  payslips                  Payslip[]
+  jobOpenings               JobOpening[]
+  candidates                Candidate[]
+  performanceCycles         PerformanceCycle[]
+  performanceReviews        PerformanceReview[]
+  performanceGoals          PerformanceGoal[]
+  assets                    Asset[]
+  assetRequests             AssetRequest[]
+  announcementChannels      AnnouncementChannel[]
+  announcements             Announcement[]
+  announcementEvents        AnnouncementEvent[]
+  timesheetProjects         TimesheetProject[]
+  timesheetTasks            TimesheetTask[]
+  timesheets                Timesheet[]
+  timeEntries               TimeEntry[]
+  timesheetSettings         TimesheetSettings?
+  legalEntities             LegalEntity[]
+  statutoryPacks            StatutoryPack[]
+  payCalendars              PayCalendar[]
+  taxDeclarations           TaxDeclaration[]
+  employeeLoans             EmployeeLoan[]
+  payrollInputs             PayrollInput[]
+  openingBalances           OpeningBalance[]
+  historicalPayslips        HistoricalPayslip[]
+  migrationStatus           MigrationStatus?
+  ReimbursementCategory     ReimbursementCategory[]
+  ReimbursementClaim        ReimbursementClaim[]
+  Garnishment               Garnishment[]
+  ContractorInvoice         ContractorInvoice[]
+  PaymentBatch              PaymentBatch[]
+  PayrollEvent              PayrollEvent[]
+  PayslipTemplate           PayslipTemplate?
 
   @@index([deletedAt])
 }
 
 model User {
-  id                String      @id @default(cuid())
-  tenantId          String
-  employeeId        String?     @unique
-  email             String
-  passwordHash      String
-  memberType        MemberType  @default(EMPLOYEE)
-  status            UserStatus  @default(ACTIVE)
-  mfaEnabled        Boolean     @default(false)
-  lastLoginAt       DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  deletedAt         DateTime?
+  id           String     @id @default(cuid())
+  tenantId     String
+  employeeId   String?    @unique
+  email        String
+  passwordHash String
+  memberType   MemberType @default(EMPLOYEE)
+  status       UserStatus @default(ACTIVE)
+  mfaEnabled   Boolean    @default(false)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
 
   // Relations
   tenant                  Tenant                            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -275,55 +282,57 @@ model User {
 }
 
 model Employee {
-  id                      String   @id @default(cuid())
-  tenantId                String
-  userId                  String?  @unique
-  employeeCode            String
-  firstName               String
-  lastName                String
-  workEmail               String
-  personalEmail           String?
-  phone                   String?
-  dateOfBirth             DateTime?
-  gender                  Gender?
-  address                 String?
-  emergencyContactName    String?
-  emergencyContactPhone   String?
-  designation             String?
-  departmentId            String?
-  managerId               String?
-  joinedOn                DateTime
-  employmentType          EmploymentType @default(FULL_TIME)
-  employmentStatus        EmploymentStatus @default(ACTIVE)
-  location                String?
-  profilePhotoUrl         String?
-  payCurrency             String     @default("INR")
-  createdBy               String?
-  updatedBy               String?
-  createdAt               DateTime   @default(now())
-  updatedAt               DateTime   @updatedAt
-  deletedAt               DateTime?
+  id                    String           @id @default(cuid())
+  tenantId              String
+  userId                String?          @unique
+  employeeCode          String
+  firstName             String
+  lastName              String
+  workEmail             String
+  personalEmail         String?
+  phone                 String?
+  dateOfBirth           DateTime?
+  gender                Gender?
+  address               String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  designation           String?
+  departmentId          String?
+  managerId             String?
+  joinedOn              DateTime
+  employmentType        EmploymentType   @default(FULL_TIME)
+  employmentStatus      EmploymentStatus @default(ACTIVE)
+  location              String?
+  profilePhotoUrl       String?
+  payCurrency           String           @default("INR")
+  createdBy             String?
+  updatedBy             String?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  deletedAt             DateTime?
 
   // Relations
-  tenant                  Tenant                           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user                    User?                            @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  department              Department?                      @relation("employees", fields: [departmentId], references: [id], onDelete: SetNull)
-  manager                 Employee?                        @relation("managedBy", fields: [managerId], references: [id], onDelete: SetNull)
-  managedEmployees        Employee[]                       @relation("managedBy")
-  managedDepartments      Department[]                     @relation("headEmployee")
-  documents               EmployeeDocument[]
-  attendanceRecords       AttendanceRecord[]
+  tenant                    Tenant                            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user                      User?                             @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  department                Department?                       @relation("employees", fields: [departmentId], references: [id], onDelete: SetNull)
+  manager                   Employee?                         @relation("managedBy", fields: [managerId], references: [id], onDelete: SetNull)
+  managedEmployees          Employee[]                        @relation("managedBy")
+  managedDepartments        Department[]                      @relation("headEmployee")
+  documents                 EmployeeDocument[]
+  attendanceRecords         AttendanceRecord[]
   attendanceRegularizations AttendanceRegularizationRequest[]
-  leaveBalances           LeaveBalance[]
-  leaveRequests           LeaveRequest[]
-  resignations            Resignation[]
-  salaries                EmployeeSalary[]
-  payslips                Payslip[]
-  taxDeclarations         TaxDeclaration[]
-  employeeLoans           EmployeeLoan[]
-  payrollInputs           PayrollInput[]
-  openingBalances         OpeningBalance[]
-  historicalPayslips      HistoricalPayslip[]
+  leaveBalances             LeaveBalance[]
+  leaveRequests             LeaveRequest[]
+  resignations              Resignation[]
+  salaries                  EmployeeSalary[]
+  payslips                  Payslip[]
+  taxDeclarations           TaxDeclaration[]
+  employeeLoans             EmployeeLoan[]
+  payrollInputs             PayrollInput[]
+  openingBalances           OpeningBalance[]
+  historicalPayslips        HistoricalPayslip[]
+  ReimbursementClaim        ReimbursementClaim[]
+  Garnishment               Garnishment[]
 
   @@unique([tenantId, employeeCode])
   @@unique([tenantId, workEmail])
@@ -336,23 +345,23 @@ model Employee {
 }
 
 model Department {
-  id              String   @id @default(cuid())
-  tenantId        String
-  parentId        String?
-  name            String
-  departmentCode  String?
-  headEmployeeId  String?  @unique
-  depth           Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  deletedAt       DateTime?
+  id             String    @id @default(cuid())
+  tenantId       String
+  parentId       String?
+  name           String
+  departmentCode String?
+  headEmployeeId String?   @unique
+  depth          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
 
   // Relations
-  tenant          Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  parent          Department?  @relation("subDepartments", fields: [parentId], references: [id], onDelete: SetNull)
-  subDepartments  Department[] @relation("subDepartments")
-  headEmployee    Employee?    @relation("headEmployee", fields: [headEmployeeId], references: [id], onDelete: SetNull)
-  employees       Employee[]   @relation("employees")
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  parent         Department?  @relation("subDepartments", fields: [parentId], references: [id], onDelete: SetNull)
+  subDepartments Department[] @relation("subDepartments")
+  headEmployee   Employee?    @relation("headEmployee", fields: [headEmployeeId], references: [id], onDelete: SetNull)
+  employees      Employee[]   @relation("employees")
 
   @@unique([tenantId, departmentCode])
   @@index([tenantId])
@@ -361,26 +370,26 @@ model Department {
 }
 
 model Role {
-  id              String   @id @default(cuid())
-  tenantId        String?  // Null for global/system roles
-  name            String
-  key             String
-  isSystem        Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String? // Null for global/system roles
+  name      String
+  key       String
+  isSystem  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  tenant          Tenant?           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  permissions     RolePermission[]
-  userRoles       UserRole[]
+  tenant      Tenant?          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  permissions RolePermission[]
+  userRoles   UserRole[]
 
   @@unique([tenantId, key])
   @@index([tenantId])
 }
 
 model Permission {
-  id          String   @id @default(cuid())
-  key         String   @unique
+  id          String  @id @default(cuid())
+  key         String  @unique
   module      String
   description String?
 
@@ -389,12 +398,12 @@ model Permission {
 }
 
 model RolePermission {
-  roleId        String
-  permissionId  String
+  roleId       String
+  permissionId String
 
   // Relations
-  role          Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission    Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@id([roleId, permissionId])
   @@index([roleId])
@@ -402,12 +411,12 @@ model RolePermission {
 }
 
 model UserRole {
-  userId    String
-  roleId    String
+  userId String
+  roleId String
 
   // Relations
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@id([userId, roleId])
   @@index([userId])
@@ -415,24 +424,24 @@ model UserRole {
 }
 
 model Session {
-  id                String    @id @default(cuid())
-  userId            String
-  tenantId          String
-  sessionFamilyId   String    // For tracking token rotation and reuse detection
-  refreshTokenHash  String    // SHA-256 hash of refresh token
-  ipAddress         String?
-  userAgent         String?
-  deviceName        String?
-  loginAt           DateTime  @default(now())
-  lastSeenAt        DateTime  @updatedAt
-  expiresAt         DateTime
-  revokedAt         DateTime?
-  revokeReason      String?   // LOGOUT, TOKEN_REUSE_DETECTED, ADMIN_REVOKE, etc.
-  createdAt         DateTime  @default(now())
+  id               String    @id @default(cuid())
+  userId           String
+  tenantId         String
+  sessionFamilyId  String // For tracking token rotation and reuse detection
+  refreshTokenHash String // SHA-256 hash of refresh token
+  ipAddress        String?
+  userAgent        String?
+  deviceName       String?
+  loginAt          DateTime  @default(now())
+  lastSeenAt       DateTime  @updatedAt
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  revokeReason     String? // LOGOUT, TOKEN_REUSE_DETECTED, ADMIN_REVOKE, etc.
+  createdAt        DateTime  @default(now())
 
   // Relations
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([userId, revokedAt, expiresAt])
   @@index([tenantId, userId, revokedAt])
@@ -452,8 +461,8 @@ model PasswordResetToken {
   createdAt   DateTime  @default(now())
 
   // Relations
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tenantId])
@@ -464,27 +473,27 @@ model PasswordResetToken {
 }
 
 model OtpChallenge {
-  id              String    @id @default(cuid())
-  userId          String
-  tenantId        String
-  challengeId     String    @unique // State reference, not the code itself
-  codeHash        String    // SHA-256 hash of 6-digit code
-  purpose         String    // LOGIN, EMAIL_VERIFY, PHONE_VERIFY, ACCOUNT_RECOVERY
-  deliveryChannel String    // EMAIL, SMS
-  destinationMasked String  // Masked email/phone for display (e.g., "u***@test.com")
-  attempts        Int       @default(0)
-  maxAttempts     Int       @default(5)
-  resendCount     Int       @default(0)
-  maxResends      Int       @default(3)
-  lastSentAt      DateTime?
-  lockedAt        DateTime?
-  expiresAt       DateTime
-  consumedAt      DateTime?
-  createdAt       DateTime  @default(now())
+  id                String    @id @default(cuid())
+  userId            String
+  tenantId          String
+  challengeId       String    @unique // State reference, not the code itself
+  codeHash          String // SHA-256 hash of 6-digit code
+  purpose           String // LOGIN, EMAIL_VERIFY, PHONE_VERIFY, ACCOUNT_RECOVERY
+  deliveryChannel   String // EMAIL, SMS
+  destinationMasked String // Masked email/phone for display (e.g., "u***@test.com")
+  attempts          Int       @default(0)
+  maxAttempts       Int       @default(5)
+  resendCount       Int       @default(0)
+  maxResends        Int       @default(3)
+  lastSentAt        DateTime?
+  lockedAt          DateTime?
+  expiresAt         DateTime
+  consumedAt        DateTime?
+  createdAt         DateTime  @default(now())
 
   // Relations
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, challengeId])
   @@index([tenantId, userId, consumedAt])
@@ -493,50 +502,50 @@ model OtpChallenge {
 }
 
 model EmployeeDocument {
-  id                  String   @id @default(cuid())
-  tenantId            String
-  employeeId          String
-  documentType        String
-  fileName            String
-  fileUrl             String?
-  storageKey          String?
-  mimeType            String?
-  sizeBytes           Int?
-  verificationStatus  DocumentVerificationStatus @default(PENDING)
-  uploadedById        String
-  verifiedById        String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                 String                     @id @default(cuid())
+  tenantId           String
+  employeeId         String
+  documentType       String
+  fileName           String
+  fileUrl            String?
+  storageKey         String?
+  mimeType           String?
+  sizeBytes          Int?
+  verificationStatus DocumentVerificationStatus @default(PENDING)
+  uploadedById       String
+  verifiedById       String?
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
 
   // Relations
-  tenant              Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee            Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  uploadedBy          User     @relation("uploadedBy", fields: [uploadedById], references: [id])
-  verifiedBy          User?    @relation("verifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  uploadedBy User     @relation("uploadedBy", fields: [uploadedById], references: [id])
+  verifiedBy User?    @relation("verifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
 
   @@index([tenantId])
   @@index([employeeId])
 }
 
 model AttendanceRecord {
-  id            String   @id @default(cuid())
-  seqNo         Int      @default(autoincrement())
-  tenantId      String
-  employeeId    String
+  id             String           @id @default(cuid())
+  seqNo          Int              @default(autoincrement())
+  tenantId       String
+  employeeId     String
   attendanceDate DateTime
-  checkInAt     DateTime?
-  checkOutAt    DateTime?
-  workMode      WorkMode @default(OFFICE)
-  status        AttendanceStatus @default(PRESENT)
-  totalMinutes  Int?
-  locationJson  Json?    // Location data
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  checkInAt      DateTime?
+  checkOutAt     DateTime?
+  workMode       WorkMode         @default(OFFICE)
+  status         AttendanceStatus @default(PRESENT)
+  totalMinutes   Int?
+  locationJson   Json? // Location data
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
   // Relations
-  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee      Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, employeeId, attendanceDate])
   @@index([tenantId, attendanceDate])
@@ -548,24 +557,24 @@ model AttendanceRecord {
 }
 
 model AttendanceRegularizationRequest {
-  id              String   @id @default(cuid())
-  seqNo           Int      @default(autoincrement())
+  id              String                         @id @default(cuid())
+  seqNo           Int                            @default(autoincrement())
   tenantId        String
   employeeId      String
   attendanceDate  DateTime
-  type            RegularizationType @default(LATE)
+  type            RegularizationType             @default(LATE)
   reason          String
   status          AttendanceRegularizationStatus @default(PENDING)
   reviewerId      String?
   reviewerComment String?
   documentUrl     String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime                       @default(now())
+  updatedAt       DateTime                       @updatedAt
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  reviewer        User?    @relation("reviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewer User?    @relation("reviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
 
   @@index([tenantId])
   @@index([employeeId])
@@ -586,9 +595,9 @@ model LeaveType {
   updatedAt           DateTime @updatedAt
 
   // Relations
-  tenant              Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  leaveBalances       LeaveBalance[]
-  leaveRequests       LeaveRequest[]
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  leaveBalances LeaveBalance[]
+  leaveRequests LeaveRequest[]
 
   @@unique([tenantId, code])
   @@index([tenantId])
@@ -605,9 +614,9 @@ model LeaveBalance {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  leaveType   LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee  Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, employeeId, leaveTypeId])
   @@index([tenantId])
@@ -615,8 +624,8 @@ model LeaveBalance {
 }
 
 model LeaveRequest {
-  id              String   @id @default(cuid())
-  seqNo           Int      @default(autoincrement())
+  id              String             @id @default(cuid())
+  seqNo           Int                @default(autoincrement())
   tenantId        String
   employeeId      String
   leaveTypeId     String
@@ -627,16 +636,16 @@ model LeaveRequest {
   status          LeaveRequestStatus @default(PENDING)
   approverId      String?
   approverComment String?
-  submittedAt     DateTime @default(now())
+  submittedAt     DateTime           @default(now())
   decidedAt       DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 
   // Relations
-  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee        Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  leaveType       LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade)
-  approver        User?     @relation("approver", fields: [approverId], references: [id], onDelete: SetNull)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee  Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade)
+  approver  User?     @relation("approver", fields: [approverId], references: [id], onDelete: SetNull)
 
   @@index([tenantId])
   @@index([employeeId])
@@ -645,40 +654,40 @@ model LeaveRequest {
 }
 
 model Holiday {
-  id            String   @id @default(cuid())
-  tenantId      String
-  name          String
-  holidayDate   DateTime
-  location      String?
-  isOptional    Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  holidayDate DateTime
+  location    String?
+  isOptional  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
-  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([holidayDate])
 }
 
 model Resignation {
-  id                      String   @id @default(cuid())
-  tenantId                String
-  employeeId              String
-  reason                  String
+  id                       String            @id @default(cuid())
+  tenantId                 String
+  employeeId               String
+  reason                   String
   preferredLastWorkingDate DateTime
-  status                  ResignationStatus @default(PENDING)
-  reviewerId              String?
-  reviewerComment         String?
-  submittedAt             DateTime @default(now())
-  decidedAt               DateTime?
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  status                   ResignationStatus @default(PENDING)
+  reviewerId               String?
+  reviewerComment          String?
+  submittedAt              DateTime          @default(now())
+  decidedAt                DateTime?
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
 
   // Relations
-  tenant                  Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee                Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  reviewer                User?     @relation("reviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewer User?    @relation("reviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
 
   @@index([tenantId])
   @@index([employeeId])
@@ -686,21 +695,21 @@ model Resignation {
 }
 
 model AuditLog {
-  id              String   @id @default(cuid())
-  tenantId        String
-  actorUserId     String?  // Nullable for system-generated actions
-  action          String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT, APPROVE, etc.
-  entityType      String   // Employee, LeaveRequest, etc.
-  entityId        String
-  oldValuesJson   Json?    // JSON data for change tracking
-  newValuesJson   Json?    // JSON data for change tracking
-  ipAddress       String?
-  userAgent       String?
-  createdAt       DateTime @default(now())
+  id            String   @id @default(cuid())
+  tenantId      String
+  actorUserId   String? // Nullable for system-generated actions
+  action        String // CREATE, UPDATE, DELETE, LOGIN, LOGOUT, APPROVE, etc.
+  entityType    String // Employee, LeaveRequest, etc.
+  entityId      String
+  oldValuesJson Json? // JSON data for change tracking
+  newValuesJson Json? // JSON data for change tracking
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime @default(now())
 
   // Relations
-  tenant          Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  actor           User?   @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actor  User?  @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([tenantId, createdAt])
   @@index([tenantId, action])
@@ -714,21 +723,21 @@ model AuditLog {
 }
 
 model LogEntry {
-  id              String   @id @default(cuid())
-  tenantId        String
-  level           String   // ERROR, WARN, INFO, DEBUG
-  levelLabel      String   // Error, Warning, Information, Debug
-  levelColor      String   // red, yellow, blue, gray
-  module          String   // auth, employees, attendance, etc.
-  message         String
-  requestId       String?  // Associated request ID
-  actorUserId     String?  // User who triggered the log
-  metadataJson    Json?    // Additional context
-  createdAt       DateTime @default(now())
+  id           String   @id @default(cuid())
+  tenantId     String
+  level        String // ERROR, WARN, INFO, DEBUG
+  levelLabel   String // Error, Warning, Information, Debug
+  levelColor   String // red, yellow, blue, gray
+  module       String // auth, employees, attendance, etc.
+  message      String
+  requestId    String? // Associated request ID
+  actorUserId  String? // User who triggered the log
+  metadataJson Json? // Additional context
+  createdAt    DateTime @default(now())
 
   // Relations
-  tenant          Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  actor           User?   @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actor  User?  @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([tenantId, createdAt])
   @@index([tenantId, level])
@@ -737,20 +746,20 @@ model LogEntry {
 }
 
 model Notification {
-  id              String    @id @default(cuid())
-  tenantId        String
-  userId          String
-  type            String    // leave_approved, leave_rejected, etc.
-  title           String
-  message         String
-  metadataJson    Json?     // JSON context data
-  readAt          DateTime?
-  expiresAt       DateTime? // TTL — auto-filtered after this time
-  createdAt       DateTime  @default(now())
+  id           String    @id @default(cuid())
+  tenantId     String
+  userId       String
+  type         String // leave_approved, leave_rejected, etc.
+  title        String
+  message      String
+  metadataJson Json? // JSON context data
+  readAt       DateTime?
+  expiresAt    DateTime? // TTL — auto-filtered after this time
+  createdAt    DateTime  @default(now())
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, userId])
   @@index([tenantId, createdAt])
@@ -761,19 +770,19 @@ model Notification {
 }
 
 model SavedView {
-  id              String   @id @default(cuid())
-  tenantId        String
-  userId          String
-  module          String   // employees, leave, attendance, etc.
-  name            String
-  filtersJson     Json     // JSON filters
-  columnsJson     Json?    // JSON column visibility
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id          String   @id @default(cuid())
+  tenantId    String
+  userId      String
+  module      String // employees, leave, attendance, etc.
+  name        String
+  filtersJson Json // JSON filters
+  columnsJson Json? // JSON column visibility
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, userId, module, name])
   @@index([tenantId])
@@ -781,112 +790,112 @@ model SavedView {
 }
 
 model Setting {
-  id              String   @id @default(cuid())
-  tenantId        String
-  groupKey        String   // workspace, people, security, etc.
-  settingKey      String   // company-name, leave-types, etc.
-  valueJson       Json     // JSON value
-  updatedById     String?
-  updatedAt       DateTime @updatedAt
+  id          String   @id @default(cuid())
+  tenantId    String
+  groupKey    String // workspace, people, security, etc.
+  settingKey  String // company-name, leave-types, etc.
+  valueJson   Json // JSON value
+  updatedById String?
+  updatedAt   DateTime @updatedAt
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  updatedBy       User?    @relation("updatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  updatedBy User?  @relation("updatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
 
   @@unique([tenantId, groupKey, settingKey])
   @@index([tenantId])
 }
 
 model ScheduledReport {
-  id              String   @id @default(cuid())
+  id              String          @id @default(cuid())
   tenantId        String
   createdById     String
-  reportType      String   // attendance, leaves, payroll
+  reportType      String // attendance, leaves, payroll
   frequency       ReportFrequency
-  emailRecipients Json     // Array of email strings
+  emailRecipients Json // Array of email strings
   nextRunDate     DateTime
-  isActive        Boolean  @default(true)
+  isActive        Boolean         @default(true)
   lastRunAt       DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, isActive])
   @@index([tenantId, nextRunDate])
 }
 
 model ReportExport {
-  id              String   @id @default(cuid())
-  tenantId        String
-  createdById     String?
-  reportType      String   // attendance, leaves, payroll
-  format          String   // json, csv
-  status          ReportExportStatus @default(PENDING)
-  fileUrl         String?
-  filePath        String?
-  errorMessage    String?
-  createdAt       DateTime @default(now())
-  completedAt     DateTime?
+  id           String             @id @default(cuid())
+  tenantId     String
+  createdById  String?
+  reportType   String // attendance, leaves, payroll
+  format       String // json, csv
+  status       ReportExportStatus @default(PENDING)
+  fileUrl      String?
+  filePath     String?
+  errorMessage String?
+  createdAt    DateTime           @default(now())
+  completedAt  DateTime?
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, status])
   @@index([tenantId, createdAt])
 }
 
 model TenantConfig {
-  id                  String   @id @default(cuid())
-  tenantId            String   @unique
-  companyName         String
-  timezone            String   @default("Asia/Kolkata")
-  workingHoursStart   String   @default("09:00") // HH:mm format
-  workingHoursEnd     String   @default("18:00") // HH:mm format
-  fiscalYearStart     Int      @default(4) // April = 4
-  fiscalYearEnd       Int      @default(3) // March = 3
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                String   @id @default(cuid())
+  tenantId          String   @unique
+  companyName       String
+  timezone          String   @default("Asia/Kolkata")
+  workingHoursStart String   @default("09:00") // HH:mm format
+  workingHoursEnd   String   @default("18:00") // HH:mm format
+  fiscalYearStart   Int      @default(4) // April = 4
+  fiscalYearEnd     Int      @default(3) // March = 3
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   // Relations
-  tenant              Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
 }
 
 model EmailTemplate {
-  id              String   @id @default(cuid())
-  tenantId        String
-  type            String   // LEAVE_APPROVAL, LEAVE_REJECTION, ATTENDANCE_ALERT
-  subject         String
-  body            String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id        String   @id @default(cuid())
+  tenantId  String
+  type      String // LEAVE_APPROVAL, LEAVE_REJECTION, ATTENDANCE_ALERT
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, type])
   @@index([tenantId])
 }
 
 model ExportJob {
-  id              String   @id @default(cuid())
-  tenantId        String
-  jobId           String   @unique
-  createdById     String?
-  exportType      ExportType
-  format          String   // csv, excel, json
-  status          ExportJobStatus @default(QUEUED)
-  fileUrl         String?
-  errorMessage    String?
-  filters         Json?
-  createdAt       DateTime @default(now())
-  completedAt     DateTime?
+  id           String          @id @default(cuid())
+  tenantId     String
+  jobId        String          @unique
+  createdById  String?
+  exportType   ExportType
+  format       String // csv, excel, json
+  status       ExportJobStatus @default(QUEUED)
+  fileUrl      String?
+  errorMessage String?
+  filters      Json?
+  createdAt    DateTime        @default(now())
+  completedAt  DateTime?
 
   // Relations
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId, jobId])
   @@index([tenantId, status])
@@ -909,6 +918,11 @@ model SalaryComponent {
   active          Boolean         @default(true)
   displayOrder    Int             @default(0)
   description     String?
+  statutoryTag    String?
+  prorate         Boolean         @default(true)
+  payInPeriods    String? // JSON-encoded number[] | null
+  glAccountCode   String?
+  costCenterRule  String          @default("NONE") // DEPARTMENT | NONE
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
@@ -922,16 +936,16 @@ model SalaryComponent {
 }
 
 model PayGroup {
-  id           String      @id @default(cuid())
-  tenantId     String
-  name         String
-  code         String
-  currency     String      @default("INR")
-  paySchedule  PaySchedule @default(MONTHLY)
-  description  String?
-  active       Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id          String      @id @default(cuid())
+  tenantId    String
+  name        String
+  code        String
+  currency    String      @default("INR")
+  paySchedule PaySchedule @default(MONTHLY)
+  description String?
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   // Relations
   tenant           Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -951,8 +965,8 @@ model PayGroupComponent {
   overrideFormula         String?
 
   // Relations
-  payGroup   PayGroup        @relation(fields: [payGroupId], references: [id], onDelete: Cascade)
-  component  SalaryComponent @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  payGroup  PayGroup        @relation(fields: [payGroupId], references: [id], onDelete: Cascade)
+  component SalaryComponent @relation(fields: [componentId], references: [id], onDelete: Cascade)
 
   @@unique([payGroupId, componentId])
   @@index([payGroupId])
@@ -960,24 +974,24 @@ model PayGroupComponent {
 }
 
 model EmployeeSalary {
-  id                 String    @id @default(cuid())
-  tenantId           String
-  employeeId         String
-  payGroupId         String
-  annualCtc          Decimal   @db.Decimal(15, 2)
-  effectiveFrom      DateTime
-  effectiveTo        DateTime?
-  bankAccountName    String?
-  bankAccountNumber  String?
-  bankIfscCode       String?
-  bankName           String?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  tenantId          String
+  employeeId        String
+  payGroupId        String
+  annualCtc         Decimal   @db.Decimal(15, 2)
+  effectiveFrom     DateTime
+  effectiveTo       DateTime?
+  bankAccountName   String?
+  bankAccountNumber String?
+  bankIfscCode      String?
+  bankName          String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   // Relations
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  employee  Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  payGroup  PayGroup @relation(fields: [payGroupId], references: [id])
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  payGroup PayGroup @relation(fields: [payGroupId], references: [id])
 
   @@index([tenantId])
   @@index([employeeId])
@@ -987,12 +1001,14 @@ model EmployeeSalary {
 model PayrollRun {
   id               String           @id @default(cuid())
   tenantId         String
-  period           String           // "2024-06"
+  period           String // "2024-06"
+  type             String           @default("REGULAR") // REGULAR | OFF_CYCLE | BONUS | ARREARS | FNF | REVERSAL
   status           PayrollRunStatus @default(DRAFT)
   employeeCount    Int              @default(0)
   totalGross       Decimal          @default(0) @db.Decimal(15, 2)
   totalDeductions  Decimal          @default(0) @db.Decimal(15, 2)
   totalNet         Decimal          @default(0) @db.Decimal(15, 2)
+  employerCost     Decimal          @default(0) @db.Decimal(15, 2)
   currency         String           @default("INR")
   initiatedById    String?
   approvedById     String?
@@ -1002,14 +1018,18 @@ model PayrollRun {
   processedAt      DateTime?
   approvedAt       DateTime?
   paidAt           DateTime?
+  published        Boolean          @default(false)
+  publishedAt      DateTime?
   summaryJson      Json?
+  approvalsJson    Json?
+  auditJson        Json? // PayrollRunAuditEntry[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
   // Relations
-  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  initiatedByUser User?         @relation("runInitiatedBy", fields: [initiatedById], references: [id], onDelete: SetNull)
-  approvedByUser  User?         @relation("runApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  tenant          Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  initiatedByUser User?          @relation("runInitiatedBy", fields: [initiatedById], references: [id], onDelete: SetNull)
+  approvedByUser  User?          @relation("runApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
   payslips        Payslip[]
   inputs          PayrollInput[]
 
@@ -1019,31 +1039,33 @@ model PayrollRun {
 }
 
 model Payslip {
-  id                   String        @id @default(cuid())
-  tenantId             String
-  payrollRunId         String
-  employeeId           String
-  period               String        // "2024-06"
-  currency             String        @default("INR")
-  grossEarnings        Decimal       @default(0) @db.Decimal(15, 2)
-  totalDeductions      Decimal       @default(0) @db.Decimal(15, 2)
-  netPay               Decimal       @default(0) @db.Decimal(15, 2)
-  workingDays          Int           @default(0)
-  presentDays          Int           @default(0)
-  leaveDays            Int           @default(0)
-  lopDays              Int           @default(0)
-  status               PayslipStatus @default(PENDING)
-  paymentDate          DateTime?
-  paymentReference     String?
-  earningsJson         Json?
-  deductionsJson       Json?
-  oneTimeAdditionsJson Json?
+  id                    String        @id @default(cuid())
+  tenantId              String
+  payrollRunId          String
+  employeeId            String
+  period                String // "2024-06"
+  currency              String        @default("INR")
+  grossEarnings         Decimal       @default(0) @db.Decimal(15, 2)
+  totalDeductions       Decimal       @default(0) @db.Decimal(15, 2)
+  netPay                Decimal       @default(0) @db.Decimal(15, 2)
+  workingDays           Int           @default(0)
+  presentDays           Int           @default(0)
+  leaveDays             Int           @default(0)
+  lopDays               Int           @default(0)
+  status                PayslipStatus @default(PENDING)
+  heldAt                DateTime?
+  holdReason            String?
+  paymentDate           DateTime?
+  paymentReference      String?
+  earningsJson          Json?
+  deductionsJson        Json?
+  oneTimeAdditionsJson  Json?
   oneTimeDeductionsJson Json?
-  notes                String?
-  documentUrl          String?
-  generatedAt          DateTime?
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  notes                 String?
+  documentUrl           String?
+  generatedAt           DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
 
   // Relations
   tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -1160,15 +1182,15 @@ model PayrollInput {
 }
 
 model PayCalendar {
-  id          String   @id @default(cuid())
-  tenantId    String
-  name        String
-  code        String
-  country     String   @default("IN")
-  paySchedule String   @default("MONTHLY")
+  id           String   @id @default(cuid())
+  tenantId     String
+  name         String
+  code         String
+  country      String   @default("IN")
+  paySchedule  String   @default("MONTHLY")
   firstPayDate String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
@@ -1215,12 +1237,12 @@ model HistoricalPayslip {
 }
 
 model MigrationStatus {
-  id                  String    @id @default(cuid())
-  tenantId            String    @unique
-  sandboxMode         Boolean   @default(true)
+  id                  String   @id @default(cuid())
+  tenantId            String   @unique
+  sandboxMode         Boolean  @default(true)
   goLivePeriod        String?
   lastReconciledRunId String?
-  updatedAt           DateTime  @updatedAt
+  updatedAt           DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
@@ -1228,21 +1250,21 @@ model MigrationStatus {
 // ── Recruitment Module ─────────────────────────────────────────────────────────
 
 model JobOpening {
-  id              String   @id @default(cuid())
-  tenantId        String
-  title           String
-  department      String
-  location        String
-  employmentType  String   // FULL_TIME | PART_TIME | CONTRACT | INTERNSHIP
-  applicantCount  Int      @default(0)
-  currentStage    String   @default("Applied")
-  status          String   @default("Open") // Open | Closing | On hold | Closed
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(cuid())
+  tenantId       String
+  title          String
+  department     String
+  location       String
+  employmentType String // FULL_TIME | PART_TIME | CONTRACT | INTERNSHIP
+  applicantCount Int      @default(0)
+  currentStage   String   @default("Applied")
+  status         String   @default("Open") // Open | Closing | On hold | Closed
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relations
-  candidates      Candidate[]
-  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  candidates Candidate[]
+  tenant     Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([tenantId, status])
@@ -1256,15 +1278,15 @@ model Candidate {
   role        String
   email       String
   stage       String   @default("applied") // applied | screening | interview | offer | hired
-  rating      Int      @default(0)          // 0-5
+  rating      Int      @default(0) // 0-5
   daysInStage Int      @default(0)
   isReferral  Boolean  @default(false)
   appliedAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
-  opening     JobOpening @relation(fields: [openingId], references: [id], onDelete: Cascade)
-  tenant      Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  opening JobOpening @relation(fields: [openingId], references: [id], onDelete: Cascade)
+  tenant  Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([openingId])
@@ -1274,20 +1296,20 @@ model Candidate {
 // ── Performance Module ─────────────────────────────────────────────────────────
 
 model PerformanceCycle {
-  id                String   @id @default(cuid())
-  tenantId          String
-  name              String
-  selfReviewDue     DateTime
-  managerReviewDue  DateTime
-  calibrationDate   DateTime
-  progressPct       Int      @default(0)
-  status            String   @default("In progress") // Upcoming | In progress | Calibrating | Closed
-  startedAt         DateTime @default(now())
+  id               String   @id @default(cuid())
+  tenantId         String
+  name             String
+  selfReviewDue    DateTime
+  managerReviewDue DateTime
+  calibrationDate  DateTime
+  progressPct      Int      @default(0)
+  status           String   @default("In progress") // Upcoming | In progress | Calibrating | Closed
+  startedAt        DateTime @default(now())
 
   // Relations
-  reviews           PerformanceReview[]
-  goals             PerformanceGoal[]
-  tenant            Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  reviews PerformanceReview[]
+  goals   PerformanceGoal[]
+  tenant  Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([tenantId, status])
@@ -1300,15 +1322,15 @@ model PerformanceReview {
   employeeId      String
   reviewerId      String?
   status          String   @default("Not started") // Not started | Self review | Manager review | Calibrated
-  rating          String?  // Exceeds | Strong | Meets | Developing | Below
+  rating          String? // Exceeds | Strong | Meets | Developing | Below
   selfComplete    Boolean  @default(false)
   managerComplete Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   // Relations
-  cycle           PerformanceCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
-  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  cycle  PerformanceCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  tenant Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, cycleId, employeeId])
   @@index([tenantId])
@@ -1329,8 +1351,8 @@ model PerformanceGoal {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  cycle       PerformanceCycle? @relation(fields: [cycleId], references: [id], onDelete: SetNull)
-  tenant      Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  cycle  PerformanceCycle? @relation(fields: [cycleId], references: [id], onDelete: SetNull)
+  tenant Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([cycleId])
@@ -1340,21 +1362,21 @@ model PerformanceGoal {
 // ── Assets Module ──────────────────────────────────────────────────────────────
 
 model Asset {
-  id              String   @id @default(cuid())
-  tenantId        String
-  tag             String
-  name            String
-  type            String   // Laptop | Monitor | Phone | Other
-  status          String   @default("Available") // Assigned | Available | Repair | Retired
-  assignedToId    String?
-  assignedToName  String?
-  assignedSince   String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(cuid())
+  tenantId       String
+  tag            String
+  name           String
+  type           String // Laptop | Monitor | Phone | Other
+  status         String   @default("Available") // Assigned | Available | Repair | Retired
+  assignedToId   String?
+  assignedToName String?
+  assignedSince  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relations
-  requests        AssetRequest[]
-  tenant          Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  requests AssetRequest[]
+  tenant   Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, tag])
   @@index([tenantId])
@@ -1375,8 +1397,8 @@ model AssetRequest {
   updatedAt       DateTime @updatedAt
 
   // Relations
-  asset           Asset?  @relation(fields: [assetId], references: [id], onDelete: SetNull)
-  tenant          Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  asset  Asset? @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([tenantId, status])
@@ -1385,39 +1407,39 @@ model AssetRequest {
 // ── Announcements Module ───────────────────────────────────────────────────────
 
 model AnnouncementChannel {
-  id            String   @id @default(cuid())
-  tenantId      String
-  name          String
-  category      String   // Company | People | Product | IT | Office
-  postCount     Int      @default(0)
-  createdAt     DateTime @default(now())
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  category  String // Company | People | Product | IT | Office
+  postCount Int      @default(0)
+  createdAt DateTime @default(now())
 
   // Relations
   announcements Announcement[]
-  tenant        Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, name])
   @@index([tenantId])
 }
 
 model Announcement {
-  id          String   @id @default(cuid())
-  tenantId    String
-  channelId   String
-  category    String
-  title       String
-  body        String
-  authorName  String
-  authorRole  String?
-  audience    String   @default("All employees")
-  readCount   Int      @default(0)
-  isPinned    Boolean  @default(false)
-  postedAt    DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  tenantId   String
+  channelId  String
+  category   String
+  title      String
+  body       String
+  authorName String
+  authorRole String?
+  audience   String   @default("All employees")
+  readCount  Int      @default(0)
+  isPinned   Boolean  @default(false)
+  postedAt   DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // Relations
-  channel     AnnouncementChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  tenant      Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  channel AnnouncementChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  tenant  Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([tenantId, isPinned])
@@ -1427,13 +1449,13 @@ model Announcement {
 model AnnouncementEvent {
   id        String   @id @default(cuid())
   tenantId  String
-  date      String   // YYYY-MM-DD
+  date      String // YYYY-MM-DD
   title     String
   meta      String
   createdAt DateTime @default(now())
 
   // Relations
-  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
   @@index([tenantId, date])
@@ -1480,22 +1502,22 @@ model TimesheetTask {
 }
 
 model Timesheet {
-  id           String    @id @default(cuid())
-  tenantId     String
-  employeeId   String
-  weekStart    String    // YYYY-MM-DD (Monday)
-  weekEnd      String    // YYYY-MM-DD (Sunday)
-  status       String    @default("DRAFT") // DRAFT | SUBMITTED | APPROVED | REJECTED
-  totalHours   Float     @default(0)
-  submittedAt  DateTime?
-  decidedBy    String?
-  decidedAt    DateTime?
-  comment      String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          String    @id @default(cuid())
+  tenantId    String
+  employeeId  String
+  weekStart   String // YYYY-MM-DD (Monday)
+  weekEnd     String // YYYY-MM-DD (Sunday)
+  status      String    @default("DRAFT") // DRAFT | SUBMITTED | APPROVED | REJECTED
+  totalHours  Float     @default(0)
+  submittedAt DateTime?
+  decidedBy   String?
+  decidedAt   DateTime?
+  comment     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  tenant   Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  entries  TimeEntry[]
+  tenant  Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  entries TimeEntry[]
 
   @@unique([tenantId, employeeId, weekStart])
   @@index([tenantId])
@@ -1509,7 +1531,7 @@ model TimeEntry {
   employeeId  String
   projectId   String
   taskId      String?
-  date        String   // YYYY-MM-DD
+  date        String // YYYY-MM-DD
   hours       Float
   billable    Boolean  @default(true)
   note        String?
@@ -1517,10 +1539,10 @@ model TimeEntry {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  tenant     Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  timesheet  Timesheet        @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
-  project    TimesheetProject @relation(fields: [projectId], references: [id])
-  task       TimesheetTask?   @relation(fields: [taskId], references: [id])
+  tenant    Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  timesheet Timesheet        @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+  project   TimesheetProject @relation(fields: [projectId], references: [id])
+  task      TimesheetTask?   @relation(fields: [taskId], references: [id])
 
   @@index([tenantId])
   @@index([timesheetId])
@@ -1541,4 +1563,139 @@ model TimesheetSettings {
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
+}
+
+// ── Payroll Phase 3 Extended Models ────────────────────────────────────────────
+
+model ReimbursementCategory {
+  id         String   @id @default(cuid())
+  tenantId   String
+  code       String
+  label      String
+  monthlyCap Decimal  @default(0) @db.Decimal(15, 2)
+  createdAt  DateTime @default(now())
+
+  claims ReimbursementClaim[]
+  tenant Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+}
+
+model ReimbursementClaim {
+  id          String    @id @default(cuid())
+  tenantId    String
+  employeeId  String
+  categoryId  String
+  amount      Decimal   @db.Decimal(15, 2)
+  currency    String    @default("INR")
+  description String?
+  proofUrl    String?
+  status      String    @default("SUBMITTED") // SUBMITTED | APPROVED | REJECTED | PAID
+  runId       String?
+  submittedAt DateTime  @default(now())
+  decidedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tenant   Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  category ReimbursementCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([employeeId])
+  @@index([tenantId, status])
+}
+
+model Garnishment {
+  id                     String   @id @default(cuid())
+  tenantId               String
+  employeeId             String
+  type                   String // CHILD_SUPPORT | SPOUSAL_SUPPORT | TAX_LEVY | COURT_ORDER | DEFAULTED_LOAN
+  priority               Int      @default(1)
+  amountKind             String   @default("FLAT") // FLAT | PERCENT_OF_DISPOSABLE
+  amountValue            Decimal  @db.Decimal(15, 2)
+  protectedEarningsFloor Decimal  @default(0) @db.Decimal(15, 2)
+  cap                    Decimal? @db.Decimal(15, 2)
+  reference              String?
+  effectiveFrom          String
+  effectiveTo            String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([employeeId])
+}
+
+model ContractorInvoice {
+  id             String    @id @default(cuid())
+  tenantId       String
+  workerId       String
+  workerName     String
+  period         String
+  amount         Decimal   @db.Decimal(15, 2)
+  currency       String    @default("USD")
+  withholdingPct Decimal   @default(0) @db.Decimal(5, 2)
+  netPayable     Decimal   @db.Decimal(15, 2)
+  status         String    @default("SUBMITTED") // SUBMITTED | APPROVED | PAID | VOIDED
+  payoutRef      String?
+  submittedAt    DateTime  @default(now())
+  decidedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, workerId])
+  @@index([tenantId, status])
+}
+
+model PaymentBatch {
+  id           String    @id @default(cuid())
+  tenantId     String
+  runId        String
+  count        Int       @default(0)
+  totalAmount  Decimal   @default(0) @db.Decimal(15, 2)
+  currency     String    @default("INR")
+  status       String    @default("PENDING") // PENDING | PROCESSING | COMPLETED
+  linesJson    Json      @default("[]")
+  createdAt    DateTime  @default(now())
+  reconciledAt DateTime?
+  updatedAt    DateTime  @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([runId])
+}
+
+model PayrollEvent {
+  id        String   @id @default(cuid())
+  tenantId  String
+  type      String
+  runId     String?
+  summary   String
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, runId])
+}
+
+model PayslipTemplate {
+  id        String   @id @default(cuid())
+  tenantId  String   @unique
+  name      String   @default("Default Payslip")
+  locale    String   @default("en-IN")
+  logoUrl   String?
+  sections  Json     @default("[]")
+  fields    Json     @default("[]")
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

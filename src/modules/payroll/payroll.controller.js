@@ -559,3 +559,219 @@ export async function updateContractorInvoice(request, reply) {
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
+
+// ── Phase 3: Missing Endpoints ────────────────────────────────────────────────
+
+export async function approveRunLevel(request, reply) {
+  try {
+    const data = await service.approveRunLevel(prisma, request.params.id, request.tenant.id, Number(request.params.level), request.body);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getRunVariance(request, reply) {
+  try {
+    const data = await service.getRunVariance(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Run not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getRunAudit(request, reply) {
+  try {
+    const data = await service.getRunAudit(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Run not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function recalculatePayslip(request, reply) {
+  try {
+    const data = await service.recalculatePayslip(prisma, request.params.id, request.params.payslipId, request.tenant.id, request.body?.actor);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Payslip not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function holdPayslip(request, reply) {
+  try {
+    const data = await service.holdPayslip(prisma, request.params.runId, request.params.payslipId, request.tenant.id, request.body);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Payslip not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function releasePayslip(request, reply) {
+  try {
+    const data = await service.releasePayslip(prisma, request.params.runId, request.params.payslipId, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Payslip not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function importInputsFromTimesheets(request, reply) {
+  try {
+    const data = await service.importInputsFromTimesheets(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Run not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function publishRun(request, reply) {
+  try {
+    const data = await service.publishRun(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Run not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function listPayrollEvents(request, reply) {
+  try {
+    const data = await service.listPayrollEvents(prisma, request.tenant.id, request.query.runId);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getEventCatalogue(_request, reply) {
+  reply.send(successResponse([
+    { type: 'payroll.run.created', label: 'Run Created', description: 'A new payroll run was initiated', category: 'Run' },
+    { type: 'payroll.run.calculated', label: 'Run Calculated', description: 'Payroll calculation completed', category: 'Run' },
+    { type: 'payroll.run.approved', label: 'Run Approved', description: 'Run approved by all approvers', category: 'Run' },
+    { type: 'payroll.run.paid', label: 'Run Paid', description: 'Run marked as paid', category: 'Run' },
+    { type: 'payslip.published', label: 'Payslips Published', description: 'Payslips published to employees', category: 'Payslip' },
+    { type: 'payment.failed', label: 'Payment Failed', description: 'A payment failed during disbursement', category: 'Payment' },
+    { type: 'salary.revised', label: 'Salary Revised', description: 'Employee salary configuration changed', category: 'Employee' },
+    { type: 'claim.approved', label: 'Claim Approved', description: 'Reimbursement claim approved', category: 'Claims' },
+  ]));
+}
+
+export async function getPaymentBatch(request, reply) {
+  try {
+    const data = await service.getPaymentBatch(prisma, request.params.id, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function createPaymentBatch(request, reply) {
+  try {
+    const data = await service.createPaymentBatch(prisma, request.params.id, request.tenant.id);
+    reply.code(201).send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function downloadBankFile(request, reply) {
+  try {
+    const { csv, filename } = await service.getBankFile(prisma, request.params.id, request.tenant.id, request.query.format || 'NACH');
+    reply.header('Content-Type', 'text/plain').header('Content-Disposition', `attachment; filename="${filename}"`).send(csv);
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getPaymentBatchStatus(request, reply) {
+  try {
+    const data = await service.getPaymentBatchById(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Batch not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function reconcilePaymentBatch(request, reply) {
+  try {
+    const data = await service.reconcilePaymentBatch(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Batch not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getPayslipTemplate(request, reply) {
+  try {
+    const data = await service.getPayslipTemplate(prisma, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function updatePayslipTemplate(request, reply) {
+  try {
+    const data = await service.updatePayslipTemplate(prisma, request.tenant.id, request.body);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getTaxForm(request, reply) {
+  try {
+    const data = await service.getTaxForm(prisma, request.params.id, request.tenant.id, request.query.type || 'FORM16', request.query.fy);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'No payroll data for this employee')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function listReimbursementCategories(request, reply) {
+  try {
+    const data = await service.listReimbursementCategories(prisma, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function listReimbursementClaims(request, reply) {
+  try {
+    const data = await service.listReimbursementClaims(prisma, request.tenant.id, request.query);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function submitReimbursementClaim(request, reply) {
+  try {
+    const data = await service.submitReimbursementClaim(prisma, request.tenant.id, request.body);
+    reply.code(201).send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function decideReimbursementClaim(request, reply) {
+  try {
+    const data = await service.decideReimbursementClaim(prisma, request.params.id, request.tenant.id, request.body.status);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function listGarnishments(request, reply) {
+  try {
+    const data = await service.listGarnishments(prisma, request.params.id, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function createGarnishment(request, reply) {
+  try {
+    const data = await service.createGarnishment(prisma, request.params.id, request.tenant.id, request.body);
+    reply.code(201).send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function updateGarnishment(request, reply) {
+  try {
+    const data = await service.updateGarnishment(prisma, request.params.garnishmentId, request.params.id, request.tenant.id, request.body);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Garnishment not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function deleteGarnishment(request, reply) {
+  try {
+    await service.deleteGarnishment(prisma, request.params.garnishmentId, request.params.id, request.tenant.id);
+    reply.send(successResponse({ deleted: true }));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getRunJournal(request, reply) {
+  try {
+    const data = await service.getRunJournal(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Run not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function exportRunJournal(request, reply) {
+  try {
+    const { csv, filename } = await service.exportRunJournal(prisma, request.params.id, request.tenant.id, request.query.format || 'CSV');
+    reply.header('Content-Type', 'text/plain').header('Content-Disposition', `attachment; filename="${filename}"`).send(csv);
+  } catch (err) { handleError(reply, err); }
+}
