@@ -1,9 +1,23 @@
 import * as repo from './announcements.repository.js';
 
+/** Phase 3 UI reads `color` from category config — must always be present. */
+export const ANNOUNCEMENT_CATEGORY_COLORS = {
+  Company: '#3b82f6',
+  People: '#ec4899',
+  Product: '#8b5cf6',
+  IT: '#f59e0b',
+  Office: '#10b981',
+};
+
+function categoryColor(category) {
+  return ANNOUNCEMENT_CATEGORY_COLORS[category] ?? '#64748b';
+}
+
 function shapeAnnouncement(a) {
   return {
     id: a.id,
     category: a.category,
+    color: categoryColor(a.category),
     channelId: a.channelId,
     title: a.title,
     body: a.body,
@@ -41,6 +55,7 @@ export async function getChannels(tenantId) {
     name: ch.name,
     postCount: ch.postCount,
     category: ch.category,
+    color: categoryColor(ch.category),
   }));
 }
 
@@ -51,6 +66,7 @@ export async function getEvents(tenantId) {
     date: e.date,
     title: e.title,
     meta: e.meta,
+    color: '#64748b',
   }));
 }
 
