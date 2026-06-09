@@ -158,6 +158,7 @@ export const updateEmailIntegration = wrap(async (req) => integrationsService.up
 export const getEmailIntegrationStats = wrap(async (req) => integrationsService.getEmailIntegrationStats(req.tenant.id));
 export const getStorageIntegration = wrap(async (req) => integrationsService.getStorageIntegration(req.tenant.id));
 export const updateStorageIntegration = wrap(async (req) => integrationsService.updateStorageIntegration(req.tenant.id, req.body));
+export const testStorageIntegration = wrap(async (req) => integrationsService.testStorageIntegration(req.tenant.id));
 export const listWebhooks = wrap(async (req) => integrationsService.listWebhooks(req.tenant.id));
 export const createWebhook = wrap(async (req, rep) => { rep.code(201); return integrationsService.createWebhook(req.tenant.id, req.body); });
 export const updateWebhook = wrap(async (req) => {

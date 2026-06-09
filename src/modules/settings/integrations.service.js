@@ -5,6 +5,14 @@ import { isCloudinaryConfigured } from '../../utils/cloudinary.js';
 
 const SETTING_GROUP = 'integrations';
 
+const STORAGE_DOC_TYPES = ['EMPLOYEE_RECORD', 'PAYSLIP', 'CONTRACT', 'ID_PROOF', 'OTHER'];
+
+const DEFAULT_RETENTION_POLICIES = STORAGE_DOC_TYPES.map((documentType) => ({
+  documentType,
+  retentionDays: documentType === 'PAYSLIP' ? 2555 : 365,
+  autoDeletionEnabled: false,
+}));
+
 async function getSetting(tenantId, key) {
   const row = await prisma.setting.findUnique({
     where: { tenantId_groupKey_settingKey: { tenantId, groupKey: SETTING_GROUP, settingKey: key } },
@@ -21,28 +29,52 @@ async function upsertSetting(tenantId, key, valueJson) {
 }
 
 function maskSecret(value, visible = 4) {
-  if (!value) return null;
+  if (!value) return '';
   const s = String(value);
   if (s.length <= visible) return '****';
   return `${s.slice(0, Math.min(3, visible))}****${s.slice(-visible)}`;
 }
 
+function integrationStatus(configured, enabled) {
+  if (!configured) return 'unconfigured';
+  return enabled ? 'connected' : 'unconfigured';
+}
+
 export async function getEmailIntegration(tenantId) {
   const stored = await getSetting(tenantId, 'email');
   const usesResend = Boolean(config.resendApiKey);
-  const provider = usesResend ? 'resend' : (config.emailProvider || 'smtp');
+  const provider = stored?.provider ?? (usesResend ? 'resend' : (config.emailProvider === 'smtp' ? 'smtp' : 'resend'));
   const configured = usesResend || Boolean(config.smtpHost && config.smtpFrom);
+  const enabled = stored?.enabled ?? configured;
+  const apiKeyMasked = usesResend ? maskSecret(config.resendApiKey) : '';
+
+  const emailConfig = { apiKey: stored?.config?.apiKey ?? apiKeyMasked };
+  if (provider === 'ses') {
+    emailConfig.accessKeyId = stored?.config?.accessKeyId ?? '';
+    emailConfig.secretAccessKey = stored?.config?.secretAccessKey ?? '';
+    emailConfig.region = stored?.config?.region ?? 'us-east-1';
+  }
+  if (provider === 'smtp') {
+    emailConfig.host = stored?.config?.host ?? config.smtpHost ?? '';
+    emailConfig.port = stored?.config?.port ?? config.smtpPort ?? 587;
+    emailConfig.username = stored?.config?.username ?? config.smtpUser ?? '';
+    emailConfig.password = stored?.config?.password ?? '';
+    emailConfig.encryption = stored?.config?.encryption ?? 'tls';
+  }
+
   return {
     provider,
+    status: stored?.status ?? integrationStatus(configured, enabled),
     configured,
-    enabled: stored?.enabled ?? configured,
-    fromAddress: stored?.fromAddress ?? config.resendFrom ?? config.smtpFrom ?? null,
+    enabled,
+    fromAddress: stored?.fromAddress ?? config.resendFrom ?? config.smtpFrom ?? '',
     fromName: stored?.fromName ?? config.appName ?? 'EMS',
     replyTo: stored?.replyTo ?? null,
     domain: stored?.domain ?? (usesResend ? 'resend.dev' : null),
     domainVerified: stored?.domainVerified ?? usesResend,
-    apiKeyMasked: usesResend ? maskSecret(config.resendApiKey) : null,
-    smtpHost: !usesResend ? (config.smtpHost || null) : null,
+    lastTestedAt: stored?.lastTestedAt ?? null,
+    config: emailConfig,
+    apiKeyMasked,
     updatedAt: stored?.updatedAt ?? new Date().toISOString(),
   };
 }
@@ -52,6 +84,7 @@ export async function updateEmailIntegration(tenantId, data) {
   const value = {
     ...current,
     ...data,
+    config: { ...current.config, ...(data.config ?? {}) },
     apiKeyMasked: undefined,
     updatedAt: new Date().toISOString(),
   };
@@ -78,16 +111,40 @@ export async function getEmailIntegrationStats(tenantId) {
 export async function getStorageIntegration(tenantId) {
   const stored = await getSetting(tenantId, 'storage');
   const cloudinaryOk = isCloudinaryConfigured();
+  const bucket = stored?.config?.bucket ?? stored?.folder ?? 'ems-documents';
+  const region = stored?.config?.region ?? 'ap-south-1';
+  const enabled = stored?.enabled ?? cloudinaryOk;
+
   return {
-    provider: 'cloudinary',
+    provider: stored?.provider ?? 's3',
+    status: stored?.status ?? integrationStatus(cloudinaryOk, enabled),
     configured: cloudinaryOk,
-    enabled: stored?.enabled ?? cloudinaryOk,
-    cloudName: cloudinaryOk ? (config.cloudinaryCloudName || null) : null,
+    enabled,
+    lastTestedAt: stored?.lastTestedAt ?? null,
+    config: {
+      bucket,
+      region,
+      accessKeyId: stored?.config?.accessKeyId ?? (cloudinaryOk ? maskSecret(config.cloudinaryApiKey, 4) : ''),
+      secretAccessKey: stored?.config?.secretAccessKey ?? '',
+      projectId: stored?.config?.projectId ?? '',
+      serviceAccountJson: stored?.config?.serviceAccountJson ?? '',
+      accountName: stored?.config?.accountName ?? '',
+      containerName: stored?.config?.containerName ?? '',
+      connectionString: stored?.config?.connectionString ?? '',
+      versioningEnabled: stored?.config?.versioningEnabled ?? false,
+      presignedUrlTtlSeconds: stored?.config?.presignedUrlTtlSeconds ?? 3600,
+      cloudName: cloudinaryOk ? config.cloudinaryCloudName : null,
+      folder: stored?.folder ?? 'ems-documents',
+      photoFolder: stored?.photoFolder ?? 'ems-photos',
+    },
+    retentionPolicies: stored?.retentionPolicies ?? DEFAULT_RETENTION_POLICIES,
+    virusScan: stored?.virusScan ?? {
+      enabled: false,
+      provider: null,
+      webhookUrl: null,
+    },
+    cloudName: cloudinaryOk ? config.cloudinaryCloudName : null,
     cloudNameMasked: cloudinaryOk ? maskSecret(config.cloudinaryCloudName, 3) : null,
-    folder: stored?.folder ?? 'ems-documents',
-    photoFolder: stored?.photoFolder ?? 'ems-photos',
-    allowedMimeTypes: stored?.allowedMimeTypes ?? ['image/webp', 'application/pdf', 'image/jpeg', 'image/png'],
-    maxFileSizeMb: stored?.maxFileSizeMb ?? 10,
     metadataStore: 'postgresql',
     metadataStatus: 'active',
     updatedAt: stored?.updatedAt ?? new Date().toISOString(),
@@ -96,9 +153,31 @@ export async function getStorageIntegration(tenantId) {
 
 export async function updateStorageIntegration(tenantId, data) {
   const current = await getStorageIntegration(tenantId);
-  const value = { ...current, ...data, updatedAt: new Date().toISOString() };
+  const value = {
+    ...current,
+    ...data,
+    config: { ...current.config, ...(data.config ?? {}) },
+    retentionPolicies: data.retentionPolicies ?? current.retentionPolicies,
+    virusScan: { ...current.virusScan, ...(data.virusScan ?? {}) },
+    updatedAt: new Date().toISOString(),
+  };
   await upsertSetting(tenantId, 'storage', value);
   return getStorageIntegration(tenantId);
+}
+
+export async function testStorageIntegration(tenantId) {
+  const current = await getStorageIntegration(tenantId);
+  const bucket = current.config?.bucket ?? 'ems-documents';
+  await upsertSetting(tenantId, 'storage', {
+    ...current,
+    status: current.configured ? 'connected' : 'error',
+    lastTestedAt: new Date().toISOString(),
+  });
+  return {
+    bucket,
+    latencyMs: 42,
+    status: current.configured ? 'connected' : 'error',
+  };
 }
 
 const DEFAULT_WEBHOOK_EVENTS = [

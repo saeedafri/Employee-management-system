@@ -50,7 +50,10 @@ async function main() {
     { key: 'earnings', label: 'Earnings', enabled: true, order: 1, color: '#16a34a' },
     { key: 'deductions', label: 'Deductions', enabled: true, order: 2, color: '#dc2626' },
     { key: 'employerContributions', label: 'Employer Contributions', enabled: true, order: 3, color: '#7c3aed' },
-    { key: 'ytd', label: 'Year to Date', enabled: true, order: 4, color: '#0891b2' },
+    { key: 'oneTime', label: 'One-Time Items', enabled: false, order: 4, color: '#ca8a04' },
+    { key: 'ytd', label: 'Year to Date', enabled: true, order: 5, color: '#0891b2' },
+    { key: 'attendance', label: 'Attendance', enabled: false, order: 6, color: '#64748b' },
+    { key: 'paymentInfo', label: 'Payment Info', enabled: false, order: 7, color: '#64748b' },
   ];
   const normalizedFields = [
     { key: 'employeeCode', label: 'Employee ID', enabled: true },

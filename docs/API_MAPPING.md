@@ -4174,9 +4174,11 @@ UI routes: `/settings/integration-email`, `/settings/integration-storage`, `/set
 | DELETE | `/settings/webhooks/:id` | HR,SA | Delete webhook |
 | POST | `/settings/webhooks/:id/test` | HR,SA | Test delivery (simulated) |
 
-**Email response:** `{ provider: "resend", configured, enabled, fromAddress, fromName, domain, domainVerified, apiKeyMasked, updatedAt }`
+**Email response (UI contract):** `{ provider, status: "connected"|"unconfigured"|"error", fromAddress, fromName, lastTestedAt, config: { apiKey, ...providerFields }, configured, enabled, domain?, domainVerified? }`
 
-**Storage response:** `{ provider: "cloudinary", configured, enabled, cloudName, cloudNameMasked, folder, photoFolder, allowedMimeTypes[], maxFileSizeMb, metadataStore: "postgresql", updatedAt }`
+**Storage response (UI contract):** `{ provider: "s3"|"gcs"|"azure", status, lastTestedAt, config: { bucket, region, accessKeyId, versioningEnabled, presignedUrlTtlSeconds, ... }, retentionPolicies: [{ documentType, retentionDays, autoDeletionEnabled }], virusScan: { enabled, provider, webhookUrl } }`
+
+**Garnishment response:** includes `amount: { kind: "FLAT"|"PERCENT_OF_DISPOSABLE", value }` (not flat `amountKind`/`amountValue` alone).
 
 **Webhooks list:** `{ webhooks: [{ id, name, url, events[], enabled, secretMasked, lastTriggeredAt, createdAt }], eventCatalog: [{ type, label }] }`
 

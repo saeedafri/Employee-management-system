@@ -633,7 +633,8 @@ export async function listPayrollEvents(request, reply) {
 }
 
 export async function getEventCatalogue(_request, reply) {
-  reply.send(successResponse([
+  const { EVENT_CATEGORY_COLORS } = await import('../../utils/payrollUiShapes.js');
+  const events = [
     { type: 'payroll.run.created', label: 'Run Created', description: 'A new payroll run was initiated', category: 'Run' },
     { type: 'payroll.run.calculated', label: 'Run Calculated', description: 'Payroll calculation completed', category: 'Run' },
     { type: 'payroll.run.approved', label: 'Run Approved', description: 'Run approved by all approvers', category: 'Run' },
@@ -642,7 +643,11 @@ export async function getEventCatalogue(_request, reply) {
     { type: 'payment.failed', label: 'Payment Failed', description: 'A payment failed during disbursement', category: 'Payment' },
     { type: 'salary.revised', label: 'Salary Revised', description: 'Employee salary configuration changed', category: 'Employee' },
     { type: 'claim.approved', label: 'Claim Approved', description: 'Reimbursement claim approved', category: 'Claims' },
-  ]));
+  ];
+  reply.send(successResponse(events.map((e) => ({
+    ...e,
+    color: EVENT_CATEGORY_COLORS[e.category] ?? '#64748b',
+  }))));
 }
 
 export async function getPaymentBatch(request, reply) {

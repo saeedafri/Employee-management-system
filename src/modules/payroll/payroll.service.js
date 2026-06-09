@@ -1,6 +1,7 @@
 import * as repo from './payroll.repository.js';
 import { detectCircularDep } from '../../utils/formulaEval.js';
 import {
+  fmtGarnishmentForUi,
   fmtPayslipTemplateForUi,
   normalizePayslipTemplateField,
   normalizePayslipTemplateSection,
@@ -1299,7 +1300,10 @@ const DEFAULT_TEMPLATE_SECTIONS = [
   { key: 'earnings', label: 'Earnings', enabled: true, order: 1 },
   { key: 'deductions', label: 'Deductions', enabled: true, order: 2 },
   { key: 'employerContributions', label: 'Employer Contributions', enabled: true, order: 3 },
-  { key: 'ytd', label: 'Year to Date', enabled: true, order: 4 },
+  { key: 'oneTime', label: 'One-Time Items', enabled: false, order: 4 },
+  { key: 'ytd', label: 'Year to Date', enabled: true, order: 5 },
+  { key: 'attendance', label: 'Attendance', enabled: false, order: 6 },
+  { key: 'paymentInfo', label: 'Payment Info', enabled: false, order: 7 },
 ];
 
 const DEFAULT_TEMPLATE_FIELDS = [
@@ -1438,20 +1442,23 @@ export async function decideReimbursementClaim(prisma, claimId, tenantId, status
 }
 
 export async function listGarnishments(prisma, employeeId, tenantId) {
-  return await prisma.garnishment.findMany({ where: { employeeId, tenantId }, orderBy: { createdAt: 'desc' } });
+  const rows = await prisma.garnishment.findMany({ where: { employeeId, tenantId }, orderBy: { priority: 'asc' } });
+  return rows.map(fmtGarnishmentForUi);
 }
 
 export async function createGarnishment(prisma, employeeId, tenantId, data) {
   const { generateId } = await import('../../utils/id.js');
-  return await prisma.garnishment.create({
+  const amountKind = data.amount?.kind ?? data.amountKind ?? 'FLAT';
+  const amountValue = data.amount?.value ?? data.amountValue;
+  const row = await prisma.garnishment.create({
     data: {
       id: generateId(),
       tenantId,
       employeeId,
       type: data.type,
       priority: data.priority ?? 1,
-      amountKind: data.amountKind || 'FLAT',
-      amountValue: data.amountValue,
+      amountKind,
+      amountValue,
       protectedEarningsFloor: data.protectedEarningsFloor ?? 0,
       cap: data.cap ?? null,
       reference: data.reference || null,
@@ -1459,15 +1466,23 @@ export async function createGarnishment(prisma, employeeId, tenantId, data) {
       effectiveTo: data.effectiveTo || null,
     },
   });
+  return fmtGarnishmentForUi(row);
 }
 
 export async function updateGarnishment(prisma, garnishmentId, employeeId, tenantId, data) {
   const g = await prisma.garnishment.findFirst({ where: { id: garnishmentId, employeeId, tenantId } });
   if (!g) return null;
-  return await prisma.garnishment.update({
+  const patch = { ...data, updatedAt: new Date() };
+  if (data.amount) {
+    patch.amountKind = data.amount.kind;
+    patch.amountValue = data.amount.value;
+    delete patch.amount;
+  }
+  const row = await prisma.garnishment.update({
     where: { id: garnishmentId },
-    data: { ...data, updatedAt: new Date() },
+    data: patch,
   });
+  return fmtGarnishmentForUi(row);
 }
 
 export async function deleteGarnishment(prisma, garnishmentId, employeeId, tenantId) {

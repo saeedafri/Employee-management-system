@@ -41,6 +41,8 @@ const PayrollComponent = {
     active:          { type: 'boolean' },
     displayOrder:    { type: 'integer' },
     description:     { type: 'string', nullable: true },
+    color:           { type: 'string', description: 'UI badge color (hex or tailwind class)' },
+    amount:          { type: 'number', nullable: true, description: 'Normalized monthly amount alias for UI' },
     statutoryTag:    { type: 'string', nullable: true, description: 'e.g. PF_EMPLOYEE, ESI, TDS — links component to statutory deduction bucket' },
     prorate:         { type: 'boolean', description: 'Whether to pro-rate for mid-month joiners/exits' },
     payInPeriods:    { type: 'string', nullable: true, description: 'JSON-encoded number[] — which months to pay (null = all months)' },
