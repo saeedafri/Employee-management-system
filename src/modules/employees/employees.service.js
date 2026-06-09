@@ -1,6 +1,7 @@
 import * as repo from './employees.repository.js';
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
+import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
 
 export async function listEmployees(tenantId, filters) {
   try {
@@ -95,6 +96,16 @@ export async function updateEmployee(employeeId, tenantId, data, userId) {
       ...data,
       updatedBy: userId,
     });
+
+    await recordAuditLog(
+      tenantId,
+      userId,
+      'EMPLOYEE_UPDATED',
+      'Employee',
+      employeeId,
+      { designation: existing.designation, phone: existing.phone },
+      { designation: employee.designation, phone: employee.phone },
+    ).catch(() => {});
 
     return successResponse(employee, { cached: false });
   } catch (error) {

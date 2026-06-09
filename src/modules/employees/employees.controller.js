@@ -5,6 +5,7 @@ import { errorResponse } from '../../utils/response.js';
 import { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
 import { prisma } from '../../plugins/prisma.js';
 import { generateId } from '../../utils/id.js';
+import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
 import sharp from 'sharp';
 
 const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS']);
@@ -167,6 +168,16 @@ export async function uploadDocument(request, reply) {
       },
     });
 
+    await recordAuditLog(
+      tenantId,
+      user.sub,
+      'DOCUMENT_UPLOADED',
+      'Employee',
+      employeeId,
+      null,
+      { documentId: doc.id, fileName: doc.fileName, documentType },
+    ).catch(() => {});
+
     reply.code(201).send({ success: true, data: doc });
   } catch (err) {
     reply.code(500).send(errorResponse('UPLOAD_ERROR', err.message, request.requestId));
@@ -212,6 +223,16 @@ export async function deleteDocument(request, reply) {
     }
 
     await prisma.employeeDocument.delete({ where: { id: docId } });
+    await recordAuditLog(
+      tenantId,
+      user.sub,
+      'DOCUMENT_DELETED',
+      'Employee',
+      employeeId,
+      { documentId: docId, fileName: doc.fileName },
+      null,
+    ).catch(() => {});
+
     reply.code(200).send({ success: true, message: 'Document deleted' });
   } catch (err) {
     reply.code(500).send(errorResponse('DELETE_ERROR', err.message, request.requestId));

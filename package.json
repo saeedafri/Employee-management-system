@@ -38,10 +38,12 @@
     "db:seed:phase3:payroll": "node prisma/seedPayrollPhase3.js",
     "db:seed:timesheets": "node prisma/seedTimesheets.js",
     "db:seed:integrations": "node prisma/seedPhase3Integrations.js",
-    "test:deployed-ui": "node scripts/deployed-ui-full-audit.mjs",
+    "test:deployed-ui:smoke": "node scripts/deployed-ui-full-audit.mjs",
+    "test:deployed-ui:deep": "node scripts/deployed-ui-deep-clickthrough.mjs",
+    "test:deployed-ui": "node scripts/deployed-ui-complete-final-audit.mjs",
     "test:playwright:deployed": "playwright test tests/e2e/deployed-full-clickthrough.spec.ts --project=chromium --workers=1",
     "db:seed:deep": "node prisma/seedDeepClickthrough.js",
-    "test:deployed-ui": "node scripts/deployed-ui-deep-clickthrough.mjs"
+    "seed:production-api": "node scripts/seedProductionViaApi.mjs"
   },
   "keywords": [
     "employee-management",
@@ -78,6 +80,7 @@
   "devDependencies": {
     "@eslint/js": "^8.57.0",
     "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.60.0",
     "c8": "^11.0.0",
     "chai": "^6.2.2",
     "eslint": "^8.57.0",

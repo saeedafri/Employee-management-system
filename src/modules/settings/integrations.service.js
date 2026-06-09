@@ -115,8 +115,10 @@ export async function getStorageIntegration(tenantId) {
   const region = stored?.config?.region ?? 'ap-south-1';
   const enabled = stored?.enabled ?? cloudinaryOk;
 
+  const provider = stored?.provider ?? (cloudinaryOk ? 'cloudinary' : 's3');
+
   return {
-    provider: stored?.provider ?? 's3',
+    provider,
     status: stored?.status ?? integrationStatus(cloudinaryOk, enabled),
     configured: cloudinaryOk,
     enabled,

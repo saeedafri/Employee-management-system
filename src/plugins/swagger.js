@@ -1395,6 +1395,64 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             createdAt: { type: 'string', format: 'date-time' },
           },
         },
+        PaySchedule: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, code: { type: 'string' }, name: { type: 'string' },
+            country: { type: 'string' }, paySchedule: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            firstPayDate: { type: 'string', format: 'date' }, source: { type: 'string' },
+          },
+        },
+        WebhookEvent: {
+          type: 'object',
+          properties: {
+            type: { type: 'string' }, label: { type: 'string' },
+          },
+        },
+        EmployeeDocument: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, employeeId: { type: 'string' }, documentType: { type: 'string' },
+            fileName: { type: 'string' }, fileUrl: { type: 'string' }, mimeType: { type: 'string' },
+            sizeBytes: { type: 'integer' }, verificationStatus: { type: 'string' },
+            createdAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        DepartmentTree: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, name: { type: 'string' }, depth: { type: 'integer' },
+            parentId: { type: 'string', nullable: true }, headEmployeeId: { type: 'string', nullable: true },
+            children: { type: 'array', items: { '$ref': '#/definitions/DepartmentTree' } },
+          },
+        },
+        TimesheetProject: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, name: { type: 'string' }, code: { type: 'string' },
+            status: { type: 'string' }, billable: { type: 'boolean' },
+          },
+        },
+        TimesheetTask: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, projectId: { type: 'string' }, name: { type: 'string' },
+            status: { type: 'string' },
+          },
+        },
+        TimesheetApproval: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, employeeId: { type: 'string' }, employeeName: { type: 'string' },
+            weekStart: { type: 'string', format: 'date' }, status: { type: 'string' },
+            totalHours: { type: 'number' }, submittedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        PayrollRunDetail: {
+          type: 'object',
+          description: 'Full payroll run for detail page',
+          allOf: [{ '$ref': '#/definitions/PayrollRunSummary' }],
+        },
       },
     },
   });
