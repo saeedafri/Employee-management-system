@@ -421,14 +421,20 @@ export async function getEmployeePayslipById(prisma, employeeId, payslipId, tena
 function fmtRun(run, withSummary = false) {
   const base = {
     id: run.id, period: run.period, periodLabel: monthLabel(run.period),
+    type: run.type ?? 'REGULAR',
     status: run.status, employeeCount: run.employeeCount,
     totalGross: Number(run.totalGross), totalDeductions: Number(run.totalDeductions),
-    totalNet: Number(run.totalNet), currency: run.currency,
+    totalNet: Number(run.totalNet),
+    employerCost: Number(run.employerCost ?? 0),
+    currency: run.currency,
     initiatedBy: run.initiatedByUser?.email ?? null,
     approvedBy: run.approvedByUser?.email ?? null,
     processedAt: run.processedAt ?? null,
     approvedAt: run.approvedAt ?? null,
     paidAt: run.paidAt ?? null,
+    published: run.published ?? false,
+    publishedAt: run.publishedAt ?? null,
+    approvals: run.approvalsJson ?? [],
     createdAt: run.createdAt,
   };
   if (withSummary) base.summary = run.summaryJson ?? { byDepartment: [], warnings: [] };

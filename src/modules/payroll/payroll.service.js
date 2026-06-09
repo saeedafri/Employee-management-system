@@ -1132,8 +1132,29 @@ export async function listPayrollEvents(prisma, tenantId, runId) {
 
 export async function getPaymentBatch(prisma, runId, tenantId) {
   const batch = await prisma.paymentBatch.findFirst({ where: { runId, tenantId }, orderBy: { createdAt: 'desc' } });
-  if (!batch) return { runId, batch: null };
-  return { runId, batch };
+  if (!batch) return null;
+  const rawLines = batch.linesJson ?? [];
+  return {
+    id: batch.id,
+    runId: batch.runId,
+    count: batch.count,
+    totalAmount: Number(batch.totalAmount),
+    currency: batch.currency,
+    status: batch.status,
+    createdAt: batch.createdAt,
+    reconciledAt: batch.reconciledAt ?? null,
+    lines: rawLines.map((l) => ({
+      payslipId: l.payslipId ?? l.employeeId ?? '',
+      employeeId: l.employeeId ?? '',
+      employeeCode: l.employeeCode ?? '',
+      employeeName: l.name ?? l.employeeName ?? '',
+      amount: Number(l.netPay ?? l.amount ?? 0),
+      currency: batch.currency,
+      status: l.status ?? 'PENDING',
+      failureReason: l.failureReason ?? null,
+      payoutRef: l.payoutRef ?? null,
+    })),
+  };
 }
 
 export async function createPaymentBatch(prisma, runId, tenantId) {
