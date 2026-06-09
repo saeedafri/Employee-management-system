@@ -1415,32 +1415,46 @@ export async function deleteGarnishment(prisma, garnishmentId, employeeId, tenan
 export async function getRunJournal(prisma, runId, tenantId) {
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) return null;
+  const currency = run.currency || 'INR';
   const payslips = await prisma.payslip.findMany({
     where: { payrollRunId: runId, tenantId },
-    include: { employee: { select: { firstName: true, lastName: true } } },
+    include: {
+      employee: {
+        select: {
+          firstName: true, lastName: true,
+          department: { select: { name: true } },
+        },
+      },
+    },
   });
-  const entries = payslips.flatMap(p => {
-    const name = p.employee ? `${p.employee.firstName} ${p.employee.lastName}`.trim() : p.employeeId;
+  const lines = payslips.flatMap((p) => {
+    const costCenter = p.employee?.department?.name ?? 'General';
     return [
-      { account: 'Salary Expense', debit: Number(p.grossEarnings || 0), credit: 0, employeeId: p.employeeId, description: `Gross pay - ${name}` },
-      { account: 'Tax Payable', debit: 0, credit: Number(p.totalDeductions || 0), employeeId: p.employeeId, description: `Tax/deductions - ${name}` },
-      { account: 'Salaries Payable', debit: 0, credit: Number(p.netPay || 0), employeeId: p.employeeId, description: `Net pay - ${name}` },
+      { account: 'Salary Expense', costCenter, debit: Number(p.grossEarnings || 0), credit: 0, currency },
+      { account: 'Tax Payable', costCenter, debit: 0, credit: Number(p.totalDeductions || 0), currency },
+      { account: 'Salaries Payable', costCenter, debit: 0, credit: Number(p.netPay || 0), currency },
     ];
   });
+  const totalDebit = lines.reduce((s, l) => s + l.debit, 0);
+  const totalCredit = lines.reduce((s, l) => s + l.credit, 0);
   return {
     runId,
     period: run.period,
-    totalDebit: entries.reduce((s, e) => s + e.debit, 0),
-    totalCredit: entries.reduce((s, e) => s + e.credit, 0),
-    entries,
+    currency,
+    lines,
+    totalDebit,
+    totalCredit,
+    balanced: totalDebit === totalCredit,
+    generatedAt: new Date().toISOString(),
+    entries: lines,
   };
 }
 
 export async function exportRunJournal(prisma, runId, tenantId, _format) {
   const journal = await getRunJournal(prisma, runId, tenantId);
   if (!journal) throw AppError('Run not found', 'NOT_FOUND', 404);
-  const header = 'Account,Debit,Credit,EmployeeId,Description';
-  const rows = journal.entries.map(e => `${e.account},${e.debit},${e.credit},${e.employeeId},"${e.description}"`);
+  const header = 'Account,CostCenter,Debit,Credit,Currency';
+  const rows = journal.lines.map((l) => `${l.account},${l.costCenter},${l.debit},${l.credit},${l.currency}`);
   const csv = [header, ...rows].join('\n');
   return { csv, filename: `journal-${runId}.csv` };
 }

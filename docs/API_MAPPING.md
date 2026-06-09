@@ -4097,7 +4097,7 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | GET | `/payroll/runs/:id/journal` | HR,SA | Debit/credit journal for the run |
 | GET | `/payroll/runs/:id/journal/export` | HR,SA | `?format=CSV`. Download journal as CSV |
 
-**Journal shape:** `{ runId, period, totalDebit, totalCredit, entries: [{account, debit, credit, employeeId, description}] }`
+**Journal shape (JournalDocument):** `{ runId, period, currency, lines: [{ account, costCenter, debit, credit, currency }], totalDebit, totalCredit, balanced, generatedAt }` — UI reads **`lines`** (not `entries`)
 
 ### F.12 — Events & Catalogue
 | Method | Path | Roles | Notes |

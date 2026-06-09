@@ -1212,19 +1212,21 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             lines: { type: 'array', items: { '$ref': '#/definitions/PaymentBatchLine' } },
           },
         },
-        JournalEntry: {
+        JournalLine: {
           type: 'object',
           properties: {
-            account: { type: 'string' }, debit: { type: 'number' }, credit: { type: 'number' },
-            employeeId: { type: 'string' }, description: { type: 'string' },
+            account: { type: 'string' }, costCenter: { type: 'string' },
+            debit: { type: 'number' }, credit: { type: 'number' }, currency: { type: 'string' },
           },
         },
         AccountingJournal: {
           type: 'object',
+          description: 'GET /payroll/runs/:id/journal — UI reads lines[]',
           properties: {
-            runId: { type: 'string' }, period: { type: 'string' },
+            runId: { type: 'string' }, period: { type: 'string' }, currency: { type: 'string' },
+            lines: { type: 'array', items: { '$ref': '#/definitions/JournalLine' } },
             totalDebit: { type: 'number' }, totalCredit: { type: 'number' },
-            entries: { type: 'array', items: { '$ref': '#/definitions/JournalEntry' } },
+            balanced: { type: 'boolean' }, generatedAt: { type: 'string', format: 'date-time' },
           },
         },
         PayrollEvent: {
