@@ -1409,7 +1409,15 @@ export async function listReimbursementClaims(prisma, tenantId, params = {}) {
     }),
     prisma.reimbursementClaim.count({ where }),
   ]);
-  return { claims, total, page: Number(params.page || 0), limit: Number(params.limit || 50) };
+  const mapped = claims.map((c) => ({
+    ...c,
+    amount: c.amount != null ? Number(c.amount) : 0,
+    category: c.category
+      ? { ...c.category, monthlyCap: Number(c.category.monthlyCap) }
+      : c.category,
+  }));
+  if (params.employeeId) return mapped;
+  return { claims: mapped, total, page: Number(params.page || 0), limit: Number(params.limit || 50) };
 }
 
 export async function submitReimbursementClaim(prisma, tenantId, data) {

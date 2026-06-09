@@ -635,14 +635,14 @@ export async function listPayrollEvents(request, reply) {
 export async function getEventCatalogue(_request, reply) {
   const { EVENT_CATEGORY_COLORS } = await import('../../utils/payrollUiShapes.js');
   const events = [
-    { type: 'payroll.run.created', label: 'Run Created', description: 'A new payroll run was initiated', category: 'Run' },
-    { type: 'payroll.run.calculated', label: 'Run Calculated', description: 'Payroll calculation completed', category: 'Run' },
-    { type: 'payroll.run.approved', label: 'Run Approved', description: 'Run approved by all approvers', category: 'Run' },
-    { type: 'payroll.run.paid', label: 'Run Paid', description: 'Run marked as paid', category: 'Run' },
-    { type: 'payslip.published', label: 'Payslips Published', description: 'Payslips published to employees', category: 'Payslip' },
-    { type: 'payment.failed', label: 'Payment Failed', description: 'A payment failed during disbursement', category: 'Payment' },
-    { type: 'salary.revised', label: 'Salary Revised', description: 'Employee salary configuration changed', category: 'Employee' },
-    { type: 'claim.approved', label: 'Claim Approved', description: 'Reimbursement claim approved', category: 'Claims' },
+    { type: 'payroll.run.created', label: 'Run Created', description: 'A new payroll run was initiated', category: 'run' },
+    { type: 'payroll.run.calculated', label: 'Run Calculated', description: 'Payroll calculation completed', category: 'run' },
+    { type: 'payroll.run.approved', label: 'Run Approved', description: 'Run approved by all approvers', category: 'run' },
+    { type: 'payroll.run.paid', label: 'Run Paid', description: 'Run marked as paid', category: 'run' },
+    { type: 'payslip.published', label: 'Payslips Published', description: 'Payslips published to employees', category: 'payslip' },
+    { type: 'payment.failed', label: 'Payment Failed', description: 'A payment failed during disbursement', category: 'payment' },
+    { type: 'salary.revised', label: 'Salary Revised', description: 'Employee salary configuration changed', category: 'employee' },
+    { type: 'claim.approved', label: 'Claim Approved', description: 'Reimbursement claim approved', category: 'claims' },
   ];
   reply.send(successResponse(events.map((e) => ({
     ...e,

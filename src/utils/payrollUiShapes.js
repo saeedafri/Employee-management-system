@@ -34,12 +34,13 @@ export const ALL_PAYSLIP_SECTION_DEFS = [
   { key: 'paymentInfo', label: 'Payment Info', enabled: false, order: 7 },
 ];
 
+/** UI `PAYROLL_EVENT_CONFIG` keys are lowercase category slugs. */
 export const EVENT_CATEGORY_COLORS = {
-  Run: '#6366f1',
-  Payslip: '#3b82f6',
-  Payment: '#ef4444',
-  Employee: '#10b981',
-  Claims: '#f59e0b',
+  run: '#6366f1',
+  payslip: '#3b82f6',
+  payment: '#ef4444',
+  employee: '#10b981',
+  claims: '#f59e0b',
 };
 
 export function componentColor(type) {
