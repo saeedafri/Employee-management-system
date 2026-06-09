@@ -5,7 +5,7 @@
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
 >
-> **Cloudinary:** `POST /employees/:id/photo` and `POST /employees/:id/documents` return `503 STORAGE_NOT_CONFIGURED` until `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` are set in Render env vars. All other endpoints are unaffected.
+> **Cloudinary:** Live on Render (2026-06-09) — cloud `dmljxhmio`. `POST /employees/:id/photo` and `POST /employees/:id/documents` upload to Cloudinary; `GET` returns `fileUrl` on `res.cloudinary.com`. Settings storage integration returns `provider: cloudinary`, `configured: true`.
 >
 > **MSW (Mock Service Worker):** The deployed Vercel frontend has `NEXT_PUBLIC_USE_MOCKS` controlled by the Vercel env var. Default in code is `false`. If set to `true`, Phase 3 API calls are intercepted by MSW in the browser before reaching the backend BFF proxy. Set it to `false` in Vercel dashboard → Settings → Environment Variables to force real backend calls.
 

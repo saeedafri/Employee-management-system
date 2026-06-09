@@ -16,7 +16,7 @@ Deployed on **Render**. GitHub: `github.com/saeedafri/Employee-management-system
 | Auth | JWT access tokens + refresh token rotation (httpOnly cookie) |
 | Password | Argon2id (type:2, memoryCost:19456, timeCost:2, parallelism:1) |
 | Email | **Resend** (HTTP API via `RESEND_API_KEY`) — `emailJob.js` uses Resend directly; `EMAIL_PROVIDER` env var not used by password reset/OTP flows |
-| File Storage | Cloudinary (optional) — `CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET` env vars |
+| File Storage | **Cloudinary** (live on Render) — cloud `dmljxhmio`; `CLOUDINARY_*` env vars on Render + local `.env` |
 | Export | Real XLSX via ExcelJS — styled headers, alternating rows, auto-width |
 | Queue | **REMOVED** — Redis/BullMQ removed; all ops are synchronous |
 | Docs | Swagger UI at `/docs` |
@@ -434,8 +434,8 @@ Validator required `type` field (LATE/MISSED_CHECKOUT/EARLY_CHECKOUT) but `Atten
 Uses Cloudinary for storage. Requires `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` on Render.
 Returns `503 STORAGE_NOT_CONFIGURED` if vars not set (graceful fallback).
 
-### Remaining — Cloudinary not configured on Render (2026-05-27 production check)
-All 65 employees have `profilePhotoUrl: null`. `GET /employees/:id/documents` returns `[]` for all employees including Aman, Priya, HR Admin. Set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` in Render env vars to enable photo and document upload. Endpoints already implemented and return `503 STORAGE_NOT_CONFIGURED` gracefully until then.
+### Cloudinary on Render (configured 2026-06-09)
+`CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` are set on Render service `srv-d85k6cl8nd3s73drar50` (cloud: **dmljxhmio**). `POST /employees/:id/documents` and `POST /employees/:id/photo` are live. Settings → Storage shows `provider: cloudinary`, `configured: true`. Local `.env` matches same cloud name.
 
 ### Remaining — Notifications module not built
 No `src/modules/notifications/` dir. `Notification` Prisma model exists but zero routes.
@@ -545,10 +545,8 @@ SMTP_FROM=<sender address>
 # For Gmail: 1) enable 2FA, 2) create App Password at myaccount.google.com/apppasswords
 # For Resend: SMTP_HOST=smtp.resend.com SMTP_PORT=465 SMTP_USER=resend SMTP_PASS=re_KEY SMTP_FROM=onboarding@resend.dev
 
-# File Storage — Cloudinary (needed for document upload endpoint)
-# CLOUDINARY_CLOUD_NAME=your-cloud-name
-# CLOUDINARY_API_KEY=your-api-key
-# CLOUDINARY_API_SECRET=your-api-secret
+# File Storage — Cloudinary (configured; values in .env — never commit)
+# CLOUDINARY_CLOUD_NAME=dmljxhmio
 
 RENDER_API_KEY=<see .env>
 GITHUB_TOKEN=<see .env>
