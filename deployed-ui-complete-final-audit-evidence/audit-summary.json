@@ -1,0 +1,376 @@
+{
+  "deployedUrl": "https://ems-frontend-iota-ten.vercel.app",
+  "testedAt": "2026-06-09T09:53:19.033Z",
+  "accounts": [
+    "HR",
+    "HR_ACME",
+    "SUPER",
+    "MANAGER",
+    "PRIYA",
+    "DEV1"
+  ],
+  "results": [
+    {
+      "module": "Dashboard",
+      "action": "pending approvals load",
+      "endpoint": "GET /manager/approvals",
+      "screenshot": "dashboard_pending_approvals_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:48:10.773Z"
+    },
+    {
+      "module": "Dashboard",
+      "action": "approval action",
+      "screenshot": "dashboard_approval_action_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:48:12.081Z"
+    },
+    {
+      "module": "Settings",
+      "action": "payslip template save",
+      "result": "PARTIAL",
+      "note": "Save disabled — no changes to persist",
+      "ts": "2026-06-09T09:48:18.042Z"
+    },
+    {
+      "module": "Settings",
+      "action": "pay schedules",
+      "endpoint": "GET /payroll/schedules",
+      "screenshot": "settings_pay_schedules_loaded_with_data.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:48:24.653Z"
+    },
+    {
+      "module": "Settings",
+      "action": "email integration load",
+      "endpoint": "GET /settings/integrations/email",
+      "screenshot": "settings_email_resend_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:48:30.568Z"
+    },
+    {
+      "module": "Settings",
+      "action": "send test email",
+      "endpoint": "POST /settings/integrations/email/test",
+      "screenshot": "settings_email_send_test_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:48:31.912Z"
+    },
+    {
+      "module": "Settings",
+      "action": "storage integration",
+      "endpoint": "GET /settings/integrations/storage",
+      "screenshot": "settings_storage_cloudinary_loaded.png",
+      "result": "PASS",
+      "note": "provider=cloudinary",
+      "ts": "2026-06-09T09:48:37.968Z"
+    },
+    {
+      "module": "Settings",
+      "action": "storage test",
+      "endpoint": "POST /settings/integrations/storage/test",
+      "screenshot": "settings_storage_test_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:48:39.260Z"
+    },
+    {
+      "module": "Settings",
+      "action": "webhooks list",
+      "endpoint": "GET /settings/webhooks",
+      "screenshot": "settings_webhooks_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:48:45.898Z"
+    },
+    {
+      "module": "Settings",
+      "action": "create webhook",
+      "endpoint": "POST /settings/webhooks",
+      "screenshot": "settings_webhook_create_success.png",
+      "result": "PARTIAL",
+      "ts": "2026-06-09T09:48:47.269Z"
+    },
+    {
+      "module": "Settings",
+      "action": "console errors",
+      "result": "PARTIAL",
+      "note": "Failed to load resource: the server responded with a status of 400 ()",
+      "ts": "2026-06-09T09:48:48.086Z"
+    },
+    {
+      "module": "Employees",
+      "action": "profile load",
+      "endpoint": "GET /employees/cmq5k4wso001ies8d5sjxzwum",
+      "screenshot": "employee_profile_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:05.346Z"
+    },
+    {
+      "module": "Employees",
+      "action": "compensation",
+      "endpoint": "GET /payroll/employees/:id/salary",
+      "screenshot": "employee_compensation_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:09.058Z"
+    },
+    {
+      "module": "Employees",
+      "action": "documents list",
+      "endpoint": "GET /employees/cmq5k4wso001ies8d5sjxzwum/documents",
+      "screenshot": "employee_documents_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:12.801Z"
+    },
+    {
+      "module": "Employees",
+      "action": "document download",
+      "result": "PARTIAL",
+      "note": "No documents to download or Cloudinary not configured",
+      "ts": "2026-06-09T09:49:12.804Z"
+    },
+    {
+      "module": "Employees",
+      "action": "activity tab",
+      "endpoint": "GET /audit-logs?entity=Employee",
+      "screenshot": "employee_activity_loaded_with_rows.png",
+      "result": "PARTIAL",
+      "note": "0 rows",
+      "ts": "2026-06-09T09:49:16.382Z"
+    },
+    {
+      "module": "Employees",
+      "action": "edit save",
+      "endpoint": "PATCH /employees/cmq5k4wso001ies8d5sjxzwum",
+      "screenshot": "employee_edit_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:20.939Z"
+    },
+    {
+      "module": "Departments",
+      "action": "list",
+      "endpoint": "GET /departments",
+      "screenshot": "departments_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:29.922Z"
+    },
+    {
+      "module": "Departments",
+      "action": "create",
+      "endpoint": "POST /departments",
+      "screenshot": "department_create_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:32.478Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "list",
+      "endpoint": "GET /payroll/runs",
+      "screenshot": "payroll_list_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:44.084Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "run detail",
+      "endpoint": "GET /payroll/runs/:id",
+      "screenshot": "payroll_run_detail_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:51.928Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "view payslip",
+      "endpoint": "GET /payroll/runs/:id/payslips/:slipId",
+      "screenshot": "payroll_view_payslip_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:55.070Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_export_register_success",
+      "endpoint": "GET /payroll/runs/:id/register",
+      "screenshot": "payroll_export_register_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:49:59.410Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_bank_file_downloaded",
+      "endpoint": "GET /payroll/runs/:id/bank-file",
+      "screenshot": "payroll_bank_file_downloaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:50:09.786Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_audit_pack_export_success",
+      "endpoint": "GET /payroll/reports/audit-pack",
+      "screenshot": "payroll_audit_pack_export_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:50:15.331Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_statutory_return_export_success",
+      "endpoint": "GET /payroll/runs/:id/statutory-return",
+      "screenshot": "payroll_statutory_return_export_success.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:50:22.224Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "accounting journal",
+      "endpoint": "GET /payroll/runs/:id/journal",
+      "screenshot": "payroll_accounting_journal_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:50:29.374Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "audit trail",
+      "screenshot": "payroll_audit_trail_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:50:36.594Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "events",
+      "screenshot": "payroll_events_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:50:41.034Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "HR_ADMIN load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_hr_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:50:51.902Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "MANAGER load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_manager_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:51:00.519Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "EMPLOYEE priya load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_employee_priya_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:51:09.752Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "EMPLOYEE dev1 load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_employee_dev1_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:51:20.318Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "SUPER_ADMIN load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_superadmin_graceful_state.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:51:30.034Z"
+    },
+    {
+      "module": "Recruitment",
+      "action": "page load",
+      "screenshot": "recruitment_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:51:54.029Z"
+    },
+    {
+      "module": "Performance",
+      "action": "page load",
+      "screenshot": "performance_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:52:03.590Z"
+    },
+    {
+      "module": "Assets",
+      "action": "page load",
+      "screenshot": "assets_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:52:13.090Z"
+    },
+    {
+      "module": "Assets",
+      "action": "create action",
+      "screenshot": "assets_assign_success.png",
+      "result": "PARTIAL",
+      "ts": "2026-06-09T09:52:14.471Z"
+    },
+    {
+      "module": "Announcements",
+      "action": "page load",
+      "screenshot": "announcements_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:52:23.694Z"
+    },
+    {
+      "module": "Announcements",
+      "action": "create action",
+      "screenshot": "announcements_create_success.png",
+      "result": "PARTIAL",
+      "ts": "2026-06-09T09:52:25.031Z"
+    },
+    {
+      "module": "Attendance",
+      "action": "page load",
+      "route": "/attendance",
+      "screenshot": "attendance_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:52:33.964Z"
+    },
+    {
+      "module": "Leave",
+      "action": "page load",
+      "route": "/leave",
+      "screenshot": "leave_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:52:43.079Z"
+    },
+    {
+      "module": "Holidays",
+      "action": "page load",
+      "route": "/holidays",
+      "screenshot": "holidays_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:52:52.138Z"
+    },
+    {
+      "module": "Analytics",
+      "action": "page load",
+      "route": "/analytics",
+      "screenshot": "analytics_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:53:01.483Z"
+    },
+    {
+      "module": "Reports",
+      "action": "page load",
+      "route": "/reports",
+      "screenshot": "reports_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:53:10.712Z"
+    },
+    {
+      "module": "Permissions",
+      "action": "page load",
+      "route": "/settings/permissions",
+      "screenshot": "permissions_loaded.png",
+      "result": "PASS",
+      "ts": "2026-06-09T09:53:18.904Z"
+    }
+  ],
+  "failures": 0,
+  "partial": 7,
+  "verdict": "PARTIAL",
+  "evidenceDir": "/Users/mohdsaeedafri/All-Code-Base/EMS/deployed-ui-complete-final-audit-evidence"
+}

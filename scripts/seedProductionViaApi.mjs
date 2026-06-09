@@ -63,15 +63,17 @@ async function main() {
   }
 
   const emps = await api(token, 'GET', '/employees?limit=5');
-  const list = emps.json?.data?.employees ?? emps.json?.data?.items ?? emps.json?.data ?? [];
+  const list = emps.json?.data?.employees ?? emps.json?.data?.data ?? emps.json?.data?.items ?? (Array.isArray(emps.json?.data) ? emps.json.data : []);
   const empId = Array.isArray(list) ? list[0]?.id : null;
   if (empId) {
     const patch = await api(token, 'PATCH', `/employees/${empId}`, {
-      designation: 'Senior Engineer (audit seed)',
+      designation: `Senior Engineer ${new Date().toISOString().slice(0, 10)}`,
     });
-    console.log('employee patch audit seed', patch.status);
+    console.log('employee patch audit seed', patch.status, patch.json?.error?.code || 'ok');
     const logs = await api(token, 'GET', `/audit-logs?entity=Employee&entityId=${empId}&limit=5`);
     console.log('audit logs count', logs.json?.data?.logs?.length ?? 0);
+  } else {
+    console.log('no employee id for audit seed');
   }
 
   const storage = await api(token, 'PATCH', '/settings/integrations/storage', {

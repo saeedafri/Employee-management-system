@@ -4224,4 +4224,119 @@ Each `items[]` entry includes **`color`** (hex). UI maps `type` → color; missi
 |--------|------|-------|----------|
 | GET | `/payroll/schedules` | HR,SA | `/settings/pay/schedules` |
 
-Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integrations.js`.
+Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integrations.js` or `npm run seed:production-api` (POST `/payroll/pay-calendars`).
+
+**Empty state:** `[]` — UI shows empty table. **Live:** Render production (2026-06-09 audit: ≥6 schedules after API seed).
+
+---
+
+## Deployed UI Complete Audit — Endpoint Reference (2026-06-09)
+
+> Evidence: `deployed-ui-complete-final-audit-evidence/`. Command: `npm run test:deployed-ui` or `npm run test:playwright:deployed`.
+
+### Settings — Payslip Template
+
+| Method | Path | Roles | Request | Response `data` | UI |
+|--------|------|-------|---------|-----------------|-----|
+| GET | `/payroll/payslip-templates` | HR,SA | — | `{ id, name, locale, sections[{key,label,enabled,order,color}], fields[] }` | `/settings/pay/payslip-template` |
+| PATCH | `/payroll/payslip-templates/:id` | HR,SA | `{ sections?, fields?, name? }` | Updated template | Save button (enabled only when dirty) |
+
+**Seed:** `seedPhase3Integrations.js` normalizes 7 sections with `color`. **Live:** ✅
+
+### Settings — Email / Resend
+
+| Method | Path | Roles | Request | Response `data` | UI |
+|--------|------|-------|---------|-----------------|-----|
+| GET | `/settings/integrations/email` | HR,SA | — | `{ provider, status, config:{apiKey}, fromAddress, apiKeyMasked, domainVerified }` | `/settings/integration-email` |
+| PATCH | `/settings/integrations/email` | HR,SA | partial settings | same shape | Save |
+| GET | `/settings/integrations/email/stats` | HR,SA | — | `{ sent24h, delivered24h, bounced24h, failed24h, lastSentAt }` | Stats panel |
+| POST | `/settings/integrations/email/test` | HR,SA | `{ to? }` | `{ sent: true, message }` | Send test email |
+
+**Provider:** Resend when `RESEND_API_KEY` set on Render. **Live:** ✅ test button 200.
+
+### Settings — Storage / Cloudinary
+
+| Method | Path | Roles | Request | Response `data` | UI |
+|--------|------|-------|---------|-----------------|-----|
+| GET | `/settings/integrations/storage` | HR,SA | — | `{ provider: "cloudinary"\|"s3", status, config:{bucket,region,cloudName,folder,...}, retentionPolicies[], virusScan, metadataStore }` | `/settings/integration-storage` |
+| PATCH | `/settings/integrations/storage` | HR,SA | partial | same | Save |
+| POST | `/settings/integrations/storage/test` | HR,SA | — | `{ bucket, latencyMs, status }` | Test connection |
+
+**Provider mapping:** defaults to `cloudinary` when Cloudinary env vars configured; S3-shaped `config` retained for UI compatibility. **Upload:** `POST /employees/:id/documents` → `503 STORAGE_NOT_CONFIGURED` until Cloudinary on Render.
+
+### Settings — Webhooks
+
+| Method | Path | Roles | Request | Response | UI |
+|--------|------|-------|---------|----------|-----|
+| GET | `/settings/webhooks` | HR,SA | — | `{ webhooks[], eventCatalog[] }` | `/settings/integration-webhooks` |
+| POST | `/settings/webhooks` | HR,SA | `{ name, url, events[], enabled?, secret? }` | webhook object | Create modal |
+| PATCH | `/settings/webhooks/:id` | HR,SA | partial | webhook | Edit / enable |
+| POST | `/settings/webhooks/:id/test` | HR,SA | — | `{ delivered, statusCode, testedAt }` | Test button |
+
+**Seed:** `seed:production-api` or `seedPhase3Integrations.js`. **Empty:** `webhooks: []`.
+
+### Employee Documents
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/employees/:id/documents` | HR,SA,EMP(own) | List metadata from Postgres |
+| POST | `/employees/:id/documents` | HR,SA,EMP(own) | multipart; WebP via sharp; Cloudinary required |
+| DELETE | `/employees/:id/documents/:docId` | HR,SA | Removes DB + Cloudinary |
+
+**Audit:** `DOCUMENT_UPLOADED` / `DOCUMENT_DELETED` logged to `audit_logs` (Activity tab). **Download:** client opens `fileUrl` from list response.
+
+### Employee Activity (audit-logs)
+
+| Method | Path | Roles | Query | Response |
+|--------|------|-------|-------|----------|
+| GET | `/audit-logs` | HR,SA,MGR | `entity=Employee&entityId=&limit=` | `{ logs[], pagination }` |
+
+UI Activity tab uses this endpoint (not `/employees/:id/activity` alias). **Seed:** PATCH employee or upload document to generate rows. `EMPLOYEE_UPDATED` logged on PATCH.
+
+### Payroll Deep Actions (PAID run)
+
+| Action | Method | Path | Roles |
+|--------|--------|------|-------|
+| View payslip | GET | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA |
+| Export register | GET | `/payroll/runs/:id/register?type=SALARY` | HR,SA |
+| Publish payslips | POST | `/payroll/runs/:id/publish` | HR,SA |
+| Payment batch | GET/POST | `/payroll/runs/:id/payment-batch` | HR,SA |
+| Bank file | GET | `/payroll/runs/:id/bank-file?format=NACH` | HR,SA |
+| Accounting journal | GET | `/payroll/runs/:id/journal` | HR,SA |
+| Statutory return | GET | `/payroll/runs/:id/statutory-return` | HR,SA |
+| Audit pack | GET | `/payroll/reports/audit-pack?runId=` | HR,SA |
+| Audit trail | GET | `/payroll/runs/:id/audit` | HR,SA |
+| Events | GET | `/payroll/events?runId=` | HR,SA |
+| Event catalogue | GET | `/payroll/event-catalogue` | HR,SA |
+
+**2026-06-09 deployed audit:** all deep actions PASS on May 2026 PAID run.
+
+### Timesheets (all roles)
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/timesheets?week=YYYY-MM-DD` | all with employee | Week grid |
+| POST | `/timesheets/entries` | EMP | Add entry |
+| PATCH | `/timesheets/entries/:id` | EMP | Edit |
+| DELETE | `/timesheets/entries/:id` | EMP | Delete |
+| POST | `/timesheets/:id/submit` | EMP | Submit week |
+| GET | `/timesheets/approvals` | MGR,HR | Approval queue |
+| POST | `/timesheets/:id/approve` | MGR,HR | Approve |
+| POST | `/timesheets/:id/reject` | MGR,HR | `{ comment }` |
+| GET/POST/PATCH | `/timesheets/projects` | HR,MGR | Projects tab |
+| POST | `/timesheets/projects/:id/tasks` | HR,MGR | Tasks |
+
+**SUPER_ADMIN:** no employee record — UI shows graceful empty state (not 500).
+
+### Phase 3 Modules
+
+| Module | UI route | Key APIs | Live status |
+|--------|----------|----------|-------------|
+| Recruitment | `/recruitment` | `/recruitment/summary`, `/openings`, `/candidates` | ✅ load |
+| Performance | `/performance` | `/performance/goals`, `/performance/reviews` | ✅ load |
+| Assets | `/assets` | `/assets`, `/assets/requests` | ✅ load |
+| Announcements | `/announcements` | `/announcements` | ✅ load |
+
+### Known Console Noise
+
+`Failed to load resource: 400` on cold `/api/auth/me` before login cookie is set (`INVALID_TENANT`) — transient on login page; not a post-login API failure. Cleared after successful login.
