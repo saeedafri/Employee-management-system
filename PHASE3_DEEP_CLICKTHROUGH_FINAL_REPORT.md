@@ -270,22 +270,24 @@ TypeError: c.map is not a function
 
 ## Final Verdict
 
-### **PARTIAL**
+### **PASS** (post-deploy, 2026-06-09)
 
 | Criterion | Status |
 |-----------|--------|
-| View Payslip works | ✅ PASS (production verified 2026-06-09) |
-| Payroll detail inner components | ⚠️ Audit/Events fail on **deployed** API shape (fixed locally) |
+| View Payslip works | ✅ PASS |
+| Payroll detail inner components | ✅ PASS (audit, events, journal, batch, exports) |
 | Timesheets all roles load | ✅ PASS |
-| No error boundary (full payroll page) | ❌ Audit accordion crashes until deploy |
-| Screenshots + network evidence | ✅ Saved |
+| No error boundary (full payroll page) | ✅ PASS |
+| Screenshots + network evidence | ✅ Saved locally |
 | API_MAPPING + Swagger updated | ✅ Done |
 | fromServiceWorker === false | ✅ Verified |
 
-**To reach PASS:** commit + push backend fixes, wait for Render deploy, re-run:
+**Deploy commits:** `36e0598` (audit/events/payslip), `201aac7` (journal `lines[]`)
+
+**Re-run command:**
 
 ```bash
 npm run test:deployed-ui
 ```
 
-Expected: audit/events PASS, full payroll detail clickthrough green.
+Result: **PASS (0 failures)** on deployed Vercel UI + Render API.
