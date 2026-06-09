@@ -41,6 +41,7 @@ export const EVENT_CATEGORY_COLORS = {
   payment: '#ef4444',
   employee: '#10b981',
   claims: '#f59e0b',
+  claim: '#f59e0b',
 };
 
 export function componentColor(type) {

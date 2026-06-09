@@ -1409,20 +1409,31 @@ export async function listReimbursementClaims(prisma, tenantId, params = {}) {
     }),
     prisma.reimbursementClaim.count({ where }),
   ]);
-  const mapped = claims.map((c) => ({
-    ...c,
-    amount: c.amount != null ? Number(c.amount) : 0,
-    category: c.category
-      ? { ...c.category, monthlyCap: Number(c.category.monthlyCap) }
-      : c.category,
-  }));
+  const mapped = claims.map(fmtReimbursementClaimForUi);
   if (params.employeeId) return mapped;
   return { claims: mapped, total, page: Number(params.page || 0), limit: Number(params.limit || 50) };
 }
 
+function fmtReimbursementClaimForUi(c) {
+  return {
+    id: c.id,
+    employeeId: c.employeeId,
+    category: c.category?.code ?? c.categoryId,
+    categoryLabel: c.category?.label ?? null,
+    amount: c.amount != null ? Number(c.amount) : 0,
+    currency: c.currency,
+    description: c.description ?? null,
+    proofUrl: c.proofUrl ?? null,
+    status: c.status,
+    runId: c.runId ?? null,
+    submittedAt: c.submittedAt,
+    decidedAt: c.decidedAt ?? null,
+  };
+}
+
 export async function submitReimbursementClaim(prisma, tenantId, data) {
   const { generateId } = await import('../../utils/id.js');
-  return await prisma.reimbursementClaim.create({
+  const row = await prisma.reimbursementClaim.create({
     data: {
       id: generateId(),
       tenantId,
@@ -1437,16 +1448,18 @@ export async function submitReimbursementClaim(prisma, tenantId, data) {
     },
     include: { category: true },
   });
+  return fmtReimbursementClaimForUi(row);
 }
 
 export async function decideReimbursementClaim(prisma, claimId, tenantId, status) {
   const claim = await prisma.reimbursementClaim.findFirst({ where: { id: claimId, tenantId } });
   if (!claim) throw AppError('Claim not found', 'NOT_FOUND', 404);
-  return await prisma.reimbursementClaim.update({
+  const row = await prisma.reimbursementClaim.update({
     where: { id: claimId },
     data: { status, decidedAt: new Date() },
     include: { category: true },
   });
+  return fmtReimbursementClaimForUi(row);
 }
 
 export async function listGarnishments(prisma, employeeId, tenantId) {
