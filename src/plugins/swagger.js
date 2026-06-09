@@ -1101,7 +1101,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             grossEarnings:   { type: 'number' },
             totalDeductions: { type: 'number' },
             netPay:          { type: 'number' },
-            employerCost:    { type: 'number', description: 'grossEarnings × 1.13 (gross + estimated employer burden)' },
+            employerCost:    { type: 'number', description: 'grossEarnings + sum(employerContributions) from statutory engine' },
           },
         },
         StatutoryRegisterRow: {
@@ -1203,6 +1203,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             oneTimeAdditions: { type: 'array', items: { type: 'object' } },
             oneTimeDeductions: { type: 'array', items: { type: 'object' } },
             grossEarnings: { type: 'number' }, totalDeductions: { type: 'number' }, netPay: { type: 'number' },
+            employerCost: { type: 'number', description: 'grossEarnings + employer statutory contributions' },
             workingDays: { type: 'integer' }, presentDays: { type: 'integer' }, leaveDays: { type: 'integer' }, lopDays: { type: 'integer' },
             status: { type: 'string' }, paymentDate: { type: 'string', format: 'date' }, paymentReference: { type: 'string' },
             payrollRunId: { type: 'string' }, documentUrl: { type: 'string', nullable: true },
@@ -1218,6 +1219,38 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             totalGross: { type: 'number' }, totalDeductions: { type: 'number' }, totalNet: { type: 'number' },
             employerCost: { type: 'number' }, currency: { type: 'string' },
             published: { type: 'boolean' }, publishedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        PayCalendar: {
+          type: 'object',
+          description: 'GET/POST/PATCH /payroll/pay-calendars',
+          properties: {
+            id: { type: 'string' }, name: { type: 'string' }, legalEntityId: { type: 'string', nullable: true },
+            frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            periodAnchor: { type: 'integer', minimum: 1, maximum: 28, description: 'Day-of-month period starts (1–28)' },
+            payDateRule: { type: 'string' }, payDay: { type: 'integer' }, cutoffDay: { type: 'integer' },
+            holidayCalendarId: { type: 'string', nullable: true },
+            createdAt: { type: 'string', format: 'date-time' }, updatedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        PayCalendarCreateRequest: {
+          type: 'object',
+          required: ['name', 'code'],
+          properties: {
+            name: { type: 'string' }, code: { type: 'string' }, country: { type: 'string' },
+            frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            periodAnchor: { type: 'integer', minimum: 1, maximum: 28 },
+            payDateRule: { type: 'string' }, payDay: { type: 'integer' }, cutoffDay: { type: 'integer' },
+            legalEntityId: { type: 'string', nullable: true }, holidayCalendarId: { type: 'string', nullable: true },
+          },
+        },
+        PayCalendarUpdateRequest: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' }, frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            periodAnchor: { type: 'integer', minimum: 1, maximum: 28 },
+            payDateRule: { type: 'string' }, payDay: { type: 'integer' }, cutoffDay: { type: 'integer' },
+            legalEntityId: { type: 'string', nullable: true }, holidayCalendarId: { type: 'string', nullable: true },
           },
         },
         PaymentBatchLine: {

@@ -6,6 +6,12 @@ import {
 } from '../../utils/payrollComponentShape.js';
 import { fmtPayCalendar, payCalendarInputToDb } from '../../utils/payCalendarShape.js';
 import { withComponentColor } from '../../utils/payrollUiShapes.js';
+import {
+  computeStatutoryContributions,
+  resolveStatutoryPackForRun,
+  schemeManagedComponentCodes,
+  sumEmployerContributions,
+} from '../../utils/statutoryCalculation.js';
 import { fmtStatutoryPackRow, mergePackUpdate } from '../../utils/statutoryPackShape.js';
 
 const COMPONENT_INCLUDE = {
@@ -455,6 +461,11 @@ async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod) {
 function fmtPayslipDetail(ps, extras = {}) {
   const earnings = (ps.earningsJson ?? []).map(normalizePayslipLine);
   const deductions = (ps.deductionsJson ?? []).map(normalizePayslipLine);
+  const storedEmployer = (ps.employerContributionsJson ?? []).map(normalizePayslipLine);
+  const employerContributions = storedEmployer.length
+    ? storedEmployer
+    : (extras.employerContributions ?? buildEmployerContributions(earnings, deductions));
+  const employerCost = Number(ps.grossEarnings) + sumEmployerContributions(employerContributions);
   return {
     id: ps.id, period: ps.period, periodLabel: monthLabel(ps.period),
     currency: ps.currency,
@@ -469,7 +480,8 @@ function fmtPayslipDetail(ps, extras = {}) {
     company: ps.tenant ? { name: ps.tenant.name, address: null, logoUrl: ps.tenant.logoUrl ?? null } : undefined,
     earnings,
     deductions,
-    employerContributions: extras.employerContributions ?? buildEmployerContributions(earnings, deductions),
+    employerContributions,
+    employerCost,
     oneTimeAdditions: ps.oneTimeAdditionsJson ?? [],
     oneTimeDeductions: ps.oneTimeDeductionsJson ?? [],
     grossEarnings: Number(ps.grossEarnings),
@@ -659,7 +671,7 @@ function negateLines(arr) {
   }));
 }
 
-async function finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings) {
+async function finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings, totalEmployerCost = 0) {
   await prisma.payrollRun.update({
     where: { id },
     data: {
@@ -667,6 +679,7 @@ async function finalizeRunCalculation(prisma, id, preservedMeta, empCount, total
       totalGross: Math.round(totalGross * 100) / 100,
       totalDeductions: Math.round(totalDeductions * 100) / 100,
       totalNet: Math.round(totalNet * 100) / 100,
+      employerCost: Math.round(totalEmployerCost * 100) / 100,
       processedAt: new Date(),
       summaryJson: {
         ...preservedMeta,
@@ -795,7 +808,21 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
 
   const warnings = [];
   const byDept = {};
-  let totalGross = 0, totalDeductions = 0, totalNet = 0, empCount = 0;
+  let totalGross = 0, totalDeductions = 0, totalNet = 0, totalEmployerCost = 0, empCount = 0;
+
+  const { pack: statutoryPack } = await resolveStatutoryPackForRun(prisma, tenantId, run.period);
+  const contributionSchemes = statutoryPack?.contributionSchemes ?? [];
+  const { employeeCodes: schemeEmployeeCodes, employerCodes: schemeEmployerCodes } = schemeManagedComponentCodes(contributionSchemes);
+  if (statutoryPack) {
+    preservedMeta.pinnedStatutoryPack = {
+      statutoryPackId: statutoryPack.id,
+      country: statutoryPack.country,
+      version: statutoryPack.version,
+      pinnedAt: new Date().toISOString(),
+    };
+  } else {
+    warnings.push({ message: 'No statutory pack resolved for run period — statutory contributions skipped' });
+  }
 
   for (const sal of salaries) {
     const { employee, payGroup } = sal;
@@ -805,6 +832,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       const pgComps = payGroup.components.map((pgc) => ({
         id: pgc.component.id, code: pgc.component.code, name: pgc.component.name,
         type: pgc.component.type, taxable: pgc.component.taxable,
+        statutoryTag: pgc.component.statutoryTag ?? null,
         displayOrder: pgc.component.displayOrder,
         calculationType: pgc.overrideCalculationType || pgc.component.calculationType,
         value: pgc.overrideValue !== null && pgc.overrideValue !== undefined
@@ -813,12 +841,15 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         formula: pgc.overrideFormula || pgc.component.formula,
       }));
 
+      const componentByCode = new Map(pgComps.map((c) => [c.code, c]));
       const ctcMonthly = Number(sal.annualCtc) / 12;
       const sorted = topologicalSort(pgComps);
       const computed = { CTC: ctcMonthly };
       const earningsArr = [], deductionsArr = [];
 
       for (const comp of sorted) {
+        if (comp.type === 'DEDUCTION' && schemeEmployeeCodes.has(comp.code)) continue;
+        if (comp.type === 'EMPLOYER_CONTRIBUTION' && schemeEmployerCodes.has(comp.code)) continue;
         let amount = 0;
         if (comp.calculationType === 'FLAT') {
           amount = comp.value || 0;
@@ -835,9 +866,19 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         else if (comp.type === 'DEDUCTION') deductionsArr.push({ code: comp.code, name: comp.name, amount });
       }
 
+      const { statutoryDeductions, employerContributions } = computeStatutoryContributions(
+        earningsArr, componentByCode, contributionSchemes,
+      );
+      for (const ded of statutoryDeductions) {
+        const idx = deductionsArr.findIndex((d) => d.code === ded.code);
+        if (idx >= 0) deductionsArr[idx] = ded;
+        else deductionsArr.push(ded);
+      }
+
       const grossEarnings = Math.round(earningsArr.reduce((s, e) => s + e.amount, 0) * 100) / 100;
       const totalDed = Math.round(deductionsArr.reduce((s, d) => s + d.amount, 0) * 100) / 100;
       const netPay = Math.round((grossEarnings - totalDed) * 100) / 100;
+      const employerCost = Math.round((grossEarnings + sumEmployerContributions(employerContributions)) * 100) / 100;
 
       const attendance = await prisma.attendanceRecord.findMany({
         where: { tenantId, employeeId: employee.id, attendanceDate: { gte: periodStart, lte: periodEnd } },
@@ -854,11 +895,13 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
           currency: payGroup.currency, grossEarnings, totalDeductions: totalDed, netPay,
           workingDays, presentDays, leaveDays, lopDays, status: 'PENDING',
           earningsJson: earningsArr, deductionsJson: deductionsArr,
+          employerContributionsJson: employerContributions,
           oneTimeAdditionsJson: [], oneTimeDeductionsJson: [], generatedAt: new Date(),
         },
       });
 
-      totalGross += grossEarnings; totalDeductions += totalDed; totalNet += netPay; empCount++;
+      totalGross += grossEarnings; totalDeductions += totalDed; totalNet += netPay;
+      totalEmployerCost += employerCost; empCount++;
       const deptName = employee.department?.name || 'Unassigned';
       if (!byDept[deptName]) byDept[deptName] = { departmentName: deptName, employeeCount: 0, totalNet: 0 };
       byDept[deptName].employeeCount++;
@@ -879,7 +922,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
     }
   }
 
-  await finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings);
+  await finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings, totalEmployerCost);
 }
 
 export async function approvePayrollRun(prisma, id, tenantId, userId, notes) {

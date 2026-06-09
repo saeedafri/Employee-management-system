@@ -796,6 +796,8 @@ export async function getRunRegister(prisma, id, tenantId, type) {
   const currency = run.currency || 'INR';
 
   const rows = payslips.map(ps => {
+    const employerContribs = Array.isArray(ps.employerContributionsJson) ? ps.employerContributionsJson : [];
+    const employerContribTotal = employerContribs.reduce((s, l) => s + Number(l.amount ?? l.monthlyAmount ?? 0), 0);
     const base = {
       employeeCode: ps.employee?.employeeCode ?? '',
       employeeName: ps.employee ? `${ps.employee.firstName} ${ps.employee.lastName}` : 'Unknown',
@@ -803,13 +805,17 @@ export async function getRunRegister(prisma, id, tenantId, type) {
       grossEarnings: Number(ps.grossEarnings),
       totalDeductions: Number(ps.totalDeductions),
       netPay: Number(ps.netPay),
-      employerCost: Number(ps.grossEarnings) * 1.13,
+      employerCost: Number(ps.grossEarnings) + employerContribTotal,
     };
     if (registerType === 'STATUTORY') {
       const lines = Array.isArray(ps.deductionsJson) ? ps.deductionsJson : [];
-      const pfEmp = lines.find(l => l.code === 'PF_EMPLOYEE')?.amount ?? 0;
-      const pfEmpr = lines.find(l => l.code === 'PF_EMPLOYER')?.amount ?? 0;
-      return { ...base, pfEmployee: Number(pfEmp), pfEmployer: Number(pfEmpr) };
+      const pfEmpLine = lines.find((l) => ['PF', 'PF_EMPLOYEE', 'PF_EE', 'EPF_EE'].includes(l.code));
+      const pfErLine = employerContribs.find((l) => ['PF_ER', 'PF_EMPLOYER', 'EPF_ER'].includes(l.code));
+      return {
+        ...base,
+        pfEmployee: Number(pfEmpLine?.amount ?? pfEmpLine?.monthlyAmount ?? 0),
+        pfEmployer: Number(pfErLine?.amount ?? pfErLine?.monthlyAmount ?? 0),
+      };
     }
     if (registerType === 'BANK_ADVICE') {
       const sal = ps.employee?.salaries?.[0];

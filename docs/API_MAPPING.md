@@ -3140,7 +3140,7 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
       "name": "India Monthly Payroll",
       "legalEntityId": "le-acme-in",
       "frequency": "MONTHLY",
-      "periodAnchor": "MONTH_START",
+      "periodAnchor": 1,
       "payDateRule": "LAST_WORKING_DAY",
       "payDay": 30,
       "cutoffDay": 25,
@@ -3153,7 +3153,11 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 }
 ```
 
+**`periodAnchor`:** integer day-of-month `1–28` (UI renders `Day {periodAnchor}`). Legacy DB value `"MONTH_START"` is normalized to `1` on read. POST/PATCH accept integer; response always returns integer.
+
 **`frequency` values:** `MONTHLY` | `BIWEEKLY` | `WEEKLY` (stored as `paySchedule` in DB; POST accepts `frequency` or `paySchedule`)
+
+**Errors:** `400 VALIDATION_ERROR` if `periodAnchor` out of range; `422 INVALID_PAY_CALENDAR` optional alias for invalid scheduling fields.
 
 ---
 
@@ -4186,7 +4190,33 @@ Consumed by payroll run detail **View payslip** drawer (`/payroll/:runId`).
 ```
 
 > **UI line items:** each `earnings[]` / `deductions[]` / `employerContributions[]` entry must include **`amount`** (UI reads this; `monthlyAmount` is back-compat alias).
+> **`employerCost`:** `grossEarnings + sum(employerContributions[].amount)` — employer statutory amounts do not reduce `netPay`.
 > **Empty state:** `404 NOT_FOUND` if payslip not in run. Drawer shows "Failed to load payslip" on non-2xx.
+
+### Statutory contribution calculation (engine — no separate route)
+
+On `POST /payroll/runs/:id/calculate`, the engine:
+
+1. Resolves the pinned statutory pack (legal entity `statutoryPackId` or country-effective pack for run `period`).
+2. Builds `componentByCode` from pay-group components including each `statutoryTag`.
+3. For each `contributionScheme` in `pack.contributionSchemes`:
+   - Wage base = sum of earning line `amount` where `component.statutoryTag === scheme.wageBaseTag`.
+   - Untagged earnings are excluded.
+   - `wageCeiling` (minor units in pack) caps the base: `min(rawBase, wageCeiling / 100)`.
+   - Employee amount = `round(base × scheme.employee.rate / 100)` posted to `deductions[]` as `scheme.employee.component`.
+   - Employer amount = `round(base × scheme.employer.rate / 100)` posted to `employerContributionsJson` as `scheme.employer.component`.
+4. Pay-group deduction/employer components whose `code` matches scheme component codes are skipped (engine is source of truth).
+5. `pinnedStatutoryPack` stored on run `summaryJson` at calculate time.
+
+**Example:** `BASIC.statutoryTag = "PF_WAGE"`, scheme `wageBaseTag = "PF_WAGE"`, earning ₹50,000, ceiling ₹15,000 → PF employee ₹1,800, PF employer ₹1,800, `netPay` reduced by employee PF only.
+
+**Registers:** `GET /payroll/runs/:id/register?type=STATUTORY` uses computed `pfEmployee` / `pfEmployer` from stored payslip lines. `type=SALARY` `employerCost` = gross + employer contributions (not hardcoded ×1.13).
+
+### Payment batch detail (run-scoped)
+
+**Frontend detail source:** `GET /payroll/runs/:runId/payment-batch` (not list-only `GET /payroll/payment-batches`).
+
+**Response includes `lines[]`:** `{ payslipId, employeeId, employeeCode, employeeName, amount, currency, status, failureReason, payoutRef }`. Empty shell when no batch: `{ id: null, lines: [], status: "NONE" }`.
 
 ---
 

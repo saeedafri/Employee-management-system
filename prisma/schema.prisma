@@ -1058,9 +1058,10 @@ model Payslip {
   paymentDate           DateTime?
   paymentReference      String?
   earningsJson          Json?
-  deductionsJson        Json?
-  oneTimeAdditionsJson  Json?
-  oneTimeDeductionsJson Json?
+  deductionsJson            Json?
+  employerContributionsJson Json?
+  oneTimeAdditionsJson      Json?
+  oneTimeDeductionsJson     Json?
   notes                 String?
   documentUrl           String?
   generatedAt           DateTime?

@@ -23,10 +23,11 @@ test.describe('Payroll live API contract', () => {
     }
 
     const calendars = await request.get(`${BASE}/payroll/pay-calendars`, { headers });
-    const cal = (await calendars.json()).data?.[0];
-    if (cal) {
-      expect(cal).toHaveProperty('frequency');
-      expect(cal).toHaveProperty('periodAnchor');
+    const calList = (await calendars.json()).data ?? [];
+    for (const cal of calList) {
+      expect(typeof cal.periodAnchor).toBe('number');
+      expect(cal.periodAnchor).toBeGreaterThanOrEqual(1);
+      expect(cal.periodAnchor).toBeLessThanOrEqual(28);
     }
 
     const entities = await request.get(`${BASE}/payroll/legal-entities`, { headers });

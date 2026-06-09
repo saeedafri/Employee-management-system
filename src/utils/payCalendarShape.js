@@ -3,6 +3,14 @@
 const FREQ_TO_SCHEDULE = { MONTHLY: 'MONTHLY', BIWEEKLY: 'BIWEEKLY', WEEKLY: 'WEEKLY' };
 const SCHEDULE_TO_FREQ = { MONTHLY: 'MONTHLY', BIWEEKLY: 'BIWEEKLY', WEEKLY: 'WEEKLY' };
 
+/** Frontend contract: periodAnchor is integer day-of-month 1–28. */
+export function normalizePeriodAnchor(value) {
+  if (value === undefined || value === null || value === '' || value === 'MONTH_START') return 1;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 1;
+  return Math.min(28, Math.max(1, Math.trunc(n)));
+}
+
 export function fmtPayCalendar(row) {
   if (!row) return null;
   const frequency = row.paySchedule ?? row.frequency ?? 'MONTHLY';
@@ -11,7 +19,7 @@ export function fmtPayCalendar(row) {
     name: row.name,
     legalEntityId: row.legalEntityId ?? null,
     frequency: SCHEDULE_TO_FREQ[frequency] ?? frequency,
-    periodAnchor: row.periodAnchor ?? 'MONTH_START',
+    periodAnchor: normalizePeriodAnchor(row.periodAnchor),
     payDateRule: row.payDateRule ?? 'LAST_WORKING_DAY',
     payDay: row.payDay ?? (frequency === 'MONTHLY' ? 30 : frequency === 'BIWEEKLY' ? 15 : 7),
     cutoffDay: row.cutoffDay ?? 25,
@@ -30,7 +38,7 @@ export function payCalendarInputToDb(data, existing = {}) {
     paySchedule: FREQ_TO_SCHEDULE[frequency] ?? frequency,
     ...(data.firstPayDate !== undefined && { firstPayDate: data.firstPayDate }),
     ...(data.legalEntityId !== undefined && { legalEntityId: data.legalEntityId }),
-    ...(data.periodAnchor !== undefined && { periodAnchor: data.periodAnchor }),
+    ...(data.periodAnchor !== undefined && { periodAnchor: String(normalizePeriodAnchor(data.periodAnchor)) }),
     ...(data.payDateRule !== undefined && { payDateRule: data.payDateRule }),
     ...(data.payDay !== undefined && { payDay: data.payDay }),
     ...(data.cutoffDay !== undefined && { cutoffDay: data.cutoffDay }),

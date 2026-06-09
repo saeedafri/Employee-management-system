@@ -79,9 +79,21 @@ async function main() {
     });
   }
 
-  await check('pay calendars', 'GET', '/payroll/pay-calendars', {
+  const calCheck = await check('pay calendars', 'GET', '/payroll/pay-calendars', {
     expectFields: ['legalEntityId', 'frequency', 'periodAnchor', 'payDateRule', 'payDay', 'cutoffDay'],
   });
+  const calendars = calCheck.json?.data ?? [];
+  for (const cal of calendars) {
+    if (typeof cal.periodAnchor !== 'number' || cal.periodAnchor === 'MONTH_START') {
+      results.push({ name: 'periodAnchor numeric', path: '/payroll/pay-calendars', status: 200, pass: false, missing: ['periodAnchor:number'] });
+      console.log('FAIL periodAnchor must be number on all calendars');
+      break;
+    }
+  }
+  if (calendars.length && typeof calendars[0].periodAnchor === 'number') {
+    results.push({ name: 'periodAnchor numeric', path: '/payroll/pay-calendars', status: 200, pass: true, missing: [] });
+    console.log('PASS all periodAnchor values are numeric');
+  }
 
   await check('legal entities', 'GET', '/payroll/legal-entities', { expectFields: ['active'] });
 

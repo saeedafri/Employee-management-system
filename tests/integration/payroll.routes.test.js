@@ -874,7 +874,7 @@ describe('Payroll Routes Integration Tests', function () {
       expect(JSON.parse(patchRes.body).data.payInPeriods).to.deep.equal([1, 7]);
     });
 
-    it('GET /payroll/pay-calendars returns frontend PayCalendar shape', async function () {
+    it('GET /payroll/pay-calendars returns numeric periodAnchor', async function () {
       await prisma.payCalendar.create({
         data: {
           tenantId: tenant.id, name: 'Monthly', code: 'MON_TEST', paySchedule: 'MONTHLY',
@@ -886,8 +886,26 @@ describe('Payroll Routes Integration Tests', function () {
         headers: { Authorization: `Bearer ${hrToken}` },
       });
       const cal = JSON.parse(res.body).data[0];
-      expect(cal).to.include.keys('frequency', 'periodAnchor', 'payDateRule', 'payDay', 'cutoffDay', 'legalEntityId');
+      expect(cal.periodAnchor).to.be.a('number');
+      expect(cal.periodAnchor).to.equal(1);
       expect(cal.frequency).to.equal('MONTHLY');
+    });
+
+    it('POST/PATCH pay-calendars persist numeric periodAnchor', async function () {
+      const createRes = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/pay-calendars',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { name: 'Anchor Test', code: 'ANCHOR_T', frequency: 'MONTHLY', periodAnchor: 5 },
+      });
+      expect(createRes.statusCode).to.equal(201);
+      expect(JSON.parse(createRes.body).data.periodAnchor).to.equal(5);
+      const id = JSON.parse(createRes.body).data.id;
+      const patchRes = await app.inject({
+        method: 'PATCH', url: `/api/v1/payroll/pay-calendars/${id}`,
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { periodAnchor: 10 },
+      });
+      expect(JSON.parse(patchRes.body).data.periodAnchor).to.equal(10);
     });
 
     it('GET /payroll/legal-entities includes active', async function () {
@@ -899,6 +917,71 @@ describe('Payroll Routes Integration Tests', function () {
         headers: { Authorization: `Bearer ${hrToken}` },
       });
       expect(JSON.parse(res.body).data[0].active).to.equal(false);
+    });
+
+    it('calculate applies statutoryTag wage base for PF deductions', async function () {
+      const pack = await prisma.statutoryPack.create({
+        data: {
+          tenantId: tenant.id, country: 'IN', version: 'test-epf',
+          effectiveFrom: new Date('2020-01-01'),
+          packData: {
+            contributionSchemes: [{
+              code: 'IN_EPF', name: 'EPF', wageBaseTag: 'PF_WAGE', wageCeiling: 1500000,
+              employee: { rate: 12, component: 'PF' }, employer: { rate: 12, component: 'PF_ER' },
+            }],
+          },
+        },
+      });
+      await prisma.legalEntity.create({
+        data: { tenantId: tenant.id, name: 'Test LE', country: 'IN', statutoryPackId: pack.id, active: true },
+      });
+      const basic = await prisma.salaryComponent.create({
+        data: {
+          tenantId: tenant.id, name: 'Basic', code: 'BASIC_PF', type: 'EARNING',
+          calculationType: 'FLAT', value: 50000, taxable: true, active: true,
+          statutoryTag: 'PF_WAGE', displayOrder: 1,
+        },
+      });
+      const pfComp = await prisma.salaryComponent.create({
+        data: {
+          tenantId: tenant.id, name: 'PF', code: 'PF', type: 'DEDUCTION',
+          calculationType: 'PERCENTAGE', value: 12, basisCode: 'BASIC_PF', taxable: false, active: true, displayOrder: 2,
+        },
+      });
+      const pg = await prisma.payGroup.create({
+        data: {
+          tenantId: tenant.id, name: 'PF Group', code: 'PF_GRP', currency: 'INR', paySchedule: 'MONTHLY',
+          components: { create: [{ componentId: basic.id }, { componentId: pfComp.id }] },
+        },
+      });
+      await createEmployeeSalary(empRecord.id, pg.id);
+      const runRes = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/runs',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { period: '2026-04' },
+      });
+      const runId = JSON.parse(runRes.body).data.id;
+      await app.inject({
+        method: 'POST', url: `/api/v1/payroll/runs/${runId}/calculate`,
+        headers: { Authorization: `Bearer ${hrToken}` }, payload: {},
+      });
+      const slipsRes = await app.inject({
+        method: 'GET', url: `/api/v1/payroll/runs/${runId}/payslips`,
+        headers: { Authorization: `Bearer ${hrToken}` },
+      });
+      const slipId = JSON.parse(slipsRes.body).data.items[0]?.id;
+      expect(slipId).to.exist;
+      const detailRes = await app.inject({
+        method: 'GET', url: `/api/v1/payroll/runs/${runId}/payslips/${slipId}`,
+        headers: { Authorization: `Bearer ${hrToken}` },
+      });
+      const detail = JSON.parse(detailRes.body).data;
+      const pfDed = detail.deductions.find((d) => d.code === 'PF');
+      const pfEr = detail.employerContributions.find((c) => c.code === 'PF_ER');
+      expect(pfDed.amount).to.equal(1800);
+      expect(pfEr.amount).to.equal(1800);
+      expect(detail.netPay).to.equal(50000 - 1800);
+      expect(detail.employerCost).to.equal(50000 + 1800);
     });
 
     it('base payroll paths return 200', async function () {
