@@ -6,6 +6,7 @@ import {
   normalizePayslipTemplateField,
   normalizePayslipTemplateSection,
 } from '../../utils/payrollUiShapes.js';
+import { flatBodyToPackData } from '../../utils/statutoryPackShape.js';
 
 function AppError(message, code, statusCode = 400) {
   const e = new Error(message);
@@ -176,9 +177,30 @@ export async function getPayrollRuns(prisma, tenantId, query) {
   });
 }
 
+const VALID_RUN_TYPES = ['REGULAR', 'OFF_CYCLE', 'BONUS', 'ARREARS', 'FNF', 'REVERSAL'];
+
 export async function createPayrollRun(prisma, tenantId, userId, data) {
   if (!data.period || !/^\d{4}-\d{2}$/.test(data.period)) {
-    throw AppError('period is required in YYYY-MM format', 'VALIDATION_ERROR');
+    const err = AppError('period is required in YYYY-MM format', 'VALIDATION_ERROR', 400);
+    err.details = [{ field: 'period', message: 'Required YYYY-MM' }];
+    throw err;
+  }
+  const type = data.type || 'REGULAR';
+  if (!VALID_RUN_TYPES.includes(type)) {
+    throw AppError(`Invalid run type: ${type}`, 'INVALID_RUN_TYPE', 422);
+  }
+  if (type === 'OFF_CYCLE' && (!data.employeeIds || !data.employeeIds.length)) {
+    const err = AppError('employeeIds required for OFF_CYCLE run', 'VALIDATION_ERROR', 400);
+    err.details = [{ field: 'employeeIds', message: 'Required for OFF_CYCLE' }];
+    throw err;
+  }
+  if (type === 'FNF' && !data.fnf?.employeeId) {
+    const err = AppError('fnf.employeeId required for FNF run', 'VALIDATION_ERROR', 400);
+    err.details = [{ field: 'fnf.employeeId', message: 'Required for FNF' }];
+    throw err;
+  }
+  if (type === 'REVERSAL' && !data.reversalOfRunId) {
+    throw AppError('reversalOfRunId required for REVERSAL run', 'REVERSAL_TARGET_REQUIRED', 422);
   }
   return repo.createPayrollRun(prisma, tenantId, userId, data);
 }
@@ -302,16 +324,47 @@ export async function getStatutoryPack(prisma, id, tenantId) {
   return repo.getStatutoryPackById(prisma, id, tenantId);
 }
 
-export async function createStatutoryPack(prisma, tenantId, data) {
-  const existing = await prisma.statutoryPack.findUnique({
-    where: { tenantId_country_version: { tenantId, country: data.country, version: data.version } },
-  });
-  if (existing) throw AppError('Pack version already exists', 'PACK_VERSION_EXISTS', 409);
-  return repo.createStatutoryPack(prisma, tenantId, data);
+function validateStatutoryPackBody(body, isCreate = true) {
+  const details = [];
+  if (isCreate) {
+    if (!body.country) details.push({ field: 'country', message: 'country is required' });
+    if (!body.version) details.push({ field: 'version', message: 'version is required' });
+    if (!body.effectiveFrom) details.push({ field: 'effectiveFrom', message: 'effectiveFrom is required' });
+  }
+  if (body.effectiveFrom && body.effectiveTo) {
+    if (new Date(body.effectiveFrom) > new Date(body.effectiveTo)) {
+      details.push({ field: 'effectiveTo', message: 'effectiveTo must be on or after effectiveFrom' });
+    }
+  }
+  if (details.length) {
+    const err = AppError('Statutory pack validation failed', details.some((d) => d.field === 'effectiveTo') ? 'INVALID_PACK' : 'VALIDATION_ERROR', details.some((d) => d.field === 'effectiveTo') ? 422 : 400);
+    err.details = details;
+    throw err;
+  }
 }
 
-export async function updateStatutoryPack(prisma, id, tenantId, data) {
-  return repo.updateStatutoryPack(prisma, id, tenantId, data);
+export async function createStatutoryPack(prisma, tenantId, body) {
+  validateStatutoryPackBody(body, true);
+  const existing = await prisma.statutoryPack.findUnique({
+    where: { tenantId_country_version: { tenantId, country: body.country, version: body.version } },
+  });
+  if (existing) throw AppError('Pack version already exists', 'PACK_VERSION_EXISTS', 409);
+  return repo.createStatutoryPack(prisma, tenantId, {
+    country: body.country,
+    version: body.version,
+    effectiveFrom: body.effectiveFrom,
+    effectiveTo: body.effectiveTo ?? null,
+    packData: flatBodyToPackData(body),
+  });
+}
+
+export async function updateStatutoryPack(prisma, id, tenantId, body) {
+  validateStatutoryPackBody(body, false);
+  return repo.updateStatutoryPack(prisma, id, tenantId, body);
+}
+
+export async function deleteStatutoryPack(prisma, id, tenantId) {
+  return repo.deleteStatutoryPack(prisma, id, tenantId);
 }
 
 // ── Phase 3: YTD ─────────────────────────────────────────────────────────────

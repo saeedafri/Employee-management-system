@@ -43,7 +43,8 @@
     "test:deployed-ui": "node scripts/deployed-ui-complete-final-audit.mjs",
     "test:playwright:deployed": "playwright test tests/e2e/deployed-full-clickthrough.spec.ts --project=chromium --workers=1",
     "db:seed:deep": "node prisma/seedDeepClickthrough.js",
-    "seed:production-api": "node scripts/seedProductionViaApi.mjs"
+    "seed:production-api": "node scripts/seedProductionViaApi.mjs",
+    "verify:phase3-production": "node scripts/verifyPhase3Production.mjs"
   },
   "keywords": [
     "employee-management",

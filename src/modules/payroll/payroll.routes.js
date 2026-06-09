@@ -320,13 +320,17 @@ export default async function payrollRoutes(fastify) {
 
   fastify.post('/payroll/runs', {
     schema: {
-      tags: ['Payroll'], description: 'Initiate a new payroll run', security: [{ Bearer: [] }],
+      tags: ['Payroll'], description: 'Initiate payroll run (REGULAR|OFF_CYCLE|BONUS|ARREARS|FNF|REVERSAL)', security: [{ Bearer: [] }],
       body: {
         type: 'object',
         required: ['period'],
         properties: {
-          period: { type: 'string', description: 'YYYY-MM', pattern: '^\\d{4}-\\d{2}$' },
-          includeAllActiveEmployees: { type: 'boolean', default: true },
+          period: { type: 'string', pattern: '^\\d{4}-\\d{2}$' },
+          type: { type: 'string', description: 'REGULAR | OFF_CYCLE | BONUS | ARREARS | FNF | REVERSAL' },
+          employeeIds: { type: 'array', items: { type: 'string' } },
+          fnf: { type: 'object', additionalProperties: true },
+          reversalOfRunId: { type: 'string' },
+          includeAllActiveEmployees: { type: 'boolean' },
           payGroupIds: { type: 'array', items: { type: 'string' } },
         },
       },
@@ -502,14 +506,21 @@ export default async function payrollRoutes(fastify) {
 
   fastify.post('/payroll/statutory-packs', {
     schema: {
-      tags: ['Payroll'], description: 'Create statutory pack (SUPER_ADMIN)', security: [{ Bearer: [] }],
+      tags: ['Payroll'], description: 'Create statutory pack — flat body same as GET (SUPER_ADMIN)', security: [{ Bearer: [] }],
       body: {
         type: 'object',
-        required: ['country', 'version', 'effectiveFrom', 'packData'],
+        required: ['country', 'version', 'effectiveFrom'],
         properties: {
           country: { type: 'string' }, version: { type: 'string' },
-          effectiveFrom: { type: 'string' }, effectiveTo: { type: 'string' },
-          packData: { type: 'object', additionalProperties: true },
+          effectiveFrom: { type: 'string' }, effectiveTo: { type: 'string', nullable: true },
+          rounding: { type: 'object', additionalProperties: true },
+          proration: { type: 'object', additionalProperties: true },
+          taxRegimes: { type: 'array', items: { type: 'object', additionalProperties: true } },
+          contributionSchemes: { type: 'array', items: { type: 'object', additionalProperties: true } },
+          localTaxes: { type: 'array', items: { type: 'object', additionalProperties: true } },
+          statutoryComponents: { type: 'array', items: { type: 'object', additionalProperties: true } },
+          minimumWages: { type: 'array', items: { type: 'object', additionalProperties: true } },
+          gratuity: { type: 'object', nullable: true, additionalProperties: true },
         },
       },
       response: { 201: obj },
@@ -519,13 +530,22 @@ export default async function payrollRoutes(fastify) {
 
   fastify.patch('/payroll/statutory-packs/:id', {
     schema: {
-      tags: ['Payroll'], description: 'Update statutory pack (SUPER_ADMIN)', security: [{ Bearer: [] }],
+      tags: ['Payroll'], description: 'Update statutory pack — flat partial body (SUPER_ADMIN)', security: [{ Bearer: [] }],
       params: idParam,
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
     onRequest: [authenticate, authorize(superOnly)],
   }, ctrl.updateStatutoryPack);
+
+  fastify.delete('/payroll/statutory-packs/:id', {
+    schema: {
+      tags: ['Payroll'], description: 'Delete statutory pack if not referenced (SUPER_ADMIN)', security: [{ Bearer: [] }],
+      params: idParam,
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(superOnly)],
+  }, ctrl.deleteStatutoryPack);
 
   // ── Phase 3: Employee Payroll ───────────────────────────────────────────────
 

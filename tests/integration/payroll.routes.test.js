@@ -665,4 +665,107 @@ describe('Payroll Routes Integration Tests', function () {
       expect(res.statusCode).to.equal(403);
     });
   });
+
+  // ── Statutory Packs (flat API) ─────────────────────────────────────────────
+
+  describe('Statutory packs flat contract', function () {
+    const flatPack = () => ({
+      country: 'IN',
+      version: `test-${Date.now()}`,
+      effectiveFrom: '2026-04-01',
+      rounding: { mode: 'NEAREST', precision: 0 },
+      proration: { basis: 'CALENDAR_DAYS' },
+      taxRegimes: [],
+      contributionSchemes: [],
+      localTaxes: [],
+      statutoryComponents: [],
+      minimumWages: [],
+      gratuity: { enabled: true },
+    });
+
+    it('POST returns flat shape with gratuity', async function () {
+      const res = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/statutory-packs',
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload: flatPack(),
+      });
+      expect(res.statusCode).to.equal(201);
+      const body = JSON.parse(res.body).data;
+      expect(body).to.not.have.property('packData');
+      expect(body.gratuity).to.deep.include({ enabled: true });
+    });
+
+    it('duplicate version returns 409 PACK_VERSION_EXISTS', async function () {
+      const payload = flatPack();
+      await app.inject({
+        method: 'POST', url: '/api/v1/payroll/statutory-packs',
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload,
+      });
+      const res = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/statutory-packs',
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload,
+      });
+      expect(res.statusCode).to.equal(409);
+      expect(JSON.parse(res.body).error.code).to.equal('PACK_VERSION_EXISTS');
+    });
+
+    it('DELETE returns deleted true', async function () {
+      const created = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/statutory-packs',
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload: flatPack(),
+      });
+      const id = JSON.parse(created.body).data.id;
+      const res = await app.inject({
+        method: 'DELETE', url: `/api/v1/payroll/statutory-packs/${id}`,
+        headers: { Authorization: `Bearer ${saToken}` },
+      });
+      expect(res.statusCode).to.equal(200);
+      expect(JSON.parse(res.body).data.deleted).to.equal(true);
+    });
+  });
+
+  describe('Payroll run types', function () {
+    it('allows OFF_CYCLE with employeeIds alongside REGULAR', async function () {
+      await app.inject({
+        method: 'POST', url: '/api/v1/payroll/runs',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { period: '2026-01' },
+      });
+      const res = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/runs',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { period: '2026-01', type: 'OFF_CYCLE', employeeIds: [empRecord.id] },
+      });
+      expect(res.statusCode).to.equal(201);
+      expect(JSON.parse(res.body).data.type).to.equal('OFF_CYCLE');
+    });
+
+    it('REGULAR duplicate returns 409 RUN_EXISTS', async function () {
+      await app.inject({
+        method: 'POST', url: '/api/v1/payroll/runs',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { period: '2026-02' },
+      });
+      const res = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/runs',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { period: '2026-02' },
+      });
+      expect(res.statusCode).to.equal(409);
+      expect(JSON.parse(res.body).error.code).to.equal('RUN_EXISTS');
+    });
+
+    it('invalid type returns 422 INVALID_RUN_TYPE', async function () {
+      const res = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/runs',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { period: '2026-03', type: 'NOT_A_TYPE' },
+      });
+      expect(res.statusCode).to.equal(422);
+      expect(JSON.parse(res.body).error.code).to.equal('INVALID_RUN_TYPE');
+    });
+  });
 });

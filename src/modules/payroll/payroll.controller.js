@@ -276,6 +276,14 @@ export async function updateStatutoryPack(request, reply) {
   } catch (err) { handleError(reply, err); }
 }
 
+export async function deleteStatutoryPack(request, reply) {
+  try {
+    const data = await service.deleteStatutoryPack(prisma, request.params.id, request.tenant.id);
+    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Statutory pack not found')); return; }
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
 // ── Phase 3: Employee Payroll ─────────────────────────────────────────────────
 
 export async function getEmployeeYtd(request, reply) {

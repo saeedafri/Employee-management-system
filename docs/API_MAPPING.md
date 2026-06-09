@@ -4230,6 +4230,42 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 
 ---
 
+## Statutory Packs (newreqphase3 F.3) — Flat API
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/statutory-packs` | HR,SA | `?country=IN` optional filter |
+| GET | `/payroll/statutory-packs/:id` | HR,SA | Flat response |
+| POST | `/payroll/statutory-packs` | SA | **Flat body** — same fields as GET (no `packData` wrapper) |
+| PATCH | `/payroll/statutory-packs/:id` | SA | Partial flat body |
+| DELETE | `/payroll/statutory-packs/:id` | SA | `{ deleted: true }` or `409 PACK_IN_USE` |
+
+**Flat response/request fields:** `country`, `version`, `effectiveFrom`, `effectiveTo`, `rounding`, `proration`, `taxRegimes[]`, `contributionSchemes[]`, `localTaxes[]`, `statutoryComponents[]`, `minimumWages[]`, **`gratuity`** (object or `null`).
+
+**Errors:** `409 PACK_VERSION_EXISTS` (duplicate tenant+country+version), `422 INVALID_PACK` (effectiveFrom > effectiveTo), `400 VALIDATION_ERROR` (`details: [{field, message}]`), `409 PACK_IN_USE` (referenced by legal entity).
+
+**Storage:** Rule fields stored in DB `packData` JSON; API always flattened via `fmtStatutoryPackRow()`.
+
+---
+
+## Payroll Run Types (newreqphase3)
+
+| Type | POST body extras | Duplicate rule |
+|------|------------------|----------------|
+| `REGULAR` | default | `409 RUN_EXISTS` if second REGULAR same period |
+| `OFF_CYCLE` | `employeeIds[]` | May coexist with REGULAR same period |
+| `BONUS` / `ARREARS` | — (set `variablePay` on run inputs before calculate) | May coexist |
+| `FNF` | `fnf: { employeeId, lastWorkingDay, yearsOfService, leaveBalanceDays, noticeShortfallDays }` | May coexist |
+| `REVERSAL` | `reversalOfRunId` (target APPROVED/PAID) | May coexist |
+
+**Response fields:** `type`, `employeeIds`, `employeeId`, `fnfParams`, `reversalOfRunId`, `reversalOfPeriodLabel`.
+
+**Errors:** `422 INVALID_RUN_TYPE`, `422 REVERSAL_TARGET_REQUIRED`, `409 RUN_EXISTS` (REGULAR only).
+
+**Calculate behavior:** OFF_CYCLE → subset employees; BONUS/ARREARS → only rows with `variablePay` input; REVERSAL → negate target payslip lines; FNF → single employee.
+
+---
+
 ## Deployed UI Complete Audit — Endpoint Reference (2026-06-09)
 
 > Evidence: `deployed-ui-complete-final-audit-evidence/`. Command: `npm run test:deployed-ui` or `npm run test:playwright:deployed`.

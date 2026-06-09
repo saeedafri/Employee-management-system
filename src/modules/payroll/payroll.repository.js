@@ -1,5 +1,6 @@
 import { evaluateFormula, topologicalSort } from '../../utils/formulaEval.js';
 import { withComponentColor } from '../../utils/payrollUiShapes.js';
+import { fmtStatutoryPackRow, mergePackUpdate } from '../../utils/statutoryPackShape.js';
 
 const COMPONENT_INCLUDE = {
   id: true, name: true, code: true, type: true, calculationType: true,
@@ -471,7 +472,19 @@ export async function getEmployeePayslipById(prisma, employeeId, payslipId, tena
 
 // ── Payroll Runs ──────────────────────────────────────────────────────────────
 
+function runMeta(summaryJson) {
+  const meta = summaryJson && typeof summaryJson === 'object' ? summaryJson : {};
+  return {
+    employeeIds: meta.employeeIds ?? undefined,
+    employeeId: meta.employeeId ?? meta.fnfParams?.employeeId ?? undefined,
+    fnfParams: meta.fnfParams ?? undefined,
+    reversalOfRunId: meta.reversalOfRunId ?? undefined,
+    reversalOfPeriodLabel: meta.reversalOfPeriodLabel ?? undefined,
+  };
+}
+
 function fmtRun(run, withSummary = false) {
+  const meta = runMeta(run.summaryJson);
   const base = {
     id: run.id, period: run.period, periodLabel: monthLabel(run.period),
     type: run.type ?? 'REGULAR',
@@ -489,8 +502,15 @@ function fmtRun(run, withSummary = false) {
     publishedAt: run.publishedAt ?? null,
     approvals: run.approvalsJson ?? [],
     createdAt: run.createdAt,
+    ...meta,
   };
-  if (withSummary) base.summary = run.summaryJson ?? { byDepartment: [], warnings: [] };
+  if (withSummary) {
+    const sj = run.summaryJson ?? { byDepartment: [], warnings: [] };
+    base.summary = {
+      byDepartment: sj.byDepartment ?? [],
+      warnings: sj.warnings ?? [],
+    };
+  }
   return base;
 }
 
@@ -513,16 +533,53 @@ export async function getPayrollRuns(prisma, tenantId, { page = 1, limit = 10, y
   return { items: rows.map((r) => fmtRun(r)), pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
 }
 
+const VALID_RUN_TYPES = ['REGULAR', 'OFF_CYCLE', 'BONUS', 'ARREARS', 'FNF', 'REVERSAL'];
+
 export async function createPayrollRun(prisma, tenantId, userId, data) {
-  const existing = await prisma.payrollRun.findFirst({
-    where: { tenantId, period: data.period, status: { not: 'CANCELLED' } },
-  });
-  if (existing) {
-    const err = new Error(`A payroll run for ${data.period} already exists`);
-    err.code = 'RUN_EXISTS'; err.statusCode = 409; throw err;
+  const type = data.type || 'REGULAR';
+  if (!VALID_RUN_TYPES.includes(type)) {
+    const err = new Error(`Invalid run type: ${type}`);
+    err.code = 'INVALID_RUN_TYPE'; err.statusCode = 422; throw err;
   }
+
+  if (type === 'REGULAR') {
+    const existing = await prisma.payrollRun.findFirst({
+      where: { tenantId, period: data.period, type: 'REGULAR', status: { not: 'CANCELLED' } },
+    });
+    if (existing) {
+      const err = new Error(`A regular payroll run for ${data.period} already exists`);
+      err.code = 'RUN_EXISTS'; err.statusCode = 409; throw err;
+    }
+  }
+
+  const summaryJson = {};
+  if (type === 'OFF_CYCLE') summaryJson.employeeIds = data.employeeIds;
+  if (type === 'FNF' && data.fnf) {
+    summaryJson.fnfParams = data.fnf;
+    summaryJson.employeeId = data.fnf.employeeId;
+  }
+  if (type === 'REVERSAL') {
+    const target = await prisma.payrollRun.findFirst({
+      where: { id: data.reversalOfRunId, tenantId },
+    });
+    if (!target) {
+      const err = new Error('Reversal target run not found');
+      err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
+    }
+    if (!['APPROVED', 'PAID'].includes(target.status)) {
+      const err = new Error('Reversal target must be APPROVED or PAID');
+      err.code = 'INVALID_RUN_TYPE'; err.statusCode = 422; throw err;
+    }
+    summaryJson.reversalOfRunId = data.reversalOfRunId;
+    summaryJson.reversalOfPeriodLabel = monthLabel(target.period);
+  }
+
   const run = await prisma.payrollRun.create({
-    data: { tenantId, period: data.period, initiatedById: userId, currency: 'INR' },
+    data: {
+      tenantId, period: data.period, type,
+      initiatedById: userId, currency: 'INR',
+      ...(Object.keys(summaryJson).length && { summaryJson }),
+    },
     include: RUN_USER_INCLUDE,
   });
   return fmtRun(run);
@@ -549,6 +606,38 @@ function getWorkingDays(start, end) {
   return count;
 }
 
+function preserveRunMeta(summaryJson) {
+  const meta = summaryJson && typeof summaryJson === 'object' ? { ...summaryJson } : {};
+  delete meta.byDepartment;
+  delete meta.warnings;
+  return meta;
+}
+
+function negateLines(arr) {
+  return (Array.isArray(arr) ? arr : []).map((line) => ({
+    ...line,
+    amount: -Math.abs(Number(line.amount ?? line.monthlyAmount ?? 0)),
+  }));
+}
+
+async function finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings) {
+  await prisma.payrollRun.update({
+    where: { id },
+    data: {
+      status: 'REVIEW', employeeCount: empCount,
+      totalGross: Math.round(totalGross * 100) / 100,
+      totalDeductions: Math.round(totalDeductions * 100) / 100,
+      totalNet: Math.round(totalNet * 100) / 100,
+      processedAt: new Date(),
+      summaryJson: {
+        ...preservedMeta,
+        byDepartment: Object.values(byDept),
+        warnings,
+      },
+    },
+  });
+}
+
 export async function calculatePayrollRun(prisma, id, tenantId) {
   const run = await prisma.payrollRun.findFirst({ where: { id, tenantId } });
   if (!run) {
@@ -560,13 +649,85 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
 
   await prisma.payrollRun.update({ where: { id }, data: { status: 'CALCULATING' } });
 
+  const runType = run.type || 'REGULAR';
+  const preservedMeta = preserveRunMeta(run.summaryJson);
+
+  await prisma.payslip.deleteMany({ where: { payrollRunId: id } });
+
+  if (runType === 'REVERSAL') {
+    const targetId = preservedMeta.reversalOfRunId;
+    const targetPayslips = await prisma.payslip.findMany({ where: { payrollRunId: targetId, tenantId } });
+    let totalGross = 0; let totalDeductions = 0; let totalNet = 0; let empCount = 0;
+    const byDept = {}; const warnings = [];
+    for (const ps of targetPayslips) {
+      const gross = -Number(ps.grossEarnings);
+      const ded = -Number(ps.totalDeductions);
+      const net = -Number(ps.netPay);
+      await prisma.payslip.create({
+        data: {
+          tenantId, payrollRunId: id, employeeId: ps.employeeId, period: run.period,
+          currency: ps.currency, grossEarnings: gross, totalDeductions: ded, netPay: net,
+          workingDays: ps.workingDays, presentDays: ps.presentDays, leaveDays: ps.leaveDays, lopDays: ps.lopDays,
+          status: 'PENDING',
+          earningsJson: negateLines(ps.earningsJson),
+          deductionsJson: negateLines(ps.deductionsJson),
+          oneTimeAdditionsJson: negateLines(ps.oneTimeAdditionsJson),
+          oneTimeDeductionsJson: negateLines(ps.oneTimeDeductionsJson),
+          generatedAt: new Date(),
+        },
+      });
+      totalGross += gross; totalDeductions += ded; totalNet += net; empCount++;
+    }
+    await finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings);
+    return;
+  }
+
+  if (runType === 'BONUS' || runType === 'ARREARS') {
+    const inputs = await prisma.payrollInput.findMany({
+      where: { runId: id, tenantId, variablePay: { not: null } },
+    });
+    const inpMap = Object.fromEntries(inputs.map((i) => [i.employeeId, i]));
+    let totalGross = 0; let totalDeductions = 0; let totalNet = 0; let empCount = 0;
+    const byDept = {}; const warnings = [];
+    const label = runType === 'BONUS' ? 'Bonus' : 'Arrears';
+    for (const inp of inputs) {
+      const amount = Number(inp.variablePay);
+      if (!amount) continue;
+      const emp = await prisma.employee.findFirst({
+        where: { id: inp.employeeId, tenantId },
+        include: { department: { select: { name: true } } },
+      });
+      if (!emp) continue;
+      const earningsArr = [{ code: runType, name: label, amount, taxable: true }];
+      await prisma.payslip.create({
+        data: {
+          tenantId, payrollRunId: id, employeeId: emp.id, period: run.period,
+          currency: 'INR', grossEarnings: amount, totalDeductions: 0, netPay: amount,
+          workingDays: 0, presentDays: 0, leaveDays: 0, lopDays: 0, status: 'PENDING',
+          earningsJson: earningsArr, deductionsJson: [],
+          oneTimeAdditionsJson: [], oneTimeDeductionsJson: [], generatedAt: new Date(),
+        },
+      });
+      totalGross += amount; totalNet += amount; empCount++;
+      const deptName = emp.department?.name || 'Unassigned';
+      if (!byDept[deptName]) byDept[deptName] = { departmentName: deptName, employeeCount: 0, totalNet: 0 };
+      byDept[deptName].employeeCount++;
+      byDept[deptName].totalNet = Math.round((byDept[deptName].totalNet + amount) * 100) / 100;
+    }
+    if (!inputs.length) {
+      warnings.push({ message: 'No variablePay inputs — add inputs before calculate' });
+    }
+    await finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings);
+    return;
+  }
+
   const [yearStr, monthStr] = run.period.split('-');
   const year = parseInt(yearStr);
   const month = parseInt(monthStr);
   const periodStart = new Date(year, month - 1, 1);
   const periodEnd = new Date(year, month, 0, 23, 59, 59, 999);
 
-  const salaries = await prisma.employeeSalary.findMany({
+  let salaries = await prisma.employeeSalary.findMany({
     where: {
       tenantId,
       effectiveFrom: { lte: periodEnd },
@@ -585,11 +746,18 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
     },
   });
 
+  if (runType === 'OFF_CYCLE') {
+    const allowed = new Set(preservedMeta.employeeIds || []);
+    salaries = salaries.filter((s) => allowed.has(s.employeeId));
+  }
+  if (runType === 'FNF') {
+    const empId = preservedMeta.employeeId || preservedMeta.fnfParams?.employeeId;
+    salaries = salaries.filter((s) => s.employeeId === empId);
+  }
+
   const warnings = [];
   const byDept = {};
   let totalGross = 0, totalDeductions = 0, totalNet = 0, empCount = 0;
-
-  await prisma.payslip.deleteMany({ where: { payrollRunId: id } });
 
   for (const sal of salaries) {
     const { employee, payGroup } = sal;
@@ -673,17 +841,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
     }
   }
 
-  await prisma.payrollRun.update({
-    where: { id },
-    data: {
-      status: 'REVIEW', employeeCount: empCount,
-      totalGross: Math.round(totalGross * 100) / 100,
-      totalDeductions: Math.round(totalDeductions * 100) / 100,
-      totalNet: Math.round(totalNet * 100) / 100,
-      processedAt: new Date(),
-      summaryJson: { byDepartment: Object.values(byDept), warnings },
-    },
-  });
+  await finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings);
 }
 
 export async function approvePayrollRun(prisma, id, tenantId, userId, notes) {
@@ -875,29 +1033,8 @@ export async function updateLegalEntity(prisma, id, tenantId, data) {
 
 // ── Phase 3: Statutory Packs ──────────────────────────────────────────────────
 
-// The StatutoryPack contract is flat: rounding/proration/taxRegimes/
-// contributionSchemes/localTaxes/statutoryComponents live at the top level (the
-// UI reads pack.taxRegimes.length etc). Storage nests them under packData, so
-// spread it back out and guarantee the array fields exist.
 function fmtStatutoryPack(p) {
-  const data = p.packData || {};
-  return {
-    id: p.id,
-    tenantId: p.tenantId,
-    country: p.country,
-    version: p.version,
-    effectiveFrom: p.effectiveFrom ? p.effectiveFrom.toISOString().slice(0, 10) : null,
-    effectiveTo: p.effectiveTo ? p.effectiveTo.toISOString().slice(0, 10) : null,
-    rounding: data.rounding ?? null,
-    proration: data.proration ?? null,
-    taxRegimes: data.taxRegimes ?? [],
-    contributionSchemes: data.contributionSchemes ?? [],
-    localTaxes: data.localTaxes ?? [],
-    statutoryComponents: data.statutoryComponents ?? [],
-    minimumWages: data.minimumWages ?? [],
-    createdAt: p.createdAt,
-    updatedAt: p.updatedAt,
-  };
+  return fmtStatutoryPackRow(p);
 }
 
 export async function getStatutoryPacks(prisma, tenantId, country) {
@@ -914,7 +1051,7 @@ export async function getStatutoryPackById(prisma, id, tenantId) {
 }
 
 export async function createStatutoryPack(prisma, tenantId, data) {
-  return prisma.statutoryPack.create({
+  const row = await prisma.statutoryPack.create({
     data: {
       tenantId, country: data.country, version: data.version,
       effectiveFrom: new Date(data.effectiveFrom),
@@ -922,18 +1059,36 @@ export async function createStatutoryPack(prisma, tenantId, data) {
       packData: data.packData,
     },
   });
+  return fmtStatutoryPack(row);
 }
 
 export async function updateStatutoryPack(prisma, id, tenantId, data) {
   const existing = await prisma.statutoryPack.findFirst({ where: { id, tenantId } });
   if (!existing) return null;
-  return prisma.statutoryPack.update({
+  const merged = mergePackUpdate(existing, data);
+  const row = await prisma.statutoryPack.update({
     where: { id },
     data: {
-      ...(data.effectiveTo !== undefined && { effectiveTo: data.effectiveTo ? new Date(data.effectiveTo) : null }),
-      ...(data.packData && { packData: data.packData }),
+      ...(data.country && { country: merged.country }),
+      ...(data.version && { version: merged.version }),
+      ...(data.effectiveFrom !== undefined && { effectiveFrom: new Date(merged.effectiveFrom) }),
+      ...(data.effectiveTo !== undefined && { effectiveTo: merged.effectiveTo ? new Date(merged.effectiveTo) : null }),
+      packData: merged.packData,
     },
   });
+  return fmtStatutoryPack(row);
+}
+
+export async function deleteStatutoryPack(prisma, id, tenantId) {
+  const existing = await prisma.statutoryPack.findFirst({ where: { id, tenantId } });
+  if (!existing) return null;
+  const inUse = await prisma.legalEntity.count({ where: { tenantId, statutoryPackId: id } });
+  if (inUse > 0) {
+    const err = new Error('Statutory pack is referenced by a legal entity');
+    err.code = 'PACK_IN_USE'; err.statusCode = 409; throw err;
+  }
+  await prisma.statutoryPack.delete({ where: { id } });
+  return { deleted: true };
 }
 
 // ── Phase 3: Pay Calendars ────────────────────────────────────────────────────
