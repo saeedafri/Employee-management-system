@@ -831,4 +831,90 @@ describe('Payroll Routes Integration Tests', function () {
       expect(JSON.parse(res.body).error.code).to.equal('INVALID_RUN_TYPE');
     });
   });
+
+  describe('Phase 3 contract shapes', function () {
+    it('GET /payroll/components returns statutory fields and timestamps', async function () {
+      await prisma.salaryComponent.create({
+        data: {
+          tenantId: tenant.id, name: 'PF Wage', code: 'PF_WAGE_TEST',
+          type: 'EARNING', calculationType: 'FLAT', value: 1000, taxable: true, active: true,
+          statutoryTag: 'PF_WAGE', prorate: true, payInPeriods: '[1,2,3]',
+          costCenterRule: 'DEPARTMENT',
+        },
+      });
+      const res = await app.inject({
+        method: 'GET', url: '/api/v1/payroll/components',
+        headers: { Authorization: `Bearer ${hrToken}` },
+      });
+      const item = JSON.parse(res.body).data.find((c) => c.code === 'PF_WAGE_TEST');
+      expect(item).to.include.keys('statutoryTag', 'prorate', 'payInPeriods', 'createdAt', 'updatedAt', 'costCenterRule');
+      expect(item.payInPeriods).to.deep.equal([1, 2, 3]);
+    });
+
+    it('POST/PATCH /payroll/components persists statutory fields', async function () {
+      const createRes = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/components',
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: {
+          name: 'Statutory Comp', code: 'STAT_PATCH', type: 'EARNING', calculationType: 'FLAT',
+          value: 500, taxable: true, statutoryTag: 'PF_EMPLOYEE', prorate: false, payInPeriods: [6, 12],
+        },
+      });
+      expect(createRes.statusCode).to.equal(201);
+      const created = JSON.parse(createRes.body).data;
+      expect(created.statutoryTag).to.equal('PF_EMPLOYEE');
+      expect(created.payInPeriods).to.deep.equal([6, 12]);
+
+      const patchRes = await app.inject({
+        method: 'PATCH', url: `/api/v1/payroll/components/${created.id}`,
+        headers: { Authorization: `Bearer ${hrToken}` },
+        payload: { prorate: true, payInPeriods: [1, 7] },
+      });
+      expect(JSON.parse(patchRes.body).data.prorate).to.equal(true);
+      expect(JSON.parse(patchRes.body).data.payInPeriods).to.deep.equal([1, 7]);
+    });
+
+    it('GET /payroll/pay-calendars returns frontend PayCalendar shape', async function () {
+      await prisma.payCalendar.create({
+        data: {
+          tenantId: tenant.id, name: 'Monthly', code: 'MON_TEST', paySchedule: 'MONTHLY',
+          periodAnchor: 'MONTH_START', payDateRule: 'LAST_WORKING_DAY', payDay: 30, cutoffDay: 25,
+        },
+      });
+      const res = await app.inject({
+        method: 'GET', url: '/api/v1/payroll/pay-calendars',
+        headers: { Authorization: `Bearer ${hrToken}` },
+      });
+      const cal = JSON.parse(res.body).data[0];
+      expect(cal).to.include.keys('frequency', 'periodAnchor', 'payDateRule', 'payDay', 'cutoffDay', 'legalEntityId');
+      expect(cal.frequency).to.equal('MONTHLY');
+    });
+
+    it('GET /payroll/legal-entities includes active', async function () {
+      await prisma.legalEntity.create({
+        data: { tenantId: tenant.id, name: 'Test LE', country: 'IN', active: false },
+      });
+      const res = await app.inject({
+        method: 'GET', url: '/api/v1/payroll/legal-entities',
+        headers: { Authorization: `Bearer ${hrToken}` },
+      });
+      expect(JSON.parse(res.body).data[0].active).to.equal(false);
+    });
+
+    it('base payroll paths return 200', async function () {
+      for (const path of [
+        '/api/v1/payroll/employees',
+        '/api/v1/payroll/migration',
+        '/api/v1/payroll/payment-batches',
+        '/api/v1/payroll/reports',
+        '/api/v1/payroll/settings',
+      ]) {
+        const res = await app.inject({
+          method: 'GET', url: path,
+          headers: { Authorization: `Bearer ${hrToken}` },
+        });
+        expect(res.statusCode, path).to.equal(200);
+      }
+    });
+  });
 });

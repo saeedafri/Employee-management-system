@@ -44,7 +44,9 @@
     "test:playwright:deployed": "playwright test tests/e2e/deployed-full-clickthrough.spec.ts --project=chromium --workers=1",
     "db:seed:deep": "node prisma/seedDeepClickthrough.js",
     "seed:production-api": "node scripts/seedProductionViaApi.mjs",
-    "verify:phase3-production": "node scripts/verifyPhase3Production.mjs"
+    "verify:phase3-production": "node scripts/verifyPhase3Production.mjs",
+    "db:seed:payroll-contract": "node scripts/seedPayrollContractData.mjs",
+    "verify:payroll-contract": "node scripts/verifyPayrollLiveContract.mjs"
   },
   "keywords": [
     "employee-management",

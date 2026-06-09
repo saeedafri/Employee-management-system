@@ -1,11 +1,20 @@
 import { evaluateFormula, topologicalSort } from '../../utils/formulaEval.js';
+import {
+  fmtComponentStatutoryFields,
+  normalizeCostCenterRule,
+  serializePayInPeriods,
+} from '../../utils/payrollComponentShape.js';
+import { fmtPayCalendar, payCalendarInputToDb } from '../../utils/payCalendarShape.js';
 import { withComponentColor } from '../../utils/payrollUiShapes.js';
 import { fmtStatutoryPackRow, mergePackUpdate } from '../../utils/statutoryPackShape.js';
 
 const COMPONENT_INCLUDE = {
   id: true, name: true, code: true, type: true, calculationType: true,
   value: true, basisCode: true, formula: true, taxable: true, active: true,
-  displayOrder: true, description: true, createdAt: true, updatedAt: true,
+  displayOrder: true, description: true,
+  statutoryTag: true, prorate: true, payInPeriods: true,
+  glAccountCode: true, costCenterRule: true,
+  createdAt: true, updatedAt: true,
 };
 
 function fmtComponent(c) {
@@ -15,8 +24,28 @@ function fmtComponent(c) {
     value: c.value !== null ? Number(c.value) : null,
     basisCode: c.basisCode ?? null, formula: c.formula ?? null,
     taxable: c.taxable, active: c.active, displayOrder: c.displayOrder,
-    description: c.description ?? null, createdAt: c.createdAt, updatedAt: c.updatedAt,
+    description: c.description ?? null,
+    ...fmtComponentStatutoryFields(c),
+    createdAt: c.createdAt, updatedAt: c.updatedAt,
   });
+}
+
+function fmtLegalEntity(e) {
+  return {
+    id: e.id,
+    name: e.name,
+    country: e.country,
+    currency: e.currency,
+    fiscalYearStartMonth: e.fiscalYearStartMonth,
+    timezone: e.timezone,
+    locale: e.locale,
+    registrationIds: e.registrationIds ?? {},
+    statutoryPackId: e.statutoryPackId ?? null,
+    payCalendarId: e.payCalendarId ?? null,
+    active: e.active ?? true,
+    createdAt: e.createdAt,
+    updatedAt: e.updatedAt,
+  };
 }
 
 function fmtPayGroup(pg) {
@@ -72,6 +101,11 @@ export async function createComponent(prisma, tenantId, data) {
       formula: data.formula ?? null, taxable: data.taxable,
       active: data.active ?? true, displayOrder: data.displayOrder ?? 0,
       description: data.description ?? null,
+      statutoryTag: data.statutoryTag ?? null,
+      prorate: data.prorate ?? true,
+      payInPeriods: serializePayInPeriods(data.payInPeriods),
+      glAccountCode: data.glAccountCode ?? null,
+      costCenterRule: normalizeCostCenterRule(data.costCenterRule),
     },
     select: COMPONENT_INCLUDE,
   });
@@ -94,6 +128,11 @@ export async function updateComponent(prisma, id, tenantId, data) {
   if (data.active !== undefined) updateData.active = data.active;
   if (data.displayOrder !== undefined) updateData.displayOrder = data.displayOrder;
   if (data.description !== undefined) updateData.description = data.description;
+  if (data.statutoryTag !== undefined) updateData.statutoryTag = data.statutoryTag;
+  if (data.prorate !== undefined) updateData.prorate = data.prorate;
+  if (data.payInPeriods !== undefined) updateData.payInPeriods = serializePayInPeriods(data.payInPeriods);
+  if (data.glAccountCode !== undefined) updateData.glAccountCode = data.glAccountCode;
+  if (data.costCenterRule !== undefined) updateData.costCenterRule = normalizeCostCenterRule(data.costCenterRule);
 
   const row = await prisma.salaryComponent.update({ where: { id }, data: updateData, select: COMPONENT_INCLUDE });
   return fmtComponent(row);
@@ -1010,25 +1049,33 @@ export async function exportRunPayslipsCsv(prisma, runId, tenantId) {
 // ── Phase 3: Legal Entities ───────────────────────────────────────────────────
 
 export async function getLegalEntities(prisma, tenantId) {
-  return prisma.legalEntity.findMany({ where: { tenantId }, orderBy: { createdAt: 'asc' } });
+  const rows = await prisma.legalEntity.findMany({ where: { tenantId }, orderBy: { createdAt: 'asc' } });
+  return rows.map(fmtLegalEntity);
 }
 
 export async function createLegalEntity(prisma, tenantId, data) {
-  return prisma.legalEntity.create({
+  const row = await prisma.legalEntity.create({
     data: {
       tenantId,
       name: data.name, country: data.country || 'IN', currency: data.currency || 'INR',
       fiscalYearStartMonth: data.fiscalYearStartMonth || 4, timezone: data.timezone || 'Asia/Kolkata',
       locale: data.locale || 'en-IN', registrationIds: data.registrationIds || {},
       statutoryPackId: data.statutoryPackId || null, payCalendarId: data.payCalendarId || null,
+      active: data.active ?? true,
     },
   });
+  return fmtLegalEntity(row);
 }
 
 export async function updateLegalEntity(prisma, id, tenantId, data) {
   const existing = await prisma.legalEntity.findFirst({ where: { id, tenantId } });
   if (!existing) return null;
-  return prisma.legalEntity.update({ where: { id }, data });
+  const updateData = {};
+  for (const field of ['name', 'country', 'currency', 'fiscalYearStartMonth', 'timezone', 'locale', 'registrationIds', 'statutoryPackId', 'payCalendarId', 'active']) {
+    if (data[field] !== undefined) updateData[field] = data[field];
+  }
+  const row = await prisma.legalEntity.update({ where: { id }, data: updateData });
+  return fmtLegalEntity(row);
 }
 
 // ── Phase 3: Statutory Packs ──────────────────────────────────────────────────
@@ -1094,21 +1141,55 @@ export async function deleteStatutoryPack(prisma, id, tenantId) {
 // ── Phase 3: Pay Calendars ────────────────────────────────────────────────────
 
 export async function getPayCalendars(prisma, tenantId) {
-  return prisma.payCalendar.findMany({ where: { tenantId }, orderBy: { createdAt: 'asc' } });
+  const rows = await prisma.payCalendar.findMany({ where: { tenantId }, orderBy: { createdAt: 'asc' } });
+  return rows.map(fmtPayCalendar);
 }
 
 export async function createPayCalendar(prisma, tenantId, data) {
-  return prisma.payCalendar.create({
+  const row = await prisma.payCalendar.create({
     data: {
-      tenantId, name: data.name, code: data.code.toUpperCase(),
-      country: data.country || 'IN', paySchedule: data.paySchedule || 'MONTHLY',
+      tenantId,
+      name: data.name,
+      code: data.code.toUpperCase(),
+      country: data.country || 'IN',
       firstPayDate: data.firstPayDate || null,
+      ...payCalendarInputToDb(data),
     },
   });
+  return fmtPayCalendar(row);
 }
 
 export async function updatePayCalendar(prisma, id, tenantId, data) {
   const existing = await prisma.payCalendar.findFirst({ where: { id, tenantId } });
   if (!existing) return null;
-  return prisma.payCalendar.update({ where: { id }, data });
+  const row = await prisma.payCalendar.update({
+    where: { id },
+    data: payCalendarInputToDb(data, existing),
+  });
+  return fmtPayCalendar(row);
+}
+
+export async function listPaymentBatches(prisma, tenantId) {
+  const batches = await prisma.paymentBatch.findMany({
+    where: { tenantId },
+    orderBy: { createdAt: 'desc' },
+  });
+  if (!batches.length) return [];
+  const runIds = [...new Set(batches.map((b) => b.runId))];
+  const runs = await prisma.payrollRun.findMany({
+    where: { id: { in: runIds }, tenantId },
+    select: { id: true, period: true },
+  });
+  const periodByRun = Object.fromEntries(runs.map((r) => [r.id, r.period]));
+  return batches.map((b) => ({
+    id: b.id,
+    runId: b.runId,
+    period: periodByRun[b.runId] ?? null,
+    count: b.count,
+    totalAmount: Number(b.totalAmount),
+    currency: b.currency,
+    status: b.status,
+    createdAt: b.createdAt,
+    reconciledAt: b.reconciledAt,
+  }));
 }

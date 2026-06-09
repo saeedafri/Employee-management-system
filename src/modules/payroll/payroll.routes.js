@@ -45,7 +45,9 @@ const PayrollComponent = {
     amount:          { type: 'number', nullable: true, description: 'Normalized monthly amount alias for UI' },
     statutoryTag:    { type: 'string', nullable: true, description: 'e.g. PF_EMPLOYEE, ESI, TDS — links component to statutory deduction bucket' },
     prorate:         { type: 'boolean', description: 'Whether to pro-rate for mid-month joiners/exits' },
-    payInPeriods:    { type: 'string', nullable: true, description: 'JSON-encoded number[] — which months to pay (null = all months)' },
+    payInPeriods:    { type: 'array', nullable: true, items: { type: 'integer' }, description: 'Which months to pay (null = all months)' },
+    createdAt:       { type: 'string', format: 'date-time' },
+    updatedAt:       { type: 'string', format: 'date-time' },
     glAccountCode:   { type: 'string', nullable: true, description: 'GL ledger account code for accounting integration' },
     costCenterRule:  { type: 'string', enum: ['DEPARTMENT', 'NONE'], description: 'How to allocate cost: DEPARTMENT maps to employee dept, NONE uses default center' },
   },
@@ -129,7 +131,7 @@ export default async function payrollRoutes(fastify) {
           description: { type: 'string', maxLength: 500 },
           statutoryTag: { type: 'string', description: 'e.g. PF_EMPLOYEE, ESI, TDS' },
           prorate: { type: 'boolean', description: 'Pro-rate for mid-month joins/exits (default true)' },
-          payInPeriods: { type: 'string', description: 'JSON-encoded number[] — which months to pay (null = all)' },
+          payInPeriods: { type: 'array', nullable: true, items: { type: 'integer' }, description: 'Which months to pay (null = all)' },
           glAccountCode: { type: 'string', description: 'GL account code for accounting integration' },
           costCenterRule: { type: 'string', enum: ['DEPARTMENT', 'NONE'], description: 'Cost center allocation rule (default NONE)' },
         },
@@ -158,9 +160,19 @@ export default async function payrollRoutes(fastify) {
           value: { type: 'number' }, basisCode: { type: 'string' }, formula: { type: 'string' },
           taxable: { type: 'boolean' }, active: { type: 'boolean' }, displayOrder: { type: 'integer' },
           description: { type: 'string' },
+          statutoryTag: { type: 'string', nullable: true },
+          prorate: { type: 'boolean' },
+          payInPeriods: { type: 'array', nullable: true, items: { type: 'integer' } },
+          glAccountCode: { type: 'string', nullable: true },
+          costCenterRule: { type: 'string', enum: ['DEPARTMENT', 'NONE'] },
         },
       },
-      response: { 200: obj },
+      response: {
+        200: {
+          type: 'object',
+          properties: { success: { type: 'boolean' }, data: PayrollComponent },
+        },
+      },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.updateComponent);
@@ -231,6 +243,17 @@ export default async function payrollRoutes(fastify) {
     schema: { tags: ['Payroll'], description: 'List non-monthly pay schedules', security: [{ Bearer: [] }], response: { 200: obj } },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.getPaySchedules);
+
+  // ── Payroll Employees (list) ────────────────────────────────────────────────
+  fastify.get('/payroll/employees', {
+    schema: {
+      tags: ['Payroll'],
+      description: 'List employees with payroll assignment summary for admin payroll screens',
+      security: [{ Bearer: [] }],
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayrollEmployees);
 
   // ── Employee Salary ─────────────────────────────────────────────────────────
   fastify.get('/payroll/employees/:employeeId/salary', {
@@ -468,6 +491,7 @@ export default async function payrollRoutes(fastify) {
           fiscalYearStartMonth: { type: 'integer' }, timezone: { type: 'string' }, locale: { type: 'string' },
           registrationIds: { type: 'object', additionalProperties: true },
           statutoryPackId: { type: 'string' }, payCalendarId: { type: 'string' },
+          active: { type: 'boolean', description: 'Entity status for UI badges (default true)' },
         },
       },
       response: { 201: obj },
@@ -797,7 +821,14 @@ export default async function payrollRoutes(fastify) {
         properties: {
           name: { type: 'string' }, code: { type: 'string' }, country: { type: 'string' },
           paySchedule: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+          frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'], description: 'Alias for paySchedule' },
           firstPayDate: { type: 'string' },
+          legalEntityId: { type: 'string', nullable: true },
+          periodAnchor: { type: 'string' },
+          payDateRule: { type: 'string' },
+          payDay: { type: 'integer' },
+          cutoffDay: { type: 'integer' },
+          holidayCalendarId: { type: 'string', nullable: true },
         },
       },
       response: { 201: obj },
@@ -821,6 +852,16 @@ export default async function payrollRoutes(fastify) {
     schema: { tags: ['Payroll'], description: 'List all opening balances', security: [{ Bearer: [] }], response: { 200: obj } },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.getAllOpeningBalances);
+
+  fastify.get('/payroll/migration', {
+    schema: {
+      tags: ['Payroll'],
+      description: 'Migration overview (alias aggregate of /payroll/migration/status)',
+      security: [{ Bearer: [] }],
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayrollMigration);
 
   fastify.get('/payroll/migration/historical-payslips', {
     schema: { tags: ['Payroll'], description: 'List imported historical payslips', security: [{ Bearer: [] }], response: { 200: obj } },
@@ -850,7 +891,27 @@ export default async function payrollRoutes(fastify) {
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.updateMigrationStatus);
 
+  fastify.get('/payroll/payment-batches', {
+    schema: {
+      tags: ['Payroll'],
+      description: 'List all payment batches across payroll runs',
+      security: [{ Bearer: [] }],
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.listPaymentBatches);
+
   // ── Phase 3: Compliance Reports ─────────────────────────────────────────────
+
+  fastify.get('/payroll/reports', {
+    schema: {
+      tags: ['Payroll'],
+      description: 'Payroll reports index with available report metadata and recent runs',
+      security: [{ Bearer: [] }],
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayrollReportsIndex);
 
   fastify.get('/payroll/reports/pay-equity', {
     schema: {
@@ -868,6 +929,16 @@ export default async function payrollRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.getAuditPack);
+
+  fastify.get('/payroll/settings', {
+    schema: {
+      tags: ['Payroll'],
+      description: 'Central payroll settings (data policy, defaults, feature flags)',
+      security: [{ Bearer: [] }],
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayrollSettings);
 
   fastify.get('/payroll/settings/data-policy', {
     schema: { tags: ['Payroll'], description: 'Get data residency & retention policy', security: [{ Bearer: [] }], response: { 200: obj } },

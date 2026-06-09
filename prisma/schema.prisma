@@ -1094,6 +1094,7 @@ model LegalEntity {
   registrationIds      Json     @default("{}")
   statutoryPackId      String?
   payCalendarId        String?
+  active               Boolean  @default(true)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
@@ -1182,15 +1183,21 @@ model PayrollInput {
 }
 
 model PayCalendar {
-  id           String   @id @default(cuid())
-  tenantId     String
-  name         String
-  code         String
-  country      String   @default("IN")
-  paySchedule  String   @default("MONTHLY")
-  firstPayDate String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  tenantId           String
+  name               String
+  code               String
+  country            String   @default("IN")
+  paySchedule        String   @default("MONTHLY")
+  firstPayDate       String?
+  legalEntityId      String?
+  periodAnchor       String?  @default("MONTH_START")
+  payDateRule        String?  @default("LAST_WORKING_DAY")
+  payDay             Int?
+  cutoffDay          Int?     @default(25)
+  holidayCalendarId  String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 

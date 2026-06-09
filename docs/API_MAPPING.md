@@ -2741,7 +2741,14 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
       "taxable": true,
       "active": true,
       "displayOrder": 1,
-      "description": "Basic salary — 40% of CTC"
+      "description": "Basic salary — 40% of CTC",
+      "statutoryTag": "PF_WAGE",
+      "prorate": true,
+      "payInPeriods": null,
+      "glAccountCode": null,
+      "costCenterRule": "DEPARTMENT",
+      "createdAt": "2026-06-09T00:00:00.000Z",
+      "updatedAt": "2026-06-09T00:00:00.000Z"
     },
     {
       "id": "comp-hra",
@@ -2995,7 +3002,9 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
       "registrationIds": { "pan": "AAACA1234C", "tan": "DELA12345B", "gstin": "07AAACA1234C1Z5" },
       "statutoryPackId": "pack-in-2026",
       "payCalendarId": "cal-in-monthly",
-      "createdAt": "2026-01-01T00:00:00.000Z"
+      "active": true,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
     },
     {
       "id": "le-acme-us",
@@ -3117,9 +3126,11 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 ### F.5 — Pay Calendars
 
 #### `GET /payroll/pay-calendars`
-**Roles:** HR, SA
+**Roles:** HR, SA  
+**UI:** Payroll → Pay Calendars  
+**Seed:** `npm run db:seed:payroll-contract`
 
-**Response 200:**
+**Response 200 (frontend `PayCalendar` shape):**
 ```json
 {
   "success": true,
@@ -3127,26 +3138,22 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
     {
       "id": "cal-in-monthly",
       "name": "India Monthly Payroll",
-      "code": "IN_MONTHLY",
-      "country": "IN",
-      "paySchedule": "MONTHLY",
-      "firstPayDate": "2026-01-31",
-      "createdAt": "2026-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "cal-us-biweekly",
-      "name": "US Bi-Weekly Payroll",
-      "code": "US_BIWEEKLY",
-      "country": "US",
-      "paySchedule": "BIWEEKLY",
-      "firstPayDate": "2026-01-10"
+      "legalEntityId": "le-acme-in",
+      "frequency": "MONTHLY",
+      "periodAnchor": "MONTH_START",
+      "payDateRule": "LAST_WORKING_DAY",
+      "payDay": 30,
+      "cutoffDay": 25,
+      "holidayCalendarId": null,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
     }
   ],
   "meta": {}
 }
 ```
 
-**`paySchedule` values:** `MONTHLY` | `BIWEEKLY` | `WEEKLY`
+**`frequency` values:** `MONTHLY` | `BIWEEKLY` | `WEEKLY` (stored as `paySchedule` in DB; POST accepts `frequency` or `paySchedule`)
 
 ---
 
@@ -3161,6 +3168,42 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
   "firstPayDate": "2026-01-31"
 }
 ```
+
+---
+
+### F.5b — Payroll Base Paths (UI list screens)
+
+#### `GET /payroll/employees`
+**Roles:** HR, SA  
+**UI:** Payroll → Employees roster  
+**Response 200:** `{ success, data: PayrollEmployee[], meta }` — each item: `employeeId`, `employeeCode`, `employeeName`, `department`, `designation`, `country`, `currency`, `payGroupId`, `payGroupName`, `hasSalaryConfig`, `annualCtc`, `active`
+
+#### `GET /payroll/migration`
+**Roles:** HR, SA  
+**UI:** Payroll → Migration hub (alias of `/payroll/migration/status` aggregate)  
+**Response 200:** `{ sandboxMode, goLivePeriod, openingBalancesCount, historicalPayslipsCount, lastReconciledRunId, updatedAt }`
+
+#### `GET /payroll/payment-batches`
+**Roles:** HR, SA  
+**Response 200:** array of `{ id, runId, period, count, totalAmount, currency, status, createdAt, reconciledAt }`
+
+#### `GET /payroll/reports`
+**Roles:** HR, SA  
+**Response 200:** `{ reports: [{ id, path, label, method, requiresRunId? }], recentRuns: [...] }`
+
+#### `GET /payroll/settings`
+**Roles:** HR, SA  
+**Response 200:** `{ defaultCountry, defaultCurrency, sandboxMode, dataPolicy, features, updatedAt }` — sub-resource `/payroll/settings/data-policy` unchanged
+
+#### `GET /payroll/contractor-invoices`
+**Roles:** HR, SA  
+**Seed:** `npm run db:seed:payroll-contract`  
+**Response item:** `{ id, workerId, workerName, period, amount, currency, withholdingPct, netPayable, status, payoutRef, submittedAt, decidedAt }`
+
+#### `GET /payroll/opening-balances`
+**Roles:** HR, SA  
+**Seed:** `npm run db:seed:payroll-contract`  
+**Response item:** `{ employeeId, employeeCode, employeeName, fiscalYear, grossEarnings, taxableIncome, taxDeducted, totalDeductions, netPay, contributions, importedAt }`
 
 ---
 

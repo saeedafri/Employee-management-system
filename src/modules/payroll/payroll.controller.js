@@ -474,6 +474,41 @@ export async function importHistoricalPayslips(request, reply) {
   } catch (err) { handleError(reply, err); }
 }
 
+export async function getPayrollEmployees(request, reply) {
+  try {
+    const data = await service.getPayrollEmployees(prisma, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getPayrollMigration(request, reply) {
+  try {
+    const data = await service.getPayrollMigration(prisma, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function listPaymentBatches(request, reply) {
+  try {
+    const data = await service.listPaymentBatches(prisma, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getPayrollReportsIndex(request, reply) {
+  try {
+    const data = await service.getPayrollReportsIndex(prisma, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function getPayrollSettings(request, reply) {
+  try {
+    const data = await service.getPayrollSettings(prisma, request.tenant.id);
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
 export async function getMigrationStatus(request, reply) {
   try {
     const data = await service.getMigrationStatus(prisma, request.tenant.id);

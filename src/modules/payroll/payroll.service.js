@@ -512,11 +512,120 @@ export async function upsertOpeningBalance(prisma, employeeId, tenantId, data) {
   });
 }
 
+function fmtOpeningBalance(row) {
+  const emp = row.employee;
+  return {
+    employeeId: row.employeeId,
+    employeeCode: emp?.employeeCode ?? null,
+    employeeName: emp ? `${emp.firstName} ${emp.lastName}`.trim() : null,
+    fiscalYear: row.fiscalYear,
+    grossEarnings: Number(row.grossEarnings),
+    taxableIncome: Number(row.taxableIncome),
+    taxDeducted: Number(row.taxDeducted),
+    totalDeductions: Number(row.totalDeductions),
+    netPay: Number(row.netPay),
+    contributions: row.contributions ?? {},
+    importedAt: row.importedAt,
+  };
+}
+
 export async function getAllOpeningBalances(prisma, tenantId) {
-  return prisma.openingBalance.findMany({ where: { tenantId }, orderBy: { importedAt: 'desc' } });
+  const rows = await prisma.openingBalance.findMany({
+    where: { tenantId },
+    include: { employee: { select: { employeeCode: true, firstName: true, lastName: true } } },
+    orderBy: { importedAt: 'desc' },
+  });
+  return rows.map(fmtOpeningBalance);
 }
 
 // ── Phase 3: Payroll Roster & Run Inputs ──────────────────────────────────────
+
+export async function getPayrollEmployees(prisma, tenantId) {
+  const employees = await prisma.employee.findMany({
+    where: { tenantId, deletedAt: null },
+    include: {
+      department: { select: { name: true } },
+      salaries: {
+        where: { effectiveTo: null },
+        take: 1,
+        orderBy: { effectiveFrom: 'desc' },
+        include: { payGroup: { select: { id: true, name: true, currency: true } } },
+      },
+    },
+    orderBy: { employeeCode: 'asc' },
+  });
+
+  return employees.map((emp) => {
+    const salary = emp.salaries[0];
+    return {
+      employeeId: emp.id,
+      employeeCode: emp.employeeCode,
+      employeeName: `${emp.firstName} ${emp.lastName}`.trim(),
+      department: emp.department?.name ?? null,
+      designation: emp.designation ?? null,
+      country: emp.location?.split(',').pop()?.trim() || 'IN',
+      currency: salary?.payGroup?.currency ?? emp.payCurrency ?? 'INR',
+      payGroupId: salary?.payGroupId ?? null,
+      payGroupName: salary?.payGroup?.name ?? null,
+      hasSalaryConfig: Boolean(salary),
+      annualCtc: salary ? Number(salary.annualCtc) : null,
+      active: emp.employmentStatus === 'ACTIVE',
+    };
+  });
+}
+
+export async function getPayrollMigration(prisma, tenantId) {
+  const status = await getMigrationStatus(prisma, tenantId);
+  return {
+    ...status,
+    updatedAt: status.updatedAt ?? new Date().toISOString(),
+  };
+}
+
+export async function listPaymentBatches(prisma, tenantId) {
+  return repo.listPaymentBatches(prisma, tenantId);
+}
+
+export async function getPayrollReportsIndex(prisma, tenantId) {
+  const recentRuns = await prisma.payrollRun.findMany({
+    where: { tenantId },
+    orderBy: { createdAt: 'desc' },
+    take: 5,
+    select: {
+      id: true, period: true, status: true, type: true, published: true, createdAt: true,
+    },
+  });
+  return {
+    reports: [
+      { id: 'pay-equity', path: '/payroll/reports/pay-equity', label: 'Pay Equity', method: 'GET' },
+      { id: 'audit-pack', path: '/payroll/reports/audit-pack', label: 'Audit Pack', method: 'GET', requiresRunId: true },
+      { id: 'statutory-return', path: '/payroll/runs/:runId/statutory-return', label: 'Statutory Return', method: 'GET', requiresRunId: true },
+      { id: 'register', path: '/payroll/runs/:runId/register', label: 'Payroll Register', method: 'GET', requiresRunId: true },
+    ],
+    recentRuns,
+  };
+}
+
+export async function getPayrollSettings(prisma, tenantId) {
+  const [dataPolicy, migration] = await Promise.all([
+    getDataPolicy(prisma, tenantId),
+    getMigrationStatus(prisma, tenantId),
+  ]);
+  return {
+    defaultCountry: 'IN',
+    defaultCurrency: 'INR',
+    sandboxMode: migration.sandboxMode,
+    dataPolicy,
+    features: {
+      payrollEnabled: true,
+      contractorInvoices: true,
+      openingBalances: true,
+      statutoryPacks: true,
+      offCycleRuns: true,
+    },
+    updatedAt: dataPolicy.updatedAt ?? new Date().toISOString(),
+  };
+}
 
 export async function getPayrollRoster(prisma, tenantId) {
   const salaries = await prisma.employeeSalary.findMany({
@@ -1031,64 +1140,66 @@ export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classifi
   };
 }
 
+function fmtContractorInvoice(row) {
+  return {
+    id: row.id,
+    workerId: row.workerId,
+    workerName: row.workerName,
+    period: row.period,
+    amount: Number(row.amount),
+    currency: row.currency,
+    withholdingPct: Number(row.withholdingPct),
+    netPayable: Number(row.netPayable),
+    status: row.status,
+    payoutRef: row.payoutRef ?? null,
+    submittedAt: row.submittedAt,
+    decidedAt: row.decidedAt ?? null,
+  };
+}
+
 export async function listContractorInvoices(prisma, tenantId, params = {}) {
-  const setting = await prisma.setting.findUnique({
-    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
+  const where = { tenantId };
+  if (params.workerId) where.workerId = params.workerId;
+  if (params.status) where.status = params.status;
+  const rows = await prisma.contractorInvoice.findMany({
+    where,
+    orderBy: { submittedAt: 'desc' },
   });
-  const invoices = (setting?.valueJson ?? []).filter((i) => {
-    if (params.workerId && i.workerId !== params.workerId) return false;
-    if (params.status && i.status !== params.status) return false;
-    return true;
-  });
-  return invoices;
+  return rows.map(fmtContractorInvoice);
 }
 
 export async function createContractorInvoice(prisma, tenantId, data) {
-  const { generateId } = await import('../../utils/id.js');
-  const invoice = {
-    id: generateId(),
-    workerId: data.workerId,
-    workerName: data.workerName || null,
-    period: data.period,
-    amount: data.amount,
-    currency: data.currency || 'INR',
-    withholdingPct: data.withholdingPct ?? 0,
-    netPayable: Math.round(data.amount * (1 - (data.withholdingPct ?? 0) / 100)),
-    status: 'SUBMITTED',
-    payoutRef: null,
-    submittedAt: new Date().toISOString(),
-    decidedAt: null,
-  };
-  const setting = await prisma.setting.findUnique({
-    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
+  const withholdingPct = data.withholdingPct ?? 0;
+  const amount = Number(data.amount);
+  const netPayable = data.netPayable ?? Math.round(amount * (1 - withholdingPct / 100));
+  const row = await prisma.contractorInvoice.create({
+    data: {
+      tenantId,
+      workerId: data.workerId,
+      workerName: data.workerName || 'Contractor',
+      period: data.period,
+      amount,
+      currency: data.currency || 'INR',
+      withholdingPct,
+      netPayable,
+      status: 'SUBMITTED',
+    },
   });
-  const invoices = [invoice, ...(setting?.valueJson ?? [])];
-  await prisma.setting.upsert({
-    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
-    create: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices', valueJson: invoices },
-    update: { valueJson: invoices },
-  });
-  return invoice;
+  return fmtContractorInvoice(row);
 }
 
 export async function updateContractorInvoice(prisma, tenantId, invoiceId, data) {
-  const setting = await prisma.setting.findUnique({
-    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
-  });
-  const invoices = setting?.valueJson ?? [];
-  const idx = invoices.findIndex((i) => i.id === invoiceId);
-  if (idx === -1) throw AppError('Invoice not found', 'NOT_FOUND', 404);
-  invoices[idx] = {
-    ...invoices[idx],
-    ...data,
-    decidedAt: data.status && data.status !== 'SUBMITTED' ? new Date().toISOString() : invoices[idx].decidedAt,
-  };
-  await prisma.setting.upsert({
-    where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices' } },
-    create: { tenantId, groupKey: 'payroll', settingKey: 'contractor-invoices', valueJson: invoices },
-    update: { valueJson: invoices },
-  });
-  return invoices[idx];
+  const existing = await prisma.contractorInvoice.findFirst({ where: { id: invoiceId, tenantId } });
+  if (!existing) throw AppError('Invoice not found', 'NOT_FOUND', 404);
+  const updateData = {};
+  for (const field of ['workerName', 'period', 'amount', 'currency', 'withholdingPct', 'netPayable', 'status', 'payoutRef']) {
+    if (data[field] !== undefined) updateData[field] = data[field];
+  }
+  if (data.status && data.status !== 'SUBMITTED' && data.status !== existing.status) {
+    updateData.decidedAt = new Date();
+  }
+  const row = await prisma.contractorInvoice.update({ where: { id: invoiceId }, data: updateData });
+  return fmtContractorInvoice(row);
 }
 
 // ── Phase 3 Extended Services ─────────────────────────────────────────────────
