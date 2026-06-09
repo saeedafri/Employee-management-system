@@ -155,7 +155,9 @@ async function freshContext(browser, opts = {}) {
     acceptDownloads: true,
     recordVideo: opts.video ? { dir: VIDEOS, size: { width: 1280, height: 720 } } : undefined,
   });
-  if (opts.trace) await context.tracing.start({ screenshots: true, snapshots: true });
+  if (opts.trace && !process.env.PLAYWRIGHT_TEST) {
+    try { await context.tracing.start({ screenshots: true, snapshots: true }); } catch { /* already started under Playwright runner */ }
+  }
   const page = await context.newPage();
   const net = [];
   const consoleLog = [];
@@ -549,8 +551,8 @@ export async function runCompleteFinalAudit({ headless = true, seedFirst = true 
     // Timesheet mutations (API + UI)
     {
       const { context, page, net } = await freshContext(browser);
-      await login(page, ACCOUNTS.PRIYA, net);
-      const priyaTok = await apiLogin(ACCOUNTS.PRIYA.email, ACCOUNTS.PRIYA.password);
+      await login(page, ACCOUNTS.DEV1, net);
+      const priyaTok = await apiLogin(ACCOUNTS.DEV1.email, ACCOUNTS.DEV1.password);
       const hrTok = await apiLogin(ACCOUNTS.HR.email, ACCOUNTS.HR.password);
       let tsPass = 0;
       if (priyaTok) {
@@ -576,11 +578,18 @@ export async function runCompleteFinalAudit({ headless = true, seedFirst = true 
               if (patched.status === 200) tsPass++;
             }
           }
-          const submitted = await apiCall(priyaTok, 'POST', `/timesheets/${sheet.id}/submit`);
-          if (submitted.status === 200) tsPass++;
-          if (hrTok && submitted.status === 200) {
+          if (sheet.status === 'DRAFT') {
+            const submitted = await apiCall(priyaTok, 'POST', `/timesheets/${sheet.id}/submit`);
+            if (submitted.status === 200) tsPass++;
+            if (hrTok && submitted.status === 200) {
+              const approved = await apiCall(hrTok, 'POST', `/timesheets/${sheet.id}/approve`);
+              if (approved.status === 200) tsPass++;
+            }
+          } else if (sheet.status === 'SUBMITTED' && hrTok) {
             const approved = await apiCall(hrTok, 'POST', `/timesheets/${sheet.id}/approve`);
-            if (approved.status === 200) tsPass++;
+            if (approved.status === 200) tsPass += 2;
+          } else if (sheet.status === 'APPROVED') {
+            tsPass += 2;
           }
         }
       }
