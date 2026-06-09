@@ -725,7 +725,6 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
     const inputs = await prisma.payrollInput.findMany({
       where: { runId: id, tenantId, variablePay: { not: null } },
     });
-    const inpMap = Object.fromEntries(inputs.map((i) => [i.employeeId, i]));
     let totalGross = 0; let totalDeductions = 0; let totalNet = 0; let empCount = 0;
     const byDept = {}; const warnings = [];
     const label = runType === 'BONUS' ? 'Bonus' : 'Arrears';
