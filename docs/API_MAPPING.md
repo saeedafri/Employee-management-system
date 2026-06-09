@@ -1,9 +1,13 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-05-27** (bulk approve live-tested + null balance fix deployed)
+> **Last verified: 2026-06-09** (Phase 3 timesheets + payroll register + explicit Swagger schemas)
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
+>
+> **Cloudinary:** `POST /employees/:id/photo` and `POST /employees/:id/documents` return `503 STORAGE_NOT_CONFIGURED` until `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` are set in Render env vars. All other endpoints are unaffected.
+>
+> **MSW (Mock Service Worker):** The deployed Vercel frontend has `NEXT_PUBLIC_USE_MOCKS` controlled by the Vercel env var. Default in code is `false`. If set to `true`, Phase 3 API calls are intercepted by MSW in the browser before reaching the backend BFF proxy. Set it to `false` in Vercel dashboard → Settings → Environment Variables to force real backend calls.
 
 ---
 
@@ -1099,7 +1103,7 @@ Returns attrition rate trend over time.
 ### `GET /analytics/payroll-cost`
 **Roles:** HR_ADMIN, SUPER_ADMIN. Query: `?range=6m|12m` (default `6m`).
 
-Returns monthly payroll cost trend (estimated from headcount — no payroll module yet).
+Returns monthly payroll cost trend. Data sourced from live payroll runs (PayrollRun + Payslip models). Falls back to headcount-based estimation only if no payroll runs exist for the period.
 
 ```json
 {
@@ -1331,7 +1335,7 @@ Query: `?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&departmentId=`
 - `data.chartData[]`: `month`, `monthLabel`, `totalGross`, `totalDeductions`, `totalNet`, `employeeCount`
 - `data.tableData.items[]`: `departmentName`, `employeeCount`, `totalGross`, `totalDeductions`, `totalNet`, `avgNetPerEmployee`
 
-> **Note:** Payroll cost is estimated from headcount (no payroll module yet). FULL_TIME: 80,000/month, PART_TIME/CONTRACT: 40,000/month, INTERNSHIP: 20,000/month gross.
+> **Note:** When live payroll runs exist, figures come from real Payslip data. The headcount-based estimates (FULL_TIME: ₹80,000/mo, PART_TIME/CONTRACT: ₹40,000/mo, INTERNSHIP: ₹20,000/mo) are used as fallback only when no payroll run covers the month.
 
 #### `GET /reports/payroll/ctc-analysis`
 Query: `?departmentId=`
@@ -2707,9 +2711,9 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 
 ## Domain F — Payroll (`/payroll/*`)
 
-> **Status: LIVE ✅**  
-> F.1–F.5, F.8, F.9, F.12–F.14 endpoints are **live on Render**.  
-> F.6 (Claims), F.7 (Garnishments), F.10 (Documents), F.11 (Accounting) are **MSW-only** (no live backend).  
+> **Status: LIVE ✅ (all sections)**  
+> All F.1–F.17 endpoints are **live on Render** as of 2026-06-08.  
+> F.6 (Claims), F.7 (Garnishments), F.10 (Documents), F.11 (Accounting) — previously MSW-only — are now implemented. See §F.17 below.  
 > **Money:** major units (e.g. `1800000` = ₹18,00,000). **Casing:** camelCase throughout.  
 > **Auth:** Bearer token required on every endpoint. Role codes: HR=HR_ADMIN, SA=SUPER_ADMIN, MGR=MANAGER, EMP=EMPLOYEE.
 
@@ -3956,9 +3960,9 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 
 ---
 
-### F.17 — MSW-Only Endpoints (NOT live on backend)
+### F.17 — Previously MSW-Only Endpoints (NOW LIVE ✅ as of 2026-06-08)
 
-These endpoints exist only as frontend mocks (MSW). Calling them on Render returns **404**.
+These endpoints were previously MSW-only frontend mocks. They are now fully implemented and live on Render. Calling them returns real data.
 
 | Section | Endpoints |
 |---------|-----------|

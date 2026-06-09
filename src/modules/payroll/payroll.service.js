@@ -1226,7 +1226,7 @@ export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
   const currentFY = fy || `${new Date().getFullYear() - 1}-${String(new Date().getFullYear()).slice(2)}`;
   const payslips = await prisma.payslip.findMany({ where: { employeeId, tenantId } });
   const grossAnnual = payslips.reduce((s, p) => s + Number(p.grossEarnings || 0), 0);
-  const netAnnual = payslips.reduce((s, p) => s + Number(p.netPay || 0), 0);
+  const _netAnnual = payslips.reduce((s, p) => s + Number(p.netPay || 0), 0);
   const taxDeducted = payslips.reduce((s, p) => s + Number(p.totalDeductions || 0), 0);
   return {
     formType: type,
@@ -1250,7 +1250,7 @@ export async function listReimbursementCategories(prisma, tenantId) {
       { code: 'EQUIPMENT', label: 'Equipment & Supplies', monthlyCap: 10000 },
     ];
     const created = await Promise.all(defaults.map(d =>
-      prisma.reimbursementCategory.create({ data: { id: generateId(), tenantId, ...d } })
+      prisma.reimbursementCategory.create({ data: { id: generateId(), tenantId, ...d } }),
     ));
     return created;
   }
@@ -1366,7 +1366,7 @@ export async function getRunJournal(prisma, runId, tenantId) {
   };
 }
 
-export async function exportRunJournal(prisma, runId, tenantId, format) {
+export async function exportRunJournal(prisma, runId, tenantId, _format) {
   const journal = await getRunJournal(prisma, runId, tenantId);
   if (!journal) throw AppError('Run not found', 'NOT_FOUND', 404);
   const header = 'Account,Debit,Credit,EmployeeId,Description';

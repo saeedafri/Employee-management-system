@@ -56,9 +56,9 @@ async function enrichSheetsWithNames(sheets) {
   const empIds = [...new Set(sheets.map(s => s.employeeId))];
   const emps = empIds.length > 0
     ? await prisma.employee.findMany({
-        where: { id: { in: empIds } },
-        select: { id: true, firstName: true, lastName: true },
-      })
+      where: { id: { in: empIds } },
+      select: { id: true, firstName: true, lastName: true },
+    })
     : [];
   const empById = Object.fromEntries(emps.map(e => [e.id, `${e.firstName} ${e.lastName}`.trim()]));
   return empById;

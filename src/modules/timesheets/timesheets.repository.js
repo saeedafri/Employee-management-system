@@ -203,9 +203,9 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
   const empIds = Object.keys(employeeMap);
   const empRecords = empIds.length > 0
     ? await prisma.employee.findMany({
-        where: { id: { in: empIds } },
-        select: { id: true, firstName: true, lastName: true, employeeCode: true },
-      })
+      where: { id: { in: empIds } },
+      select: { id: true, firstName: true, lastName: true, employeeCode: true },
+    })
     : [];
   const empById = Object.fromEntries(empRecords.map(e => [e.id, e]));
 

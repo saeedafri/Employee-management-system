@@ -7,20 +7,109 @@ const allAuth = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER', 'EMPLOYEE'];
 const idParam = { type: 'object', required: ['id'], properties: { id: { type: 'string' } } };
 const obj = { type: 'object', additionalProperties: true };
 
+// ─── Explicit Phase 3 register schemas ──────────────────────────────────────
+const RegisterColumn = {
+  type: 'object',
+  properties: {
+    key:   { type: 'string' },
+    label: { type: 'string' },
+    align: { type: 'string', enum: ['left', 'right'] },
+    kind:  { type: 'string', enum: ['text', 'money', 'number'] },
+  },
+};
+
+const SummaryItem = {
+  type: 'object',
+  properties: {
+    label: { type: 'string' },
+    value: { type: 'string' },
+  },
+};
+
+const PayrollComponent = {
+  type: 'object',
+  properties: {
+    id:              { type: 'string' },
+    name:            { type: 'string' },
+    code:            { type: 'string' },
+    type:            { type: 'string', enum: ['EARNING', 'DEDUCTION', 'BENEFIT', 'REIMBURSEMENT', 'EMPLOYER_CONTRIBUTION', 'VARIABLE'] },
+    calculationType: { type: 'string', enum: ['FLAT', 'PERCENTAGE', 'FORMULA'] },
+    value:           { type: 'number', nullable: true },
+    basisCode:       { type: 'string', nullable: true },
+    formula:         { type: 'string', nullable: true },
+    taxable:         { type: 'boolean' },
+    active:          { type: 'boolean' },
+    displayOrder:    { type: 'integer' },
+    description:     { type: 'string', nullable: true },
+    statutoryTag:    { type: 'string', nullable: true, description: 'e.g. PF_EMPLOYEE, ESI, TDS — links component to statutory deduction bucket' },
+    prorate:         { type: 'boolean', description: 'Whether to pro-rate for mid-month joiners/exits' },
+    payInPeriods:    { type: 'string', nullable: true, description: 'JSON-encoded number[] — which months to pay (null = all months)' },
+    glAccountCode:   { type: 'string', nullable: true, description: 'GL ledger account code for accounting integration' },
+    costCenterRule:  { type: 'string', enum: ['DEPARTMENT', 'NONE'], description: 'How to allocate cost: DEPARTMENT maps to employee dept, NONE uses default center' },
+  },
+};
+
+const PayrollRegister = {
+  type: 'object',
+  properties: {
+    register:        { type: 'string', enum: ['SALARY', 'STATUTORY', 'BANK_ADVICE', 'VARIANCE'], description: 'Register type rendered' },
+    runId:           { type: 'string' },
+    period:          { type: 'string', example: '2026-05' },
+    periodLabel:     { type: 'string', example: 'May 2026' },
+    currency:        { type: 'string', example: 'INR' },
+    columns:         { type: 'array', items: RegisterColumn },
+    rows:            {
+      type: 'array',
+      description: 'Row shape varies by register type. SALARY rows include department + employerCost; STATUTORY rows include pfEmployee + pfEmployer; BANK_ADVICE rows include bankName + accountNumber; VARIANCE rows include previousNet + currentNet + variance.',
+      items: {
+        type: 'object',
+        properties: {
+          employeeCode:    { type: 'string' },
+          employeeName:    { type: 'string' },
+          department:      { type: 'string', description: 'SALARY only' },
+          grossEarnings:   { type: 'number', description: 'SALARY/STATUTORY' },
+          totalDeductions: { type: 'number', description: 'SALARY/STATUTORY' },
+          netPay:          { type: 'number' },
+          employerCost:    { type: 'number', description: 'SALARY only — grossEarnings × 1.13' },
+          pfEmployee:      { type: 'number', description: 'STATUTORY only' },
+          pfEmployer:      { type: 'number', description: 'STATUTORY only' },
+          bankName:        { type: 'string', description: 'BANK_ADVICE only' },
+          accountNumber:   { type: 'string', description: 'BANK_ADVICE only' },
+          previousNet:     { type: 'number', description: 'VARIANCE only' },
+          currentNet:      { type: 'number', description: 'VARIANCE only' },
+          variance:        { type: 'number', description: 'VARIANCE only' },
+        },
+      },
+    },
+    summary:         { type: 'array', items: SummaryItem },
+    totalEmployerCost: { type: 'number', description: 'Sum of all employerCost values (SALARY register)' },
+  },
+};
+
 export default async function payrollRoutes(fastify) {
   // ── Salary Components ───────────────────────────────────────────────────────
   fastify.get('/payroll/components', {
     schema: {
-      tags: ['Payroll'], description: 'List salary components', security: [{ Bearer: [] }],
+      tags: ['Payroll'],
+      description: 'List salary components. Each item includes statutoryTag, prorate, payInPeriods, glAccountCode, costCenterRule.',
+      security: [{ Bearer: [] }],
       querystring: { type: 'object', properties: { active: { type: 'string', enum: ['true', 'false'] } } },
-      response: { 200: obj },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: { type: 'array', items: PayrollComponent },
+          },
+        },
+      },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.getComponents);
 
   fastify.post('/payroll/components', {
     schema: {
-      tags: ['Payroll'], description: 'Create salary component', security: [{ Bearer: [] }],
+      tags: ['Payroll'], description: 'Create salary component. Optional fields: statutoryTag, prorate, payInPeriods, glAccountCode, costCenterRule.', security: [{ Bearer: [] }],
       body: {
         type: 'object',
         required: ['name', 'code', 'type', 'calculationType', 'taxable'],
@@ -36,9 +125,22 @@ export default async function payrollRoutes(fastify) {
           active: { type: 'boolean' },
           displayOrder: { type: 'integer' },
           description: { type: 'string', maxLength: 500 },
+          statutoryTag: { type: 'string', description: 'e.g. PF_EMPLOYEE, ESI, TDS' },
+          prorate: { type: 'boolean', description: 'Pro-rate for mid-month joins/exits (default true)' },
+          payInPeriods: { type: 'string', description: 'JSON-encoded number[] — which months to pay (null = all)' },
+          glAccountCode: { type: 'string', description: 'GL account code for accounting integration' },
+          costCenterRule: { type: 'string', enum: ['DEPARTMENT', 'NONE'], description: 'Cost center allocation rule (default NONE)' },
         },
       },
-      response: { 201: obj },
+      response: {
+        201: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: PayrollComponent,
+          },
+        },
+      },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.createComponent);
@@ -604,10 +706,20 @@ export default async function payrollRoutes(fastify) {
 
   fastify.get('/payroll/runs/:id/register', {
     schema: {
-      tags: ['Payroll'], description: 'Get payroll register for a run', security: [{ Bearer: [] }],
+      tags: ['Payroll'],
+      description: 'Get payroll register for a run. ?type=SALARY|STATUTORY|BANK_ADVICE|VARIANCE. SALARY rows include department + employerCost. Response includes columns[], rows[], summary[], totalEmployerCost, periodLabel.',
+      security: [{ Bearer: [] }],
       params: idParam,
-      querystring: { type: 'object', properties: { type: { type: 'string', enum: ['SALARY', 'STATUTORY', 'BANK_ADVICE', 'VARIANCE'] } } },
-      response: { 200: obj },
+      querystring: { type: 'object', properties: { type: { type: 'string', enum: ['SALARY', 'STATUTORY', 'BANK_ADVICE', 'VARIANCE'], description: 'Register type (default SALARY)' } } },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: PayrollRegister,
+          },
+        },
+      },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.getRunRegister);

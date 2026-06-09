@@ -1,6 +1,77 @@
 import { authenticate, authorize } from '../../middleware/authenticate.js';
 import * as controller from './timesheets.controller.js';
 
+// ─── Shared response schemas ───────────────────────────────────────────────────
+const TimesheetEntry = {
+  type: 'object',
+  properties: {
+    id:           { type: 'string' },
+    timesheetId:  { type: 'string' },
+    employeeId:   { type: 'string' },
+    projectId:    { type: 'string' },
+    taskId:       { type: 'string', nullable: true },
+    date:         { type: 'string', format: 'date' },
+    hours:        { type: 'number' },
+    billable:     { type: 'boolean' },
+    note:         { type: 'string', nullable: true },
+    source:       { type: 'string', enum: ['MANUAL', 'TIMER'] },
+  },
+};
+
+const Timesheet = {
+  type: 'object',
+  properties: {
+    id:             { type: 'string' },
+    employeeId:     { type: 'string' },
+    employeeName:   { type: 'string', description: 'Full name of the employee (enriched from Employee table)' },
+    weekStart:      { type: 'string', format: 'date' },
+    weekEnd:        { type: 'string', format: 'date' },
+    status:         { type: 'string', enum: ['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED'] },
+    totalHours:     { type: 'number' },
+    billableHours:  { type: 'number' },
+    overtimeHours:  { type: 'number' },
+    standardHours:  { type: 'number' },
+    submittedAt:    { type: 'string', format: 'date-time', nullable: true },
+    decidedBy:      { type: 'string', nullable: true },
+    decidedAt:      { type: 'string', format: 'date-time', nullable: true },
+    comment:        { type: 'string', nullable: true },
+    entries:        { type: 'array', items: TimesheetEntry },
+  },
+};
+
+const TimesheetSummaryByEmployee = {
+  type: 'object',
+  properties: {
+    employeeId:     { type: 'string' },
+    employeeName:   { type: 'string' },
+    hours:          { type: 'number', description: 'Total hours logged' },
+    billableHours:  { type: 'number' },
+    utilizationPct: { type: 'integer', description: 'Billable / total * 100' },
+  },
+};
+
+const TimesheetSummaryByProject = {
+  type: 'object',
+  properties: {
+    projectId:     { type: 'string' },
+    projectName:   { type: 'string' },
+    hours:         { type: 'number' },
+    billableHours: { type: 'number' },
+  },
+};
+
+const TimesheetSummary = {
+  type: 'object',
+  properties: {
+    totalHours:      { type: 'number' },
+    billableHours:   { type: 'number' },
+    nonBillableHours:{ type: 'number' },
+    utilizationPct:  { type: 'integer' },
+    byProject:       { type: 'array', items: TimesheetSummaryByProject },
+    byEmployee:      { type: 'array', items: TimesheetSummaryByEmployee },
+  },
+};
+
 export default async function timesheetsRoutes(fastify) {
   const HR_ADMIN = ['HR_ADMIN', 'SUPER_ADMIN'];
   const HR_MANAGER = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER'];
@@ -142,7 +213,15 @@ export default async function timesheetsRoutes(fastify) {
           employeeId: { type: 'string' },
         },
       },
-      response: { 200: obj },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: Timesheet,
+          },
+        },
+      },
     },
     onRequest: [authenticate, authorize(ALL_AUTH)],
   }, controller.getTimesheet);
@@ -219,13 +298,21 @@ export default async function timesheetsRoutes(fastify) {
   fastify.get('/timesheets/approvals', {
     schema: {
       tags: ['Timesheets'],
-      summary: 'List timesheets pending approval (manager/HR queue)',
+      summary: 'List timesheets pending approval (manager/HR queue). Each row includes employeeName.',
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
-        properties: { status: { type: 'string', enum: ['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED'] } },
+        properties: { status: { type: 'string', enum: ['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED'], description: 'Default: SUBMITTED' } },
       },
-      response: { 200: obj },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: { type: 'array', items: Timesheet },
+          },
+        },
+      },
     },
     onRequest: [authenticate, authorize(HR_MANAGER)],
   }, controller.getApprovals);
@@ -266,16 +353,24 @@ export default async function timesheetsRoutes(fastify) {
   fastify.get('/timesheets/summary', {
     schema: {
       tags: ['Timesheets'],
-      summary: 'Timesheet utilization summary',
+      summary: 'Timesheet utilization summary — returns totalHours, billableHours, utilizationPct, byProject[], byEmployee[]',
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
         properties: {
-          range: { type: 'string', enum: ['30d', '90d'] },
-          employeeId: { type: 'string' },
+          range: { type: 'string', enum: ['30d', '90d'], description: 'Lookback window (default 30d)' },
+          employeeId: { type: 'string', description: 'Filter to specific employee (HR only)' },
         },
       },
-      response: { 200: obj },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: TimesheetSummary,
+          },
+        },
+      },
     },
     onRequest: [authenticate, authorize(HR_MANAGER)],
   }, controller.getSummary);
