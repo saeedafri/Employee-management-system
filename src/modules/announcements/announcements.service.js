@@ -9,15 +9,20 @@ export const ANNOUNCEMENT_CATEGORY_COLORS = {
   Office: '#10b981',
 };
 
+function normalizeCategory(category) {
+  return ANNOUNCEMENT_CATEGORY_COLORS[category] ? category : 'Company';
+}
+
 function categoryColor(category) {
-  return ANNOUNCEMENT_CATEGORY_COLORS[category] ?? '#64748b';
+  return ANNOUNCEMENT_CATEGORY_COLORS[normalizeCategory(category)];
 }
 
 function shapeAnnouncement(a) {
+  const category = normalizeCategory(a.category);
   return {
     id: a.id,
-    category: a.category,
-    color: categoryColor(a.category),
+    category,
+    color: categoryColor(category),
     channelId: a.channelId,
     title: a.title,
     body: a.body,

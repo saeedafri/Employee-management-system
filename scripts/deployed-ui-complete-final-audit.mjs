@@ -193,12 +193,21 @@ async function openPayslipDrawer(page, rowIndex = 0) {
   return true;
 }
 
-async function getPaidRunId(page) {
+async function getPaidRunId(page, hrToken) {
+  if (hrToken) {
+    for (const q of ['/payroll/runs?status=PAID&limit=5', '/payroll/runs?status=APPROVED&limit=5', '/payroll/runs?limit=20']) {
+      const res = await apiCall(hrToken, 'GET', q);
+      const raw = res.json?.data;
+      const runs = raw?.items ?? raw?.runs ?? (Array.isArray(raw) ? raw : []);
+      const pick = runs.find((r) => r.status === 'PAID') || runs.find((r) => r.status === 'APPROVED') || runs[0];
+      if (pick?.id) return pick.id;
+    }
+  }
   const res = await page.evaluate(async (api) => {
     const r = await fetch(`${api}/payroll/runs?limit=20`, { credentials: 'include' });
     return r.json();
   }, `${UI}/api`);
-  let runs = res?.data?.runs ?? res?.data?.items ?? res?.data ?? [];
+  let runs = res?.data?.items ?? res?.data?.runs ?? res?.data ?? [];
   if (!Array.isArray(runs)) runs = [];
   const paid = runs.find((r) => r.status === 'PAID') || runs[0];
   return paid?.id;
@@ -457,22 +466,32 @@ export async function runCompleteFinalAudit({ headless = true, seedFirst = true 
     {
       const { context, page, net, consoleLog, pageErrors } = await freshContext(browser, { video: true, trace: true });
       await login(page, ACCOUNTS.HR, net);
-      paidRunId = await getPaidRunId(page);
-      if (!paidRunId) paidRunId = 'cmq5kdd6300aues8dg44o2fn8';
+      const payrollHrToken = await apiLogin(ACCOUNTS.HR.email, ACCOUNTS.HR.password);
+      paidRunId = await getPaidRunId(page, payrollHrToken);
+      if (!paidRunId) {
+        record('Payroll', { action: 'run detail', result: 'FAIL', note: 'No payroll runs found' });
+      }
 
       await visit(page, '/payroll', 'payroll_list_loaded.png', net);
       record('Payroll', { action: 'list', endpoint: 'GET /payroll/runs', screenshot: 'payroll_list_loaded.png', result: (await hasErrorBoundary(page)) ? 'FAIL' : 'PASS' });
 
-      await page.goto(`${UI}/payroll/${paidRunId}`, { waitUntil: 'networkidle' });
-      await page.screenshot({ path: path.join(SHOTS, 'payroll_run_detail_loaded.png'), fullPage: true });
-      record('Payroll', { action: 'run detail', endpoint: 'GET /payroll/runs/:id', screenshot: 'payroll_run_detail_loaded.png', result: (await hasErrorBoundary(page)) ? 'FAIL' : 'PASS' });
+      if (paidRunId) {
+        await page.goto(`${UI}/payroll/${paidRunId}`, { waitUntil: 'networkidle' });
+        await page.screenshot({ path: path.join(SHOTS, 'payroll_run_detail_loaded.png'), fullPage: true });
+        record('Payroll', { action: 'run detail', endpoint: 'GET /payroll/runs/:id', screenshot: 'payroll_run_detail_loaded.png', result: (await hasErrorBoundary(page)) ? 'FAIL' : 'PASS' });
+      }
 
-      if (await openPayslipDrawer(page, 0)) {
+      if (paidRunId && await openPayslipDrawer(page, 0)) {
         await page.screenshot({ path: path.join(SHOTS, 'payroll_view_payslip_loaded.png'), fullPage: true });
         record('Payroll', { action: 'view payslip', endpoint: 'GET /payroll/runs/:id/payslips/:slipId', screenshot: 'payroll_view_payslip_loaded.png', result: (await hasErrorBoundary(page)) ? 'FAIL' : 'PASS' });
         await page.keyboard.press('Escape').catch(() => {});
       }
 
+      if (!paidRunId) {
+        await context.tracing.stop({ path: path.join(TRACES, 'payroll-deep.zip') }).catch(() => {});
+        saveModuleEvidence('payroll', net, consoleLog, pageErrors);
+        await context.close();
+      } else {
       const actions = [
         { name: /export register/i, shot: 'payroll_export_register_success.png', ep: 'GET /payroll/runs/:id/register' },
         { name: /publish payslip/i, shot: 'payroll_publish_payslips_success.png', ep: 'POST /payroll/runs/:id/publish' },
@@ -507,6 +526,7 @@ export async function runCompleteFinalAudit({ headless = true, seedFirst = true 
       await context.tracing.stop({ path: path.join(TRACES, 'payroll-deep.zip') }).catch(() => {});
       saveModuleEvidence('payroll', net, consoleLog, pageErrors);
       await context.close();
+      }
     }
 
     // ── TIMESHEETS (all roles) ──────────────────────────────────────────────
