@@ -3075,12 +3075,7 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
         { "code": "ESI", "name": "Employee State Insurance",
           "employeeRate": 0.75, "employerRate": 3.25, "wageBase": 21000 }
       ],
-      "statutoryComponents": [
-        { "code": "EPF_EE", "name": "PF Employee", "type": "DEDUCTION" },
-        { "code": "EPF_ER", "name": "PF Employer", "type": "EMPLOYER_CONTRIBUTION" },
-        { "code": "ESI_EE", "name": "ESI Employee", "type": "DEDUCTION" },
-        { "code": "TDS", "name": "Income Tax (TDS)", "type": "DEDUCTION" }
-      ]
+      "statutoryComponents": ["PF_EE", "PF_ER", "ESI_EE", "ESI_ER", "PROF_TAX", "TDS"]
     }
   ],
   "meta": {}
@@ -3094,29 +3089,25 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 #### `POST /payroll/statutory-packs`
 **Roles:** SA only
 
-**Request body:**
+**Request body (flat — preferred):**
 ```json
 {
   "country": "IN",
   "version": "2026.2",
   "effectiveFrom": "2026-10-01",
   "effectiveTo": null,
-  "packData": {
-    "rounding": "nearest_rupee",
-    "proration": "working_days",
-    "taxRegimes": [
-      { "code": "NEW", "name": "New Tax Regime", "default": true,
-        "slabs": [{ "from": 0, "to": 400000, "rate": 0 }] }
-    ],
-    "contributionSchemes": [
-      { "code": "EPF", "employeeRate": 12, "employerRate": 12, "wageBase": 15000 }
-    ],
-    "statutoryComponents": [
-      { "code": "EPF_EE", "name": "PF Employee", "type": "DEDUCTION" }
-    ]
-  }
+  "rounding": { "mode": "NEAREST", "precision": 0 },
+  "proration": { "basis": "CALENDAR_DAYS" },
+  "taxRegimes": [],
+  "contributionSchemes": [],
+  "localTaxes": [],
+  "statutoryComponents": ["PF", "PF_ER", "ESI_EE", "ESI_ER", "PROF_TAX", "TDS"],
+  "minimumWages": [],
+  "gratuity": null
 }
 ```
+
+**`statutoryComponents`:** always `string[]` in responses. On write, legacy `{ "code": "PF" }` objects are accepted and normalized to `"PF"` before storage.
 
 **Errors:**  
 - `409 PACK_VERSION_EXISTS` — country + version combo already exists
@@ -4240,11 +4231,13 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 | PATCH | `/payroll/statutory-packs/:id` | SA | Partial flat body |
 | DELETE | `/payroll/statutory-packs/:id` | SA | `{ deleted: true }` or `409 PACK_IN_USE` |
 
-**Flat response/request fields:** `country`, `version`, `effectiveFrom`, `effectiveTo`, `rounding`, `proration`, `taxRegimes[]`, `contributionSchemes[]`, `localTaxes[]`, `statutoryComponents[]`, `minimumWages[]`, **`gratuity`** (object or `null`).
+**Flat response/request fields:** `country`, `version`, `effectiveFrom`, `effectiveTo`, `rounding`, `proration`, `taxRegimes[]`, `contributionSchemes[]`, `localTaxes[]`, **`statutoryComponents: string[]`**, `minimumWages[]`, **`gratuity`** (object or `null`).
+
+**`statutoryComponents` contract:** Response is always `string[]` (e.g. `["PF", "PF_ER"]`). POST/PATCH accept `string[]` or legacy `{ code: string }[]`; backend normalizes to strings before persisting via `normalizeStatutoryComponents()`.
 
 **Errors:** `409 PACK_VERSION_EXISTS` (duplicate tenant+country+version), `422 INVALID_PACK` (effectiveFrom > effectiveTo), `400 VALIDATION_ERROR` (`details: [{field, message}]`), `409 PACK_IN_USE` (referenced by legal entity).
 
-**Storage:** Rule fields stored in DB `packData` JSON; API always flattened via `fmtStatutoryPackRow()`.
+**Storage:** Rule fields stored in DB `packData` JSON; API always flattened via `fmtStatutoryPackRow()` with normalized `statutoryComponents`.
 
 ---
 

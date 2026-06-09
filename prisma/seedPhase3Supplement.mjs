@@ -5,6 +5,8 @@
  */
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
+import { normalizeStatutoryComponents } from '../src/utils/statutoryPackShape.js';
+
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -67,13 +69,7 @@ async function main() {
           { code: '401K', name: '401(k) Employee', rate: 4, maxAnnual: 23000, employer: { code: '401K_ER', name: '401(k) Employer Match', rate: 3 } },
         ],
         localTaxes: [],
-        statutoryComponents: [
-          { code: 'FWT', name: 'Federal Withholding Tax', type: 'DEDUCTION' },
-          { code: 'SS_EE', name: 'Social Security (EE)', type: 'DEDUCTION' },
-          { code: 'MC_EE', name: 'Medicare (EE)', type: 'DEDUCTION' },
-          { code: 'SS_ER', name: 'Social Security (ER)', type: 'EMPLOYER_CONTRIBUTION' },
-          { code: 'MC_ER', name: 'Medicare (ER)', type: 'EMPLOYER_CONTRIBUTION' },
-        ],
+        statutoryComponents: ['FWT', 'SS_EE', 'MC_EE', 'SS_ER', 'MC_ER'],
         minimumWages: [{ state: 'CA', amount: 16, currency: 'USD' }, { state: 'NY', amount: 15, currency: 'USD' }],
       },
     },
@@ -237,6 +233,21 @@ async function main() {
       console.log('  ✓ Payslip with null documentUrl (graceful-handling test)');
     } else {
       console.log('  ✓ Null-doc payslip already exists');
+    }
+  }
+
+  console.log('── Normalize statutoryComponents → string[] ──');
+  const packs = await prisma.statutoryPack.findMany({ where: { tenantId } });
+  for (const pack of packs) {
+    const pd = pack.packData && typeof pack.packData === 'object' ? pack.packData : {};
+    const normalized = normalizeStatutoryComponents(pd.statutoryComponents);
+    const current = pd.statutoryComponents ?? [];
+    if (JSON.stringify(current) !== JSON.stringify(normalized)) {
+      await prisma.statutoryPack.update({
+        where: { id: pack.id },
+        data: { packData: { ...pd, statutoryComponents: normalized } },
+      });
+      console.log(`  ✓ ${pack.country} ${pack.version}: [${normalized.join(', ')}]`);
     }
   }
 

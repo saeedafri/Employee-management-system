@@ -43,6 +43,9 @@ async function main() {
   // ── Statutory packs ───────────────────────────────────────────────────────
   const list = await api(hrToken, 'GET', '/payroll/statutory-packs?country=IN');
   record('statutory-packs list', list.status === 200 && Array.isArray(list.json.data));
+  const listPacks = list.json?.data ?? [];
+  const listAllStrings = listPacks.every((p) => (p.statutoryComponents ?? []).every((c) => typeof c === 'string'));
+  record('statutory-components GET list all strings', listAllStrings, listPacks.map((p) => `${p.version}:${JSON.stringify(p.statutoryComponents?.[0])}`).join('; '));
 
   const ver = `audit-${Date.now()}`;
   const flatBody = {
@@ -85,6 +88,51 @@ async function main() {
 
     const del = await api(saToken, 'DELETE', `/payroll/statutory-packs/${pack.id}`);
     record('statutory-packs delete', del.status === 200 && del.json?.data?.deleted === true);
+  }
+
+  const verStr = `sc-str-${Date.now()}`;
+  const createdStr = await api(saToken, 'POST', '/payroll/statutory-packs', {
+    ...flatBody,
+    version: verStr,
+    statutoryComponents: ['PF', 'PF_ER'],
+  });
+  record(
+    'statutory-components POST string[]',
+    createdStr.status === 201 && JSON.stringify(createdStr.json?.data?.statutoryComponents) === '["PF","PF_ER"]',
+    JSON.stringify(createdStr.json?.data?.statutoryComponents),
+  );
+
+  const verObj = `sc-obj-${Date.now()}`;
+  const createdObj = await api(saToken, 'POST', '/payroll/statutory-packs', {
+    ...flatBody,
+    version: verObj,
+    statutoryComponents: [{ code: 'PF' }],
+  });
+  record(
+    'statutory-components POST legacy {code}',
+    createdObj.status === 201 && createdObj.json?.data?.statutoryComponents?.join(',') === 'PF',
+    JSON.stringify(createdObj.json?.data?.statutoryComponents),
+  );
+
+  if (createdObj.json?.data?.id) {
+    const patched = await api(saToken, 'PATCH', `/payroll/statutory-packs/${createdObj.json.data.id}`, {
+      statutoryComponents: ['PF', { code: 'PF_ER' }],
+    });
+    record(
+      'statutory-components PATCH mixed',
+      patched.status === 200 && JSON.stringify(patched.json?.data?.statutoryComponents) === '["PF","PF_ER"]',
+      JSON.stringify(patched.json?.data?.statutoryComponents),
+    );
+    const detail = await api(hrToken, 'GET', `/payroll/statutory-packs/${createdObj.json.data.id}`);
+    record(
+      'statutory-components GET detail strings',
+      (detail.json?.data?.statutoryComponents ?? []).every((c) => typeof c === 'string'),
+      JSON.stringify(detail.json?.data?.statutoryComponents),
+    );
+    await api(saToken, 'DELETE', `/payroll/statutory-packs/${createdObj.json.data.id}`);
+  }
+  if (createdStr.json?.data?.id) {
+    await api(saToken, 'DELETE', `/payroll/statutory-packs/${createdStr.json.data.id}`);
   }
 
   // ── Payroll run types ─────────────────────────────────────────────────────

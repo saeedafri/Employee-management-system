@@ -518,7 +518,16 @@ export default async function payrollRoutes(fastify) {
           taxRegimes: { type: 'array', items: { type: 'object', additionalProperties: true } },
           contributionSchemes: { type: 'array', items: { type: 'object', additionalProperties: true } },
           localTaxes: { type: 'array', items: { type: 'object', additionalProperties: true } },
-          statutoryComponents: { type: 'array', items: { type: 'object', additionalProperties: true } },
+          statutoryComponents: {
+            type: 'array',
+            description: 'Component codes (string[]). Legacy { code } objects accepted and normalized on write.',
+            items: {
+              oneOf: [
+                { type: 'string' },
+                { type: 'object', required: ['code'], properties: { code: { type: 'string' } }, additionalProperties: true },
+              ],
+            },
+          },
           minimumWages: { type: 'array', items: { type: 'object', additionalProperties: true } },
           gratuity: { type: 'object', nullable: true, additionalProperties: true },
         },

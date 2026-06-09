@@ -725,6 +725,69 @@ describe('Payroll Routes Integration Tests', function () {
       expect(res.statusCode).to.equal(200);
       expect(JSON.parse(res.body).data.deleted).to.equal(true);
     });
+
+    it('POST with string[] statutoryComponents returns strings on read', async function () {
+      const payload = { ...flatPack(), statutoryComponents: ['PF', 'PF_ER'] };
+      const created = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/statutory-packs',
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload,
+      });
+      expect(created.statusCode).to.equal(201);
+      const body = JSON.parse(created.body).data;
+      expect(body.statutoryComponents).to.deep.equal(['PF', 'PF_ER']);
+      const detail = await app.inject({
+        method: 'GET', url: `/api/v1/payroll/statutory-packs/${body.id}`,
+        headers: { Authorization: `Bearer ${hrToken}` },
+      });
+      expect(JSON.parse(detail.body).data.statutoryComponents).to.deep.equal(['PF', 'PF_ER']);
+    });
+
+    it('POST with legacy { code } objects normalizes to strings', async function () {
+      const payload = {
+        ...flatPack(),
+        statutoryComponents: [{ code: 'PF' }, { code: 'PF_ER' }],
+      };
+      const created = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/statutory-packs',
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload,
+      });
+      expect(created.statusCode).to.equal(201);
+      const body = JSON.parse(created.body).data;
+      expect(body.statutoryComponents).to.deep.equal(['PF', 'PF_ER']);
+      expect(body.statutoryComponents.every((c) => typeof c === 'string')).to.equal(true);
+    });
+
+    it('PATCH with mixed statutoryComponents normalizes to strings', async function () {
+      const created = await app.inject({
+        method: 'POST', url: '/api/v1/payroll/statutory-packs',
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload: flatPack(),
+      });
+      const id = JSON.parse(created.body).data.id;
+      const patched = await app.inject({
+        method: 'PATCH', url: `/api/v1/payroll/statutory-packs/${id}`,
+        headers: { Authorization: `Bearer ${saToken}` },
+        payload: { statutoryComponents: ['PF', { code: 'PF_ER' }] },
+      });
+      expect(patched.statusCode).to.equal(200);
+      expect(JSON.parse(patched.body).data.statutoryComponents).to.deep.equal(['PF', 'PF_ER']);
+    });
+
+    it('GET list never returns object statutoryComponents', async function () {
+      const res = await app.inject({
+        method: 'GET', url: '/api/v1/payroll/statutory-packs?country=IN',
+        headers: { Authorization: `Bearer ${hrToken}` },
+      });
+      expect(res.statusCode).to.equal(200);
+      const packs = JSON.parse(res.body).data;
+      for (const pack of packs) {
+        for (const comp of pack.statutoryComponents ?? []) {
+          expect(comp).to.be.a('string');
+        }
+      }
+    });
   });
 
   describe('Payroll run types', function () {
