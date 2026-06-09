@@ -642,7 +642,7 @@ export async function getEventCatalogue(_request, reply) {
     { type: 'payslip.published', label: 'Payslips Published', description: 'Payslips published to employees', category: 'payslip' },
     { type: 'payment.failed', label: 'Payment Failed', description: 'A payment failed during disbursement', category: 'payment' },
     { type: 'salary.revised', label: 'Salary Revised', description: 'Employee salary configuration changed', category: 'employee' },
-    { type: 'claim.approved', label: 'Claim Approved', description: 'Reimbursement claim approved', category: 'claim' },
+    { type: 'claim.approved', label: 'Claim Approved', description: 'Reimbursement claim approved', category: 'employee' },
   ];
   reply.send(successResponse(events.map((e) => ({
     ...e,
