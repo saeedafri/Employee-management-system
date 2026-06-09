@@ -4089,7 +4089,9 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | GET | `/payroll/payslip-templates` | HR,SA | Get (or auto-create) payslip template |
 | PATCH | `/payroll/payslip-templates` | HR,SA | Update sections, fields, logo, locale |
 
-**Template shape:** `{ id, tenantId, name, locale, logoUrl, sections: [{id, label, visible, order}], fields: [{key, label, visible}] }`
+**Template shape (UI contract):** `{ id, name, locale, logoUrl, sections: [{ key, label, enabled, order, color }], fields: [{ key, label, enabled }], updatedAt }`
+
+> Section `key` values: `earnings` | `deductions` | `employerContributions` | `oneTime` | `ytd` | `attendance` | `paymentInfo`. Backend normalizes legacy `id`/`visible` on read/write. Each section includes **`color`** (hex) — UI crashes without it.
 
 ### F.11 — Accounting Journal
 | Method | Path | Roles | Notes |
@@ -4151,3 +4153,73 @@ Consumed by payroll run detail **View payslip** drawer (`/payroll/:runId`).
 
 > **UI line items:** each `earnings[]` / `deductions[]` / `employerContributions[]` entry must include **`amount`** (UI reads this; `monthlyAmount` is back-compat alias).
 > **Empty state:** `404 NOT_FOUND` if payslip not in run. Drawer shows "Failed to load payslip" on non-2xx.
+
+---
+
+## Settings — Integrations (Phase 3 UI)
+
+UI routes: `/settings/integration-email`, `/settings/integration-storage`, `/settings/integration-webhooks`
+
+| Method | Path | Roles | UI consumer |
+|--------|------|-------|-------------|
+| GET | `/settings/integrations/email` | HR,SA | Email integration page |
+| PATCH | `/settings/integrations/email` | HR,SA | Save sender/from settings |
+| GET | `/settings/integrations/email/stats` | HR,SA | 24h delivery stats panel |
+| POST | `/settings/integrations/email/test` | HR,SA | Send test email |
+| GET | `/settings/integrations/storage` | HR,SA | Storage integration page |
+| PATCH | `/settings/integrations/storage` | HR,SA | Folder/mime limits |
+| GET | `/settings/webhooks` | HR,SA | Webhooks list + event catalog |
+| POST | `/settings/webhooks` | HR,SA | Create webhook |
+| PATCH | `/settings/webhooks/:id` | HR,SA | Update webhook |
+| DELETE | `/settings/webhooks/:id` | HR,SA | Delete webhook |
+| POST | `/settings/webhooks/:id/test` | HR,SA | Test delivery (simulated) |
+
+**Email response:** `{ provider: "resend", configured, enabled, fromAddress, fromName, domain, domainVerified, apiKeyMasked, updatedAt }`
+
+**Storage response:** `{ provider: "cloudinary", configured, enabled, cloudName, cloudNameMasked, folder, photoFolder, allowedMimeTypes[], maxFileSizeMb, metadataStore: "postgresql", updatedAt }`
+
+**Webhooks list:** `{ webhooks: [{ id, name, url, events[], enabled, secretMasked, lastTriggeredAt, createdAt }], eventCatalog: [{ type, label }] }`
+
+---
+
+## Dashboard — Pending Approvals (HR + Manager)
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/manager/approvals` | MGR, HR,SA | Dashboard pending approvals panel |
+
+**HR_ADMIN / SUPER_ADMIN:** tenant-wide queue (`scope=tenant`). **MANAGER:** direct-report queue only.
+
+**Response:** `{ items: [{ id, type, color, title, subtitle, employeeName, submittedAt, ... }], leaveRequests[], regularizationRequests[], timesheetRequests[], assetRequests[], total, approvalBreakdown }`
+
+Each `items[]` entry includes **`color`** (hex). UI maps `type` → color; missing color crashes dashboard.
+
+---
+
+## Employee Profile — Activity
+
+| Method | Path | Roles | UI route |
+|--------|------|-------|----------|
+| GET | `/employees/:id/activity` | HR,SA,MGR,EMP(own) | Profile → Activity tab |
+
+**Response:** `{ items: [{ id, type, action, actionLabel, description, color, actorEmail?, createdAt, timestamp, fileUrl? }], total }`
+
+---
+
+## Employee Profile — Compensation
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | `/payroll/employees/:employeeId/salary` | HR,SA,EMP(own) | Compensation tab |
+
+**`calculatedComponents[]`** each include **`color`** and **`amount`**. `BENEFIT` type is normalized to `EARNING` for UI. Reimbursement categories include **`color`**.
+
+---
+
+## Pay Schedules
+
+| Method | Path | Roles | UI route |
+|--------|------|-------|----------|
+| GET | `/payroll/schedules` | HR,SA | `/settings/pay/schedules` |
+
+Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integrations.js`.

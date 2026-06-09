@@ -1,6 +1,7 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as settingsService from './settings.service.js';
 import * as settingsValidator from './settings.validator.js';
+import * as integrationsService from './integrations.service.js';
 
 export async function getTenantConfig(request, reply) {
   try {
@@ -151,3 +152,22 @@ export const deleteLeaveType = wrap(async (req, rep) => { const { deleteLeaveTyp
 export const createRole = wrap(async (req, rep) => { rep.code(201); return settingsService.createRole(req.tenant.id, req.body); });
 export const deleteRole = wrap(async (req) => settingsService.deleteRole(req.tenant.id, req.params.key));
 export const assignUsersToRole = wrap(async (req) => settingsService.assignUsersToRole(req.tenant.id, req.params.key, req.body.userIds));
+
+export const getEmailIntegration = wrap(async (req) => integrationsService.getEmailIntegration(req.tenant.id));
+export const updateEmailIntegration = wrap(async (req) => integrationsService.updateEmailIntegration(req.tenant.id, req.body));
+export const getEmailIntegrationStats = wrap(async (req) => integrationsService.getEmailIntegrationStats(req.tenant.id));
+export const getStorageIntegration = wrap(async (req) => integrationsService.getStorageIntegration(req.tenant.id));
+export const updateStorageIntegration = wrap(async (req) => integrationsService.updateStorageIntegration(req.tenant.id, req.body));
+export const listWebhooks = wrap(async (req) => integrationsService.listWebhooks(req.tenant.id));
+export const createWebhook = wrap(async (req, rep) => { rep.code(201); return integrationsService.createWebhook(req.tenant.id, req.body); });
+export const updateWebhook = wrap(async (req) => {
+  const data = await integrationsService.updateWebhook(req.tenant.id, req.params.id, req.body);
+  if (!data) { const e = new Error('Webhook not found'); e.code = 'NOT_FOUND'; e.statusCode = 404; throw e; }
+  return data;
+});
+export const deleteWebhook = wrap(async (req) => integrationsService.deleteWebhook(req.tenant.id, req.params.id));
+export const testWebhook = wrap(async (req) => {
+  const data = await integrationsService.testWebhook(req.tenant.id, req.params.id);
+  if (!data) { const e = new Error('Webhook not found'); e.code = 'NOT_FOUND'; e.statusCode = 404; throw e; }
+  return data;
+});

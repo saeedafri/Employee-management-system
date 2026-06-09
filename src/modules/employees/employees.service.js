@@ -138,3 +138,75 @@ export async function exportEmployees(tenantId) {
     return errorResponse('EXPORT_ERROR', error.message, null);
   }
 }
+
+export async function getEmployeeActivity(employeeId, tenantId, { limit = 50 } = {}) {
+  try {
+    const employee = await repo.getEmployeeById(employeeId, tenantId);
+    if (!employee) return errorResponse('NOT_FOUND', 'Employee not found', null);
+
+    const [auditLogs, leaveEvents, docs] = await Promise.all([
+      prisma.auditLog.findMany({
+        where: { tenantId, entityId: employeeId },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        include: { actor: { select: { email: true } } },
+      }),
+      prisma.leaveRequest.findMany({
+        where: { tenantId, employeeId },
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+        include: { leaveType: { select: { name: true } } },
+      }),
+      prisma.employeeDocument.findMany({
+        where: { tenantId, employeeId },
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+      }),
+    ]);
+
+    const fromAudit = auditLogs.map((log) => ({
+      id: log.id,
+      type: 'audit',
+      action: log.action,
+      actionLabel: log.action?.replace(/_/g, ' ').toLowerCase(),
+      description: `${log.action} on ${log.entityType}`,
+      actorEmail: log.actor?.email ?? null,
+      entityType: log.entityType,
+      entityId: log.entityId,
+      color: '#64748b',
+      createdAt: log.createdAt,
+      timestamp: log.createdAt,
+    }));
+
+    const fromLeave = leaveEvents.map((l) => ({
+      id: l.id,
+      type: 'leave',
+      action: l.status,
+      actionLabel: `Leave ${l.status.toLowerCase()}`,
+      description: `${l.leaveType?.name ?? 'Leave'} — ${l.totalDays} day(s)`,
+      color: '#3b82f6',
+      createdAt: l.createdAt,
+      timestamp: l.createdAt,
+    }));
+
+    const fromDocs = docs.map((d) => ({
+      id: d.id,
+      type: 'document',
+      action: 'UPLOADED',
+      actionLabel: 'Document uploaded',
+      description: d.fileName ?? d.documentType ?? 'Document',
+      color: '#0d9488',
+      createdAt: d.createdAt,
+      timestamp: d.createdAt,
+      fileUrl: d.fileUrl,
+    }));
+
+    const items = [...fromAudit, ...fromLeave, ...fromDocs]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, limit);
+
+    return successResponse({ items, total: items.length }, { cached: false });
+  } catch (error) {
+    return errorResponse('ACTIVITY_FETCH_ERROR', error.message, null);
+  }
+}

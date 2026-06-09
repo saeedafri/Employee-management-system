@@ -1,0 +1,352 @@
+[
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmq5k49kv000yes8d1jcd036x",
+        "email": "mohammadsaeedafri9@gmail.com",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+        "status": "ACTIVE",
+        "employee": null,
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-06-09T07:50:37.323Z"
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 0,
+          "pages": 0
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/departments",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmq5k4vck001ges8dezs2uxdw",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "Customer Success",
+          "departmentCode": "CUS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:41.300Z",
+          "updatedAt": "2026-06-08T18:41:41.300Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 7
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmq5k4j4j0012es8dmlgjorgc",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "Engineering",
+          "departmentCode": "ENG",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:25.460Z",
+          "updatedAt": "2026-06-08T18:41:25.460Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 12
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmq5kf7ds0003j9v7xuqthow7",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "parentId": "cmq5k4j4j0012es8dmlgjorgc",
+              "name": "Backend Engineering",
+              "departmentCode": "ENG-BE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-08T18:49:43.456Z",
+              "updatedAt": "2026-06-08T18:49:43.456Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmq5kf6mk0001j9v7v28xjkwb",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "parentId": "cmq5k4j4j0012es8dmlgjorgc",
+              "name": "Frontend Engineering",
+              "departmentCode": "ENG-FE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-08T18:49:42.476Z",
+              "updatedAt": "2026-06-08T18:49:42.476Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmq5kf7xl0005j9v7kc1plool",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "parentId": "cmq5k4j4j0012es8dmlgjorgc",
+              "name": "QA & Testing",
+              "departmentCode": "ENG-QA",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-08T18:49:44.170Z",
+              "updatedAt": "2026-06-08T18:49:44.170Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmq5k4pix0018es8dcyelkv38",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "Finance",
+          "departmentCode": "FIN",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:33.754Z",
+          "updatedAt": "2026-06-08T18:41:33.754Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmq5k4ny20016es8dv8bokfst",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "HR",
+          "departmentCode": "HR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:31.706Z",
+          "updatedAt": "2026-06-08T18:41:31.706Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmq5k4tmu001ees8d5t1b5xjo",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "Marketing",
+          "departmentCode": "MAR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:39.078Z",
+          "updatedAt": "2026-06-08T18:41:39.078Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmq5k4r0z001aes8dl6ojcgqt",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "Operations",
+          "departmentCode": "OPS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:35.699Z",
+          "updatedAt": "2026-06-08T18:41:35.699Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmq5kf9ff000bj9v71s3bbig2",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "parentId": "cmq5k4r0z001aes8dl6ojcgqt",
+              "name": "IT Support",
+              "departmentCode": "OPS-IT",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-08T18:49:46.107Z",
+              "updatedAt": "2026-06-08T18:49:46.107Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmq5k4sdc001ces8dcme5kbx5",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "Product",
+          "departmentCode": "PRO",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:37.440Z",
+          "updatedAt": "2026-06-08T18:41:37.440Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmq5k4md50014es8do2equ4ld",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "parentId": null,
+          "name": "Sales",
+          "departmentCode": "SALES",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-08T18:41:29.248Z",
+          "updatedAt": "2026-06-08T18:41:29.248Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmq5kf8gr0007j9v7ry81c9mp",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "parentId": "cmq5k4md50014es8do2equ4ld",
+              "name": "Sales - North",
+              "departmentCode": "SALES-N",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-08T18:49:44.859Z",
+              "updatedAt": "2026-06-08T18:49:44.859Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmq5kf8y60009j9v79i1p9lfr",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "parentId": "cmq5k4md50014es8do2equ4ld",
+              "name": "Sales - South",
+              "departmentCode": "SALES-S",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-08T18:49:45.486Z",
+              "updatedAt": "2026-06-08T18:49:45.486Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "cached": false
+      }
+    }
+  }
+]

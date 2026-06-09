@@ -1,4 +1,5 @@
 import { evaluateFormula, topologicalSort } from '../../utils/formulaEval.js';
+import { withComponentColor } from '../../utils/payrollUiShapes.js';
 
 const COMPONENT_INCLUDE = {
   id: true, name: true, code: true, type: true, calculationType: true,
@@ -7,14 +8,14 @@ const COMPONENT_INCLUDE = {
 };
 
 function fmtComponent(c) {
-  return {
+  return withComponentColor({
     id: c.id, name: c.name, code: c.code, type: c.type,
     calculationType: c.calculationType,
     value: c.value !== null ? Number(c.value) : null,
     basisCode: c.basisCode ?? null, formula: c.formula ?? null,
     taxable: c.taxable, active: c.active, displayOrder: c.displayOrder,
     description: c.description ?? null, createdAt: c.createdAt, updatedAt: c.updatedAt,
-  };
+  });
 }
 
 function fmtPayGroup(pg) {
@@ -234,7 +235,7 @@ function buildCalculatedComponents(pgComponents, annualCtc) {
     }
     amount = Math.round(amount * 100) / 100;
     computed[comp.code] = amount;
-    const item = { code: comp.code, name: comp.name, type: comp.type, monthlyAmount: amount, taxable: comp.taxable };
+    const item = withComponentColor({ code: comp.code, name: comp.name, type: comp.type, monthlyAmount: amount, taxable: comp.taxable });
     calculated.push(item);
     if (comp.type === 'EARNING') earnings.push({ amount });
     else if (comp.type === 'DEDUCTION') deductions.push({ amount });

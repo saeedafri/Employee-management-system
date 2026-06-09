@@ -1,5 +1,10 @@
 import * as repo from './payroll.repository.js';
 import { detectCircularDep } from '../../utils/formulaEval.js';
+import {
+  fmtPayslipTemplateForUi,
+  normalizePayslipTemplateField,
+  normalizePayslipTemplateSection,
+} from '../../utils/payrollUiShapes.js';
 
 function AppError(message, code, statusCode = 400) {
   const e = new Error(message);
@@ -74,13 +79,51 @@ export async function deletePayGroup(prisma, id, tenantId) {
 }
 
 export async function getPaySchedules(prisma, tenantId) {
-  const groups = await repo.getPayGroups(prisma, tenantId);
-  return groups
-    .filter((g) => g.paySchedule !== 'MONTHLY' && g.active)
+  const [groups, calendars] = await Promise.all([
+    repo.getPayGroups(prisma, tenantId),
+    repo.getPayCalendars(prisma, tenantId),
+  ]);
+
+  const fromGroups = groups
+    .filter((g) => g.active)
     .map((g) => ({
-      id: g.id, name: g.name, frequency: g.paySchedule,
-      startDate: null, timezone: 'UTC', nextRunDate: null, active: g.active,
+      id: g.id,
+      name: g.name,
+      code: g.code,
+      frequency: g.paySchedule,
+      currency: g.currency,
+      country: g.currency === 'USD' ? 'US' : 'IN',
+      startDate: null,
+      timezone: 'Asia/Kolkata',
+      nextRunDate: null,
+      active: g.active,
+      source: 'payGroup',
     }));
+
+  const fromCalendars = calendars.map((c) => ({
+    id: c.id,
+    name: c.name,
+    code: c.code,
+    frequency: c.paySchedule ?? 'MONTHLY',
+    currency: c.country === 'US' ? 'USD' : 'INR',
+    country: c.country ?? 'IN',
+    startDate: c.firstPayDate ? String(c.firstPayDate).split('T')[0] : null,
+    timezone: 'Asia/Kolkata',
+    nextRunDate: null,
+    active: true,
+    source: 'payCalendar',
+    periodAnchor: 1,
+    payDateRule: 'LAST_WORKING_DAY',
+    cutoffDay: 25,
+  }));
+
+  const seen = new Set();
+  return [...fromCalendars, ...fromGroups].filter((s) => {
+    const key = `${s.frequency}-${s.name}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 // ── Employee Salary ───────────────────────────────────────────────────────────
@@ -1252,6 +1295,19 @@ export async function reconcilePaymentBatch(prisma, batchId, tenantId) {
   });
 }
 
+const DEFAULT_TEMPLATE_SECTIONS = [
+  { key: 'earnings', label: 'Earnings', enabled: true, order: 1 },
+  { key: 'deductions', label: 'Deductions', enabled: true, order: 2 },
+  { key: 'employerContributions', label: 'Employer Contributions', enabled: true, order: 3 },
+  { key: 'ytd', label: 'Year to Date', enabled: true, order: 4 },
+];
+
+const DEFAULT_TEMPLATE_FIELDS = [
+  { key: 'employeeCode', label: 'Employee ID', enabled: true },
+  { key: 'department', label: 'Department', enabled: true },
+  { key: 'designation', label: 'Designation', enabled: true },
+];
+
 export async function getPayslipTemplate(prisma, tenantId) {
   let template = await prisma.payslipTemplate.findUnique({ where: { tenantId } });
   if (!template) {
@@ -1263,31 +1319,37 @@ export async function getPayslipTemplate(prisma, tenantId) {
         name: 'Default Payslip',
         locale: 'en-IN',
         logoUrl: null,
-        sections: [
-          { id: 'earnings', label: 'Earnings', visible: true },
-          { id: 'deductions', label: 'Deductions', visible: true },
-          { id: 'employer', label: 'Employer Contributions', visible: true },
-        ],
-        fields: [],
+        sections: DEFAULT_TEMPLATE_SECTIONS,
+        fields: DEFAULT_TEMPLATE_FIELDS,
       },
     });
   }
-  return template;
+  return fmtPayslipTemplateForUi(template);
 }
 
 export async function updatePayslipTemplate(prisma, tenantId, data) {
-  const existing = await getPayslipTemplate(prisma, tenantId);
-  return await prisma.payslipTemplate.update({
+  const existing = await prisma.payslipTemplate.findUnique({ where: { tenantId } });
+  if (!existing) return getPayslipTemplate(prisma, tenantId);
+
+  const sections = data.sections
+    ? data.sections.map(normalizePayslipTemplateSection)
+    : existing.sections;
+  const fields = data.fields
+    ? data.fields.map(normalizePayslipTemplateField)
+    : existing.fields;
+
+  const updated = await prisma.payslipTemplate.update({
     where: { tenantId },
     data: {
       name: data.name ?? existing.name,
       locale: data.locale ?? existing.locale,
       logoUrl: data.logoUrl ?? existing.logoUrl,
-      sections: data.sections ?? existing.sections,
-      fields: data.fields ?? existing.fields,
+      sections,
+      fields,
       updatedAt: new Date(),
     },
   });
+  return fmtPayslipTemplateForUi(updated);
 }
 
 export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
@@ -1308,6 +1370,8 @@ export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
   };
 }
 
+const REIMBURSEMENT_CATEGORY_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4'];
+
 export async function listReimbursementCategories(prisma, tenantId) {
   const cats = await prisma.reimbursementCategory.findMany({ where: { tenantId }, orderBy: { label: 'asc' } });
   if (cats.length === 0) {
@@ -1322,9 +1386,9 @@ export async function listReimbursementCategories(prisma, tenantId) {
     const created = await Promise.all(defaults.map(d =>
       prisma.reimbursementCategory.create({ data: { id: generateId(), tenantId, ...d } }),
     ));
-    return created;
+    return created.map((c, i) => ({ ...c, monthlyCap: Number(c.monthlyCap), color: REIMBURSEMENT_CATEGORY_COLORS[i % REIMBURSEMENT_CATEGORY_COLORS.length] }));
   }
-  return cats;
+  return cats.map((c, i) => ({ ...c, monthlyCap: Number(c.monthlyCap), color: REIMBURSEMENT_CATEGORY_COLORS[i % REIMBURSEMENT_CATEGORY_COLORS.length] }));
 }
 
 export async function listReimbursementClaims(prisma, tenantId, params = {}) {

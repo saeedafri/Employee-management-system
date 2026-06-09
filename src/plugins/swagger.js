@@ -645,6 +645,33 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             parameters: [{ in: 'path', name: 'key', type: 'string', required: true }],
           }),
         },
+        '/settings/integrations/email': {
+          get: op('Settings', 'Email integration status (Resend/SMTP)', true),
+          patch: op('Settings', 'Update email integration settings', true),
+        },
+        '/settings/integrations/email/stats': {
+          get: op('Settings', 'Email delivery stats (24h)', true),
+        },
+        '/settings/integrations/storage': {
+          get: op('Settings', 'Storage integration status (Cloudinary)', true),
+          patch: op('Settings', 'Update storage integration settings', true),
+        },
+        '/settings/webhooks': {
+          get: op('Settings', 'List outbound webhooks', true),
+          post: op('Settings', 'Create webhook', true),
+        },
+        '/settings/webhooks/{id}': {
+          patch: op('Settings', 'Update webhook', true, { parameters: [{ in: 'path', name: 'id', type: 'string', required: true }] }),
+          delete: op('Settings', 'Delete webhook', true, { parameters: [{ in: 'path', name: 'id', type: 'string', required: true }] }),
+        },
+        '/employees/{id}/activity': {
+          get: op('Employees', 'Employee activity timeline', true, {
+            parameters: [
+              { in: 'path', name: 'id', type: 'string', required: true },
+              { in: 'query', name: 'limit', type: 'integer' },
+            ],
+          }),
+        },
 
         // ── NOTIFICATIONS ─────────────────────────────────────────────────────
         '/notifications': {
@@ -1310,6 +1337,62 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
               },
             },
             meta: { type: 'object', properties: { cached: { type: 'boolean', example: false } } },
+          },
+        },
+        PayslipTemplateSection: {
+          type: 'object',
+          properties: {
+            key: { type: 'string' }, label: { type: 'string' }, enabled: { type: 'boolean' },
+            order: { type: 'integer' }, color: { type: 'string', example: '#16a34a' },
+          },
+        },
+        PayslipTemplate: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, name: { type: 'string' }, locale: { type: 'string' }, logoUrl: { type: 'string', nullable: true },
+            sections: { type: 'array', items: { '$ref': '#/definitions/PayslipTemplateSection' } },
+            fields: { type: 'array', items: { type: 'object', properties: { key: { type: 'string' }, label: { type: 'string' }, enabled: { type: 'boolean' } } } },
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        EmailIntegrationSettings: {
+          type: 'object',
+          properties: {
+            provider: { type: 'string', example: 'resend' }, configured: { type: 'boolean' }, enabled: { type: 'boolean' },
+            fromAddress: { type: 'string' }, fromName: { type: 'string' }, domainVerified: { type: 'boolean' },
+            apiKeyMasked: { type: 'string', nullable: true },
+          },
+        },
+        StorageIntegrationSettings: {
+          type: 'object',
+          properties: {
+            provider: { type: 'string', example: 'cloudinary' }, configured: { type: 'boolean' }, enabled: { type: 'boolean' },
+            cloudName: { type: 'string', nullable: true }, folder: { type: 'string' }, maxFileSizeMb: { type: 'number' },
+            metadataStore: { type: 'string', example: 'postgresql' },
+          },
+        },
+        WebhookConfig: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, name: { type: 'string' }, url: { type: 'string' },
+            events: { type: 'array', items: { type: 'string' } }, enabled: { type: 'boolean' },
+            secretMasked: { type: 'string' }, lastTriggeredAt: { type: 'string', format: 'date-time', nullable: true },
+          },
+        },
+        PendingApproval: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, type: { type: 'string', enum: ['leave', 'regularization', 'timesheet', 'asset'] },
+            color: { type: 'string' }, title: { type: 'string' }, subtitle: { type: 'string' },
+            employeeName: { type: 'string' }, submittedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        EmployeeActivityItem: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, type: { type: 'string' }, action: { type: 'string' },
+            description: { type: 'string' }, color: { type: 'string' },
+            createdAt: { type: 'string', format: 'date-time' },
           },
         },
       },

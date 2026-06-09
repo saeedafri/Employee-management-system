@@ -1,5 +1,6 @@
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
+import { APPROVAL_TYPE_COLORS } from '../../utils/payrollUiShapes.js';
 
 export async function getManagerDashboard(managerId, tenantId) {
   try {
@@ -165,63 +166,148 @@ export async function getTeamAttendance(managerId, tenantId, range = '30d') {
   }
 }
 
-export async function getPendingApprovals(managerId, tenantId) {
+export async function getPendingApprovals(managerId, tenantId, { scope = 'team' } = {}) {
   try {
-    const manager = await prisma.employee.findUnique({
-      where: { id: managerId },
-    });
-
-    if (!manager) {
-      return errorResponse('MANAGER_NOT_FOUND', 'Manager not found', null);
+    if (scope === 'team') {
+      const manager = await prisma.employee.findUnique({ where: { id: managerId } });
+      if (!manager) {
+        return errorResponse('MANAGER_NOT_FOUND', 'Manager not found', null);
+      }
     }
 
-    // Get pending leave requests
-    const pendingLeaves = await prisma.leaveRequest.findMany({
-      where: {
-        tenantId,
-        status: 'PENDING',
-        employee: { managerId },
-      },
-      include: {
-        employee: { select: { firstName: true, lastName: true, employeeCode: true } },
-        leaveType: { select: { name: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const teamFilter = scope === 'tenant' ? {} : { employee: { managerId } };
 
-    // Get pending regularization requests
-    const pendingRegularizations = await prisma.attendanceRegularizationRequest.findMany({
-      where: {
-        tenantId,
-        status: 'PENDING',
-        employee: { managerId },
-      },
-      include: {
-        employee: { select: { firstName: true, lastName: true, employeeCode: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const [pendingLeaves, pendingRegularizations, pendingTimesheets, pendingAssets] = await Promise.all([
+      prisma.leaveRequest.findMany({
+        where: { tenantId, status: 'PENDING', ...teamFilter },
+        include: {
+          employee: { select: { id: true, firstName: true, lastName: true, employeeCode: true } },
+          leaveType: { select: { name: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      }),
+      prisma.attendanceRegularizationRequest.findMany({
+        where: { tenantId, status: 'PENDING', ...teamFilter },
+        include: { employee: { select: { id: true, firstName: true, lastName: true, employeeCode: true } } },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+      }),
+      (async () => {
+        const where = { tenantId, status: 'SUBMITTED' };
+        if (scope !== 'tenant' && managerId) {
+          const teamIds = await prisma.employee.findMany({
+            where: { tenantId, managerId, deletedAt: null },
+            select: { id: true },
+          });
+          const ids = teamIds.map((e) => e.id);
+          if (!ids.length) return [];
+          where.employeeId = { in: ids };
+        }
+        const sheets = await prisma.timesheet.findMany({
+          where,
+          orderBy: { submittedAt: 'desc' },
+          take: 50,
+        });
+        const empIds = [...new Set(sheets.map((s) => s.employeeId))];
+        const emps = empIds.length
+          ? await prisma.employee.findMany({
+            where: { id: { in: empIds } },
+            select: { id: true, firstName: true, lastName: true, employeeCode: true },
+          })
+          : [];
+        const empMap = Object.fromEntries(emps.map((e) => [e.id, e]));
+        return sheets.map((s) => ({ ...s, employee: empMap[s.employeeId] }));
+      })().catch(() => []),
+      prisma.assetRequest.findMany({
+        where: { tenantId, status: 'Pending' },
+        orderBy: { requestedAt: 'desc' },
+        take: 50,
+      }).catch(() => []),
+    ]);
+
+    const leaveRequests = pendingLeaves.map((l) => ({
+      id: l.id,
+      type: 'leave',
+      color: APPROVAL_TYPE_COLORS.leave,
+      employeeId: l.employee.id,
+      employeeCode: l.employee.employeeCode,
+      employeeName: `${l.employee.firstName} ${l.employee.lastName}`,
+      leaveType: l.leaveType.name,
+      title: 'Leave request',
+      subtitle: l.leaveType.name,
+      startDate: l.startDate,
+      endDate: l.endDate,
+      totalDays: l.totalDays,
+      reason: l.reason,
+      status: l.status,
+      submittedAt: l.createdAt,
+    }));
+
+    const regularizationRequests = pendingRegularizations.map((r) => ({
+      id: r.id,
+      type: 'regularization',
+      color: APPROVAL_TYPE_COLORS.regularization,
+      employeeId: r.employee.id,
+      employeeCode: r.employee.employeeCode,
+      employeeName: `${r.employee.firstName} ${r.employee.lastName}`,
+      title: 'Attendance regularization',
+      subtitle: r.attendanceDate?.toISOString?.().split('T')[0] ?? r.attendanceDate,
+      attendanceDate: r.attendanceDate,
+      reason: r.reason,
+      status: r.status,
+      submittedAt: r.createdAt,
+    }));
+
+    const timesheetRequests = pendingTimesheets.map((t) => ({
+      id: t.id,
+      type: 'timesheet',
+      color: APPROVAL_TYPE_COLORS.timesheet,
+      employeeId: t.employee.id,
+      employeeCode: t.employee.employeeCode,
+      employeeName: `${t.employee.firstName} ${t.employee.lastName}`,
+      title: 'Timesheet approval',
+      subtitle: `${t.weekStart} – ${t.weekEnd}`,
+      weekStart: t.weekStart,
+      weekEnd: t.weekEnd,
+      totalHours: Number(t.totalHours ?? 0),
+      status: t.status,
+      submittedAt: t.submittedAt ?? t.updatedAt,
+    }));
+
+    const assetRequests = pendingAssets.map((a) => ({
+      id: a.id,
+      type: 'asset',
+      color: APPROVAL_TYPE_COLORS.asset,
+      employeeId: a.requestedById,
+      employeeCode: null,
+      employeeName: a.requestedByName ?? 'Unknown',
+      title: 'Asset request',
+      subtitle: a.item ?? 'Asset',
+      status: a.status,
+      submittedAt: a.requestedAt,
+    }));
+
+    const items = [
+      ...leaveRequests,
+      ...regularizationRequests,
+      ...timesheetRequests,
+      ...assetRequests,
+    ].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
 
     return successResponse({
-      leaveRequests: pendingLeaves.map(l => ({
-        id: l.id,
-        employeeCode: l.employee.employeeCode,
-        employeeName: `${l.employee.firstName} ${l.employee.lastName}`,
-        leaveType: l.leaveType.name,
-        startDate: l.startDate,
-        endDate: l.endDate,
-        totalDays: l.totalDays,
-        reason: l.reason,
-        status: l.status,
-      })),
-      regularizationRequests: pendingRegularizations.map(r => ({
-        id: r.id,
-        employeeCode: r.employee.employeeCode,
-        employeeName: `${r.employee.firstName} ${r.employee.lastName}`,
-        attendanceDate: r.attendanceDate,
-        reason: r.reason,
-        status: r.status,
-      })),
+      items,
+      leaveRequests,
+      regularizationRequests,
+      timesheetRequests,
+      assetRequests,
+      total: items.length,
+      approvalBreakdown: {
+        leave: leaveRequests.length,
+        regularization: regularizationRequests.length,
+        timesheet: timesheetRequests.length,
+        asset: assetRequests.length,
+      },
     }, { cached: false });
   } catch (error) {
     return errorResponse('PENDING_APPROVALS_ERROR', error.message, null);

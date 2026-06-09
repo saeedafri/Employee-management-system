@@ -9,6 +9,7 @@ import {
   uploadDocument,
   listDocuments,
   deleteDocument,
+  getEmployeeActivity,
   bulkDeactivate,
   bulkExport,
   presignDocument,
@@ -44,6 +45,20 @@ export async function employeesRoutes(fastify) {
       },
     },
     listEmployees,
+  );
+
+  fastify.get(
+    '/employees/:id/activity',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Employee activity timeline (audit, leave, documents)',
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        querystring: { type: 'object', properties: { limit: { type: 'number', default: 50 } } },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    getEmployeeActivity,
   );
 
   fastify.get(

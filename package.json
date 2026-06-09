@@ -37,6 +37,9 @@
     "db:seed:phase3": "node prisma/seedPhase3Rich.js",
     "db:seed:phase3:payroll": "node prisma/seedPayrollPhase3.js",
     "db:seed:timesheets": "node prisma/seedTimesheets.js",
+    "db:seed:integrations": "node prisma/seedPhase3Integrations.js",
+    "test:deployed-ui": "node scripts/deployed-ui-full-audit.mjs",
+    "test:playwright:deployed": "playwright test tests/e2e/deployed-full-clickthrough.spec.ts --project=chromium --workers=1",
     "db:seed:deep": "node prisma/seedDeepClickthrough.js",
     "test:deployed-ui": "node scripts/deployed-ui-deep-clickthrough.mjs"
   },

@@ -1,0 +1,660 @@
+[
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/employees/cmq5k4wso001ies8d5sjxzwum/salary",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmq5kcyv300aaes8dtnpqlhhd",
+        "employeeId": "cmq5k4wso001ies8d5sjxzwum",
+        "payGroupId": "cmq5kcl0q009ues8d8bx8i3w4",
+        "payGroup": {
+          "id": "cmq5kcl0q009ues8d8bx8i3w4",
+          "name": "Standard Pay Group",
+          "code": "STANDARD",
+          "currency": "INR",
+          "paySchedule": "MONTHLY"
+        },
+        "annualCtc": 1800000,
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "bankAccountName": null,
+        "bankAccountNumber": "0001234567890",
+        "bankIfscCode": "SBIN0001234",
+        "bankName": "HDFC",
+        "calculatedComponents": [
+          {
+            "code": "BASIC",
+            "name": "Basic Salary",
+            "type": "EARNING",
+            "monthlyAmount": 50000,
+            "taxable": true
+          },
+          {
+            "code": "HRA",
+            "name": "House Rent Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 20000,
+            "taxable": false
+          },
+          {
+            "code": "CONVEYANCE",
+            "name": "Conveyance Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 1600,
+            "taxable": false
+          },
+          {
+            "code": "MEDICAL",
+            "name": "Medical Allowance",
+            "type": "BENEFIT",
+            "monthlyAmount": 1250,
+            "taxable": false
+          },
+          {
+            "code": "PF",
+            "name": "Provident Fund (Employee)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 6000,
+            "taxable": false
+          },
+          {
+            "code": "TDS",
+            "name": "Income Tax (TDS)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 5000,
+            "taxable": false
+          }
+        ],
+        "monthlyGross": 71600,
+        "monthlyDeductions": 11000,
+        "monthlyNet": 60600,
+        "history": [],
+        "createdAt": "2026-06-08T18:47:59.103Z",
+        "updatedAt": "2026-06-08T18:47:59.103Z"
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/components",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmq5kcadi009ies8dcd0kgxp1",
+          "name": "Basic Salary",
+          "code": "BASIC",
+          "type": "EARNING",
+          "calculationType": "FLAT",
+          "value": 50000,
+          "basisCode": null,
+          "formula": null,
+          "taxable": true,
+          "active": true,
+          "displayOrder": 1,
+          "description": null
+        },
+        {
+          "id": "cmq5kcdtu009kes8ds79qv777",
+          "name": "House Rent Allowance",
+          "code": "HRA",
+          "type": "EARNING",
+          "calculationType": "PERCENTAGE",
+          "value": 40,
+          "basisCode": "BASIC",
+          "formula": null,
+          "taxable": false,
+          "active": true,
+          "displayOrder": 2,
+          "description": null
+        },
+        {
+          "id": "cmq5kcfb2009mes8d2521t7ip",
+          "name": "Conveyance Allowance",
+          "code": "CONVEYANCE",
+          "type": "EARNING",
+          "calculationType": "FLAT",
+          "value": 1600,
+          "basisCode": null,
+          "formula": null,
+          "taxable": false,
+          "active": true,
+          "displayOrder": 3,
+          "description": null
+        },
+        {
+          "id": "cmq5kcglf009oes8dz1p1qh5t",
+          "name": "Medical Allowance",
+          "code": "MEDICAL",
+          "type": "BENEFIT",
+          "calculationType": "FLAT",
+          "value": 1250,
+          "basisCode": null,
+          "formula": null,
+          "taxable": false,
+          "active": true,
+          "displayOrder": 4,
+          "description": null
+        },
+        {
+          "id": "cmq5kci0m009qes8d5zkag3la",
+          "name": "Provident Fund (Employee)",
+          "code": "PF",
+          "type": "DEDUCTION",
+          "calculationType": "PERCENTAGE",
+          "value": 12,
+          "basisCode": "BASIC",
+          "formula": null,
+          "taxable": false,
+          "active": true,
+          "displayOrder": 5,
+          "description": null
+        },
+        {
+          "id": "cmq5kcjie009ses8dme4q0vcq",
+          "name": "Income Tax (TDS)",
+          "code": "TDS",
+          "type": "DEDUCTION",
+          "calculationType": "FLAT",
+          "value": 5000,
+          "basisCode": null,
+          "formula": null,
+          "taxable": false,
+          "active": true,
+          "displayOrder": 6,
+          "description": null
+        },
+        {
+          "id": "cmq5udxkv0005duh9qu0dle6x",
+          "name": "Basic Salary2",
+          "code": "BASIC_SALARY2",
+          "type": "EARNING",
+          "calculationType": "FLAT",
+          "value": 1999.99,
+          "basisCode": "",
+          "formula": "",
+          "taxable": true,
+          "active": true,
+          "displayOrder": 7,
+          "description": ""
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/employees/cmq5k4wso001ies8d5sjxzwum/tax-declaration?fy=2026-27",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "employeeId": "cmq5k4wso001ies8d5sjxzwum",
+        "fiscalYear": "2026-27",
+        "regime": "IN_NEW_REGIME",
+        "items": []
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/groups",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmq5kcl0q009ues8d8bx8i3w4",
+          "name": "Standard Pay Group",
+          "code": "STANDARD",
+          "currency": "INR",
+          "paySchedule": "MONTHLY",
+          "description": null,
+          "active": true,
+          "employeeCount": 0,
+          "components": [
+            {
+              "componentId": "cmq5kcadi009ies8dcd0kgxp1",
+              "componentCode": "BASIC",
+              "componentName": "Basic Salary",
+              "componentType": "EARNING",
+              "overrideCalculationType": null,
+              "overrideValue": null,
+              "overrideFormula": null
+            },
+            {
+              "componentId": "cmq5kcdtu009kes8ds79qv777",
+              "componentCode": "HRA",
+              "componentName": "House Rent Allowance",
+              "componentType": "EARNING",
+              "overrideCalculationType": null,
+              "overrideValue": null,
+              "overrideFormula": null
+            },
+            {
+              "componentId": "cmq5kcfb2009mes8d2521t7ip",
+              "componentCode": "CONVEYANCE",
+              "componentName": "Conveyance Allowance",
+              "componentType": "EARNING",
+              "overrideCalculationType": null,
+              "overrideValue": null,
+              "overrideFormula": null
+            },
+            {
+              "componentId": "cmq5kcglf009oes8dz1p1qh5t",
+              "componentCode": "MEDICAL",
+              "componentName": "Medical Allowance",
+              "componentType": "BENEFIT",
+              "overrideCalculationType": null,
+              "overrideValue": null,
+              "overrideFormula": null
+            },
+            {
+              "componentId": "cmq5kci0m009qes8d5zkag3la",
+              "componentCode": "PF",
+              "componentName": "Provident Fund (Employee)",
+              "componentType": "DEDUCTION",
+              "overrideCalculationType": null,
+              "overrideValue": null,
+              "overrideFormula": null
+            },
+            {
+              "componentId": "cmq5kcjie009ses8dme4q0vcq",
+              "componentCode": "TDS",
+              "componentName": "Income Tax (TDS)",
+              "componentType": "DEDUCTION",
+              "overrideCalculationType": null,
+              "overrideValue": null,
+              "overrideFormula": null
+            }
+          ],
+          "createdAt": "2026-06-08T18:47:41.162Z",
+          "updatedAt": "2026-06-08T18:47:41.162Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/legal-entities",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "le_cmq5k2bkv0000es8dzc32uxe3_in",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "name": "Acme India Pvt Ltd",
+          "country": "IN",
+          "currency": "INR",
+          "fiscalYearStartMonth": 4,
+          "timezone": "Asia/Kolkata",
+          "locale": "en-IN",
+          "registrationIds": {
+            "PF": "MHBAN1234567",
+            "ESI": "12345678901234",
+            "PAN": "AAAAA1234A"
+          },
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "createdAt": "2026-06-08T18:48:20.822Z",
+          "updatedAt": "2026-06-08T18:48:20.822Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/countries/IN/bank-schema",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "country": "IN",
+        "fields": [
+          {
+            "key": "accountName",
+            "label": "Account holder name",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "accountNumber",
+            "label": "Account number",
+            "type": "text",
+            "required": true,
+            "regex": "^[0-9]{9,18}$"
+          },
+          {
+            "key": "ifsc",
+            "label": "IFSC code",
+            "type": "text",
+            "required": true,
+            "regex": "^[A-Z]{4}0[A-Z0-9]{6}$"
+          },
+          {
+            "key": "bankName",
+            "label": "Bank name",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/reimbursement-categories",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "rcat-006",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "code": "BOOKS",
+          "label": "Books & Courses",
+          "monthlyCap": "5000",
+          "createdAt": "2026-06-08T19:45:06.309Z"
+        },
+        {
+          "id": "rcat-005",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "code": "EQUIPMENT",
+          "label": "Equipment & Supplies",
+          "monthlyCap": "10000",
+          "createdAt": "2026-06-08T19:45:05.977Z"
+        },
+        {
+          "id": "rcat-002",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "code": "FOOD",
+          "label": "Food & Meals",
+          "monthlyCap": "3000",
+          "createdAt": "2026-06-08T19:45:04.942Z"
+        },
+        {
+          "id": "rcat-004",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "code": "INTERNET",
+          "label": "Internet & Phone",
+          "monthlyCap": "1500",
+          "createdAt": "2026-06-08T19:45:05.694Z"
+        },
+        {
+          "id": "rcat-003",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "code": "MEDICAL",
+          "label": "Medical",
+          "monthlyCap": "15000",
+          "createdAt": "2026-06-08T19:45:05.285Z"
+        },
+        {
+          "id": "rcat-001",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "code": "TRAVEL",
+          "label": "Travel & Conveyance",
+          "monthlyCap": "5000",
+          "createdAt": "2026-06-08T19:45:04.364Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/statutory-packs?country=IN",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmq5kdiaj00b2es8dfw96vts7",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "country": "IN",
+          "version": "2026.1",
+          "effectiveFrom": "2026-04-01",
+          "effectiveTo": null,
+          "rounding": {
+            "mode": "NEAREST",
+            "precision": 0
+          },
+          "proration": {
+            "basis": "CALENDAR_DAYS"
+          },
+          "taxRegimes": [
+            {
+              "cess": {
+                "rate": 4
+              },
+              "code": "IN_NEW_REGIME",
+              "slabs": [
+                {
+                  "to": 40000000,
+                  "from": 0,
+                  "rate": 0
+                },
+                {
+                  "to": 80000000,
+                  "from": 40000000,
+                  "rate": 5
+                },
+                {
+                  "to": null,
+                  "from": 80000000,
+                  "rate": 30
+                }
+              ],
+              "currency": "INR",
+              "fiscalYear": "2026-27",
+              "standardDeduction": 7500000
+            }
+          ],
+          "contributionSchemes": [
+            {
+              "code": "IN_EPF",
+              "name": "Employees' Provident Fund",
+              "employee": {
+                "rate": 12,
+                "component": "PF"
+              },
+              "employer": {
+                "rate": 12,
+                "component": "PF_ER"
+              },
+              "wageBaseTag": "PF_WAGE",
+              "wageCeiling": 1500000
+            }
+          ],
+          "localTaxes": [
+            {
+              "code": "IN_MH_PT",
+              "name": "Professional Tax (Maharashtra)",
+              "slabs": [
+                {
+                  "to": 750000,
+                  "from": 0,
+                  "amount": 0
+                },
+                {
+                  "to": null,
+                  "from": 750000,
+                  "amount": 20000
+                }
+              ],
+              "component": "PROF_TAX"
+            }
+          ],
+          "statutoryComponents": [
+            "PF",
+            "PF_ER",
+            "TDS"
+          ],
+          "minimumWages": [],
+          "createdAt": "2026-06-08T18:48:24.283Z",
+          "updatedAt": "2026-06-08T18:48:24.283Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/employees/cmq5k4wso001ies8d5sjxzwum/loans",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [],
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/reimbursement-claims?employeeId=cmq5k4wso001ies8d5sjxzwum",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "claims": [
+          {
+            "id": "72d0e3d5-6c29-41f6-bbe3-6249a1da95ec",
+            "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+            "employeeId": "cmq5k4wso001ies8d5sjxzwum",
+            "categoryId": "rcat-001",
+            "amount": "2500",
+            "currency": "INR",
+            "description": "Taxi to client office",
+            "proofUrl": null,
+            "status": "APPROVED",
+            "runId": null,
+            "submittedAt": "2026-06-04T12:49:48.687Z",
+            "decidedAt": "2026-06-08T19:45:07.220Z",
+            "createdAt": "2026-06-08T19:45:07.222Z",
+            "updatedAt": "2026-06-08T19:45:07.222Z",
+            "category": {
+              "id": "rcat-001",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "code": "TRAVEL",
+              "label": "Travel & Conveyance",
+              "monthlyCap": "5000",
+              "createdAt": "2026-06-08T19:45:04.364Z"
+            }
+          },
+          {
+            "id": "a82639ff-a99c-44a9-9058-7f514e475ab4",
+            "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+            "employeeId": "cmq5k4wso001ies8d5sjxzwum",
+            "categoryId": "rcat-002",
+            "amount": "1200",
+            "currency": "INR",
+            "description": "Team lunch",
+            "proofUrl": null,
+            "status": "APPROVED",
+            "runId": null,
+            "submittedAt": "2026-05-29T01:53:43.662Z",
+            "decidedAt": "2026-06-08T19:45:08.105Z",
+            "createdAt": "2026-06-08T19:45:08.106Z",
+            "updatedAt": "2026-06-08T19:45:08.106Z",
+            "category": {
+              "id": "rcat-002",
+              "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+              "code": "FOOD",
+              "label": "Food & Meals",
+              "monthlyCap": "3000",
+              "createdAt": "2026-06-08T19:45:04.942Z"
+            }
+          }
+        ],
+        "total": 2,
+        "page": 0,
+        "limit": 50
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/countries",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "code": "IN",
+          "name": "India",
+          "currency": "INR",
+          "locale": "en-IN",
+          "fiscalYearStartMonth": 4
+        },
+        {
+          "code": "US",
+          "name": "United States",
+          "currency": "USD",
+          "locale": "en-US",
+          "fiscalYearStartMonth": 1
+        },
+        {
+          "code": "GB",
+          "name": "United Kingdom",
+          "currency": "GBP",
+          "locale": "en-GB",
+          "fiscalYearStartMonth": 4
+        },
+        {
+          "code": "SG",
+          "name": "Singapore",
+          "currency": "SGD",
+          "locale": "en-SG",
+          "fiscalYearStartMonth": 1
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/payroll/employees/cmq5k4wso001ies8d5sjxzwum/garnishments",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "644ca49a-850b-4fec-ab23-56a23cb1abbd",
+          "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+          "employeeId": "cmq5k4wso001ies8d5sjxzwum",
+          "type": "COURT_ORDER",
+          "priority": 1,
+          "amountKind": "FLAT",
+          "amountValue": "5000",
+          "protectedEarningsFloor": "20000",
+          "cap": null,
+          "reference": "COURT/2024/001",
+          "effectiveFrom": "2024-01-01",
+          "effectiveTo": null,
+          "createdAt": "2026-06-08T19:45:14.164Z",
+          "updatedAt": "2026-06-08T19:45:14.164Z"
+        }
+      ],
+      "meta": {}
+    }
+  }
+]

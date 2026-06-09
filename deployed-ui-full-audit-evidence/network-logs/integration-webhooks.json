@@ -1,0 +1,88 @@
+[
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmq5k49kv000yes8d1jcd036x",
+        "email": "mohammadsaeedafri9@gmail.com",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmq5k2bkv0000es8dzc32uxe3",
+        "status": "ACTIVE",
+        "employee": null,
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-06-09T07:50:37.323Z"
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 0,
+          "pages": 0
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/settings/webhooks",
+    "method": "GET",
+    "status": 404,
+    "fromServiceWorker": false,
+    "body": {
+      "message": "Route GET:/api/v1/settings/webhooks not found",
+      "error": "Not Found",
+      "statusCode": 404
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/settings/webhooks",
+    "method": "GET",
+    "status": 404,
+    "fromServiceWorker": false,
+    "body": {
+      "message": "Route GET:/api/v1/settings/webhooks not found",
+      "error": "Not Found",
+      "statusCode": 404
+    }
+  },
+  {
+    "url": "https://ems-frontend-iota-ten.vercel.app/api/settings/webhooks",
+    "method": "GET",
+    "status": 404,
+    "fromServiceWorker": false,
+    "body": {
+      "message": "Route GET:/api/v1/settings/webhooks not found",
+      "error": "Not Found",
+      "statusCode": 404
+    }
+  }
+]

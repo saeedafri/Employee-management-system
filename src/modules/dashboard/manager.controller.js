@@ -49,11 +49,15 @@ export async function getTeamAttendanceHandler(request, reply) {
 export async function getPendingApprovalsHandler(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (user.memberType !== 'MANAGER') {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only managers can access this', request.requestId));
+  const isManager = user.memberType === 'MANAGER';
+  const isAdmin = ['HR_ADMIN', 'SUPER_ADMIN'].includes(user.memberType);
+  if (!isManager && !isAdmin) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only managers and HR admins can access this', request.requestId));
   }
 
-  const result = await getPendingApprovals(user.employeeId, tenantId);
+  const scope = isAdmin ? 'tenant' : 'team';
+  const managerId = isManager ? user.employeeId : null;
+  const result = await getPendingApprovals(managerId, tenantId, { scope });
   reply.code(result.error ? 400 : 200).send(result);
 }
 

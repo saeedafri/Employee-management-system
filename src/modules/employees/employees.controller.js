@@ -39,6 +39,21 @@ export async function listEmployees(request, reply) {
   }
 }
 
+export async function getEmployeeActivity(request, reply) {
+  const { user } = request;
+  const tenantId = request.tenant.id;
+  try {
+    const { id } = await validator.idParamSchema.parseAsync(request.params);
+    if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER'].includes(user.memberType)) {
+      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee activity', request.requestId));
+    }
+    const result = await service.getEmployeeActivity(id, tenantId, { limit: Number(request.query.limit) || 50 });
+    reply.code(result.error ? (result.error.code === 'NOT_FOUND' ? 404 : 400) : 200).send(result);
+  } catch (error) {
+    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+  }
+}
+
 export async function getEmployee(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
