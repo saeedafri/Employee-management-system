@@ -538,8 +538,8 @@ export async function runCompleteFinalAudit({ headless = true, seedFirst = true 
         const tsRaw = tsList.json?.data;
         const sheet = Array.isArray(tsRaw) ? tsRaw[0] : tsRaw?.timesheets?.[0] ?? (tsRaw?.id ? tsRaw : null);
         const projects = await apiCall(priyaTok, 'GET', '/timesheets/projects');
-        const projRaw = projects.json?.data?.projects ?? projects.json?.data;
-        const project = Array.isArray(projRaw) ? projRaw[0] : null;
+        const projRaw = projects.json?.data;
+        const project = Array.isArray(projRaw) ? projRaw[0] : projRaw?.projects?.[0] ?? null;
         if (sheet?.id && project?.id) {
           const today = new Date();
           const monday = new Date(today);
