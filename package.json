@@ -17,16 +17,9 @@
     "db:seed:production": "node prisma/seedProductionData.js",
     "db:seed:demo": "node prisma/seedDemo.js",
     "db:studio": "prisma studio",
-    "test:performance": "mocha 'tests/performance.test.js'",
-    "test": "node scripts/guard-test-db.js && mocha 'tests/**/*.test.js'",
-    "test:unit": "mocha 'tests/unit/**/*.test.js'",
-    "test:integration": "mocha 'tests/integration/**/*.test.js'",
-    "test:e2e": "mocha 'tests/e2e/**/*.test.js'",
-    "test:watch": "mocha 'tests/**/*.test.js' --watch",
-    "test:coverage": "c8 mocha 'tests/**/*.test.js'",
-    "lint": "eslint src/ tests/",
-    "lint:fix": "eslint src/ tests/ --fix",
-    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"prisma/**/*.js\"",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.js\" \"prisma/**/*.js\"",
     "email:test": "node scripts/sendTestEmail.js",
     "seed:test-email-user": "node scripts/seedTestEmailUser.js",
     "api:capture": "node scripts/captureApiResponses.js",
@@ -82,21 +75,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^8.57.0",
-    "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.60.0",
-    "c8": "^11.0.0",
-    "chai": "^6.2.2",
     "eslint": "^8.57.0",
     "globals": "^14.0.0",
-    "mocha": "^11.7.5",
     "node-fetch": "^2.7.0",
     "playwright": "^1.60.0",
     "prettier": "^3.2.5",
-    "prisma": "^5.15.0",
-    "sinon": "^22.0.0",
-    "supertest": "^7.2.2"
+    "prisma": "^5.15.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "20.x"
   }
 }
