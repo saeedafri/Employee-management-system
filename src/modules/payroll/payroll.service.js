@@ -795,9 +795,13 @@ export async function getAuditPack(prisma, tenantId, runId) {
   if (!runId) return null;
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) return null;
+  const auditLog = await getRunAudit(prisma, runId, tenantId);
+  const approvals = Array.isArray(run.approvalsJson) ? run.approvalsJson : [];
   return {
     run: { id: run.id, period: run.period, status: run.status, totals: { gross: Number(run.totalGross), deductions: Number(run.totalDeductions), net: Number(run.totalNet) }, currency: run.currency },
-    configPin: null, approvalChain: [], auditLog: [],
+    configPin: run.configSnapshotRef ?? null,
+    approvalChain: approvals,
+    auditLog: auditLog ?? [],
     generatedAt: new Date().toISOString(),
   };
 }
@@ -1040,14 +1044,42 @@ export async function getRunVariance(prisma, runId, tenantId) {
     };
   });
 
+  const items = rows.map((r) => ({
+    employeeId: r.employeeId,
+    employeeName: r.employeeName,
+    currentNet: r.currentNet,
+    previousNet: r.previousNet,
+    deltaPct: r.variancePct,
+    flags: [
+      ...(r.flagged ? ['HIGH_VARIANCE'] : []),
+      ...(r.currentNet < 0 ? ['NEGATIVE_NET'] : []),
+      ...(r.currentNet === 0 ? ['ZERO_PAY'] : []),
+      ...(r.previousNet === 0 && r.currentNet > 0 ? ['NEW_JOINER'] : []),
+    ],
+  }));
   return {
     runId,
+    thresholdPct: 20,
+    comparedToPeriod: prevRun?.period ?? null,
     comparedWithRunId: prevRun?.id || null,
+    items,
     varianceRows: rows,
     summary: {
       totalVariance: rows.reduce((s, r) => s + r.variance, 0),
-      flaggedCount: rows.filter(r => r.flagged).length,
+      flaggedCount: rows.filter((r) => r.flagged).length,
     },
+  };
+}
+
+function mapEventToAuditEntry(e, runId) {
+  const action = (e.type || '').replace(/\./g, '_').toUpperCase();
+  return {
+    id: e.id,
+    runId,
+    action,
+    actor: e.actor || 'SYSTEM',
+    at: e.createdAt instanceof Date ? e.createdAt.toISOString() : e.createdAt,
+    detail: e.summary ?? null,
   };
 }
 
@@ -1055,14 +1087,17 @@ export async function getRunAudit(prisma, runId, tenantId) {
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) return null;
   const events = await prisma.payrollEvent.findMany({ where: { runId, tenantId }, orderBy: { createdAt: 'asc' } });
-  return {
+  const stored = Array.isArray(run.auditJson) ? run.auditJson : (run.auditJson?.entries ?? []);
+  const fromEvents = events.map((e) => mapEventToAuditEntry(e, runId));
+  const fromStored = stored.map((e) => ({
+    id: e.id ?? `${runId}-${e.action}`,
     runId,
-    period: run.period,
-    status: run.status,
-    approvals: run.approvalsJson ?? [],
-    timeline: events.map(e => ({ id: e.id, type: e.type, summary: e.summary, createdAt: e.createdAt })),
-    auditData: run.auditJson ?? {},
-  };
+    action: e.action ?? 'UNKNOWN',
+    actor: e.actor ?? 'SYSTEM',
+    at: e.at ?? e.createdAt ?? new Date().toISOString(),
+    detail: e.detail ?? e.summary ?? null,
+  }));
+  return [...fromStored, ...fromEvents].sort((a, b) => String(a.at).localeCompare(String(b.at)));
 }
 
 export async function recalculatePayslip(prisma, runId, payslipId, tenantId, actor) {
@@ -1127,12 +1162,26 @@ export async function listPayrollEvents(prisma, tenantId, runId) {
   const where = { tenantId };
   if (runId) where.runId = runId;
   const events = await prisma.payrollEvent.findMany({ where, orderBy: { createdAt: 'desc' }, take: 100 });
-  return { events };
+  return events.map((e) => ({
+    id: e.id,
+    type: e.type,
+    runId: e.runId,
+    at: e.createdAt.toISOString(),
+    summary: e.summary,
+  }));
 }
 
 export async function getPaymentBatch(prisma, runId, tenantId) {
+  const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
+  if (!run) return null;
   const batch = await prisma.paymentBatch.findFirst({ where: { runId, tenantId }, orderBy: { createdAt: 'desc' } });
-  if (!batch) return null;
+  if (!batch) {
+    return {
+      id: null, runId, count: 0, totalAmount: 0,
+      currency: run.currency || 'INR', status: 'NONE',
+      createdAt: null, reconciledAt: null, lines: [],
+    };
+  }
   const rawLines = batch.linesJson ?? [];
   return {
     id: batch.id,

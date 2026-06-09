@@ -1127,6 +1127,143 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             totalEmployerCost:{ type: 'number', description: 'Sum of all employerCost values — SALARY register only' },
           },
         },
+        PayslipLine: {
+          type: 'object',
+          description: 'Single earnings/deduction/employer line on a payslip',
+          properties: {
+            code:          { type: 'string', example: 'BASIC' },
+            name:          { type: 'string', example: 'Basic Salary' },
+            type:          { type: 'string', enum: ['EARNING', 'DEDUCTION', 'BENEFIT', 'EMPLOYER_CONTRIBUTION'] },
+            amount:        { type: 'number', description: 'UI reads this field' },
+            monthlyAmount: { type: 'number', description: 'Back-compat alias of amount' },
+            taxable:       { type: 'boolean' },
+          },
+        },
+        PayslipYtd: {
+          type: 'object',
+          properties: {
+            fiscalYear:      { type: 'string', example: '2026-27' },
+            monthsElapsed:   { type: 'integer' },
+            grossEarnings:   { type: 'number' },
+            taxableIncome:   { type: 'number' },
+            taxDeducted:     { type: 'number' },
+            totalDeductions: { type: 'number' },
+            netPay:          { type: 'number' },
+            contributions:   { type: 'object', additionalProperties: { type: 'number' } },
+          },
+        },
+        PayslipListItem: {
+          type: 'object',
+          description: 'Row in GET /payroll/runs/:runId/payslips',
+          properties: {
+            id: { type: 'string' }, employeeId: { type: 'string' }, employeeCode: { type: 'string' },
+            employeeName: { type: 'string' }, departmentName: { type: 'string' }, designation: { type: 'string' },
+            currency: { type: 'string' }, grossEarnings: { type: 'number' }, totalDeductions: { type: 'number' },
+            netPay: { type: 'number' }, workingDays: { type: 'integer' }, presentDays: { type: 'integer' },
+            lopDays: { type: 'integer' }, status: { type: 'string' }, hasAdjustments: { type: 'boolean' },
+          },
+        },
+        PayslipDetail: {
+          type: 'object',
+          description: 'Full payslip for drawer/detail view — GET /payroll/runs/:runId/payslips/:payslipId',
+          properties: {
+            id: { type: 'string' }, period: { type: 'string' }, periodLabel: { type: 'string' }, currency: { type: 'string' },
+            employee: { type: 'object', properties: { id: { type: 'string' }, firstName: { type: 'string' }, lastName: { type: 'string' }, employeeCode: { type: 'string' }, designation: { type: 'string' }, departmentName: { type: 'string' }, panNumber: { type: 'string' } } },
+            company: { type: 'object', properties: { name: { type: 'string' }, address: { type: 'string' }, logoUrl: { type: 'string' } } },
+            earnings: { type: 'array', items: { '$ref': '#/definitions/PayslipLine' } },
+            deductions: { type: 'array', items: { '$ref': '#/definitions/PayslipLine' } },
+            employerContributions: { type: 'array', items: { '$ref': '#/definitions/PayslipLine' } },
+            oneTimeAdditions: { type: 'array', items: { type: 'object' } },
+            oneTimeDeductions: { type: 'array', items: { type: 'object' } },
+            grossEarnings: { type: 'number' }, totalDeductions: { type: 'number' }, netPay: { type: 'number' },
+            workingDays: { type: 'integer' }, presentDays: { type: 'integer' }, leaveDays: { type: 'integer' }, lopDays: { type: 'integer' },
+            status: { type: 'string' }, paymentDate: { type: 'string', format: 'date' }, paymentReference: { type: 'string' },
+            payrollRunId: { type: 'string' }, documentUrl: { type: 'string', nullable: true },
+            generatedAt: { type: 'string', format: 'date-time' },
+            ytd: { '$ref': '#/definitions/PayslipYtd' },
+          },
+        },
+        PayrollRunSummary: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, period: { type: 'string' }, periodLabel: { type: 'string' },
+            type: { type: 'string' }, status: { type: 'string' }, employeeCount: { type: 'integer' },
+            totalGross: { type: 'number' }, totalDeductions: { type: 'number' }, totalNet: { type: 'number' },
+            employerCost: { type: 'number' }, currency: { type: 'string' },
+            published: { type: 'boolean' }, publishedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        PaymentBatchLine: {
+          type: 'object',
+          properties: {
+            payslipId: { type: 'string' }, employeeId: { type: 'string' }, employeeCode: { type: 'string' },
+            employeeName: { type: 'string' }, amount: { type: 'number' }, currency: { type: 'string' },
+            status: { type: 'string', enum: ['PENDING', 'PROCESSING', 'PAID', 'FAILED', 'RETURNED'] },
+            failureReason: { type: 'string' }, payoutRef: { type: 'string' },
+          },
+        },
+        PaymentBatch: {
+          type: 'object',
+          description: 'GET /payroll/runs/:id/payment-batch — returns empty shell when no batch exists',
+          properties: {
+            id: { type: 'string', nullable: true }, runId: { type: 'string' }, count: { type: 'integer' },
+            totalAmount: { type: 'number' }, currency: { type: 'string' }, status: { type: 'string' },
+            createdAt: { type: 'string', format: 'date-time' }, reconciledAt: { type: 'string', format: 'date-time' },
+            lines: { type: 'array', items: { '$ref': '#/definitions/PaymentBatchLine' } },
+          },
+        },
+        JournalEntry: {
+          type: 'object',
+          properties: {
+            account: { type: 'string' }, debit: { type: 'number' }, credit: { type: 'number' },
+            employeeId: { type: 'string' }, description: { type: 'string' },
+          },
+        },
+        AccountingJournal: {
+          type: 'object',
+          properties: {
+            runId: { type: 'string' }, period: { type: 'string' },
+            totalDebit: { type: 'number' }, totalCredit: { type: 'number' },
+            entries: { type: 'array', items: { '$ref': '#/definitions/JournalEntry' } },
+          },
+        },
+        PayrollEvent: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' }, type: { type: 'string' }, runId: { type: 'string' },
+            summary: { type: 'string' }, createdAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        StatutoryReturn: {
+          type: 'object',
+          properties: {
+            runId: { type: 'string' }, period: { type: 'string' }, type: { type: 'string' },
+            rows: { type: 'array', items: { type: 'object' } }, generatedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        AuditPack: {
+          type: 'object',
+          properties: {
+            run: { type: 'object' }, configPin: { type: 'object' },
+            approvalChain: { type: 'array', items: { type: 'object' } },
+            auditLog: { type: 'array', items: { type: 'object' } },
+            generatedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        ApiError: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: false },
+            error: {
+              type: 'object',
+              properties: {
+                code: { type: 'string' }, message: { type: 'string' },
+                details: { type: 'array', items: { type: 'object' } },
+                requestId: { type: 'string' },
+              },
+            },
+          },
+        },
         AuditLog: {
           type: 'object',
           properties: {

@@ -326,13 +326,12 @@ async function main() {
   ];
 
   for (const lt of extraLeaveTypes) {
-    const existing = await prisma.leaveType.findFirst({ where: { tenantId, code: lt.code } });
-    if (!existing) {
-      await prisma.leaveType.create({ data: { tenantId, isActive: true, ...lt } });
-      console.log(`  ✓ Created leave type: ${lt.name}`);
-    } else {
-      console.log(`  · Skipped (exists): ${lt.name}`);
-    }
+    await prisma.leaveType.upsert({
+      where: { tenantId_code: { tenantId, code: lt.code } },
+      update: { name: lt.name },
+      create: { tenantId, isActive: true, ...lt },
+    });
+    console.log(`  ✓ Upserted: ${lt.name}`);
   }
 
   // ── More holidays ──────────────────────────────────────────────────────────

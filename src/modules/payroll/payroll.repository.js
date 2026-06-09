@@ -364,7 +364,56 @@ function normalizePayslipLine(l) {
   };
 }
 
-function fmtPayslipDetail(ps) {
+function buildEmployerContributions(earnings, deductions) {
+  const basicLine = (earnings ?? []).find((e) => e.code === 'BASIC');
+  const basicAmt = Number(basicLine?.amount ?? basicLine?.monthlyAmount ?? 0);
+  const pfLine = (deductions ?? []).find((d) => ['PF', 'PF_EMPLOYEE'].includes(d.code));
+  const pfAmt = Number(pfLine?.amount ?? pfLine?.monthlyAmount ?? Math.round(basicAmt * 0.12));
+  const esiAmt = Math.round(basicAmt * 0.0325);
+  return [
+    { code: 'PF_ER', name: 'Employer PF', type: 'EMPLOYER_CONTRIBUTION', amount: pfAmt, monthlyAmount: pfAmt, taxable: false },
+    { code: 'ESI_ER', name: 'Employer ESI', type: 'EMPLOYER_CONTRIBUTION', amount: esiAmt, monthlyAmount: esiAmt, taxable: false },
+  ];
+}
+
+async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod) {
+  const [year, month] = throughPeriod.split('-').map(Number);
+  const fyStartYear = month >= 4 ? year : year - 1;
+  const periodStart = `${fyStartYear}-04`;
+  const payslips = await prisma.payslip.findMany({
+    where: {
+      tenantId, employeeId, status: { in: ['PAID', 'PENDING', 'HELD'] },
+      period: { gte: periodStart, lte: throughPeriod },
+    },
+    orderBy: { period: 'asc' },
+  });
+  const grossEarnings = payslips.reduce((s, p) => s + Number(p.grossEarnings), 0);
+  const totalDeductions = payslips.reduce((s, p) => s + Number(p.totalDeductions), 0);
+  const netPay = payslips.reduce((s, p) => s + Number(p.netPay), 0);
+  const taxDeducted = payslips.reduce((s, p) => {
+    const deds = Array.isArray(p.deductionsJson) ? p.deductionsJson : [];
+    return s + deds.filter((d) => d.code === 'TDS').reduce((a, d) => a + Number(d.amount ?? d.monthlyAmount ?? 0), 0);
+  }, 0);
+  const pfTotal = payslips.reduce((s, p) => {
+    const deds = Array.isArray(p.deductionsJson) ? p.deductionsJson : [];
+    return s + deds.filter((d) => ['PF', 'PF_EMPLOYEE'].includes(d.code)).reduce((a, d) => a + Number(d.amount ?? d.monthlyAmount ?? 0), 0);
+  }, 0);
+  const fiscalYear = `${fyStartYear}-${String(fyStartYear + 1).slice(2)}`;
+  return {
+    fiscalYear,
+    monthsElapsed: payslips.length,
+    grossEarnings,
+    taxableIncome: Math.round(grossEarnings * 0.87),
+    taxDeducted,
+    totalDeductions,
+    netPay,
+    contributions: { PF: pfTotal, PF_ER: pfTotal },
+  };
+}
+
+function fmtPayslipDetail(ps, extras = {}) {
+  const earnings = (ps.earningsJson ?? []).map(normalizePayslipLine);
+  const deductions = (ps.deductionsJson ?? []).map(normalizePayslipLine);
   return {
     id: ps.id, period: ps.period, periodLabel: monthLabel(ps.period),
     currency: ps.currency,
@@ -377,8 +426,9 @@ function fmtPayslipDetail(ps) {
       panNumber: null,
     } : undefined,
     company: ps.tenant ? { name: ps.tenant.name, address: null, logoUrl: ps.tenant.logoUrl ?? null } : undefined,
-    earnings: (ps.earningsJson ?? []).map(normalizePayslipLine),
-    deductions: (ps.deductionsJson ?? []).map(normalizePayslipLine),
+    earnings,
+    deductions,
+    employerContributions: extras.employerContributions ?? buildEmployerContributions(earnings, deductions),
     oneTimeAdditions: ps.oneTimeAdditionsJson ?? [],
     oneTimeDeductions: ps.oneTimeDeductionsJson ?? [],
     grossEarnings: Number(ps.grossEarnings),
@@ -392,6 +442,7 @@ function fmtPayslipDetail(ps) {
     payrollRunId: ps.payrollRunId,
     documentUrl: ps.documentUrl ?? null,
     generatedAt: ps.generatedAt,
+    ...(extras.ytd ? { ytd: extras.ytd } : {}),
   };
 }
 
@@ -413,7 +464,8 @@ export async function getEmployeePayslipById(prisma, employeeId, payslipId, tena
   if (!ps) {
     const err = new Error('Payslip not found'); err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
   }
-  return fmtPayslipDetail(ps);
+  const ytd = await computePayslipYtd(prisma, employeeId, tenantId, ps.period);
+  return fmtPayslipDetail(ps, { ytd });
 }
 
 // ── Payroll Runs ──────────────────────────────────────────────────────────────
@@ -740,7 +792,8 @@ export async function getRunPayslip(prisma, runId, payslipId, tenantId) {
   if (!ps) {
     const err = new Error('Payslip not found'); err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
   }
-  return fmtPayslipDetail(ps);
+  const ytd = await computePayslipYtd(prisma, ps.employeeId, tenantId, ps.period);
+  return fmtPayslipDetail(ps, { ytd });
 }
 
 export async function updateRunPayslip(prisma, runId, payslipId, tenantId, data) {

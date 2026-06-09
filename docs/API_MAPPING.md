@@ -2608,7 +2608,7 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/payroll/runs/:runId/payslips` | HR,SA | `?page&limit&departmentId&search`. Lists payslips in run |
-| GET | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Full detail same shape as employee self-service detail. Includes `documentUrl` |
+| GET | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | **PayslipDetail** for drawer. UI route: `/payroll/:runId` → Payslip drawer. See shape below |
 | PATCH | `/payroll/runs/:runId/payslips/:payslipId` | HR,SA | Add one-time adjustments. Body: `{oneTimeAdditions[], oneTimeDeductions[], notes}`. Recalculates net |
 | GET | `/payroll/runs/:runId/export` | HR,SA | `Content-Type: text/csv`. Payroll register download |
 
@@ -4066,8 +4066,8 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | POST | `/payroll/runs/:id/approvals/:level` | HR,SA | Body: `{approvedBy, comment}`. Level 1 or 2 |
-| GET | `/payroll/runs/:id/variance` | HR,SA | Variance vs previous run — flags >20% change |
-| GET | `/payroll/runs/:id/audit` | HR,SA | Full audit trail with timeline events |
+| GET | `/payroll/runs/:id/variance` | HR,SA | `{ runId, thresholdPct, comparedToPeriod, items: [{ employeeId, employeeName, currentNet, previousNet, deltaPct, flags[] }] }` |
+| GET | `/payroll/runs/:id/audit` | HR,SA | **`data` is `PayrollRunAuditEntry[]`** (array). UI calls `.map()` on `data` directly. Entry: `{ id, runId, action, actor, at, detail? }` |
 | POST | `/payroll/runs/:id/payslips/:payslipId/recalculate` | HR,SA | Re-run calculation for single payslip |
 | POST | `/payroll/runs/:runId/payslips/:payslipId/hold` | HR,SA | Body: `{reason}`. Sets status=HELD |
 | POST | `/payroll/runs/:runId/payslips/:payslipId/release` | HR,SA | Releases held payslip back to CALCULATED |
@@ -4076,7 +4076,7 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 ### F.9 — Disbursement & Payment Batch
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
-| GET | `/payroll/runs/:id/payment-batch` | HR,SA | Get existing payment batch for run |
+| GET | `/payroll/runs/:id/payment-batch` | HR,SA | **PaymentBatch**. Returns empty shell `{ id: null, count: 0, lines: [], status: 'NONE' }` when no batch exists (not `null`) |
 | POST | `/payroll/runs/:id/payment-batch` | HR,SA | Create payment batch (skips HELD payslips) |
 | GET | `/payroll/runs/:id/bank-file` | HR,SA | `?format=NACH|CSV`. Returns flat file for bank upload |
 | GET | `/payroll/payment-batches/:id/status` | HR,SA | Get batch by ID with status |
@@ -4102,7 +4102,7 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 ### F.12 — Events & Catalogue
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
-| GET | `/payroll/events` | HR,SA | `?runId=`. List payroll events (audit feed) |
+| GET | `/payroll/events` | HR,SA | `?runId=`. **`data` is event array** `[{ id, type, runId, at, summary }]` (not `{ events: [] }`) |
 | GET | `/payroll/event-catalogue` | HR,SA | Static list of all event types with descriptions |
 
 ### F.13 — Tax Forms
@@ -4111,3 +4111,43 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | GET | `/payroll/employees/:id/tax-form` | HR,SA | `?type=FORM16|W2|P60&fy=YYYY-YY`. Returns tax form summary |
 
 **Tax form shape:** `{ formType, fiscalYear, employee: {id, name, employeeCode, pan}, employer: {name, tan}, incomeDetails: {grossIncome, netTaxableIncome, taxDeducted}, downloadUrl }`
+
+#### PayslipDetail — `GET /payroll/runs/:runId/payslips/:payslipId`
+
+Consumed by payroll run detail **View payslip** drawer (`/payroll/:runId`).
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "cmq5kde4c00awes8dxbqju4ds",
+    "period": "2026-05",
+    "periodLabel": "May 2026",
+    "currency": "INR",
+    "employee": { "id": "...", "firstName": "HR", "lastName": "Admin", "employeeCode": "E0003", "designation": "HR Manager", "departmentName": "HR", "panNumber": null },
+    "company": { "name": "Acme Corp", "address": null, "logoUrl": null },
+    "earnings": [{ "code": "BASIC", "name": "Basic Salary", "type": "EARNING", "amount": 45000, "monthlyAmount": 45000, "taxable": true }],
+    "deductions": [{ "code": "PF", "name": "Provident Fund", "type": "DEDUCTION", "amount": 4500, "monthlyAmount": 4500, "taxable": false }],
+    "employerContributions": [{ "code": "PF_ER", "name": "Employer PF", "type": "EMPLOYER_CONTRIBUTION", "amount": 4500, "monthlyAmount": 4500, "taxable": false }],
+    "oneTimeAdditions": [],
+    "oneTimeDeductions": [],
+    "grossEarnings": 90000,
+    "totalDeductions": 11000,
+    "netPay": 79000,
+    "workingDays": 22,
+    "presentDays": 22,
+    "leaveDays": 0,
+    "lopDays": 0,
+    "status": "PAID",
+    "paymentDate": "2026-05-28",
+    "paymentReference": null,
+    "payrollRunId": "cmq5kdd6300aues8dg44o2fn8",
+    "documentUrl": "https://res.cloudinary.com/.../payslip_E0003_2026_05.webp",
+    "generatedAt": "2026-05-28T00:00:00.000Z",
+    "ytd": { "fiscalYear": "2026-27", "monthsElapsed": 2, "grossEarnings": 180000, "taxableIncome": 156600, "taxDeducted": 13000, "totalDeductions": 22000, "netPay": 158000, "contributions": { "PF": 9000, "PF_ER": 9000 } }
+  }
+}
+```
+
+> **UI line items:** each `earnings[]` / `deductions[]` / `employerContributions[]` entry must include **`amount`** (UI reads this; `monthlyAmount` is back-compat alias).
+> **Empty state:** `404 NOT_FOUND` if payslip not in run. Drawer shows "Failed to load payslip" on non-2xx.
