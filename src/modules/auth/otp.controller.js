@@ -3,6 +3,7 @@ import { prisma } from '../../plugins/prisma.js';
 import * as otpService from './otp.service.js';
 import * as otpValidator from './otp.validator.js';
 import * as authService from './auth.service.js';
+import { setAccessTokenCookie, setRefreshTokenCookie } from './auth.cookies.js';
 
 export async function verifyOtpController(request, reply) {
   try {
@@ -17,13 +18,8 @@ export async function verifyOtpController(request, reply) {
     if (result.purpose === 'LOGIN') {
       const loginResult = await authService.completeMfaLogin(prisma, tenantId, result.userId, ip, userAgent);
 
-      // Set refresh token cookie
-      reply.setCookie('refreshToken', loginResult.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+      setRefreshTokenCookie(reply, loginResult.refreshToken);
+      setAccessTokenCookie(reply, loginResult.accessToken);
 
       return reply.send(
         successResponse({

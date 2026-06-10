@@ -3,6 +3,11 @@ import { config } from '../../config/index.js';
 import { prisma } from '../../plugins/prisma.js';
 import * as authService from './auth.service.js';
 import * as authValidator from './auth.validator.js';
+import {
+  clearAuthCookies,
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+} from './auth.cookies.js';
 
 async function resolveLoginTenantId(request, reply, email) {
   // Resolve tenant. Priority:
@@ -84,29 +89,8 @@ export async function loginController(request, reply) {
       );
     }
 
-    reply.setCookie(
-      config.sessionCookieName,
-      result.refreshToken,
-      {
-        httpOnly: true,
-        secure: config.isProduction,
-        sameSite: 'strict',
-        maxAge: config.sessionMaxAgeDays * 24 * 60 * 60,
-        path: '/',
-      },
-    );
-
-    reply.setCookie(
-      'accessToken',
-      result.accessToken,
-      {
-        httpOnly: true,
-        secure: config.isProduction,
-        sameSite: 'strict',
-        maxAge: 15 * 60,
-        path: '/',
-      },
-    );
+    setRefreshTokenCookie(reply, result.refreshToken);
+    setAccessTokenCookie(reply, result.accessToken);
 
     return reply.send(
       successResponse({
@@ -142,29 +126,8 @@ export async function adminLoginController(request, reply) {
       userAgent,
     );
 
-    reply.setCookie(
-      config.sessionCookieName,
-      result.refreshToken,
-      {
-        httpOnly: true,
-        secure: config.isProduction,
-        sameSite: 'strict',
-        maxAge: config.sessionMaxAgeDays * 24 * 60 * 60,
-        path: '/',
-      },
-    );
-
-    reply.setCookie(
-      'accessToken',
-      result.accessToken,
-      {
-        httpOnly: true,
-        secure: config.isProduction,
-        sameSite: 'strict',
-        maxAge: 15 * 60,
-        path: '/',
-      },
-    );
+    setRefreshTokenCookie(reply, result.refreshToken);
+    setAccessTokenCookie(reply, result.accessToken);
 
     return reply.send(
       successResponse({
@@ -178,11 +141,6 @@ export async function adminLoginController(request, reply) {
     request.log.error(error);
     throw error;
   }
-}
-
-function clearAuthCookies(reply) {
-  reply.clearCookie('accessToken', { path: '/' });
-  reply.clearCookie(config.sessionCookieName, { path: '/' });
 }
 
 export async function refreshController(request, reply) {
@@ -223,29 +181,8 @@ export async function refreshController(request, reply) {
       rawRefreshToken,
     );
 
-    reply.setCookie(
-      config.sessionCookieName,
-      result.refreshToken,
-      {
-        httpOnly: true,
-        secure: config.isProduction,
-        sameSite: 'strict',
-        maxAge: config.sessionMaxAgeDays * 24 * 60 * 60,
-        path: '/',
-      },
-    );
-
-    reply.setCookie(
-      'accessToken',
-      result.accessToken,
-      {
-        httpOnly: true,
-        secure: config.isProduction,
-        sameSite: 'strict',
-        maxAge: 15 * 60,
-        path: '/',
-      },
-    );
+    setRefreshTokenCookie(reply, result.refreshToken);
+    setAccessTokenCookie(reply, result.accessToken);
 
     return reply.send(
       successResponse({
@@ -273,7 +210,7 @@ export async function logoutController(request, reply) {
     const { sub: userId, sessionId } = request.user;
     await authService.logout(prisma, userId, sessionId);
 
-    reply.clearCookie(config.sessionCookieName);
+    clearAuthCookies(reply);
     return reply.send(successResponse({ message: 'Logged out successfully' }));
   } catch (error) {
     request.log.error(error);
@@ -286,7 +223,7 @@ export async function logoutAllController(request, reply) {
     const { sub: userId, sessionId } = request.user;
     await authService.logoutAll(prisma, userId, sessionId);
 
-    reply.clearCookie(config.sessionCookieName);
+    clearAuthCookies(reply);
     return reply.send(
       successResponse({ message: 'Logged out from all devices' }),
     );

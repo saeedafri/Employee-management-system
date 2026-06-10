@@ -98,17 +98,29 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Authentication', 'Refresh access token (uses refreshToken cookie)', false),
         },
         '/auth/logout': {
-          post: op('Authentication', 'Logout current session'),
+          post: op('Authentication', 'Logout current session', true, {
+            responses: {
+              200: { description: 'Revokes current session and clears both accessToken and refreshToken cookies.' },
+              401: { description: 'Missing access token or invalid/expired/revoked session token' },
+              403: r403,
+            },
+          }),
         },
         '/auth/logout-all': {
-          post: op('Authentication', 'Logout from ALL sessions'),
+          post: op('Authentication', 'Logout from ALL sessions', true, {
+            responses: {
+              200: { description: 'Revokes all user sessions and clears both accessToken and refreshToken cookies.' },
+              401: { description: 'Missing access token or invalid/expired/revoked session token' },
+              403: r403,
+            },
+          }),
         },
         '/auth/me': {
           get: op('Authentication', 'Get current user profile', true, {
             responses: {
               200: r200,
               400: { description: 'Explicit invalid tenant context (for example bad X-Tenant-Key or tenant subdomain)' },
-              401: { description: 'Missing access token or invalid/expired token' },
+              401: { description: 'Missing access token or invalid/expired/revoked session token' },
               403: r403,
             },
           }),

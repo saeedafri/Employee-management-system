@@ -1,5 +1,6 @@
 import { verifyToken } from '../utils/token.js';
 import { errorResponse } from '../utils/response.js';
+import { prisma } from '../plugins/prisma.js';
 
 export async function authenticate(request, reply) {
   try {
@@ -21,6 +22,38 @@ export async function authenticate(request, reply) {
     }
 
     const payload = await verifyToken(token);
+    if (!payload?.sessionId || !payload?.sub || !payload?.tenantId) {
+      throw new Error('Session revoked or expired');
+    }
+
+    const session = await prisma.session.findUnique({
+      where: { id: payload.sessionId },
+      select: {
+        id: true,
+        userId: true,
+        tenantId: true,
+        expiresAt: true,
+        revokedAt: true,
+      },
+    });
+
+    if (!session) {
+      throw new Error('Session revoked or expired');
+    }
+
+    if (
+      session.userId !== payload.sub
+      || session.tenantId !== payload.tenantId
+      || session.revokedAt
+      || new Date() > session.expiresAt
+    ) {
+      throw new Error('Session revoked or expired');
+    }
+
+    if (request.tenant?.id && request.tenant.id !== session.tenantId) {
+      throw new Error('Session revoked or expired');
+    }
+
     request.user = payload;
   } catch (error) {
     return reply.code(401).send(

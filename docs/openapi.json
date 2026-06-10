@@ -2100,10 +2100,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Revokes current session and clears both accessToken and refreshToken cookies."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Missing access token or invalid/expired/revoked session token"
           },
           "403": {
             "description": "Forbidden"
@@ -2125,10 +2125,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Revokes all user sessions and clears both accessToken and refreshToken cookies."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Missing access token or invalid/expired/revoked session token"
           },
           "403": {
             "description": "Forbidden"
@@ -2156,7 +2156,7 @@
             "description": "Explicit invalid tenant context (for example bad X-Tenant-Key or tenant subdomain)"
           },
           "401": {
-            "description": "Missing access token or invalid/expired token"
+            "description": "Missing access token or invalid/expired/revoked session token"
           },
           "403": {
             "description": "Forbidden"

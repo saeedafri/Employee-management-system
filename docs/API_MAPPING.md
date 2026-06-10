@@ -181,6 +181,7 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
 | Missing cookie / Bearer token | 401 | `UNAUTHORIZED` |
 | Garbage or unparseable token | 401 | `INVALID_TOKEN` or `UNAUTHORIZED` |
 | Expired / invalid JWT | 401 | `INVALID_TOKEN` |
+| Revoked session token | 401 | `INVALID_TOKEN` |
 | Explicit invalid `X-Tenant-Key` or tenant subdomain | 400 | `INVALID_TENANT` |
 | Valid token | 200 | — |
 
@@ -206,6 +207,22 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
 
 ### `POST /auth/logout`
 **Response `data`:** `{ "message": "Logged out successfully" }`
+
+**Behavior:**
+- revokes the current server-side session using `request.user.sessionId`
+- clears `accessToken` cookie
+- clears `refreshToken` cookie
+- old copied access tokens from that session stop working immediately
+- reusing the old cookie jar, old `accessToken` cookie, or old Bearer token returns `401 INVALID_TOKEN`
+
+### `POST /auth/logout-all`
+**Response `data`:** `{ "message": "Logged out from all devices" }`
+
+**Behavior:**
+- revokes all sessions for the current user
+- clears `accessToken` cookie
+- clears `refreshToken` cookie
+- old copied access tokens from any revoked session stop working immediately
 
 ### `DELETE /auth/sessions/:sessionId`
 **Response `data`:** `{ "message": "Session revoked successfully" }`

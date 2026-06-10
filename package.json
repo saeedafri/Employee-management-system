@@ -40,7 +40,10 @@
     "verify:phase3-production": "node scripts/verifyPhase3Production.mjs",
     "db:seed:payroll-contract": "node scripts/seedPayrollContractData.mjs",
     "verify:payroll-contract": "node scripts/verifyPayrollLiveContract.mjs",
-    "test:auth-me": "node --test tests/auth-me.test.js"
+    "test:auth-me": "node --test tests/auth-me.test.js",
+    "test:auth-logout": "node --test tests/auth-logout.test.js",
+    "verify:auth-logout:live": "node scripts/verifyAuthLogoutLive.mjs",
+    "test:playwright:logout": "playwright test tests/e2e/logout-security.spec.ts --project=chromium --workers=1"
   },
   "keywords": [
     "employee-management",
