@@ -244,15 +244,19 @@ Explicit bad tenant input still returns `400 INVALID_TENANT`.
 - `npm run test:auth-me`
 
 ### Live Evidence
-Pending until the latest Render deploy completes, then re-run:
+Render deploy `dep-d8koijdckfvc739p70v0` for commit `afb2f0b` went live on 2026-06-10.
 
-- no token `/auth/me`
-- garbage bearer token `/auth/me`
-- garbage cookie token `/auth/me`
-- valid login + `/auth/me`
+| Case | Status | Code |
+|------|--------|------|
+| `GET /auth/me` with no token | `401` | `UNAUTHORIZED` |
+| `GET /auth/me` with `Authorization: Bearer garbage-token` | `401` | `INVALID_TOKEN` |
+| `GET /auth/me` with `Cookie: accessToken=garbage-token` | `401` | `INVALID_TOKEN` |
+| `GET /auth/me` with well-formed invalid JWT | `401` | `INVALID_TOKEN` |
+| `POST /auth/login` with `x-tenant-key: acme-corp-001` | `200` | — |
+| `GET /auth/me` with valid login token | `200` | — |
 
 ### Cleanup
-Pending verification of whether any `Evidence Role` / `evidence-role-*` record still exists and whether it is assigned to users.
+`Evidence Role` / `evidence-role-1781103016` was found in the shared tenant, confirmed unassigned (`userRoles: []`), then deleted through `DELETE /settings/roles/:key`. Follow-up `GET /settings/roles-permissions` confirmed it is gone.
 
 ### Final Verdict
-Pending live Render verification. PASS only when live `/auth/me` returns `401` for both no-token and garbage-token cases.
+PASS
