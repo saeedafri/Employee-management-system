@@ -11,8 +11,8 @@ async function fetchData(fetchFn) {
   }
 }
 
-export async function getSummary(tenantId) {
-  const { data, cached } = await fetchData(() => repo.getSummaryData(tenantId));
+export async function getSummary(tenantId, filters = {}) {
+  const { data, cached } = await fetchData(() => repo.getSummaryData(tenantId, filters));
 
   return {
     success: true,
@@ -24,8 +24,8 @@ export async function getSummary(tenantId) {
   };
 }
 
-export async function getAttendance(tenantId, range = '30d') {
-  const { data, cached } = await fetchData(() => repo.getAttendanceData(tenantId, range));
+export async function getAttendance(tenantId, range = '30d', filters = {}) {
+  const { data, cached } = await fetchData(() => repo.getAttendanceData(tenantId, range, filters));
 
   return {
     success: true,
@@ -37,8 +37,8 @@ export async function getAttendance(tenantId, range = '30d') {
   };
 }
 
-export async function getHeadcountByDepartment(tenantId) {
-  const { data, cached } = await fetchData(() => repo.getHeadcountByDepartment(tenantId));
+export async function getHeadcountByDepartment(tenantId, filters = {}) {
+  const { data, cached } = await fetchData(() => repo.getHeadcountByDepartment(tenantId, filters));
 
   return {
     success: true,
@@ -50,8 +50,8 @@ export async function getHeadcountByDepartment(tenantId) {
   };
 }
 
-export async function getRecentActivity(tenantId, limit = 10) {
-  const { data, cached } = await fetchData(() => repo.getRecentActivity(tenantId, limit));
+export async function getRecentActivity(tenantId, limit = 10, filters = {}) {
+  const { data, cached } = await fetchData(() => repo.getRecentActivity(tenantId, limit, filters));
 
   return {
     success: true,
@@ -63,8 +63,8 @@ export async function getRecentActivity(tenantId, limit = 10) {
   };
 }
 
-export async function getLeaveSummary(tenantId, range = '30d') {
-  const { data, cached } = await fetchData(() => repo.getLeaveSummary(tenantId, range));
+export async function getLeaveSummary(tenantId, range = '30d', filters = {}) {
+  const { data, cached } = await fetchData(() => repo.getLeaveSummary(tenantId, range, filters));
 
   return {
     success: true,
@@ -76,23 +76,23 @@ export async function getLeaveSummary(tenantId, range = '30d') {
   };
 }
 
-export async function getWorkforceTrend(tenantId, range = '6m') {
-  const { data } = await fetchData(() => repo.getWorkforceTrend(tenantId, range));
+export async function getWorkforceTrend(tenantId, range = '6m', filters = {}) {
+  const { data } = await fetchData(() => repo.getWorkforceTrend(tenantId, range, filters));
   return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
 }
 
-export async function getAttrition(tenantId, range = '6m') {
-  const { data } = await fetchData(() => repo.getAttrition(tenantId, range));
+export async function getAttrition(tenantId, range = '6m', filters = {}) {
+  const { data } = await fetchData(() => repo.getAttrition(tenantId, range, filters));
   return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
 }
 
-export async function getPayrollCost(tenantId, range = '6m') {
-  const { data } = await fetchData(() => repo.getPayrollCost(tenantId, range));
+export async function getPayrollCost(tenantId, range = '6m', filters = {}) {
+  const { data } = await fetchData(() => repo.getPayrollCost(tenantId, range, filters));
   return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
 }
 
-export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null) {
-  const { data } = await fetchData(() => repo.getDepartmentPerformance(tenantId, range, managerEmployeeId));
+export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null, filters = {}) {
+  const { data } = await fetchData(() => repo.getDepartmentPerformance(tenantId, range, managerEmployeeId, filters));
   return { success: true, data, meta: { generatedAt: new Date().toISOString() } };
 }
 

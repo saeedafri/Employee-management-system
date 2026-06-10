@@ -65,7 +65,8 @@ export async function getEmployee(request, reply) {
       return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee data', request.requestId));
     }
 
-    const result = await service.getEmployee(id, tenantId);
+    const includeTerminated = request.query.includeTerminated === 'true' && ['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType);
+    const result = await service.getEmployee(id, tenantId, { includeTerminated });
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
     reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));

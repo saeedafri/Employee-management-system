@@ -113,6 +113,10 @@ export async function resolveTenant(request, reply) {
 
   if (!tenant) {
     if (isTenantOptional) return;
+    // When the only identifier was from a JWT, the token may be garbage/expired/forged.
+    // Let authenticate() run and return 401 instead of blocking with 400 here.
+    if (!slug && !tenantKey && !fallbackKey && tenantId) return;
+    // Explicit key or subdomain provided but unrecognised → genuine 400.
     const hint = slug
       ? `No tenant with subdomain "${slug}".`
       : tenantKey

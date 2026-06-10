@@ -101,18 +101,20 @@ export async function getTeamLeaveRequests(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const managerEmployeeId = request.user.employeeId;
+    const isSuperAdmin = request.user.memberType === 'SUPER_ADMIN';
 
-    if (!managerEmployeeId) {
-      return reply.status(400).send(
-        errorResponse('NO_EMPLOYEE_ID', 'User does not have an employee profile', {}, request.id),
+    if (!managerEmployeeId && !isSuperAdmin) {
+      return reply.status(403).send(
+        errorResponse('FORBIDDEN', 'User does not have an employee profile. SUPER_ADMIN without an employee profile cannot access team leave endpoints.', {}, request.id),
       );
     }
 
     const query = leaveValidator.getLeaveRequestsSchema.parse(request.query);
 
+    // SUPER_ADMIN with no employee profile gets org-wide results (null = all)
     const { requests, total } = await leaveService.getTeamLeaveRequests(
       tenantId,
-      managerEmployeeId,
+      isSuperAdmin && !managerEmployeeId ? null : managerEmployeeId,
       query,
     );
 
@@ -175,6 +177,7 @@ export async function approveLeaveRequest(request, reply) {
         referenceNo: leaveRequest.referenceNo,
         status: leaveRequest.status,
         decidedAt: leaveRequest.decidedAt,
+        approverComment: leaveRequest.approverComment ?? null,
       }),
     );
   } catch (error) {
@@ -215,6 +218,7 @@ export async function rejectLeaveRequest(request, reply) {
         referenceNo: leaveRequest.referenceNo,
         status: leaveRequest.status,
         decidedAt: leaveRequest.decidedAt,
+        approverComment: leaveRequest.approverComment ?? null,
       }),
     );
   } catch (error) {
@@ -282,13 +286,14 @@ export async function getTeamCalendar(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const managerEmployeeId = request.user.employeeId;
+    const isSuperAdmin = request.user.memberType === 'SUPER_ADMIN';
     const month = request.query.month || new Date().toISOString().slice(0, 7);
 
-    if (!managerEmployeeId) {
-      return reply.status(400).send(errorResponse('NO_EMPLOYEE_ID', 'User has no employee profile', {}, request.id));
+    if (!managerEmployeeId && !isSuperAdmin) {
+      return reply.status(403).send(errorResponse('FORBIDDEN', 'User does not have an employee profile.', {}, request.id));
     }
 
-    const data = await leaveService.getTeamCalendar(tenantId, managerEmployeeId, month);
+    const data = await leaveService.getTeamCalendar(tenantId, isSuperAdmin && !managerEmployeeId ? null : managerEmployeeId, month);
     return reply.send(successResponse(data));
   } catch (error) {
     request.log.error(error);

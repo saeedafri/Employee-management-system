@@ -103,7 +103,11 @@ export async function getTeamCalendar(tenantId, managerEmployeeId, month) {
   const endDate = new Date(year, mon, 0);
 
   const teamEmployees = await prisma.employee.findMany({
-    where: { tenantId, managerId: managerEmployeeId, deletedAt: null },
+    where: {
+      tenantId,
+      deletedAt: null,
+      ...(managerEmployeeId !== null ? { managerId: managerEmployeeId } : {}),
+    },
     select: { id: true, firstName: true, lastName: true, employeeCode: true },
   });
 
@@ -305,7 +309,9 @@ export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters 
     tenantId,
     ...(employeeId
       ? { employeeId }
-      : { employee: { managerId: managerEmployeeId } }),
+      : managerEmployeeId !== null
+        ? { employee: { managerId: managerEmployeeId } }
+        : {}),
   };
 
   if (status) {

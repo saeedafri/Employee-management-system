@@ -29,7 +29,7 @@ function formatIstDate(date) {
   return `${values.day}/${values.month}/${values.year} ${values.hour}:${values.minute}:${values.second} ${period} IST`;
 }
 
-export async function getSummaryData(tenantId) {
+export async function getSummaryData(tenantId, filters = {}) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
@@ -77,20 +77,33 @@ export async function getSummaryData(tenantId) {
   };
 }
 
-export async function getAttendanceData(tenantId, range) {
-  const days = getRangeDays(range);
-  const endDate = new Date();
-  endDate.setHours(23, 59, 59, 999);
+export async function getAttendanceData(tenantId, range, filters = {}) {
+  const { departmentId, from, to } = filters;
+  let startDate, endDate;
 
-  const startDate = new Date(endDate);
-  startDate.setDate(startDate.getDate() - days + 1);
-  startDate.setHours(0, 0, 0, 0);
+  if (from || to) {
+    endDate = to ? new Date(to) : new Date();
+    endDate.setHours(23, 59, 59, 999);
+    startDate = from ? new Date(from) : new Date(endDate);
+    if (!from) { startDate.setDate(startDate.getDate() - getRangeDays(range) + 1); }
+    startDate.setHours(0, 0, 0, 0);
+  } else {
+    const days = getRangeDays(range);
+    endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+    startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - days + 1);
+    startDate.setHours(0, 0, 0, 0);
+  }
+
+  const attendanceWhere = {
+    tenantId,
+    attendanceDate: { gte: startDate, lte: endDate },
+    ...(departmentId ? { employee: { departmentId } } : {}),
+  };
 
   const records = await prisma.attendanceRecord.findMany({
-    where: {
-      tenantId,
-      attendanceDate: { gte: startDate, lte: endDate },
-    },
+    where: attendanceWhere,
     select: { attendanceDate: true, status: true },
   });
 
@@ -107,8 +120,9 @@ export async function getAttendanceData(tenantId, range) {
     else if (r.status === 'HALF_DAY') byDate[dateKey].halfDay++;
   });
 
+  const totalDays = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
   const series = [];
-  for (let i = 0; i < days; i++) {
+  for (let i = 0; i < totalDays; i++) {
     const d = new Date(startDate);
     d.setDate(d.getDate() + i);
     const dateKey = d.toISOString().split('T')[0];
@@ -121,7 +135,8 @@ export async function getAttendanceData(tenantId, range) {
   return { range, series };
 }
 
-export async function getHeadcountByDepartment(tenantId) {
+export async function getHeadcountByDepartment(tenantId, filters = {}) {
+  const { departmentId } = filters;
   // Fetch all non-deleted depts and employee counts in 3 queries
   const [departments, allDepts, employeeCounts, activeCounts] = await Promise.all([
     prisma.department.findMany({
@@ -158,7 +173,12 @@ export async function getHeadcountByDepartment(tenantId) {
   employeeCounts.forEach(e => { empMap[e.departmentId] = e._count.id; });
   activeCounts.forEach(a => { activeMap[a.departmentId] = a._count.id; });
 
-  const result = departments.map(dept => {
+  let filtered = departments;
+  if (departmentId) {
+    filtered = departments.filter(d => d.id === departmentId);
+  }
+
+  const result = filtered.map(dept => {
     const ids = subtreeIds[dept.id] || new Set([dept.id]);
     let employeeCount = 0;
     let activeCount = 0;
@@ -259,9 +279,10 @@ async function resolveEntityLabels(logs) {
   return labelMap;
 }
 
-export async function getRecentActivity(tenantId, limit = 10) {
+export async function getRecentActivity(tenantId, limit = 10, filters = {}) {
+  const { departmentId } = filters;
   const logs = await prisma.auditLog.findMany({
-    where: { tenantId },
+    where: { tenantId, ...(departmentId ? { actor: { employee: { departmentId } } } : {}) },
     select: {
       id: true,
       action: true,
@@ -345,7 +366,7 @@ function monthKey(year, month) {
   return `${year}-${String(month).padStart(2, '0')}`;
 }
 
-export async function getWorkforceTrend(tenantId, range = '6m') {
+export async function getWorkforceTrend(tenantId, range = '6m', filters = {}) {
   const months = getRangeMonths(range);
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
@@ -378,7 +399,7 @@ export async function getWorkforceTrend(tenantId, range = '6m') {
   return result;
 }
 
-export async function getAttrition(tenantId, range = '6m') {
+export async function getAttrition(tenantId, range = '6m', filters = {}) {
   const months = getRangeMonths(range);
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
@@ -416,7 +437,7 @@ export async function getAttrition(tenantId, range = '6m') {
   return { currentMonthRate, rollingAnnualRate, trend };
 }
 
-export async function getPayrollCost(tenantId, range = '6m') {
+export async function getPayrollCost(tenantId, range = '6m', filters = {}) {
   const months = getRangeMonths(range);
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
@@ -461,7 +482,7 @@ export async function getPayrollCost(tenantId, range = '6m') {
   return result;
 }
 
-export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null) {
+export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null, filters = {}) {
   const days = range === '90d' ? 90 : 30;
   const since = new Date();
   since.setDate(since.getDate() - days);
@@ -539,16 +560,18 @@ export async function getDepartmentPerformance(tenantId, range = '30d', managerE
   }).filter(d => d.headcount > 0);
 }
 
-export async function getLeaveSummary(tenantId, range) {
+export async function getLeaveSummary(tenantId, range, filters = {}) {
+  const { departmentId, from, to } = filters;
   const days = getRangeDays(range);
-  const endDate = new Date();
-  const startDate = new Date(endDate);
-  startDate.setDate(startDate.getDate() - days);
+  const endDate = to ? new Date(to) : new Date();
+  const startDate = from ? new Date(from) : new Date(endDate);
+  if (!from) startDate.setDate(startDate.getDate() - days);
 
   const leaves = await prisma.leaveRequest.findMany({
     where: {
       tenantId,
-      startDate: { gte: startDate },
+      startDate: { gte: startDate, ...(to ? { lte: endDate } : {}) },
+      ...(departmentId ? { employee: { departmentId } } : {}),
     },
     select: { status: true },
   });

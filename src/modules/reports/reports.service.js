@@ -310,14 +310,15 @@ export async function getPayrollCtcAnalysis(tenantId, filters) {
   return { meta: reportMeta('CTC Analysis Report', filters), ...data };
 }
 
-export async function exportReport(tenantId, userId, { reportType, format, filters: _filters }) {
-  const VALID_TYPES = [
-    'workforce/headcount', 'workforce/turnover', 'workforce/demographics',
-    'attendance/summary', 'attendance/absenteeism',
-    'leave/utilization', 'leave/pending',
-    'payroll/summary', 'payroll/ctc-analysis',
-  ];
-  if (!VALID_TYPES.includes(reportType)) {
+const VALID_EXPORT_TYPES = [
+  'workforce/headcount', 'workforce/turnover', 'workforce/demographics',
+  'attendance/summary', 'attendance/absenteeism',
+  'leave/utilization', 'leave/pending',
+  'payroll/summary', 'payroll/ctc-analysis',
+];
+
+export async function exportReport(tenantId, userId, { reportType, format, filters = {} }) {
+  if (!VALID_EXPORT_TYPES.includes(reportType)) {
     throw new AppError('Invalid reportType', 'INVALID_REPORT_TYPE', 400);
   }
   if (format !== 'CSV') {
@@ -325,5 +326,70 @@ export async function exportReport(tenantId, userId, { reportType, format, filte
   }
 
   const exportRecord = await reportsRepository.createReportExport(tenantId, userId, reportType, format);
-  return { jobId: exportRecord.id, status: 'PENDING', message: 'Export queued. Use /export/:job_id/download once ready.' };
+
+  // Generate CSV synchronously — no queue
+  setImmediate(() => _processExportJob(exportRecord.id, tenantId, reportType, filters));
+
+  return { jobId: exportRecord.id, status: 'PENDING', message: 'Export processing. Poll GET /reports/export/:jobId/status or download at GET /reports/export/:jobId/download when ready.' };
+}
+
+async function _processExportJob(jobId, tenantId, reportType, filters) {
+  try {
+    let data;
+    switch (reportType) {
+      case 'workforce/headcount':   data = await reportsRepository.getWorkforceHeadcount(tenantId, filters); break;
+      case 'workforce/turnover':    data = await reportsRepository.getWorkforceTurnover(tenantId, filters); break;
+      case 'workforce/demographics':data = await reportsRepository.getWorkforceDemographics(tenantId, filters); break;
+      case 'attendance/summary':    data = await reportsRepository.getAttendanceSummaryReport(tenantId, filters); break;
+      case 'attendance/absenteeism':data = await reportsRepository.getAttendanceAbsenteeism(tenantId, filters); break;
+      case 'leave/utilization':     data = await reportsRepository.getLeaveUtilization(tenantId, filters); break;
+      case 'leave/pending':         data = await reportsRepository.getLeavePending(tenantId, filters); break;
+      case 'payroll/summary':       data = await reportsRepository.getPayrollSummaryReport(tenantId, filters); break;
+      case 'payroll/ctc-analysis':  data = await reportsRepository.getPayrollCtcAnalysis(tenantId, filters); break;
+      default: throw new Error(`Unknown reportType: ${reportType}`);
+    }
+    const rows = data?.tableData?.items || data?.chartData || (Array.isArray(data) ? data : [data]);
+    const csv = _toCsv(rows);
+    await reportsRepository.completeReportExport(jobId, 'SUCCESS', csv);
+  } catch (err) {
+    await reportsRepository.completeReportExport(jobId, 'FAILED', null, err.message).catch(() => {});
+  }
+}
+
+function _toCsv(rows) {
+  if (!rows || rows.length === 0) return 'no_data\n(empty result set)\n';
+  const keys = Object.keys(rows[0]);
+  const header = keys.map(k => `"${k}"`).join(',');
+  const lines = rows.map(row =>
+    keys.map(k => {
+      const v = row[k];
+      if (v === null || v === undefined) return '';
+      const s = String(v).replace(/"/g, '""');
+      return `"${s}"`;
+    }).join(',')
+  );
+  return [header, ...lines].join('\n') + '\n';
+}
+
+export async function getExportJobStatus(tenantId, jobId) {
+  const job = await reportsRepository.getReportExportById(tenantId, jobId);
+  if (!job) throw new AppError('Export job not found', 'NOT_FOUND', 404);
+  return {
+    jobId: job.id,
+    status: job.status,
+    reportType: job.reportType,
+    format: job.format,
+    createdAt: job.createdAt,
+    completedAt: job.completedAt,
+    errorMessage: job.errorMessage || null,
+  };
+}
+
+export async function downloadExportJob(tenantId, jobId) {
+  const job = await reportsRepository.getReportExportById(tenantId, jobId);
+  if (!job) throw new AppError('Export job not found', 'NOT_FOUND', 404);
+  if (job.status === 'PENDING') throw new AppError('Export is still processing', 'EXPORT_PENDING', 202);
+  if (job.status === 'FAILED') throw new AppError(job.errorMessage || 'Export failed', 'EXPORT_FAILED', 500);
+  if (!job.csvContent) throw new AppError('Export file not available', 'NO_CONTENT', 404);
+  return { csv: job.csvContent, reportType: job.reportType };
 }

@@ -400,12 +400,12 @@ export default async function payrollRoutes(fastify) {
 
   fastify.post('/payroll/runs/:id/cancel', {
     schema: {
-      tags: ['Payroll'], description: 'Cancel a payroll run (SUPER_ADMIN only)', security: [{ Bearer: [] }],
+      tags: ['Payroll'], description: 'Cancel a payroll run. HR_ADMIN can cancel DRAFT/REVIEW/APPROVED runs. SUPER_ADMIN can cancel any non-PAID run.', security: [{ Bearer: [] }],
       params: idParam,
       body: { type: 'object', properties: { reason: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.cancelPayrollRun);
 
   // ── Run Payslips ────────────────────────────────────────────────────────────
@@ -1175,8 +1175,8 @@ export default async function payrollRoutes(fastify) {
   // ── Phase 3: Payslip Templates ──────────────────────────────────────────────
 
   fastify.get('/payroll/payslip-templates', {
-    schema: { tags: ['Payroll'], description: 'Get tenant payslip template', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    schema: { tags: ['Payroll'], description: 'Get tenant payslip template. HR_ADMIN configures; MANAGER/EMPLOYEE read-only for own payslip drawer.', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(allAuth)],
   }, ctrl.getPayslipTemplate);
 
   fastify.patch('/payroll/payslip-templates', {

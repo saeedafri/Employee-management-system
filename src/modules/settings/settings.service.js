@@ -74,7 +74,7 @@ export async function updateEmailTemplate(tenantId, type, data) {
 }
 
 export async function getRolePermissions(tenantId) {
-  const matrix = await settingsRepository.getRolePermissions(tenantId);
+  const { matrix, customRoles } = await settingsRepository.getRolePermissions(tenantId);
 
   const roles = Object.keys(matrix);
   const permissionSet = new Set(Object.values(matrix).flat());
@@ -83,6 +83,7 @@ export async function getRolePermissions(tenantId) {
     roles,
     permissions: Array.from(permissionSet).sort(),
     matrix,
+    customRoles,
   };
 }
 

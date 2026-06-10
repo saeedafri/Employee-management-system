@@ -231,7 +231,7 @@ export default async function reportsRoutes(fastify) {
 
   fastify.post('/reports/export', {
     schema: {
-      tags: ['Reports'], description: 'Export a report as CSV', security: [{ Bearer: [] }],
+      tags: ['Reports'], description: 'Export a report as CSV — returns jobId; poll GET /reports/export/:jobId/status then download at GET /reports/export/:jobId/download', security: [{ Bearer: [] }],
       body: {
         type: 'object',
         required: ['reportType'],
@@ -245,4 +245,30 @@ export default async function reportsRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, (req, rep) => reportsController.exportReport(req, rep));
+
+  fastify.get('/reports/export/:jobId', {
+    schema: {
+      tags: ['Reports'], description: 'Get export job status', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getExportJobStatus(req, rep));
+
+  fastify.get('/reports/export/:jobId/status', {
+    schema: {
+      tags: ['Reports'], description: 'Get export job status (alias)', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.getExportJobStatus(req, rep));
+
+  fastify.get('/reports/export/:jobId/download', {
+    schema: {
+      tags: ['Reports'], description: 'Download export CSV — returns text/csv when SUCCESS, 202 when PENDING', security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, (req, rep) => reportsController.downloadExport(req, rep));
 }

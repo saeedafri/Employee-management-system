@@ -187,7 +187,7 @@ export async function createPayGroup(prisma, tenantId, data) {
       components: {
         create: (data.components || []).map((c) => ({
           componentId: c.componentId,
-          overrideCalculationType: c.overrideCalculationType ?? null,
+          overrideCalculationType: normalizeOverrideCalcType(c.overrideCalculationType),
           overrideValue: c.overrideValue ?? null,
           overrideFormula: c.overrideFormula ?? null,
         })),
@@ -196,6 +196,16 @@ export async function createPayGroup(prisma, tenantId, data) {
     include: PG_INCLUDE,
   });
   return fmtPayGroup(pg);
+}
+
+const VALID_CALC_TYPES = new Set(['FLAT', 'PERCENTAGE', 'FORMULA']);
+function normalizeOverrideCalcType(v) {
+  if (v === null || v === undefined || v === '') return null;
+  if (!VALID_CALC_TYPES.has(v)) {
+    const err = new Error(`Invalid overrideCalculationType: "${v}". Must be FLAT, PERCENTAGE, FORMULA, or null.`);
+    err.code = 'VALIDATION_ERROR'; err.statusCode = 400; throw err;
+  }
+  return v;
 }
 
 export async function updatePayGroup(prisma, id, tenantId, data) {
@@ -215,7 +225,7 @@ export async function updatePayGroup(prisma, id, tenantId, data) {
     updateData.components = {
       create: data.components.map((c) => ({
         componentId: c.componentId,
-        overrideCalculationType: c.overrideCalculationType ?? null,
+        overrideCalculationType: normalizeOverrideCalcType(c.overrideCalculationType),
         overrideValue: c.overrideValue ?? null,
         overrideFormula: c.overrideFormula ?? null,
       })),

@@ -48,9 +48,9 @@ export async function listEmployees(tenantId, filters = {}) {
   };
 }
 
-export async function getEmployeeById(employeeId, tenantId) {
+export async function getEmployeeById(employeeId, tenantId, { includeTerminated = false } = {}) {
   return prisma.employee.findFirst({
-    where: { id: employeeId, tenantId, deletedAt: null },
+    where: { id: employeeId, tenantId, ...(includeTerminated ? {} : { deletedAt: null }) },
     include: {
       user: { select: { email: true, memberType: true, status: true, mfaEnabled: true } },
       department: { select: { id: true, name: true } },

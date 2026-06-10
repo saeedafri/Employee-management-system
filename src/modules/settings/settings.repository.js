@@ -144,12 +144,16 @@ export async function getRolePermissions(tenantId) {
   });
 
   const result = {};
+  const customRoles = [];
 
   roles.forEach((role) => {
     result[role.key] = role.permissions.map((rp) => rp.permission.key);
+    if (!role.isSystem && role.tenantId === tenantId) {
+      customRoles.push({ key: role.key, name: role.name });
+    }
   });
 
-  return result;
+  return { matrix: result, customRoles };
 }
 
 export async function updateRolePermissions(tenantId, roleKey, permissions) {
@@ -284,7 +288,24 @@ export async function updateNotificationPreferences(tenantId, userId, data) {
 export async function createRole(tenantId, data) {
   const existing = await prisma.role.findFirst({ where: { key: data.key, tenantId } });
   if (existing) throw Object.assign(new Error('Role key already exists'), { code: 'DUPLICATE_ROLE_KEY', statusCode: 409 });
-  return prisma.role.create({ data: { tenantId, key: data.key, name: data.name, isSystem: false } });
+
+  const role = await prisma.role.create({ data: { tenantId, key: data.key, name: data.name, isSystem: false } });
+
+  const permissions = data.permissions || [];
+  if (permissions.length > 0) {
+    const permissionRows = await prisma.permission.findMany({
+      where: { key: { in: permissions } },
+      select: { id: true, key: true },
+    });
+    if (permissionRows.length > 0) {
+      await prisma.rolePermission.createMany({
+        data: permissionRows.map((p) => ({ roleId: role.id, permissionId: p.id })),
+        skipDuplicates: true,
+      });
+    }
+  }
+
+  return { ...role, permissions };
 }
 
 export async function deleteRole(tenantId, key) {

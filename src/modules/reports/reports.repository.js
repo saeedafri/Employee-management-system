@@ -159,6 +159,34 @@ export async function createReportExport(tenantId, createdById, reportType, form
   });
 }
 
+export async function getReportExportById(tenantId, id) {
+  const row = await prisma.reportExport.findFirst({ where: { id, tenantId } });
+  if (!row) return null;
+  return {
+    id: row.id,
+    tenantId: row.tenantId,
+    reportType: row.reportType,
+    format: row.format,
+    status: row.status,
+    createdAt: row.createdAt,
+    completedAt: row.completedAt,
+    errorMessage: row.errorMessage,
+    csvContent: row.filePath || null,
+  };
+}
+
+export async function completeReportExport(id, status, csvContent, errorMessage) {
+  return prisma.reportExport.update({
+    where: { id },
+    data: {
+      status,
+      filePath: csvContent || null,
+      errorMessage: errorMessage || null,
+      completedAt: new Date(),
+    },
+  });
+}
+
 // ── Domain 4 helper ──────────────────────────────────────────────────────────
 
 function mKey(year, month) {

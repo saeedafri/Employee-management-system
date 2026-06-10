@@ -262,3 +262,34 @@ export async function exportReport(request, reply) {
     throw error;
   }
 }
+
+export async function getExportJobStatus(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const { jobId } = request.params;
+    const result = await reportsService.getExportJobStatus(tenantId, jobId);
+    return reply.send(successResponse(result));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) return reply.status(error.statusCode || 400).send(errorResponse(error.code, error.message, error.details, request.id));
+    throw error;
+  }
+}
+
+export async function downloadExport(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const { jobId } = request.params;
+    const { csv, reportType } = await reportsService.downloadExportJob(tenantId, jobId);
+    const filename = `${reportType.replace('/', '-')}-${jobId.slice(-8)}.csv`;
+    return reply
+      .header('Content-Type', 'text/csv; charset=utf-8')
+      .header('Content-Disposition', `attachment; filename="${filename}"`)
+      .send(csv);
+  } catch (error) {
+    request.log.error(error);
+    if (error.statusCode === 202) return reply.status(202).send(successResponse({ status: 'PENDING', message: 'Export is still processing. Try again shortly.' }));
+    if (error.code) return reply.status(error.statusCode || 400).send(errorResponse(error.code, error.message, error.details, request.id));
+    throw error;
+  }
+}

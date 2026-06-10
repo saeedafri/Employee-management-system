@@ -12,9 +12,9 @@ export async function listEmployees(tenantId, filters) {
   }
 }
 
-export async function getEmployee(employeeId, tenantId) {
+export async function getEmployee(employeeId, tenantId, { includeTerminated = false } = {}) {
   try {
-    const employee = await repo.getEmployeeById(employeeId, tenantId);
+    const employee = await repo.getEmployeeById(employeeId, tenantId, { includeTerminated });
     if (!employee) {
       return errorResponse('NOT_FOUND', 'Employee not found', null);
     }

@@ -66,12 +66,18 @@ export async function employeesRoutes(fastify) {
     {
       schema: {
         tags: ['Employees'],
-        description: 'Get employee details',
+        description: 'Get employee details. HR/SUPER_ADMIN may pass ?includeTerminated=true to retrieve soft-deleted employees.',
         params: {
           type: 'object',
           required: ['id'],
           properties: {
             id: { type: 'string' },
+          },
+        },
+        querystring: {
+          type: 'object',
+          properties: {
+            includeTerminated: { type: 'string', enum: ['true', 'false'], description: 'HR/Admin only. Include soft-deleted/terminated employees.' },
           },
         },
         response: {

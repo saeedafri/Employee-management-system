@@ -144,6 +144,9 @@ export async function setEmployeeSalary(prisma, employeeId, tenantId, data) {
   if (!data.payGroupId) throw AppError('payGroupId is required', 'VALIDATION_ERROR');
   if (!data.annualCtc) throw AppError('annualCtc is required', 'VALIDATION_ERROR');
   if (!data.effectiveFrom) throw AppError('effectiveFrom is required', 'VALIDATION_ERROR');
+  if (data.effectiveTo && new Date(data.effectiveFrom) > new Date(data.effectiveTo)) {
+    throw AppError('effectiveTo must be on or after effectiveFrom', 'VALIDATION_ERROR');
+  }
   return repo.setEmployeeSalary(prisma, employeeId, tenantId, data);
 }
 
