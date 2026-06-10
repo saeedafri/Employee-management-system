@@ -260,3 +260,96 @@ Render deploy `dep-d8koijdckfvc739p70v0` for commit `afb2f0b` went live on 2026-
 
 ### Final Verdict
 PASS
+
+---
+
+## BE-12 — Logout Session Revocation
+
+### Root Cause
+Two separate problems caused logout to be incomplete:
+
+1. `POST /auth/logout` and `POST /auth/logout-all` only cleared the refresh cookie (`refreshToken` / `config.sessionCookieName`) and did not clear the `accessToken` cookie.
+2. `authenticate()` verified JWT signature and expiry only. It did not check whether `payload.sessionId` still pointed to an active, non-revoked session in the database.
+
+That meant copied access tokens could continue to call protected APIs until JWT expiry even after logout.
+
+### Fix
+- Added shared auth cookie helpers in `src/modules/auth/auth.cookies.js`.
+- `login`, `adminLogin`, `refresh`, and MFA completion now use the same cookie helpers for access and refresh cookies.
+- `logout`, `logout-all`, and refresh failure paths now clear both `accessToken` and `refreshToken` with the correct cookie attributes:
+  - `path: '/'`
+  - `httpOnly: true`
+  - `secure: config.isProduction`
+  - `sameSite: 'strict'`
+- `authenticate()` now requires `payload.sessionId`, loads the backing session row, and rejects the token with `401 INVALID_TOKEN` when the session:
+  - is missing
+  - is revoked
+  - is expired
+  - has user / tenant mismatch
+- `logout()` continues to revoke the current session in the DB and write the audit log.
+- `logoutAll()` revokes all user sessions, clears both cookies, and the old access token becomes unusable immediately.
+
+### Files Changed
+- `src/modules/auth/auth.cookies.js`
+- `src/modules/auth/auth.controller.js`
+- `src/modules/auth/otp.controller.js`
+- `src/middleware/authenticate.js`
+- `tests/auth-logout.test.js`
+- `tests/e2e/logout-security.spec.ts`
+- `scripts/verifyAuthLogoutLive.mjs`
+- `scripts/verifyLogoutUiPlaywright.mjs`
+- `docs/API_MAPPING.md`
+- `src/plugins/swagger.js`
+- `docs/openapi.json`
+- `package.json`
+
+### Tests
+Local:
+- `npm run test:auth-me`
+- `npm run test:auth-logout`
+
+Live API:
+- `npm run verify:auth-logout:live`
+
+Deployed UI:
+- `npm run verify:logout-ui`
+
+### Live Evidence
+Live API verifier output: `live-auth-logout-evidence/verify-auth-logout-live.json`
+
+| Case | Result |
+|------|--------|
+| Login | `200`, returns `sessionId`, sets both `refreshToken` and `accessToken` cookies |
+| `GET /auth/me` before logout | `200` |
+| `POST /auth/logout` | `200`, clears `accessToken` and `refreshToken` cookies |
+| Reuse original full cookie jar after logout | `401 INVALID_TOKEN` |
+| Reuse old `accessToken` cookie only | `401 INVALID_TOKEN` |
+| Reuse old Bearer access token | `401 INVALID_TOKEN` |
+| Fresh login after logout | `200`, fresh `/auth/me` returns `200` |
+| `POST /auth/logout-all` | `200`, clears both cookies |
+| Reuse Bearer token after logout-all | `401 INVALID_TOKEN` |
+
+### Deployed UI Evidence
+Artifacts saved under `deployed-ui-logout-evidence/`:
+
+- Screenshots:
+  - `screenshots/01-dashboard-before-logout.png`
+  - `screenshots/02-after-logout-login-screen.png`
+  - `screenshots/03-after-back.png`
+  - `screenshots/04-dashboard-reload-after-logout.png`
+- Network log:
+  - `network-logs/logout-security.json`
+- Console log:
+  - `console-logs/logout-security.json`
+
+Observed deployed UI behavior:
+- Login succeeds and dashboard loads.
+- Clicking avatar menu → `Sign out` triggers `POST /api/auth/logout` with `200`.
+- UI redirects to `/login`.
+- Browser Back does not restore authenticated dashboard state.
+- Forced `/dashboard` reload results in `/api/auth/me` returning `401` and the UI ends on the login screen.
+
+### Final Verdict
+PASS only because both halves were verified live:
+- backend clears both cookies
+- old access tokens are rejected immediately after logout

@@ -43,7 +43,8 @@
     "test:auth-me": "node --test tests/auth-me.test.js",
     "test:auth-logout": "node --test tests/auth-logout.test.js",
     "verify:auth-logout:live": "node scripts/verifyAuthLogoutLive.mjs",
-    "test:playwright:logout": "playwright test tests/e2e/logout-security.spec.ts --project=chromium --workers=1"
+    "test:playwright:logout": "npx playwright test tests/e2e/logout-security.spec.ts --project=chromium --workers=1",
+    "verify:logout-ui": "node scripts/verifyLogoutUiPlaywright.mjs"
   },
   "keywords": [
     "employee-management",

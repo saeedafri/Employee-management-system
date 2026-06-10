@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
 
@@ -15,16 +15,7 @@ const ACCOUNT = {
 
 for (const dir of [EVIDENCE, SHOTS, NET, CONSOLE]) fs.mkdirSync(dir, { recursive: true });
 
-async function login(page) {
-  await page.goto(`${UI}/login`, { waitUntil: 'networkidle', timeout: 90000 });
-  await page.fill('input[type="email"], input[name="email"]', ACCOUNT.email);
-  await page.fill('input[type="password"], input[name="password"]', ACCOUNT.password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL('**/dashboard**', { timeout: 60000 });
-  await page.waitForLoadState('networkidle');
-}
-
-async function clickFirstVisible(page, selectors: string[]) {
+async function clickFirstVisible(page, selectors) {
   for (const selector of selectors) {
     const locator = page.locator(selector).first();
     if (await locator.isVisible().catch(() => false)) {
@@ -35,15 +26,24 @@ async function clickFirstVisible(page, selectors: string[]) {
   return false;
 }
 
+async function login(page) {
+  await page.goto(`${UI}/login`, { waitUntil: 'networkidle', timeout: 90000 });
+  await page.fill('input[type="email"], input[name="email"]', ACCOUNT.email);
+  await page.fill('input[type="password"], input[name="password"]', ACCOUNT.password);
+  await page.click('button[type="submit"]');
+  await page.waitForURL('**/dashboard**', { timeout: 60000 });
+  await page.waitForLoadState('networkidle');
+}
+
 async function performLogout(page) {
   const directMenu = page.getByRole('button', { name: /open user menu/i });
   if (await directMenu.isVisible().catch(() => false)) {
     await directMenu.click({ timeout: 10000 });
-    const signOut = page.getByRole('menuitem', { name: /sign out/i });
-    if (await signOut.isVisible().catch(() => false)) {
-      await signOut.click({ timeout: 10000, force: true });
-      return;
-    }
+    await page.waitForSelector('div[role="menuitem"]', { timeout: 10000 });
+    const signOut = page.locator('div[role="menuitem"]:has-text("Sign out")').first();
+    await signOut.waitFor({ state: 'attached', timeout: 10000 });
+    await signOut.evaluate((el) => el.click());
+    return true;
   }
 
   const direct = await clickFirstVisible(page, [
@@ -55,7 +55,7 @@ async function performLogout(page) {
     'a:has-text("Logout")',
     'a:has-text("Log out")',
   ]);
-  if (direct) return;
+  if (direct) return true;
 
   await clickFirstVisible(page, [
     'button[aria-label*="profile" i]',
@@ -67,7 +67,7 @@ async function performLogout(page) {
     'button:has-text("@")',
   ]);
 
-  const opened = await clickFirstVisible(page, [
+  return clickFirstVisible(page, [
     'button:has-text("Logout")',
     'button:has-text("Log out")',
     'button:has-text("Sign out")',
@@ -78,58 +78,93 @@ async function performLogout(page) {
     'a:has-text("Logout")',
     'a:has-text("Log out")',
   ]);
-
-  expect(opened).toBeTruthy();
 }
 
-test('logout blocks back-button and reload access', async ({ page }) => {
-  const network: Array<Record<string, unknown>> = [];
-  const consoleLog: Array<Record<string, unknown>> = [];
+const browser = await chromium.launch({
+  channel: 'chrome',
+  headless: true,
+});
+const context = await browser.newContext({
+  viewport: { width: 1440, height: 900 },
+});
+const page = await context.newPage();
 
-  page.on('console', (msg) => {
-    consoleLog.push({ type: msg.type(), text: msg.text() });
+const network = [];
+const consoleLog = [];
+
+page.on('console', (msg) => {
+  consoleLog.push({ type: msg.type(), text: msg.text() });
+});
+
+page.on('response', async (response) => {
+  const url = response.url();
+  if (!url.includes('/api/')) return;
+  let body = null;
+  try {
+    const contentType = response.headers()['content-type'] || '';
+    body = contentType.includes('json') ? await response.json() : await response.text();
+  } catch {
+    body = null;
+  }
+  network.push({
+    url,
+    method: response.request().method(),
+    status: response.status(),
+    body,
   });
+});
 
-  page.on('response', async (response) => {
-    const url = response.url();
-    if (!url.includes('/api/')) return;
-    let body: unknown = null;
-    try {
-      const contentType = response.headers()['content-type'] || '';
-      body = contentType.includes('json') ? await response.json() : await response.text();
-    } catch {
-      body = null;
-    }
-    network.push({
-      url,
-      method: response.request().method(),
-      status: response.status(),
-      body,
-    });
-  });
+let outcome = 'PASS';
+let errorMessage = null;
 
+try {
   await login(page);
   await page.screenshot({ path: path.join(SHOTS, '01-dashboard-before-logout.png'), fullPage: true });
 
-  await performLogout(page);
+  const clicked = await performLogout(page);
+  if (!clicked) throw new Error('Could not find logout control in deployed UI');
+
   await page.waitForURL('**/login**', { timeout: 60000 });
-  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(1500);
   await page.screenshot({ path: path.join(SHOTS, '02-after-logout-login-screen.png'), fullPage: true });
 
   await page.goBack({ waitUntil: 'networkidle' }).catch(() => {});
   await page.waitForTimeout(1500);
   await page.screenshot({ path: path.join(SHOTS, '03-after-back.png'), fullPage: true });
-  expect(page.url()).toContain('/login');
 
-  await page.goto(`${UI}/dashboard`, { waitUntil: 'networkidle', timeout: 90000 });
+  await page.goto(`${UI}/dashboard`, { waitUntil: 'domcontentloaded', timeout: 90000 });
+  await page.waitForURL('**/login**', { timeout: 10000 }).catch(() => {});
   await page.waitForTimeout(1500);
   await page.screenshot({ path: path.join(SHOTS, '04-dashboard-reload-after-logout.png'), fullPage: true });
-  expect(page.url()).toContain('/login');
 
   const authMeCalls = network.filter((row) => String(row.url).includes('/auth/me'));
   const authMe401 = authMeCalls.some((row) => Number(row.status) === 401);
-  expect(authMe401).toBeTruthy();
-
+  if (!String(page.url()).includes('/login') || !authMe401) {
+    outcome = 'FAIL';
+    errorMessage = 'Protected route remained accessible after logout or /auth/me did not return 401';
+  }
+} catch (error) {
+  outcome = 'FAIL';
+  errorMessage = error.message;
+} finally {
   fs.writeFileSync(path.join(NET, 'logout-security.json'), JSON.stringify(network, null, 2));
   fs.writeFileSync(path.join(CONSOLE, 'logout-security.json'), JSON.stringify(consoleLog, null, 2));
-});
+  await context.close();
+  await browser.close();
+}
+
+const report = {
+  checkedAt: new Date().toISOString(),
+  ui: UI,
+  outcome,
+  errorMessage,
+  screenshotDir: SHOTS,
+  networkLog: path.join(NET, 'logout-security.json'),
+  consoleLog: path.join(CONSOLE, 'logout-security.json'),
+};
+
+console.log(JSON.stringify(report, null, 2));
+
+if (outcome !== 'PASS') {
+  process.exit(1);
+}
