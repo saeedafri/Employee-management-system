@@ -43,7 +43,7 @@ The UI team completed a screen-by-screen QA sweep with API mocks OFF. The failur
 
 **Root cause:** Prisma enum validation throws an unhandled error when `overrideCalculationType` receives an empty string or unsupported value.
 
-**Fix:** `src/modules/payroll/payroll.repository.js` — `normalizeOverrideCalcType()` helper converts `null`/`""` to `null`, validates against `['FLAT', 'PERCENTAGE', 'FORMULA']`, throws `400 VALIDATION_ERROR` for invalid non-null values. Applied in `createPayGroup` and `updatePayGroup`.
+**Fix:** `src/modules/payroll/payroll.repository.js` — `normalizeOverrideCalcType()` helper converts `null`/`""` to `null`, validates against `['FLAT', 'PERCENTAGE', 'FORMULA']`, throws `400 VALIDATION_ERROR` for invalid non-null values. Applied in `createPayGroup` and `updatePayGroup`. Live path: `POST /payroll/groups`, `PATCH /payroll/groups/:id`.
 
 ---
 

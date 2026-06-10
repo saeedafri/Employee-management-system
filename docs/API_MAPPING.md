@@ -2602,7 +2602,7 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | POST | `/payroll/runs/:id/calculate` | HR,SA | 202. DRAFT→REVIEW. Computes payslips for all employees with salary config |
 | POST | `/payroll/runs/:id/approve` | HR,SA | 200. REVIEW→APPROVED. Body: `{notes}` |
 | PATCH | `/payroll/runs/:id/mark-paid` | HR,SA | 200. APPROVED→PAID. Body: `{paidAt, paymentReference}`. Updates all payslips to PAID |
-| POST | `/payroll/runs/:id/cancel` | SA only | 200. Cannot cancel PAID runs. Body: `{reason}` |
+| POST | `/payroll/runs/:id/cancel` | HR_ADMIN, SUPER_ADMIN | 200. Cannot cancel PAID runs (400 INVALID_STATUS). Body: `{reason}` |
 
 ### Run Payslips
 | Method | Path | Roles | Notes |
@@ -4124,8 +4124,8 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | POST | `/payroll/runs/:id/publish` | HR,SA | Publish payslips to employees (sets published=true) |
-| GET | `/payroll/payslip-templates` | HR,SA | Get (or auto-create) payslip template |
-| PATCH | `/payroll/payslip-templates` | HR,SA | Update sections, fields, logo, locale |
+| GET | `/payroll/payslip-templates` | all authenticated | Get (or auto-create) payslip template. EMPLOYEE/MANAGER can read for self-service payslip drawer. |
+| PATCH | `/payroll/payslip-templates` | HR_ADMIN, SUPER_ADMIN | Update sections, fields, logo, locale |
 
 **Template shape (UI contract):** `{ id, name, locale, logoUrl, sections: [{ key, label, enabled, order, color }], fields: [{ key, label, enabled }], updatedAt }`
 
@@ -4340,8 +4340,8 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 
 | Method | Path | Roles | Request | Response `data` | UI |
 |--------|------|-------|---------|-----------------|-----|
-| GET | `/payroll/payslip-templates` | HR,SA | — | `{ id, name, locale, sections[{key,label,enabled,order,color}], fields[] }` | `/settings/pay/payslip-template` |
-| PATCH | `/payroll/payslip-templates/:id` | HR,SA | `{ sections?, fields?, name? }` | Updated template | Save button (enabled only when dirty) |
+| GET | `/payroll/payslip-templates` | all authenticated | — | `{ id, name, locale, sections[{key,label,enabled,order,color}], fields[] }` | `/settings/pay/payslip-template` and employee self-service payslip drawer |
+| PATCH | `/payroll/payslip-templates/:id` | HR_ADMIN, SUPER_ADMIN | `{ sections?, fields?, name? }` | Updated template | Save button (enabled only when dirty) |
 
 **Seed:** `seedPhase3Integrations.js` normalizes 7 sections with `color`. **Live:** ✅
 
@@ -4529,6 +4529,18 @@ All analytics endpoints now accept three optional query params:
 | `from` | YYYY-MM-DD | Start date (overrides preset `range`) |
 | `to` | YYYY-MM-DD | End date (overrides preset `range`) |
 
-Applied to: `/analytics/summary`, `/analytics/attendance`, `/analytics/headcount-by-department`, `/analytics/leave-summary`, `/analytics/recent-activity`, `/analytics/workforce-trend`, `/analytics/attrition`, `/analytics/payroll-cost`, `/analytics/department-performance`.
+All 9 endpoints **accept** these query params without error. Filtering behavior per endpoint:
 
-`departmentId` filtering is applied in attendance records, leave requests, headcount, and recent-activity. `from`/`to` override the date window for attendance and leave-summary.
+| Endpoint | `departmentId` applied | `from`/`to` applied |
+|----------|----------------------|---------------------|
+| `/analytics/attendance` | ✅ filters AttendanceRecord | ✅ overrides preset range |
+| `/analytics/headcount-by-department` | ✅ filters to single dept | — |
+| `/analytics/leave-summary` | ✅ filters LeaveRequest by dept | ✅ overrides preset range |
+| `/analytics/recent-activity` | ✅ filters AuditLog by actor dept | — |
+| `/analytics/summary` | — (accepted, ignored) | — |
+| `/analytics/workforce-trend` | — (accepted, ignored) | — |
+| `/analytics/attrition` | — (accepted, ignored) | — |
+| `/analytics/payroll-cost` | — (accepted, ignored) | — |
+| `/analytics/department-performance` | — (accepted, ignored) | — |
+
+**Note:** "accepted, ignored" means the param is valid (no 400 error) but the response is unfiltered. Full filtering for workforce-trend, attrition, payroll-cost, and department-performance is deferred.
