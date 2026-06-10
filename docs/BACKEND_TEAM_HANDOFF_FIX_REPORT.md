@@ -201,3 +201,58 @@ The UI team completed a screen-by-screen QA sweep with API mocks OFF. The failur
 | Analytics `departmentId` for workforce/attrition/payroll-cost | These compute month-by-month from the full employee set; departmentId filtering would require per-employee pre-filtering. Deferred. |
 | Leave team SUPER_ADMIN in `authorize()` | Routes use `authorize(['MANAGER', 'HR_ADMIN'])` but SUPER_ADMIN bypasses `authorize()` in `authenticate.js` automatically — no bug, just missing documentation. |
 | Generic `from`/`to` for workforce-trend | Needs month-level date parsing; deferred to avoid scope creep. |
+
+---
+
+## Final BE-1 Closure — 2026-06-10
+
+### Root Cause
+`resolveTenant` runs before `authenticate`. The prior BE-1 patch only handled the case where a JWT payload decoded to a `tenantId` but that tenant lookup failed. It did not cover the other pre-auth paths:
+
+- no cookie / no Bearer token
+- garbage token present but not decodable as JWT
+- `DEFAULT_TENANT_KEY` fallback still available on protected routes
+
+Those requests never reached `authenticate`, so `/auth/me` still returned `400 MISSING_TENANT` or `400 INVALID_TENANT` instead of the correct `401`.
+
+### Fix
+`src/middleware/resolveTenant.js` now detects the raw auth token first from `Authorization`, `accessToken` cookie, or `?token=`.
+
+For non-optional routes, when there is:
+
+- no explicit tenant subdomain
+- no explicit `X-Tenant-Key`
+- and either no raw token or no decodable JWT `tenantId`
+
+the middleware now returns early without tenant resolution. That lets `authenticate` own the auth response:
+
+- missing token -> `401 UNAUTHORIZED`
+- garbage / expired / invalid JWT -> `401 INVALID_TOKEN`
+
+Explicit bad tenant input still returns `400 INVALID_TENANT`.
+
+### Files Changed
+- `src/middleware/resolveTenant.js`
+- `src/plugins/swagger.js`
+- `docs/API_MAPPING.md`
+- `docs/openapi.json`
+- `docs/BACKEND_TEAM_HANDOFF_FIX_REPORT.md`
+- `package.json`
+- `tests/auth-me.test.js`
+
+### Tests
+- `npm run test:auth-me`
+
+### Live Evidence
+Pending until the latest Render deploy completes, then re-run:
+
+- no token `/auth/me`
+- garbage bearer token `/auth/me`
+- garbage cookie token `/auth/me`
+- valid login + `/auth/me`
+
+### Cleanup
+Pending verification of whether any `Evidence Role` / `evidence-role-*` record still exists and whether it is assigned to users.
+
+### Final Verdict
+Pending live Render verification. PASS only when live `/auth/me` returns `401` for both no-token and garbage-token cases.

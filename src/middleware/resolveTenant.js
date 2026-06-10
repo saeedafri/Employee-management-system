@@ -60,10 +60,9 @@ function tenantIdFromJwt(jwt) {
   }
 }
 
-function tenantIdFromAuthHeader(authHeader) {
-  if (!authHeader) return null;
-  const raw = authHeader.replace(/^Bearer\s+/i, '').trim();
-  return tenantIdFromJwt(raw);
+function rawTokenFromRequest(request) {
+  const rawHeader = request.headers.authorization?.replace(/^Bearer\s+/i, '').trim();
+  return rawHeader || request.cookies?.accessToken || request.query?.token || '';
 }
 
 export async function resolveTenant(request, reply) {
@@ -76,10 +75,17 @@ export async function resolveTenant(request, reply) {
   // Layer 2: Explicit header key
   const tenantKey = !slug ? (request.headers['x-tenant-key'] || null) : null;
 
+  // Raw token presence matters even when we cannot decode a tenantId from it.
+  const rawToken = (!slug && !tenantKey) ? rawTokenFromRequest(request) : '';
+
   // Layer 3: JWT payload tenantId — from Authorization header, accessToken cookie, or ?token= query param (SSE)
   const tenantId = (!slug && !tenantKey)
-    ? (tenantIdFromAuthHeader(request.headers.authorization) || tenantIdFromJwt(request.cookies?.accessToken) || tenantIdFromJwt(request.query?.token))
+    ? tenantIdFromJwt(rawToken)
     : null;
+
+  // Protected routes without an explicit tenant context should fall through to authenticate().
+  // That middleware owns missing/garbage/expired token responses.
+  if (!isTenantOptional && !slug && !tenantKey && (!rawToken || !tenantId)) return;
 
   // Layer 4: Default key from env
   const fallbackKey = (!slug && !tenantKey && !tenantId)

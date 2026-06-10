@@ -39,7 +39,8 @@
     "seed:production-api": "node scripts/seedProductionViaApi.mjs",
     "verify:phase3-production": "node scripts/verifyPhase3Production.mjs",
     "db:seed:payroll-contract": "node scripts/seedPayrollContractData.mjs",
-    "verify:payroll-contract": "node scripts/verifyPayrollLiveContract.mjs"
+    "verify:payroll-contract": "node scripts/verifyPayrollLiveContract.mjs",
+    "test:auth-me": "node --test tests/auth-me.test.js"
   },
   "keywords": [
     "employee-management",

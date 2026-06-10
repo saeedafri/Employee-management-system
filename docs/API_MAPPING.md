@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-06-09** (Phase 3 timesheets + payroll register + explicit Swagger schemas)
+> **Last verified: 2026-06-10** (BE-1 `/auth/me` auth precedence fix + prior Phase 3 coverage)
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
@@ -173,6 +173,16 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
   "lastLoginAt": "2026-05-22T12:31:07.353Z"
 }
 ```
+
+**Auth behavior:**
+
+| Case | Status | Error code |
+|------|--------|------------|
+| Missing cookie / Bearer token | 401 | `UNAUTHORIZED` |
+| Garbage or unparseable token | 401 | `INVALID_TOKEN` or `UNAUTHORIZED` |
+| Expired / invalid JWT | 401 | `INVALID_TOKEN` |
+| Explicit invalid `X-Tenant-Key` or tenant subdomain | 400 | `INVALID_TENANT` |
+| Valid token | 200 | — |
 
 ---
 
@@ -4441,14 +4451,14 @@ UI Activity tab uses this endpoint (not `/employees/:id/activity` alias). **Seed
 
 ### Known Console Noise
 
-`Failed to load resource: 400` on cold `/api/auth/me` before login cookie is set (`INVALID_TENANT`) — transient on login page; not a post-login API failure. Cleared after successful login.
+Cold `/api/auth/me` before login should now return `401 UNAUTHORIZED` when no cookie is present. A `400 INVALID_TENANT` there is a regression.
 
 ---
 
 ## Frontend QA Sweep Fixes (2026-06-10)
 
 ### BE-1 — Auth: Invalid JWT now returns 401, not 400
-`GET /auth/me` and other protected endpoints now return `401 UNAUTHORIZED` (not `400 INVALID_TENANT`) when the Bearer token is garbage, expired, or forged. Root cause: `resolveTenant` was decoding JWT without verifying the signature, looking up the (non-existent) tenant, and returning 400 before `authenticate` could run.
+`GET /auth/me` and other protected endpoints now return `401 UNAUTHORIZED` for missing cookies/tokens and `401 INVALID_TOKEN` for garbage, expired, or forged JWTs. `400 INVALID_TENANT` remains valid only when the caller explicitly supplies a bad tenant context such as `X-Tenant-Key` or subdomain.
 
 ### BE-2 — PayGroup: overrideCalculationType null/blank accepted
 `POST /payroll/pay-groups` and `PATCH /payroll/pay-groups/:id` now accept `null` or `""` for `overrideCalculationType` without 500. Only `FLAT`, `PERCENTAGE`, `FORMULA`, or null are valid.

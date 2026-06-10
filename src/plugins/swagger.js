@@ -104,7 +104,14 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Authentication', 'Logout from ALL sessions'),
         },
         '/auth/me': {
-          get: op('Authentication', 'Get current user profile'),
+          get: op('Authentication', 'Get current user profile', true, {
+            responses: {
+              200: r200,
+              400: { description: 'Explicit invalid tenant context (for example bad X-Tenant-Key or tenant subdomain)' },
+              401: { description: 'Missing access token or invalid/expired token' },
+              403: r403,
+            },
+          }),
         },
         '/auth/sessions': {
           get: op('Authentication', 'List all active sessions for current user'),
