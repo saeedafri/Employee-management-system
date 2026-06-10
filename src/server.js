@@ -4,12 +4,12 @@ import { createApp } from './app.js';
 
 const logger = pino();
 
-async function main() {
+async function start() {
   try {
-    const fastify = await createApp();
-    await fastify.listen({ port: config.port, host: '0.0.0.0' });
+    const app = await createApp();
+    await app.listen({ port: config.port, host: '0.0.0.0' });
 
-    fastify.log.info({
+    app.log.info({
       msg: 'Server started',
       appName: config.appName,
       version: config.appVersion,
@@ -23,4 +23,6 @@ async function main() {
   }
 }
 
-main();
+if (!process.env.VERCEL) {
+  await start();
+}

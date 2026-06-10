@@ -102,3 +102,4 @@ export async function createApp() {
 
   return fastify;
 }
+

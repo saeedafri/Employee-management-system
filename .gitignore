@@ -38,8 +38,10 @@ prisma/dev.db-journal
 tmp/
 temp/
 .cache/
+backups/
 
 # Testing
 .mocha/
 test-results.json
 .mcp.json
+.vercel
