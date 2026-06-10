@@ -4442,3 +4442,93 @@ UI Activity tab uses this endpoint (not `/employees/:id/activity` alias). **Seed
 ### Known Console Noise
 
 `Failed to load resource: 400` on cold `/api/auth/me` before login cookie is set (`INVALID_TENANT`) — transient on login page; not a post-login API failure. Cleared after successful login.
+
+---
+
+## Frontend QA Sweep Fixes (2026-06-10)
+
+### BE-1 — Auth: Invalid JWT now returns 401, not 400
+`GET /auth/me` and other protected endpoints now return `401 UNAUTHORIZED` (not `400 INVALID_TENANT`) when the Bearer token is garbage, expired, or forged. Root cause: `resolveTenant` was decoding JWT without verifying the signature, looking up the (non-existent) tenant, and returning 400 before `authenticate` could run.
+
+### BE-2 — PayGroup: overrideCalculationType null/blank accepted
+`POST /payroll/pay-groups` and `PATCH /payroll/pay-groups/:id` now accept `null` or `""` for `overrideCalculationType` without 500. Only `FLAT`, `PERCENTAGE`, `FORMULA`, or null are valid.
+
+### BE-3 — Employees: terminated employee lookup
+`GET /employees/:id?includeTerminated=true` — HR_ADMIN and SUPER_ADMIN can retrieve soft-deleted/terminated employees by appending this query param. Without the param, `deletedAt: null` is still enforced.
+
+### BE-4 — Payroll Salary: effectiveTo validation
+`POST /payroll/employees/:id/salary` now returns `400 VALIDATION_ERROR` if `effectiveTo < effectiveFrom`.
+
+### BE-5 — Leave Team Endpoints: SUPER_ADMIN support
+`GET /leave/team/requests` and `GET /leave/team/calendar` now work for SUPER_ADMIN (who has no employee profile). SUPER_ADMIN gets org-wide results (`managerEmployeeId = null` path). Other non-employee users still get `403 FORBIDDEN`.
+
+**Leave team request shape** (with fix):
+```json
+{
+  "id": "...",
+  "referenceNo": "LVR-0001",
+  "employeeId": "...",
+  "employeeName": "Priya Sharma",
+  "employeeCode": "E0004",
+  "leaveTypeId": "...",
+  "leaveTypeName": "Annual Leave",
+  "startDate": "2026-06-10T00:00:00.000Z",
+  "endDate": "2026-06-12T00:00:00.000Z",
+  "totalDays": 3,
+  "status": "PENDING",
+  "reason": "Vacation",
+  "submittedAt": "2026-06-08T10:00:00.000Z",
+  "decidedAt": null
+}
+```
+
+### BE-6 — Leave Approve/Reject: approverComment in response
+`PATCH /leave/requests/:id/approve` and `PATCH /leave/requests/:id/reject` now include `approverComment` in the response body:
+```json
+{ "id": "...", "referenceNo": "LVR-0001", "status": "APPROVED", "decidedAt": "...", "approverComment": "Approved as planned" }
+```
+
+### BE-7 — Payroll Cancel: HR_ADMIN can cancel
+`POST /payroll/runs/:id/cancel` now accessible to `HR_ADMIN` (previously SUPER_ADMIN only). PAID runs still cannot be cancelled by anyone (400 INVALID_STATUS from repository).
+
+### BE-8 — Payslip Templates: all authenticated users can read
+`GET /payroll/payslip-templates` is now accessible to all authenticated users (previously HR_ADMIN only). Required for employee self-service payslip drawer.
+
+### BE-9 — Report Export: status + download endpoints added
+Three new routes:
+- `GET /reports/export/:jobId` — returns job status (`PENDING` / `SUCCESS` / `FAILED`)
+- `GET /reports/export/:jobId/status` — alias for above
+- `GET /reports/export/:jobId/download` — streams `text/csv` with `Content-Disposition: attachment`
+
+**Status response:**
+```json
+{ "jobId": "...", "status": "SUCCESS", "exportType": "attendance", "exportedAt": "..." }
+```
+**Download:** Returns `text/csv` with `Content-Disposition: attachment; filename="<type>-<YYYY-MM-DD>.csv"`. If still pending → 202 JSON `{ "status": "PENDING" }`. Export is processed near-synchronously.
+
+### BE-10 — Roles: createRole persists permissions
+`POST /settings/roles` now writes `permissions[]` as `RolePermission` DB records on creation. If a permission key doesn't exist in the `Permission` table, it is silently skipped.
+
+### BE-11 — Roles: customRoles in GET /settings/roles-permissions
+`GET /settings/roles-permissions` now includes `customRoles` array:
+```json
+{
+  "roles": ["SUPER_ADMIN", "HR_ADMIN", "MANAGER", "EMPLOYEE", "my-custom-role"],
+  "permissions": ["leave:approve", "reports:read"],
+  "matrix": { "SUPER_ADMIN": ["leave:approve", ...], "my-custom-role": [] },
+  "customRoles": [{ "key": "my-custom-role", "name": "Custom Role" }]
+}
+```
+
+### Analytics Filters (all 9 endpoints)
+All analytics endpoints now accept three optional query params:
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `departmentId` | string | Filter results to a specific department |
+| `from` | YYYY-MM-DD | Start date (overrides preset `range`) |
+| `to` | YYYY-MM-DD | End date (overrides preset `range`) |
+
+Applied to: `/analytics/summary`, `/analytics/attendance`, `/analytics/headcount-by-department`, `/analytics/leave-summary`, `/analytics/recent-activity`, `/analytics/workforce-trend`, `/analytics/attrition`, `/analytics/payroll-cost`, `/analytics/department-performance`.
+
+`departmentId` filtering is applied in attendance records, leave requests, headcount, and recent-activity. `from`/`to` override the date window for attendance and leave-summary.

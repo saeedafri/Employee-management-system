@@ -337,16 +337,16 @@ async function _processExportJob(jobId, tenantId, reportType, filters) {
   try {
     let data;
     switch (reportType) {
-      case 'workforce/headcount':   data = await reportsRepository.getWorkforceHeadcount(tenantId, filters); break;
-      case 'workforce/turnover':    data = await reportsRepository.getWorkforceTurnover(tenantId, filters); break;
-      case 'workforce/demographics':data = await reportsRepository.getWorkforceDemographics(tenantId, filters); break;
-      case 'attendance/summary':    data = await reportsRepository.getAttendanceSummaryReport(tenantId, filters); break;
-      case 'attendance/absenteeism':data = await reportsRepository.getAttendanceAbsenteeism(tenantId, filters); break;
-      case 'leave/utilization':     data = await reportsRepository.getLeaveUtilization(tenantId, filters); break;
-      case 'leave/pending':         data = await reportsRepository.getLeavePending(tenantId, filters); break;
-      case 'payroll/summary':       data = await reportsRepository.getPayrollSummaryReport(tenantId, filters); break;
-      case 'payroll/ctc-analysis':  data = await reportsRepository.getPayrollCtcAnalysis(tenantId, filters); break;
-      default: throw new Error(`Unknown reportType: ${reportType}`);
+    case 'workforce/headcount':    data = await reportsRepository.getWorkforceHeadcount(tenantId, filters); break;
+    case 'workforce/turnover':     data = await reportsRepository.getWorkforceTurnover(tenantId, filters); break;
+    case 'workforce/demographics': data = await reportsRepository.getWorkforceDemographics(tenantId, filters); break;
+    case 'attendance/summary':     data = await reportsRepository.getAttendanceSummaryReport(tenantId, filters); break;
+    case 'attendance/absenteeism': data = await reportsRepository.getAttendanceAbsenteeism(tenantId, filters); break;
+    case 'leave/utilization':      data = await reportsRepository.getLeaveUtilization(tenantId, filters); break;
+    case 'leave/pending':          data = await reportsRepository.getLeavePending(tenantId, filters); break;
+    case 'payroll/summary':        data = await reportsRepository.getPayrollSummaryReport(tenantId, filters); break;
+    case 'payroll/ctc-analysis':   data = await reportsRepository.getPayrollCtcAnalysis(tenantId, filters); break;
+    default: throw new Error(`Unknown reportType: ${reportType}`);
     }
     const rows = data?.tableData?.items || data?.chartData || (Array.isArray(data) ? data : [data]);
     const csv = _toCsv(rows);
@@ -366,7 +366,7 @@ function _toCsv(rows) {
       if (v === null || v === undefined) return '';
       const s = String(v).replace(/"/g, '""');
       return `"${s}"`;
-    }).join(',')
+    }).join(','),
   );
   return [header, ...lines].join('\n') + '\n';
 }
