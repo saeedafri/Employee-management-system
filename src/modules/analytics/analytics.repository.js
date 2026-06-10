@@ -29,7 +29,7 @@ function formatIstDate(date) {
   return `${values.day}/${values.month}/${values.year} ${values.hour}:${values.minute}:${values.second} ${period} IST`;
 }
 
-export async function getSummaryData(tenantId, filters = {}) {
+export async function getSummaryData(tenantId, _filters = {}) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
@@ -366,7 +366,7 @@ function monthKey(year, month) {
   return `${year}-${String(month).padStart(2, '0')}`;
 }
 
-export async function getWorkforceTrend(tenantId, range = '6m', filters = {}) {
+export async function getWorkforceTrend(tenantId, range = '6m', _filters = {}) {
   const months = getRangeMonths(range);
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
@@ -399,7 +399,7 @@ export async function getWorkforceTrend(tenantId, range = '6m', filters = {}) {
   return result;
 }
 
-export async function getAttrition(tenantId, range = '6m', filters = {}) {
+export async function getAttrition(tenantId, range = '6m', _filters = {}) {
   const months = getRangeMonths(range);
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
@@ -437,7 +437,7 @@ export async function getAttrition(tenantId, range = '6m', filters = {}) {
   return { currentMonthRate, rollingAnnualRate, trend };
 }
 
-export async function getPayrollCost(tenantId, range = '6m', filters = {}) {
+export async function getPayrollCost(tenantId, range = '6m', _filters = {}) {
   const months = getRangeMonths(range);
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
@@ -482,7 +482,7 @@ export async function getPayrollCost(tenantId, range = '6m', filters = {}) {
   return result;
 }
 
-export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null, filters = {}) {
+export async function getDepartmentPerformance(tenantId, range = '30d', managerEmployeeId = null, _filters = {}) {
   const days = range === '90d' ? 90 : 30;
   const since = new Date();
   since.setDate(since.getDate() - days);
