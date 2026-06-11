@@ -94,18 +94,46 @@ After login, two httpOnly cookies are set automatically:
 
 ---
 
-## HTTP Status Code Rules
+## HTTP Status Code Contract
 
-| Situation | Status |
-|-----------|--------|
-| Success GET/PATCH/DELETE | 200 |
-| Success POST (create) | 201 |
-| Validation error (missing/invalid fields) | 400 |
-| Conflict (duplicate, cycle, not-empty) | 409 |
-| Not found | 404 |
-| Auth/token missing or invalid | 401 |
-| Insufficient role | 403 |
-| Other bad request | 400 |
+> Frontend shared error handler depends on this table exactly. Do not deviate.
+
+| Situation | Status | Frontend behavior |
+|-----------|-------:|-------------------|
+| Success GET/PATCH/DELETE | 200 | normal |
+| Success POST create | 201 | normal |
+| Success queued/async | 202 | normal |
+| **Field-level validation error** | **422** | maps `error.details[]` `{field,message}` to inline field errors |
+| Auth missing / token expired / invalid | 401 | silent token refresh; on fail → `/login` |
+| Insufficient role / permission | 403 | access-denied UI |
+| Not found | 404 | not-found/error state |
+| Conflict (duplicate, cycle, dept-not-empty) | 409 | conflict message |
+| Malformed JSON / bad request not tied to a field | 400 | generic error banner |
+| Server / upstream error | 500/502 | generic error + retry |
+
+### Validation error body (422)
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Request validation failed",
+    "details": [{ "field": "email", "message": "Invalid email" }],
+    "requestId": "req-..."
+  }
+}
+```
+
+`details` is always an **array of `{field, message}`** for 422.  
+For all other errors, `details` is an object (may be `{}`).
+
+### What stays 400
+
+- Malformed / unparseable JSON body
+- Missing tenant context (`MISSING_TENANT`, `INVALID_TENANT`)
+- Ambiguous email across tenants (`AMBIGUOUS_EMAIL`)
+- Domain/state errors not tied to a specific request field (`NO_EMPLOYEE_RECORD`, `INVALID_STATUS`, `PARSE_ERROR`)
 
 ---
 

@@ -36,7 +36,11 @@ export async function listEmployees(request, reply) {
     const result = await service.listEmployees(tenantId, query, user.id);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -51,7 +55,11 @@ export async function getEmployeeActivity(request, reply) {
     const result = await service.getEmployeeActivity(id, tenantId, { limit: Number(request.query.limit) || 50 });
     reply.code(result.error ? (result.error.code === 'NOT_FOUND' ? 404 : 400) : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -69,7 +77,11 @@ export async function getEmployee(request, reply) {
     const result = await service.getEmployee(id, tenantId, { includeTerminated });
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -85,7 +97,11 @@ export async function createEmployee(request, reply) {
     const result = await service.createEmployee(tenantId, data, user.id);
     reply.code(result.error ? errorStatus(result.error.code) : 201).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -103,7 +119,11 @@ export async function updateEmployee(request, reply) {
     const result = await service.updateEmployee(id, tenantId, data, user.id);
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -119,7 +139,11 @@ export async function deleteEmployee(request, reply) {
     const result = await service.deleteEmployee(id, tenantId);
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 

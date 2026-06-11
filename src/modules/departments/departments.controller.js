@@ -30,7 +30,11 @@ export async function listDepartments(request, reply) {
     const result = await service.listDepartments(tenantId, query);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -46,7 +50,11 @@ export async function createDepartment(request, reply) {
     const result = await service.createDepartment(tenantId, data, user.id);
     reply.code(result.error ? errorStatus(result.error.code) : 201).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -63,7 +71,11 @@ export async function updateDepartment(request, reply) {
     const result = await service.updateDepartment(id, tenantId, data, user.id);
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -79,7 +91,11 @@ export async function deleteDepartment(request, reply) {
     const result = await service.deleteDepartment(id, tenantId);
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -91,7 +107,7 @@ export async function reassignAndDelete(request, reply) {
   try {
     const { id } = request.params;
     const { reassignEmployeesTo } = request.body;
-    if (!reassignEmployeesTo) return reply.code(400).send(errorResponse('VALIDATION_ERROR', 'reassignEmployeesTo is required', request.requestId));
+    if (!reassignEmployeesTo) return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'reassignEmployeesTo is required', [{ field: 'reassignEmployeesTo', message: 'reassignEmployeesTo is required' }], request.id));
     const result = await service.reassignAndDeleteDepartment(id, tenantId, reassignEmployeesTo);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {

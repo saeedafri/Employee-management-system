@@ -25,7 +25,11 @@ export async function listHolidays(request, reply) {
     const result = await service.listHolidays(tenantId, query);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -41,7 +45,11 @@ export async function createHoliday(request, reply) {
     const result = await service.createHoliday(tenantId, data, user.id);
     reply.code(result.error ? 400 : 201).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -58,7 +66,11 @@ export async function updateHoliday(request, reply) {
     const result = await service.updateHoliday(id, tenantId, data);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 
@@ -74,7 +86,11 @@ export async function deleteHoliday(request, reply) {
     const result = await service.deleteHoliday(id, tenantId);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {
-    reply.code(400).send(errorResponse('VALIDATION_ERROR', error.message, request.requestId));
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }
 export async function importHolidays(request, reply) {

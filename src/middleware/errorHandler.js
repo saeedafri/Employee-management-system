@@ -19,7 +19,7 @@ export async function errorHandler(error, request, reply) {
       message: v.message,
     }));
 
-    return reply.code(400).send(
+    return reply.code(422).send(
       errorResponse(
         'VALIDATION_ERROR',
         'Request validation failed',
@@ -36,7 +36,7 @@ export async function errorHandler(error, request, reply) {
       message: err.message,
     }));
 
-    return reply.code(400).send(
+    return reply.code(422).send(
       errorResponse(
         'VALIDATION_ERROR',
         'Request validation failed',

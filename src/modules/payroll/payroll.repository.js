@@ -203,7 +203,7 @@ function normalizeOverrideCalcType(v) {
   if (v === null || v === undefined || v === '') return null;
   if (!VALID_CALC_TYPES.has(v)) {
     const err = new Error(`Invalid overrideCalculationType: "${v}". Must be FLAT, PERCENTAGE, FORMULA, or null.`);
-    err.code = 'VALIDATION_ERROR'; err.statusCode = 400; throw err;
+    err.code = 'VALIDATION_ERROR'; err.statusCode = 422; throw err;
   }
   return v;
 }
