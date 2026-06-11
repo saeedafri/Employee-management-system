@@ -183,7 +183,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── DEPARTMENTS ──────────────────────────────────────────────────────
         '/departments': {
-          get:  op('Departments', 'List all departments (hierarchical tree). Each node includes headEmployee plus flat headEmployeeFirstName / headEmployeeLastName / headEmployeeName.'),
+          get:  op('Departments', 'List all departments (hierarchical tree). Each node includes headEmployee plus flat headEmployeeFirstName / headEmployeeLastName / headEmployeeName. _count.employees is an inclusive subtree count (direct + all descendants). directEmployeeCount is direct-only.'),
           post: op('Departments', 'Create department (HR_ADMIN/SUPER_ADMIN). headEmployeeId optional — must be an employee in this tenant who does not already head another department.', true, {
             responses: { 201: r201, 400: r400, 409: { description: 'Duplicate code or head employee already heads another department' } },
             parameters: [{ in: 'body', name: 'body', required: true, schema: { $ref: '#/definitions/DepartmentInput' } }],
@@ -300,7 +300,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Analytics', 'Attendance analytics over time'),
         },
         '/analytics/headcount-by-department': {
-          get: op('Analytics', 'Headcount breakdown by department'),
+          get: op('Analytics', 'Headcount breakdown by top-level department. employeeCount and activeCount are inclusive subtree counts — each root department includes all employees from its child, grandchild, and deeper descendant departments.'),
         },
         '/analytics/recent-activity': {
           get: op('Analytics', 'Recent activity feed'),
@@ -785,7 +785,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── DEPARTMENTS (new endpoints) ───────────────────────────────────────
         '/departments/{id}/employees': {
-          get: op('Departments', 'List employees in a department with pagination', true, {
+          get: op('Departments', 'List employees in a department and all descendant departments (subtree-inclusive). pagination.total reflects the full subtree count.', true, {
             parameters: [
               ...idParam,
               { in: 'query', name: 'page',   type: 'integer' },

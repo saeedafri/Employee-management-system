@@ -495,6 +495,7 @@ Returns array of root departments. Each has a `children` array (populated if sub
   "headEmployeeLastName": "Sharma",
   "headEmployeeName": "Priya Sharma",
   "_count": { "employees": 7 },
+  "directEmployeeCount": 5,
   "children": []
 }
 ```
@@ -502,6 +503,23 @@ Returns array of root departments. Each has a `children` array (populated if sub
 > `headEmployee` is the nested object; `headEmployeeFirstName` / `headEmployeeLastName` / `headEmployeeName` (concatenated) are convenience fields for table rendering. All four are `null` when no head is set.
 
 > Tree is server-built. `children[]` is populated when sub-departments exist. If all departments are root-level, all `children` arrays are empty — build nothing client-side, the server returns the tree.
+
+### Department employee counts
+
+`_count.employees` is an **inclusive subtree count** — it includes employees directly assigned to the department **and** all employees assigned to any child, grandchild, or deeper descendant departments.
+
+`directEmployeeCount` is the direct-only count (only employees whose `departmentId` equals this department's ID).
+
+**Example:**
+```
+Engineering (12 direct) → Backend Engineering (2 direct) → Platform (1 direct)
+GET /departments response:
+  Engineering._count.employees = 15   ← 12 + 2 + 1
+  Backend Engineering._count.employees = 3   ← 2 + 1
+  Platform._count.employees = 1
+```
+
+Use `_count.employees` for cards and badges. Use `directEmployeeCount` only if the UI needs to show "X direct + Y in sub-departments".
 
 ---
 
@@ -1105,17 +1123,19 @@ All require HR_ADMIN or SUPER_ADMIN.
 ```
 
 ### `GET /analytics/headcount-by-department`
-**Top-level departments only** (sub-departments are excluded from this chart; their employees roll up into the parent). Sorted by `employeeCount` descending.
+**Top-level departments only** (parentId = null). `employeeCount` and `activeCount` are **inclusive subtree counts** — each root department's count includes all employees in its child, grandchild, and deeper descendant departments. Sorted by `employeeCount` descending.
 
 ```json
 {
   "data": [
-    { "departmentId": "...", "departmentName": "Engineering", "employeeCount": 12, "activeCount": 10 },
+    { "departmentId": "...", "departmentName": "Engineering", "employeeCount": 14, "activeCount": 12 },
     { "departmentId": "...", "departmentName": "Sales",       "employeeCount": 9,  "activeCount": 9  }
   ],
   "meta": { "cached": false, "generatedAt": "2026-05-24T07:00:00.000Z" }
 }
 ```
+
+> If Engineering has 12 direct employees and Backend Engineering (child) has 2 employees, `employeeCount` is 14.
 
 ### `GET /analytics/leave-summary`
 ```json
@@ -1700,6 +1720,8 @@ Department detail panel — headcount, sub-departments, managers, employee list.
 }
 ```
 
+> `totalHeadcount` is an **inclusive subtree count** — includes all employees in this department and all descendant departments (children, grandchildren, etc.). The `employees` preview array (up to 50) also includes employees from all descendant departments.
+
 ---
 
 ### `GET /leave/types` — extended with CRUD
@@ -2031,6 +2053,8 @@ Call after file upload completes. Returns the confirmed document record.
 
 **Query params:** `page` (default 1), `limit` (default 20), `search` (optional name filter).
 
+Returns employees assigned to the selected department **and all descendant departments** (children, grandchildren, etc.). `pagination.total` reflects the full subtree count.
+
 **Response `data`:**
 ```json
 {
@@ -2041,12 +2065,15 @@ Call after file upload completes. Returns the confirmed document record.
       "lastName": "Sharma",
       "employeeCode": "E0001",
       "designation": "Senior Engineer",
-      "employmentStatus": "ACTIVE"
+      "employmentStatus": "ACTIVE",
+      "department": { "id": "...", "name": "Backend Engineering" }
     }
   ],
   "pagination": { "page": 1, "limit": 20, "total": 14, "pages": 1 }
 }
 ```
+
+> `department` field shows which specific sub-department each employee belongs to — useful when the selected department is a parent and employees come from different sub-departments.
 
 #### `POST /departments/:id/reassign-and-delete`
 

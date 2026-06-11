@@ -1,4 +1,5 @@
 import { prisma } from '../../plugins/prisma.js';
+import { buildDepartmentChildrenMap, getDepartmentAndDescendantIds } from '../../utils/departmentTree.js';
 
 function getRangeDays(range) {
   const days = { '7d': 7, '30d': 30, '90d': 90 };
@@ -159,12 +160,11 @@ export async function getHeadcountByDepartment(tenantId, filters = {}) {
     }),
   ]);
 
-  // Build parent → [child dept ids] map for sub-dept rollup
-  const topIds = new Set(departments.map(d => d.id));
-  const subtreeIds = {};
-  topIds.forEach(id => { subtreeIds[id] = new Set([id]); });
-  allDepts.forEach(d => {
-    if (d.parentId && topIds.has(d.parentId)) subtreeIds[d.parentId].add(d.id);
+  // Build full recursive subtree maps for each root department
+  const childrenMap = buildDepartmentChildrenMap(allDepts);
+  const subtreeIdsMap = {};
+  departments.forEach(dept => {
+    subtreeIdsMap[dept.id] = getDepartmentAndDescendantIds(dept.id, childrenMap);
   });
 
   // Build employee count maps
@@ -179,7 +179,7 @@ export async function getHeadcountByDepartment(tenantId, filters = {}) {
   }
 
   const result = filtered.map(dept => {
-    const ids = subtreeIds[dept.id] || new Set([dept.id]);
+    const ids = subtreeIdsMap[dept.id] || [dept.id];
     let employeeCount = 0;
     let activeCount = 0;
     ids.forEach(id => {

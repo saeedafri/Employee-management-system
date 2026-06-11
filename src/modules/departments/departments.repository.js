@@ -1,19 +1,36 @@
 import { prisma } from '../../plugins/prisma.js';
+import {
+  buildDepartmentChildrenMap,
+  getDepartmentAndDescendantIds,
+  buildRollupEmployeeCounts,
+} from '../../utils/departmentTree.js';
 
 export async function listDepartments(tenantId, filters = {}) {
   const { includeArchived = false } = filters;
 
-  return prisma.department.findMany({
-    where: {
-      tenantId,
-      ...(includeArchived ? {} : { deletedAt: null }),
-    },
-    include: {
-      headEmployee: { select: { id: true, firstName: true, lastName: true, employeeCode: true } },
-      _count: { select: { employees: true } },
-    },
-    orderBy: { name: 'asc' },
-  });
+  const [departments, directCounts] = await Promise.all([
+    prisma.department.findMany({
+      where: { tenantId, ...(includeArchived ? {} : { deletedAt: null }) },
+      include: {
+        headEmployee: { select: { id: true, firstName: true, lastName: true, employeeCode: true } },
+      },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.employee.groupBy({
+      by: ['departmentId'],
+      where: { tenantId, deletedAt: null },
+      _count: { id: true },
+    }),
+  ]);
+
+  const directCountMap = new Map(directCounts.map(r => [r.departmentId, r._count.id]));
+  const rollupMap = buildRollupEmployeeCounts(departments, directCountMap);
+
+  return departments.map(dept => ({
+    ...dept,
+    directEmployeeCount: directCountMap.get(dept.id) ?? 0,
+    _count: { employees: rollupMap.get(dept.id) ?? 0 },
+  }));
 }
 
 export async function getDepartmentById(id, tenantId) {
@@ -28,31 +45,31 @@ export async function getDepartmentById(id, tenantId) {
 }
 
 export async function getDepartmentDetail(id, tenantId) {
-  const dept = await prisma.department.findFirst({
-    where: { id, tenantId, deletedAt: null },
-    include: {
-      headEmployee: { select: { id: true, firstName: true, lastName: true } },
-      parent: { select: { id: true, name: true } },
-      subDepartments: { where: { deletedAt: null }, select: { id: true, name: true, departmentCode: true } },
-    },
-  });
+  const [dept, allDepts] = await Promise.all([
+    prisma.department.findFirst({
+      where: { id, tenantId, deletedAt: null },
+      include: {
+        headEmployee: { select: { id: true, firstName: true, lastName: true } },
+        parent: { select: { id: true, name: true } },
+        subDepartments: { where: { deletedAt: null }, select: { id: true, name: true, departmentCode: true } },
+      },
+    }),
+    prisma.department.findMany({ where: { tenantId, deletedAt: null }, select: { id: true, parentId: true } }),
+  ]);
   if (!dept) return null;
 
-  const [, employees, subDeptCount, totalHeadcount, managerCount] = await Promise.all([
-    prisma.department.findMany({ where: { tenantId, deletedAt: null }, select: { id: true, parentId: true } }),
+  const childrenMap = buildDepartmentChildrenMap(allDepts);
+  const subtreeIds = getDepartmentAndDescendantIds(id, childrenMap);
+
+  const [employees, subDeptCount, totalHeadcount, managerCount] = await Promise.all([
     prisma.employee.findMany({
-      where: { tenantId, departmentId: id, deletedAt: null },
+      where: { tenantId, departmentId: { in: subtreeIds }, deletedAt: null },
       select: { id: true, firstName: true, lastName: true, employeeCode: true, designation: true, employmentStatus: true },
       orderBy: { firstName: 'asc' },
       take: 50,
     }),
     prisma.department.count({ where: { tenantId, parentId: id, deletedAt: null } }),
-    (async () => {
-      const subtreeIds = new Set([id]);
-      const allD = await prisma.department.findMany({ where: { tenantId, deletedAt: null }, select: { id: true, parentId: true } });
-      allD.forEach(d => { if (d.parentId === id) subtreeIds.add(d.id); });
-      return prisma.employee.count({ where: { tenantId, departmentId: { in: [...subtreeIds] }, deletedAt: null } });
-    })(),
+    prisma.employee.count({ where: { tenantId, departmentId: { in: subtreeIds }, deletedAt: null } }),
     prisma.employee.count({
       where: { tenantId, departmentId: id, deletedAt: null, managedEmployees: { some: { deletedAt: null } } },
     }),
@@ -170,7 +187,15 @@ export async function reassignAndDelete(id, tenantId, targetDeptId) {
 
 export async function getDepartmentEmployees(deptId, tenantId, page = 1, limit = 20, search) {
   const skip = (page - 1) * limit;
-  const where = { tenantId, departmentId: deptId, deletedAt: null };
+
+  const allDepts = await prisma.department.findMany({
+    where: { tenantId, deletedAt: null },
+    select: { id: true, parentId: true },
+  });
+  const childrenMap = buildDepartmentChildrenMap(allDepts);
+  const deptIds = getDepartmentAndDescendantIds(deptId, childrenMap);
+
+  const where = { tenantId, departmentId: { in: deptIds }, deletedAt: null };
   if (search) {
     where.OR = [
       { firstName: { contains: search, mode: 'insensitive' } },
@@ -184,6 +209,7 @@ export async function getDepartmentEmployees(deptId, tenantId, page = 1, limit =
       select: {
         id: true, employeeCode: true, firstName: true, lastName: true,
         designation: true, employmentStatus: true, joinedOn: true,
+        department: { select: { id: true, name: true } },
         user: { select: { email: true } },
       },
       orderBy: { employeeCode: 'asc' },
