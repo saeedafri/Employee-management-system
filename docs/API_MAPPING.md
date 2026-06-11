@@ -3264,7 +3264,7 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 
 **`frequency` values:** `MONTHLY` | `BIWEEKLY` | `WEEKLY` (stored as `paySchedule` in DB; POST accepts `frequency` or `paySchedule`)
 
-**Errors:** `400 VALIDATION_ERROR` if `periodAnchor` out of range; `422 INVALID_PAY_CALENDAR` optional alias for invalid scheduling fields.
+**Errors:** `422 VALIDATION_ERROR` if `periodAnchor` out of range; `422 INVALID_PAY_CALENDAR` optional alias for invalid scheduling fields.
 
 ---
 
@@ -4415,7 +4415,7 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 
 **`statutoryComponents` contract:** Response is always `string[]` (e.g. `["PF", "PF_ER"]`). POST/PATCH accept `string[]` or legacy `{ code: string }[]`; backend normalizes to strings before persisting via `normalizeStatutoryComponents()`.
 
-**Errors:** `409 PACK_VERSION_EXISTS` (duplicate tenant+country+version), `422 INVALID_PACK` (effectiveFrom > effectiveTo), `400 VALIDATION_ERROR` (`details: [{field, message}]`), `409 PACK_IN_USE` (referenced by legal entity).
+**Errors:** `409 PACK_VERSION_EXISTS` (duplicate tenant+country+version), `422 INVALID_PACK` (effectiveFrom > effectiveTo), `422 VALIDATION_ERROR` (`details: [{field, message}]`), `409 PACK_IN_USE` (referenced by legal entity).
 
 **Storage:** Rule fields stored in DB `packData` JSON; API always flattened via `fmtStatutoryPackRow()` with normalized `statutoryComponents`.
 
@@ -4564,7 +4564,7 @@ Cold `/api/auth/me` before login should now return `401 UNAUTHORIZED` when no co
 `GET /employees/:id?includeTerminated=true` — HR_ADMIN and SUPER_ADMIN can retrieve soft-deleted/terminated employees by appending this query param. Without the param, `deletedAt: null` is still enforced.
 
 ### BE-4 — Payroll Salary: effectiveTo validation
-`POST /payroll/employees/:id/salary` now returns `400 VALIDATION_ERROR` if `effectiveTo < effectiveFrom`.
+`POST /payroll/employees/:id/salary` now returns `422 VALIDATION_ERROR` if `effectiveTo < effectiveFrom`.
 
 ### BE-5 — Leave Team Endpoints: SUPER_ADMIN support
 `GET /leave/team/requests` and `GET /leave/team/calendar` now work for SUPER_ADMIN (who has no employee profile). SUPER_ADMIN gets org-wide results (`managerEmployeeId = null` path). Other non-employee users still get `403 FORBIDDEN`.
