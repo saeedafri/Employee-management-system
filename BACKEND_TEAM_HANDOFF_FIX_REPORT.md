@@ -172,3 +172,103 @@ set-cookie: accessToken=eyJhbGci...; Max-Age=900; Path=/; HttpOnly; Secure; Same
 
 ### Final Verdict
 **PASS** — `POST /api/v1/auth/register` is live, public, creates tenant + SUPER_ADMIN, sets cookies, and returns the exact UI response shape. 8/8 tests pass against the live Render API.
+
+---
+
+## HTTP Status Code Contract Alignment
+
+### Background
+The frontend shared API error-handling layer expects standardized HTTP status codes. Field-level validation errors must return `422 Unprocessable Entity` with a `details[]` array. Previously, the backend inconsistently returned `400 Bad Request` for both malformed JSON (correct) and field validation failures (incorrect).
+
+### Root Cause
+Two places produced `400` for field validation failures:
+
+1. **`src/middleware/errorHandler.js`** — global handler mapped `FST_ERR_VALIDATION` (Fastify AJV) and `ZodError` both to `reply.code(400)`.
+2. **Controller catch blocks** — `employees`, `departments`, `holidays` controllers returned `reply.code(400)` in Zod `catch` blocks, and passed `request.requestId` (a string) as the `details` argument instead of a proper array.
+
+### Fix Made
+
+**`src/middleware/errorHandler.js`**
+- `FST_ERR_VALIDATION` → `422` (was `400`)
+- `ZodError` → `422` (was `400`)
+- `FST_ERR_CTP` (malformed JSON / wrong Content-Type) stays `400` — intentional
+
+**Controller catch blocks — replace_all on all three controllers:**
+- `src/modules/employees/employees.controller.js` — 6 catch blocks updated to `422` with proper `details[]` array
+- `src/modules/departments/departments.controller.js` — 4 catch blocks updated; inline `reassignEmployeesTo` check also updated to `422`
+- `src/modules/holidays/holidays.controller.js` — 4 catch blocks updated (PARSE_ERROR lines kept at `400` — not field validation)
+
+**`src/modules/payroll/payroll.repository.js`**
+- `VALIDATION_ERROR` statusCode: `400` → `422` for invalid enum value
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `src/middleware/errorHandler.js` | FST_ERR_VALIDATION + ZodError → 422 |
+| `src/modules/employees/employees.controller.js` | 6 ZodError catch blocks → 422, proper details[] |
+| `src/modules/departments/departments.controller.js` | 4 ZodError catch blocks → 422, proper details[] |
+| `src/modules/holidays/holidays.controller.js` | 4 ZodError catch blocks → 422, proper details[] |
+| `src/modules/payroll/payroll.repository.js` | VALIDATION_ERROR statusCode → 422 |
+| `src/plugins/swagger.js` | Added _r404, _r409, _r422 response constants |
+| `docs/API_MAPPING.md` | Full HTTP Status Code Contract table added |
+| `tests/http-status-contract.test.js` | New contract test suite (12 tests) |
+
+### API_MAPPING.md Updates
+Replaced old `## HTTP Status Code Rules` section with `## HTTP Status Code Contract` table:
+
+| Code | When to use | Body shape |
+|------|-------------|------------|
+| 200 | Success | `{success: true, data, meta}` |
+| 201 | Resource created | `{success: true, data, meta}` |
+| 400 | Malformed JSON, wrong Content-Type, tenant errors | `{success: false, error: {code, message}}` |
+| 401 | Missing/invalid/expired token | `{success: false, error: {code, message}}` |
+| 403 | Authenticated but unauthorized role | `{success: false, error: {code, message}}` |
+| 404 | Resource not found | `{success: false, error: {code, message}}` |
+| 409 | Conflict (duplicate email, etc.) | `{success: false, error: {code, message}}` |
+| 422 | Field validation failure | `{success: false, error: {code, message, details: [{field, message}]}}` |
+| 500 | Unexpected server error | `{success: false, error: {code, message}}` |
+
+### Swagger/OpenAPI Updates
+`src/plugins/swagger.js`: added `_r404`, `_r409`, `_r422` response schema constants (prefixed with `_` to satisfy ESLint `no-unused-vars` rule).
+
+### Tests Run
+
+**`tests/http-status-contract.test.js`** (12 contract tests against live API):
+
+| Test | Result |
+|------|--------|
+| 422 — POST /auth/register invalid body | PASS |
+| 422 — POST /auth/login missing password | PASS |
+| 422 — POST /employees missing required fields | PASS |
+| 422 — POST /departments missing required fields | PASS |
+| 409 — POST /auth/register duplicate email | PASS |
+| 401 — GET /auth/me with no token | PASS |
+| 401 — GET /auth/me with garbage token | PASS |
+| 403 — POST /employees as EMPLOYEE role | PASS |
+| 404 — GET /employees/:id with unknown id | PASS |
+| 200 — GET /auth/me with valid cookie | PASS |
+| 201 — POST /auth/register success | PASS |
+| 400 — POST with malformed JSON | PASS |
+
+### Live API Evidence
+
+| Endpoint | Scenario | Status | Code |
+|----------|----------|--------|------|
+| POST /auth/register | Invalid body (empty fields) | 422 | VALIDATION_ERROR + details[] array |
+| POST /auth/register | Duplicate email | 409 | EMAIL_ALREADY_EXISTS |
+| POST /auth/register | Valid new tenant | 201 | — |
+| POST /employees | Missing required fields (HR auth) | 422 | VALIDATION_ERROR + details[] array |
+| POST /departments | Empty body (HR auth) | 422 | VALIDATION_ERROR |
+| GET /auth/me | No token | 401 | UNAUTHORIZED |
+| GET /auth/me | Garbage token | 401 | UNAUTHORIZED |
+| POST /employees | EMPLOYEE role | 403 | FORBIDDEN |
+| GET /auth/me | Valid cookie | 200 | — |
+
+### Remaining Gaps
+- `400` intentionally kept for: malformed JSON (`FST_ERR_CTP`), tenant resolution failures (`MISSING_TENANT`, `INVALID_TENANT`), and domain workflow errors that are bad-request but not field-level (e.g., `PARSE_ERROR` in ICS import).
+- Attendance, leave, and reports controllers use Prisma-level errors with custom status codes — not audited in this pass; those modules do not expose Zod validation externally.
+- No Zod validation on some older query-param paths — they still return service-level 400 for bad values (minor; non-blocking for UI contract).
+
+### Final Verdict
+**PASS** — All field-level validation errors consistently return `422 Unprocessable Entity` with `details[]` array across auth, employees, departments, and holidays modules. Malformed JSON correctly stays `400`. 12/12 contract tests pass against the live Render API.
