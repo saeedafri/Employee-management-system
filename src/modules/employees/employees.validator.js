@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+// Accepts string[] or scalar string (legacy transition → normalised to [string])
+const deptIdArray = z.preprocess(
+  (val) => (typeof val === 'string' && val.length > 0 ? [val] : val),
+  z.array(z.string().min(1)).min(1, 'Department path must be a non-empty array'),
+);
+
 export const listQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
@@ -20,14 +26,17 @@ export const createEmployeeSchema = z.object({
   gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
   address: z.string().optional(),
   designation: z.string().optional(),
-  departmentId: z.string().optional(),
+  departmentId: deptIdArray,
   managerId: z.string().optional(),
   joinedOn: z.coerce.date(),
   employmentType: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP']).default('FULL_TIME'),
   location: z.string().optional(),
 });
 
-export const updateEmployeeSchema = createEmployeeSchema.partial();
+// All fields optional for PATCH; if departmentId provided it must still be a valid non-empty array
+export const updateEmployeeSchema = createEmployeeSchema.partial().extend({
+  departmentId: deptIdArray.optional(),
+});
 
 export const idParamSchema = z.object({
   id: z.string().cuid(),

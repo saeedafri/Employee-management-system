@@ -170,7 +170,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
               { in: 'query', name: 'location',     type: 'string' },
             ],
           }),
-          post: op('Employees', 'Create new employee', true, { responses: { 201: r201, 400: r400 } }),
+          post: op('Employees', 'Create new employee. departmentId must be a string[] path ordered root→leaf (min 1). Last element is stored as Employee.departmentId. Response always returns departmentId: string[] and department: {id,name}[].', true, { responses: { 201: r201, 400: r400, 422: { description: 'VALIDATION_ERROR — departmentId invalid path' } } }),
         },
         '/employees/{id}': {
           get:    op('Employees', 'Get employee by ID',    true, { parameters: idParam }),

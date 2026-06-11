@@ -1,13 +1,13 @@
 import { prisma } from '../../plugins/prisma.js';
 
 export async function listEmployees(tenantId, filters = {}) {
-  const { page = 1, limit = 20, search, departmentId, status, location, managerOrSelf, selfId } = filters;
+  const { page = 1, limit = 20, search, departmentId, departmentIds, status, location, managerOrSelf, selfId } = filters;
   const skip = (page - 1) * limit;
 
   const where = {
     tenantId,
     employmentStatus: status,
-    ...(departmentId && { departmentId }),
+    ...(departmentIds ? { departmentId: { in: departmentIds } } : departmentId ? { departmentId } : {}),
     ...(location && { location }),
     // Row-level filtering for non-admin roles
     ...(managerOrSelf && { OR: [{ managerId: managerOrSelf }, { id: managerOrSelf }] }),

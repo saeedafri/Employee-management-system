@@ -96,7 +96,7 @@ export async function employeesRoutes(fastify) {
         description: 'Create new employee',
         body: {
           type: 'object',
-          required: ['firstName', 'lastName', 'workEmail', 'joinedOn'],
+          required: ['firstName', 'lastName', 'workEmail', 'joinedOn', 'departmentId'],
           properties: {
             employeeCode: { type: 'string', description: 'Auto-generated as EMP-0001 if omitted' },
             firstName: { type: 'string' },
@@ -105,7 +105,7 @@ export async function employeesRoutes(fastify) {
             personalEmail: { type: 'string' },
             phone: { type: 'string' },
             designation: { type: 'string' },
-            departmentId: { type: 'string' },
+            departmentId: { type: 'array', items: { type: 'string' }, minItems: 1, description: 'Ordered root→leaf path. Last element is stored as Employee.departmentId.' },
             managerId: { type: 'string' },
             joinedOn: { type: 'string' },
           },
@@ -137,7 +137,7 @@ export async function employeesRoutes(fastify) {
             firstName: { type: 'string' },
             lastName: { type: 'string' },
             designation: { type: 'string' },
-            departmentId: { type: 'string' },
+            departmentId: { type: 'array', items: { type: 'string' }, minItems: 1, description: 'Optional. If supplied must be valid ordered root→leaf path.' },
             managerId: { type: 'string' },
           },
         },

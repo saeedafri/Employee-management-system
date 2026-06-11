@@ -10,10 +10,12 @@ import sharp from 'sharp';
 
 const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
+const UNPROCESSABLE_CODES = new Set(['VALIDATION_ERROR']);
 
 function errorStatus(code) {
   if (CONFLICT_CODES.has(code)) return 409;
   if (NOT_FOUND_CODES.has(code)) return 404;
+  if (UNPROCESSABLE_CODES.has(code)) return 422;
   return 400;
 }
 

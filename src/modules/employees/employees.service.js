@@ -2,11 +2,38 @@ import * as repo from './employees.repository.js';
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
+import {
+  validateDepartmentPath,
+  loadAllDeptsByTenant,
+  walkPath,
+  getDescendantIds,
+  formatEmployeeForApi,
+} from './employeeDepartmentPath.js';
+
+function deptPathError(message) {
+  return {
+    success: false,
+    error: {
+      code: 'VALIDATION_ERROR',
+      message: 'Request validation failed',
+      details: [{ field: 'departmentId', message }],
+    },
+  };
+}
 
 export async function listEmployees(tenantId, filters) {
   try {
-    const result = await repo.listEmployees(tenantId, filters);
-    return successResponse(result, { cached: false });
+    const allDeptsById = await loadAllDeptsByTenant(tenantId);
+
+    const repoFilters = { ...filters };
+    if (filters.departmentId) {
+      repoFilters.departmentIds = getDescendantIds(allDeptsById, filters.departmentId);
+      delete repoFilters.departmentId;
+    }
+
+    const result = await repo.listEmployees(tenantId, repoFilters);
+    const formatted = result.data.map(emp => formatEmployeeForApi(emp, walkPath(allDeptsById, emp.departmentId)));
+    return successResponse({ data: formatted, pagination: result.pagination }, { cached: false });
   } catch (error) {
     return errorResponse('LIST_ERROR', error.message, null);
   }
@@ -18,7 +45,8 @@ export async function getEmployee(employeeId, tenantId, { includeTerminated = fa
     if (!employee) {
       return errorResponse('NOT_FOUND', 'Employee not found', null);
     }
-    return successResponse(employee, { cached: false });
+    const allDeptsById = await loadAllDeptsByTenant(tenantId);
+    return successResponse(formatEmployeeForApi(employee, walkPath(allDeptsById, employee.departmentId)), { cached: false });
   } catch (error) {
     return errorResponse('FETCH_ERROR', error.message, null);
   }
@@ -46,6 +74,16 @@ async function generateEmployeeCode(tenantId) {
 
 export async function createEmployee(tenantId, data, userId) {
   try {
+    let leafDepartmentId;
+    let departmentPath;
+    try {
+      const result = await validateDepartmentPath(tenantId, data.departmentId);
+      leafDepartmentId = result.leafDepartmentId;
+      departmentPath = result.path;
+    } catch (pathErr) {
+      return deptPathError(pathErr.message);
+    }
+
     if (!data.employeeCode) {
       data.employeeCode = await generateEmployeeCode(tenantId);
     }
@@ -62,10 +100,11 @@ export async function createEmployee(tenantId, data, userId) {
 
     const employee = await repo.createEmployee(tenantId, {
       ...data,
+      departmentId: leafDepartmentId,
       createdBy: userId,
     });
 
-    return successResponse(employee, { cached: false });
+    return successResponse(formatEmployeeForApi(employee, departmentPath), { cached: false });
   } catch (error) {
     return errorResponse('CREATE_ERROR', error.message, null);
   }
@@ -73,27 +112,42 @@ export async function createEmployee(tenantId, data, userId) {
 
 export async function updateEmployee(employeeId, tenantId, data, userId) {
   try {
-    const existing = await repo.getEmployeeById(employeeId, tenantId);
+    const [existing, allDeptsById] = await Promise.all([
+      repo.getEmployeeById(employeeId, tenantId),
+      loadAllDeptsByTenant(tenantId),
+    ]);
+
     if (!existing) {
       return errorResponse('NOT_FOUND', 'Employee not found', null);
     }
 
-    if (data.employeeCode && data.employeeCode !== existing.employeeCode) {
-      const codeExists = await repo.checkEmployeeCodeExists(data.employeeCode, tenantId, employeeId);
+    let updateData = { ...data };
+
+    if (updateData.departmentId !== undefined) {
+      try {
+        const { leafDepartmentId } = await validateDepartmentPath(tenantId, updateData.departmentId);
+        updateData.departmentId = leafDepartmentId;
+      } catch (pathErr) {
+        return deptPathError(pathErr.message);
+      }
+    }
+
+    if (updateData.employeeCode && updateData.employeeCode !== existing.employeeCode) {
+      const codeExists = await repo.checkEmployeeCodeExists(updateData.employeeCode, tenantId, employeeId);
       if (codeExists) {
         return errorResponse('DUPLICATE_EMPLOYEE_CODE', 'Employee code already exists', null);
       }
     }
 
-    if (data.workEmail && data.workEmail !== existing.workEmail) {
-      const emailExists = await repo.checkWorkEmailExists(data.workEmail, tenantId, employeeId);
+    if (updateData.workEmail && updateData.workEmail !== existing.workEmail) {
+      const emailExists = await repo.checkWorkEmailExists(updateData.workEmail, tenantId, employeeId);
       if (emailExists) {
         return errorResponse('DUPLICATE_WORK_EMAIL', 'Work email already exists', null);
       }
     }
 
     const employee = await repo.updateEmployee(employeeId, tenantId, {
-      ...data,
+      ...updateData,
       updatedBy: userId,
     });
 
@@ -107,7 +161,7 @@ export async function updateEmployee(employeeId, tenantId, data, userId) {
       { designation: employee.designation, phone: employee.phone },
     ).catch(() => {});
 
-    return successResponse(employee, { cached: false });
+    return successResponse(formatEmployeeForApi(employee, walkPath(allDeptsById, employee.departmentId)), { cached: false });
   } catch (error) {
     return errorResponse('UPDATE_ERROR', error.message, null);
   }
@@ -120,7 +174,6 @@ export async function deleteEmployee(employeeId, tenantId) {
       return errorResponse('NOT_FOUND', 'Employee not found', null);
     }
 
-    // Block deletion if employee manages others or heads a department
     const [managedCount, deptHeadCount] = await Promise.all([
       prisma.employee.count({ where: { managerId: employeeId, tenantId, deletedAt: null } }),
       prisma.department.count({ where: { headEmployeeId: employeeId, tenantId, deletedAt: null } }),
