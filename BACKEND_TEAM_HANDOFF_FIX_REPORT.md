@@ -3,6 +3,55 @@
 
 ---
 
+## Auth Register Validation Status Fix
+
+### Issue
+`POST /auth/register` validation failures returned `400` instead of `422`.
+
+### Root Cause
+Fastify's AJV route-schema validation fires before the controller runs. The global `errorHandler.js` catches `FST_ERR_VALIDATION` and returns `400` for all routes. The controller's Zod-based `422` path was never reached because invalid requests were rejected upstream.
+
+### Fix
+Added `attachValidation: true` to the `/auth/register` route config. This prevents Fastify from auto-rejecting invalid requests — instead `request.validationError` is set and the handler is called. `registerController` checks `request.validationError` at entry and returns `422 VALIDATION_ERROR` with the same body shape. No other routes are affected.
+
+### Files Changed
+
+| File | Change |
+|------|--------|
+| `src/modules/auth/auth.routes.js` | Added `attachValidation: true` to register route options |
+| `src/modules/auth/auth.controller.js` | Added `request.validationError` check returning 422 at top of `registerController` |
+| `tests/auth-register.test.js` | Tightened validation tests to assert exact 422; added combined-invalid-body test |
+
+### Tests
+
+`node --test tests/auth-register.test.js` — **9/9 pass**
+
+| Test | Result |
+|------|--------|
+| Register new company — 201 | ✅ |
+| Register sets auth cookies | ✅ |
+| /auth/me after register — 200 | ✅ |
+| Duplicate email — 409 | ✅ |
+| No x-tenant-key required | ✅ |
+| Missing companyName — exactly 422 | ✅ |
+| Invalid email — exactly 422 | ✅ |
+| Short password — exactly 422 | ✅ |
+| Combined invalid body (UI-team case) — 422 VALIDATION_ERROR | ✅ |
+
+### Live Evidence
+
+```
+POST /auth/register {"companyName":"","fullName":"","email":"not-an-email","password":""}
+→ 422 {"success":false,"error":{"code":"VALIDATION_ERROR","message":"Request validation failed","details":[{"field":"companyName","message":"must NOT have fewer than 2 characters"}],"requestId":"req-b"}}
+```
+
+Happy path and duplicate-email behaviors unchanged (201 / 409).
+
+### Final Verdict
+**PASS** — `POST /auth/register` validation failures now return 422. All other behaviors are unchanged.
+
+---
+
 ## Auth Registration — POST /auth/register
 
 ### Background
