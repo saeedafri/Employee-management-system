@@ -5,6 +5,7 @@ import * as otpController from './otp.controller.js';
 
 export default async function authRoutes(fastify) {
   fastify.post('/auth/register', {
+    attachValidation: true,
     schema: {
       tags: ['Authentication'],
       description: 'Register a new company and create the first SUPER_ADMIN user. Public endpoint — no auth headers required.',

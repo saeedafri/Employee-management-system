@@ -142,17 +142,38 @@ test('no x-tenant-key header required', async () => {
   assert.equal(res.status, 201, `Expected 201 without tenant header, got ${res.status}`);
 });
 
-test('missing companyName returns 422', async () => {
+test('missing companyName returns exactly 422', async () => {
   const r = await post('/auth/register', { fullName: 'Admin', email: uniqueEmail(), password: 'Password123!' });
-  assert.ok(r.status === 422 || r.status === 400, `Expected 4xx validation, got ${r.status}`);
+  assert.equal(r.status, 422, `Expected 422, got ${r.status}`);
+  assert.equal(r.json.success, false);
+  assert.equal(r.json.error.code, 'VALIDATION_ERROR');
+  assert.ok(Array.isArray(r.json.error.details), 'details should be an array');
 });
 
-test('invalid email returns 422', async () => {
+test('invalid email returns exactly 422', async () => {
   const r = await post('/auth/register', { companyName: 'Corp', fullName: 'Admin', email: 'not-an-email', password: 'Password123!' });
-  assert.ok(r.status === 422 || r.status === 400, `Expected 4xx validation, got ${r.status}`);
+  assert.equal(r.status, 422, `Expected 422, got ${r.status}`);
+  assert.equal(r.json.error.code, 'VALIDATION_ERROR');
 });
 
-test('short password returns 422', async () => {
+test('short password returns exactly 422', async () => {
   const r = await post('/auth/register', { companyName: 'Corp', fullName: 'Admin', email: uniqueEmail(), password: 'abc' });
-  assert.ok(r.status === 422 || r.status === 400, `Expected 4xx for weak password, got ${r.status}`);
+  assert.equal(r.status, 422, `Expected 422, got ${r.status}`);
+  assert.equal(r.json.error.code, 'VALIDATION_ERROR');
+});
+
+test('combined invalid body — UI-team case — returns 422 with VALIDATION_ERROR', async () => {
+  const r = await post('/auth/register', {
+    companyName: '',
+    fullName: '',
+    email: 'not-an-email',
+    password: '',
+  });
+  assert.equal(r.status, 422, `Expected 422, got ${r.status}: ${JSON.stringify(r.json)}`);
+  assert.equal(r.json.success, false);
+  assert.equal(r.json.error.code, 'VALIDATION_ERROR');
+  assert.equal(r.json.error.message, 'Request validation failed');
+  assert.ok(Array.isArray(r.json.error.details), 'details must be an array');
+  const fields = r.json.error.details.map((d) => d.field);
+  assert.ok(fields.includes('companyName'), `details must include companyName, got: ${JSON.stringify(fields)}`);
 });

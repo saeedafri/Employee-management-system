@@ -258,6 +258,22 @@ export async function getSessionsController(request, reply) {
 }
 
 export async function registerController(request, reply) {
+  if (request.validationError) {
+    const details = request.validationError.validation.map((v) => ({
+      field: v.instancePath ? v.instancePath.replace(/^\//, '').replace(/\//g, '.') : (v.params?.missingProperty || 'unknown'),
+      message: v.message,
+    }));
+    return reply.code(422).send({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Request validation failed',
+        details,
+        requestId: request.id,
+      },
+    });
+  }
+
   try {
     const body = authValidator.registerSchema.parse(request.body);
     const ipAddress = request.ip;
