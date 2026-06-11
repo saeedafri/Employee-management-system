@@ -168,14 +168,28 @@ export async function uploadDocument(request, reply) {
     }
 
     const { documentType = 'OTHER' } = request.query;
-    const buffer = await data.toBuffer();
-    // Use publicId as just the filename within folder to avoid doubled paths
+    const rawBuffer = await data.toBuffer();
     const fileId = generateId();
 
-    const uploaded = await uploadToCloudinary(buffer, {
+    const isImage = data.mimetype?.startsWith('image/');
+    let uploadBuffer = rawBuffer;
+    let uploadMimeType = data.mimetype;
+    let uploadFileName = data.filename;
+    let cloudinaryResourceType = 'raw';
+
+    if (isImage) {
+      uploadBuffer = await sharp(rawBuffer)
+        .webp({ quality: 85 })
+        .toBuffer();
+      uploadMimeType = 'image/webp';
+      uploadFileName = data.filename.replace(/\.[^.]+$/, '') + '.webp';
+      cloudinaryResourceType = 'image';
+    }
+
+    const uploaded = await uploadToCloudinary(uploadBuffer, {
       folder: `ems/${tenantId}/employees/${employeeId}`,
       publicId: fileId,
-      resourceType: 'auto',
+      resourceType: cloudinaryResourceType,
     });
 
     const doc = await prisma.employeeDocument.create({
@@ -183,10 +197,10 @@ export async function uploadDocument(request, reply) {
         tenant: { connect: { id: tenantId } },
         employee: { connect: { id: employeeId } },
         documentType,
-        fileName: data.filename,
+        fileName: uploadFileName,
         fileUrl: uploaded.url,
         storageKey: uploaded.publicId,
-        mimeType: data.mimetype,
+        mimeType: uploadMimeType,
         sizeBytes: uploaded.bytes,
         uploadedBy: { connect: { id: user.sub } },
         verificationStatus: 'PENDING',
