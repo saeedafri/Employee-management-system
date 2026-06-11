@@ -111,6 +111,58 @@ After login, two httpOnly cookies are set automatically:
 
 ## Auth
 
+### `POST /auth/register` — Public ✅
+
+Creates a new tenant and first SUPER_ADMIN user in a single transaction. No auth headers required.
+
+**Headers:**
+```
+Content-Type: application/json
+```
+No `x-tenant-key`, no `Authorization`.
+
+**Body:**
+```json
+{
+  "companyName": "Acme Inc",
+  "fullName": "Mohammad Saqib",
+  "email": "admin@acme.com",
+  "password": "Password123!"
+}
+```
+
+| Field | Type | Rules |
+|-------|------|-------|
+| `companyName` | string | min 2 chars |
+| `fullName` | string | min 2 chars |
+| `email` | string | valid email, lowercased |
+| `password` | string | min 8 chars |
+
+**Success — 201:**
+```json
+{
+  "success": true,
+  "data": {
+    "accessToken": "<jwt>",
+    "sessionId": "...",
+    "tenant": { "id": "...", "name": "Acme Inc", "country": null, "currency": null, "timezone": null },
+    "user": { "id": "...", "email": "admin@acme.com", "memberType": "SUPER_ADMIN", "employeeId": null, "employee": null },
+    "permissions": ["employees:read", "employees:write", "employees:delete", "employees:export", "departments:read", "departments:write", "attendance:read", "attendance:write", "leave:read", "leave:request", "leave:approve", "analytics:read", "permissions:manage", "audit:read"]
+  },
+  "meta": {}
+}
+```
+
+Sets cookies: `accessToken` (httpOnly, 15min), `refreshToken` (httpOnly, 30d).  
+First user is always `SUPER_ADMIN`. No `Employee` record is created.
+
+**Errors:**
+- `409 EMAIL_ALREADY_EXISTS` — email is already registered
+- `409 TENANT_ALREADY_EXISTS` — slug collision after retries (rare)
+- `422 VALIDATION_ERROR` — missing/invalid fields
+
+---
+
 ### `POST /auth/login`
 
 Include `x-tenant-key: acme-corp-001` header. Returns token directly — no OTP step.

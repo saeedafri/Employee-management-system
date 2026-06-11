@@ -257,6 +257,54 @@ export async function getSessionsController(request, reply) {
   }
 }
 
+export async function registerController(request, reply) {
+  try {
+    const body = authValidator.registerSchema.parse(request.body);
+    const ipAddress = request.ip;
+    const userAgent = request.headers['user-agent'];
+
+    const result = await authService.register(prisma, body, ipAddress, userAgent);
+
+    setRefreshTokenCookie(reply, result.refreshToken);
+    setAccessTokenCookie(reply, result.accessToken);
+
+    return reply.code(201).send(
+      successResponse({
+        accessToken: result.accessToken,
+        sessionId: result.sessionId,
+        tenant: result.tenant,
+        user: result.user,
+        permissions: result.permissions,
+      }),
+    );
+  } catch (error) {
+    if (error.code === 'EMAIL_ALREADY_EXISTS') {
+      return reply.code(409).send({
+        success: false,
+        error: { code: error.code, message: error.message },
+      });
+    }
+    if (error.code === 'TENANT_ALREADY_EXISTS') {
+      return reply.code(409).send({
+        success: false,
+        error: { code: error.code, message: error.message },
+      });
+    }
+    if (error.name === 'ZodError') {
+      return reply.code(422).send({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Request validation failed',
+          details: error.errors.map((e) => ({ field: e.path.join('.'), message: e.message })),
+        },
+      });
+    }
+    request.log.error(error);
+    throw error;
+  }
+}
+
 export async function revokeSessionController(request, reply) {
   try {
     const { sub: userId } = request.user;

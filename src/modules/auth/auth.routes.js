@@ -4,6 +4,32 @@ import * as passwordResetController from './passwordReset.controller.js';
 import * as otpController from './otp.controller.js';
 
 export default async function authRoutes(fastify) {
+  fastify.post('/auth/register', {
+    schema: {
+      tags: ['Authentication'],
+      description: 'Register a new company and create the first SUPER_ADMIN user. Public endpoint — no auth headers required.',
+      body: {
+        type: 'object',
+        required: ['companyName', 'fullName', 'email', 'password'],
+        properties: {
+          companyName: { type: 'string', minLength: 2 },
+          fullName: { type: 'string', minLength: 2 },
+          email: { type: 'string', format: 'email' },
+          password: { type: 'string', minLength: 8 },
+        },
+      },
+      response: {
+        201: { type: 'object', additionalProperties: true },
+        409: { type: 'object', additionalProperties: true },
+        422: { type: 'object', additionalProperties: true },
+      },
+    },
+    rateLimit: {
+      max: 5,
+      timeWindow: '15 minutes',
+    },
+  }, async (request, reply) => authController.registerController(request, reply));
+
   fastify.post('/auth/login', {
     schema: {
       tags: ['Authentication'],

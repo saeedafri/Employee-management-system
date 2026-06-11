@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { verifyPassword, hashSHA256 } from '../../utils/hash.js';
+import { hashPassword, verifyPassword, hashSHA256 } from '../../utils/hash.js';
 import { createAccessToken, generateRefreshToken } from '../../utils/token.js';
 import { generateId } from '../../utils/id.js';
 import { config } from '../../config/index.js';
@@ -514,6 +514,182 @@ export async function revokeSpecificSession(db, userId, sessionId) {
       entityId: sessionId,
     });
   }
+}
+
+const SUPER_ADMIN_PERMISSIONS = [
+  { key: 'employees:read', module: 'employees', description: 'View employees' },
+  { key: 'employees:write', module: 'employees', description: 'Create/edit employees' },
+  { key: 'employees:delete', module: 'employees', description: 'Delete employees' },
+  { key: 'employees:export', module: 'employees', description: 'Export employees' },
+  { key: 'departments:read', module: 'departments', description: 'View departments' },
+  { key: 'departments:write', module: 'departments', description: 'Create/edit departments' },
+  { key: 'attendance:read', module: 'attendance', description: 'View attendance' },
+  { key: 'attendance:write', module: 'attendance', description: 'Check-in/out and regularize' },
+  { key: 'leave:read', module: 'leave', description: 'View leave' },
+  { key: 'leave:request', module: 'leave', description: 'Request leave' },
+  { key: 'leave:approve', module: 'leave', description: 'Approve/deny leave' },
+  { key: 'analytics:read', module: 'analytics', description: 'View analytics' },
+  { key: 'permissions:manage', module: 'permissions', description: 'Manage roles and permissions' },
+  { key: 'audit:read', module: 'audit', description: 'View audit logs' },
+];
+
+function buildSlug(companyName) {
+  return companyName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'company';
+}
+
+async function findUniqueSlug(db, base) {
+  let slug = base;
+  let attempt = 2;
+  while (await db.tenant.findUnique({ where: { slug } })) {
+    slug = `${base}-${attempt++}`;
+    if (attempt > 100) slug = `${base}-${Date.now()}`;
+  }
+  return slug;
+}
+
+async function findUniqueTenantKey(db, base) {
+  let key = `${base}-001`;
+  let attempt = 2;
+  while (await db.tenant.findUnique({ where: { tenantKey: key } })) {
+    key = `${base}-${String(attempt++).padStart(3, '0')}`;
+    if (attempt > 100) key = `${base}-${Date.now()}`;
+  }
+  return key;
+}
+
+export async function register(db, { companyName, fullName: _fullName, email, password }, ipAddress, userAgent) {
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const existingUser = await db.user.findFirst({
+    where: { email: normalizedEmail, deletedAt: null },
+  });
+  if (existingUser) {
+    throw new AppError('Email already registered', 'EMAIL_ALREADY_EXISTS', 409);
+  }
+
+  const baseSlug = buildSlug(companyName);
+  const [slug, tenantKey] = await Promise.all([
+    findUniqueSlug(db, baseSlug),
+    findUniqueTenantKey(db, baseSlug),
+  ]);
+
+  // fullName is stored in user/employee records if employee is created later — not used during admin-only registration
+
+  const passwordHash = await hashPassword(password);
+  const permissionKeys = SUPER_ADMIN_PERMISSIONS.map((p) => p.key);
+
+  return db.$transaction(async (tx) => {
+    const tenant = await tx.tenant.create({
+      data: {
+        tenantKey,
+        slug,
+        name: companyName,
+        legalName: companyName,
+        displayName: companyName,
+        country: '',
+        primaryContactEmail: normalizedEmail,
+      },
+    });
+
+    await tx.tenantConfig.create({
+      data: { tenantId: tenant.id, companyName },
+    });
+
+    const permissions = await Promise.all(
+      SUPER_ADMIN_PERMISSIONS.map((p) =>
+        tx.permission.upsert({ where: { key: p.key }, update: {}, create: p }),
+      ),
+    );
+
+    const superAdminRole = await tx.role.create({
+      data: {
+        tenantId: tenant.id,
+        name: 'Super Admin',
+        key: 'SUPER_ADMIN',
+        isSystem: true,
+        permissions: {
+          create: permissions.map((p) => ({ permissionId: p.id })),
+        },
+      },
+    });
+
+    const user = await tx.user.create({
+      data: {
+        tenantId: tenant.id,
+        email: normalizedEmail,
+        passwordHash,
+        memberType: 'SUPER_ADMIN',
+        status: 'ACTIVE',
+      },
+    });
+
+    await tx.userRole.create({ data: { userId: user.id, roleId: superAdminRole.id } });
+
+    const sessionId = generateId();
+    const rawRefreshToken = generateRefreshToken();
+    const refreshTokenHash = hashSHA256(rawRefreshToken);
+    const expiresAt = new Date(Date.now() + config.sessionMaxAgeDays * 24 * 60 * 60 * 1000);
+
+    const session = await tx.session.create({
+      data: {
+        id: sessionId,
+        userId: user.id,
+        tenantId: tenant.id,
+        sessionFamilyId: sessionId,
+        refreshTokenHash,
+        ipAddress,
+        userAgent,
+        expiresAt,
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        tenantId: tenant.id,
+        actorUserId: user.id,
+        action: 'REGISTER',
+        entityType: 'Tenant',
+        entityId: tenant.id,
+        ipAddress,
+        userAgent,
+      },
+    });
+
+    const accessToken = await createAccessToken({
+      sub: user.id,
+      tenantId: tenant.id,
+      memberType: 'SUPER_ADMIN',
+      employeeId: null,
+      sessionId: session.id,
+      permissions: permissionKeys,
+    });
+
+    const opaqueRefreshToken = `${session.id}.${rawRefreshToken}`;
+
+    return {
+      tenant: {
+        id: tenant.id,
+        name: tenant.name,
+        country: null,
+        currency: null,
+        timezone: null,
+      },
+      user: {
+        id: user.id,
+        email: user.email,
+        memberType: user.memberType,
+        employeeId: null,
+        employee: null,
+      },
+      accessToken,
+      refreshToken: opaqueRefreshToken,
+      sessionId: session.id,
+      permissions: permissionKeys,
+    };
+  });
 }
 
 export { AppError };

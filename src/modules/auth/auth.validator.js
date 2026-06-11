@@ -39,3 +39,10 @@ export const verifyOtpSchema = z.object({
 export const resendOtpSchema = z.object({
   challengeId: z.string().min(1),
 });
+
+export const registerSchema = z.object({
+  companyName: z.string().trim().min(2, 'Company name must be at least 2 characters'),
+  fullName: z.string().trim().min(2, 'Full name must be at least 2 characters'),
+  email: z.string().email('Invalid email').toLowerCase().trim(),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
