@@ -6,7 +6,8 @@ export async function listEmployees(tenantId, filters = {}) {
 
   const where = {
     tenantId,
-    employmentStatus: status,
+    deletedAt: null,
+    ...(status && { employmentStatus: status }),
     ...(departmentIds ? { departmentId: { in: departmentIds } } : departmentId ? { departmentId } : {}),
     ...(location && { location }),
     // Row-level filtering for non-admin roles

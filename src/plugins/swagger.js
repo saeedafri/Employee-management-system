@@ -160,12 +160,12 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── EMPLOYEES ────────────────────────────────────────────────────────
         '/employees': {
-          get: op('Employees', 'List employees with pagination & filters', true, {
+          get: op('Employees', 'List employees with pagination & filters. Soft-deleted employees are always excluded. departmentId filter is subtree-aware — passing a parent department ID returns employees in that department and all descendants.', true, {
             parameters: [
               { in: 'query', name: 'page',         type: 'number',  description: 'Page number (default 1)' },
               { in: 'query', name: 'limit',        type: 'number',  description: 'Per page (default 20)' },
               { in: 'query', name: 'search',       type: 'string',  description: 'Search by name / email' },
-              { in: 'query', name: 'departmentId', type: 'string',  description: 'Filter by department' },
+              { in: 'query', name: 'departmentId', type: 'string',  description: 'Subtree-aware department filter — includes employees in selected department and all descendants. Soft-deleted excluded.' },
               { in: 'query', name: 'status',       type: 'string',  description: 'ACTIVE | INACTIVE | ON_LEAVE | RESIGNED | TERMINATED' },
               { in: 'query', name: 'location',     type: 'string' },
             ],

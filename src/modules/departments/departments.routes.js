@@ -37,7 +37,7 @@ export default async function departmentsRoutes(fastify) {
     {
       schema: {
         tags: ['Departments'],
-        description: 'Get department detail with headcount, sub-departments, and employee list',
+        description: 'Get department detail. totalHeadcount and employees preview are inclusive subtree counts (department + all descendants). Soft-deleted employees excluded.',
         params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
         response: { 200: { type: 'object', additionalProperties: true } },
       },

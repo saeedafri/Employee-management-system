@@ -155,6 +155,7 @@ export async function getEmployeeCountInDepartment(deptId, tenantId) {
     where: {
       departmentId: deptId,
       tenantId,
+      deletedAt: null,
     },
   });
   return result;

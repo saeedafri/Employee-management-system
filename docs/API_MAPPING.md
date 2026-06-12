@@ -328,6 +328,10 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
 
 **Query params:** `page`, `limit`, `search`, `departmentId`, `status`, `location`
 
+> Soft-deleted employees (`deletedAt` is non-null) are **always excluded** from this list. Use `GET /employees/:id?includeTerminated=true` (HR/Admin only) to retrieve a specific soft-deleted employee.
+
+> `departmentId` filter is **subtree-aware** — passing a parent department ID returns employees in that department and all descendant departments. Soft-deleted employees are excluded from the count and list.
+
 **Response `data`:**
 
 > **Note:** Double-nested — `data.data` is the array, `data.pagination` has counts.
@@ -506,9 +510,9 @@ Returns array of root departments. Each has a `children` array (populated if sub
 
 ### Department employee counts
 
-`_count.employees` is an **inclusive subtree count** — it includes employees directly assigned to the department **and** all employees assigned to any child, grandchild, or deeper descendant departments.
+`_count.employees` is an **inclusive subtree count** — it includes employees directly assigned to the department **and** all employees assigned to any child, grandchild, or deeper descendant departments. Soft-deleted employees (`deletedAt` non-null) are excluded from all counts.
 
-`directEmployeeCount` is the direct-only count (only employees whose `departmentId` equals this department's ID).
+`directEmployeeCount` is the direct-only count (only employees whose `departmentId` equals this department's ID, also excludes soft-deleted).
 
 **Example:**
 ```
@@ -520,6 +524,8 @@ GET /departments response:
 ```
 
 Use `_count.employees` for cards and badges. Use `directEmployeeCount` only if the UI needs to show "X direct + Y in sub-departments".
+
+All department count fields (`_count.employees`, `totalHeadcount`, `employeeCount`, `directEmployeeCount`) exclude soft-deleted employees.
 
 ---
 
@@ -2053,7 +2059,7 @@ Call after file upload completes. Returns the confirmed document record.
 
 **Query params:** `page` (default 1), `limit` (default 20), `search` (optional name filter).
 
-Returns employees assigned to the selected department **and all descendant departments** (children, grandchildren, etc.). `pagination.total` reflects the full subtree count.
+Returns employees assigned to the selected department **and all descendant departments** (children, grandchildren, etc.). Soft-deleted employees are excluded. `pagination.total` reflects the full subtree count.
 
 **Response `data`:**
 ```json
