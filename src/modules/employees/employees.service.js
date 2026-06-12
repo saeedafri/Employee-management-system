@@ -168,7 +168,7 @@ export async function createEmployee(tenantId, data, userId) {
       if (!deliveryEmail) {
         inviteForResponse = { sent: false, reason: 'NO_DELIVERY_EMAIL', sentTo: resolvedEmailTarget };
       } else {
-        const activationUrl = `${config.frontendSetPasswordUrl}?token=${inviteCoreResult.rawToken}`;
+        const activationUrl = `${config.frontendAppUrl}/set-password?token=${inviteCoreResult.rawToken}`;
         const emailResult = await sendInviteEmail(deliveryEmail, {
           employeeFirstName: employee.firstName,
           companyName,

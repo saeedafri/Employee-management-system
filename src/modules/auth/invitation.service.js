@@ -64,7 +64,7 @@ async function createInviteToken(tenantId, employeeId, userId, emailTarget, emai
 }
 
 async function dispatchInviteEmail(to, { employeeFirstName, companyName, rawToken, expiresAt }) {
-  const activationUrl = `${config.frontendSetPasswordUrl}?token=${rawToken}`;
+  const activationUrl = `${config.frontendAppUrl}/set-password?token=${rawToken}`;
   const expiresAtStr = expiresAt.toUTCString();
   try {
     const result = await sendInviteEmail(to, {

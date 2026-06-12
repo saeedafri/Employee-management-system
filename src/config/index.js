@@ -41,7 +41,7 @@ export const config = {
 
   // Employee Invitation
   inviteTokenTtlHours: parseInt(process.env.INVITE_TOKEN_TTL_HOURS, 10) || 72,
-  frontendSetPasswordUrl: process.env.FRONTEND_SET_PASSWORD_URL || 'http://localhost:5173/set-password',
+  frontendAppUrl: (process.env.FRONTEND_APP_URL || 'http://localhost:3000').replace(/\/$/, ''),
 
   // App
   appName: process.env.APP_NAME || 'EMS',
