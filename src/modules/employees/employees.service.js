@@ -2,6 +2,7 @@ import * as repo from './employees.repository.js';
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
+import { createAndSendInvite } from '../auth/invitation.service.js';
 import {
   validateDepartmentPath,
   loadAllDeptsByTenant,
@@ -98,15 +99,87 @@ export async function createEmployee(tenantId, data, userId) {
       return errorResponse('DUPLICATE_WORK_EMAIL', 'Work email already exists', null);
     }
 
+    const { sendInvite = false, emailTarget, memberType, ...employeeData } = data;
+
     const employee = await repo.createEmployee(tenantId, {
-      ...data,
+      ...employeeData,
       departmentId: leafDepartmentId,
       createdBy: userId,
     });
 
+    // Handle invite — create user + token + send email
+    if (sendInvite) {
+      const inviteResult = await createAndSendInvite(tenantId, employee, emailTarget ?? null, userId);
+
+      if (!inviteResult.success && inviteResult.code === 'NO_DELIVERY_EMAIL') {
+        // Return employee but flag the missing email issue
+        const formatted = formatEmployeeForApi(employee, departmentPath);
+        formatted.invite = { sent: false, reason: 'NO_DELIVERY_EMAIL', sentTo: emailTarget ?? 'PERSONAL' };
+        return successResponse(formatted, { cached: false });
+      }
+
+      const formatted = formatEmployeeForApi(employee, departmentPath);
+      formatted.user = inviteResult.user ?? null;
+      formatted.invite = {
+        sent: inviteResult.sent,
+        sentTo: inviteResult.sentTo,
+        email: inviteResult.email,
+        expiresAt: inviteResult.expiresAt,
+        ...(inviteResult.reason ? { reason: inviteResult.reason } : {}),
+      };
+      return successResponse(formatted, { cached: false });
+    }
+
     return successResponse(formatEmployeeForApi(employee, departmentPath), { cached: false });
   } catch (error) {
     return errorResponse('CREATE_ERROR', error.message, null);
+  }
+}
+
+export async function sendEmployeeInvite(employeeId, tenantId, emailTarget, actorId) {
+  try {
+    const employee = await prisma.employee.findFirst({
+      where: { id: employeeId, tenantId, deletedAt: null },
+    });
+    if (!employee) return errorResponse('EMPLOYEE_NOT_FOUND', 'Employee not found', null, 404);
+
+    if (employee.employmentStatus === 'TERMINATED') {
+      return errorResponse('EMPLOYEE_TERMINATED', 'Cannot invite a terminated employee', null, 409);
+    }
+
+    // Rate limit: max 3 invites per hour per employee
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const recentCount = await prisma.userInvitation.count({
+      where: { employeeId, tenantId, createdAt: { gte: oneHourAgo } },
+    });
+    if (recentCount >= 3) {
+      return errorResponse('RATE_LIMITED', 'Too many invite sends. Try again later.', null, 429);
+    }
+
+    // Check if already ACTIVE
+    if (employee.userId) {
+      const user = await prisma.user.findUnique({ where: { id: employee.userId } });
+      if (user?.status === 'ACTIVE') {
+        return errorResponse('ALREADY_ACTIVE', 'User is already active', null, 409);
+      }
+    }
+
+    const inviteResult = await createAndSendInvite(tenantId, employee, emailTarget ?? null, actorId);
+
+    if (!inviteResult.success) {
+      const statusMap = { NO_DELIVERY_EMAIL: 422, ALREADY_ACTIVE: 409 };
+      return errorResponse(inviteResult.code, inviteResult.message, null, statusMap[inviteResult.code] ?? 400);
+    }
+
+    return successResponse({
+      sent: inviteResult.sent,
+      sentTo: inviteResult.sentTo,
+      email: inviteResult.email,
+      expiresAt: inviteResult.expiresAt,
+      ...(inviteResult.reason ? { reason: inviteResult.reason } : {}),
+    }, { cached: false });
+  } catch (error) {
+    return errorResponse('INVITE_ERROR', error.message, null);
   }
 }
 

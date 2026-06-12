@@ -24,3 +24,8 @@ export async function verifyToken(token) {
 export function generateRefreshToken() {
   return crypto.randomBytes(32).toString('hex');
 }
+
+// 256-bit (32-byte) cryptographically random token — use for invite links
+export function generateSecureToken() {
+  return crypto.randomBytes(32).toString('hex');
+}

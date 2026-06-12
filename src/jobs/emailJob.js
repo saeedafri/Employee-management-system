@@ -59,6 +59,26 @@ function renderEmailTemplate(template, data) {
         </body>
       </html>
     `,
+    account_invite: (d) => `
+      <html>
+        <body style="font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px;">
+          <div style="max-width: 480px; margin: 0 auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="background: ${brandColor}; padding: 24px 32px;">
+              <h1 style="color: #fff; margin: 0; font-size: 20px;">Welcome to ${d.companyName}</h1>
+            </div>
+            <div style="padding: 32px;">
+              <p style="margin-top: 0;">Hi ${d.employeeFirstName},</p>
+              <p>You've been invited to join <strong>${d.companyName}</strong> on EMS. Click the button below to activate your account and set your password.</p>
+              <p style="color: #888; font-size: 13px;">This link expires on <strong>${d.expiresAt}</strong>.</p>
+              <a href="${d.activationUrl}" style="display: inline-block; background: ${brandColor}; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 16px 0;">Activate Account</a>
+              <p style="color: #888; font-size: 13px;">If you didn't expect this invitation, you can safely ignore this email.</p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
+              <p style="color: #aaa; font-size: 12px; margin: 0;">Need help? Contact <a href="mailto:${d.supportEmail}" style="color: ${brandColor};">${d.supportEmail}</a></p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
   };
 
   const templateFn = templates[template];
@@ -98,4 +118,15 @@ export async function enqueuePasswordResetEmail(to, resetToken, expiresInMinutes
 
 export async function enqueueOtpEmail(to, code, expiresInMinutes) {
   return sendEmail(to, 'Your EMS OTP Code', 'otp_verification', { code, expiresInMinutes });
+}
+
+export async function sendInviteEmail(to, { employeeFirstName, companyName, activationUrl, expiresAt, supportEmail }) {
+  const subject = `Activate your account for ${companyName}`;
+  return sendEmail(to, subject, 'account_invite', {
+    employeeFirstName,
+    companyName,
+    activationUrl,
+    expiresAt,
+    supportEmail: supportEmail || config.smtpFrom,
+  });
 }

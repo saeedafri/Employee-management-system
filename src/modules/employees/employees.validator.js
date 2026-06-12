@@ -31,10 +31,18 @@ export const createEmployeeSchema = z.object({
   joinedOn: z.coerce.date(),
   employmentType: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP']).default('FULL_TIME'),
   location: z.string().optional(),
+  // Invitation fields (optional, backward-compatible)
+  memberType: z.enum(['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER', 'EMPLOYEE', 'AUDITOR']).default('EMPLOYEE'),
+  sendInvite: z.boolean().default(false),
+  emailTarget: z.enum(['PERSONAL', 'WORK']).optional(),
+});
+
+export const sendInviteSchema = z.object({
+  emailTarget: z.enum(['PERSONAL', 'WORK']).optional(),
 });
 
 // All fields optional for PATCH; if departmentId provided it must still be a valid non-empty array
-export const updateEmployeeSchema = createEmployeeSchema.partial().extend({
+export const updateEmployeeSchema = createEmployeeSchema.omit({ memberType: true, sendInvite: true, emailTarget: true }).partial().extend({
   departmentId: deptIdArray.optional(),
 });
 

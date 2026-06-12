@@ -2,6 +2,7 @@ import { authenticate } from '../../middleware/authenticate.js';
 import * as authController from './auth.controller.js';
 import * as passwordResetController from './passwordReset.controller.js';
 import * as otpController from './otp.controller.js';
+import * as invitationService from './invitation.service.js';
 
 export default async function authRoutes(fastify) {
   fastify.post('/auth/register', {
@@ -254,4 +255,87 @@ export default async function authRoutes(fastify) {
       timeWindow: '15 minutes',
     },
   }, async (request, reply) => otpController.resendOtpController(request, reply));
+
+  // ── Invitation routes (public) ──────────────────────────────────────────────
+
+  fastify.get('/auth/invitation', {
+    schema: {
+      tags: ['Invitation'],
+      description: 'Validate an invitation token. Always returns 200 — check status field (VALID | EXPIRED | USED | NOT_FOUND).',
+      querystring: {
+        type: 'object',
+        required: ['token'],
+        properties: { token: { type: 'string' } },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+  }, async (request, reply) => {
+    const result = await invitationService.validateInvitationToken(request.query.token);
+    return reply.send({ success: true, data: result, meta: {} });
+  });
+
+  fastify.post('/auth/accept-invitation', {
+    schema: {
+      tags: ['Invitation'],
+      description: 'Accept an invitation: set password and activate the account (INVITED → ACTIVE). Does not auto-login.',
+      body: {
+        type: 'object',
+        required: ['token', 'password'],
+        properties: {
+          token: { type: 'string' },
+          password: { type: 'string' },
+        },
+      },
+      response: {
+        200: { type: 'object', additionalProperties: true },
+        404: { type: 'object', additionalProperties: true },
+        409: { type: 'object', additionalProperties: true },
+        410: { type: 'object', additionalProperties: true },
+        422: { type: 'object', additionalProperties: true },
+      },
+    },
+    rateLimit: { max: 10, timeWindow: '15 minutes' },
+  }, async (request, reply) => {
+    const { token, password } = request.body;
+    const result = await invitationService.acceptInvitation(token, password);
+
+    if (!result.success) {
+      const statusMap = {
+        INVITE_EXPIRED: 410,
+        INVITE_ALREADY_USED: 409,
+        INVALID_TOKEN: 404,
+        WEAK_PASSWORD: 422,
+      };
+      const status = statusMap[result.code] ?? 400;
+      const body = {
+        success: false,
+        error: {
+          code: result.code,
+          message: result.code === 'WEAK_PASSWORD' ? 'Password does not meet policy' : 'Invitation error',
+          ...(result.details ? { details: result.details } : {}),
+          requestId: request.id,
+        },
+      };
+      return reply.code(status).send(body);
+    }
+
+    return reply.send({ success: true, data: { activated: result.activated }, meta: {} });
+  });
+
+  fastify.post('/auth/invitation/resend', {
+    schema: {
+      tags: ['Invitation'],
+      description: 'Public self-serve invite resend. Always returns generic 200 to prevent account enumeration.',
+      body: {
+        type: 'object',
+        required: ['email'],
+        properties: { email: { type: 'string', format: 'email' } },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    rateLimit: { max: 5, timeWindow: '15 minutes' },
+  }, async (request, reply) => {
+    await invitationService.publicResendInvite(request.body.email);
+    return reply.send({ success: true, data: { message: 'If an invite exists, a new link was sent' }, meta: {} });
+  });
 }

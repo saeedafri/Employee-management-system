@@ -8,14 +8,16 @@ import { generateId } from '../../utils/id.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
 import sharp from 'sharp';
 
-const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS']);
-const NOT_FOUND_CODES = new Set(['NOT_FOUND']);
-const UNPROCESSABLE_CODES = new Set(['VALIDATION_ERROR']);
+const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS', 'ALREADY_ACTIVE', 'EMPLOYEE_TERMINATED']);
+const NOT_FOUND_CODES = new Set(['NOT_FOUND', 'EMPLOYEE_NOT_FOUND']);
+const UNPROCESSABLE_CODES = new Set(['VALIDATION_ERROR', 'NO_DELIVERY_EMAIL']);
+const RATE_LIMIT_CODES = new Set(['RATE_LIMITED']);
 
 function errorStatus(code) {
   if (CONFLICT_CODES.has(code)) return 409;
   if (NOT_FOUND_CODES.has(code)) return 404;
   if (UNPROCESSABLE_CODES.has(code)) return 422;
+  if (RATE_LIMIT_CODES.has(code)) return 429;
   return 400;
 }
 
@@ -489,5 +491,26 @@ export async function deletePhoto(request, reply) {
     reply.code(200).send({ success: true, message: 'Profile photo deleted' });
   } catch (err) {
     reply.code(500).send(errorResponse('DELETE_ERROR', err.message, request.requestId));
+  }
+}
+
+export async function sendInvite(request, reply) {
+  const { user } = request; const tenantId = request.tenant.id;
+
+  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can send invites', request.requestId));
+  }
+
+  try {
+    const { id: employeeId } = request.params;
+    const { emailTarget } = await validator.sendInviteSchema.parseAsync(request.body ?? {});
+    const result = await service.sendEmployeeInvite(employeeId, tenantId, emailTarget, user.id);
+    reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
+  } catch (error) {
+    if (error.name === 'ZodError') {
+      const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    throw error;
   }
 }

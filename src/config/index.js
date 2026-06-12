@@ -39,6 +39,10 @@ export const config = {
   resetPasswordRateLimitWindow: process.env.RESET_PASSWORD_RATE_LIMIT_WINDOW || '15 minutes',
   frontendResetPasswordUrl: process.env.FRONTEND_RESET_PASSWORD_URL || 'http://localhost:5173/reset-password',
 
+  // Employee Invitation
+  inviteTokenTtlHours: parseInt(process.env.INVITE_TOKEN_TTL_HOURS, 10) || 72,
+  frontendSetPasswordUrl: process.env.FRONTEND_SET_PASSWORD_URL || 'http://localhost:5173/set-password',
+
   // App
   appName: process.env.APP_NAME || 'EMS',
   appVersion: process.env.APP_VERSION || '1.0.0',

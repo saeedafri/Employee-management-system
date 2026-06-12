@@ -17,6 +17,7 @@ import {
   downloadDocument,
   uploadPhoto,
   deletePhoto,
+  sendInvite,
 } from './employees.controller.js';
 
 export async function employeesRoutes(fastify) {
@@ -108,6 +109,9 @@ export async function employeesRoutes(fastify) {
             departmentId: { type: 'array', items: { type: 'string' }, minItems: 1, description: 'Ordered root→leaf path. Last element is stored as Employee.departmentId.' },
             managerId: { type: 'string' },
             joinedOn: { type: 'string' },
+            memberType: { type: 'string', enum: ['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER', 'EMPLOYEE', 'AUDITOR'], description: 'Login role for the linked User. Defaults to EMPLOYEE.' },
+            sendInvite: { type: 'boolean', description: 'Send invitation email so employee can set their password. Default false.' },
+            emailTarget: { type: 'string', enum: ['PERSONAL', 'WORK'], description: 'Which email to send the invite to. Falls back to tenant setting invite_email_target.' },
           },
         },
         response: {
@@ -116,6 +120,36 @@ export async function employeesRoutes(fastify) {
       },
     },
     createEmployee,
+  );
+
+  fastify.post(
+    '/employees/:id/invite',
+    {
+      schema: {
+        tags: ['Employees'],
+        description: 'Send or resend invitation email for an employee. Creates/links a User with INVITED status if needed.',
+        security: [{ Bearer: [] }],
+        params: {
+          type: 'object',
+          required: ['id'],
+          properties: { id: { type: 'string' } },
+        },
+        body: {
+          type: 'object',
+          properties: {
+            emailTarget: { type: 'string', enum: ['PERSONAL', 'WORK'], description: 'Which email to send the invite to.' },
+          },
+        },
+        response: {
+          200: { type: 'object', additionalProperties: true },
+          404: { type: 'object', additionalProperties: true },
+          409: { type: 'object', additionalProperties: true },
+          422: { type: 'object', additionalProperties: true },
+          429: { type: 'object', additionalProperties: true },
+        },
+      },
+    },
+    sendInvite,
   );
 
   fastify.patch(

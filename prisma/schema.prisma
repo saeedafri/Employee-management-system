@@ -238,6 +238,7 @@ model Tenant {
   PaymentBatch              PaymentBatch[]
   PayrollEvent              PayrollEvent[]
   PayslipTemplate           PayslipTemplate?
+  userInvitations           UserInvitation[]
 
   @@index([deletedAt])
 }
@@ -275,6 +276,8 @@ model User {
   settingsUpdatedBy       Setting[]                         @relation("updatedBy")
   initiatedPayrollRuns    PayrollRun[]                      @relation("runInitiatedBy")
   approvedPayrollRuns     PayrollRun[]                      @relation("runApprovedBy")
+  invitations             UserInvitation[]                  @relation("invitedUser")
+  createdInvitations      UserInvitation[]                  @relation("inviteCreator")
 
   @@unique([tenantId, email])
   @@index([tenantId])
@@ -333,6 +336,7 @@ model Employee {
   historicalPayslips        HistoricalPayslip[]
   ReimbursementClaim        ReimbursementClaim[]
   Garnishment               Garnishment[]
+  invitations               UserInvitation[]
 
   @@unique([tenantId, employeeCode])
   @@unique([tenantId, workEmail])
@@ -855,6 +859,7 @@ model TenantConfig {
   workingHoursEnd   String   @default("18:00") // HH:mm format
   fiscalYearStart   Int      @default(4) // April = 4
   fiscalYearEnd     Int      @default(3) // March = 3
+  inviteEmailTarget String   @default("PERSONAL") // PERSONAL | WORK
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -1706,4 +1711,32 @@ model PayslipTemplate {
   updatedAt DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model UserInvitation {
+  id           String    @id @default(cuid())
+  tenantId     String
+  employeeId   String
+  userId       String
+  tokenHash    String    @unique
+  emailTarget  String    // PERSONAL | WORK
+  email        String    // actual email address the invite was sent to
+  expiresAt    DateTime
+  usedAt       DateTime?
+  revokedAt    DateTime?
+  createdById  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee  Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  user      User     @relation("invitedUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdBy User?    @relation("inviteCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([employeeId])
+  @@index([tokenHash])
+  @@index([tenantId, userId, usedAt, revokedAt])
 }

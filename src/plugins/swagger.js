@@ -9,8 +9,11 @@ const r400 = { description: 'Bad Request — malformed JSON, missing tenant cont
 const r401 = { description: 'Unauthorized — missing, expired, or revoked token' };
 const r403 = { description: 'Forbidden — authenticated but insufficient role/permission' };
 const _r404 = { description: 'Not Found' };
+const r404 = _r404;
 const _r409 = { description: 'Conflict — duplicate, cycle, or resource already exists' };
+const r409 = _r409;
 const _r422 = { description: 'Unprocessable Entity — field-level validation failure; error.details[] contains {field, message} pairs' };
+const r422 = _r422;
 const idParam = [{ in: 'path', name: 'id', type: 'string', required: true, description: 'Resource ID' }];
 const pathParam = (name, desc) => ({ in: 'path', name, type: 'string', required: true, description: desc });
 const queryParam = (name, type, desc) => ({ in: 'query', name, type, required: false, description: desc });
@@ -157,6 +160,22 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/auth/resend-otp': {
           post: op('Authentication', 'Resend OTP code', false),
         },
+        '/auth/invitation': {
+          get: op('Invitation', 'Validate invitation token. Always returns 200 — check status field: VALID | EXPIRED | USED | NOT_FOUND. No auth required.', false, {
+            parameters: [{ in: 'query', name: 'token', required: true, type: 'string' }],
+            responses: { 200: { description: 'status: VALID | EXPIRED | USED | NOT_FOUND' } },
+          }),
+        },
+        '/auth/accept-invitation': {
+          post: op('Invitation', 'Accept invitation: set password and activate account (INVITED → ACTIVE). Does NOT auto-login — FE redirects to /login. Returns 410 INVITE_EXPIRED, 409 INVITE_ALREADY_USED, 404 INVALID_TOKEN, 422 WEAK_PASSWORD.', false, {
+            responses: { 200: r200, 404: r404, 409: r409, 410: { description: 'INVITE_EXPIRED' }, 422: r422 },
+          }),
+        },
+        '/auth/invitation/resend': {
+          post: op('Invitation', 'Public self-serve invite resend. Always returns generic 200 (prevents enumeration). Rate-limited 5 per 15 min.', false, {
+            responses: { 200: r200, 429: { description: 'RATE_LIMITED' } },
+          }),
+        },
 
         // ── EMPLOYEES ────────────────────────────────────────────────────────
         '/employees': {
@@ -170,12 +189,18 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
               { in: 'query', name: 'location',     type: 'string' },
             ],
           }),
-          post: op('Employees', 'Create new employee. departmentId must be a string[] path ordered root→leaf (min 1). Last element is stored as Employee.departmentId. Response always returns departmentId: string[] and department: {id,name}[].', true, { responses: { 201: r201, 400: r400, 422: { description: 'VALIDATION_ERROR — departmentId invalid path' } } }),
+          post: op('Employees', 'Create new employee. Optional fields: memberType (login role, default EMPLOYEE), sendInvite (bool, default false), emailTarget (PERSONAL|WORK). If sendInvite=true, creates User with INVITED status, issues invite token, sends email. Response includes user and invite objects. Email failure does not roll back employee creation.', true, { responses: { 201: r201, 400: r400, 422: { description: 'VALIDATION_ERROR — departmentId invalid path' } } }),
         },
         '/employees/{id}': {
           get:    op('Employees', 'Get employee by ID',    true, { parameters: idParam }),
           patch:  op('Employees', 'Update employee',       true, { parameters: idParam }),
           delete: op('Employees', 'Delete / terminate employee', true, { parameters: idParam }),
+        },
+        '/employees/{id}/invite': {
+          post: op('Employees', 'Send or resend invitation email for an employee. Creates/links User with INVITED status if needed. Rate-limited 3/hr per employee. Errors: 404 EMPLOYEE_NOT_FOUND, 409 ALREADY_ACTIVE, 409 EMPLOYEE_TERMINATED, 422 NO_DELIVERY_EMAIL, 429 RATE_LIMITED.', true, {
+            parameters: idParam,
+            responses: { 200: r200, 404: r404, 409: r409, 422: r422, 429: { description: 'RATE_LIMITED' } },
+          }),
         },
         '/employees/export/csv': {
           get: op('Employees', 'Export employees as CSV'),

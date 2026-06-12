@@ -49,12 +49,19 @@ export async function updateTenantConfig(tenantId, data) {
   if (data.timezone !== undefined) updateData.timezone = data.timezone;
   if (data.working_hours_start !== undefined) updateData.workingHoursStart = data.working_hours_start;
   if (data.working_hours_end !== undefined) updateData.workingHoursEnd = data.working_hours_end;
+  if (data.invite_email_target !== undefined) {
+    if (!['PERSONAL', 'WORK'].includes(data.invite_email_target)) {
+      throw new Error('invite_email_target must be PERSONAL or WORK');
+    }
+    updateData.inviteEmailTarget = data.invite_email_target;
+  }
 
   return prisma.tenantConfig.upsert({
     where: { tenantId },
     update: updateData,
     create: {
       tenantId,
+      companyName: updateData.companyName ?? 'My Company',
       ...updateData,
     },
   });

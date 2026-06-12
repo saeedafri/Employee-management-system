@@ -30,6 +30,10 @@ async function validateLogin(db, tenantId, email, password) {
     throw new AppError('Account is disabled', 'ACCOUNT_DISABLED', 401);
   }
 
+  if (user.status === 'INVITED') {
+    throw new AppError('Please activate your account using the invitation email.', 'ACCOUNT_NOT_ACTIVATED', 403);
+  }
+
   const passwordMatches = await verifyPassword(password, user.passwordHash);
   if (!passwordMatches) {
     throw new AppError('Invalid credentials', 'INVALID_CREDENTIALS', 401);

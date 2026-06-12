@@ -27,6 +27,7 @@ export async function getTenantConfig(tenantId) {
     working_hours_start: config?.workingHoursStart ?? null,
     working_hours_end: config?.workingHoursEnd ?? null,
     fiscal_year_start: config?.fiscalYearStart ?? null,
+    invite_email_target: config?.inviteEmailTarget ?? 'PERSONAL',
   };
 }
 
@@ -39,7 +40,7 @@ export async function updateTenantConfig(tenantId, data) {
     promises.push(settingsRepository.updateTenantFields(tenantId, data));
   }
 
-  const configFields = ['company_name', 'timezone', 'working_hours_start', 'working_hours_end'];
+  const configFields = ['company_name', 'timezone', 'working_hours_start', 'working_hours_end', 'invite_email_target'];
   const hasConfigFields = configFields.some((f) => data[f] !== undefined);
   if (hasConfigFields) {
     promises.push(settingsRepository.updateTenantConfig(tenantId, data));
