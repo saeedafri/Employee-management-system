@@ -54,7 +54,7 @@ export async function getEmployeeActivity(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
     if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER'].includes(user.memberType)) {
-      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee activity', request.requestId));
+      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee activity', {}, request.id));
     }
     const result = await service.getEmployeeActivity(id, tenantId, { limit: Number(request.query.limit) || 50 });
     reply.code(result.error ? (result.error.code === 'NOT_FOUND' ? 404 : 400) : 200).send(result);
@@ -74,7 +74,7 @@ export async function getEmployee(request, reply) {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
 
     if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee data', request.requestId));
+      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee data', {}, request.id));
     }
 
     const includeTerminated = request.query.includeTerminated === 'true' && ['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType);
@@ -116,7 +116,7 @@ export async function updateEmployee(request, reply) {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
 
     if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot update other employee data', request.requestId));
+      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot update other employee data', {}, request.id));
     }
 
     const data = await validator.updateEmployeeSchema.parseAsync(request.body);
@@ -498,7 +498,7 @@ export async function sendInvite(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can send invites', request.requestId));
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can send invites', {}, request.id));
   }
 
   try {

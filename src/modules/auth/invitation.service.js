@@ -98,7 +98,7 @@ async function writeAuditLog(tenantId, actorUserId, action, entityId, extra = {}
  * Core: create/link User (INVITED), invalidate old invites, issue token, send email.
  * Used by POST /employees (sendInvite=true) and POST /employees/:id/invite.
  */
-export async function createAndSendInvite(tenantId, employee, emailTargetOverride, createdById) {
+export async function createAndSendInvite(tenantId, employee, emailTargetOverride, createdById, memberType = 'EMPLOYEE') {
   const emailTarget = emailTargetOverride ?? (await getInviteEmailTarget(tenantId));
   const email = resolveEmailAddress(employee, emailTarget);
 
@@ -130,7 +130,7 @@ export async function createAndSendInvite(tenantId, employee, emailTargetOverrid
         tenantId,
         email: employee.workEmail,
         passwordHash: '',
-        memberType: 'EMPLOYEE',
+        memberType,
         status: 'INVITED',
         employeeId: employee.id,
       },

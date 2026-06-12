@@ -3,6 +3,7 @@ import * as authController from './auth.controller.js';
 import * as passwordResetController from './passwordReset.controller.js';
 import * as otpController from './otp.controller.js';
 import * as invitationService from './invitation.service.js';
+import { errorResponse } from '../../utils/response.js';
 
 export default async function authRoutes(fastify) {
   fastify.post('/auth/register', {
@@ -307,16 +308,8 @@ export default async function authRoutes(fastify) {
         WEAK_PASSWORD: 422,
       };
       const status = statusMap[result.code] ?? 400;
-      const body = {
-        success: false,
-        error: {
-          code: result.code,
-          message: result.code === 'WEAK_PASSWORD' ? 'Password does not meet policy' : 'Invitation error',
-          ...(result.details ? { details: result.details } : {}),
-          requestId: request.id,
-        },
-      };
-      return reply.code(status).send(body);
+      const message = result.code === 'WEAK_PASSWORD' ? 'Password does not meet policy' : 'Invitation error';
+      return reply.code(status).send(errorResponse(result.code, message, result.details ?? {}, request.id));
     }
 
     return reply.send({ success: true, data: { activated: result.activated }, meta: {} });

@@ -86,23 +86,51 @@ function renderEmailTemplate(template, data) {
   return templateFn(data);
 }
 
+async function sendViaResend(to, subject, html) {
+  const from = config.resendFrom || 'onboarding@resend.dev';
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ from, to, subject, html }),
+    });
+    const body = await res.json();
+    if (!res.ok) {
+      logger.error({ type: 'resend_failed', to, status: res.status, error: body.message });
+      return { success: false, error: body.message ?? 'Resend API error' };
+    }
+    logger.info({ type: 'email_sent_resend', to, subject, messageId: body.id });
+    return { success: true, messageId: body.id };
+  } catch (err) {
+    logger.error({ type: 'resend_network_error', to, error: err.message });
+    return { success: false, error: err.message };
+  }
+}
+
 async function sendEmail(to, subject, template, data) {
   if (config.isTesting) return { success: true, devMode: true };
 
+  const html = renderEmailTemplate(template, data);
+
+  if (config.resendApiKey) {
+    return sendViaResend(to, subject, html);
+  }
+
   if (!config.smtpUser || !config.smtpPass) {
-    logger.warn({ type: 'email_skipped', reason: 'SMTP not configured' });
-    return { success: false, reason: 'SMTP not configured' };
+    logger.warn({ type: 'email_skipped', reason: 'No email provider configured' });
+    return { success: false, reason: 'No email provider configured' };
   }
 
   try {
-    const html = renderEmailTemplate(template, data);
     const info = await getTransporter().sendMail({
       from: `EMS <${config.smtpFrom}>`,
       to,
       subject,
       html,
     });
-
     logger.info({ type: 'email_sent', to, template, messageId: info.messageId });
     return { success: true, messageId: info.messageId };
   } catch (err) {

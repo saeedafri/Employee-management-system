@@ -3,6 +3,11 @@ import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
 import { createAndSendInvite } from '../auth/invitation.service.js';
+import { generateSecureToken } from '../../utils/token.js';
+import { hashSHA256 } from '../../utils/hash.js';
+import { generateId } from '../../utils/id.js';
+import { config } from '../../config/index.js';
+import { sendInviteEmail } from '../../jobs/emailJob.js';
 import {
   validateDepartmentPath,
   loadAllDeptsByTenant,
@@ -10,6 +15,12 @@ import {
   getDescendantIds,
   formatEmployeeForApi,
 } from './employeeDepartmentPath.js';
+
+function maskEmail(email) {
+  const [local, domain] = email.split('@');
+  if (local.length <= 3) return `${local[0]}${'*'.repeat(Math.max(0, local.length - 2))}${local[local.length - 1] ?? ''}@${domain}`;
+  return `${local[0]}${'*'.repeat(local.length - 2)}${local[local.length - 1]}@${domain}`;
+}
 
 function deptPathError(message) {
   return {
@@ -99,38 +110,100 @@ export async function createEmployee(tenantId, data, userId) {
       return errorResponse('DUPLICATE_WORK_EMAIL', 'Work email already exists', null);
     }
 
-    const { sendInvite = false, emailTarget, memberType, ...employeeData } = data;
+    const { sendInvite = false, emailTarget, memberType = 'EMPLOYEE', ...employeeData } = data;
 
-    const employee = await repo.createEmployee(tenantId, {
-      ...employeeData,
-      departmentId: leafDepartmentId,
-      createdBy: userId,
-    });
-
-    // Handle invite — create user + token + send email
+    // Pre-resolve invite targets outside transaction (read-only queries)
+    let resolvedEmailTarget, deliveryEmail, companyName;
     if (sendInvite) {
-      const inviteResult = await createAndSendInvite(tenantId, employee, emailTarget ?? null, userId);
-
-      if (!inviteResult.success && inviteResult.code === 'NO_DELIVERY_EMAIL') {
-        // Return employee but flag the missing email issue
-        const formatted = formatEmployeeForApi(employee, departmentPath);
-        formatted.invite = { sent: false, reason: 'NO_DELIVERY_EMAIL', sentTo: emailTarget ?? 'PERSONAL' };
-        return successResponse(formatted, { cached: false });
+      if (emailTarget) {
+        resolvedEmailTarget = emailTarget;
+      } else {
+        const cfg = await prisma.tenantConfig.findUnique({ where: { tenantId }, select: { inviteEmailTarget: true } });
+        resolvedEmailTarget = cfg?.inviteEmailTarget ?? 'PERSONAL';
       }
+      deliveryEmail = resolvedEmailTarget === 'WORK' ? (employeeData.workEmail ?? null) : (employeeData.personalEmail ?? null);
 
-      const formatted = formatEmployeeForApi(employee, departmentPath);
-      formatted.user = inviteResult.user ?? null;
-      formatted.invite = {
-        sent: inviteResult.sent,
-        sentTo: inviteResult.sentTo,
-        email: inviteResult.email,
-        expiresAt: inviteResult.expiresAt,
-        ...(inviteResult.reason ? { reason: inviteResult.reason } : {}),
-      };
-      return successResponse(formatted, { cached: false });
+      const cfg = await prisma.tenantConfig.findUnique({ where: { tenantId }, select: { companyName: true } });
+      if (cfg?.companyName) {
+        companyName = cfg.companyName;
+      } else {
+        const tenant = await prisma.tenant.findUnique({ where: { id: tenantId }, select: { name: true } });
+        companyName = tenant?.name ?? 'Your Company';
+      }
     }
 
-    return successResponse(formatEmployeeForApi(employee, departmentPath), { cached: false });
+    // Atomic: employee + user + invite token in one transaction
+    let employee, inviteCoreResult;
+    const employeeCreateData = { tenantId, ...employeeData, departmentId: leafDepartmentId, createdBy: userId, updatedBy: userId };
+    const employeeInclude = {
+      department: { select: { id: true, name: true } },
+      manager: { select: { id: true, firstName: true, lastName: true } },
+    };
+
+    await prisma.$transaction(async (tx) => {
+      employee = await tx.employee.create({ data: employeeCreateData, include: employeeInclude });
+
+      if (sendInvite && deliveryEmail) {
+        const newUser = await tx.user.create({
+          data: { id: generateId(), tenantId, email: employee.workEmail, passwordHash: '', memberType, status: 'INVITED', employeeId: employee.id },
+        });
+        await tx.employee.update({ where: { id: employee.id }, data: { userId: newUser.id } });
+        await tx.userInvitation.updateMany({
+          where: { userId: newUser.id, tenantId, usedAt: null, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+        const rawToken = generateSecureToken();
+        const tokenHash = hashSHA256(rawToken);
+        const expiresAt = new Date(Date.now() + config.inviteTokenTtlHours * 60 * 60 * 1000);
+        await tx.userInvitation.create({
+          data: { id: generateId(), tenantId, employeeId: employee.id, userId: newUser.id, tokenHash, emailTarget: resolvedEmailTarget, email: deliveryEmail, expiresAt, createdById: userId ?? null },
+        });
+        inviteCoreResult = { user: newUser, rawToken, expiresAt };
+      }
+    }, { timeout: 30000, maxWait: 10000 });
+
+    // Post-transaction: send email (failure doesn't roll back the employee/user/token)
+    let inviteForResponse = null;
+    if (sendInvite) {
+      if (!deliveryEmail) {
+        inviteForResponse = { sent: false, reason: 'NO_DELIVERY_EMAIL', sentTo: resolvedEmailTarget };
+      } else {
+        const activationUrl = `${config.frontendSetPasswordUrl}?token=${inviteCoreResult.rawToken}`;
+        const emailResult = await sendInviteEmail(deliveryEmail, {
+          employeeFirstName: employee.firstName,
+          companyName,
+          activationUrl,
+          expiresAt: inviteCoreResult.expiresAt.toUTCString(),
+          supportEmail: config.resendFrom || config.smtpFrom,
+        });
+
+        await prisma.auditLog.create({
+          data: { tenantId, actorUserId: userId ?? null, action: 'INVITE_SENT', entityType: 'UserInvitation', entityId: inviteCoreResult.user.id, newValuesJson: { employeeId: employee.id, emailTarget: resolvedEmailTarget } },
+        }).catch(() => {});
+
+        if (!emailResult.success) {
+          await prisma.auditLog.create({
+            data: { tenantId, actorUserId: userId ?? null, action: 'INVITE_EMAIL_FAILED', entityType: 'UserInvitation', entityId: inviteCoreResult.user.id, newValuesJson: { reason: emailResult.error ?? emailResult.reason } },
+          }).catch(() => {});
+        }
+
+        inviteForResponse = {
+          sent: emailResult.success,
+          sentTo: resolvedEmailTarget,
+          email: maskEmail(deliveryEmail),
+          expiresAt: inviteCoreResult.expiresAt.toISOString(),
+          user: { id: inviteCoreResult.user.id, email: inviteCoreResult.user.email, memberType: inviteCoreResult.user.memberType, status: 'INVITED' },
+          ...(emailResult.success ? {} : { reason: 'EMAIL_SEND_FAILED' }),
+        };
+      }
+    }
+
+    const formatted = formatEmployeeForApi(employee, departmentPath);
+    if (sendInvite) {
+      formatted.user = inviteForResponse?.user ?? null;
+      formatted.invite = inviteForResponse;
+    }
+    return successResponse(formatted, { cached: false });
   } catch (error) {
     return errorResponse('CREATE_ERROR', error.message, null);
   }

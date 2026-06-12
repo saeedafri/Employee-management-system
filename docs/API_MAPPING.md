@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-06-10** (BE-1 `/auth/me` auth precedence fix + prior Phase 3 coverage)
+> **Last verified: 2026-06-12** (Employee Invitation & Set-Password flow — all 8 blocking fixes applied)
 > Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
@@ -322,6 +322,94 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
 
 ---
 
+## Employee Invitation & Account Activation
+
+> All invitation routes are **public** (no `Authorization` header required).  
+> Token security: 256-bit random, SHA-256 hashed in DB, single-use, 72h TTL.  
+> Raw token is only in the email link — never stored or logged.
+
+### `GET /auth/invitation?token=<raw_token>` — Always 200
+
+Validate an invitation token before showing the set-password form.
+
+**Response `data`:**
+```json
+// VALID
+{
+  "status": "VALID",
+  "employee": { "firstName": "Alice", "companyName": "Acme Corp" },
+  "expiresAt": "2026-06-15T12:00:00.000Z"
+}
+
+// Other statuses: EXPIRED | USED | NOT_FOUND
+{ "status": "NOT_FOUND" }
+```
+
+| `status` value | Meaning |
+|---------------|---------|
+| `VALID` | Token valid, show set-password form |
+| `EXPIRED` | Token past 72h TTL |
+| `USED` | Token already consumed |
+| `NOT_FOUND` | Token unknown or tampered |
+
+### `POST /auth/accept-invitation` — Activate account
+
+**Body:**
+```json
+{ "token": "<raw_token>", "password": "NewPass123!" }
+```
+
+**Success — 200:**
+```json
+{ "success": true, "data": { "activated": true }, "meta": {} }
+```
+
+**Errors:**
+
+| HTTP | `error.code` | Condition |
+|------|-------------|-----------|
+| 410 | `INVITE_EXPIRED` | Token past TTL |
+| 409 | `INVITE_ALREADY_USED` | Already activated or revoked |
+| 404 | `INVALID_TOKEN` | Unknown token |
+| 422 | `WEAK_PASSWORD` | Password fails policy (details array) |
+
+**Password policy:** min 8 chars, 1 uppercase, 1 lowercase, 1 number.
+
+**`WEAK_PASSWORD` `details` array:**
+```json
+[{ "field": "password", "message": "Password must contain at least one uppercase letter" }]
+```
+
+> Does **not** auto-login — frontend must redirect to `/auth/login` after success.
+
+### `POST /auth/invitation/resend` — Self-serve resend
+
+**Rate limit:** 5 requests / 15 minutes.  
+**Always returns 200** (prevents account enumeration).
+
+**Body:** `{ "email": "alice@gmail.com" }`
+
+**Response — 200:**
+```json
+{ "success": true, "data": { "message": "If an invite exists, a new link was sent" }, "meta": {} }
+```
+
+> Internally: invalidates previous unused token, issues new 72h token, sends email.
+
+### Login blocks INVITED users
+
+```
+POST /auth/login  →  403 ACCOUNT_NOT_ACTIVATED
+{
+  "error": {
+    "code": "ACCOUNT_NOT_ACTIVATED",
+    "message": "Please activate your account using the invitation email."
+  }
+}
+```
+
+---
+
 ## Employees
 
 ### `GET /employees`
@@ -421,6 +509,7 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
   "firstName": "Jane",
   "lastName": "Doe",
   "workEmail": "jane.doe@acme.test",
+  "personalEmail": "jane.personal@gmail.com",
   "employeeCode": "EMP-0082",
   "employmentType": "FULL_TIME",
   "joinedOn": "2024-01-15",
@@ -430,14 +519,46 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
   "phone": "+91 9876543210",
   "location": "Mumbai",
   "gender": "FEMALE",
-  "dateOfBirth": "1995-06-15"
+  "dateOfBirth": "1995-06-15",
+  "sendInvite": true,
+  "memberType": "EMPLOYEE",
+  "emailTarget": "PERSONAL"
 }
 ```
 
 > `employeeCode` is **optional** — if omitted, auto-generated as `EMP-0001`, `EMP-0082`, etc.  
 > Format for new codes is `EMP-XXXX` (4-digit padded). Dates: `"2024-01-15"` also accepted.
 
+**Invite fields (all optional):**
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `sendInvite` | boolean | `false` | When true: create User (INVITED status) + issue token + send email atomically |
+| `memberType` | enum | `EMPLOYEE` | Role for the linked User: `SUPER_ADMIN \| HR_ADMIN \| MANAGER \| EMPLOYEE \| AUDITOR` |
+| `emailTarget` | enum | tenant setting | Where to send invite: `PERSONAL \| WORK`. Falls back to `invite_email_target` tenant setting |
+
 **Response:** 201, `data` = full employee object
+
+When `sendInvite=true`, response also includes:
+```json
+{
+  "user": {
+    "id": "...",
+    "email": "jane.doe@acme.test",
+    "memberType": "EMPLOYEE",
+    "status": "INVITED"
+  },
+  "invite": {
+    "sent": true,
+    "sentTo": "PERSONAL",
+    "email": "j***.p****@gmail.com",
+    "expiresAt": "2026-06-15T12:00:00.000Z"
+  }
+}
+```
+
+When email delivery fails (non-blocking): `invite.sent=false, invite.reason="EMAIL_SEND_FAILED"`.  
+When no delivery email exists: `invite.sent=false, invite.reason="NO_DELIVERY_EMAIL"`.
 
 **Error codes:**
 | Code | Status | When |
@@ -445,6 +566,44 @@ Only used in MFA flow (not needed for standard login — MFA is disabled).
 | `DUPLICATE_EMPLOYEE_CODE` | 409 | Code already taken |
 | `DUPLICATE_WORK_EMAIL` | 409 | Email already taken |
 | `VALIDATION_ERROR` | 422 | Missing required fields |
+
+> Employee + User + InvitationToken are created in a single `prisma.$transaction()`. Email send happens after the transaction — email failure never rolls back the employee or user.
+
+---
+
+### `POST /employees/:id/invite`
+
+**Required roles:** HR_ADMIN, SUPER_ADMIN  
+**Rate limit:** 3 invites per hour per employee
+
+Send or resend an invitation for an existing employee. Invalidates any prior unused token.
+
+**Body (optional):**
+```json
+{ "emailTarget": "PERSONAL" }
+```
+
+**Success — 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "sent": true,
+    "sentTo": "PERSONAL",
+    "email": "j***.p****@gmail.com",
+    "expiresAt": "2026-06-15T12:00:00.000Z"
+  }
+}
+```
+
+**Error codes:**
+| Code | Status | When |
+|------|--------|------|
+| `EMPLOYEE_NOT_FOUND` | 404 | Employee not found |
+| `EMPLOYEE_TERMINATED` | 409 | Soft-deleted employee |
+| `ALREADY_ACTIVE` | 409 | Linked user already ACTIVE |
+| `NO_DELIVERY_EMAIL` | 422 | No email for the target (PERSONAL or WORK) |
+| `RATE_LIMITED` | 429 | >3 invites/hr for this employee |
 
 ---
 
@@ -1290,9 +1449,12 @@ Query: `?range=30d|90d` (default `30d`).
   "timezone": "Asia/Kolkata",
   "working_hours_start": "09:00",
   "working_hours_end": "18:00",
-  "fiscal_year_start": 4
+  "fiscal_year_start": 4,
+  "invite_email_target": "PERSONAL"
 }
 ```
+
+> `invite_email_target` controls the default email address used when sending invitations. `PERSONAL` = `personalEmail`, `WORK` = `workEmail`. Default: `PERSONAL`. Overridable per-invite via `emailTarget` field in `POST /employees` and `POST /employees/:id/invite`.
 
 ### `PATCH /settings/tenant`
 **Required roles:** HR_ADMIN, SUPER_ADMIN. **Body (snake_case):**
@@ -1301,7 +1463,8 @@ Query: `?range=30d|90d` (default `30d`).
   "company_name": "Acme Corp",
   "timezone": "Asia/Kolkata",
   "working_hours_start": "09:00",
-  "working_hours_end": "18:00"
+  "working_hours_end": "18:00",
+  "invite_email_target": "WORK"
 }
 ```
 **Response `data`:** same shape as GET.

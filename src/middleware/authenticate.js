@@ -28,29 +28,16 @@ export async function authenticate(request, reply) {
 
     const session = await prisma.session.findUnique({
       where: { id: payload.sessionId },
-      select: {
-        id: true,
-        userId: true,
-        tenantId: true,
-        expiresAt: true,
-        revokedAt: true,
-      },
+      select: { id: true, userId: true, tenantId: true, revokedAt: true },
     });
 
-    if (!session) {
-      throw new Error('Session revoked or expired');
-    }
-
     if (
-      session.userId !== payload.sub
+      !session
+      || session.userId !== payload.sub
       || session.tenantId !== payload.tenantId
       || session.revokedAt
-      || new Date() > session.expiresAt
+      || (request.tenant?.id && request.tenant.id !== session.tenantId)
     ) {
-      throw new Error('Session revoked or expired');
-    }
-
-    if (request.tenant?.id && request.tenant.id !== session.tenantId) {
       throw new Error('Session revoked or expired');
     }
 

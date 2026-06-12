@@ -121,7 +121,7 @@ const report = {
   checkedAt: new Date().toISOString(),
   base: BASE,
   be1,
-  be12: {
+  be2: {
     login: {
       status: loginRes.status,
       sessionId: loginRes.body?.data?.sessionId || null,

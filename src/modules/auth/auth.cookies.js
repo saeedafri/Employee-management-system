@@ -31,7 +31,6 @@ export function setAccessTokenCookie(reply, accessToken) {
 }
 
 export function clearAuthCookies(reply) {
-  const opts = authCookieOptions();
-  reply.clearCookie('accessToken', opts);
-  reply.clearCookie(config.sessionCookieName, opts);
+  reply.clearCookie('accessToken', { path: '/' });
+  reply.clearCookie(config.sessionCookieName, { path: '/' });
 }
