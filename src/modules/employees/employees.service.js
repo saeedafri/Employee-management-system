@@ -174,7 +174,7 @@ export async function createEmployee(tenantId, data, userId) {
           companyName,
           activationUrl,
           expiresAt: inviteCoreResult.expiresAt.toUTCString(),
-          supportEmail: config.resendFrom || config.smtpFrom,
+          supportEmail: config.supportEmail,
         });
 
         await prisma.auditLog.create({

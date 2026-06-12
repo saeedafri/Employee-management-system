@@ -72,7 +72,7 @@ async function dispatchInviteEmail(to, { employeeFirstName, companyName, rawToke
       companyName,
       activationUrl,
       expiresAt: expiresAtStr,
-      supportEmail: config.smtpFrom,
+      supportEmail: config.supportEmail,
     });
     return result;
   } catch (err) {

@@ -57,6 +57,7 @@ export const config = {
   smtpFrom: process.env.SMTP_FROM || 'noreply@acme.test',
   resendApiKey: process.env.RESEND_API_KEY || '',
   resendFrom: process.env.RESEND_FROM || 'noreply@acme.test',
+  supportEmail: process.env.SUPPORT_EMAIL || process.env.SMTP_FROM || 'support@acme.test',
   brevoApiKey: process.env.BREVO_API_KEY || '',
   brevoFrom: process.env.BREVO_FROM || 'noreply@acme.test',
 
