@@ -188,6 +188,25 @@ export async function reassignAndDeleteDepartment(id, tenantId, reassignEmployee
   }
 }
 
+export async function addDepartmentMembers(id, tenantId, employeeIds, userId) {
+  try {
+    const dept = await repo.getDepartmentById(id, tenantId);
+    if (!dept) return errorResponse('DEPARTMENT_NOT_FOUND', 'Department not found', null);
+
+    const result = await repo.addDepartmentMembers(id, tenantId, employeeIds, userId);
+    if (result.error) return { success: false, error: result.error };
+
+    await import('../auditLogs/auditLogs.service.js').then(({ recordAuditLog }) =>
+      recordAuditLog(tenantId, userId, 'DEPARTMENT_MEMBERS_ADDED', 'Department', id, null,
+        { departmentId: id, employeeIds, added: result.added, skipped: result.skipped })
+    ).catch(() => {});
+
+    return { success: true, data: result, meta: {} };
+  } catch (error) {
+    return errorResponse('UPDATE_ERROR', error.message, null);
+  }
+}
+
 export async function getDepartmentEmployees(id, tenantId, page, limit, search) {
   try {
     const dept = await repo.getDepartmentById(id, tenantId);

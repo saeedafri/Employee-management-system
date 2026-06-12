@@ -115,6 +115,32 @@ export async function reassignAndDelete(request, reply) {
   }
 }
 
+const MEMBER_NOT_FOUND_CODES = new Set(['DEPARTMENT_NOT_FOUND', 'EMPLOYEE_NOT_FOUND']);
+
+export async function addDepartmentMembers(request, reply) {
+  const { user } = request; const tenantId = request.tenant.id;
+  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can add department members', request.requestId));
+  }
+  try {
+    const { id } = request.params;
+    const data = await validator.addDepartmentMembersSchema.parseAsync(request.body);
+    const result = await service.addDepartmentMembers(id, tenantId, data.employeeIds, user.id);
+    if (result.error) {
+      const code = result.error.code;
+      const status = MEMBER_NOT_FOUND_CODES.has(code) ? 404 : code === 'VALIDATION_ERROR' ? 422 : 400;
+      return reply.code(status).send(result);
+    }
+    reply.code(200).send(result);
+  } catch (error) {
+    if (error.name === 'ZodError') {
+      const details = error.errors.map(e => ({ field: e.path.join('.'), message: e.message }));
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
+    }
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+  }
+}
+
 export async function getDepartmentEmployees(request, reply) {
   const tenantId = request.tenant.id;
   try {

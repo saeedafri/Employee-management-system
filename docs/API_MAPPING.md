@@ -2053,6 +2053,49 @@ Call after file upload completes. Returns the confirmed document record.
 
 ### Departments
 
+#### `POST /departments/:id/members`
+
+**Roles:** HR_ADMIN, SUPER_ADMIN.
+
+Bulk assign existing employees to a department or sub-department. Sets `Employee.departmentId` to `:id` for each listed employee.
+
+**Body:**
+```json
+{ "employeeIds": ["emp_a", "emp_b", "emp_c"] }
+```
+
+**Behavior:**
+- `:id` is the target department — may be root or sub-department.
+- Idempotent: already-assigned employees count as `skipped`, not `added`. No error.
+- Validates all employee IDs exist (non-deleted) before updating; partial updates never occur.
+- `_count.employees` in response is target department's updated **inclusive subtree count**.
+- Soft-deleted employees are rejected with `404 EMPLOYEE_NOT_FOUND`.
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "dep_eng",
+    "added": 2,
+    "skipped": 1,
+    "employeeIds": ["emp_a", "emp_b", "emp_c"],
+    "_count": { "employees": 16 }
+  },
+  "meta": {}
+}
+```
+
+**Errors:**
+| Code | Status | When |
+|------|--------|------|
+| `DEPARTMENT_NOT_FOUND` | 404 | Department doesn't exist or is soft-deleted |
+| `EMPLOYEE_NOT_FOUND` | 404 | One or more employee IDs not found; `details.employeeIds` lists missing IDs |
+| `VALIDATION_ERROR` | 422 | `employeeIds` missing, empty, or non-array |
+| `FORBIDDEN` | 403 | Non HR/Admin role |
+
+---
+
 #### `GET /departments/:id/employees`
 
 **Roles:** any authenticated user.

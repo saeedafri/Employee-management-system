@@ -161,6 +161,42 @@ export async function getEmployeeCountInDepartment(deptId, tenantId) {
   return result;
 }
 
+export async function addDepartmentMembers(departmentId, tenantId, employeeIds, userId) {
+  const uniqueIds = [...new Set(employeeIds)];
+
+  const employees = await prisma.employee.findMany({
+    where: { id: { in: uniqueIds }, tenantId, deletedAt: null },
+    select: { id: true, departmentId: true },
+  });
+
+  if (employees.length !== uniqueIds.length) {
+    const found = new Set(employees.map(e => e.id));
+    return { error: { code: 'EMPLOYEE_NOT_FOUND', message: 'One or more employees were not found', details: { employeeIds: uniqueIds.filter(id => !found.has(id)) } } };
+  }
+
+  const skippedIds = employees.filter(e => e.departmentId === departmentId).map(e => e.id);
+  const toAddIds   = employees.filter(e => e.departmentId !== departmentId).map(e => e.id);
+
+  if (toAddIds.length > 0) {
+    await prisma.employee.updateMany({
+      where: { id: { in: toAddIds }, tenantId, deletedAt: null },
+      data: { departmentId, updatedBy: userId, updatedAt: new Date() },
+    });
+  }
+
+  const allDepts = await prisma.department.findMany({
+    where: { tenantId, deletedAt: null },
+    select: { id: true, parentId: true },
+  });
+  const childrenMap = buildDepartmentChildrenMap(allDepts);
+  const subtreeIds  = getDepartmentAndDescendantIds(departmentId, childrenMap);
+  const employeeCount = await prisma.employee.count({
+    where: { tenantId, deletedAt: null, departmentId: { in: subtreeIds } },
+  });
+
+  return { id: departmentId, added: toAddIds.length, skipped: skippedIds.length, employeeIds: uniqueIds, _count: { employees: employeeCount } };
+}
+
 export async function hasSubdepartments(deptId, tenantId) {
   const count = await prisma.department.count({
     where: {

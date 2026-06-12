@@ -7,6 +7,7 @@ import {
   deleteDepartment,
   reassignAndDelete,
   getDepartmentEmployees,
+  addDepartmentMembers,
 } from './departments.controller.js';
 
 export default async function departmentsRoutes(fastify) {
@@ -136,6 +137,26 @@ export default async function departmentsRoutes(fastify) {
       },
     },
     reassignAndDelete,
+  );
+
+  fastify.post(
+    '/departments/:id/members',
+    {
+      schema: {
+        tags: ['Departments'],
+        description: 'Bulk assign existing employees to a department. Idempotent — already-assigned employees are counted as skipped. Updates Employee.departmentId to target department. _count.employees is inclusive subtree count after update.',
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        body: {
+          type: 'object',
+          required: ['employeeIds'],
+          properties: {
+            employeeIds: { type: 'array', items: { type: 'string' }, minItems: 1 },
+          },
+        },
+        response: { 200: { type: 'object', additionalProperties: true } },
+      },
+    },
+    addDepartmentMembers,
   );
 
   fastify.get(

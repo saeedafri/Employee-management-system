@@ -22,3 +22,7 @@ export const updateDepartmentSchema = z.object({
   departmentCode: z.string().max(50).optional(),
   headEmployeeId: z.string().cuid('Invalid head employee ID').optional().nullable(),
 });
+
+export const addDepartmentMembersSchema = z.object({
+  employeeIds: z.array(z.string().min(1)).min(1, 'employeeIds must be a non-empty array'),
+});

@@ -784,6 +784,12 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
 
         // ── DEPARTMENTS (new endpoints) ───────────────────────────────────────
+        '/departments/{id}/members': {
+          post: op('Departments', 'Bulk assign existing employees to a department (HR_ADMIN/SUPER_ADMIN). Idempotent — already-assigned employees counted as skipped. _count.employees is updated inclusive subtree count.', true, {
+            parameters: [...idParam, { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['employeeIds'], properties: { employeeIds: { type: 'array', items: { type: 'string' }, minItems: 1 } } } }],
+            responses: { 200: r200, 403: r403, 404: { description: 'DEPARTMENT_NOT_FOUND or EMPLOYEE_NOT_FOUND' }, 422: { description: 'VALIDATION_ERROR — employeeIds empty or invalid' } },
+          }),
+        },
         '/departments/{id}/employees': {
           get: op('Departments', 'List employees in a department and all descendant departments (subtree-inclusive). pagination.total reflects the full subtree count.', true, {
             parameters: [
