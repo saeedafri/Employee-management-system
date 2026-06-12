@@ -9,7 +9,7 @@ export async function getDepartment(request, reply) {
     const result = await service.getDepartment(id, tenantId);
     reply.code(result.error ? 404 : 200).send(result);
   } catch (error) {
-    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, {}, request.requestId));
   }
 }
 
@@ -42,7 +42,7 @@ export async function createDepartment(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create departments', request.requestId));
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create departments', {}, request.requestId));
   }
 
   try {
@@ -62,7 +62,7 @@ export async function updateDepartment(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can update departments', request.requestId));
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can update departments', {}, request.requestId));
   }
 
   try {
@@ -83,7 +83,7 @@ export async function deleteDepartment(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', request.requestId));
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', {}, request.requestId));
   }
 
   try {
@@ -102,7 +102,7 @@ export async function deleteDepartment(request, reply) {
 export async function reassignAndDelete(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', request.requestId));
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', {}, request.requestId));
   }
   try {
     const { id } = request.params;
@@ -111,7 +111,7 @@ export async function reassignAndDelete(request, reply) {
     const result = await service.reassignAndDeleteDepartment(id, tenantId, reassignEmployeesTo);
     reply.code(result.error ? 400 : 200).send(result);
   } catch (error) {
-    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, {}, request.requestId));
   }
 }
 
@@ -120,7 +120,7 @@ const MEMBER_NOT_FOUND_CODES = new Set(['DEPARTMENT_NOT_FOUND', 'EMPLOYEE_NOT_FO
 export async function addDepartmentMembers(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
   if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can add department members', request.requestId));
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can add department members', {}, request.requestId));
   }
   try {
     const { id } = request.params;
@@ -137,7 +137,7 @@ export async function addDepartmentMembers(request, reply) {
       const details = error.errors.map(e => ({ field: e.path.join('.'), message: e.message }));
       return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Request validation failed', details, request.id));
     }
-    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, {}, request.requestId));
   }
 }
 
@@ -149,6 +149,6 @@ export async function getDepartmentEmployees(request, reply) {
     const result = await service.getDepartmentEmployees(id, tenantId, parseInt(page, 10), parseInt(limit, 10), search);
     reply.code(result.error ? 404 : 200).send(result);
   } catch (error) {
-    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, request.requestId));
+    reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, {}, request.requestId));
   }
 }
