@@ -105,7 +105,16 @@ export default async function settingsRoutes(fastify) {
 
   // ── Branding ─────────────────────────────────────────────────────────────────
   fastify.get('/settings/branding', { schema: { tags: ['Settings'], description: 'Get tenant branding (logo, colors)', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate] }, (req, rep) => settingsController.getBranding(req, rep));
-  fastify.patch('/settings/branding', { schema: { tags: ['Settings'], description: 'Update tenant branding', security: [{ Bearer: [] }], body: { type: 'object', properties: { logo_url: { type: 'string' }, primary_color_hex: { type: 'string' } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.updateBranding(req, rep));
+  fastify.patch('/settings/branding', {
+    schema: {
+      tags: ['Settings'],
+      description: 'Update tenant branding. Accepts multipart/form-data (logo file + primary_color_hex) or JSON ({logo_url, primary_color_hex}).',
+      security: [{ Bearer: [] }],
+      consumes: ['multipart/form-data', 'application/json'],
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+  }, (req, rep) => settingsController.updateBranding(req, rep));
 
   // ── Attendance rules ──────────────────────────────────────────────────────────
   fastify.get('/settings/attendance-rules', { schema: { tags: ['Settings'], description: 'Get attendance rules', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.getAttendanceRules(req, rep));

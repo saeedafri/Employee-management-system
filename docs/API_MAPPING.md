@@ -2409,17 +2409,32 @@ All settings endpoints use **`snake_case`** field names.
 
 #### `GET /settings/branding` · `PATCH /settings/branding`
 
-**Roles:** HR_ADMIN, SUPER_ADMIN (PATCH). Any admin (GET).
+**Roles:** HR_ADMIN, SUPER_ADMIN (PATCH). Any authenticated admin (GET).
 
-**Response / PATCH body (any subset):**
+**PATCH — Option A: `multipart/form-data`**
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `logo` | binary | no | PNG/JPEG/WebP/SVG, max 1 MB. Non-SVG images converted to WebP before storage. |
+| `primary_color_hex` | string | no | Format `#RRGGBB` |
+
+**PATCH — Option B: `application/json`**
 ```json
-{
-  "logo_url": "https://cdn.../logo.png",
-  "primary_color_hex": "#3b5cff"
-}
+{ "logo_url": "https://res.cloudinary.com/...", "primary_color_hex": "#3b5cff" }
 ```
 
-PATCH via `multipart/form-data` with field `logo` (image ≤ 1 MB PNG/SVG), or JSON with `logo_url`.
+**Response (both options):**
+```json
+{ "success": true, "data": { "logo_url": "https://res.cloudinary.com/.../logo.webp", "primary_color_hex": "#3b5cff" }, "meta": {} }
+```
+
+**Errors:**
+| Code | Status | Condition |
+|------|--------|-----------|
+| `INVALID_FILE_TYPE` | 422 | File type not PNG/JPEG/WebP/SVG |
+| `FILE_TOO_LARGE` | 422 | File > 1 MB |
+| `VALIDATION_ERROR` | 422 | `primary_color_hex` not `#RRGGBB` |
+| `STORAGE_NOT_CONFIGURED` | 503 | Cloudinary env vars missing |
+| `UPLOAD_FAILED` | 502 | Cloudinary upload error |
 
 #### `GET /settings/attendance-rules` · `PATCH /settings/attendance-rules`
 

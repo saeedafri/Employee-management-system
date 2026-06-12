@@ -657,7 +657,40 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/settings/branding': {
           get:   op('Settings', 'Get tenant branding (logo_url, primary_color_hex)'),
-          patch: op('Settings', 'Update tenant branding — multipart/form-data with logo field or JSON with logo_url'),
+          patch: {
+            tags: ['Settings'],
+            summary: 'Update tenant branding',
+            description: 'Multipart: fields logo (PNG/JPEG/WebP/SVG ≤1 MB, converted to WebP) + primary_color_hex. JSON: {logo_url, primary_color_hex}. HR_ADMIN or SUPER_ADMIN only.',
+            security: [{ Bearer: [] }],
+            requestBody: {
+              content: {
+                'multipart/form-data': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      logo: { type: 'string', format: 'binary', description: 'PNG/JPEG/WebP/SVG, max 1 MB' },
+                      primary_color_hex: { type: 'string', example: '#3b5cff', description: '#RRGGBB' },
+                    },
+                  },
+                },
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      logo_url: { type: 'string', example: 'https://res.cloudinary.com/.../logo.webp' },
+                      primary_color_hex: { type: 'string', example: '#3b5cff' },
+                    },
+                  },
+                },
+              },
+            },
+            responses: {
+              200: { description: 'Updated branding', content: { 'application/json': { schema: { type: 'object', additionalProperties: true } } } },
+              422: { description: 'INVALID_FILE_TYPE / FILE_TOO_LARGE / VALIDATION_ERROR' },
+              503: { description: 'STORAGE_NOT_CONFIGURED' },
+              502: { description: 'UPLOAD_FAILED' },
+            },
+          },
         },
         '/settings/attendance-rules': {
           get:   op('Settings', 'Get attendance rules (work_week_days, late_after, thresholds, etc.)'),

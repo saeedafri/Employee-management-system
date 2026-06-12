@@ -1,7 +1,9 @@
+import sharp from 'sharp';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as settingsService from './settings.service.js';
 import * as settingsValidator from './settings.validator.js';
 import * as integrationsService from './integrations.service.js';
+import { uploadToCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
 
 export async function getTenantConfig(request, reply) {
   try {
@@ -138,7 +140,82 @@ const wrap = (fn) => async (req, rep) => {
 };
 
 export const getBranding = wrap(async (req) => settingsService.getBranding(req.tenant.id));
-export const updateBranding = wrap(async (req) => settingsService.updateBranding(req.tenant.id, req.body));
+
+const MAX_LOGO_BYTES = 1 * 1024 * 1024;
+const ALLOWED_LOGO_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']);
+
+export async function updateBranding(request, reply) {
+  const tenantId = request.tenant.id;
+  let body = {};
+  let logoFile = null;
+
+  const contentType = request.headers['content-type'] || '';
+  if (contentType.includes('multipart/form-data')) {
+    for await (const part of request.parts()) {
+      if (part.type === 'file') {
+        if (part.fieldname !== 'logo') { await part.toBuffer().catch(() => null); continue; }
+        if (!ALLOWED_LOGO_TYPES.has(part.mimetype)) {
+          await part.toBuffer().catch(() => null);
+          return reply.code(422).send(errorResponse('INVALID_FILE_TYPE', 'Logo must be PNG, JPEG, WebP, or SVG.', {}, request.id));
+        }
+        const buffer = await part.toBuffer();
+        if (buffer.length > MAX_LOGO_BYTES) {
+          return reply.code(422).send(errorResponse('FILE_TOO_LARGE', 'Logo must be 1 MB or smaller.', {}, request.id));
+        }
+        logoFile = { buffer, filename: part.filename, mimetype: part.mimetype };
+      } else {
+        body[part.fieldname] = part.value;
+      }
+    }
+  } else {
+    body = request.body || {};
+  }
+
+  const updateData = {};
+  if (body.logo_url !== undefined) updateData.logo_url = body.logo_url;
+  if (body.primary_color_hex !== undefined && body.primary_color_hex !== '') {
+    const color = String(body.primary_color_hex).trim();
+    if (!/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'Invalid primary_color_hex. Expected format #RRGGBB.', { details: [{ field: 'primary_color_hex', message: 'Expected #RRGGBB' }] }, request.id));
+    }
+    updateData.primary_color_hex = color;
+  }
+
+  if (logoFile) {
+    if (!isCloudinaryConfigured()) {
+      return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.', {}, request.id));
+    }
+    try {
+      let uploadBuffer = logoFile.buffer;
+      let resourceType = 'image';
+      if (logoFile.mimetype !== 'image/svg+xml') {
+        uploadBuffer = await sharp(logoFile.buffer).webp({ quality: 90 }).toBuffer();
+      } else {
+        resourceType = 'raw';
+      }
+      const uploaded = await uploadToCloudinary(uploadBuffer, {
+        folder: `ems/${tenantId}/branding`,
+        publicId: 'logo',
+        resourceType,
+      });
+      updateData.logo_url = uploaded.url;
+    } catch (uploadErr) {
+      request.log.error({ uploadErr }, 'Branding logo upload failed');
+      return reply.code(502).send(errorResponse('UPLOAD_FAILED', 'Logo upload failed. Please try again.', {}, request.id));
+    }
+  }
+
+  try {
+    const result = await settingsService.updateBranding(tenantId, updateData);
+    return reply.send(successResponse(result));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) {
+      return reply.code(error.statusCode || 400).send(errorResponse(error.code, error.message, error.details || {}, request.id));
+    }
+    throw error;
+  }
+}
 export const getAttendanceRules = wrap(async (req) => settingsService.getAttendanceRules(req.tenant.id));
 export const updateAttendanceRules = wrap(async (req) => settingsService.updateAttendanceRules(req.tenant.id, req.body));
 export const getAuthSettings = wrap(async (req) => settingsService.getAuthSettings(req.tenant.id));
