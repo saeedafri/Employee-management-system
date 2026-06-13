@@ -680,11 +680,28 @@ export async function updateRunInput(prisma, runId, employeeId, tenantId, data) 
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) throw AppError('Payroll run not found', 'NOT_FOUND', 404);
 
-  return prisma.payrollInput.upsert({
+  const sanitized = {};
+  if (data.lopDays !== undefined) sanitized.lopDays = Number(data.lopDays) || 0;
+  if (data.otHours !== undefined) sanitized.otHours = Number(data.otHours) || 0;
+  if (data.variablePay !== undefined) sanitized.variablePay = data.variablePay != null ? Number(data.variablePay) : null;
+  if (data.oneTimeAdditions !== undefined) sanitized.oneTimeAdditions = data.oneTimeAdditions;
+  if (data.oneTimeDeductions !== undefined) sanitized.oneTimeDeductions = data.oneTimeDeductions;
+
+  const record = await prisma.payrollInput.upsert({
     where: { runId_employeeId: { runId, employeeId } },
-    create: { tenantId, runId, employeeId, ...data },
-    update: data,
+    create: { tenantId, runId, employeeId, ...sanitized },
+    update: sanitized,
   });
+
+  return {
+    runId,
+    employeeId,
+    lopDays: record.lopDays ?? 0,
+    otHours: record.otHours ?? 0,
+    variablePay: record.variablePay != null ? Number(record.variablePay) : null,
+    oneTimeAdditions: record.oneTimeAdditions || [],
+    oneTimeDeductions: record.oneTimeDeductions || [],
+  };
 }
 
 export async function importRunInputs(prisma, runId, tenantId, csv) {
@@ -1066,20 +1083,29 @@ export async function listWorkers(prisma, tenantId, classification) {
     },
   });
 
+  // Fetch legalEntity names for salaries that reference one
+  const leIds = [...new Set(employees.map((e) => e.salaries?.[0]?.legalEntityId).filter(Boolean))];
+  const leMap = new Map();
+  if (leIds.length > 0) {
+    const les = await prisma.legalEntity.findMany({ where: { id: { in: leIds } }, select: { id: true, name: true } });
+    for (const le of les) leMap.set(le.id, le.name);
+  }
+
   let workers = employees.map((e) => {
     const salary = e.salaries?.[0];
     const monthlyCostMinorUnits = salary
       ? Math.round((Number(salary.annualCtc) / 12) * 100)
       : 0;
+    const leId = salary?.legalEntityId ?? null;
     return {
       id: e.id,
       employeeCode: e.employeeCode,
       name: `${e.firstName} ${e.lastName}`,
       classification: toWorkerClassification(e.employmentType),
-      country: e.location?.slice(0, 2)?.toUpperCase() || 'IN',
-      currency: e.payCurrency || 'INR',
-      legalEntityId: null,
-      legalEntityName: null,
+      country: salary?.country ?? e.location?.slice(0, 2)?.toUpperCase() ?? 'IN',
+      currency: salary?.currency ?? e.payCurrency ?? 'INR',
+      legalEntityId: leId,
+      legalEntityName: leId ? (leMap.get(leId) ?? null) : null,
       monthlyCost: monthlyCostMinorUnits,
       riskFlag: null,
       active: true,
@@ -1092,7 +1118,8 @@ export async function listWorkers(prisma, tenantId, classification) {
   return workers;
 }
 
-export async function updateWorkerClassification(prisma, tenantId, employeeId, classification) {
+export async function updateWorkerClassification(prisma, tenantId, employeeId, body) {
+  const { classification, country, currency, legalEntityId } = body;
   const emp = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
   if (!emp) throw AppError('Employee not found', 'NOT_FOUND', 404);
 
@@ -1101,7 +1128,26 @@ export async function updateWorkerClassification(prisma, tenantId, employeeId, c
     where: { id: employeeId },
     data: { employmentType: newType, updatedAt: new Date() },
   });
-  return { id: updated.id, classification, employmentType: updated.employmentType };
+
+  const salaryPatch = {};
+  if (country !== undefined) salaryPatch.country = country;
+  if (currency !== undefined) salaryPatch.currency = currency;
+  if (legalEntityId !== undefined) salaryPatch.legalEntityId = legalEntityId;
+  if (Object.keys(salaryPatch).length > 0) {
+    await prisma.employeeSalary.updateMany({
+      where: { tenantId, employeeId, effectiveTo: null },
+      data: salaryPatch,
+    });
+  }
+
+  return {
+    id: updated.id,
+    classification,
+    employmentType: updated.employmentType,
+    country: country ?? null,
+    currency: currency ?? null,
+    legalEntityId: legalEntityId ?? null,
+  };
 }
 
 export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classification') {

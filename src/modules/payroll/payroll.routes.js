@@ -982,7 +982,7 @@ export default async function payrollRoutes(fastify) {
     schema: {
       tags: ['Payroll'], description: 'Update worker classification', security: [{ Bearer: [] }],
       params: idParam,
-      body: { type: 'object', required: ['classification'], properties: { classification: { type: 'string', enum: ['EMPLOYEE', 'CONTRACTOR', 'EOR'] } } },
+      body: { type: 'object', required: ['classification'], properties: { classification: { type: 'string', enum: ['EMPLOYEE', 'CONTRACTOR', 'EOR'] }, country: { type: 'string', description: 'ISO 3166-1 alpha-2 country code' }, currency: { type: 'string', description: 'ISO 4217 currency code' }, legalEntityId: { type: 'string', description: 'Legal entity this worker belongs to' } } },
       response: { 200: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],

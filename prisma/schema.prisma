@@ -986,6 +986,9 @@ model EmployeeSalary {
   annualCtc         Decimal   @db.Decimal(15, 2)
   effectiveFrom     DateTime
   effectiveTo       DateTime?
+  country           String?   @default("IN")
+  currency          String?
+  legalEntityId     String?
   bankAccountName   String?
   bankAccountNumber String?
   bankIfscCode      String?
@@ -1001,6 +1004,8 @@ model EmployeeSalary {
   @@index([tenantId])
   @@index([employeeId])
   @@index([tenantId, employeeId, effectiveFrom])
+  @@index([tenantId, country])
+  @@index([tenantId, legalEntityId])
 }
 
 model PayrollRun {

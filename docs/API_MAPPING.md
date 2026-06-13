@@ -4076,8 +4076,14 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 
 **Request body:**
 ```json
-{ "classification": "CONTRACTOR" }
+{
+  "classification": "CONTRACTOR",
+  "country": "PH",
+  "currency": "PHP",
+  "legalEntityId": "le-acme-ph"
+}
 ```
+`classification` is required. `country`, `currency`, `legalEntityId` are optional — when provided they are persisted to the employee's active `EmployeeSalary` record.
 
 **Response 200:**
 ```json
@@ -4086,13 +4092,16 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
   "data": {
     "id": "cmq3cxlim002fghij8kz43qu",
     "classification": "CONTRACTOR",
-    "employmentType": "CONTRACT"
+    "employmentType": "CONTRACT",
+    "country": "PH",
+    "currency": "PHP",
+    "legalEntityId": "le-acme-ph"
   },
   "meta": {}
 }
 ```
 
-**Notes:** updates `Employee.employmentType`. `CONTRACTOR` → `CONTRACT`, `EMPLOYEE` → `FULL_TIME`.
+**Notes:** updates `Employee.employmentType`. `CONTRACTOR` → `CONTRACT`, `EMPLOYEE` → `FULL_TIME`. Also writes `country`/`currency`/`legalEntityId` to the salary record — used by per-employee statutory pack resolution at payroll calculate time.
 
 ---
 
@@ -4288,16 +4297,36 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 #### `PATCH /payroll/runs/:runId/inputs/:employeeId`
 **Roles:** HR, SA
 
-**Request body (any subset):**
+**Request body (any subset — unknown fields are silently ignored):**
 ```json
 {
   "lopDays": 1,
+  "otHours": 2,
   "variablePay": 5000,
   "oneTimeAdditions": [
     { "description": "Spot Award", "amount": 2000 }
-  ]
+  ],
+  "oneTimeDeductions": []
 }
 ```
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "runId": "run-abc",
+    "employeeId": "emp-xyz",
+    "lopDays": 1,
+    "otHours": 2,
+    "variablePay": 5000,
+    "oneTimeAdditions": [{ "description": "Spot Award", "amount": 2000 }],
+    "oneTimeDeductions": []
+  }
+}
+```
+
+**Notes:** Uses upsert — safe to call even if no prior input row exists. Only `lopDays`, `otHours`, `variablePay`, `oneTimeAdditions`, `oneTimeDeductions` are persisted; all other fields in the body are ignored.
 
 ---
 

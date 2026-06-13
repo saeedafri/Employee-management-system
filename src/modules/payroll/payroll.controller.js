@@ -569,7 +569,7 @@ export async function listWorkers(request, reply) {
 
 export async function updateWorkerClassification(request, reply) {
   try {
-    const data = await service.updateWorkerClassification(prisma, request.tenant.id, request.params.id, request.body.classification);
+    const data = await service.updateWorkerClassification(prisma, request.tenant.id, request.params.id, request.body);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }

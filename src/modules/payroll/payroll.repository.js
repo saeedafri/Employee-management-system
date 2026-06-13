@@ -8,9 +8,11 @@ import { fmtPayCalendar, payCalendarInputToDb } from '../../utils/payCalendarSha
 import { withComponentColor } from '../../utils/payrollUiShapes.js';
 import {
   computeStatutoryContributions,
-  resolveStatutoryPackForRun,
+  computeIncomeTaxFromRegime,
+  resolveStatutoryPackForEmployee,
   schemeManagedComponentCodes,
   sumEmployerContributions,
+  resolveFiscalYear,
 } from '../../utils/statutoryCalculation.js';
 import { fmtStatutoryPackRow, mergePackUpdate } from '../../utils/statutoryPackShape.js';
 
@@ -338,6 +340,9 @@ export async function getEmployeeSalary(prisma, employeeId, tenantId, isHR = tru
       currency: current.payGroup.currency, paySchedule: current.payGroup.paySchedule,
     },
     annualCtc: Number(current.annualCtc),
+    country: current.country ?? null,
+    currency: current.currency ?? null,
+    legalEntityId: current.legalEntityId ?? null,
     effectiveFrom: current.effectiveFrom.toISOString().split('T')[0],
     effectiveTo: current.effectiveTo ? current.effectiveTo.toISOString().split('T')[0] : null,
     bankAccountName: isHR ? current.bankAccountName : undefined,
@@ -378,6 +383,9 @@ export async function setEmployeeSalary(prisma, employeeId, tenantId, data) {
     data: {
       tenantId, employeeId, payGroupId: data.payGroupId,
       annualCtc: data.annualCtc, effectiveFrom,
+      country: data.country ?? null,
+      currency: data.currency ?? null,
+      legalEntityId: data.legalEntityId ?? null,
       bankAccountName: data.bankAccountName ?? null,
       bankAccountNumber: data.bankAccountNumber ?? null,
       bankIfscCode: data.bankIfscCode ?? null,
@@ -433,14 +441,28 @@ function buildEmployerContributions(earnings, deductions) {
   ];
 }
 
-async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod) {
-  const [year, month] = throughPeriod.split('-').map(Number);
-  const fyStartYear = month >= 4 ? year : year - 1;
-  const periodStart = `${fyStartYear}-04`;
+async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod, fiscalYearStartMonth) {
+  // Resolve fiscalYearStartMonth from salary's legal entity if not provided
+  let fyStartMonth = fiscalYearStartMonth;
+  if (fyStartMonth == null) {
+    const sal = await prisma.employeeSalary.findFirst({
+      where: { tenantId, employeeId },
+      orderBy: { effectiveFrom: 'desc' },
+      select: { legalEntityId: true },
+    });
+    if (sal?.legalEntityId) {
+      const le = await prisma.legalEntity.findUnique({ where: { id: sal.legalEntityId }, select: { fiscalYearStartMonth: true } });
+      fyStartMonth = le?.fiscalYearStartMonth ?? 4;
+    } else {
+      fyStartMonth = 4;
+    }
+  }
+
+  const { fiscalYear, fiscalYearStartPeriod } = resolveFiscalYear(throughPeriod, fyStartMonth);
   const payslips = await prisma.payslip.findMany({
     where: {
       tenantId, employeeId, status: { in: ['PAID', 'PENDING', 'HELD'] },
-      period: { gte: periodStart, lte: throughPeriod },
+      period: { gte: fiscalYearStartPeriod, lte: throughPeriod },
     },
     orderBy: { period: 'asc' },
   });
@@ -449,13 +471,13 @@ async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod) {
   const netPay = payslips.reduce((s, p) => s + Number(p.netPay), 0);
   const taxDeducted = payslips.reduce((s, p) => {
     const deds = Array.isArray(p.deductionsJson) ? p.deductionsJson : [];
-    return s + deds.filter((d) => d.code === 'TDS').reduce((a, d) => a + Number(d.amount ?? d.monthlyAmount ?? 0), 0);
+    return s + deds.filter((d) => ['TDS', 'WITHHOLDING_TAX', 'INCOME_TAX'].includes(d.code))
+      .reduce((a, d) => a + Number(d.amount ?? d.monthlyAmount ?? 0), 0);
   }, 0);
   const pfTotal = payslips.reduce((s, p) => {
     const deds = Array.isArray(p.deductionsJson) ? p.deductionsJson : [];
     return s + deds.filter((d) => ['PF', 'PF_EMPLOYEE'].includes(d.code)).reduce((a, d) => a + Number(d.amount ?? d.monthlyAmount ?? 0), 0);
   }, 0);
-  const fiscalYear = `${fyStartYear}-${String(fyStartYear + 1).slice(2)}`;
   return {
     fiscalYear,
     monthsElapsed: payslips.length,
@@ -820,25 +842,30 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
   const byDept = {};
   let totalGross = 0, totalDeductions = 0, totalNet = 0, totalEmployerCost = 0, empCount = 0;
 
-  const { pack: statutoryPack } = await resolveStatutoryPackForRun(prisma, tenantId, run.period);
-  const contributionSchemes = statutoryPack?.contributionSchemes ?? [];
-  const { employeeCodes: schemeEmployeeCodes, employerCodes: schemeEmployerCodes } = schemeManagedComponentCodes(contributionSchemes);
-  if (statutoryPack) {
-    preservedMeta.pinnedStatutoryPack = {
-      statutoryPackId: statutoryPack.id,
-      country: statutoryPack.country,
-      version: statutoryPack.version,
-      pinnedAt: new Date().toISOString(),
-    };
-  } else {
-    warnings.push({ message: 'No statutory pack resolved for run period — statutory contributions skipped' });
-  }
-
   for (const sal of salaries) {
     const { employee, payGroup } = sal;
     if (employee.employmentStatus !== 'ACTIVE' || employee.deletedAt) continue;
 
     try {
+      // Per-employee pack resolution
+      const { pack: statutoryPack, fiscalYearStartMonth } = await resolveStatutoryPackForEmployee(
+        prisma, tenantId, sal, run.period,
+      );
+      const contributionSchemes = statutoryPack?.contributionSchemes ?? [];
+      const { employeeCodes: schemeEmployeeCodes, employerCodes: schemeEmployerCodes } = schemeManagedComponentCodes(contributionSchemes);
+
+      // Pin statutory pack per payslip in preserved meta only once (for run-level summary)
+      if (statutoryPack && !preservedMeta.pinnedStatutoryPack) {
+        preservedMeta.pinnedStatutoryPack = {
+          statutoryPackId: statutoryPack.id,
+          country: statutoryPack.country,
+          version: statutoryPack.version,
+          pinnedAt: new Date().toISOString(),
+        };
+      } else if (!statutoryPack) {
+        warnings.push({ employeeId: employee.id, message: 'No statutory pack resolved — statutory contributions skipped' });
+      }
+
       const pgComps = payGroup.components.map((pgc) => ({
         id: pgc.component.id, code: pgc.component.code, name: pgc.component.name,
         type: pgc.component.type, taxable: pgc.component.taxable,
@@ -885,24 +912,54 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         else deductionsArr.push(ded);
       }
 
+      // Generic income tax via pack taxRegime (no country-specific branching)
+      const taxRegimes = statutoryPack?.taxRegimes ?? [];
+      const activeRegime = taxRegimes.length > 0 ? taxRegimes[0] : null;
+      if (activeRegime && Array.isArray(activeRegime.slabs) && activeRegime.slabs.length > 0) {
+        const annualGross = earningsArr
+          .filter((e) => {
+            const comp = componentByCode.get(e.code);
+            return comp?.taxable !== false;
+          })
+          .reduce((s, e) => s + Number(e.amount ?? 0), 0) * 12;
+        const annualTax = computeIncomeTaxFromRegime(annualGross, activeRegime);
+        const monthlyTax = Math.round(annualTax / 12);
+        if (monthlyTax > 0) {
+          const taxCode = activeRegime.taxCode ?? 'WITHHOLDING_TAX';
+          const taxName = activeRegime.name ?? 'Withholding Tax';
+          const idx = deductionsArr.findIndex((d) => d.code === taxCode);
+          if (idx >= 0) deductionsArr[idx].amount = monthlyTax;
+          else deductionsArr.push({ code: taxCode, name: taxName, amount: monthlyTax, taxable: false });
+        }
+      }
+
       const grossEarnings = Math.round(earningsArr.reduce((s, e) => s + e.amount, 0) * 100) / 100;
       const totalDed = Math.round(deductionsArr.reduce((s, d) => s + d.amount, 0) * 100) / 100;
       const netPay = Math.round((grossEarnings - totalDed) * 100) / 100;
       const employerCost = Math.round((grossEarnings + sumEmployerContributions(employerContributions)) * 100) / 100;
+
+      // Payroll input overrides (lopDays from input table)
+      const runInput = await prisma.payrollInput.findFirst({ where: { runId: id, employeeId: employee.id } });
 
       const attendance = await prisma.attendanceRecord.findMany({
         where: { tenantId, employeeId: employee.id, attendanceDate: { gte: periodStart, lte: periodEnd } },
         select: { status: true },
       });
       const workingDays = getWorkingDays(periodStart, periodEnd);
-      const presentDays = attendance.filter((a) => ['PRESENT', 'WFH', 'HALF_DAY'].includes(a.status)).length;
-      const leaveDays = attendance.filter((a) => a.status === 'LEAVE').length;
-      const lopDays = attendance.filter((a) => a.status === 'ABSENT').length;
+      // Default: full attendance when no records exist (fix #6)
+      const hasAttendance = attendance.length > 0;
+      const presentDays = hasAttendance
+        ? attendance.filter((a) => ['PRESENT', 'WFH', 'HALF_DAY'].includes(a.status)).length
+        : workingDays;
+      const leaveDays = hasAttendance ? attendance.filter((a) => a.status === 'LEAVE').length : 0;
+      const lopDays = runInput?.lopDays ?? (hasAttendance ? attendance.filter((a) => a.status === 'ABSENT').length : 0);
+
+      const currency = sal.currency ?? payGroup.currency;
 
       await prisma.payslip.create({
         data: {
           tenantId, payrollRunId: id, employeeId: employee.id, period: run.period,
-          currency: payGroup.currency, grossEarnings, totalDeductions: totalDed, netPay,
+          currency, grossEarnings, totalDeductions: totalDed, netPay,
           workingDays, presentDays, leaveDays, lopDays, status: 'PENDING',
           earningsJson: earningsArr, deductionsJson: deductionsArr,
           employerContributionsJson: employerContributions,
