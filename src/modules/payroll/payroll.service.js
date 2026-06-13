@@ -147,7 +147,19 @@ export async function setEmployeeSalary(prisma, employeeId, tenantId, data) {
   if (data.effectiveTo && new Date(data.effectiveFrom) > new Date(data.effectiveTo)) {
     throw AppError('effectiveTo must be on or after effectiveFrom', 'VALIDATION_ERROR');
   }
-  return repo.setEmployeeSalary(prisma, employeeId, tenantId, data);
+
+  // Validate and derive from legalEntityId when provided
+  const normalized = { ...data };
+  if (data.legalEntityId) {
+    const le = await prisma.legalEntity.findFirst({ where: { id: data.legalEntityId, tenantId } });
+    if (!le) throw AppError('legalEntityId not found or does not belong to this tenant', 'INVALID_LEGAL_ENTITY', 422);
+    if (!le.active) throw AppError('Legal entity is inactive', 'INACTIVE_LEGAL_ENTITY', 422);
+    // Legal entity is authoritative — override any contradictory country/currency
+    normalized.country = le.country;
+    normalized.currency = le.currency ?? data.currency ?? null;
+  }
+
+  return repo.setEmployeeSalary(prisma, employeeId, tenantId, normalized);
 }
 
 // ── Employee Payslips ─────────────────────────────────────────────────────────
@@ -566,8 +578,9 @@ export async function getPayrollEmployees(prisma, tenantId) {
       employeeName: `${emp.firstName} ${emp.lastName}`.trim(),
       department: emp.department?.name ?? null,
       designation: emp.designation ?? null,
-      country: emp.location?.split(',').pop()?.trim() || 'IN',
-      currency: salary?.payGroup?.currency ?? emp.payCurrency ?? 'INR',
+      country: salary?.country ?? emp.location?.split(',').pop()?.trim() ?? 'IN',
+      currency: salary?.currency ?? salary?.payGroup?.currency ?? emp.payCurrency ?? 'INR',
+      legalEntityId: salary?.legalEntityId ?? null,
       payGroupId: salary?.payGroupId ?? null,
       payGroupName: salary?.payGroup?.name ?? null,
       hasSalaryConfig: Boolean(salary),
@@ -1119,9 +1132,20 @@ export async function listWorkers(prisma, tenantId, classification) {
 }
 
 export async function updateWorkerClassification(prisma, tenantId, employeeId, body) {
-  const { classification, country, currency, legalEntityId } = body;
+  const { classification } = body;
+  let { country, currency, legalEntityId } = body;
   const emp = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
   if (!emp) throw AppError('Employee not found', 'NOT_FOUND', 404);
+
+  // Validate and derive from legalEntityId when provided
+  if (legalEntityId !== undefined) {
+    const le = await prisma.legalEntity.findFirst({ where: { id: legalEntityId, tenantId } });
+    if (!le) throw AppError('legalEntityId not found or does not belong to this tenant', 'INVALID_LEGAL_ENTITY', 422);
+    if (!le.active) throw AppError('Legal entity is inactive', 'INACTIVE_LEGAL_ENTITY', 422);
+    // Legal entity is authoritative — override any contradictory country/currency
+    country = le.country;
+    currency = le.currency ?? currency ?? null;
+  }
 
   const newType = classification === 'CONTRACTOR' ? 'CONTRACT' : 'FULL_TIME';
   const updated = await prisma.employee.update({
@@ -1134,10 +1158,16 @@ export async function updateWorkerClassification(prisma, tenantId, employeeId, b
   if (currency !== undefined) salaryPatch.currency = currency;
   if (legalEntityId !== undefined) salaryPatch.legalEntityId = legalEntityId;
   if (Object.keys(salaryPatch).length > 0) {
-    await prisma.employeeSalary.updateMany({
+    const result = await prisma.employeeSalary.updateMany({
       where: { tenantId, employeeId, effectiveTo: null },
       data: salaryPatch,
     });
+    if (result.count === 0) {
+      throw AppError(
+        'No active salary configuration — assign a salary first before setting country/currency/legalEntityId',
+        'NO_ACTIVE_SALARY', 422,
+      );
+    }
   }
 
   return {

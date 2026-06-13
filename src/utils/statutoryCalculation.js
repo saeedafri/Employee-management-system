@@ -174,14 +174,23 @@ export async function resolveStatutoryPackForEmployee(prisma, tenantId, salary, 
     }
   }
 
-  // 2. salary.country → active pack for country
+  // 2. salary.country → active pack for country; look up LE for that country to get fiscalYearStartMonth
   const salaryCountry = salary?.country;
   if (salaryCountry) {
     const row = await prisma.statutoryPack.findFirst({
       where: { tenantId, country: salaryCountry, effectiveFrom: { lte: periodDate }, OR: [{ effectiveTo: null }, { effectiveTo: { gte: periodDate } }] },
       orderBy: { effectiveFrom: 'desc' },
     });
-    if (row) return { pack: fmtStatutoryPackRow(row), legalEntity: null, fiscalYearStartMonth: 4 };
+    if (row) {
+      // Use legal entity for this country if one exists — avoids India-biased hardcode
+      const leForCountry = await prisma.legalEntity.findFirst({
+        where: { tenantId, country: salaryCountry, active: true },
+        orderBy: { createdAt: 'asc' },
+      });
+      // Default to 1 (calendar year) when no LE found — do NOT default to 4 (India Apr–Mar)
+      const fyMonth = leForCountry?.fiscalYearStartMonth ?? 1;
+      return { pack: fmtStatutoryPackRow(row), legalEntity: leForCountry ?? null, fiscalYearStartMonth: fyMonth };
+    }
   }
 
   // 3. Tenant default: first active legal entity

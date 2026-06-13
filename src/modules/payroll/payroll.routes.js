@@ -275,6 +275,9 @@ export default async function payrollRoutes(fastify) {
         properties: {
           payGroupId: { type: 'string' }, annualCtc: { type: 'number' },
           effectiveFrom: { type: 'string', description: 'YYYY-MM-DD' },
+          country: { type: 'string', description: 'ISO 3166-1 alpha-2. Derived from legalEntityId when provided.' },
+          currency: { type: 'string', description: 'ISO 4217. Derived from legalEntityId when provided.' },
+          legalEntityId: { type: 'string', description: 'Legal entity. When set, country/currency are derived from it.' },
           bankAccountName: { type: 'string' }, bankAccountNumber: { type: 'string' },
           bankIfscCode: { type: 'string' }, bankName: { type: 'string' },
         },
@@ -292,7 +295,9 @@ export default async function payrollRoutes(fastify) {
         type: 'object',
         properties: {
           payGroupId: { type: 'string' }, annualCtc: { type: 'number' },
-          effectiveFrom: { type: 'string' }, bankAccountName: { type: 'string' },
+          effectiveFrom: { type: 'string' },
+          country: { type: 'string' }, currency: { type: 'string' }, legalEntityId: { type: 'string' },
+          bankAccountName: { type: 'string' },
           bankAccountNumber: { type: 'string' }, bankIfscCode: { type: 'string' },
           bankName: { type: 'string' },
         },

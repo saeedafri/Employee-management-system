@@ -3428,15 +3428,24 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
       "rounding": "nearest_rupee",
       "proration": "working_days",
       "taxRegimes": [
-        { "code": "NEW", "name": "New Tax Regime", "default": true,
+        {
+          "code": "NEW", "name": "New Tax Regime", "default": true,
+          "standardDeduction": 50000,
           "slabs": [
-            { "from": 0, "to": 300000, "rate": 0 },
-            { "from": 300001, "to": 600000, "rate": 5 },
-            { "from": 600001, "to": 900000, "rate": 10 },
-            { "from": 900001, "to": 1200000, "rate": 15 },
-            { "from": 1200001, "to": 1500000, "rate": 20 },
-            { "from": 1500001, "to": null, "rate": 30 }
-          ]
+            { "from": 0, "to": 300000, "rate": 0, "base": 0 },
+            { "from": 300001, "to": 600000, "rate": 5, "base": 0 },
+            { "from": 600001, "to": 900000, "rate": 10, "base": 15000 },
+            { "from": 900001, "to": 1200000, "rate": 15, "base": 45000 },
+            { "from": 1200001, "to": 1500000, "rate": 20, "base": 90000 },
+            { "from": 1500001, "to": null, "rate": 30, "base": 150000 }
+          ],
+          "surcharge": 0,
+          "cess": 4,
+          "taxCredits": [
+            { "code": "REBATE_87A", "amount": 2500000 }
+          ],
+          "taxCode": "TDS",
+          "taxName": "Income Tax (TDS)"
         }
       ],
       "contributionSchemes": [
@@ -3615,16 +3624,20 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 ```json
 {
   "payGroupId": "pg-001",
-  "annualCtc": 1800000,
-  "effectiveFrom": "2026-01-01",
-  "bankName": "HDFC",
-  "bankAccountNumber": "50100123456789",
-  "bankIfscCode": "HDFC0001234",
-  "bankAccountName": "Aman Kumar"
+  "annualCtc": 1200000,
+  "effectiveFrom": "2027-01-01",
+  "country": "PH",
+  "currency": "PHP",
+  "legalEntityId": "le-acme-ph",
+  "bankName": "BDO",
+  "bankAccountNumber": "000123456789",
+  "bankAccountName": "Juan dela Cruz"
 }
 ```
 
 **Notes:**
+- `country`, `currency`, `legalEntityId` are optional but required for global payroll
+- When `legalEntityId` is provided: **`country` and `currency` are derived from the legal entity and override any values sent in the body**. The legal entity must exist, belong to the tenant, and be active (`422 INVALID_LEGAL_ENTITY` / `422 INACTIVE_LEGAL_ENTITY` otherwise)
 - Creates a new salary record and closes the old one (`effectiveTo` = today)
 - `PATCH /payroll/employees/:employeeId/salary` — same body, same behavior (creates history)
 
@@ -4695,6 +4708,28 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 | DELETE | `/payroll/statutory-packs/:id` | SA | `{ deleted: true }` or `409 PACK_IN_USE` |
 
 **Flat response/request fields:** `country`, `version`, `effectiveFrom`, `effectiveTo`, `rounding`, `proration`, `taxRegimes[]`, `contributionSchemes[]`, `localTaxes[]`, **`statutoryComponents: string[]`**, `minimumWages[]`, **`gratuity`** (object or `null`).
+
+**`taxRegimes[]` object shape:**
+```json
+{
+  "code": "PH_TRAIN_2023",
+  "name": "TRAIN Law (RA 11976)",
+  "default": true,
+  "standardDeduction": 0,
+  "slabs": [{ "from": 0, "to": 250000, "rate": 0, "base": 0 }],
+  "surcharge": 0,
+  "cess": 0,
+  "taxCredits": [{ "code": "PRIMARY_REBATE", "amount": 1723500 }],
+  "taxCode": "WITHHOLDING_TAX",
+  "taxName": "Withholding Tax"
+}
+```
+- `standardDeduction` — subtracted from annual gross before slab calculation
+- `slabs[].base` — fixed amount owed at bottom of this bracket (progressive pre-computation)
+- `surcharge` — % added to computed slab tax
+- `cess` — % added after surcharge
+- `taxCredits[]` — subtracted from final tax (after cess); amounts in major currency units (not cents); `max(0, tax - sum(credits))`
+- `taxCode` / `taxName` — code/name used in the deductions array on the payslip
 
 **`statutoryComponents` contract:** Response is always `string[]` (e.g. `["PF", "PF_ER"]`). POST/PATCH accept `string[]` or legacy `{ code: string }[]`; backend normalizes to strings before persisting via `normalizeStatutoryComponents()`.
 

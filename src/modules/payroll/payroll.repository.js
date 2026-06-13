@@ -781,11 +781,16 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         include: { department: { select: { name: true } } },
       });
       if (!emp) continue;
+      const empSal = await prisma.employeeSalary.findFirst({
+        where: { tenantId, employeeId: emp.id, effectiveTo: null },
+        include: { payGroup: { select: { currency: true } } },
+      });
+      const bonusCurrency = empSal?.currency ?? empSal?.payGroup?.currency ?? run.currency ?? 'INR';
       const earningsArr = [{ code: runType, name: label, amount, taxable: true }];
       await prisma.payslip.create({
         data: {
           tenantId, payrollRunId: id, employeeId: emp.id, period: run.period,
-          currency: 'INR', grossEarnings: amount, totalDeductions: 0, netPay: amount,
+          currency: bonusCurrency, grossEarnings: amount, totalDeductions: 0, netPay: amount,
           workingDays: 0, presentDays: 0, leaveDays: 0, lopDays: 0, status: 'PENDING',
           earningsJson: earningsArr, deductionsJson: [],
           oneTimeAdditionsJson: [], oneTimeDeductionsJson: [], generatedAt: new Date(),
@@ -854,15 +859,26 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       const contributionSchemes = statutoryPack?.contributionSchemes ?? [];
       const { employeeCodes: schemeEmployeeCodes, employerCodes: schemeEmployerCodes } = schemeManagedComponentCodes(contributionSchemes);
 
-      // Pin statutory pack per payslip in preserved meta only once (for run-level summary)
-      if (statutoryPack && !preservedMeta.pinnedStatutoryPack) {
-        preservedMeta.pinnedStatutoryPack = {
-          statutoryPackId: statutoryPack.id,
+      // Pin statutory pack per employee (multi-country reproducibility)
+      if (!preservedMeta.pinnedStatutoryPacksByEmployee) preservedMeta.pinnedStatutoryPacksByEmployee = {};
+      if (statutoryPack) {
+        const resolvedBy = sal.legalEntityId ? 'LEGAL_ENTITY' : (sal.country ? 'SALARY_COUNTRY' : 'TENANT_DEFAULT');
+        preservedMeta.pinnedStatutoryPacksByEmployee[employee.id] = {
+          employeeId: employee.id,
           country: statutoryPack.country,
+          statutoryPackId: statutoryPack.id,
           version: statutoryPack.version,
+          resolvedBy,
           pinnedAt: new Date().toISOString(),
         };
-      } else if (!statutoryPack) {
+        // Backward-compat: keep run-level summary pack (first employee's pack)
+        if (!preservedMeta.pinnedStatutoryPack) {
+          preservedMeta.pinnedStatutoryPack = {
+            statutoryPackId: statutoryPack.id, country: statutoryPack.country,
+            version: statutoryPack.version, pinnedAt: new Date().toISOString(),
+          };
+        }
+      } else {
         warnings.push({ employeeId: employee.id, message: 'No statutory pack resolved — statutory contributions skipped' });
       }
 
