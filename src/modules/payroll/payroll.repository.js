@@ -860,7 +860,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
 
     try {
       // Per-employee pack resolution
-      const { pack: statutoryPack, fiscalYearStartMonth } = await resolveStatutoryPackForEmployee(
+      const { pack: statutoryPack } = await resolveStatutoryPackForEmployee(
         prisma, tenantId, sal, run.period,
       );
       const contributionSchemes = statutoryPack?.contributionSchemes ?? [];
