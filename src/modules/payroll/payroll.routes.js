@@ -208,7 +208,7 @@ export default async function payrollRoutes(fastify) {
               required: ['componentId'],
               properties: {
                 componentId: { type: 'string' },
-                overrideCalculationType: { type: 'string', enum: ['FLAT', 'PERCENTAGE', 'FORMULA'], nullable: true },
+                overrideCalculationType: { type: 'string', nullable: true, description: 'FLAT | PERCENTAGE | FORMULA. Null = no override.' },
                 overrideValue: { type: 'number', nullable: true },
                 overrideFormula: { type: 'string', nullable: true },
               },
