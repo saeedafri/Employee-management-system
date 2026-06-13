@@ -549,7 +549,10 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/payroll/runs': {
           get:  op('Payroll', 'List payroll runs. HR_ADMIN/SUPER_ADMIN. ?page&limit&year&status', true),
-          post: op('Payroll', 'Initiate payroll run. Required: period (YYYY-MM). 409 if non-cancelled run exists for period.', true, { responses: { 201: r201, 409: { description: 'RUN_EXISTS' } } }),
+          post: op('Payroll', 'Initiate payroll run. Required: period (YYYY-MM | YYYY-MM-H1 | YYYY-MM-H2 | YYYY-Wnn). For sub-monthly/weekly send startDate, endDate, payDate, paySchedule. Duplicate detection is by cycle identity (paySchedule + startDate + endDate), so weekly and bi-weekly runs sharing a YYYY-Wnn string do not collide. 409 RUN_EXISTS when the same cycle already exists.', true, { responses: { 201: r201, 409: { description: 'RUN_EXISTS' } } }),
+        },
+        '/payroll/pay-calendars/{id}/cycles': {
+          get: op('Payroll', 'List computed pay cycles for a calendar over a month range. Query: ?from=YYYY-MM&to=YYYY-MM. Returns MONTHLY/SEMI_MONTHLY(H1,H2)/BIWEEKLY/WEEKLY cycles with startDate, endDate, payDate, cutoffDate.', true, { parameters: [pathParam('id', 'Pay calendar ID'), queryParam('from', 'string', 'Start month YYYY-MM'), queryParam('to', 'string', 'End month YYYY-MM')] }),
         },
         '/payroll/runs/{id}': {
           get: op('Payroll', 'Get payroll run detail with summary (byDepartment, warnings).', true, { parameters: idParam }),
@@ -1300,11 +1303,34 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         PayrollRunSummary: {
           type: 'object',
           properties: {
-            id: { type: 'string' }, period: { type: 'string' }, periodLabel: { type: 'string' },
+            id: { type: 'string' }, period: { type: 'string', description: 'YYYY-MM | YYYY-MM-H1 | YYYY-MM-H2 | YYYY-Wnn' },
+            periodLabel: { type: 'string' },
+            startDate: { type: 'string', format: 'date', nullable: true, description: 'Cycle start (null for legacy monthly runs)' },
+            endDate: { type: 'string', format: 'date', nullable: true, description: 'Cycle end' },
+            payDate: { type: 'string', format: 'date', nullable: true, description: 'Scheduled pay date' },
+            paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'], nullable: true },
             type: { type: 'string' }, status: { type: 'string' }, employeeCount: { type: 'integer' },
             totalGross: { type: 'number' }, totalDeductions: { type: 'number' }, totalNet: { type: 'number' },
             employerCost: { type: 'number' }, currency: { type: 'string' },
             published: { type: 'boolean' }, publishedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        PayCalendarCycle: {
+          type: 'object',
+          description: 'Computed cycle from GET /payroll/pay-calendars/:id/cycles (no stored table)',
+          properties: {
+            period: { type: 'string' }, periodLabel: { type: 'string' },
+            startDate: { type: 'string', format: 'date' }, endDate: { type: 'string', format: 'date' },
+            payDate: { type: 'string', format: 'date' }, cutoffDate: { type: 'string', format: 'date' },
+            paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+          },
+        },
+        PayCalendarCyclesResponse: {
+          type: 'object',
+          properties: {
+            payCalendarId: { type: 'string' },
+            paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            cycles: { type: 'array', items: { '$ref': '#/definitions/PayCalendarCycle' } },
           },
         },
         PayCalendar: {
@@ -1312,7 +1338,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           description: 'GET/POST/PATCH /payroll/pay-calendars',
           properties: {
             id: { type: 'string' }, name: { type: 'string' }, legalEntityId: { type: 'string', nullable: true },
-            frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            frequency: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
             periodAnchor: { type: 'integer', minimum: 1, maximum: 28, description: 'Day-of-month period starts (1–28)' },
             payDateRule: { type: 'string' }, payDay: { type: 'integer' }, cutoffDay: { type: 'integer' },
             holidayCalendarId: { type: 'string', nullable: true },
@@ -1324,7 +1350,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           required: ['name', 'code'],
           properties: {
             name: { type: 'string' }, code: { type: 'string' }, country: { type: 'string' },
-            frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            frequency: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
             periodAnchor: { type: 'integer', minimum: 1, maximum: 28 },
             payDateRule: { type: 'string' }, payDay: { type: 'integer' }, cutoffDay: { type: 'integer' },
             legalEntityId: { type: 'string', nullable: true }, holidayCalendarId: { type: 'string', nullable: true },
@@ -1333,7 +1359,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         PayCalendarUpdateRequest: {
           type: 'object',
           properties: {
-            name: { type: 'string' }, frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            name: { type: 'string' }, frequency: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
             periodAnchor: { type: 'integer', minimum: 1, maximum: 28 },
             payDateRule: { type: 'string' }, payDay: { type: 'integer' }, cutoffDay: { type: 'integer' },
             legalEntityId: { type: 'string', nullable: true }, holidayCalendarId: { type: 'string', nullable: true },
@@ -1518,7 +1544,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           type: 'object',
           properties: {
             id: { type: 'string' }, code: { type: 'string' }, name: { type: 'string' },
-            country: { type: 'string' }, paySchedule: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+            country: { type: 'string' }, paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
             firstPayDate: { type: 'string', format: 'date' }, source: { type: 'string' },
           },
         },
@@ -1627,7 +1653,11 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           type: 'object',
           required: ['period'],
           properties: {
-            period: { type: 'string', example: '2026-06' },
+            period: { type: 'string', example: '2026-06', description: 'YYYY-MM | YYYY-MM-H1 | YYYY-MM-H2 | YYYY-Wnn' },
+            startDate: { type: 'string', format: 'date', description: 'Cycle start. Optional for MONTHLY/SEMI_MONTHLY (derived); REQUIRED for BIWEEKLY.' },
+            endDate: { type: 'string', format: 'date', description: 'Cycle end. Optional for MONTHLY/SEMI_MONTHLY (derived); REQUIRED for BIWEEKLY.' },
+            payDate: { type: 'string', format: 'date', description: 'Scheduled pay date. Defaults to endDate when omitted.' },
+            paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'], description: 'Required when period is YYYY-Wnn (weekly vs bi-weekly is otherwise ambiguous).' },
             type: { '$ref': '#/definitions/PayrollRunType' },
             employeeIds: { type: 'array', items: { type: 'string' } },
             fnf: { '$ref': '#/definitions/FnFParams' },

@@ -199,7 +199,7 @@ export default async function payrollRoutes(fastify) {
         required: ['name', 'code'],
         properties: {
           name: { type: 'string' }, code: { type: 'string' }, currency: { type: 'string' },
-          paySchedule: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+          paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
           description: { type: 'string' }, active: { type: 'boolean' },
           components: {
             type: 'array',
@@ -355,7 +355,11 @@ export default async function payrollRoutes(fastify) {
         type: 'object',
         required: ['period'],
         properties: {
-          period: { type: 'string', pattern: '^\\d{4}-\\d{2}$' },
+          period: { type: 'string', description: 'YYYY-MM | YYYY-MM-H1 | YYYY-MM-H2 | YYYY-Wnn' },
+          startDate: { type: 'string', format: 'date', description: 'Cycle start date (ISO 8601)' },
+          endDate: { type: 'string', format: 'date', description: 'Cycle end date (ISO 8601)' },
+          payDate: { type: 'string', format: 'date', description: 'Scheduled pay date (ISO 8601)' },
+          paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
           type: { type: 'string', description: 'REGULAR | OFF_CYCLE | BONUS | ARREARS | FNF | REVERSAL' },
           employeeIds: { type: 'array', items: { type: 'string' } },
           fnf: { type: 'object', additionalProperties: true },
@@ -496,6 +500,7 @@ export default async function payrollRoutes(fastify) {
         properties: {
           name: { type: 'string' }, country: { type: 'string' }, currency: { type: 'string' },
           fiscalYearStartMonth: { type: 'integer' }, timezone: { type: 'string' }, locale: { type: 'string' },
+          workWeekPattern: { type: 'string', description: 'Work week, e.g. MON-FRI (default), MON-SAT, SUN-THU. Drives cycle working-day counts.' },
           registrationIds: { type: 'object', additionalProperties: true },
           statutoryPackId: { type: 'string' }, payCalendarId: { type: 'string' },
           active: { type: 'boolean', description: 'Entity status for UI badges (default true)' },
@@ -827,8 +832,8 @@ export default async function payrollRoutes(fastify) {
         required: ['name', 'code'],
         properties: {
           name: { type: 'string' }, code: { type: 'string' }, country: { type: 'string' },
-          paySchedule: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
-          frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'], description: 'Alias for paySchedule' },
+          paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+          frequency: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'], description: 'Alias for paySchedule' },
           firstPayDate: { type: 'string' },
           legalEntityId: { type: 'string', nullable: true },
           periodAnchor: { type: 'integer', minimum: 1, maximum: 28, description: 'Day-of-month the pay period starts (1–28)' },
@@ -851,8 +856,8 @@ export default async function payrollRoutes(fastify) {
         type: 'object',
         properties: {
           name: { type: 'string' },
-          frequency: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
-          paySchedule: { type: 'string', enum: ['MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+          frequency: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
+          paySchedule: { type: 'string', enum: ['MONTHLY', 'SEMI_MONTHLY', 'BIWEEKLY', 'WEEKLY'] },
           periodAnchor: { type: 'integer', minimum: 1, maximum: 28 },
           payDateRule: { type: 'string' },
           payDay: { type: 'integer' },
@@ -865,6 +870,22 @@ export default async function payrollRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.updatePayCalendar);
+
+  fastify.get('/payroll/pay-calendars/:id/cycles', {
+    schema: {
+      tags: ['Payroll'], description: 'Generate pay calendar cycles for a date range (computed, not stored)', security: [{ Bearer: [] }],
+      params: idParam,
+      querystring: {
+        type: 'object',
+        properties: {
+          from: { type: 'string', description: 'Start month YYYY-MM (inclusive). Defaults to current month.' },
+          to: { type: 'string', description: 'End month YYYY-MM (inclusive). Defaults to from.' },
+        },
+      },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.getPayCalendarCycles);
 
   // ── Phase 3: Migration ──────────────────────────────────────────────────────
 

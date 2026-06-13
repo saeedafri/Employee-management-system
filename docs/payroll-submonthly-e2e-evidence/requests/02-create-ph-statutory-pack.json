@@ -1,0 +1,35 @@
+{
+  "country": "PH",
+  "version": "2057-v1",
+  "effectiveFrom": "2057-01-01",
+  "_note": "PH TRAIN annual tax table. Values in MINOR units (centavos ×100). No standardDeduction — the 0% bracket up to 250,000 IS the exemption (a separate std deduction would double-count). On taxable 1,200,000 PHP this yields annual tax 202,500 → monthly 16,875.",
+  "taxRegimes": [
+    {
+      "code": "PH_WITHHOLDING",
+      "name": "PH Withholding Tax (TRAIN)",
+      "taxCode": "WITHHOLDING_TAX",
+      "taxName": "Withholding Tax",
+      "standardDeduction": 0,
+      "slabs": [
+        { "from": 0,         "to": 25000000,  "rate": 0  },
+        { "from": 25000000,  "to": 40000000,  "rate": 15, "base": 0 },
+        { "from": 40000000,  "to": 80000000,  "rate": 20, "base": 2250000 },
+        { "from": 80000000,  "to": 200000000, "rate": 25, "base": 10250000 },
+        { "from": 200000000, "to": 800000000, "rate": 30, "base": 40250000 },
+        { "from": 800000000, "to": null,      "rate": 35, "base": 220250000 }
+      ]
+    }
+  ],
+  "contributionSchemes": [
+    {
+      "code": "SSS",
+      "name": "SSS",
+      "wageBaseTag": "SSS_BASE",
+      "wageCeiling": 3500000,
+      "apportionmentMode": "MONTHLY_TOTAL",
+      "employee": { "component": "SSS_EE", "rate": 5 },
+      "employer": { "component": "SSS_ER", "rate": 10 }
+    }
+  ],
+  "statutoryComponents": ["SSS_EE", "SSS_ER"]
+}

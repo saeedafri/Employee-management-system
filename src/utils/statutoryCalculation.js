@@ -1,6 +1,7 @@
 /** Statutory contribution engine — uses pack contributionSchemes + component statutoryTag. */
 
 import { fmtStatutoryPackRow } from './statutoryPackShape.js';
+import { periodRepresentativeDate } from './payrollPeriod.js';
 
 function minorToMajor(amount) {
   if (amount == null) return null;
@@ -58,7 +59,24 @@ export function schemeManagedComponentCodes(contributionSchemes = []) {
   return { employeeCodes, employerCodes };
 }
 
-export function computeStatutoryContributions(earnings, componentByCode, contributionSchemes = []) {
+/**
+ * Compute statutory contributions (PF, ESI, SSS, etc.) from earnings.
+ *
+ * apportionmentOptions (optional):
+ *   periodsPerMonth   {number}  How many pay cycles fall in this calendar month (1 for MONTHLY, 2 for SEMI_MONTHLY).
+ *   isLastCycleInMonth {boolean} Whether this is the last cycle in the month. Last cycle absorbs rounding remainder.
+ *
+ * For schemes with apportionmentMode === 'MONTHLY_TOTAL':
+ *   - Scale raw earnings up to monthly estimate, apply ceiling, compute monthly contribution.
+ *   - Split across cycles; last cycle absorbs any rounding remainder.
+ *   - Prevents double-charging when a contribution has a monthly cap (e.g. SSS, PF).
+ *
+ * For schemes without apportionmentMode (legacy / MONTHLY): unchanged behaviour.
+ */
+export function computeStatutoryContributions(earnings, componentByCode, contributionSchemes = [], {
+  periodsPerMonth: ppm = 1,
+  isLastCycleInMonth = true,
+} = {}) {
   const statutoryDeductions = [];
   const employerContributions = [];
 
@@ -72,16 +90,37 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
 
     if (rawBase <= 0) continue;
 
-    let base = rawBase;
-    if (scheme.wageCeiling != null) {
-      const ceilingMajor = minorToMajor(scheme.wageCeiling);
-      if (ceilingMajor != null) base = Math.min(rawBase, ceilingMajor);
-    }
-
     const empRate = Number(scheme.employee?.rate ?? 0);
     const erRate = Number(scheme.employer?.rate ?? 0);
-    const employeeAmt = Math.round((base * empRate) / 100);
-    const employerAmt = Math.round((base * erRate) / 100);
+
+    let employeeAmt, employerAmt;
+
+    if (scheme.apportionmentMode === 'MONTHLY_TOTAL' && ppm > 1) {
+      // Monthly total approach: scale up to monthly estimate, apply ceiling, split.
+      const monthlyEstimatedBase = rawBase * ppm;
+      let monthlyCeiledBase = monthlyEstimatedBase;
+      if (scheme.wageCeiling != null) {
+        const ceilingMajor = minorToMajor(scheme.wageCeiling);
+        if (ceilingMajor != null) monthlyCeiledBase = Math.min(monthlyEstimatedBase, ceilingMajor);
+      }
+      const monthlyEmpTotal = Math.round((monthlyCeiledBase * empRate) / 100);
+      const monthlyErTotal = Math.round((monthlyCeiledBase * erRate) / 100);
+
+      const cycleEmp = Math.floor(monthlyEmpTotal / ppm);
+      const cycleEr = Math.floor(monthlyErTotal / ppm);
+      // Last cycle absorbs rounding remainder so monthly total is always exact.
+      employeeAmt = isLastCycleInMonth ? monthlyEmpTotal - cycleEmp * (ppm - 1) : cycleEmp;
+      employerAmt = isLastCycleInMonth ? monthlyErTotal - cycleEr * (ppm - 1) : cycleEr;
+    } else {
+      // Standard per-cycle computation (existing behaviour — unchanged for MONTHLY).
+      let base = rawBase;
+      if (scheme.wageCeiling != null) {
+        const ceilingMajor = minorToMajor(scheme.wageCeiling);
+        if (ceilingMajor != null) base = Math.min(rawBase, ceilingMajor);
+      }
+      employeeAmt = Math.round((base * empRate) / 100);
+      employerAmt = Math.round((base * erRate) / 100);
+    }
 
     if (employeeAmt > 0 && scheme.employee?.component) {
       statutoryDeductions.push({
@@ -202,9 +241,11 @@ export function computeIncomeTaxFromRegime(annualGross, taxRegime, currency = 'I
  * Returns fiscalYear (label), fiscalYearStartPeriod, fiscalYearEndPeriod.
  */
 export function resolveFiscalYear(period, fiscalYearStartMonth = 4) {
-  const [yearStr, monthStr] = period.split('-');
-  const year = parseInt(yearStr, 10);
-  const month = parseInt(monthStr, 10);
+  // Accepts YYYY-MM, YYYY-MM-H1/H2, YYYY-Wnn — only year and month parts are used.
+  const parts = String(period).split('-');
+  const year = parseInt(parts[0], 10);
+  // parts[1] may be "MM" or "Wnn" — parseInt handles both (stops at non-digit)
+  const month = parseInt(parts[1], 10) || 1;
 
   const fyStartYear = month >= fiscalYearStartMonth ? year : year - 1;
   // For calendar year (start=1) the FY ends in the same year; cross-year FY ends in fyStartYear+1
@@ -230,8 +271,13 @@ export function resolveFiscalYear(period, fiscalYearStartMonth = 4) {
  *
  * Returns { pack, legalEntity, fiscalYearStartMonth }
  */
-export async function resolveStatutoryPackForEmployee(prisma, tenantId, salary, period) {
-  const periodDate = new Date(`${period}-15T12:00:00.000Z`);
+export async function resolveStatutoryPackForEmployee(prisma, tenantId, salary, period, periodDateOverride = null) {
+  // Resolve a date that lies inside the period for effective-dated pack lookups.
+  // Sub-monthly periods (YYYY-MM-H1/H2, YYYY-Wnn) would make `${period}-15` an Invalid Date —
+  // route everything through periodRepresentativeDate (throws VALIDATION_ERROR if unresolvable).
+  const periodDate = periodDateOverride instanceof Date && !Number.isNaN(periodDateOverride.getTime())
+    ? periodDateOverride
+    : periodRepresentativeDate(period);
 
   // 1. Explicit legalEntityId on salary record
   if (salary?.legalEntityId) {

@@ -1,7 +1,7 @@
 /** Pay calendar API ↔ DB mapping (frontend PayCalendar contract). */
 
-const FREQ_TO_SCHEDULE = { MONTHLY: 'MONTHLY', BIWEEKLY: 'BIWEEKLY', WEEKLY: 'WEEKLY' };
-const SCHEDULE_TO_FREQ = { MONTHLY: 'MONTHLY', BIWEEKLY: 'BIWEEKLY', WEEKLY: 'WEEKLY' };
+const FREQ_TO_SCHEDULE = { MONTHLY: 'MONTHLY', SEMI_MONTHLY: 'SEMI_MONTHLY', BIWEEKLY: 'BIWEEKLY', WEEKLY: 'WEEKLY' };
+const SCHEDULE_TO_FREQ = { MONTHLY: 'MONTHLY', SEMI_MONTHLY: 'SEMI_MONTHLY', BIWEEKLY: 'BIWEEKLY', WEEKLY: 'WEEKLY' };
 
 /** Frontend contract: periodAnchor is integer day-of-month 1–28. */
 export function normalizePeriodAnchor(value) {
@@ -21,7 +21,7 @@ export function fmtPayCalendar(row) {
     frequency: SCHEDULE_TO_FREQ[frequency] ?? frequency,
     periodAnchor: normalizePeriodAnchor(row.periodAnchor),
     payDateRule: row.payDateRule ?? 'LAST_WORKING_DAY',
-    payDay: row.payDay ?? (frequency === 'MONTHLY' ? 30 : frequency === 'BIWEEKLY' ? 15 : 7),
+    payDay: row.payDay ?? (frequency === 'MONTHLY' ? 30 : (frequency === 'SEMI_MONTHLY' ? 15 : (frequency === 'BIWEEKLY' ? 15 : 7))),
     cutoffDay: row.cutoffDay ?? 25,
     holidayCalendarId: row.holidayCalendarId ?? null,
     createdAt: row.createdAt,

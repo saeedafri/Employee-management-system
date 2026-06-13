@@ -1,0 +1,9 @@
+{
+  "_endpoint": "POST /api/v1/payroll/runs",
+  "period": "2057-01-H2",
+  "startDate": "2057-01-16",
+  "endDate": "2057-01-31",
+  "payDate": "2057-01-31",
+  "paySchedule": "SEMI_MONTHLY",
+  "type": "REGULAR"
+}

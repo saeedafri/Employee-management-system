@@ -1,0 +1,13 @@
+{
+  "_endpoint": "POST /api/v1/payroll/groups",
+  "name": "PH Semi-Monthly",
+  "code": "PH_SEMI",
+  "currency": "PHP",
+  "paySchedule": "SEMI_MONTHLY",
+  "description": "Philippines semi-monthly (24 periods/year)",
+  "components": [
+    { "componentId": "<BASIC_COMPONENT_ID>" },
+    { "componentId": "<SSS_EE_COMPONENT_ID>" },
+    { "componentId": "<SSS_ER_COMPONENT_ID>" }
+  ]
+}

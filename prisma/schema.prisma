@@ -138,6 +138,7 @@ enum CalculationType {
 
 enum PaySchedule {
   MONTHLY
+  SEMI_MONTHLY
   BIWEEKLY
   WEEKLY
 }
@@ -1011,7 +1012,11 @@ model EmployeeSalary {
 model PayrollRun {
   id               String           @id @default(cuid())
   tenantId         String
-  period           String // "2024-06"
+  period           String // "2024-06" | "2024-06-H1" | "2024-W23"
+  startDate        DateTime?        // Cycle start date (Option B period model)
+  endDate          DateTime?        // Cycle end date
+  payDate          DateTime?        // Scheduled pay date
+  paySchedule      String?          // MONTHLY | SEMI_MONTHLY | BIWEEKLY | WEEKLY
   type             String           @default("REGULAR") // REGULAR | OFF_CYCLE | BONUS | ARREARS | FNF | REVERSAL
   status           PayrollRunStatus @default(DRAFT)
   employeeCount    Int              @default(0)
@@ -1102,6 +1107,7 @@ model LegalEntity {
   fiscalYearStartMonth Int      @default(4)
   timezone             String   @default("Asia/Kolkata")
   locale               String   @default("en-IN")
+  workWeekPattern      String   @default("MON-FRI") // MON-FRI | MON-SAT | SUN-THU — drives cycle working-day counts
   registrationIds      Json     @default("{}")
   statutoryPackId      String?
   payCalendarId        String?

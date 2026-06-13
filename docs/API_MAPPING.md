@@ -2958,7 +2958,8 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/payroll/runs` | HR,SA | `?page&limit&year&status`. Paginated. status: DRAFT\|CALCULATING\|REVIEW\|APPROVED\|PAID\|CANCELLED |
-| POST | `/payroll/runs` | HR,SA | 201. Required: period (YYYY-MM). 409 RUN_EXISTS if non-CANCELLED run exists |
+| POST | `/payroll/runs` | HR,SA | 201. Required: period (`YYYY-MM` \| `YYYY-MM-H1` \| `YYYY-MM-H2` \| `YYYY-Wnn`). Optional: startDate, endDate, payDate, paySchedule (MONTHLY\|SEMI_MONTHLY\|BIWEEKLY\|WEEKLY). BIWEEKLY/weekly-vs-biweekly require explicit startDate+endDate+paySchedule. 409 RUN_EXISTS by cycle identity (paySchedule+startDate+endDate) |
+| GET | `/payroll/pay-calendars/:id/cycles` | HR,SA | `?from=YYYY-MM&to=YYYY-MM`. Computed cycles (no stored table). Each: period, periodLabel, startDate, endDate, payDate, cutoffDate, paySchedule |
 | GET | `/payroll/runs/:id` | HR,SA | Includes `summary.byDepartment[]` and `summary.warnings[]` |
 | POST | `/payroll/runs/:id/calculate` | HR,SA | 202. DRAFT→REVIEW. Computes payslips for all employees with salary config |
 | POST | `/payroll/runs/:id/approve` | HR,SA | 200. REVIEW→APPROVED. Body: `{notes}` |
@@ -3398,13 +3399,16 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
   "fiscalYearStartMonth": 1,
   "timezone": "Asia/Singapore",
   "locale": "en-SG",
+  "workWeekPattern": "MON-FRI",
   "registrationIds": { "uen": "202012345A", "gst": "M90123456A" },
   "statutoryPackId": "pack-sg-2026",
   "payCalendarId": "cal-sg-monthly"
 }
 ```
 
-**Response 201:** same shape as GET item.
+`workWeekPattern` (optional, default `MON-FRI`) accepts `MON-FRI`, `MON-SAT`, `SUN-THU`, etc. It drives the `workingDays` count for every pay cycle of employees under this entity — no country is hardcoded.
+
+**Response 201:** same shape as GET item (now includes `workWeekPattern`).
 
 ---
 
@@ -3843,10 +3847,33 @@ The payroll engine normalizes all monetary pack fields to major units before com
 #### `POST /payroll/runs`
 **Roles:** HR, SA
 
-**Request body:**
+**Period formats & pay schedules (sub-monthly support):**
+
+| paySchedule  | period         | example       | cycle           | periodsPerYear |
+|--------------|----------------|---------------|-----------------|----------------|
+| MONTHLY      | `YYYY-MM`      | `2026-08`     | full month      | 12 |
+| SEMI_MONTHLY | `YYYY-MM-H1`   | `2026-08-H1`  | 1st–15th        | 24 |
+| SEMI_MONTHLY | `YYYY-MM-H2`   | `2026-08-H2`  | 16th–EOM        | 24 |
+| BIWEEKLY     | `YYYY-Wnn` (+ explicit dates) | `2026-W32` | 14-day cycle | 26 |
+| WEEKLY       | `YYYY-Wnn`     | `2026-W32`    | ISO week        | 52 |
+
+`startDate`/`endDate`/`payDate` are **derived & persisted** for MONTHLY and SEMI_MONTHLY when omitted. For **BIWEEKLY** they are **required** (a `YYYY-Wnn` string cannot encode a 14-day cycle). For any `YYYY-Wnn` period, `paySchedule` must be sent (weekly vs bi-weekly is otherwise ambiguous). `payDate` defaults to `endDate` when omitted.
+
+**Cycle math:**
+- Gross per cycle = `annualCtc / periodsPerYear(paySchedule)`
+- Income tax per cycle = `annualTax / periodsPerYear(paySchedule)`
+- Capped statutory contributions (e.g. PH SSS, IN PF) with `apportionmentMode: MONTHLY_TOTAL` are computed on the **monthly cap** and split across the **actual** number of cycles in the calendar month (2 or 3 for biweekly; 4 or 5 for weekly) — the last cycle absorbs the rounding remainder, so the month total never over-deducts.
+- `workingDays` count uses the cycle's `startDate`–`endDate` against the legal entity's `workWeekPattern` (default `MON-FRI`).
+
+**Request body (semi-monthly H1):**
 ```json
 {
-  "period": "2026-08",
+  "period": "2026-08-H1",
+  "startDate": "2026-08-01",
+  "endDate": "2026-08-15",
+  "payDate": "2026-08-15",
+  "paySchedule": "SEMI_MONTHLY",
+  "type": "REGULAR",
   "includeAllActiveEmployees": true
 }
 ```
@@ -3856,22 +3883,31 @@ The payroll engine normalizes all monetary pack fields to major units before com
 {
   "success": true,
   "data": {
-    "id": "run-aug-2026",
-    "period": "2026-08",
+    "id": "run-aug-2026-h1",
+    "period": "2026-08-H1",
+    "periodLabel": "1–15 Aug 2026",
+    "startDate": "2026-08-01",
+    "endDate": "2026-08-15",
+    "payDate": "2026-08-15",
+    "paySchedule": "SEMI_MONTHLY",
     "status": "DRAFT",
     "employeeCount": 0,
     "totalGross": 0,
     "totalDeductions": 0,
     "totalNet": 0,
     "currency": "INR",
-    "createdAt": "2026-06-08T00:00:00.000Z"
+    "createdAt": "2026-06-13T00:00:00.000Z"
   },
   "meta": {}
 }
 ```
+> Legacy MONTHLY runs created before this migration return `startDate`/`endDate`/`payDate`/`paySchedule` as `null`.
 
 **Errors:**
-- `409 RUN_EXISTS` — non-CANCELLED run for this period already exists
+- `409 RUN_EXISTS` — a non-CANCELLED run for the **same cycle** (paySchedule + startDate + endDate) already exists. Weekly and bi-weekly runs sharing a `YYYY-Wnn` string no longer collide.
+- `422 VALIDATION_ERROR` — `YYYY-Wnn` period without `paySchedule`, or BIWEEKLY without explicit `startDate`/`endDate`.
+
+**YTD note:** Year-to-date aggregation (payslip `ytd`, `GET /payroll/employees/:id/ytd`) filters by `PayrollRun.startDate` within the fiscal year (date-based), not by period-string comparison — correct for weekly/bi-weekly/sub-monthly periods. Legacy payslips without cycle dates fall back to period-string derivation.
 
 ---
 

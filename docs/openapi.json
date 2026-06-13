@@ -790,7 +790,8 @@
           "type": "string"
         },
         "period": {
-          "type": "string"
+          "type": "string",
+          "description": "YYYY-MM | YYYY-MM-H1 | YYYY-MM-H2 | YYYY-Wnn"
         },
         "periodLabel": {
           "type": "string"
@@ -825,6 +826,32 @@
         "publishedAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "nullable": true,
+          "description": "Cycle start (null for legacy monthly runs)"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "nullable": true
+        },
+        "payDate": {
+          "type": "string",
+          "format": "date",
+          "nullable": true
+        },
+        "paySchedule": {
+          "type": "string",
+          "enum": [
+            "MONTHLY",
+            "SEMI_MONTHLY",
+            "BIWEEKLY",
+            "WEEKLY"
+          ],
+          "nullable": true
         }
       }
     },
@@ -846,6 +873,7 @@
           "type": "string",
           "enum": [
             "MONTHLY",
+            "SEMI_MONTHLY",
             "BIWEEKLY",
             "WEEKLY"
           ]
@@ -899,6 +927,7 @@
           "type": "string",
           "enum": [
             "MONTHLY",
+            "SEMI_MONTHLY",
             "BIWEEKLY",
             "WEEKLY"
           ]
@@ -937,6 +966,7 @@
           "type": "string",
           "enum": [
             "MONTHLY",
+            "SEMI_MONTHLY",
             "BIWEEKLY",
             "WEEKLY"
           ]
@@ -1584,6 +1614,7 @@
           "type": "string",
           "enum": [
             "MONTHLY",
+            "SEMI_MONTHLY",
             "BIWEEKLY",
             "WEEKLY"
           ]
@@ -1919,7 +1950,8 @@
       "properties": {
         "period": {
           "type": "string",
-          "example": "2026-06"
+          "example": "2026-06",
+          "description": "YYYY-MM | YYYY-MM-H1 | YYYY-MM-H2 | YYYY-Wnn"
         },
         "type": {
           "$ref": "#/definitions/PayrollRunType"
@@ -1935,6 +1967,31 @@
         },
         "reversalOfRunId": {
           "type": "string"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Optional for MONTHLY/SEMI_MONTHLY (derived); REQUIRED for BIWEEKLY."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Optional for MONTHLY/SEMI_MONTHLY (derived); REQUIRED for BIWEEKLY."
+        },
+        "payDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Defaults to endDate when omitted."
+        },
+        "paySchedule": {
+          "type": "string",
+          "enum": [
+            "MONTHLY",
+            "SEMI_MONTHLY",
+            "BIWEEKLY",
+            "WEEKLY"
+          ],
+          "description": "Required when period is YYYY-Wnn (weekly vs bi-weekly is ambiguous)."
         }
       }
     },
@@ -2007,6 +2064,66 @@
         },
         "reversalOfPeriodLabel": {
           "type": "string"
+        }
+      }
+    },
+    "PayCalendarCycle": {
+      "type": "object",
+      "description": "Computed cycle from GET /payroll/pay-calendars/:id/cycles (no stored table)",
+      "properties": {
+        "period": {
+          "type": "string"
+        },
+        "periodLabel": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "payDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "cutoffDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "paySchedule": {
+          "type": "string",
+          "enum": [
+            "MONTHLY",
+            "SEMI_MONTHLY",
+            "BIWEEKLY",
+            "WEEKLY"
+          ]
+        }
+      }
+    },
+    "PayCalendarCyclesResponse": {
+      "type": "object",
+      "properties": {
+        "payCalendarId": {
+          "type": "string"
+        },
+        "paySchedule": {
+          "type": "string",
+          "enum": [
+            "MONTHLY",
+            "SEMI_MONTHLY",
+            "BIWEEKLY",
+            "WEEKLY"
+          ]
+        },
+        "cycles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PayCalendarCycle"
+          }
         }
       }
     }
@@ -8882,6 +8999,49 @@
         "responses": {
           "200": {
             "description": "Success"
+          }
+        }
+      }
+    },
+    "/payroll/pay-calendars/{id}/cycles": {
+      "get": {
+        "tags": [
+          "Payroll"
+        ],
+        "summary": "List computed pay cycles for a calendar over a month range",
+        "description": "Query ?from=YYYY-MM&to=YYYY-MM. Returns MONTHLY/SEMI_MONTHLY(H1,H2)/BIWEEKLY/WEEKLY cycles with startDate, endDate, payDate, cutoffDate.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Pay calendar ID"
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "type": "string",
+            "description": "Start month YYYY-MM"
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "type": "string",
+            "description": "End month YYYY-MM"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PayCalendarCyclesResponse"
+            }
           }
         }
       }

@@ -15,6 +15,15 @@ import {
   resolveFiscalYear,
 } from '../../utils/statutoryCalculation.js';
 import { fmtStatutoryPackRow, mergePackUpdate } from '../../utils/statutoryPackShape.js';
+import { periodsPerYear, periodsPerMonth, scheduleStepDays, cyclesInMonthFromAnchor } from '../../utils/payFrequency.js';
+import {
+  derivePeriodDates,
+  derivePeriodDatesFromString,
+  formatPeriodLabel,
+  isLastCycleInMonth,
+  inferScheduleFromPeriod,
+} from '../../utils/payrollPeriod.js';
+import { getWorkingDays, parseWorkWeekPattern } from '../../utils/workingDays.js';
 
 const COMPONENT_INCLUDE = {
   id: true, name: true, code: true, type: true, calculationType: true,
@@ -47,6 +56,7 @@ function fmtLegalEntity(e) {
     fiscalYearStartMonth: e.fiscalYearStartMonth,
     timezone: e.timezone,
     locale: e.locale,
+    workWeekPattern: e.workWeekPattern ?? 'MON-FRI',
     registrationIds: e.registrationIds ?? {},
     statutoryPackId: e.statutoryPackId ?? null,
     payCalendarId: e.payCalendarId ?? null,
@@ -402,14 +412,14 @@ export async function setEmployeeSalary(prisma, employeeId, tenantId, data) {
 
 // ── Employee Payslips ─────────────────────────────────────────────────────────
 
-function monthLabel(period) {
-  const [y, m] = period.split('-');
-  return new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+function monthLabel(period, startDate, endDate) {
+  return formatPeriodLabel(period, startDate, endDate);
 }
 
 function fmtPayslipSummary(ps) {
   return {
-    id: ps.id, period: ps.period, periodLabel: monthLabel(ps.period),
+    id: ps.id, period: ps.period,
+    periodLabel: monthLabel(ps.period, ps.payrollRun?.startDate, ps.payrollRun?.endDate),
     currency: ps.currency, grossEarnings: Number(ps.grossEarnings),
     totalDeductions: Number(ps.totalDeductions), netPay: Number(ps.netPay),
     status: ps.status,
@@ -470,13 +480,28 @@ async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod, fi
   }
 
   const { fiscalYear, fiscalYearStartPeriod } = resolveFiscalYear(throughPeriod, fyStartMonth);
-  const payslips = await prisma.payslip.findMany({
-    where: {
-      tenantId, employeeId, status: { in: ['PAID', 'PENDING', 'HELD'] },
-      period: { gte: fiscalYearStartPeriod, lte: throughPeriod },
-    },
-    orderBy: { period: 'asc' },
+
+  // Date-based YTD window — string period comparison is unsafe once weekly/bi-weekly/
+  // sub-monthly periods exist (e.g. "2057-W05" vs "2057-02"). Resolve a true date window
+  // and filter on each payslip's PayrollRun.startDate (falling back to the period string
+  // for legacy payslips whose run predates the cycle-date columns).
+  const [fyStartYear, fyStartMon] = fiscalYearStartPeriod.split('-').map(Number);
+  const fyStartDate = new Date(fyStartYear, (fyStartMon || 1) - 1, 1);
+  const throughDate = derivePeriodDatesFromString(throughPeriod).periodEnd;
+
+  const allPayslips = await prisma.payslip.findMany({
+    where: { tenantId, employeeId, status: { in: ['PAID', 'PENDING', 'HELD'] } },
+    include: { payrollRun: { select: { startDate: true, period: true } } },
   });
+  const payslips = allPayslips
+    .map((p) => {
+      const runStart = p.payrollRun?.startDate
+        ? new Date(p.payrollRun.startDate)
+        : derivePeriodDatesFromString(p.payrollRun?.period ?? p.period).periodStart;
+      return { ...p, _effDate: runStart };
+    })
+    .filter((p) => p._effDate >= fyStartDate && p._effDate <= throughDate)
+    .sort((a, b) => a._effDate - b._effDate);
   const grossEarnings = payslips.reduce((s, p) => s + Number(p.grossEarnings), 0);
   const totalDeductions = payslips.reduce((s, p) => s + Number(p.totalDeductions), 0);
   const netPay = payslips.reduce((s, p) => s + Number(p.netPay), 0);
@@ -510,7 +535,8 @@ function fmtPayslipDetail(ps, extras = {}) {
     : (extras.employerContributions ?? buildEmployerContributions(earnings, deductions));
   const employerCost = Number(ps.grossEarnings) + sumEmployerContributions(employerContributions);
   return {
-    id: ps.id, period: ps.period, periodLabel: monthLabel(ps.period),
+    id: ps.id, period: ps.period,
+    periodLabel: monthLabel(ps.period, ps.payrollRun?.startDate, ps.payrollRun?.endDate),
     currency: ps.currency,
     employee: ps.employee ? {
       id: ps.employee.id,
@@ -546,7 +572,10 @@ export async function getEmployeePayslips(prisma, employeeId, tenantId, { page =
   const where = { tenantId, employeeId };
   if (year) where.period = { startsWith: String(year) };
   const [rows, total] = await Promise.all([
-    prisma.payslip.findMany({ where, orderBy: { period: 'desc' }, skip: (page - 1) * limit, take: limit }),
+    prisma.payslip.findMany({
+      where, orderBy: { period: 'desc' }, skip: (page - 1) * limit, take: limit,
+      include: { payrollRun: { select: { startDate: true, endDate: true } } },
+    }),
     prisma.payslip.count({ where }),
   ]);
   return { items: rows.map(fmtPayslipSummary), pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
@@ -555,7 +584,10 @@ export async function getEmployeePayslips(prisma, employeeId, tenantId, { page =
 export async function getEmployeePayslipById(prisma, employeeId, payslipId, tenantId) {
   const ps = await prisma.payslip.findFirst({
     where: { id: payslipId, employeeId, tenantId },
-    include: { employee: { include: { department: { select: { name: true } } } }, tenant: true },
+    include: {
+      employee: { include: { department: { select: { name: true } } } }, tenant: true,
+      payrollRun: { select: { startDate: true, endDate: true } },
+    },
   });
   if (!ps) {
     const err = new Error('Payslip not found'); err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
@@ -580,7 +612,13 @@ function runMeta(summaryJson) {
 function fmtRun(run, withSummary = false) {
   const meta = runMeta(run.summaryJson);
   const base = {
-    id: run.id, period: run.period, periodLabel: monthLabel(run.period),
+    id: run.id,
+    period: run.period,
+    periodLabel: monthLabel(run.period, run.startDate, run.endDate),
+    startDate: run.startDate ? run.startDate.toISOString().slice(0, 10) : null,
+    endDate: run.endDate ? run.endDate.toISOString().slice(0, 10) : null,
+    payDate: run.payDate ? run.payDate.toISOString().slice(0, 10) : null,
+    paySchedule: run.paySchedule ?? null,
     type: run.type ?? 'REGULAR',
     status: run.status, employeeCount: run.employeeCount,
     totalGross: Number(run.totalGross), totalDeductions: Number(run.totalDeductions),
@@ -629,6 +667,58 @@ export async function getPayrollRuns(prisma, tenantId, { page = 1, limit = 10, y
 
 const VALID_RUN_TYPES = ['REGULAR', 'OFF_CYCLE', 'BONUS', 'ARREARS', 'FNF', 'REVERSAL'];
 
+/**
+ * Resolve cycle identity (paySchedule + startDate + endDate + payDate) for a run.
+ * Honours explicit values from the request; derives the rest from the period string.
+ * Throws VALIDATION_ERROR when a YYYY-Wnn period gives no way to know the cycle length
+ * (WEEKLY vs BIWEEKLY) — such runs MUST send paySchedule + startDate + endDate.
+ */
+function resolveRunCycle(data) {
+  const explicitStart = data.startDate ? new Date(data.startDate) : null;
+  const explicitEnd = data.endDate ? new Date(data.endDate) : null;
+  let paySchedule = data.paySchedule ?? inferScheduleFromPeriod(data.period) ?? null;
+
+  // YYYY-Wnn with no explicit schedule is ambiguous (weekly vs biweekly).
+  if (!paySchedule && !(explicitStart && explicitEnd)) {
+    const err = new Error(
+      `Cannot determine cycle for period "${data.period}". Weekly/bi-weekly runs must send paySchedule plus startDate and endDate.`,
+    );
+    err.code = 'VALIDATION_ERROR'; err.statusCode = 422; throw err;
+  }
+
+  let startDate = explicitStart;
+  let endDate = explicitEnd;
+  if (!startDate || !endDate) {
+    // BIWEEKLY cannot be derived from a YYYY-Wnn string (string only encodes a 7-day ISO week).
+    if (paySchedule === 'BIWEEKLY') {
+      const err = new Error('Bi-weekly runs must send explicit startDate and endDate.');
+      err.code = 'VALIDATION_ERROR'; err.statusCode = 422; throw err;
+    }
+    const derived = derivePeriodDatesFromString(data.period);
+    startDate = startDate ?? new Date(derived.periodStart);
+    endDate = endDate ?? new Date(derived.periodEnd);
+  }
+  const payDate = data.payDate ? new Date(data.payDate) : new Date(endDate);
+  return { paySchedule, startDate, endDate, payDate };
+}
+
+/**
+ * Resolve the run-level display currency. Payslip currency is per-employee and authoritative;
+ * this is just the run header. Derived from the selected pay groups (single → that currency,
+ * multiple → 'MULTI'); falls back to the tenant's sole active pay-group currency, else 'INR'.
+ * Never blindly hardcodes INR for non-INR tenants.
+ */
+async function resolveRunCurrency(prisma, tenantId, data) {
+  const where = data.payGroupIds?.length
+    ? { tenantId, id: { in: data.payGroupIds } }
+    : { tenantId, active: true };
+  const pgs = await prisma.payGroup.findMany({ where, select: { currency: true } });
+  const currencies = [...new Set(pgs.map((p) => p.currency).filter(Boolean))];
+  if (currencies.length === 1) return currencies[0];
+  if (currencies.length > 1) return 'MULTI';
+  return 'INR';
+}
+
 export async function createPayrollRun(prisma, tenantId, userId, data) {
   const type = data.type || 'REGULAR';
   if (!VALID_RUN_TYPES.includes(type)) {
@@ -636,12 +726,25 @@ export async function createPayrollRun(prisma, tenantId, userId, data) {
     err.code = 'INVALID_RUN_TYPE'; err.statusCode = 422; throw err;
   }
 
+  // Resolve cycle identity (dates + schedule) for all dated run types.
+  const cycle = resolveRunCycle(data);
+
   if (type === 'REGULAR') {
+    // Cycle-identity duplicate detection: a run is a duplicate only when the SAME
+    // calendar cycle (schedule + start + end) already exists. Weekly and bi-weekly
+    // runs sharing a YYYY-Wnn period string no longer collide.
     const existing = await prisma.payrollRun.findFirst({
-      where: { tenantId, period: data.period, type: 'REGULAR', status: { not: 'CANCELLED' } },
+      where: {
+        tenantId, type: 'REGULAR', status: { not: 'CANCELLED' },
+        AND: [
+          { OR: [{ startDate: cycle.startDate }, { startDate: null, period: data.period }] },
+          { OR: [{ endDate: cycle.endDate }, { endDate: null, period: data.period }] },
+          { OR: [{ paySchedule: cycle.paySchedule }, { paySchedule: null, period: data.period }] },
+        ],
+      },
     });
     if (existing) {
-      const err = new Error(`A regular payroll run for ${data.period} already exists`);
+      const err = new Error(`A regular payroll run for cycle ${data.period} (${cycle.startDate.toISOString().slice(0, 10)}–${cycle.endDate.toISOString().slice(0, 10)}) already exists`);
       err.code = 'RUN_EXISTS'; err.statusCode = 409; throw err;
     }
   }
@@ -668,10 +771,17 @@ export async function createPayrollRun(prisma, tenantId, userId, data) {
     summaryJson.reversalOfPeriodLabel = monthLabel(target.period);
   }
 
+  const runCurrency = await resolveRunCurrency(prisma, tenantId, data);
+
   const run = await prisma.payrollRun.create({
     data: {
       tenantId, period: data.period, type,
-      initiatedById: userId, currency: 'INR',
+      initiatedById: userId, currency: runCurrency,
+      // Always persist derived cycle metadata so downstream math, dedup and YTD are date-based.
+      startDate: cycle.startDate,
+      endDate: cycle.endDate,
+      payDate: cycle.payDate,
+      ...(cycle.paySchedule && { paySchedule: cycle.paySchedule }),
       ...(Object.keys(summaryJson).length && { summaryJson }),
     },
     include: RUN_USER_INCLUDE,
@@ -689,16 +799,7 @@ export async function getPayrollRun(prisma, id, tenantId) {
   return fmtRun(run, true);
 }
 
-function getWorkingDays(start, end) {
-  let count = 0;
-  const cur = new Date(start);
-  while (cur <= end) {
-    const d = cur.getDay();
-    if (d !== 0 && d !== 6) count++;
-    cur.setDate(cur.getDate() + 1);
-  }
-  return count;
-}
+// getWorkingDays is now imported from ../../utils/workingDays.js (Mon-Fri default, configurable).
 
 function preserveRunMeta(summaryJson) {
   const meta = summaryJson && typeof summaryJson === 'object' ? { ...summaryJson } : {};
@@ -820,11 +921,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
     return;
   }
 
-  const [yearStr, monthStr] = run.period.split('-');
-  const year = parseInt(yearStr);
-  const month = parseInt(monthStr);
-  const periodStart = new Date(year, month - 1, 1);
-  const periodEnd = new Date(year, month, 0, 23, 59, 59, 999);
+  const { periodStart, periodEnd } = derivePeriodDates(run);
 
   let salaries = await prisma.employeeSalary.findMany({
     where: {
@@ -863,9 +960,10 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
     if (employee.employmentStatus !== 'ACTIVE' || employee.deletedAt) continue;
 
     try {
-      // Per-employee pack resolution
-      const { pack: statutoryPack } = await resolveStatutoryPackForEmployee(
-        prisma, tenantId, sal, run.period,
+      // Per-employee pack resolution. Pass the cycle end date so sub-monthly periods
+      // (H1/H2, Wnn) resolve effective-dated packs without an Invalid Date.
+      const { pack: statutoryPack, legalEntity: empLegalEntity } = await resolveStatutoryPackForEmployee(
+        prisma, tenantId, sal, run.period, periodEnd,
       );
       const contributionSchemes = statutoryPack?.contributionSchemes ?? [];
       const { employeeCodes: schemeEmployeeCodes, employerCodes: schemeEmployerCodes } = schemeManagedComponentCodes(contributionSchemes);
@@ -910,9 +1008,22 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       });
 
       const componentByCode = new Map(pgComps.map((c) => [c.code, c]));
-      const ctcMonthly = Number(sal.annualCtc) / 12;
+      const empPaySchedule = payGroup.paySchedule ?? run.paySchedule ?? 'MONTHLY';
+      const ppy = periodsPerYear(empPaySchedule);
+      // Apportionment cycle count: for fixed-length schedules (BIWEEKLY/WEEKLY) the number of
+      // cycles in a calendar month varies (2 or 3 biweekly; 4 or 5 weekly). Use the ACTUAL count
+      // derived from the run's startDate so MONTHLY_TOTAL caps never over-deduct in a 3-cycle month.
+      const stepDays = scheduleStepDays(empPaySchedule);
+      let ppm = periodsPerMonth(empPaySchedule);
+      let lastCycle = isLastCycleInMonth(run.period);
+      if (stepDays && run.startDate) {
+        const c = cyclesInMonthFromAnchor(new Date(run.startDate), stepDays);
+        ppm = c.count;
+        lastCycle = c.isLast;
+      }
+      const ctcPeriod = Number(sal.annualCtc) / ppy;
       const sorted = topologicalSort(pgComps);
-      const computed = { CTC: ctcMonthly };
+      const computed = { CTC: ctcPeriod };
       const earningsArr = [], deductionsArr = [];
 
       for (const comp of sorted) {
@@ -936,6 +1047,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
 
       const { statutoryDeductions, employerContributions } = computeStatutoryContributions(
         earningsArr, componentByCode, contributionSchemes,
+        { periodsPerMonth: ppm, isLastCycleInMonth: lastCycle },
       );
       for (const ded of statutoryDeductions) {
         const idx = deductionsArr.findIndex((d) => d.code === ded.code);
@@ -952,17 +1064,21 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
             const comp = componentByCode.get(e.code);
             return comp?.taxable !== false;
           })
-          .reduce((s, e) => s + Number(e.amount ?? 0), 0) * 12;
-        // Currency determines minor-unit factor for tax slab normalization
+          .reduce((s, e) => s + Number(e.amount ?? 0), 0) * ppy;
         const taxCurrency = sal.currency ?? payGroup.currency ?? 'INR';
         const annualTax = computeIncomeTaxFromRegime(annualGross, activeRegime, taxCurrency);
+        // Withhold by MONTHLY total, then split across the actual cycles in the month so the
+        // month total is exact (last cycle absorbs the remainder). MONTHLY (ppm=1) is unchanged:
+        // cycleTax = round(annualTax/12). Semi-monthly → 8437 + 8438 = 16875 (not 2×round(annualTax/24)).
         const monthlyTax = Math.round(annualTax / 12);
-        if (monthlyTax > 0) {
+        const cycleTaxFloor = Math.floor(monthlyTax / ppm);
+        const cycleTax = lastCycle ? monthlyTax - cycleTaxFloor * (ppm - 1) : cycleTaxFloor;
+        if (cycleTax > 0) {
           const taxCode = activeRegime.taxCode ?? 'WITHHOLDING_TAX';
           const taxName = activeRegime.taxName ?? activeRegime.name ?? 'Withholding Tax';
           const idx = deductionsArr.findIndex((d) => d.code === taxCode);
-          if (idx >= 0) deductionsArr[idx].amount = monthlyTax;
-          else deductionsArr.push({ code: taxCode, name: taxName, amount: monthlyTax, taxable: false });
+          if (idx >= 0) deductionsArr[idx].amount = cycleTax;
+          else deductionsArr.push({ code: taxCode, name: taxName, amount: cycleTax, taxable: false });
         }
       }
 
@@ -978,7 +1094,9 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         where: { tenantId, employeeId: employee.id, attendanceDate: { gte: periodStart, lte: periodEnd } },
         select: { status: true },
       });
-      const workingDays = getWorkingDays(periodStart, periodEnd);
+      // Work-week pattern comes from the resolved legal entity (default Mon–Fri). No country hardcode.
+      const workWeekPattern = parseWorkWeekPattern(empLegalEntity?.workWeekPattern);
+      const workingDays = getWorkingDays(periodStart, periodEnd, workWeekPattern);
       // Default: full attendance when no records exist (fix #6)
       const hasAttendance = attendance.length > 0;
       const presentDays = hasAttendance
@@ -1127,7 +1245,10 @@ export async function getRunPayslip(prisma, runId, payslipId, tenantId) {
   }
   const ps = await prisma.payslip.findFirst({
     where: { id: payslipId, payrollRunId: runId, tenantId },
-    include: { employee: { include: { department: { select: { name: true } } } }, tenant: true },
+    include: {
+      employee: { include: { department: { select: { name: true } } } }, tenant: true,
+      payrollRun: { select: { startDate: true, endDate: true } },
+    },
   });
   if (!ps) {
     const err = new Error('Payslip not found'); err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
@@ -1158,7 +1279,10 @@ export async function updateRunPayslip(prisma, runId, payslipId, tenantId, data)
       grossEarnings: newGross, totalDeductions: newDed, netPay: newNet,
       notes: data.notes ?? ps.notes,
     },
-    include: { employee: { include: { department: { select: { name: true } } } }, tenant: true },
+    include: {
+      employee: { include: { department: { select: { name: true } } } }, tenant: true,
+      payrollRun: { select: { startDate: true, endDate: true } },
+    },
   });
   return fmtPayslipDetail(updated);
 }
@@ -1201,7 +1325,8 @@ export async function createLegalEntity(prisma, tenantId, data) {
       tenantId,
       name: data.name, country: data.country || 'IN', currency: data.currency || 'INR',
       fiscalYearStartMonth: data.fiscalYearStartMonth || 4, timezone: data.timezone || 'Asia/Kolkata',
-      locale: data.locale || 'en-IN', registrationIds: data.registrationIds || {},
+      locale: data.locale || 'en-IN', workWeekPattern: data.workWeekPattern || 'MON-FRI',
+      registrationIds: data.registrationIds || {},
       statutoryPackId: data.statutoryPackId || null, payCalendarId: data.payCalendarId || null,
       active: data.active ?? true,
     },
@@ -1213,7 +1338,7 @@ export async function updateLegalEntity(prisma, id, tenantId, data) {
   const existing = await prisma.legalEntity.findFirst({ where: { id, tenantId } });
   if (!existing) return null;
   const updateData = {};
-  for (const field of ['name', 'country', 'currency', 'fiscalYearStartMonth', 'timezone', 'locale', 'registrationIds', 'statutoryPackId', 'payCalendarId', 'active']) {
+  for (const field of ['name', 'country', 'currency', 'fiscalYearStartMonth', 'timezone', 'locale', 'workWeekPattern', 'registrationIds', 'statutoryPackId', 'payCalendarId', 'active']) {
     if (data[field] !== undefined) updateData[field] = data[field];
   }
   const row = await prisma.legalEntity.update({ where: { id }, data: updateData });

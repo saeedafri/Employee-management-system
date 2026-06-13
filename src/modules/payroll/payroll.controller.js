@@ -460,6 +460,14 @@ export async function updatePayCalendar(request, reply) {
   } catch (err) { handleError(reply, err); }
 }
 
+export async function getPayCalendarCycles(request, reply) {
+  try {
+    const { from, to } = request.query;
+    const data = await service.getPayCalendarCycles(prisma, request.params.id, request.tenant.id, { from, to });
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
 // ── Phase 3: Migration ────────────────────────────────────────────────────────
 
 export async function getAllOpeningBalances(request, reply) {

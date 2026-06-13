@@ -1,0 +1,12 @@
+{
+  "_evidenceStatus": "EXPECTED — Scenario C. India is unaffected by sub-monthly changes.",
+  "currency": "INR",
+  "paySchedule": "MONTHLY",
+  "_why": [
+    "India pay groups use paySchedule MONTHLY → periodsPerYear=12, so gross/cycle = annualCtc/12 and tax = annualTax/12 exactly as before.",
+    "India PF/ESI/PT schemes have no apportionmentMode MONTHLY_TOTAL with ppm>1 in the monthly path → the standard per-cycle branch runs (unchanged code).",
+    "fiscalYearStartMonth=4 (Apr–Mar) preserved via LegalEntity; resolveFiscalYear handles YYYY-MM unchanged.",
+    "workWeekPattern defaults to MON-FRI → identical working-day counts."
+  ],
+  "_action": "Run an India MONTHLY run on the local QA tenant and diff netPay against a pre-change baseline run — expect byte-identical per-employee figures."
+}

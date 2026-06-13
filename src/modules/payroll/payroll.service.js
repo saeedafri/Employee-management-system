@@ -8,6 +8,8 @@ import {
 } from '../../utils/payrollUiShapes.js';
 import { flatBodyToPackData } from '../../utils/statutoryPackShape.js';
 import { resolveFiscalYear } from '../../utils/statutoryCalculation.js';
+import { formatPeriodLabel, nextPeriod as nextPeriodUtil, derivePeriodDatesFromString, isValidPeriod } from '../../utils/payrollPeriod.js';
+import { generateCycles } from '../../utils/cycleGenerator.js';
 
 function AppError(message, code, statusCode = 400) {
   const e = new Error(message);
@@ -229,9 +231,9 @@ export async function getPayrollRuns(prisma, tenantId, query) {
 const VALID_RUN_TYPES = ['REGULAR', 'OFF_CYCLE', 'BONUS', 'ARREARS', 'FNF', 'REVERSAL'];
 
 export async function createPayrollRun(prisma, tenantId, userId, data) {
-  if (!data.period || !/^\d{4}-\d{2}$/.test(data.period)) {
-    const err = AppError('period is required in YYYY-MM format', 'VALIDATION_ERROR', 400);
-    err.details = [{ field: 'period', message: 'Required YYYY-MM' }];
+  if (!isValidPeriod(data.period)) {
+    const err = AppError('period is required (YYYY-MM, YYYY-MM-H1, YYYY-MM-H2, or YYYY-Wnn)', 'VALIDATION_ERROR', 400);
+    err.details = [{ field: 'period', message: 'Required YYYY-MM | YYYY-MM-H1 | YYYY-MM-H2 | YYYY-Wnn (month 01–12, week 01–53)' }];
     throw err;
   }
   const type = data.type || 'REGULAR';
@@ -452,20 +454,33 @@ export async function getEmployeeYtd(prisma, employeeId, tenantId, fy) {
     ({ fiscalYear, fiscalYearStartPeriod } = resolveFiscalYear(currentPeriod, fyStartMonth));
   }
 
-  const payslips = await prisma.payslip.findMany({
-    where: {
-      tenantId, employeeId, status: 'PAID',
-      period: { gte: fiscalYearStartPeriod },
-    },
-    orderBy: { period: 'asc' },
+  // Date-based YTD window (safe for weekly/bi-weekly/sub-monthly periods). Filter on each
+  // payslip's PayrollRun.startDate, falling back to the period string for legacy rows.
+  const [fyStartYear, fyStartMon] = fiscalYearStartPeriod.split('-').map(Number);
+  const fyStartDate = new Date(fyStartYear, (fyStartMon || 1) - 1, 1);
+  const fyEndExclusive = new Date(fyStartYear + 1, (fyStartMon || 1) - 1, 1);
+
+  const allPayslips = await prisma.payslip.findMany({
+    where: { tenantId, employeeId, status: 'PAID' },
+    include: { payrollRun: { select: { startDate: true, period: true } } },
   });
+  const payslips = allPayslips
+    .map((p) => {
+      const eff = p.payrollRun?.startDate
+        ? new Date(p.payrollRun.startDate)
+        : derivePeriodDatesFromString(p.payrollRun?.period ?? p.period).periodStart;
+      return { ...p, _effDate: eff };
+    })
+    .filter((p) => p._effDate >= fyStartDate && p._effDate < fyEndExclusive)
+    .sort((a, b) => a._effDate - b._effDate);
 
   const grossEarnings = payslips.reduce((s, p) => s + Number(p.grossEarnings), 0);
   const totalDeductions = payslips.reduce((s, p) => s + Number(p.totalDeductions), 0);
   const netPay = payslips.reduce((s, p) => s + Number(p.netPay), 0);
   const taxDeducted = payslips.reduce((s, p) => {
     const deds = Array.isArray(p.deductionsJson) ? p.deductionsJson : [];
-    return s + deds.filter(d => d.code === 'TDS').reduce((a, d) => a + (d.monthlyAmount || 0), 0);
+    return s + deds.filter(d => ['TDS', 'WITHHOLDING_TAX', 'INCOME_TAX'].includes(d.code))
+      .reduce((a, d) => a + Number(d.amount ?? d.monthlyAmount ?? 0), 0);
   }, 0);
 
   return {
@@ -550,9 +565,7 @@ function buildLoanSchedule(amount, emi, startPeriod) {
 }
 
 function nextPeriod(period) {
-  const [y, m] = period.split('-').map(Number);
-  const next = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, '0')}`;
-  return next;
+  return nextPeriodUtil(period);
 }
 
 export async function updateEmployeeLoan(prisma, loanId, tenantId, data) {
@@ -829,9 +842,8 @@ export async function getStatutoryReturn(prisma, id, tenantId, type) {
   return { runId: id, period: run.period, type: type || 'ECR', rows: [], generatedAt: new Date().toISOString() };
 }
 
-function periodLabel(period) {
-  const [year, month] = period.split('-').map(Number);
-  return new Date(year, month - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+function periodLabel(period, startDate, endDate) {
+  return formatPeriodLabel(period, startDate, endDate);
 }
 
 const REGISTER_COLUMNS = {
@@ -994,6 +1006,17 @@ export async function createPayCalendar(prisma, tenantId, data) {
 
 export async function updatePayCalendar(prisma, id, tenantId, data) {
   return repo.updatePayCalendar(prisma, id, tenantId, data);
+}
+
+export async function getPayCalendarCycles(prisma, id, tenantId, { from, to } = {}) {
+  const cal = await prisma.payCalendar.findFirst({ where: { id, tenantId } });
+  if (!cal) {
+    const err = new Error('Pay calendar not found'); err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
+  }
+  const fromMonth = from || new Date().toISOString().slice(0, 7);
+  const toMonth = to || fromMonth;
+  const cycles = generateCycles(cal, fromMonth, toMonth);
+  return { payCalendarId: id, paySchedule: cal.paySchedule, cycles };
 }
 
 // ── Phase 3: Migration ────────────────────────────────────────────────────────

@@ -1,0 +1,22 @@
+{
+  "_evidenceStatus": "EXPECTED — pending local/test DB E2E (Render DATABASE_URL blocked).",
+  "success": true,
+  "data": {
+    "id": "<PAYROLL_RUN_ID_H2>",
+    "period": "2057-01-H2",
+    "periodLabel": "16–31 Jan 2057",
+    "startDate": "2057-01-16",
+    "endDate": "2057-01-31",
+    "payDate": "2057-01-31",
+    "paySchedule": "SEMI_MONTHLY",
+    "type": "REGULAR",
+    "status": "DRAFT",
+    "employeeCount": 0,
+    "totalGross": 0,
+    "totalDeductions": 0,
+    "totalNet": 0,
+    "currency": "INR",
+    "createdAt": "2057-01-16T00:00:00.000Z"
+  },
+  "meta": {}
+}

@@ -1,0 +1,23 @@
+{
+  "_evidenceStatus": "EXPECTED — all values engine-computed and harness-verified (/tmp/payroll_verify.mjs) against the CALIBRATED PH TRAIN pack (requests/02): annual tax 202,500 → monthly 16,875, semi-monthly split 8437/8438. Pending replacement with ACTUAL_LOCAL_TEST_DB_RESPONSE once a local DB is available.",
+  "success": true,
+  "data": {
+    "period": "2057-01-H1",
+    "periodLabel": "1–15 Jan 2057",
+    "currency": "PHP",
+    "workingDays": 11,
+    "earnings": [
+      { "code": "BASIC", "name": "Basic Salary", "amount": 50000, "taxable": true }
+    ],
+    "deductions": [
+      { "code": "SSS_EE", "name": "SSS (Employee)", "amount": 875, "taxable": false },
+      { "code": "WITHHOLDING_TAX", "name": "Withholding Tax", "amount": 8437, "taxable": false }
+    ],
+    "employerContributions": [
+      { "code": "SSS_ER", "name": "SSS (Employer)", "amount": 1750, "taxable": false }
+    ],
+    "grossEarnings": 50000,
+    "totalDeductions": 9312,
+    "netPay": 40688
+  }
+}

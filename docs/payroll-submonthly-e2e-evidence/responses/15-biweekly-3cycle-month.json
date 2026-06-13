@@ -1,0 +1,11 @@
+{
+  "_evidenceStatus": "EXPECTED — Scenario D. Harness-verified (cyclesInMonthFromAnchor + computeStatutoryContributions). Jan 2057 has THREE biweekly cycles starting in-month (01, 15, 29) → SSS monthly cap split across 3, last cycle absorbs remainder. NO over-deduction.",
+  "month": "2057-01",
+  "paySchedule": "BIWEEKLY",
+  "grossPerCycle": 46154,
+  "_grossNote": "annualCtc 1,200,000 / 26 = 46,153.85",
+  "cyclesInMonth": 3,
+  "SSS_EE": { "cycle1": 583, "cycle2": 583, "cycle3_last": 584, "monthTotal": 1750 },
+  "SSS_ER": { "cycle1": 1166, "cycle2": 1166, "cycle3_last": 1168, "monthTotal": 3500 },
+  "_verified": "Month totals equal the monthly cap (1,750 / 3,500) — identical to monthly and semi-monthly. The old periodsPerMonth=2 approximation would have under-counted cycles in this 3-cycle month; the anchor-based actual count fixes it."
+}

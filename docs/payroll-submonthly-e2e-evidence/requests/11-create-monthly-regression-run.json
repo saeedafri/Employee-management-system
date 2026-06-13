@@ -1,0 +1,6 @@
+{
+  "_endpoint": "POST /api/v1/payroll/runs",
+  "_note": "Scenario B. MONTHLY uses a MONTHLY pay group (paySchedule MONTHLY). startDate/endDate/payDate are derived & persisted when omitted; sending period alone is sufficient and reproduces pre-change behaviour byte-for-byte.",
+  "period": "2057-01",
+  "type": "REGULAR"
+}

@@ -1,0 +1,12 @@
+{
+  "_endpoint": "POST /api/v1/employees",
+  "firstName": "Maria",
+  "lastName": "Santos",
+  "email": "maria.santos@submonthly-qa.test",
+  "employeeCode": "PH-0001",
+  "designation": "Software Engineer",
+  "employmentType": "FULL_TIME",
+  "employmentStatus": "ACTIVE",
+  "dateOfJoining": "2056-01-01",
+  "location": "Manila, PH"
+}
