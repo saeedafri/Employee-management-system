@@ -3488,6 +3488,31 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 
 **`statutoryComponents`:** always `string[]` in responses. On write, legacy `{ "code": "PF" }` objects are accepted and normalized to `"PF"` before storage.
 
+**Monetary unit rule — ALL monetary fields in statutory packs are minor units:**
+
+| Field | Example (PHP) | Meaning |
+|-------|--------------|---------|
+| `taxRegimes[].standardDeduction` | `0` | PHP 0 |
+| `taxRegimes[].slabs[].from` | `25000000` | PHP 250,000 |
+| `taxRegimes[].slabs[].to` | `40000000` | PHP 400,000 |
+| `taxRegimes[].slabs[].base` | `2250000` | PHP 22,500 |
+| `taxRegimes[].taxCredits[].amount` | `1723500` | ZAR 17,235 |
+| `contributionSchemes[].wageCeiling` | `3500000` | PHP 35,000 |
+| `minimumWages[].amount` | — | minor units |
+
+Rates (%) are NOT converted — `rate: 15` means 15%.
+
+Currency minor-unit factors: most currencies ×100; BHD/JOD/KWD/OMR/TND ×1000; CLP/JPY/KRW/VND ×1.
+
+The payroll engine normalizes all monetary pack fields to major units before computing.
+
+**taxRegimes per-regime fields:**
+- `taxCode` — component code for the withholding line (e.g. `"WITHHOLDING_TAX"`)
+- `taxName` — display name (e.g. `"Withholding Tax"`)
+- These fields are preserved on PATCH (per-regime merge by `code`)
+
+**PATCH behavior:** Per-regime merge by `code`. Incoming regime is spread on top of existing regime — `taxCode`, `taxName`, `taxCredits` are preserved unless explicitly overridden.
+
 **Errors:**  
 - `409 PACK_VERSION_EXISTS` — country + version combo already exists
 
