@@ -182,7 +182,8 @@ export async function patchEmployeeSalary(prisma, employeeId, tenantId, patch) {
   const merged = {
     payGroupId: normalized.payGroupId ?? active.payGroupId,
     annualCtc: normalized.annualCtc ?? Number(active.annualCtc),
-    effectiveFrom: normalized.effectiveFrom ?? active.effectiveFrom.toISOString().split('T')[0],
+    // Default to today — avoids effectiveFrom collision with the record being replaced
+    effectiveFrom: normalized.effectiveFrom ?? new Date().toISOString().split('T')[0],
     country: normalized.country ?? active.country ?? null,
     currency: normalized.currency ?? active.currency ?? null,
     legalEntityId: normalized.legalEntityId ?? active.legalEntityId ?? null,
