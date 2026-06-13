@@ -3430,14 +3430,14 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
       "taxRegimes": [
         {
           "code": "NEW", "name": "New Tax Regime", "default": true,
-          "standardDeduction": 50000,
+          "standardDeduction": 5000000,
           "slabs": [
-            { "from": 0, "to": 300000, "rate": 0, "base": 0 },
-            { "from": 300001, "to": 600000, "rate": 5, "base": 0 },
-            { "from": 600001, "to": 900000, "rate": 10, "base": 15000 },
-            { "from": 900001, "to": 1200000, "rate": 15, "base": 45000 },
-            { "from": 1200001, "to": 1500000, "rate": 20, "base": 90000 },
-            { "from": 1500001, "to": null, "rate": 30, "base": 150000 }
+            { "from": 0, "to": 30000000, "rate": 0, "base": 0 },
+            { "from": 30000001, "to": 60000000, "rate": 5, "base": 0 },
+            { "from": 60000001, "to": 90000000, "rate": 10, "base": 1500000 },
+            { "from": 90000001, "to": 120000000, "rate": 15, "base": 4500000 },
+            { "from": 120000001, "to": 150000000, "rate": 20, "base": 9000000 },
+            { "from": 150000001, "to": null, "rate": 30, "base": 15000000 }
           ],
           "surcharge": 0,
           "cess": 4,
@@ -4741,7 +4741,7 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
   "name": "TRAIN Law (RA 11976)",
   "default": true,
   "standardDeduction": 0,
-  "slabs": [{ "from": 0, "to": 250000, "rate": 0, "base": 0 }],
+  "slabs": [{ "from": 0, "to": 25000000, "rate": 0 }],
   "surcharge": 0,
   "cess": 0,
   "taxCredits": [{ "code": "PRIMARY_REBATE", "amount": 1723500 }],
@@ -4753,7 +4753,7 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 - `slabs[].base` — fixed amount owed at bottom of this bracket (progressive pre-computation)
 - `surcharge` — % added to computed slab tax
 - `cess` — % added after surcharge
-- `taxCredits[]` — subtracted from final tax (after cess); amounts in major currency units (not cents); `max(0, tax - sum(credits))`
+- `taxCredits[]` — subtracted from final tax (after cess); amounts in **minor units** (same contract as slabs); `max(0, tax - sum(credits))`
 - `taxCode` / `taxName` — code/name used in the deductions array on the payslip
 
 **`statutoryComponents` contract:** Response is always `string[]` (e.g. `["PF", "PF_ER"]`). POST/PATCH accept `string[]` or legacy `{ code: string }[]`; backend normalizes to strings before persisting via `normalizeStatutoryComponents()`.

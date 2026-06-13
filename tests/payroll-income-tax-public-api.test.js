@@ -10,8 +10,59 @@ import assert from 'node:assert/strict';
 import {
   computeIncomeTaxFromRegime,
   normalizeTaxRegimeForComputation,
+  computeSlabTax,
 } from '../src/utils/statutoryCalculation.js';
 import { mergePackUpdate } from '../src/utils/statutoryPackShape.js';
+
+// ── computeSlabTax Style A: cumulative progressive (no base fields) ────────────
+
+const PH_TRAIN_NO_BASE = [
+  { from: 0,           to: 25_000_000,  rate: 0 },
+  { from: 25_000_000,  to: 40_000_000,  rate: 15 },
+  { from: 40_000_000,  to: 80_000_000,  rate: 20 },
+  { from: 80_000_000,  to: 200_000_000, rate: 25 },
+  { from: 200_000_000, to: 800_000_000, rate: 30 },
+  { from: 800_000_000, to: null,        rate: 35 },
+];
+
+test('PH TRAIN minor-unit slabs WITHOUT base — cumulative annual tax 202500', () => {
+  const regime = {
+    standardDeduction: 0,
+    surcharge: 0,
+    cess: 0,
+    taxCredits: [],
+    slabs: PH_TRAIN_NO_BASE,
+  };
+  assert.equal(computeIncomeTaxFromRegime(1_200_000, regime, 'PHP'), 202_500);
+});
+
+test('PH TRAIN monthly withholding is 16875 (no-base slabs)', () => {
+  const regime = {
+    standardDeduction: 0,
+    surcharge: 0,
+    cess: 0,
+    taxCredits: [],
+    slabs: PH_TRAIN_NO_BASE,
+  };
+  const annualTax = computeIncomeTaxFromRegime(1_200_000, regime, 'PHP');
+  assert.equal(Math.round(annualTax / 12), 16_875);
+});
+
+test('base-style slab calculation still works (base provided on applicable slab)', () => {
+  const regime = {
+    standardDeduction: 0,
+    slabs: [
+      { from: 0,           to: 25_000_000,  rate: 0,  base: 0 },
+      { from: 25_000_000,  to: 40_000_000,  rate: 15, base: 0 },
+      { from: 40_000_000,  to: 80_000_000,  rate: 20, base: 2_250_000 },
+      { from: 80_000_000,  to: 200_000_000, rate: 25, base: 10_250_000 },
+      { from: 200_000_000, to: 800_000_000, rate: 30, base: 40_250_000 },
+      { from: 800_000_000, to: null,        rate: 35, base: 220_250_000 },
+    ],
+    taxCredits: [],
+  };
+  assert.equal(computeIncomeTaxFromRegime(1_200_000, regime, 'PHP'), 202_500);
+});
 
 // ── Part 2: normalizeTaxRegimeForComputation ──────────────────────────────────
 

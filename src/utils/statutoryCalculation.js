@@ -36,7 +36,7 @@ export function normalizeTaxRegimeForComputation(regime, currency) {
         ...s,
         from: moneyMinorToMajor(s.from ?? 0, currency),
         to: s.to == null ? null : moneyMinorToMajor(s.to, currency),
-        base: s.base == null ? 0 : moneyMinorToMajor(s.base, currency),
+        base: s.base == null ? null : moneyMinorToMajor(s.base, currency),
       }))
       : [],
     taxCredits: Array.isArray(regime.taxCredits)
@@ -113,19 +113,46 @@ export function sumEmployerContributions(employerContributions = []) {
 }
 
 /**
- * Generic slab-based annual income tax. No country-specific branching.
- * Slab format: { from, to (null=∞), rate (%), base (fixed amount for this bracket) }
- * tax = base + rate/100 * (taxableIncome - from)  for the applicable bracket.
+ * Generic slab-based annual income tax. Supports two slab styles:
+ *
+ * Style A — cumulative progressive (no base fields):
+ *   { from, to, rate }
+ *   Tax is accumulated across every bracket up to and including the applicable one.
+ *
+ * Style B — bracket shortcut (base field present on the applicable slab):
+ *   { from, to, rate, base }
+ *   base = cumulative tax for all prior brackets; only the applicable bracket is computed.
+ *   tax = base + rate/100 * (taxableIncome - from)
+ *
+ * Detection: if the applicable slab has base != null, use Style B; otherwise Style A.
  */
 export function computeSlabTax(taxableIncome, slabs = []) {
-  if (!slabs.length || taxableIncome <= 0) return 0;
-  let tax = 0;
-  for (const slab of slabs) {
+  if (!Array.isArray(slabs) || !slabs.length || taxableIncome <= 0) return 0;
+
+  const sorted = [...slabs].sort((a, b) => Number(a.from ?? 0) - Number(b.from ?? 0));
+
+  const applicable = sorted.find((slab) => {
     const lo = Number(slab.from ?? 0);
     const hi = slab.to != null ? Number(slab.to) : Infinity;
-    if (taxableIncome <= lo) continue;
-    const applicable = Math.min(taxableIncome, hi);
-    tax = Number(slab.base ?? 0) + (Number(slab.rate ?? 0) / 100) * (applicable - lo);
+    return taxableIncome > lo && taxableIncome <= hi;
+  });
+
+  // Style B: base is explicitly provided — use it as cumulative pre-tax for prior brackets.
+  if (applicable && applicable.base != null) {
+    const lo = Number(applicable.from ?? 0);
+    const rate = Number(applicable.rate ?? 0);
+    return Math.max(0, Number(applicable.base) + ((taxableIncome - lo) * rate) / 100);
+  }
+
+  // Style A: no base — accumulate progressively across all brackets.
+  let tax = 0;
+  for (const slab of sorted) {
+    const lo = Number(slab.from ?? 0);
+    const hi = slab.to != null ? Number(slab.to) : Infinity;
+    const rate = Number(slab.rate ?? 0);
+    if (taxableIncome <= lo) break;
+    const taxableInThisSlab = Math.min(taxableIncome, hi) - lo;
+    tax += (taxableInThisSlab * rate) / 100;
     if (taxableIncome <= hi) break;
   }
   return Math.max(0, tax);
