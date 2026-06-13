@@ -4876,7 +4876,7 @@ Cold `/api/auth/me` before login should now return `401 UNAUTHORIZED` when no co
 `GET /auth/me` and other protected endpoints now return `401 UNAUTHORIZED` for missing cookies/tokens and `401 INVALID_TOKEN` for garbage, expired, or forged JWTs. `400 INVALID_TENANT` remains valid only when the caller explicitly supplies a bad tenant context such as `X-Tenant-Key` or subdomain.
 
 ### BE-2 — PayGroup: overrideCalculationType null/blank accepted
-`POST /payroll/pay-groups` and `PATCH /payroll/pay-groups/:id` now accept `null` or `""` for `overrideCalculationType` without 500. Only `FLAT`, `PERCENTAGE`, `FORMULA`, or null are valid.
+`POST /payroll/groups` and `PATCH /payroll/groups/:id` now accept `null` or `""` for `overrideCalculationType` without 500. Only `FLAT`, `PERCENTAGE`, `FORMULA`, or null are valid.
 
 ### BE-3 — Employees: terminated employee lookup
 `GET /employees/:id?includeTerminated=true` — HR_ADMIN and SUPER_ADMIN can retrieve soft-deleted/terminated employees by appending this query param. Without the param, `deletedAt: null` is still enforced.

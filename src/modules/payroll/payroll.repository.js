@@ -448,13 +448,20 @@ async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod, fi
     const sal = await prisma.employeeSalary.findFirst({
       where: { tenantId, employeeId },
       orderBy: { effectiveFrom: 'desc' },
-      select: { legalEntityId: true },
+      select: { legalEntityId: true, country: true },
     });
     if (sal?.legalEntityId) {
-      const le = await prisma.legalEntity.findUnique({ where: { id: sal.legalEntityId }, select: { fiscalYearStartMonth: true } });
-      fyStartMonth = le?.fiscalYearStartMonth ?? 4;
+      const le = await prisma.legalEntity.findFirst({ where: { id: sal.legalEntityId, tenantId }, select: { fiscalYearStartMonth: true } });
+      fyStartMonth = le?.fiscalYearStartMonth ?? 1;
+    } else if (sal?.country) {
+      const le = await prisma.legalEntity.findFirst({
+        where: { tenantId, country: sal.country, active: true },
+        orderBy: { createdAt: 'asc' },
+        select: { fiscalYearStartMonth: true },
+      });
+      fyStartMonth = le?.fiscalYearStartMonth ?? 1;
     } else {
-      fyStartMonth = 4;
+      fyStartMonth = 1;
     }
   }
 

@@ -7,6 +7,7 @@ import {
   normalizePayslipTemplateSection,
 } from '../../utils/payrollUiShapes.js';
 import { flatBodyToPackData } from '../../utils/statutoryPackShape.js';
+import { resolveFiscalYear } from '../../utils/statutoryCalculation.js';
 
 function AppError(message, code, statusCode = 400) {
   const e = new Error(message);
@@ -388,14 +389,40 @@ export async function getEmployeeYtd(prisma, employeeId, tenantId, fy) {
   const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
   if (!employee) return null;
 
-  const fiscalYear = fy || getCurrentFiscalYear();
-  const [fyStart] = fiscalYear.split('-');
-  const periodStart = `${fyStart}-04`;
+  // Resolve fiscalYearStartMonth from salary LE → salary country → calendar default
+  let fyStartMonth = 1;
+  const sal = await prisma.employeeSalary.findFirst({
+    where: { tenantId, employeeId, effectiveTo: null },
+    orderBy: { effectiveFrom: 'desc' },
+    select: { legalEntityId: true, country: true },
+  });
+  if (sal?.legalEntityId) {
+    const le = await prisma.legalEntity.findFirst({ where: { id: sal.legalEntityId, tenantId } });
+    fyStartMonth = le?.fiscalYearStartMonth ?? 1;
+  } else if (sal?.country) {
+    const le = await prisma.legalEntity.findFirst({
+      where: { tenantId, country: sal.country, active: true },
+      orderBy: { createdAt: 'asc' },
+    });
+    fyStartMonth = le?.fiscalYearStartMonth ?? 1;
+  }
+
+  let fiscalYear, fiscalYearStartPeriod;
+  if (fy) {
+    fiscalYear = fy;
+    // Derive start period from FY label + resolved start month
+    const fyStartYear = fy.split('-')[0];
+    fiscalYearStartPeriod = `${fyStartYear}-${String(fyStartMonth).padStart(2, '0')}`;
+  } else {
+    const now = new Date();
+    const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    ({ fiscalYear, fiscalYearStartPeriod } = resolveFiscalYear(currentPeriod, fyStartMonth));
+  }
 
   const payslips = await prisma.payslip.findMany({
     where: {
       tenantId, employeeId, status: 'PAID',
-      period: { gte: periodStart },
+      period: { gte: fiscalYearStartPeriod },
     },
     orderBy: { period: 'asc' },
   });
