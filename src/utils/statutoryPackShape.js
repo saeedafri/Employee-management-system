@@ -60,6 +60,18 @@ export function fmtStatutoryPackRow(row) {
 export function mergePackUpdate(existingRow, body) {
   const current = existingRow.packData || {};
   const merged = flatBodyToPackData({ ...current, ...body, packData: { ...current, ...(body.packData || {}) } });
+
+  // Per-regime merge: incoming regimes are patched onto existing regimes by code,
+  // preserving taxCode/taxName/taxCredits unless the incoming body explicitly provides them.
+  if (Array.isArray(body.taxRegimes) && Array.isArray(current.taxRegimes) && current.taxRegimes.length > 0) {
+    const existingByCode = new Map(current.taxRegimes.map((r) => [r.code, r]));
+    merged.taxRegimes = body.taxRegimes.map((incoming) => {
+      const existing = existingByCode.get(incoming.code);
+      if (!existing) return incoming;
+      return { ...existing, ...incoming };
+    });
+  }
+
   return {
     country: body.country ?? existingRow.country,
     version: body.version ?? existingRow.version,

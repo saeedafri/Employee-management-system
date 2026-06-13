@@ -208,9 +208,9 @@ export default async function payrollRoutes(fastify) {
               required: ['componentId'],
               properties: {
                 componentId: { type: 'string' },
-                overrideCalculationType: { type: 'string' },
-                overrideValue: { type: 'number' },
-                overrideFormula: { type: 'string' },
+                overrideCalculationType: { type: 'string', enum: ['FLAT', 'PERCENTAGE', 'FORMULA'], nullable: true },
+                overrideValue: { type: 'number', nullable: true },
+                overrideFormula: { type: 'string', nullable: true },
               },
             },
           },
@@ -289,23 +289,25 @@ export default async function payrollRoutes(fastify) {
 
   fastify.patch('/payroll/employees/:employeeId/salary', {
     schema: {
-      tags: ['Payroll'], description: 'Update employee salary (creates new history record)', security: [{ Bearer: [] }],
+      tags: ['Payroll'],
+      description: 'Partial update employee salary. All fields optional — merges onto active salary record.',
+      security: [{ Bearer: [] }],
       params: { type: 'object', required: ['employeeId'], properties: { employeeId: { type: 'string' } } },
       body: {
         type: 'object',
         properties: {
           payGroupId: { type: 'string' }, annualCtc: { type: 'number' },
-          effectiveFrom: { type: 'string' },
+          effectiveFrom: { type: 'string', description: 'YYYY-MM-DD. Defaults to existing effectiveFrom.' },
           country: { type: 'string' }, currency: { type: 'string' }, legalEntityId: { type: 'string' },
           bankAccountName: { type: 'string' },
           bankAccountNumber: { type: 'string' }, bankIfscCode: { type: 'string' },
           bankName: { type: 'string' },
         },
       },
-      response: { 201: obj },
+      response: { 200: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
-  }, ctrl.setEmployeeSalary);
+  }, ctrl.patchEmployeeSalary);
 
   // ── Employee Payslips ───────────────────────────────────────────────────────
   fastify.get('/payroll/employees/:employeeId/payslips', {

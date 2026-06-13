@@ -258,16 +258,20 @@ export async function deletePayGroup(prisma, id, tenantId) {
 function buildCalculatedComponents(pgComponents, annualCtc) {
   const ctcMonthly = Number(annualCtc) / 12;
 
-  const effectiveComponents = pgComponents.map((pgc) => ({
-    id: pgc.component.id, code: pgc.component.code, name: pgc.component.name,
-    type: pgc.component.type, taxable: pgc.component.taxable,
-    calculationType: pgc.overrideCalculationType || pgc.component.calculationType,
-    value: pgc.overrideValue !== null && pgc.overrideValue !== undefined
-      ? Number(pgc.overrideValue) : (pgc.component.value !== null ? Number(pgc.component.value) : null),
-    basisCode: pgc.component.basisCode,
-    formula: pgc.overrideFormula || pgc.component.formula,
-    displayOrder: pgc.component.displayOrder,
-  }));
+  const effectiveComponents = pgComponents.map((pgc) => {
+    const hasOverride = Boolean(pgc.overrideCalculationType);
+    return {
+      id: pgc.component.id, code: pgc.component.code, name: pgc.component.name,
+      type: pgc.component.type, taxable: pgc.component.taxable,
+      calculationType: hasOverride ? pgc.overrideCalculationType : pgc.component.calculationType,
+      value: hasOverride && pgc.overrideValue != null
+        ? Number(pgc.overrideValue)
+        : (pgc.component.value != null ? Number(pgc.component.value) : null),
+      basisCode: pgc.component.basisCode,
+      formula: (hasOverride && pgc.overrideFormula) ? pgc.overrideFormula : pgc.component.formula,
+      displayOrder: pgc.component.displayOrder,
+    };
+  });
 
   const sorted = topologicalSort(effectiveComponents);
   const computed = { CTC: ctcMonthly };
@@ -889,17 +893,21 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         warnings.push({ employeeId: employee.id, message: 'No statutory pack resolved — statutory contributions skipped' });
       }
 
-      const pgComps = payGroup.components.map((pgc) => ({
-        id: pgc.component.id, code: pgc.component.code, name: pgc.component.name,
-        type: pgc.component.type, taxable: pgc.component.taxable,
-        statutoryTag: pgc.component.statutoryTag ?? null,
-        displayOrder: pgc.component.displayOrder,
-        calculationType: pgc.overrideCalculationType || pgc.component.calculationType,
-        value: pgc.overrideValue !== null && pgc.overrideValue !== undefined
-          ? Number(pgc.overrideValue) : (pgc.component.value !== null ? Number(pgc.component.value) : null),
-        basisCode: pgc.component.basisCode,
-        formula: pgc.overrideFormula || pgc.component.formula,
-      }));
+      const pgComps = payGroup.components.map((pgc) => {
+        const hasOverride = Boolean(pgc.overrideCalculationType);
+        return {
+          id: pgc.component.id, code: pgc.component.code, name: pgc.component.name,
+          type: pgc.component.type, taxable: pgc.component.taxable,
+          statutoryTag: pgc.component.statutoryTag ?? null,
+          displayOrder: pgc.component.displayOrder,
+          calculationType: hasOverride ? pgc.overrideCalculationType : pgc.component.calculationType,
+          value: hasOverride && pgc.overrideValue != null
+            ? Number(pgc.overrideValue)
+            : (pgc.component.value != null ? Number(pgc.component.value) : null),
+          basisCode: pgc.component.basisCode,
+          formula: (hasOverride && pgc.overrideFormula) ? pgc.overrideFormula : pgc.component.formula,
+        };
+      });
 
       const componentByCode = new Map(pgComps.map((c) => [c.code, c]));
       const ctcMonthly = Number(sal.annualCtc) / 12;
@@ -945,11 +953,13 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
             return comp?.taxable !== false;
           })
           .reduce((s, e) => s + Number(e.amount ?? 0), 0) * 12;
-        const annualTax = computeIncomeTaxFromRegime(annualGross, activeRegime);
+        // Currency determines minor-unit factor for tax slab normalization
+        const taxCurrency = sal.currency ?? payGroup.currency ?? 'INR';
+        const annualTax = computeIncomeTaxFromRegime(annualGross, activeRegime, taxCurrency);
         const monthlyTax = Math.round(annualTax / 12);
         if (monthlyTax > 0) {
           const taxCode = activeRegime.taxCode ?? 'WITHHOLDING_TAX';
-          const taxName = activeRegime.name ?? 'Withholding Tax';
+          const taxName = activeRegime.taxName ?? activeRegime.name ?? 'Withholding Tax';
           const idx = deductionsArr.findIndex((d) => d.code === taxCode);
           if (idx >= 0) deductionsArr[idx].amount = monthlyTax;
           else deductionsArr.push({ code: taxCode, name: taxName, amount: monthlyTax, taxable: false });

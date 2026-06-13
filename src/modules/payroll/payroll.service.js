@@ -163,6 +163,38 @@ export async function setEmployeeSalary(prisma, employeeId, tenantId, data) {
   return repo.setEmployeeSalary(prisma, employeeId, tenantId, normalized);
 }
 
+export async function patchEmployeeSalary(prisma, employeeId, tenantId, patch) {
+  const active = await prisma.employeeSalary.findFirst({
+    where: { tenantId, employeeId, OR: [{ effectiveTo: null }, { effectiveTo: { gte: new Date() } }] },
+    orderBy: { effectiveFrom: 'desc' },
+  });
+  if (!active) throw AppError('No active salary found for this employee', 'NO_ACTIVE_SALARY', 422);
+
+  const normalized = { ...patch };
+  if (patch.legalEntityId) {
+    const le = await prisma.legalEntity.findFirst({ where: { id: patch.legalEntityId, tenantId } });
+    if (!le) throw AppError('legalEntityId not found or does not belong to this tenant', 'INVALID_LEGAL_ENTITY', 422);
+    if (!le.active) throw AppError('Legal entity is inactive', 'INACTIVE_LEGAL_ENTITY', 422);
+    normalized.country = le.country;
+    normalized.currency = le.currency ?? patch.currency ?? active.currency ?? null;
+  }
+
+  const merged = {
+    payGroupId: normalized.payGroupId ?? active.payGroupId,
+    annualCtc: normalized.annualCtc ?? Number(active.annualCtc),
+    effectiveFrom: normalized.effectiveFrom ?? active.effectiveFrom.toISOString().split('T')[0],
+    country: normalized.country ?? active.country ?? null,
+    currency: normalized.currency ?? active.currency ?? null,
+    legalEntityId: normalized.legalEntityId ?? active.legalEntityId ?? null,
+    bankAccountName: normalized.bankAccountName ?? active.bankAccountName ?? null,
+    bankAccountNumber: normalized.bankAccountNumber ?? active.bankAccountNumber ?? null,
+    bankIfscCode: normalized.bankIfscCode ?? active.bankIfscCode ?? null,
+    bankName: normalized.bankName ?? active.bankName ?? null,
+  };
+
+  return repo.setEmployeeSalary(prisma, employeeId, tenantId, merged);
+}
+
 // ── Employee Payslips ─────────────────────────────────────────────────────────
 
 export async function getEmployeePayslips(prisma, employeeId, tenantId, requestingUser, query) {

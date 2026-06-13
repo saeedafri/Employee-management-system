@@ -96,6 +96,15 @@ export async function setEmployeeSalary(request, reply) {
   } catch (err) { handleError(reply, err); }
 }
 
+export async function patchEmployeeSalary(request, reply) {
+  try {
+    const data = await service.patchEmployeeSalary(
+      prisma, request.params.employeeId, request.tenant.id, request.body,
+    );
+    reply.send(successResponse(data));
+  } catch (err) { handleError(reply, err); }
+}
+
 // ── Employee Payslips ─────────────────────────────────────────────────────────
 
 export async function getEmployeePayslips(request, reply) {

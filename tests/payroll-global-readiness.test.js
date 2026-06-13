@@ -8,8 +8,9 @@ import {
 import { computeStatutoryContributions } from '../src/utils/statutoryCalculation.js';
 
 // ── Philippines TRAIN Law (RA 11976, 2023) ────────────────────────────────────
+// computeSlabTax works on already-normalized (major-unit) values; no currency factor applied here.
 
-test('PH: computeSlabTax — 1,200,000 taxable income → 202,500 annual tax', () => {
+test('PH: computeSlabTax — 1,200,000 taxable income (major units) → 202,500 annual tax', () => {
   const PH_SLABS = [
     { from: 0,         to: 250000,    rate: 0,  base: 0 },
     { from: 250000,    to: 400000,    rate: 15, base: 0 },
@@ -22,20 +23,23 @@ test('PH: computeSlabTax — 1,200,000 taxable income → 202,500 annual tax', (
   assert.equal(tax, 202_500);
 });
 
-test('PH: computeIncomeTaxFromRegime — no standard deduction, taxCredits=[], 1,200,000 gross → 202,500', () => {
+// computeIncomeTaxFromRegime normalizes minor-unit pack fields before computing.
+// All monetary slab values below are in PHP centavos (minor units), annualGross is major (PHP pesos).
+
+test('PH: computeIncomeTaxFromRegime — minor-unit slabs, no standard deduction, 1,200,000 gross → 202,500', () => {
   const regime = {
     standardDeduction: 0,
     slabs: [
-      { from: 0,         to: 250000,    rate: 0,  base: 0 },
-      { from: 250000,    to: 400000,    rate: 15, base: 0 },
-      { from: 400000,    to: 800000,    rate: 20, base: 22500 },
-      { from: 800000,    to: 2000000,   rate: 25, base: 102500 },
-      { from: 2000000,   to: 8000000,   rate: 30, base: 402500 },
-      { from: 8000000,   to: null,      rate: 35, base: 2202500 },
+      { from: 0,           to: 25_000_000,  rate: 0,  base: 0 },
+      { from: 25_000_000,  to: 40_000_000,  rate: 15, base: 0 },
+      { from: 40_000_000,  to: 80_000_000,  rate: 20, base: 2_250_000 },
+      { from: 80_000_000,  to: 200_000_000, rate: 25, base: 10_250_000 },
+      { from: 200_000_000, to: 800_000_000, rate: 30, base: 40_250_000 },
+      { from: 800_000_000, to: null,        rate: 35, base: 220_250_000 },
     ],
     taxCredits: [],
   };
-  const annualTax = computeIncomeTaxFromRegime(1_200_000, regime);
+  const annualTax = computeIncomeTaxFromRegime(1_200_000, regime, 'PHP');
   assert.equal(annualTax, 202_500);
   const monthly = Math.round(annualTax / 12);
   assert.equal(monthly, 16_875); // 202,500 / 12 = 16,875
@@ -67,24 +71,24 @@ test('PH: SSS contribution via computeStatutoryContributions — wage ceiling 35
   assert.equal(erContrib.amount, 3_500);   // 35,000 * 10%
 });
 
-// ── India regression — results must remain correct ────────────────────────────
+// ── India regression — minor-unit slabs (paise) ──────────────────────────────
 
-test('IN: computeIncomeTaxFromRegime — old regime, 10L gross, 50K std deduction → 102,500 + 4% cess = 106,600', () => {
+test('IN: computeIncomeTaxFromRegime — minor-unit slabs, 10L gross, 50K std deduction → 106,600', () => {
   const regime = {
-    standardDeduction: 50_000,
+    standardDeduction: 5_000_000, // 50,000 INR in paise
     slabs: [
-      { from: 0,       to: 250000,  rate: 0,  base: 0 },
-      { from: 250000,  to: 500000,  rate: 5,  base: 0 },
-      { from: 500000,  to: 1000000, rate: 20, base: 12500 },
-      { from: 1000000, to: null,    rate: 30, base: 112500 },
+      { from: 0,          to: 25_000_000,  rate: 0,  base: 0 },
+      { from: 25_000_000, to: 50_000_000,  rate: 5,  base: 0 },
+      { from: 50_000_000, to: 100_000_000, rate: 20, base: 1_250_000 },
+      { from: 100_000_000, to: null,       rate: 30, base: 11_250_000 },
     ],
     cess: 4,
     taxCredits: [],
   };
-  // Annual gross 1,000,000, taxable = 950,000
+  // Annual gross 1,000,000 INR, taxable = 950,000
   // 500K-1M bracket: base 12,500 + 20% * (950K - 500K) = 12,500 + 90,000 = 102,500
   // cess: 102,500 * 1.04 = 106,600
-  const tax = computeIncomeTaxFromRegime(1_000_000, regime);
+  const tax = computeIncomeTaxFromRegime(1_000_000, regime, 'INR');
   assert.equal(tax, 106_600);
 });
 
@@ -109,7 +113,7 @@ test('PH: resolveFiscalYear — Jan start, period 2027-03 → FY "2027"', () => 
   assert.equal(fiscalYearEndPeriod, '2027-12');
 });
 
-// ── South Africa — taxCredits subtracted from final tax ───────────────────────
+// ── South Africa — minor-unit slabs, taxCredits in paise-equivalent (ZAR cents) ─
 
 test('ZA: taxCredits are subtracted from computed tax, not from income', () => {
   const regime = {
@@ -118,12 +122,12 @@ test('ZA: taxCredits are subtracted from computed tax, not from income', () => {
       { from: 0, to: null, rate: 20, base: 0 }, // flat 20%
     ],
     taxCredits: [
-      { code: 'PRIMARY_REBATE', amount: 17_235 },
+      { code: 'PRIMARY_REBATE', amount: 1_723_500 }, // 17,235 ZAR in cents
     ],
   };
-  // Annual gross 500,000 → tax before credits = 100,000
+  // Annual gross 500,000 ZAR → tax before credits = 100,000
   // After credits: 100,000 - 17,235 = 82,765
-  const tax = computeIncomeTaxFromRegime(500_000, regime);
+  const tax = computeIncomeTaxFromRegime(500_000, regime, 'ZAR');
   assert.equal(tax, 82_765);
 });
 
@@ -134,13 +138,13 @@ test('ZA: multiple taxCredits are summed before subtraction', () => {
       { from: 0, to: null, rate: 25, base: 0 },
     ],
     taxCredits: [
-      { code: 'PRIMARY_REBATE', amount: 17_235 },
-      { code: 'SECONDARY_REBATE', amount: 9_444 },
+      { code: 'PRIMARY_REBATE', amount: 1_723_500 },   // 17,235 ZAR in cents
+      { code: 'SECONDARY_REBATE', amount: 944_400 },   // 9,444 ZAR in cents
     ],
   };
-  // gross 400,000 → tax before credits = 100,000
+  // gross 400,000 ZAR → tax before credits = 100,000
   // After credits: 100,000 - 17,235 - 9,444 = 73,321
-  const tax = computeIncomeTaxFromRegime(400_000, regime);
+  const tax = computeIncomeTaxFromRegime(400_000, regime, 'ZAR');
   assert.equal(tax, 73_321);
 });
 
@@ -148,9 +152,9 @@ test('ZA: taxCredits never produce negative tax', () => {
   const regime = {
     standardDeduction: 0,
     slabs: [{ from: 0, to: null, rate: 5, base: 0 }],
-    taxCredits: [{ code: 'REBATE', amount: 999_999 }],
+    taxCredits: [{ code: 'REBATE', amount: 99_999_900 }], // huge credit in cents
   };
-  const tax = computeIncomeTaxFromRegime(10_000, regime);
+  const tax = computeIncomeTaxFromRegime(10_000, regime, 'ZAR');
   assert.equal(tax, 0); // clamps at 0
 });
 

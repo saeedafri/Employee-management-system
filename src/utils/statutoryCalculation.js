@@ -7,6 +7,47 @@ function minorToMajor(amount) {
   return Number(amount) / 100;
 }
 
+// ISO 4217 exponent exceptions — default is 2 (×100 = minor unit factor)
+const CURRENCY_MINOR_UNITS = {
+  BHD: 3, JOD: 3, KWD: 3, OMR: 3, TND: 3,
+  CLP: 0, JPY: 0, KRW: 0, VND: 0,
+};
+
+function minorUnitFactor(currency = 'INR') {
+  return 10 ** (CURRENCY_MINOR_UNITS[currency] ?? 2);
+}
+
+function moneyMinorToMajor(value, currency) {
+  if (value == null) return value;
+  return Number(value) / minorUnitFactor(currency);
+}
+
+/**
+ * Normalize all monetary fields in a taxRegime from minor units to major units.
+ * Rates (%) are not converted. Called before passing the regime to computeIncomeTaxFromRegime.
+ */
+export function normalizeTaxRegimeForComputation(regime, currency) {
+  if (!regime) return regime;
+  return {
+    ...regime,
+    standardDeduction: moneyMinorToMajor(regime.standardDeduction ?? 0, currency),
+    slabs: Array.isArray(regime.slabs)
+      ? regime.slabs.map((s) => ({
+        ...s,
+        from: moneyMinorToMajor(s.from ?? 0, currency),
+        to: s.to == null ? null : moneyMinorToMajor(s.to, currency),
+        base: s.base == null ? 0 : moneyMinorToMajor(s.base, currency),
+      }))
+      : [],
+    taxCredits: Array.isArray(regime.taxCredits)
+      ? regime.taxCredits.map((c) => ({
+        ...c,
+        amount: moneyMinorToMajor(c.amount ?? 0, currency),
+      }))
+      : [],
+  };
+}
+
 export function schemeManagedComponentCodes(contributionSchemes = []) {
   const employeeCodes = new Set();
   const employerCodes = new Set();
@@ -101,21 +142,29 @@ export function computeSlabTax(taxableIncome, slabs = []) {
  *
  * Returns annual tax (number). Caller divides by 12 for monthly withholding.
  */
-export function computeIncomeTaxFromRegime(annualGross, taxRegime) {
+export function computeIncomeTaxFromRegime(annualGross, taxRegime, currency = 'INR') {
   if (!taxRegime || !Array.isArray(taxRegime.slabs) || !taxRegime.slabs.length) return 0;
 
-  const stdDeduction = Number(taxRegime.standardDeduction ?? 0);
+  // All pack monetary fields are in minor units — normalize before computation.
+  const regime = normalizeTaxRegimeForComputation(taxRegime, currency);
+
+  const stdDeduction = Number(regime.standardDeduction ?? 0);
   const taxableIncome = Math.max(0, annualGross - stdDeduction);
 
-  let tax = computeSlabTax(taxableIncome, taxRegime.slabs);
+  let tax = computeSlabTax(taxableIncome, regime.slabs);
 
-  const surchargeRate = Number(taxRegime.surcharge ?? 0);
+  const surchargeRate = Number(regime.surcharge ?? 0);
   if (surchargeRate > 0) tax += (surchargeRate / 100) * tax;
 
-  const cessRate = Number(taxRegime.cess ?? 0);
+  // cess may be stored as number (rate) or as {rate} object — handle both
+  const rawCess = regime.cess;
+  const cessRate = typeof rawCess === 'object' && rawCess !== null
+    ? Number(rawCess.rate ?? 0)
+    : Number(rawCess ?? 0);
   if (cessRate > 0) tax += (cessRate / 100) * tax;
 
-  const credits = Array.isArray(taxRegime.taxCredits) ? taxRegime.taxCredits : [];
+  // taxCredits already normalized to major units by normalizeTaxRegimeForComputation
+  const credits = Array.isArray(regime.taxCredits) ? regime.taxCredits : [];
   const totalCredits = credits.reduce((s, c) => s + Number(c.amount ?? 0), 0);
 
   return Math.max(0, Math.round(tax - totalCredits));
