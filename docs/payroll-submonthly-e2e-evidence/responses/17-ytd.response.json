@@ -1,0 +1,22 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 200,
+  "data": {
+    "success": true,
+    "data": {
+      "fiscalYear": "2057",
+      "monthsElapsed": 2,
+      "grossEarnings": 100000,
+      "taxableIncome": 87000,
+      "taxDeducted": 16875,
+      "totalDeductions": 18625,
+      "netPay": 81375,
+      "contributions": {
+        "PF": 1862.5
+      }
+    },
+    "meta": {}
+  }
+}

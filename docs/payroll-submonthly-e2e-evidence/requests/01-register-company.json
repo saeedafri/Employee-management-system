@@ -1,16 +1,6 @@
 {
-  "_note": "EMS has no public tenant-registration endpoint; the QA tenant is created on the LOCAL/TEST DB via seed before this sequence. This file documents the intended bootstrap identity. Replace placeholders with values from your local run.",
-  "tenant": {
-    "tenantKey": "submonthly-qa-001",
-    "name": "Submonthly Payroll QA Inc"
-  },
-  "adminLogin": {
-    "endpoint": "POST /api/v1/auth/login",
-    "headers": { "x-tenant-key": "submonthly-qa-001" },
-    "body": { "email": "admin@submonthly-qa.test", "password": "Password123!" }
-  },
-  "placeholders": {
-    "ACCESS_TOKEN": "<ACCESS_TOKEN>",
-    "TENANT_ID": "<TENANT_ID>"
-  }
+  "companyName": "Submonthly Payroll QA Inc 20260613-234919",
+  "fullName": "Submonthly QA Admin",
+  "email": "submonthly.qa.20260613-234919@acme.test",
+  "password": "<PASSWORD>"
 }

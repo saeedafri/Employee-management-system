@@ -1,21 +1,75 @@
 {
-  "_endpoint": "POST /api/v1/payroll/components (one call per component)",
-  "_note": "BASIC carries statutoryTag SSS_BASE so the SSS scheme picks it up as the contribution base. SSS_EE/SSS_ER are scheme-managed (zero-value placeholders); the engine fills their amounts from the statutory pack.",
   "components": [
     {
-      "name": "Basic Salary", "code": "BASIC", "type": "EARNING",
-      "calculationType": "PERCENTAGE", "basisCode": "CTC", "value": 100,
-      "taxable": true, "statutoryTag": "SSS_BASE", "displayOrder": 1
+      "name": "Basic Salary",
+      "code": "BASIC",
+      "type": "EARNING",
+      "calculationType": "PERCENTAGE",
+      "basisCode": "CTC",
+      "value": 100,
+      "taxable": true,
+      "statutoryTag": "SSS_BASE",
+      "displayOrder": 1
     },
     {
-      "name": "SSS Employee", "code": "SSS_EE", "type": "DEDUCTION",
-      "calculationType": "FLAT", "value": 0, "taxable": false,
-      "statutoryTag": "SSS_EE", "displayOrder": 50
+      "name": "SSS Employee",
+      "code": "SSS_EE",
+      "type": "DEDUCTION",
+      "calculationType": "FLAT",
+      "value": 0,
+      "taxable": false,
+      "statutoryTag": "SSS_EE",
+      "displayOrder": 50
     },
     {
-      "name": "SSS Employer", "code": "SSS_ER", "type": "EMPLOYER_CONTRIBUTION",
-      "calculationType": "FLAT", "value": 0, "taxable": false,
-      "statutoryTag": "SSS_ER", "displayOrder": 51
+      "name": "SSS Employer",
+      "code": "SSS_ER",
+      "type": "EMPLOYER_CONTRIBUTION",
+      "calculationType": "FLAT",
+      "value": 0,
+      "taxable": false,
+      "statutoryTag": "SSS_ER",
+      "displayOrder": 51
+    },
+    {
+      "name": "India Basic Salary",
+      "code": "IN_BASIC",
+      "type": "EARNING",
+      "calculationType": "PERCENTAGE",
+      "basisCode": "CTC",
+      "value": 100,
+      "taxable": true,
+      "statutoryTag": "PF_WAGE",
+      "displayOrder": 1
+    },
+    {
+      "name": "PF Employee",
+      "code": "PF",
+      "type": "DEDUCTION",
+      "calculationType": "FLAT",
+      "value": 0,
+      "taxable": false,
+      "statutoryTag": "PF",
+      "displayOrder": 50
+    },
+    {
+      "name": "PF Employer",
+      "code": "PF_ER",
+      "type": "EMPLOYER_CONTRIBUTION",
+      "calculationType": "FLAT",
+      "value": 0,
+      "taxable": false,
+      "statutoryTag": "PF_ER",
+      "displayOrder": 51
+    },
+    {
+      "name": "Professional Tax",
+      "code": "PT",
+      "type": "DEDUCTION",
+      "calculationType": "FLAT",
+      "value": 200,
+      "taxable": false,
+      "displayOrder": 52
     }
   ]
 }

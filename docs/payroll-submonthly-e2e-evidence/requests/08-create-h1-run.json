@@ -1,8 +1,7 @@
 {
   "period": "2057-01-H1",
-  "startDate": "2057-01-01",
-  "endDate": "2057-01-15",
-  "payDate": "2057-01-15",
-  "paySchedule": "SEMI_MONTHLY",
-  "type": "REGULAR"
+  "type": "REGULAR",
+  "payGroupIds": [
+    "<PAY_GROUP_ID>"
+  ]
 }

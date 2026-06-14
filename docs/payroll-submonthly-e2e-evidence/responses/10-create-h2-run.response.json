@@ -1,0 +1,36 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "id": "<ID>",
+      "period": "2057-01-H2",
+      "periodLabel": "16–31 Jan 2057",
+      "startDate": "2057-01-16",
+      "endDate": "2057-01-31",
+      "payDate": "2057-01-31",
+      "paySchedule": "SEMI_MONTHLY",
+      "type": "REGULAR",
+      "status": "DRAFT",
+      "employeeCount": 0,
+      "totalGross": 0,
+      "totalDeductions": 0,
+      "totalNet": 0,
+      "employerCost": 0,
+      "currency": "PHP",
+      "initiatedBy": null,
+      "approvedBy": null,
+      "processedAt": null,
+      "approvedAt": null,
+      "paidAt": null,
+      "published": false,
+      "publishedAt": null,
+      "approvals": [],
+      "createdAt": "2026-06-13T18:19:33.973Z"
+    },
+    "meta": {}
+  }
+}

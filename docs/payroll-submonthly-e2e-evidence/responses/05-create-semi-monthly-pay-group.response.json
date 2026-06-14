@@ -1,0 +1,50 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "id": "<ID>",
+      "name": "PH Semi-Monthly",
+      "code": "PHSEMI4919",
+      "currency": "PHP",
+      "paySchedule": "SEMI_MONTHLY",
+      "description": null,
+      "active": true,
+      "employeeCount": 0,
+      "components": [
+        {
+          "componentId": "<COMPONENT_ID>",
+          "componentCode": "BASIC",
+          "componentName": "Basic Salary",
+          "componentType": "EARNING",
+          "overrideCalculationType": null,
+          "overrideValue": null,
+          "overrideFormula": null
+        },
+        {
+          "componentId": "<COMPONENT_ID>",
+          "componentCode": "SSS_EE",
+          "componentName": "SSS Employee",
+          "componentType": "DEDUCTION",
+          "overrideCalculationType": null,
+          "overrideValue": null,
+          "overrideFormula": null
+        },
+        {
+          "componentId": "<COMPONENT_ID>",
+          "componentCode": "SSS_ER",
+          "componentName": "SSS Employer",
+          "componentType": "EMPLOYER_CONTRIBUTION",
+          "overrideCalculationType": null,
+          "overrideValue": null,
+          "overrideFormula": null
+        }
+      ],
+      "createdAt": "2026-06-13T18:19:28.551Z",
+      "updatedAt": "2026-06-13T18:19:28.551Z"
+    }
+  }
+}

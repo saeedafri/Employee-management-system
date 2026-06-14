@@ -1,0 +1,91 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "id": "<ID>",
+      "country": "PH",
+      "version": "2057-v1-20260613-234919",
+      "effectiveFrom": "2057-01-01",
+      "effectiveTo": null,
+      "rounding": null,
+      "proration": null,
+      "taxRegimes": [
+        {
+          "code": "PH_WITHHOLDING",
+          "name": "PH Withholding Tax (TRAIN)",
+          "slabs": [
+            {
+              "to": 25000000,
+              "from": 0,
+              "rate": 0
+            },
+            {
+              "to": 40000000,
+              "base": 0,
+              "from": 25000000,
+              "rate": 15
+            },
+            {
+              "to": 80000000,
+              "base": 2250000,
+              "from": 40000000,
+              "rate": 20
+            },
+            {
+              "to": 200000000,
+              "base": 10250000,
+              "from": 80000000,
+              "rate": 25
+            },
+            {
+              "to": 800000000,
+              "base": 40250000,
+              "from": 200000000,
+              "rate": 30
+            },
+            {
+              "to": null,
+              "base": 220250000,
+              "from": 800000000,
+              "rate": 35
+            }
+          ],
+          "taxCode": "WITHHOLDING_TAX",
+          "taxName": "Withholding Tax",
+          "standardDeduction": 0
+        }
+      ],
+      "contributionSchemes": [
+        {
+          "code": "SSS",
+          "name": "SSS",
+          "employee": {
+            "rate": 5,
+            "component": "SSS_EE"
+          },
+          "employer": {
+            "rate": 10,
+            "component": "SSS_ER"
+          },
+          "wageBaseTag": "SSS_BASE",
+          "wageCeiling": 3500000,
+          "apportionmentMode": "MONTHLY_TOTAL"
+        }
+      ],
+      "localTaxes": [],
+      "statutoryComponents": [
+        "SSS_EE",
+        "SSS_ER"
+      ],
+      "minimumWages": [],
+      "gratuity": null,
+      "createdAt": "2026-06-13T18:19:24.874Z",
+      "updatedAt": "2026-06-13T18:19:24.874Z"
+    },
+    "meta": {}
+  }
+}

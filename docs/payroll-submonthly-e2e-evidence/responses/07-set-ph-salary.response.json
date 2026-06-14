@@ -1,0 +1,67 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "id": "<ID>",
+      "employeeId": "<EMPLOYEE_ID>",
+      "payGroupId": "<PAY_GROUP_ID>",
+      "payGroup": {
+        "id": "<ID>",
+        "name": "PH Semi-Monthly",
+        "code": "PHSEMI4919",
+        "currency": "PHP",
+        "paySchedule": "SEMI_MONTHLY"
+      },
+      "annualCtc": 1200000,
+      "country": "PH",
+      "currency": "PHP",
+      "legalEntityId": "<LEGAL_ENTITY_ID>",
+      "effectiveFrom": "2057-01-01",
+      "effectiveTo": null,
+      "bankAccountName": null,
+      "bankAccountNumber": null,
+      "bankIfscCode": null,
+      "bankName": null,
+      "calculatedComponents": [
+        {
+          "code": "BASIC",
+          "name": "Basic Salary",
+          "type": "EARNING",
+          "monthlyAmount": 100000,
+          "taxable": true,
+          "color": "#16a34a",
+          "amount": 100000
+        },
+        {
+          "code": "SSS_EE",
+          "name": "SSS Employee",
+          "type": "DEDUCTION",
+          "monthlyAmount": 0,
+          "taxable": false,
+          "color": "#dc2626",
+          "amount": 0
+        },
+        {
+          "code": "SSS_ER",
+          "name": "SSS Employer",
+          "type": "EMPLOYER_CONTRIBUTION",
+          "monthlyAmount": 0,
+          "taxable": false,
+          "color": "#7c3aed",
+          "amount": 0
+        }
+      ],
+      "monthlyGross": 100000,
+      "monthlyDeductions": 0,
+      "monthlyNet": 100000,
+      "history": [],
+      "createdAt": "2026-06-13T18:19:30.816Z",
+      "updatedAt": "2026-06-13T18:19:30.816Z"
+    },
+    "meta": {}
+  }
+}

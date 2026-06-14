@@ -1,14 +1,12 @@
 {
-  "_endpoint": "POST /api/v1/payroll/legal-entities",
-  "name": "Submonthly QA — Philippines",
+  "name": "QA Philippines MON-FRI",
   "country": "PH",
   "currency": "PHP",
   "fiscalYearStartMonth": 1,
   "timezone": "Asia/Manila",
   "locale": "en-PH",
   "workWeekPattern": "MON-FRI",
-  "registrationIds": { "tin": "000-000-000-000" },
-  "statutoryPackId": "<PH_STATUTORY_PACK_ID>",
-  "payCalendarId": "<PH_SEMI_MONTHLY_CALENDAR_ID>",
+  "statutoryPackId": "<STATUTORY_PACK_ID>",
+  "payCalendarId": "<PAY_CALENDAR_ID>",
   "active": true
 }

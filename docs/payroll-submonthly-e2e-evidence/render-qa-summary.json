@@ -1,0 +1,112 @@
+{
+  "tenantName": "Submonthly Payroll QA Inc 20260613-234919",
+  "tenantKey": "submonthly-payroll-qa-inc-20260613-234919-001",
+  "adminEmail": "submonthly.qa.20260613-234919@acme.test",
+  "employeeEmail": "ph.employee.20260613-234919@acme.test",
+  "deploy": {
+    "deployId": "dep-d8mopocm0tmc73au9a8g",
+    "commitSha": "dda9585f3ebb2c614e1ec8252c3170c73a649cc4",
+    "status": "live",
+    "finishedAt": "2026-06-13T17:02:35.841105Z",
+    "migrationLog": "No pending migrations to apply."
+  },
+  "scenarios": {
+    "phSemi": {
+      "h1": {
+        "gross": 50000,
+        "tax": 8437,
+        "sssEe": 875,
+        "sssEr": 1750,
+        "netPay": 40688,
+        "currency": "PHP",
+        "workingDays": 11
+      },
+      "h2": {
+        "gross": 50000,
+        "tax": 8438,
+        "sssEe": 875,
+        "sssEr": 1750,
+        "netPay": 40687,
+        "currency": "PHP",
+        "workingDays": 12
+      },
+      "ytd": {
+        "success": true,
+        "data": {
+          "fiscalYear": "2057",
+          "monthsElapsed": 2,
+          "grossEarnings": 100000,
+          "taxableIncome": 87000,
+          "taxDeducted": 16875,
+          "totalDeductions": 18625,
+          "netPay": 81375,
+          "contributions": {
+            "PF": 1862.5
+          }
+        },
+        "meta": {}
+      }
+    },
+    "phMonthly": {
+      "gross": 100000,
+      "tax": 16875,
+      "sssEe": 1750,
+      "sssEr": 3500,
+      "netPay": 81375,
+      "currency": "PHP"
+    },
+    "indiaMonthly": {
+      "gross": 83333.33,
+      "tax": 8883,
+      "pf": 1800,
+      "pfEr": 1800,
+      "pt": 200,
+      "netPay": 72450.33,
+      "currency": "INR",
+      "ytdFiscalYear": "2056-57"
+    },
+    "biweekly": [
+      {
+        "period": "2057-W13",
+        "gross": 46153.85,
+        "tax": 5625,
+        "sssEe": 583,
+        "sssEr": 1166,
+        "workingDays": 10,
+        "periodLabel": "Apr 1–Apr 14, 2057",
+        "startDate": "2057-04-01",
+        "endDate": "2057-04-14",
+        "currency": "PHP"
+      },
+      {
+        "period": "2057-W15",
+        "gross": 46153.85,
+        "tax": 5625,
+        "sssEe": 583,
+        "sssEr": 1166,
+        "workingDays": 10,
+        "periodLabel": "Apr 15–Apr 28, 2057",
+        "startDate": "2057-04-15",
+        "endDate": "2057-04-28",
+        "currency": "PHP"
+      },
+      {
+        "period": "2057-W17",
+        "gross": 46153.85,
+        "tax": 5625,
+        "sssEe": 584,
+        "sssEr": 1168,
+        "workingDays": 10,
+        "periodLabel": "Apr 29–May 12, 2057",
+        "startDate": "2057-04-29",
+        "endDate": "2057-05-12",
+        "currency": "PHP"
+      }
+    ],
+    "workWeek": {
+      "workingDays": 13,
+      "currency": "PHP",
+      "periodLabel": "1–15 May 2057"
+    }
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 200,
+  "data": {
+    "PH_SEMI": {
+      "success": true,
+      "data": {
+        "payCalendarId": "<PAY_CALENDAR_ID>",
+        "paySchedule": "SEMI_MONTHLY",
+        "cycles": [
+          {
+            "period": "2057-01-H1",
+            "periodLabel": "1–15 Jan 2057",
+            "startDate": "2057-01-01",
+            "endDate": "2057-01-15",
+            "payDate": "2057-01-15",
+            "cutoffDate": "2057-01-14",
+            "paySchedule": "SEMI_MONTHLY"
+          },
+          {
+            "period": "2057-01-H2",
+            "periodLabel": "16–31 Jan 2057",
+            "startDate": "2057-01-16",
+            "endDate": "2057-01-31",
+            "payDate": "2057-01-31",
+            "cutoffDate": "2057-01-25",
+            "paySchedule": "SEMI_MONTHLY"
+          },
+          {
+            "period": "2057-02-H1",
+            "periodLabel": "1–15 Feb 2057",
+            "startDate": "2057-02-01",
+            "endDate": "2057-02-15",
+            "payDate": "2057-02-15",
+            "cutoffDate": "2057-02-14",
+            "paySchedule": "SEMI_MONTHLY"
+          },
+          {
+            "period": "2057-02-H2",
+            "periodLabel": "16–28 Feb 2057",
+            "startDate": "2057-02-16",
+            "endDate": "2057-02-28",
+            "payDate": "2057-02-28",
+            "cutoffDate": "2057-02-25",
+            "paySchedule": "SEMI_MONTHLY"
+          }
+        ]
+      },
+      "meta": {}
+    },
+    "PH_MONTH": {
+      "success": true,
+      "data": {
+        "payCalendarId": "<PAY_CALENDAR_ID>",
+        "paySchedule": "MONTHLY",
+        "cycles": [
+          {
+            "period": "2057-01",
+            "periodLabel": "January 2057",
+            "startDate": "2057-01-01",
+            "endDate": "2057-01-31",
+            "payDate": "2057-01-31",
+            "cutoffDate": "2057-01-25",
+            "paySchedule": "MONTHLY"
+          },
+          {
+            "period": "2057-02",
+            "periodLabel": "February 2057",
+            "startDate": "2057-02-01",
+            "endDate": "2057-02-28",
+            "payDate": "2057-02-28",
+            "cutoffDate": "2057-02-25",
+            "paySchedule": "MONTHLY"
+          }
+        ]
+      },
+      "meta": {}
+    },
+    "IN_MONTH": {
+      "success": true,
+      "data": {
+        "payCalendarId": "<PAY_CALENDAR_ID>",
+        "paySchedule": "MONTHLY",
+        "cycles": [
+          {
+            "period": "2057-01",
+            "periodLabel": "January 2057",
+            "startDate": "2057-01-01",
+            "endDate": "2057-01-31",
+            "payDate": "2057-01-31",
+            "cutoffDate": "2057-01-25",
+            "paySchedule": "MONTHLY"
+          },
+          {
+            "period": "2057-02",
+            "periodLabel": "February 2057",
+            "startDate": "2057-02-01",
+            "endDate": "2057-02-28",
+            "payDate": "2057-02-28",
+            "cutoffDate": "2057-02-25",
+            "paySchedule": "MONTHLY"
+          }
+        ]
+      },
+      "meta": {}
+    },
+    "PH_BIWEEK": {
+      "success": true,
+      "data": {
+        "payCalendarId": "<PAY_CALENDAR_ID>",
+        "paySchedule": "BIWEEKLY",
+        "cycles": [
+          {
+            "period": "2057-W01",
+            "periodLabel": "2057-01-07 – 2057-01-20",
+            "startDate": "2057-01-07",
+            "endDate": "2057-01-20",
+            "payDate": "2057-01-19",
+            "cutoffDate": "2057-01-20",
+            "paySchedule": "BIWEEKLY"
+          },
+          {
+            "period": "2057-W03",
+            "periodLabel": "2057-01-21 – 2057-02-03",
+            "startDate": "2057-01-21",
+            "endDate": "2057-02-03",
+            "payDate": "2057-02-02",
+            "cutoffDate": "2057-02-03",
+            "paySchedule": "BIWEEKLY"
+          },
+          {
+            "period": "2057-W05",
+            "periodLabel": "2057-02-04 – 2057-02-17",
+            "startDate": "2057-02-04",
+            "endDate": "2057-02-17",
+            "payDate": "2057-02-16",
+            "cutoffDate": "2057-02-17",
+            "paySchedule": "BIWEEKLY"
+          },
+          {
+            "period": "2057-W07",
+            "periodLabel": "2057-02-18 – 2057-03-03",
+            "startDate": "2057-02-18",
+            "endDate": "2057-03-03",
+            "payDate": "2057-03-02",
+            "cutoffDate": "2057-03-03",
+            "paySchedule": "BIWEEKLY"
+          }
+        ]
+      },
+      "meta": {}
+    },
+    "PH_WEEKLY": {
+      "success": true,
+      "data": {
+        "payCalendarId": "<PAY_CALENDAR_ID>",
+        "paySchedule": "WEEKLY",
+        "cycles": [
+          {
+            "period": "2057-W01",
+            "periodLabel": "2057-01-05 – 2057-01-11",
+            "startDate": "2057-01-05",
+            "endDate": "2057-01-11",
+            "payDate": "2057-01-11",
+            "cutoffDate": "2057-01-11",
+            "paySchedule": "WEEKLY"
+          },
+          {
+            "period": "2057-W02",
+            "periodLabel": "2057-01-12 – 2057-01-18",
+            "startDate": "2057-01-12",
+            "endDate": "2057-01-18",
+            "payDate": "2057-01-18",
+            "cutoffDate": "2057-01-18",
+            "paySchedule": "WEEKLY"
+          },
+          {
+            "period": "2057-W03",
+            "periodLabel": "2057-01-19 – 2057-01-25",
+            "startDate": "2057-01-19",
+            "endDate": "2057-01-25",
+            "payDate": "2057-01-25",
+            "cutoffDate": "2057-01-25",
+            "paySchedule": "WEEKLY"
+          },
+          {
+            "period": "2057-W04",
+            "periodLabel": "2057-01-26 – 2057-02-01",
+            "startDate": "2057-01-26",
+            "endDate": "2057-02-01",
+            "payDate": "2057-02-01",
+            "cutoffDate": "2057-02-01",
+            "paySchedule": "WEEKLY"
+          },
+          {
+            "period": "2057-W05",
+            "periodLabel": "2057-02-02 – 2057-02-08",
+            "startDate": "2057-02-02",
+            "endDate": "2057-02-08",
+            "payDate": "2057-02-08",
+            "cutoffDate": "2057-02-08",
+            "paySchedule": "WEEKLY"
+          },
+          {
+            "period": "2057-W06",
+            "periodLabel": "2057-02-09 – 2057-02-15",
+            "startDate": "2057-02-09",
+            "endDate": "2057-02-15",
+            "payDate": "2057-02-15",
+            "cutoffDate": "2057-02-15",
+            "paySchedule": "WEEKLY"
+          },
+          {
+            "period": "2057-W07",
+            "periodLabel": "2057-02-16 – 2057-02-22",
+            "startDate": "2057-02-16",
+            "endDate": "2057-02-22",
+            "payDate": "2057-02-22",
+            "cutoffDate": "2057-02-22",
+            "paySchedule": "WEEKLY"
+          },
+          {
+            "period": "2057-W08",
+            "periodLabel": "2057-02-23 – 2057-03-01",
+            "startDate": "2057-02-23",
+            "endDate": "2057-03-01",
+            "payDate": "2057-03-01",
+            "cutoffDate": "2057-03-01",
+            "paySchedule": "WEEKLY"
+          }
+        ]
+      },
+      "meta": {}
+    }
+  }
+}

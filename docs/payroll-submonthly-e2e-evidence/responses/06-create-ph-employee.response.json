@@ -1,0 +1,51 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "id": "<ID>",
+      "tenantId": "<TENANT_ID>",
+      "userId": null,
+      "employeeCode": "E0080",
+      "firstName": "Maria",
+      "lastName": "Santos",
+      "workEmail": "ph.employee.20260613-234919@acme.test",
+      "personalEmail": null,
+      "phone": null,
+      "dateOfBirth": null,
+      "gender": null,
+      "address": null,
+      "emergencyContactName": null,
+      "emergencyContactPhone": null,
+      "designation": "Payroll QA Engineer",
+      "departmentId": [
+        "cmqcojez9004b10fxiny5prps"
+      ],
+      "managerId": null,
+      "joinedOn": "2056-01-01T00:00:00.000Z",
+      "employmentType": "FULL_TIME",
+      "employmentStatus": "ACTIVE",
+      "location": null,
+      "profilePhotoUrl": null,
+      "payCurrency": "INR",
+      "createdBy": null,
+      "updatedBy": null,
+      "createdAt": "2026-06-13T18:19:30.417Z",
+      "updatedAt": "2026-06-13T18:19:30.417Z",
+      "deletedAt": null,
+      "manager": null,
+      "department": [
+        {
+          "id": "<ID>",
+          "name": "Payroll QA"
+        }
+      ]
+    },
+    "meta": {
+      "cached": false
+    }
+  }
+}

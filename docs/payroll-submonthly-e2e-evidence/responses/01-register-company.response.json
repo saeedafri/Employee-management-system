@@ -1,0 +1,45 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "accessToken": "<ACCESS_TOKEN>",
+      "sessionId": "a880ad9e700e10d4a220fba3",
+      "tenant": {
+        "id": "<ID>",
+        "name": "Submonthly Payroll QA Inc 20260613-234919",
+        "country": null,
+        "currency": null,
+        "timezone": null
+      },
+      "user": {
+        "id": "<ID>",
+        "email": "submonthly.qa.20260613-234919@acme.test",
+        "memberType": "SUPER_ADMIN",
+        "employeeId": null,
+        "employee": null
+      },
+      "permissions": [
+        "employees:read",
+        "employees:write",
+        "employees:delete",
+        "employees:export",
+        "departments:read",
+        "departments:write",
+        "attendance:read",
+        "attendance:write",
+        "leave:read",
+        "leave:request",
+        "leave:approve",
+        "analytics:read",
+        "permissions:manage",
+        "audit:read"
+      ]
+    },
+    "meta": {}
+  },
+  "tenantKey": "submonthly-payroll-qa-inc-20260613-234919-001"
+}

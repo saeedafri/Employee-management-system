@@ -1,10 +1,8 @@
 {
-  "_endpoint": "POST /api/v1/payroll/employees/<EMPLOYEE_ID>/salary",
-  "_note": "annualCtc is in MAJOR currency units (PHP). 1,200,000 PHP / 24 semi-monthly periods = 50,000 gross per cycle. legalEntityId is authoritative for country/currency and work-week.",
   "payGroupId": "<PAY_GROUP_ID>",
   "annualCtc": 1200000,
   "effectiveFrom": "2057-01-01",
-  "legalEntityId": "<PH_LEGAL_ENTITY_ID>",
+  "legalEntityId": "<LEGAL_ENTITY_ID>",
   "country": "PH",
   "currency": "PHP"
 }

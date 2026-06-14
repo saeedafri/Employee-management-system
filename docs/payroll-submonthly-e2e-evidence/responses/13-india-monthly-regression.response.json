@@ -1,0 +1,196 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 200,
+  "data": {
+    "create": {
+      "success": true,
+      "data": {
+        "id": "<ID>",
+        "period": "2057-03",
+        "periodLabel": "March 2057",
+        "startDate": "2057-03-01",
+        "endDate": "2057-03-31",
+        "payDate": "2057-03-31",
+        "paySchedule": "MONTHLY",
+        "type": "REGULAR",
+        "status": "DRAFT",
+        "employeeCount": 0,
+        "totalGross": 0,
+        "totalDeductions": 0,
+        "totalNet": 0,
+        "employerCost": 0,
+        "currency": "INR",
+        "initiatedBy": null,
+        "approvedBy": null,
+        "processedAt": null,
+        "approvedAt": null,
+        "paidAt": null,
+        "published": false,
+        "publishedAt": null,
+        "approvals": [],
+        "createdAt": "2026-06-13T18:19:40.233Z"
+      },
+      "meta": {}
+    },
+    "run": {
+      "id": "<ID>",
+      "period": "2057-03",
+      "periodLabel": "March 2057",
+      "startDate": "2057-03-01",
+      "endDate": "2057-03-31",
+      "payDate": "2057-03-31",
+      "paySchedule": "MONTHLY",
+      "type": "REGULAR",
+      "status": "REVIEW",
+      "employeeCount": 1,
+      "totalGross": 83333.33,
+      "totalDeductions": 10883,
+      "totalNet": 72450.33,
+      "employerCost": 85133.33,
+      "currency": "INR",
+      "initiatedBy": null,
+      "approvedBy": null,
+      "processedAt": "2026-06-13T18:19:40.829Z",
+      "approvedAt": null,
+      "paidAt": null,
+      "published": false,
+      "publishedAt": null,
+      "approvals": [],
+      "createdAt": "2026-06-13T18:19:40.233Z",
+      "summary": {
+        "byDepartment": [
+          {
+            "totalNet": 72450.33,
+            "employeeCount": 1,
+            "departmentName": "Payroll QA"
+          }
+        ],
+        "warnings": []
+      }
+    },
+    "payslipList": {
+      "items": [
+        {
+          "id": "<ID>",
+          "employeeId": "<EMPLOYEE_ID>",
+          "employeeCode": "E0080",
+          "employeeName": "Maria Santos",
+          "departmentName": "Payroll QA",
+          "designation": "Payroll QA Engineer",
+          "currency": "INR",
+          "grossEarnings": 83333.33,
+          "totalDeductions": 10883,
+          "netPay": 72450.33,
+          "workingDays": 22,
+          "presentDays": 22,
+          "lopDays": 0,
+          "status": "PENDING",
+          "hasAdjustments": false
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "limit": 20,
+        "total": 1,
+        "totalPages": 1
+      }
+    },
+    "payslip": {
+      "id": "<ID>",
+      "period": "2057-03",
+      "periodLabel": "March 2057",
+      "currency": "INR",
+      "employee": {
+        "id": "<ID>",
+        "firstName": "Maria",
+        "lastName": "Santos",
+        "employeeCode": "E0080",
+        "designation": "Payroll QA Engineer",
+        "departmentName": "Payroll QA",
+        "panNumber": null
+      },
+      "company": {
+        "name": "Submonthly Payroll QA Inc 20260613-234919",
+        "address": null,
+        "logoUrl": null
+      },
+      "earnings": [
+        {
+          "code": "IN_BASIC",
+          "name": "India Basic Salary",
+          "type": null,
+          "amount": 83333.33,
+          "monthlyAmount": 83333.33,
+          "taxable": true
+        }
+      ],
+      "deductions": [
+        {
+          "code": "PT",
+          "name": "Professional Tax",
+          "type": null,
+          "amount": 200,
+          "monthlyAmount": 200,
+          "taxable": false
+        },
+        {
+          "code": "PF",
+          "name": "Employees' Provident Fund (Employee)",
+          "type": null,
+          "amount": 1800,
+          "monthlyAmount": 1800,
+          "taxable": false
+        },
+        {
+          "code": "TDS",
+          "name": "TDS",
+          "type": null,
+          "amount": 8883,
+          "monthlyAmount": 8883,
+          "taxable": false
+        }
+      ],
+      "employerContributions": [
+        {
+          "code": "PF_ER",
+          "name": "Employees' Provident Fund (Employer)",
+          "type": "EMPLOYER_CONTRIBUTION",
+          "amount": 1800,
+          "monthlyAmount": 1800,
+          "taxable": false
+        }
+      ],
+      "employerCost": 85133.33,
+      "oneTimeAdditions": [],
+      "oneTimeDeductions": [],
+      "grossEarnings": 83333.33,
+      "totalDeductions": 10883,
+      "netPay": 72450.33,
+      "workingDays": 22,
+      "presentDays": 22,
+      "leaveDays": 0,
+      "lopDays": 0,
+      "status": "PENDING",
+      "paymentDate": null,
+      "paymentReference": null,
+      "payrollRunId": "<PAYROLL_RUN_ID>",
+      "documentUrl": null,
+      "generatedAt": "2026-06-13T18:19:40.820Z",
+      "ytd": {
+        "fiscalYear": "2056-57",
+        "monthsElapsed": 4,
+        "grossEarnings": 283333.33,
+        "taxableIncome": 246500,
+        "taxDeducted": 42633,
+        "totalDeductions": 48133,
+        "netPay": 235200.33000000002,
+        "contributions": {
+          "PF": 1800,
+          "PF_ER": 1800
+        }
+      }
+    }
+  }
+}

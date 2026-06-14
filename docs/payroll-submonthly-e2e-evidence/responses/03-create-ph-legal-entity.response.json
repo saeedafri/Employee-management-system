@@ -1,0 +1,26 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "id": "<ID>",
+      "name": "QA Philippines MON-FRI",
+      "country": "PH",
+      "currency": "PHP",
+      "fiscalYearStartMonth": 1,
+      "timezone": "Asia/Manila",
+      "locale": "en-PH",
+      "workWeekPattern": "MON-FRI",
+      "registrationIds": {},
+      "statutoryPackId": "<STATUTORY_PACK_ID>",
+      "payCalendarId": "<PAY_CALENDAR_ID>",
+      "active": true,
+      "createdAt": "2026-06-13T18:19:27.446Z",
+      "updatedAt": "2026-06-13T18:19:27.446Z"
+    },
+    "meta": {}
+  }
+}

@@ -604,3 +604,79 @@ curl -X POST https://employee-management-system-2b9q.onrender.com/api/v1/auth/lo
 15. **Images always WebP** — any image upload endpoint must convert to WebP before storing (use `sharp`). Never store raw JPEG/PNG in Cloudinary.
 16. **Test on Render after deploy** — after every Render deploy, smoke-test the changed endpoints on `https://employee-management-system-2b9q.onrender.com/api/v1` before reporting done.
 17. **Employee-scoped data isolation** — always verify that employee-role users can only see their own data, manager-role can see their team, HR/admin can see all. Test each role separately when adding filtered endpoints.
+
+---
+
+## Mandatory EMS Task Workflow
+
+For every new backend/frontend task, Claude must follow this workflow before editing source code:
+
+1. Use **backend-contract-auditor** to read the request/spec and create a requirement checklist.
+2. Use **Graphify** or **code-review-graph** to inspect impacted code paths before making changes.
+3. Use the domain specialist:
+   - **payroll-engine-specialist** for payroll/tax/statutory/run-engine work.
+   - **api-contract-docs-sync** for route/schema/API_MAPPING/Swagger changes.
+4. Use **data-loss-guard** before any command that could touch DB, migrations, seeds, tests, or DATABASE_URL.
+5. Use **render-safety-guardian** before any Render, deployed API, Vercel, or production/staging action.
+6. Use **Context7** before changing unfamiliar libraries/frameworks.
+7. Use **Superpowers** planning/debugging/review workflow for structured execution.
+8. Use **final-report-enforcer** before reporting completion.
+
+Claude must not say PASS unless the final-report-enforcer confirms:
+- root cause is explained,
+- files changed are listed,
+- docs/API_MAPPING/Swagger are updated if API changed,
+- exact commands are listed,
+- evidence is provided,
+- remaining gaps are honestly stated.
+
+---
+
+## Safety Rules (setup phase and beyond)
+
+**Never touch without explicit user approval:**
+- Production DB (Render PostgreSQL) — no reads or writes
+- Render service — no deploys, env var changes, or restarts
+- Deployed API — no curl to `onrender.com` or `vercel.app`
+- Migrations, seeds, resets — never run these without confirmation that DATABASE_URL is local/test only
+
+**Before any coding task:**
+1. Read the contract/spec fully.
+2. Inspect current implementation (read-only).
+3. Map requirements to files with evidence.
+4. Produce an implementation plan.
+5. Ask for approval if DB/deployed API/testing is needed.
+
+**For implementation:**
+1. Make all related code/docs/schema changes together.
+2. Update `docs/API_MAPPING.md` and `src/plugins/swagger.js` when API shape changes.
+3. Preserve existing behavior unless contract says otherwise.
+4. No hardcoded country or tenant logic.
+
+**For reporting (enforced by final-report-enforcer agent):**
+1. Root cause (file:line evidence).
+2. Files changed (exact paths, what changed, why).
+3. Implementation summary.
+4. Documentation updated (API_MAPPING, Swagger, CLAUDE.md).
+5. Exact commands run and their output.
+6. Exact evidence (test output, API response, diff).
+7. Remaining gaps.
+8. Final verdict: PASS / PARTIAL PASS / FAIL.
+
+**Safety hooks active** — `.claude/hooks/ems-safety-guard.cjs` blocks these commands automatically:
+- `prisma migrate*`, `prisma db push/seed/reset/pull`
+- `npm test`, `npm run test`, `npx mocha`
+- `playwright test`
+- `node prisma/seed*.js`
+- `DELETE FROM`, `TRUNCATE`, `DROP TABLE`
+- Any curl to `onrender.com` or `vercel.app`
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

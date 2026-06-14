@@ -1,0 +1,475 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 200,
+  "data": {
+    "cycles": [
+      {
+        "create": {
+          "success": true,
+          "data": {
+            "id": "<ID>",
+            "period": "2057-W13",
+            "periodLabel": "Apr 1–Apr 14, 2057",
+            "startDate": "2057-04-01",
+            "endDate": "2057-04-14",
+            "payDate": "2057-04-14",
+            "paySchedule": "BIWEEKLY",
+            "type": "REGULAR",
+            "status": "DRAFT",
+            "employeeCount": 0,
+            "totalGross": 0,
+            "totalDeductions": 0,
+            "totalNet": 0,
+            "employerCost": 0,
+            "currency": "PHP",
+            "initiatedBy": null,
+            "approvedBy": null,
+            "processedAt": null,
+            "approvedAt": null,
+            "paidAt": null,
+            "published": false,
+            "publishedAt": null,
+            "approvals": [],
+            "createdAt": "2026-06-13T18:19:42.951Z"
+          },
+          "meta": {}
+        },
+        "run": {
+          "id": "<ID>",
+          "period": "2057-W13",
+          "periodLabel": "Apr 1–Apr 14, 2057",
+          "startDate": "2057-04-01",
+          "endDate": "2057-04-14",
+          "payDate": "2057-04-14",
+          "paySchedule": "BIWEEKLY",
+          "type": "REGULAR",
+          "status": "REVIEW",
+          "employeeCount": 1,
+          "totalGross": 46153.85,
+          "totalDeductions": 6208,
+          "totalNet": 39945.85,
+          "employerCost": 47319.85,
+          "currency": "PHP",
+          "initiatedBy": null,
+          "approvedBy": null,
+          "processedAt": "2026-06-13T18:19:43.321Z",
+          "approvedAt": null,
+          "paidAt": null,
+          "published": false,
+          "publishedAt": null,
+          "approvals": [],
+          "createdAt": "2026-06-13T18:19:42.951Z",
+          "summary": {
+            "byDepartment": [
+              {
+                "totalNet": 39945.85,
+                "employeeCount": 1,
+                "departmentName": "Payroll QA"
+              }
+            ],
+            "warnings": []
+          }
+        },
+        "payslip": {
+          "id": "<ID>",
+          "period": "2057-W13",
+          "periodLabel": "Apr 1–Apr 14, 2057",
+          "currency": "PHP",
+          "employee": {
+            "id": "<ID>",
+            "firstName": "Maria",
+            "lastName": "Santos",
+            "employeeCode": "E0080",
+            "designation": "Payroll QA Engineer",
+            "departmentName": "Payroll QA",
+            "panNumber": null
+          },
+          "company": {
+            "name": "Submonthly Payroll QA Inc 20260613-234919",
+            "address": null,
+            "logoUrl": null
+          },
+          "earnings": [
+            {
+              "code": "BASIC",
+              "name": "Basic Salary",
+              "type": null,
+              "amount": 46153.85,
+              "monthlyAmount": 46153.85,
+              "taxable": true
+            }
+          ],
+          "deductions": [
+            {
+              "code": "SSS_EE",
+              "name": "SSS (Employee)",
+              "type": null,
+              "amount": 583,
+              "monthlyAmount": 583,
+              "taxable": false
+            },
+            {
+              "code": "WITHHOLDING_TAX",
+              "name": "Withholding Tax",
+              "type": null,
+              "amount": 5625,
+              "monthlyAmount": 5625,
+              "taxable": false
+            }
+          ],
+          "employerContributions": [
+            {
+              "code": "SSS_ER",
+              "name": "SSS (Employer)",
+              "type": "EMPLOYER_CONTRIBUTION",
+              "amount": 1166,
+              "monthlyAmount": 1166,
+              "taxable": false
+            }
+          ],
+          "employerCost": 47319.85,
+          "oneTimeAdditions": [],
+          "oneTimeDeductions": [],
+          "grossEarnings": 46153.85,
+          "totalDeductions": 6208,
+          "netPay": 39945.85,
+          "workingDays": 10,
+          "presentDays": 10,
+          "leaveDays": 0,
+          "lopDays": 0,
+          "status": "PENDING",
+          "paymentDate": null,
+          "paymentReference": null,
+          "payrollRunId": "<PAYROLL_RUN_ID>",
+          "documentUrl": null,
+          "generatedAt": "2026-06-13T18:19:43.314Z",
+          "ytd": {
+            "fiscalYear": "2057",
+            "monthsElapsed": 5,
+            "grossEarnings": 329487.18,
+            "taxableIncome": 286654,
+            "taxDeducted": 48258,
+            "totalDeductions": 54341,
+            "netPay": 275146.18,
+            "contributions": {
+              "PF": 1800,
+              "PF_ER": 1800
+            }
+          }
+        }
+      },
+      {
+        "create": {
+          "success": true,
+          "data": {
+            "id": "<ID>",
+            "period": "2057-W15",
+            "periodLabel": "Apr 15–Apr 28, 2057",
+            "startDate": "2057-04-15",
+            "endDate": "2057-04-28",
+            "payDate": "2057-04-28",
+            "paySchedule": "BIWEEKLY",
+            "type": "REGULAR",
+            "status": "DRAFT",
+            "employeeCount": 0,
+            "totalGross": 0,
+            "totalDeductions": 0,
+            "totalNet": 0,
+            "employerCost": 0,
+            "currency": "PHP",
+            "initiatedBy": null,
+            "approvedBy": null,
+            "processedAt": null,
+            "approvedAt": null,
+            "paidAt": null,
+            "published": false,
+            "publishedAt": null,
+            "approvals": [],
+            "createdAt": "2026-06-13T18:19:44.853Z"
+          },
+          "meta": {}
+        },
+        "run": {
+          "id": "<ID>",
+          "period": "2057-W15",
+          "periodLabel": "Apr 15–Apr 28, 2057",
+          "startDate": "2057-04-15",
+          "endDate": "2057-04-28",
+          "payDate": "2057-04-28",
+          "paySchedule": "BIWEEKLY",
+          "type": "REGULAR",
+          "status": "REVIEW",
+          "employeeCount": 1,
+          "totalGross": 46153.85,
+          "totalDeductions": 6208,
+          "totalNet": 39945.85,
+          "employerCost": 47319.85,
+          "currency": "PHP",
+          "initiatedBy": null,
+          "approvedBy": null,
+          "processedAt": "2026-06-13T18:19:45.205Z",
+          "approvedAt": null,
+          "paidAt": null,
+          "published": false,
+          "publishedAt": null,
+          "approvals": [],
+          "createdAt": "2026-06-13T18:19:44.853Z",
+          "summary": {
+            "byDepartment": [
+              {
+                "totalNet": 39945.85,
+                "employeeCount": 1,
+                "departmentName": "Payroll QA"
+              }
+            ],
+            "warnings": []
+          }
+        },
+        "payslip": {
+          "id": "<ID>",
+          "period": "2057-W15",
+          "periodLabel": "Apr 15–Apr 28, 2057",
+          "currency": "PHP",
+          "employee": {
+            "id": "<ID>",
+            "firstName": "Maria",
+            "lastName": "Santos",
+            "employeeCode": "E0080",
+            "designation": "Payroll QA Engineer",
+            "departmentName": "Payroll QA",
+            "panNumber": null
+          },
+          "company": {
+            "name": "Submonthly Payroll QA Inc 20260613-234919",
+            "address": null,
+            "logoUrl": null
+          },
+          "earnings": [
+            {
+              "code": "BASIC",
+              "name": "Basic Salary",
+              "type": null,
+              "amount": 46153.85,
+              "monthlyAmount": 46153.85,
+              "taxable": true
+            }
+          ],
+          "deductions": [
+            {
+              "code": "SSS_EE",
+              "name": "SSS (Employee)",
+              "type": null,
+              "amount": 583,
+              "monthlyAmount": 583,
+              "taxable": false
+            },
+            {
+              "code": "WITHHOLDING_TAX",
+              "name": "Withholding Tax",
+              "type": null,
+              "amount": 5625,
+              "monthlyAmount": 5625,
+              "taxable": false
+            }
+          ],
+          "employerContributions": [
+            {
+              "code": "SSS_ER",
+              "name": "SSS (Employer)",
+              "type": "EMPLOYER_CONTRIBUTION",
+              "amount": 1166,
+              "monthlyAmount": 1166,
+              "taxable": false
+            }
+          ],
+          "employerCost": 47319.85,
+          "oneTimeAdditions": [],
+          "oneTimeDeductions": [],
+          "grossEarnings": 46153.85,
+          "totalDeductions": 6208,
+          "netPay": 39945.85,
+          "workingDays": 10,
+          "presentDays": 10,
+          "leaveDays": 0,
+          "lopDays": 0,
+          "status": "PENDING",
+          "paymentDate": null,
+          "paymentReference": null,
+          "payrollRunId": "<PAYROLL_RUN_ID>",
+          "documentUrl": null,
+          "generatedAt": "2026-06-13T18:19:45.199Z",
+          "ytd": {
+            "fiscalYear": "2057",
+            "monthsElapsed": 6,
+            "grossEarnings": 375641.02999999997,
+            "taxableIncome": 326808,
+            "taxDeducted": 53883,
+            "totalDeductions": 60549,
+            "netPay": 315092.02999999997,
+            "contributions": {
+              "PF": 1800,
+              "PF_ER": 1800
+            }
+          }
+        }
+      },
+      {
+        "create": {
+          "success": true,
+          "data": {
+            "id": "<ID>",
+            "period": "2057-W17",
+            "periodLabel": "Apr 29–May 12, 2057",
+            "startDate": "2057-04-29",
+            "endDate": "2057-05-12",
+            "payDate": "2057-05-12",
+            "paySchedule": "BIWEEKLY",
+            "type": "REGULAR",
+            "status": "DRAFT",
+            "employeeCount": 0,
+            "totalGross": 0,
+            "totalDeductions": 0,
+            "totalNet": 0,
+            "employerCost": 0,
+            "currency": "PHP",
+            "initiatedBy": null,
+            "approvedBy": null,
+            "processedAt": null,
+            "approvedAt": null,
+            "paidAt": null,
+            "published": false,
+            "publishedAt": null,
+            "approvals": [],
+            "createdAt": "2026-06-13T18:19:46.944Z"
+          },
+          "meta": {}
+        },
+        "run": {
+          "id": "<ID>",
+          "period": "2057-W17",
+          "periodLabel": "Apr 29–May 12, 2057",
+          "startDate": "2057-04-29",
+          "endDate": "2057-05-12",
+          "payDate": "2057-05-12",
+          "paySchedule": "BIWEEKLY",
+          "type": "REGULAR",
+          "status": "REVIEW",
+          "employeeCount": 1,
+          "totalGross": 46153.85,
+          "totalDeductions": 6209,
+          "totalNet": 39944.85,
+          "employerCost": 47321.85,
+          "currency": "PHP",
+          "initiatedBy": null,
+          "approvedBy": null,
+          "processedAt": "2026-06-13T18:19:47.315Z",
+          "approvedAt": null,
+          "paidAt": null,
+          "published": false,
+          "publishedAt": null,
+          "approvals": [],
+          "createdAt": "2026-06-13T18:19:46.944Z",
+          "summary": {
+            "byDepartment": [
+              {
+                "totalNet": 39944.85,
+                "employeeCount": 1,
+                "departmentName": "Payroll QA"
+              }
+            ],
+            "warnings": []
+          }
+        },
+        "payslip": {
+          "id": "<ID>",
+          "period": "2057-W17",
+          "periodLabel": "Apr 29–May 12, 2057",
+          "currency": "PHP",
+          "employee": {
+            "id": "<ID>",
+            "firstName": "Maria",
+            "lastName": "Santos",
+            "employeeCode": "E0080",
+            "designation": "Payroll QA Engineer",
+            "departmentName": "Payroll QA",
+            "panNumber": null
+          },
+          "company": {
+            "name": "Submonthly Payroll QA Inc 20260613-234919",
+            "address": null,
+            "logoUrl": null
+          },
+          "earnings": [
+            {
+              "code": "BASIC",
+              "name": "Basic Salary",
+              "type": null,
+              "amount": 46153.85,
+              "monthlyAmount": 46153.85,
+              "taxable": true
+            }
+          ],
+          "deductions": [
+            {
+              "code": "SSS_EE",
+              "name": "SSS (Employee)",
+              "type": null,
+              "amount": 584,
+              "monthlyAmount": 584,
+              "taxable": false
+            },
+            {
+              "code": "WITHHOLDING_TAX",
+              "name": "Withholding Tax",
+              "type": null,
+              "amount": 5625,
+              "monthlyAmount": 5625,
+              "taxable": false
+            }
+          ],
+          "employerContributions": [
+            {
+              "code": "SSS_ER",
+              "name": "SSS (Employer)",
+              "type": "EMPLOYER_CONTRIBUTION",
+              "amount": 1168,
+              "monthlyAmount": 1168,
+              "taxable": false
+            }
+          ],
+          "employerCost": 47321.85,
+          "oneTimeAdditions": [],
+          "oneTimeDeductions": [],
+          "grossEarnings": 46153.85,
+          "totalDeductions": 6209,
+          "netPay": 39944.85,
+          "workingDays": 10,
+          "presentDays": 10,
+          "leaveDays": 0,
+          "lopDays": 0,
+          "status": "PENDING",
+          "paymentDate": null,
+          "paymentReference": null,
+          "payrollRunId": "<PAYROLL_RUN_ID>",
+          "documentUrl": null,
+          "generatedAt": "2026-06-13T18:19:47.309Z",
+          "ytd": {
+            "fiscalYear": "2057",
+            "monthsElapsed": 7,
+            "grossEarnings": 421794.87999999995,
+            "taxableIncome": 366962,
+            "taxDeducted": 59508,
+            "totalDeductions": 66758,
+            "netPay": 355036.87999999995,
+            "contributions": {
+              "PF": 1800,
+              "PF_ER": 1800
+            }
+          }
+        }
+      }
+    ]
+  }
+}

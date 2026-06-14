@@ -1,0 +1,8 @@
+{
+  "payGroupId": "<PAY_GROUP_ID>",
+  "annualCtc": 1200000,
+  "effectiveFrom": "2057-04-01",
+  "legalEntityId": "<LEGAL_ENTITY_ID>",
+  "country": "PH",
+  "currency": "PHP"
+}

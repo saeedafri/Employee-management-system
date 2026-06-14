@@ -1,0 +1,188 @@
+{
+  "_evidenceStatus": "ACTUAL_RENDER_QA_TENANT_RESPONSE",
+  "_tenantScope": "Submonthly Payroll QA Inc 20260613-234919",
+  "_sanitized": true,
+  "status": 200,
+  "data": {
+    "create": {
+      "success": true,
+      "data": {
+        "id": "<ID>",
+        "period": "2057-02",
+        "periodLabel": "February 2057",
+        "startDate": "2057-02-01",
+        "endDate": "2057-02-28",
+        "payDate": "2057-02-28",
+        "paySchedule": "MONTHLY",
+        "type": "REGULAR",
+        "status": "DRAFT",
+        "employeeCount": 0,
+        "totalGross": 0,
+        "totalDeductions": 0,
+        "totalNet": 0,
+        "employerCost": 0,
+        "currency": "PHP",
+        "initiatedBy": null,
+        "approvedBy": null,
+        "processedAt": null,
+        "approvedAt": null,
+        "paidAt": null,
+        "published": false,
+        "publishedAt": null,
+        "approvals": [],
+        "createdAt": "2026-06-13T18:19:37.604Z"
+      },
+      "meta": {}
+    },
+    "run": {
+      "id": "<ID>",
+      "period": "2057-02",
+      "periodLabel": "February 2057",
+      "startDate": "2057-02-01",
+      "endDate": "2057-02-28",
+      "payDate": "2057-02-28",
+      "paySchedule": "MONTHLY",
+      "type": "REGULAR",
+      "status": "REVIEW",
+      "employeeCount": 1,
+      "totalGross": 100000,
+      "totalDeductions": 18625,
+      "totalNet": 81375,
+      "employerCost": 103500,
+      "currency": "PHP",
+      "initiatedBy": null,
+      "approvedBy": null,
+      "processedAt": "2026-06-13T18:19:38.123Z",
+      "approvedAt": null,
+      "paidAt": null,
+      "published": false,
+      "publishedAt": null,
+      "approvals": [],
+      "createdAt": "2026-06-13T18:19:37.604Z",
+      "summary": {
+        "byDepartment": [
+          {
+            "totalNet": 81375,
+            "employeeCount": 1,
+            "departmentName": "Payroll QA"
+          }
+        ],
+        "warnings": []
+      }
+    },
+    "payslipList": {
+      "items": [
+        {
+          "id": "<ID>",
+          "employeeId": "<EMPLOYEE_ID>",
+          "employeeCode": "E0080",
+          "employeeName": "Maria Santos",
+          "departmentName": "Payroll QA",
+          "designation": "Payroll QA Engineer",
+          "currency": "PHP",
+          "grossEarnings": 100000,
+          "totalDeductions": 18625,
+          "netPay": 81375,
+          "workingDays": 20,
+          "presentDays": 20,
+          "lopDays": 0,
+          "status": "PENDING",
+          "hasAdjustments": false
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "limit": 20,
+        "total": 1,
+        "totalPages": 1
+      }
+    },
+    "payslip": {
+      "id": "<ID>",
+      "period": "2057-02",
+      "periodLabel": "February 2057",
+      "currency": "PHP",
+      "employee": {
+        "id": "<ID>",
+        "firstName": "Maria",
+        "lastName": "Santos",
+        "employeeCode": "E0080",
+        "designation": "Payroll QA Engineer",
+        "departmentName": "Payroll QA",
+        "panNumber": null
+      },
+      "company": {
+        "name": "Submonthly Payroll QA Inc 20260613-234919",
+        "address": null,
+        "logoUrl": null
+      },
+      "earnings": [
+        {
+          "code": "BASIC",
+          "name": "Basic Salary",
+          "type": null,
+          "amount": 100000,
+          "monthlyAmount": 100000,
+          "taxable": true
+        }
+      ],
+      "deductions": [
+        {
+          "code": "SSS_EE",
+          "name": "SSS (Employee)",
+          "type": null,
+          "amount": 1750,
+          "monthlyAmount": 1750,
+          "taxable": false
+        },
+        {
+          "code": "WITHHOLDING_TAX",
+          "name": "Withholding Tax",
+          "type": null,
+          "amount": 16875,
+          "monthlyAmount": 16875,
+          "taxable": false
+        }
+      ],
+      "employerContributions": [
+        {
+          "code": "SSS_ER",
+          "name": "SSS (Employer)",
+          "type": "EMPLOYER_CONTRIBUTION",
+          "amount": 3500,
+          "monthlyAmount": 3500,
+          "taxable": false
+        }
+      ],
+      "employerCost": 103500,
+      "oneTimeAdditions": [],
+      "oneTimeDeductions": [],
+      "grossEarnings": 100000,
+      "totalDeductions": 18625,
+      "netPay": 81375,
+      "workingDays": 20,
+      "presentDays": 20,
+      "leaveDays": 0,
+      "lopDays": 0,
+      "status": "PENDING",
+      "paymentDate": null,
+      "paymentReference": null,
+      "payrollRunId": "<PAYROLL_RUN_ID>",
+      "documentUrl": null,
+      "generatedAt": "2026-06-13T18:19:38.054Z",
+      "ytd": {
+        "fiscalYear": "2057",
+        "monthsElapsed": 3,
+        "grossEarnings": 200000,
+        "taxableIncome": 174000,
+        "taxDeducted": 33750,
+        "totalDeductions": 37250,
+        "netPay": 162750,
+        "contributions": {
+          "PF": 0,
+          "PF_ER": 0
+        }
+      }
+    }
+  }
+}

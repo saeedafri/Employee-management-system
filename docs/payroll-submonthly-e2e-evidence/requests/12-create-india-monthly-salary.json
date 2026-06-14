@@ -1,0 +1,8 @@
+{
+  "payGroupId": "<PAY_GROUP_ID>",
+  "annualCtc": 1000000,
+  "effectiveFrom": "2057-03-01",
+  "legalEntityId": "<LEGAL_ENTITY_ID>",
+  "country": "IN",
+  "currency": "INR"
+}

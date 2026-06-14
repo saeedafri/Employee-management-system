@@ -1,10 +1,11 @@
 {
-  "_endpoint": "POST /api/v1/payroll/runs",
-  "_note": "Scenario D. BIWEEKLY MUST send explicit startDate+endDate+paySchedule — a YYYY-Wnn string cannot encode a 14-day cycle. This cycle is one of three biweekly cycles starting in Jan 2057 (2057-01-01, -15, -29).",
-  "period": "2057-W05",
-  "startDate": "2057-01-29",
-  "endDate": "2057-02-11",
-  "payDate": "2057-02-11",
+  "period": "2057-W13",
+  "startDate": "2057-04-01",
+  "endDate": "2057-04-14",
+  "payDate": "2057-04-14",
   "paySchedule": "BIWEEKLY",
-  "type": "REGULAR"
+  "type": "REGULAR",
+  "payGroupIds": [
+    "<PAY_GROUP_ID>"
+  ]
 }
