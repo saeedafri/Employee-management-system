@@ -46,6 +46,11 @@ export function normalizeTaxRegimeForComputation(regime, currency) {
         amount: moneyMinorToMajor(c.amount ?? 0, currency),
       }))
       : [],
+    // Surcharge may be a scalar rate (legacy) or an array of {thresholdAnnual, rate} bands
+    // (FE parity). Normalize band thresholds (minor→major); leave a scalar untouched.
+    surcharge: Array.isArray(regime.surcharge)
+      ? regime.surcharge.map((s) => ({ ...s, thresholdAnnual: moneyMinorToMajor(s.thresholdAnnual ?? 0, currency) }))
+      : regime.surcharge,
   };
 }
 
@@ -219,8 +224,19 @@ export function computeIncomeTaxFromRegime(annualGross, taxRegime, currency = 'I
 
   let tax = computeSlabTax(taxableIncome, regime.slabs);
 
-  const surchargeRate = Number(regime.surcharge ?? 0);
-  if (surchargeRate > 0) tax += (surchargeRate / 100) * tax;
+  // Surcharge: FE parity (formula.utils.computeRegimeTax). An array selects the highest
+  // applicable band by thresholdAnnual (compared against the pre-standard-deduction annual,
+  // as the FE does); a scalar applies a flat rate (legacy packs — byte-identical).
+  const sc = regime.surcharge;
+  if (Array.isArray(sc)) {
+    const band = sc
+      .filter((s) => annualGross > Number(s.thresholdAnnual ?? 0))
+      .sort((a, b) => Number(b.thresholdAnnual ?? 0) - Number(a.thresholdAnnual ?? 0))[0];
+    if (band && Number(band.rate) > 0) tax += (Number(band.rate) / 100) * tax;
+  } else {
+    const surchargeRate = Number(sc ?? 0);
+    if (surchargeRate > 0) tax += (surchargeRate / 100) * tax;
+  }
 
   // cess may be stored as number (rate) or as {rate} object — handle both
   const rawCess = regime.cess;
