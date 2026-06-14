@@ -443,18 +443,6 @@ function normalizePayslipLine(l) {
   };
 }
 
-function buildEmployerContributions(earnings, deductions) {
-  const basicLine = (earnings ?? []).find((e) => e.code === 'BASIC');
-  const basicAmt = Number(basicLine?.amount ?? basicLine?.monthlyAmount ?? 0);
-  const pfLine = (deductions ?? []).find((d) => ['PF', 'PF_EMPLOYEE'].includes(d.code));
-  const pfAmt = Number(pfLine?.amount ?? pfLine?.monthlyAmount ?? Math.round(basicAmt * 0.12));
-  const esiAmt = Math.round(basicAmt * 0.0325);
-  return [
-    { code: 'PF_ER', name: 'Employer PF', type: 'EMPLOYER_CONTRIBUTION', amount: pfAmt, monthlyAmount: pfAmt, taxable: false },
-    { code: 'ESI_ER', name: 'Employer ESI', type: 'EMPLOYER_CONTRIBUTION', amount: esiAmt, monthlyAmount: esiAmt, taxable: false },
-  ];
-}
-
 async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod, fiscalYearStartMonth) {
   // Resolve fiscalYearStartMonth from salary's legal entity if not provided
   let fyStartMonth = fiscalYearStartMonth;
@@ -530,9 +518,12 @@ function fmtPayslipDetail(ps, extras = {}) {
   const earnings = (ps.earningsJson ?? []).map(normalizePayslipLine);
   const deductions = (ps.deductionsJson ?? []).map(normalizePayslipLine);
   const storedEmployer = (ps.employerContributionsJson ?? []).map(normalizePayslipLine);
+  // Employer contribution lines come ONLY from the resolved country pack's contribution
+  // schemes (stored at calculate time). A pack with no schemes → empty list. Never inject
+  // India PF_ER/ESI_ER defaults, which would leak onto non-India (e.g. ZA, PH) payslips.
   const employerContributions = storedEmployer.length
     ? storedEmployer
-    : (extras.employerContributions ?? buildEmployerContributions(earnings, deductions));
+    : (extras.employerContributions ?? []);
   const employerCost = Number(ps.grossEarnings) + sumEmployerContributions(employerContributions);
   return {
     id: ps.id, period: ps.period,
@@ -1022,6 +1013,11 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         lastCycle = c.isLast;
       }
       const ctcPeriod = Number(sal.annualCtc) / ppy;
+      // Per-cycle share for FLAT components. FLAT values are authored as MONTHLY amounts;
+      // for sub-monthly schedules each cycle must pay only its share of the month. Data-driven
+      // from periods-per-year (no frequency branches): MONTHLY ppy=12 → 1 (unchanged, byte-identical);
+      // SEMI_MONTHLY ppy=24 → 0.5; BIWEEKLY ppy=26 → 12/26; WEEKLY ppy=52 → 12/52.
+      const periodFactor = 12 / ppy;
       const sorted = topologicalSort(pgComps);
       const computed = { CTC: ctcPeriod };
       const earningsArr = [], deductionsArr = [];
@@ -1031,7 +1027,8 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         if (comp.type === 'EMPLOYER_CONTRIBUTION' && schemeEmployerCodes.has(comp.code)) continue;
         let amount = 0;
         if (comp.calculationType === 'FLAT') {
-          amount = comp.value || 0;
+          // FLAT is a monthly figure → scale to the cycle's share (periodFactor=1 for MONTHLY).
+          amount = (comp.value || 0) * periodFactor;
         } else if (comp.calculationType === 'PERCENTAGE') {
           amount = ((comp.value || 0) / 100) * (computed[comp.basisCode] || 0);
         } else if (comp.calculationType === 'FORMULA') {

@@ -2966,6 +2966,10 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | PATCH | `/payroll/runs/:id/mark-paid` | HR,SA | 200. APPROVED→PAID. Body: `{paidAt, paymentReference}`. Updates all payslips to PAID |
 | POST | `/payroll/runs/:id/cancel` | HR_ADMIN, SUPER_ADMIN | 200. Cannot cancel PAID runs (400 INVALID_STATUS). Body: `{reason}` |
 
+> **Sub-monthly pay (fixed 2026-06-14).** For SEMI_MONTHLY/BIWEEKLY/WEEKLY runs, every earning — **including `FLAT` components** — is paid as its per-cycle share of the monthly amount, computed data-driven as `monthly × 12 / periodsPerYear` (MONTHLY=1, SEMI_MONTHLY=½, BIWEEKLY=12/26, WEEKLY=12/52). A ₱100,000/month FLAT base pays ₱50,000 per semi-monthly cycle (was ₱100,000 — overpay). Monthly runs are byte-identical (factor = 1). Income tax is withheld on the **monthly** total and split across the month's cycles (last cycle absorbs the remainder), so H1+H2 sum to the monthly figure — not 2×.
+> **Statutory apportionment.** Monthly-capped contributions (`apportionmentMode: MONTHLY_TOTAL`) apportion using the run's **pay group / pay calendar** frequency — independent of whether the salary carries `legalEntityId`. No silent doubling.
+> **Run header `currency`.** A run spanning multiple pay-group currencies returns the non-ISO sentinel `currency: "MULTI"` on the run header; per-payslip `currency` is always a real ISO code. Clients must not feed `"MULTI"` to `Intl.NumberFormat({style:'currency'})`.
+
 ### Run Payslips
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
