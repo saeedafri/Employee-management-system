@@ -11,14 +11,24 @@ export async function getProjects(request, reply) {
 }
 
 export async function createProject(request, reply) {
-  const project = await service.createProject(request.tenant.id, request.body);
-  return reply.code(201).send(successResponse(project));
+  try {
+    const project = await service.createProject(request.tenant.id, request.body);
+    return reply.code(201).send(successResponse(project));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
 }
 
 export async function updateProject(request, reply) {
-  const project = await service.updateProject(request.tenant.id, request.params.id, request.body);
-  if (!project) return reply.code(404).send(errorResponse('NOT_FOUND', 'Project not found', {}, request.id));
-  return reply.send(successResponse(project));
+  try {
+    const project = await service.updateProject(request.tenant.id, request.params.id, request.body);
+    if (!project) return reply.code(404).send(errorResponse('NOT_FOUND', 'Project not found', {}, request.id));
+    return reply.send(successResponse(project));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
 }
 
 export async function deleteProject(request, reply) {
@@ -92,9 +102,14 @@ export async function updateEntry(request, reply) {
 }
 
 export async function deleteEntry(request, reply) {
-  const result = await service.deleteEntry(request.tenant.id, request.params.id);
-  if (!result) return reply.code(404).send(errorResponse('NOT_FOUND', 'Entry not found', {}, request.id));
-  return reply.send(successResponse({ id: request.params.id }));
+  try {
+    const result = await service.deleteEntry(request.tenant.id, request.params.id);
+    if (!result) return reply.code(404).send(errorResponse('NOT_FOUND', 'Entry not found', {}, request.id));
+    return reply.send(successResponse({ id: request.params.id }));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
 }
 
 export async function submitTimesheet(request, reply) {

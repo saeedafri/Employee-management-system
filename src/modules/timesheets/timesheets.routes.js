@@ -375,7 +375,7 @@ export default async function timesheetsRoutes(fastify) {
       body: {
         type: 'object',
         required: ['comment'],
-        properties: { comment: { type: 'string' } },
+        properties: { comment: { type: 'string', minLength: 1, description: 'Required reason for rejection' } },
       },
       response: { 200: obj },
     },

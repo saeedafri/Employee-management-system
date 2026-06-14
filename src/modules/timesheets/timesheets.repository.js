@@ -20,6 +20,19 @@ export async function getProjectById(tenantId, id) {
   return prisma.timesheetProject.findFirst({ where: { id, tenantId }, include: { tasks: true } });
 }
 
+// Find a project that already uses `code` (case-insensitive, matching the FE mock's
+// toLowerCase compare). `exceptId` excludes the project being updated. Drives the
+// 409 DUPLICATE_CODE the UI's ProjectDrawer branches on.
+export async function findProjectByCode(tenantId, code, exceptId = null) {
+  return prisma.timesheetProject.findFirst({
+    where: {
+      tenantId,
+      code: { equals: code, mode: 'insensitive' },
+      ...(exceptId ? { id: { not: exceptId } } : {}),
+    },
+  });
+}
+
 export async function createProject(tenantId, data) {
   const { memberIds = [], ...rest } = data;
   return prisma.timesheetProject.create({
@@ -45,8 +58,14 @@ export async function updateProject(tenantId, id, data) {
 export async function archiveOrDeleteProject(tenantId, id) {
   const existing = await getProjectById(tenantId, id);
   if (!existing) return null;
-  const entryCount = await prisma.timeEntry.count({ where: { projectId: id } });
-  if (entryCount > 0) {
+  // Archive (preserve history) when the project has tasks OR logged entries — matches
+  // the MSW rule (archive if it has tasks) and is strictly safer (never hard-deletes a
+  // project that still has time logged against it). Hard-delete only a truly empty one.
+  const [taskCount, entryCount] = await Promise.all([
+    prisma.timesheetTask.count({ where: { projectId: id } }),
+    prisma.timeEntry.count({ where: { projectId: id } }),
+  ]);
+  if (taskCount > 0 || entryCount > 0) {
     return prisma.timesheetProject.update({ where: { id }, data: { status: 'ARCHIVED' } });
   }
   return prisma.timesheetProject.delete({ where: { id } });
@@ -56,6 +75,10 @@ export async function archiveOrDeleteProject(tenantId, id) {
 
 export async function getTasksByProject(tenantId, projectId) {
   return prisma.timesheetTask.findMany({ where: { tenantId, projectId }, orderBy: { createdAt: 'asc' } });
+}
+
+export async function getTaskById(tenantId, id) {
+  return prisma.timesheetTask.findFirst({ where: { id, tenantId } });
 }
 
 export async function createTask(tenantId, projectId, data) {
@@ -121,6 +144,10 @@ export async function getPendingTimesheets(tenantId, status, _managerId) {
   const sheets = await prisma.timesheet.findMany({
     where,
     orderBy: { submittedAt: 'desc' },
+    // Include entries so fmtSheet can compute billableHours (and return entries[]) for each
+    // row — matches the FE approvals engine (recompute over entries). Without this the
+    // approvals list reported billableHours: 0 for every sheet.
+    include: { entries: true },
   });
   return sheets;
 }
@@ -143,11 +170,21 @@ export async function decideTimesheet(id, status, decidedBy, comment) {
 
 export async function recalcTimesheetTotal(timesheetId) {
   const entries = await prisma.timeEntry.findMany({ where: { timesheetId } });
-  const total = entries.reduce((s, e) => s + e.hours, 0);
+  // round2 to match the FE rollup engine (src/mocks/handlers/timesheets.ts recompute()) —
+  // an unrounded Σ leaks float artifacts (e.g. 23.999998) into totalHours and overtime.
+  const total = round2(entries.reduce((s, e) => s + e.hours, 0));
   return prisma.timesheet.update({ where: { id: timesheetId }, data: { totalHours: total } });
 }
 
 // ── Time Entries ──────────────────────────────────────────────────────────────
+
+// An entry with its parent timesheet's status — for the locked-week edit/delete guard.
+export async function getEntryById(tenantId, id) {
+  return prisma.timeEntry.findFirst({
+    where: { id, tenantId },
+    include: { timesheet: { select: { status: true } } },
+  });
+}
 
 export async function createEntry(tenantId, timesheetId, employeeId, data) {
   const entry = await prisma.timeEntry.create({
@@ -241,11 +278,19 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
     const emp = empById[row.employeeId];
     return {
       ...row,
+      hours: round2(row.hours),
+      billableHours: round2(row.billableHours),
       employeeName: emp ? `${emp.firstName} ${emp.lastName}`.trim() : 'Unknown',
       employeeCode: emp?.employeeCode ?? '',
       utilizationPct: row.hours > 0 ? Math.round((row.billableHours / row.hours) * 100) : 0,
     };
-  });
+  // round2 + sort-by-hours-desc to match the FE summary engine
+  // (src/mocks/handlers/timesheets.ts summary handler).
+  }).sort((a, b) => b.hours - a.hours);
+
+  const byProject = Object.values(projectMap)
+    .map(p => ({ ...p, hours: round2(p.hours), billableHours: round2(p.billableHours) }))
+    .sort((a, b) => b.hours - a.hours);
 
   return {
     totalHours,
@@ -253,7 +298,7 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
     nonBillableHours,
     overtimeHours,
     utilizationPct: totalHours > 0 ? Math.round((billableHours / totalHours) * 100) : 0,
-    byProject: Object.values(projectMap),
+    byProject,
     byEmployee,
   };
 }

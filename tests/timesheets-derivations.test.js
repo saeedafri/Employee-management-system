@@ -20,6 +20,7 @@ import {
   shouldRemindToday,
   needsEmployeeReminder,
   tenantToday,
+  isEditableWeek,
 } from '../src/modules/timesheets/timesheets.derive.js';
 
 // ── Bug #1: overtimeHours = Σ max(0, weekTotal − standardHours) ──────────────
@@ -163,8 +164,19 @@ test('needsEmployeeReminder: REJECTED always, DRAFT only with hours, never SUBMI
   assert.equal(needsEmployeeReminder(null), false);
 });
 
-// ── round2 helper ────────────────────────────────────────────────────────────
+// ── isEditableWeek (locked-week guard) ───────────────────────────────────────
+test('isEditableWeek: DRAFT and REJECTED are editable; SUBMITTED/APPROVED are locked', () => {
+  assert.equal(isEditableWeek('DRAFT'), true);
+  assert.equal(isEditableWeek('REJECTED'), true);
+  assert.equal(isEditableWeek('SUBMITTED'), false);
+  assert.equal(isEditableWeek('APPROVED'), false);
+  assert.equal(isEditableWeek(undefined), false);
+});
+
+// ── round2 helper (must match FE engine exactly: Math.round(n*100)/100) ───────
 test('round2: handles binary float drift', () => {
   assert.equal(round2(0.1 + 0.2), 0.3);
   assert.equal(round2(2643.5), 2643.5);
+  assert.equal(round2(23.999998), 24);
+  assert.equal(round2(1284), 1284);
 });

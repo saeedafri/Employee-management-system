@@ -2,8 +2,15 @@
 // (see docs/backendtimesheetbug.md). Extracted so the derivation logic can be
 // unit-tested without a database (tests/timesheets-derivations.test.js).
 
-// Round to 2 decimal places (hours-safe).
-export const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+// Round to 2 decimal places (hours-safe). Matches the FE rollup engine exactly
+// (src/mocks/handlers/timesheets.ts round2 = Math.round(n * 100) / 100).
+export const round2 = (n) => Math.round(n * 100) / 100;
+
+// A week is only editable (entries add/edit/delete, submit, copy-target) in these
+// states — matches the MSW EDITABLE_STATUSES. SUBMITTED/APPROVED are locked.
+export function isEditableWeek(status) {
+  return status === 'DRAFT' || status === 'REJECTED';
+}
 
 // Bug #1 — overtimeHours is DERIVED, never stored: per week max(0, totalHours -
 // standardHours), summed over every in-scope timesheet. Always a finite number

@@ -6,6 +6,8 @@ import {
   priorWeekStartISO,
   shouldRemindToday,
   needsEmployeeReminder,
+  isEditableWeek,
+  round2,
 } from './timesheets.derive.js';
 import {
   createTimesheetReminderNotifications,
@@ -31,8 +33,9 @@ function fmtProject(p) {
 function fmtSheet(sheet, settings, employeeName) {
   const standardHours = settings?.standardWeeklyHours ?? 40;
   const totalHours = sheet.totalHours ?? 0;
-  const overtimeHours = Math.max(0, totalHours - standardHours);
-  const billableHours = (sheet.entries || []).filter(e => e.billable).reduce((s, e) => s + e.hours, 0);
+  // round2 to match the FE recompute() engine exactly (src/mocks/handlers/timesheets.ts).
+  const overtimeHours = round2(Math.max(0, totalHours - standardHours));
+  const billableHours = round2((sheet.entries || []).filter(e => e.billable).reduce((s, e) => s + e.hours, 0));
 
   return {
     id: sheet.id,
@@ -87,12 +90,27 @@ export async function getProjects(tenantId, memberId) {
   return projects.map(fmtProject);
 }
 
+// 409 DUPLICATE_CODE when another project already uses this code (case-insensitive),
+// matching the FE mock. The UI's ProjectDrawer branches on HTTP 409.
+async function assertUniqueCode(tenantId, code, exceptId = null) {
+  if (!code) return;
+  const clash = await repo.findProjectByCode(tenantId, code, exceptId);
+  if (clash) {
+    const err = new Error('Project code already exists');
+    err.statusCode = 409;
+    err.code = 'DUPLICATE_CODE';
+    throw err;
+  }
+}
+
 export async function createProject(tenantId, data) {
+  await assertUniqueCode(tenantId, data.code, null);
   const p = await repo.createProject(tenantId, data);
   return fmtProject(p);
 }
 
 export async function updateProject(tenantId, id, data) {
+  if (data.code) await assertUniqueCode(tenantId, data.code, id);
   const p = await repo.updateProject(tenantId, id, data);
   if (!p) return null;
   return fmtProject(p);
@@ -121,9 +139,14 @@ export async function updateTask(tenantId, id, data) {
 // ── Timesheets ────────────────────────────────────────────────────────────────
 
 export async function getTimesheet(tenantId, employeeId, weekStart) {
-  const settings = await repo.getSettings(tenantId);
-  const sheet = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
-  return fmtSheet(sheet, settings);
+  const [settings, sheet, emp] = await Promise.all([
+    repo.getSettings(tenantId),
+    repo.getOrCreateTimesheet(tenantId, employeeId, weekStart),
+    prisma.employee.findUnique({ where: { id: employeeId }, select: { firstName: true, lastName: true } }),
+  ]);
+  // Populate employeeName to match the FE mock (which always returns the name).
+  const name = emp ? `${emp.firstName} ${emp.lastName}`.trim() : '';
+  return fmtSheet(sheet, settings, name);
 }
 
 export async function createEntry(tenantId, employeeId, body) {
@@ -132,14 +155,19 @@ export async function createEntry(tenantId, employeeId, body) {
   // empty/absent task never reaches Prisma as a bad FK (was a live 500). Domain G.2 contract.
   normalizeTaskId(entryData);
   await assertTaskAllowed(tenantId, entryData.taskId);
-  const sheet = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
-
-  if (sheet.status === 'SUBMITTED' || sheet.status === 'APPROVED') {
-    const err = new Error('Timesheet is already submitted or approved');
-    err.statusCode = 422;
-    err.code = 'TIMESHEET_LOCKED';
-    throw err;
+  // Match the FE rollup engine: when billable is omitted, infer it from the task, then the
+  // project, then the tenant's billableDefault (src/mocks/handlers/timesheets.ts createEntry).
+  // The schema default of true is wrong for non-billable projects/tasks.
+  if (entryData.billable === undefined || entryData.billable === null) {
+    const [task, project, settings] = await Promise.all([
+      entryData.taskId ? repo.getTaskById(tenantId, entryData.taskId) : null,
+      repo.getProjectById(tenantId, entryData.projectId),
+      repo.getSettings(tenantId),
+    ]);
+    entryData.billable = task?.billable ?? project?.billable ?? settings?.billableDefault ?? true;
   }
+  const sheet = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
+  assertWeekEditable(sheet.status);
 
   const entry = await repo.createEntry(tenantId, sheet.id, employeeId, entryData);
   return entry;
@@ -149,9 +177,23 @@ export async function updateEntry(tenantId, id, data) {
   normalizeTaskId(data);
   // Only enforce when the caller actually touches taskId (partial PATCH may omit it).
   if ('taskId' in data) await assertTaskAllowed(tenantId, data.taskId);
+  const existing = await repo.getEntryById(tenantId, id);
+  if (!existing) return null;
+  assertWeekEditable(existing.timesheet?.status); // can't edit a submitted/approved week
   const entry = await repo.updateEntry(tenantId, id, data);
   if (!entry) return null;
   return entry;
+}
+
+// 422 WEEK_LOCKED when the week isn't DRAFT/REJECTED — matches the FE mock so entries
+// can't be added/edited/deleted on a submitted or approved timesheet.
+function assertWeekEditable(status) {
+  if (status && !isEditableWeek(status)) {
+    const err = new Error('This week is submitted and cannot be edited.');
+    err.statusCode = 422;
+    err.code = 'WEEK_LOCKED';
+    throw err;
+  }
 }
 
 // M2 — when the tenant has requireTaskOnEntry=true, an entry MUST carry a taskId.
@@ -167,6 +209,9 @@ async function assertTaskAllowed(tenantId, taskId) {
 }
 
 export async function deleteEntry(tenantId, id) {
+  const existing = await repo.getEntryById(tenantId, id);
+  if (!existing) return null;
+  assertWeekEditable(existing.timesheet?.status); // can't delete from a submitted/approved week
   return repo.deleteEntry(tenantId, id);
 }
 
@@ -175,10 +220,10 @@ export async function submitTimesheet(tenantId, id, employeeId) {
   if (!sheet) return null;
   if (sheet.employeeId !== employeeId) return null;
 
-  if (sheet.status !== 'DRAFT' && sheet.status !== 'REJECTED') {
-    const err = new Error('Timesheet cannot be submitted in its current status');
+  if (!isEditableWeek(sheet.status)) {
+    const err = new Error('This week has already been submitted.');
     err.statusCode = 422;
-    err.code = 'INVALID_STATUS';
+    err.code = 'ALREADY_SUBMITTED';
     throw err;
   }
   if (sheet.totalHours === 0) {
@@ -250,13 +295,14 @@ export async function approveTimesheet(tenantId, id, decidedBy, comment) {
   const sheet = await repo.getTimesheetById(id, tenantId);
   if (!sheet) return null;
   if (sheet.status !== 'SUBMITTED') {
-    const err = new Error('Timesheet is not in SUBMITTED status');
+    const err = new Error('Only submitted weeks can be approved.');
     err.statusCode = 422;
-    err.code = 'INVALID_STATUS';
+    err.code = 'NOT_SUBMITTED';
     throw err;
   }
   const settings = await repo.getSettings(tenantId);
-  const updated = await repo.decideTimesheet(id, 'APPROVED', decidedBy, comment);
+  // Approval comment is optional; trim to null so blanks aren't stored (matches the mock).
+  const updated = await repo.decideTimesheet(id, 'APPROVED', decidedBy, comment?.trim() || null);
   return fmtSheet(updated, settings);
 }
 
@@ -264,13 +310,20 @@ export async function rejectTimesheet(tenantId, id, decidedBy, comment) {
   const sheet = await repo.getTimesheetById(id, tenantId);
   if (!sheet) return null;
   if (sheet.status !== 'SUBMITTED') {
-    const err = new Error('Timesheet is not in SUBMITTED status');
+    const err = new Error('Only submitted weeks can be rejected.');
     err.statusCode = 422;
-    err.code = 'INVALID_STATUS';
+    err.code = 'NOT_SUBMITTED';
+    throw err;
+  }
+  // A reason is required to reject (the route enforces presence; this also rejects blanks).
+  if (!comment || !String(comment).trim()) {
+    const err = new Error('A reason is required to reject.');
+    err.statusCode = 422;
+    err.code = 'VALIDATION';
     throw err;
   }
   const settings = await repo.getSettings(tenantId);
-  const updated = await repo.decideTimesheet(id, 'REJECTED', decidedBy, comment);
+  const updated = await repo.decideTimesheet(id, 'REJECTED', decidedBy, comment.trim());
   return fmtSheet(updated, settings);
 }
 
