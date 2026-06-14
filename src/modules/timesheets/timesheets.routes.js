@@ -433,6 +433,14 @@ export default async function timesheetsRoutes(fastify) {
           approvalRequired: { type: 'boolean' },
           unloggedHoursPolicy: { type: 'string', enum: ['IGNORE', 'FLAG', 'DEDUCT'] },
           billableDefault: { type: 'boolean' },
+          submitReminderDay: {
+            type: 'integer', minimum: 1, maximum: 7, nullable: true,
+            description: 'ISO weekday (Mon=1..Sun=7) to nudge about unsubmitted prior weeks. null = reminders disabled.',
+          },
+          requireTaskOnEntry: {
+            type: 'boolean',
+            description: 'When true, time entries must include a taskId (POST/PATCH /timesheets/entries → 422 TASK_REQUIRED if missing).',
+          },
         },
       },
       response: { 200: obj },

@@ -1,6 +1,17 @@
 import * as repo from './timesheets.repository.js';
 import { prisma } from '../../plugins/prisma.js';
-import { normalizeTaskId, uniqueCopyRows } from './timesheets.derive.js';
+import {
+  normalizeTaskId,
+  uniqueCopyRows,
+  priorWeekStartISO,
+  shouldRemindToday,
+  needsEmployeeReminder,
+} from './timesheets.derive.js';
+import {
+  createTimesheetReminderNotifications,
+  submitReminderMessage,
+} from '../../utils/notifier.js';
+import { logger } from '../../utils/logger.js';
 
 function fmtProject(p) {
   return {
@@ -120,6 +131,7 @@ export async function createEntry(tenantId, employeeId, body) {
   // taskId is optional (a project entry may have no task). Normalize null/'' → null so an
   // empty/absent task never reaches Prisma as a bad FK (was a live 500). Domain G.2 contract.
   normalizeTaskId(entryData);
+  await assertTaskAllowed(tenantId, entryData.taskId);
   const sheet = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
 
   if (sheet.status === 'SUBMITTED' || sheet.status === 'APPROVED') {
@@ -135,9 +147,23 @@ export async function createEntry(tenantId, employeeId, body) {
 
 export async function updateEntry(tenantId, id, data) {
   normalizeTaskId(data);
+  // Only enforce when the caller actually touches taskId (partial PATCH may omit it).
+  if ('taskId' in data) await assertTaskAllowed(tenantId, data.taskId);
   const entry = await repo.updateEntry(tenantId, id, data);
   if (!entry) return null;
   return entry;
+}
+
+// M2 — when the tenant has requireTaskOnEntry=true, an entry MUST carry a taskId.
+async function assertTaskAllowed(tenantId, taskId) {
+  if (taskId) return;
+  const settings = await repo.getSettings(tenantId);
+  if (settings?.requireTaskOnEntry) {
+    const err = new Error('A task is required for time entries in this workspace');
+    err.statusCode = 422;
+    err.code = 'TASK_REQUIRED';
+    throw err;
+  }
 }
 
 export async function deleteEntry(tenantId, id) {
@@ -272,6 +298,8 @@ export async function getSettings(tenantId) {
       approvalRequired: true,
       unloggedHoursPolicy: 'FLAG',
       billableDefault: true,
+      submitReminderDay: null,
+      requireTaskOnEntry: false,
       updatedAt: new Date().toISOString(),
     };
   }
@@ -280,4 +308,94 @@ export async function getSettings(tenantId) {
 
 export async function updateSettings(tenantId, data) {
   return repo.upsertSettings(tenantId, data);
+}
+
+// ── M7 Submit reminders ─────────────────────────────────────────────────────────
+
+const REMINDER_PAGE_SIZE = 1000;
+
+// Run the reminder cycle for ONE tenant for the prior week.
+// Scale-safe: cursor-paginates the week's timesheets and bulk-inserts notifications.
+// Idempotent: a DB unique index drops anything already sent this (user, week) — so a
+// double cron fire, a retry, or two instances racing can never duplicate.
+// `force` ignores the submitReminderDay day-of-week gate (tests / manual runs).
+// Returns { tenantId, weekStart, employeeReminders, approverReminders, pendingCount, skipped }.
+export async function runSubmitRemindersForTenant(tenantId, { now = new Date(), force = false } = {}) {
+  const settings = await repo.getSettings(tenantId);
+  const reminderDay = settings?.submitReminderDay ?? null;
+  const timezone = await repo.getTenantTimezone(tenantId);
+
+  if (!force && !shouldRemindToday(reminderDay, now, timezone)) {
+    return { tenantId, skipped: true, reason: reminderDay == null ? 'disabled' : 'not-due', employeeReminders: 0, approverReminders: 0 };
+  }
+
+  const weekStart = priorWeekStartISO(now, timezone);
+
+  // 1) Stream the week's timesheets in pages, building reminder rows + tallying pending.
+  const employeeRows = [];
+  let pendingCount = 0;
+  let cursorId = null;
+  for (;;) {
+    const page = await repo.getTimesheetsByWeekPage(tenantId, weekStart, { cursorId, take: REMINDER_PAGE_SIZE });
+    if (page.length === 0) break;
+
+    const needsNudge = page.filter(needsEmployeeReminder);
+    if (needsNudge.length) {
+      const userMap = await repo.getEmployeeUserMap(tenantId, needsNudge.map((s) => s.employeeId));
+      for (const s of needsNudge) {
+        const userId = userMap[s.employeeId];
+        if (!userId) continue;
+        employeeRows.push({
+          userId,
+          type: 'timesheet_submit_reminder',
+          title: 'Timesheet reminder',
+          message: submitReminderMessage(s.weekStart, s.status),
+          weekStart: s.weekStart,
+          metadata: { timesheetId: s.id, status: s.status },
+        });
+      }
+    }
+    pendingCount += page.filter((s) => s.status === 'SUBMITTED').length;
+
+    if (page.length < REMINDER_PAGE_SIZE) break;
+    cursorId = page[page.length - 1].id;
+  }
+
+  // 2) Approver fan-out: one row per active manager/HR/SUPER_ADMIN if anything is pending.
+  let approverRows = [];
+  if (pendingCount > 0) {
+    const approverIds = await repo.getApproverUserIds(tenantId);
+    approverRows = approverIds.map((userId) => ({
+      userId,
+      type: 'timesheet_approval_reminder',
+      title: 'Timesheets awaiting approval',
+      message: `${pendingCount} timesheet(s) are submitted and waiting for your approval.`,
+      weekStart,
+      metadata: { pendingCount },
+    }));
+  }
+
+  // 3) Single bulk insert per group (skipDuplicates → idempotent).
+  const employeeReminders = await createTimesheetReminderNotifications(tenantId, employeeRows);
+  const approverReminders = await createTimesheetReminderNotifications(tenantId, approverRows);
+
+  return { tenantId, weekStart, timezone, employeeReminders, approverReminders, pendingCount, skipped: false };
+}
+
+// Run the reminder cycle across every tenant (the scheduled job entrypoint).
+// Per-tenant try/catch: one tenant failing never aborts the fleet-wide run.
+export async function runSubmitReminders({ now = new Date(), force = false, tenantId = null } = {}) {
+  const tenantIds = tenantId
+    ? [tenantId]
+    : (await repo.getAllReminderSettings()).map((r) => r.tenantId);
+  const results = [];
+  for (const tid of tenantIds) {
+    try {
+      results.push(await runSubmitRemindersForTenant(tid, { now, force }));
+    } catch (err) {
+      logger.error({ err, tenantId: tid }, 'submit-reminder: tenant failed (continuing)');
+      results.push({ tenantId: tid, error: err.message, employeeReminders: 0, approverReminders: 0, failed: true });
+    }
+  }
+  return results;
 }

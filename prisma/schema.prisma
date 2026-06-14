@@ -1582,6 +1582,11 @@ model TimesheetSettings {
   approvalRequired       Boolean  @default(true)
   unloggedHoursPolicy    String   @default("FLAG") // IGNORE | FLAG | DEDUCT
   billableDefault        Boolean  @default(true)
+  // M7 — ISO weekday (Mon=1 .. Sun=7) on which the submit-reminder job nudges
+  // employees/managers about unsubmitted prior weeks. null = reminders disabled.
+  submitReminderDay      Int?
+  // M2 — when true, POST/PATCH /timesheets/entries reject an entry with no taskId (422).
+  requireTaskOnEntry     Boolean  @default(false)
   updatedAt              DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)

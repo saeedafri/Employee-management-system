@@ -258,6 +258,64 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
   };
 }
 
+// ── Submit reminders (M7) ───────────────────────────────────────────────────────
+
+// All timesheets for a tenant in a given week (used by the reminder job).
+export async function getTimesheetsByWeek(tenantId, weekStart) {
+  return prisma.timesheet.findMany({
+    where: { tenantId, weekStart },
+    select: { id: true, employeeId: true, status: true, totalHours: true, weekStart: true },
+  });
+}
+
+// Cursor-paginated page of a week's timesheets — keeps memory bounded for huge tenants.
+export async function getTimesheetsByWeekPage(tenantId, weekStart, { cursorId = null, take = 1000 } = {}) {
+  return prisma.timesheet.findMany({
+    where: { tenantId, weekStart },
+    select: { id: true, employeeId: true, status: true, totalHours: true, weekStart: true },
+    orderBy: { id: 'asc' },
+    take,
+    ...(cursorId ? { skip: 1, cursor: { id: cursorId } } : {}),
+  });
+}
+
+// Tenant reminder timezone (so the day-of-week gate uses the tenant's local day).
+export async function getTenantTimezone(tenantId) {
+  const cfg = await prisma.tenantConfig.findUnique({ where: { tenantId }, select: { timezone: true } });
+  return cfg?.timezone || 'UTC';
+}
+
+// Map employeeId -> linked User id (notifications target the User, not the Employee).
+export async function getEmployeeUserMap(tenantId, employeeIds) {
+  if (!employeeIds.length) return {};
+  const emps = await prisma.employee.findMany({
+    where: { tenantId, id: { in: employeeIds } },
+    select: { id: true, userId: true },
+  });
+  return Object.fromEntries(emps.filter((e) => e.userId).map((e) => [e.id, e.userId]));
+}
+
+// Active approver users (managers + HR/admins) for the approval-reminder fan-out.
+export async function getApproverUserIds(tenantId) {
+  const users = await prisma.user.findMany({
+    where: {
+      tenantId,
+      memberType: { in: ['MANAGER', 'HR_ADMIN', 'SUPER_ADMIN'] },
+      status: 'ACTIVE',
+      deletedAt: null,
+    },
+    select: { id: true },
+  });
+  return users.map((u) => u.id);
+}
+
+// Every tenant's reminder cadence — drives the cross-tenant job loop.
+export async function getAllReminderSettings() {
+  return prisma.timesheetSettings.findMany({
+    select: { tenantId: true, submitReminderDay: true },
+  });
+}
+
 // ── Settings ──────────────────────────────────────────────────────────────────
 
 export async function getSettings(tenantId) {

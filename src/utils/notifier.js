@@ -180,3 +180,49 @@ export async function notifyRegularizationDenied(tenantId, employeeId, request) 
     metadata: { requestId: request.id },
   });
 }
+
+// ── M7 Timesheet submit reminders (bulk, idempotent, scale-safe) ───────────────
+
+// Build the canonical message for an employee submit reminder.
+export function submitReminderMessage(weekStart, status) {
+  return status === 'REJECTED'
+    ? `Your timesheet for the week of ${weekStart} was rejected — please update and resubmit.`
+    : `Your timesheet for the week of ${weekStart} is still a draft — please submit it.`;
+}
+
+// Bulk-create timesheet reminder notifications for one tenant.
+// `rows` = [{ userId, type, title, message, weekStart, metadata }].
+// Idempotency is guaranteed by a DB unique index on
+// (tenantId, userId, type, metadataJson->>'weekStart') for the reminder types,
+// so createMany({ skipDuplicates }) drops anything already sent this week — even
+// under a double cron fire or two job instances racing. Returns rows actually created.
+//
+// Bulk insert (one round-trip) scales to large tenants; we deliberately do NOT emit
+// one SSE event per row here (the bell badge + reminder banner refresh on the next
+// poll). A single best-effort lightweight ping wakes any currently-connected clients.
+export async function createTimesheetReminderNotifications(tenantId, rows) {
+  const clean = (rows || []).filter((r) => r && r.userId);
+  if (clean.length === 0) return 0;
+
+  const expiresAt = new Date(Date.now() + TTL_MS);
+  const data = clean.map((r) => ({
+    id: generateId(),
+    tenantId,
+    userId: r.userId,
+    type: r.type,
+    title: r.title,
+    message: r.message,
+    metadataJson: { ...(r.metadata || {}), weekStart: r.weekStart },
+    expiresAt,
+  }));
+
+  const { count } = await prisma.notification.createMany({ data, skipDuplicates: true });
+
+  if (count > 0) {
+    try {
+      const userIds = [...new Set(clean.map((r) => r.userId))];
+      emitToUsers(userIds, 'notification', { refresh: true, reason: 'timesheet_reminder' });
+    } catch { /* SSE is best-effort — never let it fail the job */ }
+  }
+  return count;
+}

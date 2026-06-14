@@ -15,6 +15,11 @@ import {
   normalizeTaskId,
   uniqueCopyRows,
   round2,
+  isoWeekday,
+  priorWeekStartISO,
+  shouldRemindToday,
+  needsEmployeeReminder,
+  tenantToday,
 } from '../src/modules/timesheets/timesheets.derive.js';
 
 // ── Bug #1: overtimeHours = Σ max(0, weekTotal − standardHours) ──────────────
@@ -91,6 +96,71 @@ test('copyWeek: empty source → nothing to copy', () => {
 
 test('copyWeek: null inputs are safe', () => {
   assert.deepEqual(uniqueCopyRows(null, null), []);
+});
+
+// ── M7: submit-reminder helpers ──────────────────────────────────────────────
+test('isoWeekday: Monday=1 .. Sunday=7 (UTC)', () => {
+  assert.equal(isoWeekday(new Date('2026-06-08T00:00:00Z')), 1); // Mon
+  assert.equal(isoWeekday(new Date('2026-06-12T00:00:00Z')), 5); // Fri
+  assert.equal(isoWeekday(new Date('2026-06-14T00:00:00Z')), 7); // Sun
+});
+
+test('priorWeekStartISO: returns the Monday of the previous week', () => {
+  // Week of 2026-06-08 (Mon) → prior week Monday = 2026-06-01
+  assert.equal(priorWeekStartISO(new Date('2026-06-10T09:00:00Z')), '2026-06-01');
+  // From a Sunday (still that week) → prior Monday
+  assert.equal(priorWeekStartISO(new Date('2026-06-14T23:00:00Z')), '2026-06-01');
+  // From a Monday itself → previous Monday
+  assert.equal(priorWeekStartISO(new Date('2026-06-08T00:00:00Z')), '2026-06-01');
+});
+
+test('shouldRemindToday: null reminderDay disables reminders', () => {
+  assert.equal(shouldRemindToday(null, new Date('2026-06-12T00:00:00Z')), false);
+  assert.equal(shouldRemindToday(undefined, new Date('2026-06-12T00:00:00Z')), false);
+});
+
+test('shouldRemindToday: fires only when today matches the configured ISO weekday', () => {
+  const friday = new Date('2026-06-12T00:00:00Z'); // ISO weekday 5
+  assert.equal(shouldRemindToday(5, friday), true);
+  assert.equal(shouldRemindToday(4, friday), false);
+});
+
+test('tenantToday: resolves the tenant-local calendar date (TZ aware)', () => {
+  // 2026-06-15 00:30 UTC is still 2026-06-14 in New York (UTC-4) but already 15th in UTC.
+  const t = new Date('2026-06-15T00:30:00Z');
+  assert.equal(tenantToday(t, 'UTC').toISOString().slice(0, 10), '2026-06-15');
+  assert.equal(tenantToday(t, 'America/New_York').toISOString().slice(0, 10), '2026-06-14');
+  // Asia/Kolkata (UTC+5:30) is already the 15th.
+  assert.equal(tenantToday(t, 'Asia/Kolkata').toISOString().slice(0, 10), '2026-06-15');
+});
+
+test('tenantToday: invalid timezone falls back to UTC (never throws)', () => {
+  const t = new Date('2026-06-15T00:30:00Z');
+  assert.equal(tenantToday(t, 'Not/AZone').toISOString().slice(0, 10), '2026-06-15');
+});
+
+test('shouldRemindToday: uses the tenant-local weekday, not UTC', () => {
+  // 2026-06-15 00:30 UTC → Monday(1) in UTC, but Sunday(7) in New York.
+  const t = new Date('2026-06-15T00:30:00Z');
+  assert.equal(shouldRemindToday(1, t, 'UTC'), true);
+  assert.equal(shouldRemindToday(1, t, 'America/New_York'), false);
+  assert.equal(shouldRemindToday(7, t, 'America/New_York'), true);
+});
+
+test('priorWeekStartISO: prior Monday is computed in tenant-local time', () => {
+  const t = new Date('2026-06-15T00:30:00Z'); // UTC: Mon 15th → prior Mon 8th
+  assert.equal(priorWeekStartISO(t, 'UTC'), '2026-06-08');
+  // New York: still Sun 14th → that week's Mon is 8th → prior Mon is 1st
+  assert.equal(priorWeekStartISO(t, 'America/New_York'), '2026-06-01');
+});
+
+test('needsEmployeeReminder: REJECTED always, DRAFT only with hours, never SUBMITTED/APPROVED', () => {
+  assert.equal(needsEmployeeReminder({ status: 'REJECTED', totalHours: 0 }), true);
+  assert.equal(needsEmployeeReminder({ status: 'DRAFT', totalHours: 8 }), true);
+  assert.equal(needsEmployeeReminder({ status: 'DRAFT', totalHours: 0 }), false);
+  assert.equal(needsEmployeeReminder({ status: 'SUBMITTED', totalHours: 8 }), false);
+  assert.equal(needsEmployeeReminder({ status: 'APPROVED', totalHours: 40 }), false);
+  assert.equal(needsEmployeeReminder(null), false);
 });
 
 // ── round2 helper ────────────────────────────────────────────────────────────

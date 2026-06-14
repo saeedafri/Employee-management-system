@@ -4499,8 +4499,8 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/timesheets` | ALL | `?week=YYYY-MM-DD&employeeId=`. Auto-creates DRAFT if absent |
-| POST | `/timesheets/entries` | ALL | Required: weekStart, projectId, date, hours. Rejects if sheet SUBMITTED/APPROVED |
-| PATCH | `/timesheets/entries/:id` | ALL | Update hours, billable, note, taskId |
+| POST | `/timesheets/entries` | ALL | Required: weekStart, projectId, date, hours. `taskId` optional (null/omit OK → stored null). Rejects if sheet SUBMITTED/APPROVED. 422 `TASK_REQUIRED` if `requireTaskOnEntry` is on and taskId missing |
+| PATCH | `/timesheets/entries/:id` | ALL | Update hours, billable, note, taskId. 422 `TASK_REQUIRED` if `requireTaskOnEntry` on and taskId set to null |
 | DELETE | `/timesheets/entries/:id` | ALL | Recalculates sheet total |
 
 ### Submit & Approve
@@ -4515,8 +4515,12 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/timesheets/summary` | HR,SA,MGR | `?range=30d|90d&employeeId=`. Utilization summary |
-| GET | `/timesheets/settings` | HR,SA | Timesheet config (standardWeeklyHours, overtimeThreshold, etc.) |
-| PATCH | `/timesheets/settings` | HR,SA | Update timesheet settings |
+| GET | `/timesheets/settings` | HR,SA | Timesheet config (see Settings shape below) |
+| PATCH | `/timesheets/settings` | HR,SA | Partial update of timesheet settings |
+
+**Settings shape:** `{ standardWeeklyHours, overtimeThresholdHours, roundingMinutes, approvalRequired, unloggedHoursPolicy(IGNORE/FLAG/DEDUCT), billableDefault, submitReminderDay(int 1..7 ISO weekday | null = disabled, default null), requireTaskOnEntry(bool, default false), updatedAt }`
+
+**Submit reminders (M7 — scheduled job, no HTTP endpoint):** When `submitReminderDay` is set, a daily job (`src/jobs/submitReminderJob.js`, run by Render Cron) fires on that ISO weekday and, for the prior week, creates in-app notifications: `timesheet_submit_reminder` for employees whose sheet is DRAFT-with-hours or REJECTED, and `timesheet_approval_reminder` for managers/HR when sheets are SUBMITTED & awaiting approval. Idempotent per (user, week). FE renders the nudge from the notifications feed/SSE.
 
 **Timesheet shape:** `{ id, employeeId, employeeName, weekStart, weekEnd, status(DRAFT/SUBMITTED/APPROVED/REJECTED), totalHours, billableHours, overtimeHours, standardHours, submittedAt, decidedBy, decidedAt, comment, entries[] }`
 **Entry shape:** `{ id, timesheetId, projectId, taskId?, date, hours, billable, note, source(MANUAL/TIMER) }`

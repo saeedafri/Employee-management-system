@@ -24,6 +24,57 @@ export function normalizeTaskId(data) {
   return data;
 }
 
+// ── M7 submit-reminder helpers (pure, DB-free) ─────────────────────────────────
+
+// The tenant-local calendar date (as a UTC-midnight Date) for `now` in `timezone`.
+// Reminders must fire on the tenant's LOCAL weekday, so a global fleet of tenants
+// each gets nudged on their own day rather than everyone on a single UTC boundary.
+// timezone defaults to UTC (keeps the helper pure/testable without TZ data).
+export function tenantToday(now, timezone = 'UTC') {
+  let ymd;
+  try {
+    ymd = new Intl.DateTimeFormat('en-CA', {
+      timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(now);
+  } catch {
+    // Unknown/invalid IANA zone → fall back to UTC rather than throwing (never break).
+    ymd = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(now);
+  }
+  return new Date(`${ymd}T00:00:00Z`);
+}
+
+// ISO weekday for a UTC-midnight Date: Monday=1 .. Sunday=7 (matches submitReminderDay).
+export function isoWeekday(date) {
+  return ((date.getUTCDay() + 6) % 7) + 1;
+}
+
+// Monday (YYYY-MM-DD) of the week BEFORE the tenant-local day of `now`.
+// Timesheet.weekStart is always a Monday, so this is the prior week's key.
+export function priorWeekStartISO(now, timezone = 'UTC') {
+  const d = tenantToday(now, timezone);
+  const mondayOffset = (d.getUTCDay() + 6) % 7; // 0=Mon .. 6=Sun
+  d.setUTCDate(d.getUTCDate() - mondayOffset - 7); // back to this Monday, then a full week
+  return d.toISOString().slice(0, 10);
+}
+
+// Should the reminder job fire today for this tenant? null/absent = disabled.
+// Compares the configured ISO weekday against the tenant-LOCAL weekday.
+export function shouldRemindToday(submitReminderDay, now, timezone = 'UTC') {
+  if (submitReminderDay == null) return false;
+  return isoWeekday(tenantToday(now, timezone)) === submitReminderDay;
+}
+
+// An employee needs a submit nudge when the prior week is REJECTED (not resubmitted)
+// or DRAFT with hours actually logged. Empty drafts are ignored.
+export function needsEmployeeReminder(sheet) {
+  if (!sheet) return false;
+  if (sheet.status === 'REJECTED') return true;
+  if (sheet.status === 'DRAFT' && (sheet.totalHours ?? 0) > 0) return true;
+  return false;
+}
+
 // §3a (copy-week, M5) — pick each UNIQUE project/task row from the source week
 // that the target week does not already have. Pure decision step; the caller
 // persists the returned rows at hours:0. Idempotent and dedupes the source.

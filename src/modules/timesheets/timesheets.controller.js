@@ -81,9 +81,14 @@ export async function createEntry(request, reply) {
 }
 
 export async function updateEntry(request, reply) {
-  const entry = await service.updateEntry(request.tenant.id, request.params.id, request.body);
-  if (!entry) return reply.code(404).send(errorResponse('NOT_FOUND', 'Entry not found', {}, request.id));
-  return reply.send(successResponse(entry));
+  try {
+    const entry = await service.updateEntry(request.tenant.id, request.params.id, request.body);
+    if (!entry) return reply.code(404).send(errorResponse('NOT_FOUND', 'Entry not found', {}, request.id));
+    return reply.send(successResponse(entry));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
 }
 
 export async function deleteEntry(request, reply) {
