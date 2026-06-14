@@ -1079,13 +1079,82 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         }
       }
 
-      const grossEarnings = Math.round(earningsArr.reduce((s, e) => s + e.amount, 0) * 100) / 100;
-      const totalDed = Math.round(deductionsArr.reduce((s, d) => s + d.amount, 0) * 100) / 100;
-      const netPay = Math.round((grossEarnings - totalDed) * 100) / 100;
-      const employerCost = Math.round((grossEarnings + sumEmployerContributions(employerContributions)) * 100) / 100;
+      const r2 = (n) => Math.round(n * 100) / 100;
+      const grossEarnings = r2(earningsArr.reduce((s, e) => s + e.amount, 0));
 
-      // Payroll input overrides (lopDays from input table)
+      // Payroll input overrides (lopDays, one-time add/deduct). Fetched here (was below) so
+      // one-time lines and garnishment disposable use the same period context.
       const runInput = await prisma.payrollInput.findFirst({ where: { runId: id, employeeId: employee.id } });
+
+      // ── H5 Garnishments (FE parity: payroll-engine.ts applyGarnishments) ───────────────
+      // After statutory + tax deductions, before voluntary (loans). disposable = gross − the
+      // deductions accrued so far. Orders run in priority order; each withholds a flat amount
+      // or % of the ORIGINAL disposable, capped, never breaching its protectedEarningsFloor.
+      // Backend garnishment money is MAJOR units (Decimal) — no minor conversion. Additive:
+      // employees with no active order are byte-identical to before.
+      const garnishments = await prisma.garnishment.findMany({
+        where: {
+          tenantId, employeeId: employee.id,
+          effectiveFrom: { lte: periodEnd },
+          OR: [{ effectiveTo: null }, { effectiveTo: { gte: periodStart } }],
+        },
+      });
+      if (garnishments.length > 0) {
+        const statutorySoFar = deductionsArr.reduce((s, d) => s + d.amount, 0);
+        const disposable = grossEarnings - statutorySoFar;
+        let remaining = disposable;
+        for (const o of [...garnishments].sort((a, b) => a.priority - b.priority)) {
+          let desired = o.amountKind === 'PERCENT_OF_DISPOSABLE'
+            ? r2((disposable * Number(o.amountValue)) / 100)
+            : Number(o.amountValue);
+          if (o.cap != null) desired = Math.min(desired, Number(o.cap));
+          const available = Math.max(0, remaining - Number(o.protectedEarningsFloor ?? 0));
+          const actual = Math.max(0, Math.min(desired, available));
+          if (actual > 0) {
+            deductionsArr.push({ code: `GARN_${o.id}`, name: o.type ? `Garnishment (${o.type})` : 'Garnishment', amount: r2(actual), taxable: false });
+            remaining -= actual;
+          }
+        }
+      }
+
+      // ── H6 Loan / advance EMI recovery (FE parity: loanEmiForPeriod) ───────────────────
+      // Active loans whose window covers this period; deduct min(emi, balance). Additive.
+      const loans = await prisma.employeeLoan.findMany({
+        where: {
+          tenantId, employeeId: employee.id, status: 'ACTIVE',
+          startPeriod: { lte: run.period },
+          balance: { gt: 0 },
+          OR: [{ endPeriod: null }, { endPeriod: { gte: run.period } }],
+        },
+      });
+      for (const loan of loans) {
+        const emi = Math.min(Number(loan.emiAmount), Number(loan.balance));
+        if (emi > 0) deductionsArr.push({ code: `EMI_${loan.id}`, name: 'Loan EMI', amount: r2(emi), taxable: false });
+      }
+
+      // ── H7 Approved reimbursement claims attach as non-taxable one-time additions ───────
+      // + M2 one-time additions/deductions from the run input. Claims/oneTime are MAJOR units.
+      const approvedClaims = await prisma.reimbursementClaim.findMany({
+        where: { tenantId, employeeId: employee.id, status: 'APPROVED', runId: null },
+        include: { category: true },
+      });
+      const oneTimeAdditions = [
+        ...((Array.isArray(runInput?.oneTimeAdditions) ? runInput.oneTimeAdditions : [])
+          .map((o) => ({ description: o.description ?? o.label ?? 'Addition', amount: Number(o.amount ?? 0) }))),
+        ...approvedClaims.map((c) => ({ description: `${c.category?.label ?? c.category?.code ?? 'Reimbursement'} claim`, amount: Number(c.amount) })),
+      ];
+      const oneTimeDeductions = (Array.isArray(runInput?.oneTimeDeductions) ? runInput.oneTimeDeductions : [])
+        .map((o) => ({ description: o.description ?? o.label ?? 'Deduction', amount: Number(o.amount ?? 0) }));
+      // Attach the claims to this run (FE attachApprovedClaimsToRun); mark-paid flips them PAID.
+      if (approvedClaims.length > 0) {
+        await prisma.reimbursementClaim.updateMany({ where: { id: { in: approvedClaims.map((c) => c.id) } }, data: { runId: id } });
+      }
+      const oneTimeAddTotal = r2(oneTimeAdditions.reduce((s, o) => s + o.amount, 0));
+      const oneTimeDedTotal = r2(oneTimeDeductions.reduce((s, o) => s + o.amount, 0));
+
+      const totalDed = r2(deductionsArr.reduce((s, d) => s + d.amount, 0));
+      const netPay = r2(grossEarnings - totalDed + oneTimeAddTotal - oneTimeDedTotal);
+      const employerCost = r2(grossEarnings + sumEmployerContributions(employerContributions));
 
       const attendance = await prisma.attendanceRecord.findMany({
         where: { tenantId, employeeId: employee.id, attendanceDate: { gte: periodStart, lte: periodEnd } },
@@ -1111,7 +1180,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
           workingDays, presentDays, leaveDays, lopDays, status: 'PENDING',
           earningsJson: earningsArr, deductionsJson: deductionsArr,
           employerContributionsJson: employerContributions,
-          oneTimeAdditionsJson: [], oneTimeDeductionsJson: [], generatedAt: new Date(),
+          oneTimeAdditionsJson: oneTimeAdditions, oneTimeDeductionsJson: oneTimeDeductions, generatedAt: new Date(),
         },
       });
 
@@ -1166,6 +1235,8 @@ export async function markRunPaid(prisma, id, tenantId, paidAt, reference) {
   }
   const paidDate = paidAt ? new Date(paidAt) : new Date();
   await prisma.payslip.updateMany({ where: { payrollRunId: id }, data: { status: 'PAID', paymentDate: paidDate, paymentReference: reference ?? null } });
+  // H7 — claims attached to this run (on calculate) settle when the run is paid (FE markRunClaimsPaid).
+  await prisma.reimbursementClaim.updateMany({ where: { tenantId, runId: id, status: 'APPROVED' }, data: { status: 'PAID', decidedAt: paidDate } });
   const updated = await prisma.payrollRun.update({
     where: { id },
     data: { status: 'PAID', paidAt: paidDate, paymentReference: reference ?? null },

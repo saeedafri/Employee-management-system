@@ -1606,13 +1606,102 @@ export async function createPaymentBatch(prisma, runId, tenantId) {
   return batch;
 }
 
+// ── Bank-file format registry (§F.9) — ported byte-for-byte from the FE source of truth
+// (ems-frontend/src/mocks/data/bank-file-formats.ts). Each format is DATA: an ordered list
+// of {header, field} columns. The serializer is generic — no `if (format === …)` branch.
+const BANK_FILE_FORMATS = {
+  NACH: {
+    delimiter: ',',
+    columns: [
+      { header: 'BeneficiaryCode', field: 'employeeCode' },
+      { header: 'BeneficiaryName', field: 'employeeName' },
+      { header: 'IFSC', field: 'ifsc' },
+      { header: 'AccountNumber', field: 'accountNumber' },
+      { header: 'Amount', field: 'amount' },
+      { header: 'Reference', field: 'reference' },
+    ],
+  },
+  ACH: {
+    delimiter: ',',
+    columns: [
+      { header: 'EmployeeId', field: 'employeeCode' },
+      { header: 'Name', field: 'employeeName' },
+      { header: 'RoutingNumber', field: 'routingNumber' },
+      { header: 'AccountNumber', field: 'accountNumber' },
+      { header: 'Amount', field: 'amount' },
+      { header: 'Currency', field: 'currency' },
+    ],
+  },
+  SEPA: {
+    delimiter: ',',
+    columns: [
+      { header: 'CreditorName', field: 'employeeName' },
+      { header: 'IBAN', field: 'iban' },
+      { header: 'BIC', field: 'bic' },
+      { header: 'Amount', field: 'amount' },
+      { header: 'Currency', field: 'currency' },
+      { header: 'RemittanceInfo', field: 'reference' },
+    ],
+  },
+  BACS: {
+    delimiter: ',',
+    columns: [
+      { header: 'Name', field: 'employeeName' },
+      { header: 'SortCode', field: 'sortCode' },
+      { header: 'AccountNumber', field: 'accountNumber' },
+      { header: 'Amount', field: 'amount' },
+      { header: 'Reference', field: 'reference' },
+    ],
+  },
+};
+
+// Currencies with 0 minor-unit decimals (match the FE money.utils.currencyDecimals defaults).
+const ZERO_DECIMAL_CURRENCIES = new Set(['JPY', 'KRW', 'VND', 'CLP', 'ISK', 'XAF', 'XOF']);
+function currencyDecimals(currency) {
+  return ZERO_DECIMAL_CURRENCIES.has((currency || '').toUpperCase()) ? 0 : 2;
+}
+
+// Deterministic synthetic bank identifiers per employee (mirrors the FE syntheticBank()).
+// Real bank fields would come from the employee country bank schema (§3.4); the demo
+// synthesizes stable values so the file is reproducible. Never country-branched.
+function syntheticBank(employeeCode) {
+  const digits = String(employeeCode || '').replace(/\D/g, '').padStart(6, '0').slice(-6);
+  return {
+    accountNumber: `00${digits}5500`,
+    ifsc: `HDFC0${digits.slice(0, 3)}`,
+    routingNumber: `0210${digits.slice(0, 5)}`,
+    iban: `DE89${digits}0000000000`,
+    bic: 'DEUTDEFFXXX',
+    sortCode: `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4, 6)}`,
+  };
+}
+
 export async function getBankFile(prisma, runId, tenantId, format) {
+  const fmt = String(format || 'NACH').toUpperCase();
+  const spec = BANK_FILE_FORMATS[fmt];
+  if (!spec) {
+    const err = new Error(`Unknown bank-file format: ${format}`);
+    err.statusCode = 422; err.code = 'UNKNOWN_FORMAT';
+    throw err;
+  }
   const batch = await prisma.paymentBatch.findFirst({ where: { runId, tenantId }, orderBy: { createdAt: 'desc' } });
+  const currency = batch?.currency || 'INR';
   const lines = batch ? (batch.linesJson ?? []) : [];
-  const header = 'EmployeeCode,Name,AccountNumber,IFSC,Amount,Currency';
-  const rows = lines.map(l => `${l.employeeCode},${l.name},${l.accountNumber},${l.ifsc},${l.netPay},${batch?.currency || 'INR'}`);
-  const csv = [header, ...rows].join('\n');
-  return { csv, filename: `bank-file-${runId}.${format === 'NACH' ? 'txt' : 'csv'}` };
+  const header = spec.columns.map(c => c.header).join(spec.delimiter);
+  const body = lines.map(l => {
+    const bank = syntheticBank(l.employeeCode);
+    const resolved = {
+      employeeCode: l.employeeCode ?? '',
+      employeeName: l.name ?? '',
+      amount: Number(l.netPay ?? 0).toFixed(currencyDecimals(currency)),
+      currency,
+      reference: l.payoutRef ?? '',
+      ...bank,
+    };
+    return spec.columns.map(c => resolved[c.field]).join(spec.delimiter);
+  });
+  const csv = [header, ...body].join('\n');
+  return { csv, filename: `bank-file-${runId}-${fmt}.${fmt === 'NACH' ? 'txt' : 'csv'}` };
 }
 
 export async function getPaymentBatchById(prisma, batchId, tenantId) {
@@ -1765,6 +1854,11 @@ function fmtReimbursementClaimForUi(c) {
 
 export async function submitReimbursementClaim(prisma, tenantId, data) {
   const { generateId } = await import('../../utils/id.js');
+  // H8 — enforce the category monthly cap (FE parity: payroll-claims CLAIM_OVER_CAP, 422).
+  const category = await prisma.reimbursementCategory.findFirst({ where: { id: data.categoryId, tenantId } });
+  if (category && Number(category.monthlyCap) > 0 && Number(data.amount) > Number(category.monthlyCap)) {
+    throw AppError(`Claim amount exceeds the monthly cap for ${category.label || category.code}`, 'CLAIM_OVER_CAP', 422);
+  }
   const row = await prisma.reimbursementClaim.create({
     data: {
       id: generateId(),

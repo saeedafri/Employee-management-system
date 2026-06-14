@@ -4541,6 +4541,8 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 ```
 `byEmployee` is non-empty when time entries exist in the range (fixes "No logged hours" in Utilization report).
 
+> **FE engine parity (2026-06-14):** `byProject` and `byEmployee` are **sorted by `hours` descending** and all hour fields are `round2`-ed, matching the MSW reference (`ems-frontend/src/mocks/handlers/timesheets.ts` summary handler). `overtimeHours = Σ max(0, weekTotal − standardWeeklyHours)` over in-range sheets (always a number). `totalHours` is `round2`-ed on every entry mutation. On `POST /timesheets/entries`, when `billable` is omitted it is inferred `task.billable ?? project.billable ?? settings.billableDefault ?? true` (the schema `@default(true)` alone was wrong for non-billable projects). See `docs/MSW_BACKEND_PARITY_TIMESHEETS.md`.
+
 **`GET /payroll/runs/:id/register?type=SALARY` columns:** `employeeCode, employeeName, department, grossEarnings, totalDeductions, netPay, employerCost`
 - `department`: from `employee.department.name`
 - `employerCost`: grossEarnings × 1.13 (gross + employer contributions)
