@@ -66,6 +66,7 @@ const TimesheetSummary = {
     totalHours:      { type: 'number' },
     billableHours:   { type: 'number' },
     nonBillableHours:{ type: 'number' },
+    overtimeHours:   { type: 'number', description: 'Derived: Σ max(0, weekTotal − standardWeeklyHours) over timesheets in range. Always a number (0 when none).' },
     utilizationPct:  { type: 'integer' },
     byProject:       { type: 'array', items: TimesheetSummaryByProject },
     byEmployee:      { type: 'array', items: TimesheetSummaryByEmployee },
@@ -237,7 +238,7 @@ export default async function timesheetsRoutes(fastify) {
         properties: {
           weekStart: { type: 'string', description: 'YYYY-MM-DD (Monday)' },
           projectId: { type: 'string' },
-          taskId: { type: 'string' },
+          taskId: { type: 'string', nullable: true, description: 'Optional — a project entry may have no task. Send null or omit.' },
           date: { type: 'string', description: 'YYYY-MM-DD' },
           hours: { type: 'number', minimum: 0.25, maximum: 24 },
           billable: { type: 'boolean' },
@@ -262,7 +263,7 @@ export default async function timesheetsRoutes(fastify) {
           hours: { type: 'number' },
           billable: { type: 'boolean' },
           note: { type: 'string' },
-          taskId: { type: 'string' },
+          taskId: { type: 'string', nullable: true },
         },
       },
       response: { 200: obj },
@@ -292,6 +293,39 @@ export default async function timesheetsRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(ALL_AUTH)],
   }, controller.submitTimesheet);
+
+  fastify.post('/timesheets/copy-week', {
+    schema: {
+      tags: ['Timesheets'],
+      summary: 'Copy last week (M5) — scaffold the target week with each unique project/task row from the source week at hours:0',
+      description: 'Idempotent: skips rows the target week already has. 422 WEEK_LOCKED if the target week is not DRAFT/REJECTED. Returns the target Timesheet; meta.copied = rows created.',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['fromWeekStart', 'toWeekStart'],
+        properties: {
+          fromWeekStart: { type: 'string', description: 'YYYY-MM-DD (source week Monday)' },
+          toWeekStart: { type: 'string', description: 'YYYY-MM-DD (target week Monday)' },
+          withNotes: { type: 'boolean', description: 'Carry the source entries\' notes (default false)' },
+        },
+      },
+      response: { 201: obj },
+    },
+    onRequest: [authenticate, authorize(ALL_AUTH)],
+  }, controller.copyWeek);
+
+  fastify.post('/timesheets/:id/recall', {
+    schema: {
+      tags: ['Timesheets'],
+      summary: 'Recall / unsubmit a timesheet (M6) — owner only, SUBMITTED → DRAFT',
+      description: '404 if not found / not owner. 422 NOT_RECALLABLE if the week is not SUBMITTED.',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: { type: 'object' },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(ALL_AUTH)],
+  }, controller.recallTimesheet);
 
   // ── Approvals ─────────────────────────────────────────────────────────────
 

@@ -1,5 +1,6 @@
 import * as repo from './timesheets.repository.js';
 import { prisma } from '../../plugins/prisma.js';
+import { normalizeTaskId, uniqueCopyRows } from './timesheets.derive.js';
 
 function fmtProject(p) {
   return {
@@ -116,6 +117,9 @@ export async function getTimesheet(tenantId, employeeId, weekStart) {
 
 export async function createEntry(tenantId, employeeId, body) {
   const { weekStart, ...entryData } = body;
+  // taskId is optional (a project entry may have no task). Normalize null/'' → null so an
+  // empty/absent task never reaches Prisma as a bad FK (was a live 500). Domain G.2 contract.
+  normalizeTaskId(entryData);
   const sheet = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
 
   if (sheet.status === 'SUBMITTED' || sheet.status === 'APPROVED') {
@@ -130,6 +134,7 @@ export async function createEntry(tenantId, employeeId, body) {
 }
 
 export async function updateEntry(tenantId, id, data) {
+  normalizeTaskId(data);
   const entry = await repo.updateEntry(tenantId, id, data);
   if (!entry) return null;
   return entry;
@@ -159,6 +164,59 @@ export async function submitTimesheet(tenantId, id, employeeId) {
 
   const settings = await repo.getSettings(tenantId);
   const updated = await repo.submitTimesheet(id);
+  return fmtSheet(updated, settings);
+}
+
+// Copy last week (M5): scaffold the target week with each UNIQUE project/task row from the
+// source week at hours:0 (Harvest behavior). Idempotent — skips rows the target already has.
+export async function copyWeek(tenantId, employeeId, body) {
+  const { fromWeekStart, toWeekStart, withNotes = false } = body || {};
+  if (!fromWeekStart || !toWeekStart) {
+    const err = new Error('fromWeekStart and toWeekStart are required');
+    err.statusCode = 400; err.code = 'VALIDATION_ERROR';
+    throw err;
+  }
+  const settings = await repo.getSettings(tenantId);
+  const target = await repo.getOrCreateTimesheet(tenantId, employeeId, toWeekStart);
+  if (target.status !== 'DRAFT' && target.status !== 'REJECTED') {
+    const err = new Error('Target week is locked (already submitted/approved)');
+    err.statusCode = 422; err.code = 'WEEK_LOCKED';
+    throw err;
+  }
+
+  const source = await repo.getTimesheetByWeek(tenantId, employeeId, fromWeekStart);
+  // Unique project/task rows from the source the target doesn't already have (idempotent).
+  const rows = uniqueCopyRows(source?.entries || [], target.entries || []);
+  let copied = 0;
+  for (const e of rows) {
+    await repo.createEntry(tenantId, target.id, employeeId, {
+      projectId: e.projectId,
+      taskId: e.taskId ?? null,
+      date: toWeekStart,
+      hours: 0,
+      billable: e.billable,
+      note: withNotes ? (e.note ?? null) : null,
+      source: 'MANUAL',
+    });
+    copied++;
+  }
+
+  const refreshed = await repo.getOrCreateTimesheet(tenantId, employeeId, toWeekStart);
+  return { sheet: fmtSheet(refreshed, settings), copied };
+}
+
+// Recall / unsubmit (M6) — OWNER ONLY. SUBMITTED → DRAFT.
+export async function recallTimesheet(tenantId, id, employeeId) {
+  const sheet = await repo.getTimesheetById(id, tenantId);
+  if (!sheet) return null;
+  if (sheet.employeeId !== employeeId) return null; // owner-only; hide existence from non-owners
+  if (sheet.status !== 'SUBMITTED') {
+    const err = new Error('Only a SUBMITTED timesheet can be recalled');
+    err.statusCode = 422; err.code = 'NOT_RECALLABLE';
+    throw err;
+  }
+  const settings = await repo.getSettings(tenantId);
+  const updated = await repo.recallTimesheet(id);
   return fmtSheet(updated, settings);
 }
 

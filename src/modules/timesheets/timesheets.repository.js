@@ -1,4 +1,5 @@
 import { prisma } from '../../plugins/prisma.js';
+import { overtimeFromSheets, round2 } from './timesheets.derive.js';
 
 // ── Projects ──────────────────────────────────────────────────────────────────
 
@@ -99,6 +100,22 @@ export async function getTimesheetById(id, tenantId) {
   });
 }
 
+export async function getTimesheetByWeek(tenantId, employeeId, weekStart) {
+  return prisma.timesheet.findUnique({
+    where: { tenantId_employeeId_weekStart: { tenantId, employeeId, weekStart } },
+    include: { entries: { include: { project: true, task: true } } },
+  });
+}
+
+// Recall (unsubmit): SUBMITTED → DRAFT, clearing the submission + decision fields.
+export async function recallTimesheet(id) {
+  return prisma.timesheet.update({
+    where: { id },
+    data: { status: 'DRAFT', submittedAt: null, decidedBy: null, decidedAt: null, comment: null },
+    include: { entries: { include: { project: true, task: true } } },
+  });
+}
+
 export async function getPendingTimesheets(tenantId, status, _managerId) {
   const where = { tenantId, ...(status ? { status } : {}) };
   const sheets = await prisma.timesheet.findMany({
@@ -179,9 +196,20 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
     include: { project: true },
   });
 
-  const totalHours = entries.reduce((s, e) => s + e.hours, 0);
-  const billableHours = entries.filter(e => e.billable).reduce((s, e) => s + e.hours, 0);
-  const nonBillableHours = totalHours - billableHours;
+  const totalHours = round2(entries.reduce((s, e) => s + e.hours, 0));
+  const billableHours = round2(entries.filter(e => e.billable).reduce((s, e) => s + e.hours, 0));
+  const nonBillableHours = round2(totalHours - billableHours);
+
+  // overtimeHours is DERIVED, never stored: per week max(0, totalHours - standardHours),
+  // summed over every timesheet whose weekStart falls in range (same scope + standardHours
+  // as fmtSheet and the FE mock at src/mocks/handlers/timesheets.ts:537). Always a number.
+  const settings = await prisma.timesheetSettings.findUnique({ where: { tenantId } });
+  const standardHours = settings?.standardWeeklyHours ?? 40;
+  const scopedSheets = await prisma.timesheet.findMany({
+    where: { tenantId, ...(employeeId ? { employeeId } : {}), weekStart: { gte: sinceStr } },
+    select: { totalHours: true },
+  });
+  const overtimeHours = overtimeFromSheets(scopedSheets, standardHours);
 
   const projectMap = {};
   const employeeMap = {};
@@ -223,7 +251,7 @@ export async function getSummary(tenantId, employeeId, rangeDays) {
     totalHours,
     billableHours,
     nonBillableHours,
-    overtimeHours: 0,
+    overtimeHours,
     utilizationPct: totalHours > 0 ? Math.round((billableHours / totalHours) * 100) : 0,
     byProject: Object.values(projectMap),
     byEmployee,

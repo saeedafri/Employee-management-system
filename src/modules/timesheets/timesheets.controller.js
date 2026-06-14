@@ -127,6 +127,27 @@ export async function rejectTimesheet(request, reply) {
   }
 }
 
+export async function copyWeek(request, reply) {
+  try {
+    const result = await service.copyWeek(request.tenant.id, request.user.employeeId, request.body || {});
+    return reply.code(201).send(successResponse(result.sheet, { copied: result.copied }));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
+}
+
+export async function recallTimesheet(request, reply) {
+  try {
+    const sheet = await service.recallTimesheet(request.tenant.id, request.params.id, request.user.employeeId);
+    if (!sheet) return reply.code(404).send(errorResponse('NOT_FOUND', 'Timesheet not found', {}, request.id));
+    return reply.send(successResponse(sheet));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
+}
+
 export async function getApprovals(request, reply) {
   const { status } = request.query;
   const sheets = await service.getApprovals(request.tenant.id, status);
