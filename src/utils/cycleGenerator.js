@@ -37,10 +37,10 @@ export function generateCycles(payCalendar, fromYYYYMM, toYYYYMM) {
   const toDate = new Date(ty, tm, 0);
 
   switch (payCalendar.paySchedule) {
-    case 'SEMI_MONTHLY': return genSemiMonthlyCycles(payCalendar, fromDate, toDate);
-    case 'BIWEEKLY': return genBiweeklyCycles(payCalendar, fromDate, toDate);
-    case 'WEEKLY': return genWeeklyCycles(payCalendar, fromDate, toDate);
-    default: return genMonthlyCycles(payCalendar, fromDate, toDate);
+  case 'SEMI_MONTHLY': return genSemiMonthlyCycles(payCalendar, fromDate, toDate);
+  case 'BIWEEKLY': return genBiweeklyCycles(payCalendar, fromDate, toDate);
+  case 'WEEKLY': return genWeeklyCycles(payCalendar, fromDate, toDate);
+  default: return genMonthlyCycles(payCalendar, fromDate, toDate);
   }
 }
 
