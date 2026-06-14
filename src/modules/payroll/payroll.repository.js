@@ -889,21 +889,43 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         include: { payGroup: { select: { currency: true } } },
       });
       const bonusCurrency = empSal?.currency ?? empSal?.payGroup?.currency ?? run.currency ?? 'INR';
+      // H10 — marginal income tax on the extra pay: tax(base + extra) − tax(base), at the
+      // employee's own bands (FE computeBonusTax). Base = the latest regular payslip's taxable
+      // earnings annualized (fallback annualCtc). No regime → tax 0 (prior behaviour preserved).
+      let bonusTax = 0;
+      try {
+        const { pack: bpack } = await resolveStatutoryPackForEmployee(prisma, tenantId, empSal, run.period, periodEnd);
+        const bregime = (bpack?.taxRegimes ?? [])[0] ?? null;
+        if (bregime && Array.isArray(bregime.slabs) && bregime.slabs.length) {
+          const lastReg = await prisma.payslip.findFirst({
+            where: { tenantId, employeeId: emp.id, grossEarnings: { gt: 0 }, NOT: { period: run.period } },
+            orderBy: { generatedAt: 'desc' }, select: { earningsJson: true },
+          });
+          const baseAnnual = (lastReg && Array.isArray(lastReg.earningsJson))
+            ? lastReg.earningsJson.filter((e) => e.taxable !== false).reduce((s, e) => s + Number(e.amount ?? 0), 0) * 12
+            : Number(empSal?.annualCtc ?? 0);
+          const taxBase = computeIncomeTaxFromRegime(baseAnnual, bregime, bonusCurrency);
+          const taxWith = computeIncomeTaxFromRegime(baseAnnual + amount, bregime, bonusCurrency);
+          bonusTax = Math.max(0, Math.round(taxWith - taxBase));
+        }
+      } catch { bonusTax = 0; }
+      const bonusNet = Math.round((amount - bonusTax) * 100) / 100;
       const earningsArr = [{ code: runType, name: label, amount, taxable: true }];
+      const bonusDed = bonusTax > 0 ? [{ code: 'TDS', name: 'Income Tax (TDS)', amount: bonusTax, taxable: false }] : [];
       await prisma.payslip.create({
         data: {
           tenantId, payrollRunId: id, employeeId: emp.id, period: run.period,
-          currency: bonusCurrency, grossEarnings: amount, totalDeductions: 0, netPay: amount,
+          currency: bonusCurrency, grossEarnings: amount, totalDeductions: bonusTax, netPay: bonusNet,
           workingDays: 0, presentDays: 0, leaveDays: 0, lopDays: 0, status: 'PENDING',
-          earningsJson: earningsArr, deductionsJson: [],
+          earningsJson: earningsArr, deductionsJson: bonusDed,
           oneTimeAdditionsJson: [], oneTimeDeductionsJson: [], generatedAt: new Date(),
         },
       });
-      totalGross += amount; totalNet += amount; empCount++;
+      totalGross += amount; totalDeductions += bonusTax; totalNet += bonusNet; empCount++;
       const deptName = emp.department?.name || 'Unassigned';
       if (!byDept[deptName]) byDept[deptName] = { departmentName: deptName, employeeCount: 0, totalNet: 0 };
       byDept[deptName].employeeCount++;
-      byDept[deptName].totalNet = Math.round((byDept[deptName].totalNet + amount) * 100) / 100;
+      byDept[deptName].totalNet = Math.round((byDept[deptName].totalNet + bonusNet) * 100) / 100;
     }
     if (!inputs.length) {
       warnings.push({ message: 'No variablePay inputs — add inputs before calculate' });
@@ -995,6 +1017,8 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
             : (pgc.component.value != null ? Number(pgc.component.value) : null),
           basisCode: pgc.component.basisCode,
           formula: (hasOverride && pgc.overrideFormula) ? pgc.overrideFormula : pgc.component.formula,
+          prorate: pgc.component.prorate ?? true,
+          payInPeriods: pgc.component.payInPeriods ?? null,
         };
       });
 
@@ -1018,13 +1042,48 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       // from periods-per-year (no frequency branches): MONTHLY ppy=12 → 1 (unchanged, byte-identical);
       // SEMI_MONTHLY ppy=24 → 0.5; BIWEEKLY ppy=26 → 12/26; WEEKLY ppy=52 → 12/52.
       const periodFactor = 12 / ppy;
+      const r2 = (n) => Math.round(n * 100) / 100;
+      const pMonth = Number(run.period.slice(5, 7));
+      const pYear = Number(run.period.slice(0, 4));
+
+      // Run input + attendance resolved up front so LOP proration (H1) can reduce earnings and
+      // the garnishment disposable shares the same period context.
+      const runInput = await prisma.payrollInput.findFirst({ where: { runId: id, employeeId: employee.id } });
+      const attendance = await prisma.attendanceRecord.findMany({
+        where: { tenantId, employeeId: employee.id, attendanceDate: { gte: periodStart, lte: periodEnd } },
+        select: { status: true },
+      });
+      const workWeekPattern = parseWorkWeekPattern(empLegalEntity?.workWeekPattern);
+      const workingDays = getWorkingDays(periodStart, periodEnd, workWeekPattern);
+      const hasAttendance = attendance.length > 0;
+      const presentDays = hasAttendance
+        ? attendance.filter((a) => ['PRESENT', 'WFH', 'HALF_DAY'].includes(a.status)).length
+        : workingDays;
+      const leaveDays = hasAttendance ? attendance.filter((a) => a.status === 'LEAVE').length : 0;
+      const lopDays = runInput?.lopDays ?? (hasAttendance ? attendance.filter((a) => a.status === 'ABSENT').length : 0);
+      // H1 — LOP proration factor, calendar-day basis (FE proration.utils.prorationFactor).
+      const calDays = new Date(pYear, pMonth, 0).getDate();
+      const lopFactor = calDays > 0 ? Math.min(1, Math.max(0, calDays - lopDays) / calDays) : 1;
+
       const sorted = topologicalSort(pgComps);
       const computed = { CTC: ctcPeriod };
       const earningsArr = [], deductionsArr = [];
+      // Structural (un-prorated) running sums — formulas + the annual tax base read these so
+      // they match the FE engine (which prorates a structural breakdown, not the paid amounts).
+      let structEarnSum = 0, structDedSum = 0, annualTaxableStructural = 0;
 
       for (const comp of sorted) {
         if (comp.type === 'DEDUCTION' && schemeEmployeeCodes.has(comp.code)) continue;
         if (comp.type === 'EMPLOYER_CONTRIBUTION' && schemeEmployerCodes.has(comp.code)) continue;
+        // Scheduled components (13th-month, etc.) pay only in their configured months.
+        let payIn = null;
+        if (comp.payInPeriods) {
+          try {
+            const a = typeof comp.payInPeriods === 'string' ? JSON.parse(comp.payInPeriods) : comp.payInPeriods;
+            if (Array.isArray(a)) payIn = a.map(Number);
+          } catch { payIn = null; }
+        }
+        if (payIn && !payIn.includes(pMonth)) continue;
         let amount = 0;
         if (comp.calculationType === 'FLAT') {
           // FLAT is a monthly figure → scale to the cycle's share (periodFactor=1 for MONTHLY).
@@ -1032,14 +1091,24 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         } else if (comp.calculationType === 'PERCENTAGE') {
           amount = ((comp.value || 0) / 100) * (computed[comp.basisCode] || 0);
         } else if (comp.calculationType === 'FORMULA') {
-          computed.GROSS = earningsArr.reduce((s, e) => s + e.amount, 0);
-          computed.NET = computed.GROSS - deductionsArr.reduce((s, d) => s + d.amount, 0);
+          // FE parity: formulas resolve over STRUCTURAL (un-prorated) GROSS/NET.
+          computed.GROSS = structEarnSum;
+          computed.NET = structEarnSum - structDedSum;
           amount = evaluateFormula(comp.formula, computed);
         }
-        amount = Math.round(amount * 100) / 100;
-        computed[comp.code] = amount;
-        if (comp.type === 'EARNING') earningsArr.push({ code: comp.code, name: comp.name, amount, taxable: comp.taxable });
-        else if (comp.type === 'DEDUCTION') deductionsArr.push({ code: comp.code, name: comp.name, amount });
+        amount = r2(amount);              // structural period amount
+        computed[comp.code] = amount;     // basis/formula see structural
+        // H1 — paid amount = structural × LOP factor for prorating lines (FE comp.prorate).
+        const paid = (comp.prorate ?? true) ? r2(amount * lopFactor) : amount;
+        if (comp.type === 'EARNING') {
+          earningsArr.push({ code: comp.code, name: comp.name, amount: paid, taxable: comp.taxable });
+          structEarnSum += amount;
+          // H3 — annual taxable base from STRUCTURAL taxable earnings × periods actually paid.
+          if (comp.taxable !== false) annualTaxableStructural += amount * ((payIn && payIn.length) ? payIn.length : 12);
+        } else if (comp.type === 'DEDUCTION') {
+          deductionsArr.push({ code: comp.code, name: comp.name, amount: paid });
+          structDedSum += amount;
+        }
       }
 
       const { statutoryDeductions, employerContributions } = computeStatutoryContributions(
@@ -1052,22 +1121,60 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         else deductionsArr.push(ded);
       }
 
-      // Generic income tax via pack taxRegime (no country-specific branching)
+      const grossEarnings = r2(earningsArr.reduce((s, e) => s + e.amount, 0));
+
+      // H11 — sub-national local taxes (professional tax / LWF) from the pack's localTaxes
+      // bands, on the (prorated) monthly gross. No-op when the pack carries no localTaxes.
+      const localTaxes = statutoryPack?.localTaxes ?? [];
+      if (Array.isArray(localTaxes) && localTaxes.length > 0) {
+        const empJurisdiction = sal.jurisdiction ?? employee.jurisdiction ?? empLegalEntity?.jurisdiction ?? null;
+        for (const lt of localTaxes) {
+          if (lt.jurisdiction && empJurisdiction && lt.jurisdiction !== empJurisdiction) continue;
+          let amt = 0;
+          for (const b of (lt.slabs ?? lt.bands ?? [])) {
+            const upper = b.to == null ? Infinity : Number(b.to);
+            if (grossEarnings >= Number(b.from ?? 0) && grossEarnings < upper) { amt = Number(b.amount ?? 0); break; }
+          }
+          if (amt > 0) {
+            const code = lt.component ?? 'PROF_TAX';
+            const idx = deductionsArr.findIndex((d) => d.code === code);
+            if (idx >= 0) deductionsArr[idx].amount = amt;
+            else deductionsArr.push({ code, name: lt.name ?? 'Professional Tax', amount: amt, taxable: false });
+          }
+        }
+      }
+
+      // Income tax (H2/H3/H4): regime from the employee's declaration (else pack default);
+      // annual taxable = structural base − VERIFIED declaration exemptions the regime allows;
+      // withhold with a YTD true-up across the fiscal year, then split across sub-monthly cycles.
       const taxRegimes = statutoryPack?.taxRegimes ?? [];
-      const activeRegime = taxRegimes.length > 0 ? taxRegimes[0] : null;
+      const fyStart = Number(empLegalEntity?.fiscalYearStartMonth ?? statutoryPack?.fiscalYearStartMonth ?? 4);
+      const fyStartYear = pMonth >= fyStart ? pYear : pYear - 1;
+      const fyLabel = `${fyStartYear}-${String((fyStartYear + 1) % 100).padStart(2, '0')}`;
+      const monthIndex = ((pMonth - fyStart + 12) % 12) + 1;
+      const declaration = taxRegimes.length
+        ? await prisma.taxDeclaration.findFirst({ where: { tenantId, employeeId: employee.id, fiscalYear: fyLabel } })
+        : null;
+      const activeRegime =
+        (declaration && taxRegimes.find((rg) => rg.code === declaration.regime)) ||
+        (taxRegimes.length > 0 ? taxRegimes[0] : null);
       if (activeRegime && Array.isArray(activeRegime.slabs) && activeRegime.slabs.length > 0) {
-        const annualGross = earningsArr
-          .filter((e) => {
-            const comp = componentByCode.get(e.code);
-            return comp?.taxable !== false;
-          })
-          .reduce((s, e) => s + Number(e.amount ?? 0), 0) * ppy;
+        const allowed = new Set(activeRegime.allowedExemptions ?? []);
+        const items = Array.isArray(declaration?.items) ? declaration.items : [];
+        const exemptions = items
+          .filter((it) => it.proofStatus === 'VERIFIED' && it.code !== 'STD_DEDUCTION' && allowed.has(it.code))
+          .reduce((s, it) => s + Number(it.amount ?? 0), 0);
+        const annualTaxable = Math.max(0, annualTaxableStructural - exemptions);
         const taxCurrency = sal.currency ?? payGroup.currency ?? 'INR';
-        const annualTax = computeIncomeTaxFromRegime(annualGross, activeRegime, taxCurrency);
-        // Withhold by MONTHLY total, then split across the actual cycles in the month so the
-        // month total is exact (last cycle absorbs the remainder). MONTHLY (ppm=1) is unchanged:
-        // cycleTax = round(annualTax/12). Semi-monthly → 8437 + 8438 = 16875 (not 2×round(annualTax/24)).
-        const monthlyTax = Math.round(annualTax / 12);
+        const annualTax = computeIncomeTaxFromRegime(annualTaxable, activeRegime, taxCurrency);
+        // H2 — YTD true-up: walk months 1..monthIndex, spreading the remaining tax over the
+        // periods that are left (FE withholdingForMonth). monthIndex=1 → round(annualTax/12).
+        let ytd = 0, monthlyTax = 0;
+        for (let k = 1; k <= monthIndex; k++) {
+          const remaining = Math.max(0, annualTax - ytd);
+          monthlyTax = Math.round(remaining / Math.max(1, 12 - (k - 1)));
+          if (k < monthIndex) ytd += monthlyTax;
+        }
         const cycleTaxFloor = Math.floor(monthlyTax / ppm);
         const cycleTax = lastCycle ? monthlyTax - cycleTaxFloor * (ppm - 1) : cycleTaxFloor;
         if (cycleTax > 0) {
@@ -1079,24 +1186,21 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         }
       }
 
-      const r2 = (n) => Math.round(n * 100) / 100;
-      const grossEarnings = r2(earningsArr.reduce((s, e) => s + e.amount, 0));
-
-      // Payroll input overrides (lopDays, one-time add/deduct). Fetched here (was below) so
-      // one-time lines and garnishment disposable use the same period context.
-      const runInput = await prisma.payrollInput.findFirst({ where: { runId: id, employeeId: employee.id } });
-
       // ── H5 Garnishments (FE parity: payroll-engine.ts applyGarnishments) ───────────────
       // After statutory + tax deductions, before voluntary (loans). disposable = gross − the
       // deductions accrued so far. Orders run in priority order; each withholds a flat amount
       // or % of the ORIGINAL disposable, capped, never breaching its protectedEarningsFloor.
       // Backend garnishment money is MAJOR units (Decimal) — no minor conversion. Additive:
       // employees with no active order are byte-identical to before.
+      // Garnishment effectiveFrom/effectiveTo are STRING (YYYY-MM-DD) columns — compare with
+      // string dates, not the Date objects periodStart/periodEnd (Prisma rejects Date here).
+      const periodStartStr = periodStart instanceof Date ? periodStart.toISOString().slice(0, 10) : String(periodStart);
+      const periodEndStr = periodEnd instanceof Date ? periodEnd.toISOString().slice(0, 10) : String(periodEnd);
       const garnishments = await prisma.garnishment.findMany({
         where: {
           tenantId, employeeId: employee.id,
-          effectiveFrom: { lte: periodEnd },
-          OR: [{ effectiveTo: null }, { effectiveTo: { gte: periodStart } }],
+          effectiveFrom: { lte: periodEndStr },
+          OR: [{ effectiveTo: null }, { effectiveTo: { gte: periodStartStr } }],
         },
       });
       if (garnishments.length > 0) {
@@ -1155,21 +1259,6 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       const totalDed = r2(deductionsArr.reduce((s, d) => s + d.amount, 0));
       const netPay = r2(grossEarnings - totalDed + oneTimeAddTotal - oneTimeDedTotal);
       const employerCost = r2(grossEarnings + sumEmployerContributions(employerContributions));
-
-      const attendance = await prisma.attendanceRecord.findMany({
-        where: { tenantId, employeeId: employee.id, attendanceDate: { gte: periodStart, lte: periodEnd } },
-        select: { status: true },
-      });
-      // Work-week pattern comes from the resolved legal entity (default Mon–Fri). No country hardcode.
-      const workWeekPattern = parseWorkWeekPattern(empLegalEntity?.workWeekPattern);
-      const workingDays = getWorkingDays(periodStart, periodEnd, workWeekPattern);
-      // Default: full attendance when no records exist (fix #6)
-      const hasAttendance = attendance.length > 0;
-      const presentDays = hasAttendance
-        ? attendance.filter((a) => ['PRESENT', 'WFH', 'HALF_DAY'].includes(a.status)).length
-        : workingDays;
-      const leaveDays = hasAttendance ? attendance.filter((a) => a.status === 'LEAVE').length : 0;
-      const lopDays = runInput?.lopDays ?? (hasAttendance ? attendance.filter((a) => a.status === 'ABSENT').length : 0);
 
       const currency = sal.currency ?? payGroup.currency;
 
