@@ -3081,6 +3081,16 @@ Response shape (both POST + PATCH): full department object with `headEmployeeId`
 > All F.1–F.17 endpoints are **live on Render** as of 2026-06-08.  
 > F.6 (Claims), F.7 (Garnishments), F.10 (Documents), F.11 (Accounting) — previously MSW-only — are now implemented. See §F.17 below.  
 > **Money:** major units (e.g. `1800000` = ₹18,00,000). **Casing:** camelCase throughout.  
+>
+> **Engine parity with the FE MSW (2026-06-15)** — `calculatePayrollRun` now matches the FE engine
+> (`ems-frontend/src/mocks/data/payroll-engine.ts`): LOP proration (calendar-day, leap-aware) on
+> prorating earnings; income tax on the **structural** annual base with a **YTD true-up**, regime from
+> the employee `TaxDeclaration`; **garnishments / loan EMI / approved claims** now reduce/augment net
+> (`GARN_*`/`EMI_*` lines, claims as one-time additions, settled on mark-paid); `CLAIM_OVER_CAP` (422)
+> on claim submit; bonus/arrears marginal tax; professional/local tax from `pack.localTaxes`;
+> surcharge as scalar **or** `{thresholdAnnual,rate}` bands; `bank-file?format=NACH|ACH|SEPA|BACS`
+> emits format-specific columns. Full report: `docs/MSW_BACKEND_PARITY_PAYROLL.md`; live response
+> captures: `docs/PAYROLL_API_RESPONSES.md`.
 > **Auth:** Bearer token required on every endpoint. Role codes: HR=HR_ADMIN, SA=SUPER_ADMIN, MGR=MANAGER, EMP=EMPLOYEE.
 
 ---

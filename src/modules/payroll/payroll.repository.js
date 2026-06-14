@@ -704,9 +704,18 @@ async function resolveRunCurrency(prisma, tenantId, data) {
     ? { tenantId, id: { in: data.payGroupIds } }
     : { tenantId, active: true };
   const pgs = await prisma.payGroup.findMany({ where, select: { currency: true } });
-  const currencies = [...new Set(pgs.map((p) => p.currency).filter(Boolean))];
-  if (currencies.length === 1) return currencies[0];
-  if (currencies.length > 1) return 'MULTI';
+  const currencies = pgs.map((p) => p.currency).filter(Boolean);
+  const unique = [...new Set(currencies)];
+  if (unique.length === 1) return unique[0];
+  if (unique.length > 1) {
+    // Mixed-currency run: the run header `currency` is rendered by the FE through
+    // Intl.NumberFormat, which throws RangeError on a non-ISO sentinel like 'MULTI'. Use the
+    // most common pay-group currency (a valid ISO code) as the header; the per-payslip
+    // currency stays authoritative for the actual amounts. (FE parity: MSW never emits 'MULTI'.)
+    const counts = {};
+    for (const c of currencies) counts[c] = (counts[c] || 0) + 1;
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+  }
   return 'INR';
 }
 

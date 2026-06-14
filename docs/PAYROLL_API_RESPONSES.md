@@ -203,6 +203,68 @@ Arjun Nair,00-01-01,000001015500,83925.00,
 
 ---
 
+## 16. Payslips across ALL employees — run `2026-05` (PAID, 10 employees)
+Totals for every employee in the run (`GET /payroll/runs/:id/payslips` → `data.items[]`), showing
+the spread across departments and pay bands:
+
+| Code | Name | Dept | Gross | Deductions | Net |
+|---|---|---|---:|---:|---:|
+| E0100 | Riya Kapoor | Sales | 130000 | 8775 | 121225 |
+| E0001 | Aman Kumar | Engineering | 100000 | 12000 | 88000 |
+| E0003 | HR Admin | HR | 90000 | 11000 | 79000 |
+| E0007 | Neha Kumar | Finance | 90000 | 6075 | 83925 |
+| E0101 | Arjun Nair | Engineering | 90000 | 6075 | 83925 |
+| E0005 | Sakshi Singh | Sales | 80000 | 5400 | 74600 |
+| E0002 | Priya Sharma | Engineering | 75000 | 9000 | 66000 |
+| E0102 | Sneha Reddy | Engineering | 70000 | 4725 | 65275 |
+| E0004 | Rajesh Sharma | Engineering | 60000 | 4050 | 55950 |
+| E0008 | Amit Verma | Operations | 55000 | 3713 | 51287 |
+
+## 17. Full payslip breakdown — `GET /payroll/runs/:id/payslips/:payslipId`
+Detail keys: `{ id, period, periodLabel, currency, employee, company, earnings[], deductions[],
+employerContributions[], employerCost, oneTimeAdditions[], oneTimeDeductions[], grossEarnings,
+totalDeductions, netPay, workingDays, presentDays, leaveDays, lopDays, status, paymentDate,
+paymentReference, payrollRunId, documentUrl, generatedAt, ytd }`.
+
+**E0001 Aman Kumar** — earner with an active garnishment (new-engine, live capture):
+```jsonc
+{ "grossEarnings": 148750, "totalDeductions": 34862, "netPay": 113888, "lopDays": 0,
+  "earnings": [
+    { "code": "BASIC", "amount": 50000 }, { "code": "HRA", "amount": 20000 },
+    { "code": "CONVEYANCE", "amount": 1600 }, { "code": "SPECIAL_ALLOW", "amount": 77150 } ],
+  "deductions": [
+    { "code": "PF", "amount": 6000 }, { "code": "PROF_TAX", "amount": 200 },
+    { "code": "WITHHOLDING_TAX", "amount": 23662 },
+    { "code": "GARN_195ecf5d-…", "amount": 5000 } ],     // H5 garnishment
+  "employerContributions": [] }
+```
+
+**E0102 Sneha Reddy** — employer-contribution split + lower band (live capture):
+```jsonc
+{ "grossEarnings": 68750, "totalDeductions": 2394, "netPay": 66356,
+  "earnings": [ { "code": "BASIC", "amount": 50000 }, { "code": "HRA", "amount": 20000 },
+    { "code": "CONVEYANCE", "amount": 1600 }, { "code": "SPECIAL_ALLOW", "amount": -2850 } ],
+  "deductions": [ { "code": "PROF_TAX", "amount": 200 }, { "code": "PF", "amount": 1800 },
+    { "code": "WITHHOLDING_TAX", "amount": 394 } ],
+  "employerContributions": [ { "code": "PF_ER", "amount": 1800 } ] }
+```
+> `SPECIAL_ALLOW: -2850` is a **data** quirk for this employee (CTC < sum of fixed components),
+> not an engine defect — `SPECIAL_ALLOW = CTC − BASIC − HRA − …` goes slightly negative.
+
+## 18. Engine behaviour — LOP proration (Stage 2, verified live)
+Same employee (E0001), baseline vs **15 LOP days in February** (29-day leap month → ×14/29):
+| | Gross | BASIC | PF | PROF_TAX | WITHHOLDING_TAX | GARN | Net |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Baseline (0 LOP) | 148750 | 50000 | 6000 | 200 | 23663 | 5000 | 113887 |
+| 15 LOP (Feb) | 71810.34 | 24137.93 | 2896.55 | 96.55 | 23662 | 5000 | 40155.24 |
+
+- Earnings prorate on the **calendar-day** basis (`50000 × 14/29 = 24137.93`), leap-year aware.
+- **Income tax barely moves** (23663 → 23662): the annual taxable base is the **structural**
+  (un-prorated) salary × 12, so one month's LOP doesn't slash the year's projected tax (H3).
+- Statutory (PF) follows the prorated wage; the flat garnishment (GARN) is unaffected.
+
+---
+
 ## Capture method
 Backend (`fix/payroll-msw-parity`) run locally against the live Render DB (read-only GETs; no
 writes/deletes), authenticated as `hr@acme.test` (tenant `acme-corp-001`). Run used:

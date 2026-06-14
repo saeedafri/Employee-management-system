@@ -44,7 +44,23 @@ reports, migration, payment-batches, pay-calendars/:id/cycles, employees/:id/ope
   > Data caveat: real account/IBAN/sort-code come from an employee bank schema that the backend
   > does not yet store; identifiers are synthesized deterministically exactly as the FE mock does.
 
-## 4. OUTSTANDING — HIGH severity (wrong numbers the UI sees) ❌
+### Stage 2 — engine core (verified live on a throwaway OFF_CYCLE run, cancelled not deleted) ✅
+- **H1 LOP proration**: prorating earnings × calendar-day factor (leap-year aware); structural
+  amounts retained for formula basis + tax base. Live: BASIC 50000→24137.93 at 15 LOP in Feb (×14/29).
+- **H2 YTD true-up withholding** (`withholdingForMonth`) across the fiscal year, then cycle-split.
+- **H3 annual taxable base** from STRUCTURAL taxable earnings × `payInPeriods` length. Live: tax
+  stayed 23663→23662 under LOP (structural base, not period × ppy).
+- **H4 regime** from the employee `TaxDeclaration` (else pack default); VERIFIED exemptions subtracted.
+- **H10 bonus/arrears marginal tax**: `tax(base+extra) − tax(base)` (was 0).
+- **H11 professional/local tax** from `pack.localTaxes` bands (no-op when the pack has none).
+
+> **CRITICAL bug found + fixed during Stage 2 verification:** Stage 1's garnishment query
+> compared `Garnishment.effectiveFrom/effectiveTo` (STRING columns) with Date objects → Prisma
+> threw for every employee, silently breaking `calculate` for ALL runs (CI has no test job to
+> catch it). Fixed to compare YYYY-MM-DD strings; calculate verified working live (empCount > 0,
+> full breakdowns). **Lesson: ci.yml needs a real test job.**
+
+## 4. ~~OUTSTANDING~~ FIXED — HIGH severity (all ported; see §3 Stage 1/2) ✅
 
 > The backend `calculatePayrollRun` is a **reduced engine**. For the flat demo roster (no
 > LOP/garnishment/loan/claims) regular-run gross/net roughly match; for any realistic employee
@@ -79,6 +95,19 @@ Registers (SALARY/STATUTORY/BANK_ADVICE/VARIANCE column specs), cost-summary FX 
 tax-forms (FORM16/W2/P60) + statutory-returns (ECR/24Q/RTI) templates, migration
 (opening-balances idempotency, parallel-reconcile MATCH/MISMATCH/MISSING). These were outside the
 calculate-core path the audit traced.
+
+## 6b. UI-breaking bug found via the live MSW=false UI test (FIXED) ✅
+Driving the real UI (`NEXT_PUBLIC_USE_MOCKS=false` → local backend) **crashed the whole Payroll
+page** with `RangeError: Invalid currency code : MULTI` in the FE `formatMajor`/`fmtInr`
+(`Intl.NumberFormat`). Root cause: `resolveRunCurrency` returned the **non-ISO sentinel `'MULTI'`**
+as a mixed-currency run's header `currency` — which the MSW never emits, so the UI was never
+exercised against it.
+- **Backend fix:** mixed-currency runs now use the **most common pay-group currency** (a valid ISO
+  code) as the header; per-payslip currency stays authoritative. 46 legacy run headers corrected
+  `MULTI → INR` (header-only; 0 payslips/batches affected). Payroll page now renders.
+- **Flag for the UI team (defense-in-depth):** `money.utils.formatMajor` should guard against an
+  unexpected currency (try/catch → fall back to a plain number), so no single bad code can
+  error-boundary an entire screen.
 
 ## 7. Flagged for the UI team ⚠️
 - FE `payroll-claims` categories are minor-unit; if the backend categories change to match (H8),
