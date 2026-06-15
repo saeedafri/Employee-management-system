@@ -216,3 +216,50 @@ submitReminderDay? (1–7|null), requireTaskOnEntry? }`. Returns the full settin
 | 422 | `NOT_SUBMITTED` | approve/reject a week not in SUBMITTED |
 | 422 | `TASK_REQUIRED` | entry without taskId while tenant `requireTaskOnEntry` |
 | 422 | `VALIDATION` / `VALIDATION_ERROR` | bad body (Fastify schema) — `details:[{field,message}]` |
+
+---
+
+## BACKEND_REMAINING follow-ups — live captures (2026-06-15, MSW=false)
+
+### `GET /timesheets?week=YYYY-MM-DD` — now carries `requireTaskOnEntry` (all roles)
+```jsonc
+{ "success": true, "data": {
+  "id": "cmq6xhljc008z6h2gpo6vgz8r", "employeeId": "cmq6w2hh5001m19wg8yk2mngg",
+  "employeeName": "HR Admin", "weekStart": "2026-06-08", "weekEnd": "2026-06-14",
+  "status": "APPROVED", "totalHours": 39.5, "billableHours": 34, "overtimeHours": 0,
+  "standardHours": 40, "requireTaskOnEntry": false,        // NEW — readable by employees too
+  "submittedAt": "2026-06-10T17:40:35.052Z", "decidedBy": "cmq6w2hh5001m19wg8yk2mngg",
+  "decidedAt": "2026-06-10T17:40:42.401Z", "comment": null, "entries": [ /* TimeEntry[] */ ] } }
+```
+
+### `GET /timesheets/settings` (HR/admin)
+```jsonc
+{ "success": true, "data": {
+  "standardWeeklyHours": 40, "overtimeThresholdHours": 40, "roundingMinutes": 15,
+  "approvalRequired": true, "unloggedHoursPolicy": "FLAG", "billableDefault": true,
+  "submitReminderDay": null, "requireTaskOnEntry": false,
+  "updatedAt": "2026-06-15T04:08:04.302Z" } }
+```
+
+### `GET /timesheets/summary?range=30d|90d` — `byEmployee[]` now has `employeeCode`
+```jsonc
+{ "success": true, "data": { "byEmployee": [
+  { "employeeId": "cmq6w2gyx001k19wga9dvy6dm", "employeeName": "Priya Sharma",
+    "employeeCode": "E0002",                              // NEW — was schema-stripped
+    "hours": 357.25, "billableHours": 300.75, "utilizationPct": 84 } ] } }
+```
+
+### `GET /notifications` — submit/approval reminder with `body` + `actionUrl`
+```jsonc
+{ "id": "6699b95d6d7389865f4dd84d", "type": "timesheet_submit_reminder",
+  "title": "Timesheet reminder",
+  "body": "Your timesheet for the week of 2026-06-08 is still a draft — please submit it.",
+  "entityType": null, "entityId": null,
+  "actionUrl": "/timesheets?tab=my&week=2026-06-08",       // NEW deep-link; approval → ?tab=approvals
+  "isRead": false, "createdAt": "2026-06-15T04:08:35.393Z" }
+```
+> Field is **`body`** (mapped from stored `message`). `actionUrl` is authoritative — UI no longer
+> needs to derive it from `metadata.weekStart`. `type` ∈ `timesheet_submit_reminder` |
+> `timesheet_approval_reminder`. Reminders auto-expire (TTL) and are idempotent per (user, week).
+
+> ⚠️ Live only on branch `fix/payroll-msw-parity` (PR #1) — merge + deploy for `…onrender.com`.
