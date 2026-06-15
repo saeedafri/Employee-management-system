@@ -102,3 +102,54 @@ Found by reading the MSW engine + **driving the live Render DB read-only**:
 - **Not yet run:** authenticated HTTP end-to-end of the *new* write paths (dup-code 409,
   locked-week 422) against the deployed server — requires deploying this commit first
   (write tests deliberately avoided on prod per "don't delete anything").
+
+## 6. Post-deploy live confirmation (2026-06-15) ✅
+
+`fix/payroll-msw-parity` is **deployed** to `employee-management-system-2b9q.onrender.com`.
+Authenticated HTTP end-to-end against the live server (`hr@acme.test` / employee accounts):
+
+- **`requireTaskOnEntry`** present on `GET /timesheets?week=` for **both** HR and employee
+  (`dev1@acme.test`) → `false`.
+- **`GET /timesheets/settings`** exposes `submitReminderDay: null` + `requireTaskOnEntry: false`.
+- **`summary.byEmployee[].employeeCode`** present (15 rows: `E0001`, `E0002`, …).
+- **Dup-code write path:** `POST /timesheets/projects` with an existing `code` → **`409 DUPLICATE_CODE`**
+  (rejected, no row created) — closes the "not yet run" gap above.
+
+### M7 submit-reminder — scheduled on GitHub Actions (no Render Cron)
+
+- Workflow **`Timesheet Submit Reminders`** is **active**; scheduled run (`cron 0 2 * * *`) and
+  `workflow_dispatch -f force=true` both **succeed** on `main`. Secret `TIMESHEET_DB_URL` is set.
+- Default state is a **no-op** (`submitReminderDay: null` → job logs `skipped, reason: "disabled"`).
+  Enable per tenant via `PATCH /timesheets/settings { "submitReminderDay": 1..7 }`.
+
+### Reminder notification payload — observed live (both types)
+
+> Delivery shape is **`data.notifications[]`**. Each maps `body` ← notification `message`,
+> `actionUrl` ← `metadata.actionUrl`. FE prefers `actionUrl` and renders `body ‖ message` — no change needed.
+
+```jsonc
+// timesheet_submit_reminder (employee, DRAFT w/ hours)
+{
+  "type": "timesheet_submit_reminder",
+  "title": "Timesheet reminder",
+  "body": "Your timesheet for the week of 2026-06-08 is still a draft — please submit it.",
+  "actionUrl": "/timesheets?tab=my&week=2026-06-08",
+  "isRead": false
+}
+// timesheet_approval_reminder (manager/HR, when sheets are SUBMITTED)
+{
+  "type": "timesheet_approval_reminder",
+  "title": "Timesheets awaiting approval",
+  "body": "1 timesheet(s) are submitted and waiting for your approval.",
+  "actionUrl": "/timesheets?tab=approvals",
+  "isRead": false
+}
+```
+
+### Two low-severity backend notes (from the live observation)
+1. **`employeeReminders`/`approverReminders` counts under-report** — `createMany({skipDuplicates})`
+   returns 0 when an idempotent row already exists for `(tenant, user, type, weekStart)`. Correct
+   (no dupes) but the returned count is **not** "newly delivered" — don't use it as delivery proof.
+2. **Stored `timesheet.totalHours` can be stale on seeded DRAFTs** — the reminder scan trusts the
+   persisted column (`getTimesheetsByWeekPage`); seed rows that bypass `recalcTimesheetTotal` stay
+   at 0 and won't nudge until an entry is touched. Seed data should run a recalc.
