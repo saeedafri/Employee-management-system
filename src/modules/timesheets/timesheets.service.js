@@ -48,6 +48,9 @@ function fmtSheet(sheet, settings, employeeName) {
     billableHours,
     overtimeHours,
     standardHours,
+    // Surfaced to ALL roles (the week response is readable by employees) so the entry UI can
+    // show "task required" upfront — GET /timesheets/settings is HR-only. (UI BACKEND_REMAINING §2.)
+    requireTaskOnEntry: settings?.requireTaskOnEntry ?? false,
     submittedAt: sheet.submittedAt,
     decidedBy: sheet.decidedBy,
     decidedAt: sheet.decidedAt,
@@ -404,7 +407,8 @@ export async function runSubmitRemindersForTenant(tenantId, { now = new Date(), 
           title: 'Timesheet reminder',
           message: submitReminderMessage(s.weekStart, s.status),
           weekStart: s.weekStart,
-          metadata: { timesheetId: s.id, status: s.status },
+          // Authoritative deep-link (UI prefers backend actionUrl over deriving from metadata).
+          metadata: { timesheetId: s.id, status: s.status, actionUrl: `/timesheets?tab=my&week=${s.weekStart}` },
         });
       }
     }
@@ -424,7 +428,7 @@ export async function runSubmitRemindersForTenant(tenantId, { now = new Date(), 
       title: 'Timesheets awaiting approval',
       message: `${pendingCount} timesheet(s) are submitted and waiting for your approval.`,
       weekStart,
-      metadata: { pendingCount },
+      metadata: { pendingCount, actionUrl: '/timesheets?tab=approvals' },
     }));
   }
 

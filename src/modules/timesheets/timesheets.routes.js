@@ -31,6 +31,7 @@ const Timesheet = {
     billableHours:  { type: 'number' },
     overtimeHours:  { type: 'number' },
     standardHours:  { type: 'number' },
+    requireTaskOnEntry: { type: 'boolean', description: 'Tenant rule surfaced to all roles so the entry UI can require a task upfront' },
     submittedAt:    { type: 'string', format: 'date-time', nullable: true },
     decidedBy:      { type: 'string', nullable: true },
     decidedAt:      { type: 'string', format: 'date-time', nullable: true },
@@ -44,6 +45,7 @@ const TimesheetSummaryByEmployee = {
   properties: {
     employeeId:     { type: 'string' },
     employeeName:   { type: 'string' },
+    employeeCode:   { type: 'string', description: 'Employee code (was computed but stripped by schema — now exposed)' },
     hours:          { type: 'number', description: 'Total hours logged' },
     billableHours:  { type: 'number' },
     utilizationPct: { type: 'integer', description: 'Billable / total * 100' },
