@@ -313,6 +313,45 @@ export async function getTimesheetsByWeek(tenantId, weekStart) {
   });
 }
 
+// ── Templates (weekly saved rows — UI PR #9) ────────────────────────────────────
+// `rows` is stored JSON-encoded (same convention as TimesheetProject.memberIds).
+
+export async function getTemplates(tenantId, employeeId) {
+  return prisma.timesheetTemplate.findMany({
+    where: { tenantId, employeeId },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export async function getTemplateById(tenantId, employeeId, id) {
+  return prisma.timesheetTemplate.findFirst({ where: { id, tenantId, employeeId } });
+}
+
+export async function createTemplate(tenantId, employeeId, { name, rows }) {
+  return prisma.timesheetTemplate.create({
+    data: { tenantId, employeeId, name, rows: JSON.stringify(rows ?? []) },
+  });
+}
+
+export async function updateTemplate(tenantId, employeeId, id, data) {
+  const existing = await getTemplateById(tenantId, employeeId, id);
+  if (!existing) return null;
+  return prisma.timesheetTemplate.update({
+    where: { id },
+    data: {
+      ...(data.name !== undefined ? { name: data.name } : {}),
+      ...(data.rows !== undefined ? { rows: JSON.stringify(data.rows) } : {}),
+    },
+  });
+}
+
+export async function deleteTemplate(tenantId, employeeId, id) {
+  const existing = await getTemplateById(tenantId, employeeId, id);
+  if (!existing) return null;
+  await prisma.timesheetTemplate.delete({ where: { id } });
+  return { id };
+}
+
 // Cursor-paginated page of a week's timesheets — keeps memory bounded for huge tenants.
 export async function getTimesheetsByWeekPage(tenantId, weekStart, { cursorId = null, take = 1000 } = {}) {
   return prisma.timesheet.findMany({

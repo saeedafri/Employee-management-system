@@ -374,6 +374,136 @@ export async function updateSettings(tenantId, data) {
   return repo.upsertSettings(tenantId, data);
 }
 
+// ── Templates (weekly saved rows — UI PR #9) ────────────────────────────────────
+
+function fmtTemplate(t) {
+  let rows = [];
+  try { rows = JSON.parse(t.rows || '[]'); } catch { rows = []; }
+  return { id: t.id, name: t.name, rows, createdAt: t.createdAt };
+}
+
+// Coerce an incoming rows payload into the stored shape: TemplateRow[] where each row is
+// { projectId, taskId|null, hoursByWeekday: number[7] }. Lenient but safe — never throws.
+function sanitizeRows(rows) {
+  if (!Array.isArray(rows)) return [];
+  return rows.map((r) => {
+    const hbw = Array.isArray(r?.hoursByWeekday) ? r.hoursByWeekday : [];
+    const hoursByWeekday = Array.from({ length: 7 }, (_, i) => {
+      const n = Number(hbw[i]);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    });
+    return {
+      projectId: String(r?.projectId ?? ''),
+      taskId: r?.taskId == null || r.taskId === '' ? null : String(r.taskId),
+      hoursByWeekday,
+    };
+  }).filter((r) => r.projectId);
+}
+
+function validationError(message) {
+  const err = new Error(message);
+  err.statusCode = 422; err.code = 'VALIDATION';
+  return err;
+}
+
+export async function getTemplates(tenantId, employeeId) {
+  const list = await repo.getTemplates(tenantId, employeeId);
+  return list.map(fmtTemplate);
+}
+
+export async function createTemplate(tenantId, employeeId, body) {
+  const name = String(body?.name ?? '').trim();
+  if (!name) throw validationError('A template name is required');
+  const created = await repo.createTemplate(tenantId, employeeId, { name, rows: sanitizeRows(body?.rows) });
+  return fmtTemplate(created);
+}
+
+export async function updateTemplate(tenantId, employeeId, id, body) {
+  const data = {};
+  if (body?.name !== undefined) {
+    const name = String(body.name).trim();
+    if (!name) throw validationError('A template name cannot be empty');
+    data.name = name;
+  }
+  if (body?.rows !== undefined) data.rows = sanitizeRows(body.rows);
+  const updated = await repo.updateTemplate(tenantId, employeeId, id, data);
+  if (!updated) return null;
+  return fmtTemplate(updated);
+}
+
+export async function deleteTemplate(tenantId, employeeId, id) {
+  return repo.deleteTemplate(tenantId, employeeId, id);
+}
+
+// Add `n` days to a Monday weekStart (YYYY-MM-DD), UTC-safe (no TZ drift).
+function addDaysISO(weekStart, n) {
+  const d = new Date(`${weekStart}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+// Apply a template to a week — CREATE-ONLY, non-destructive (matches the FE/MSW contract).
+// For each row × weekday with hoursByWeekday[d] > 0, create a time entry on that date ONLY
+// if no entry already exists for (projectId, taskId, date). When requireTaskOnEntry is on,
+// taskless rows are skipped (not errored). Returns { timesheet, created, skipped }.
+export async function applyTemplate(tenantId, employeeId, id, body) {
+  const weekStart = String(body?.weekStart ?? '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(weekStart)) throw validationError('weekStart (YYYY-MM-DD) is required');
+
+  const template = await repo.getTemplateById(tenantId, employeeId, id);
+  if (!template) return null; // 404
+
+  const settings = await repo.getSettings(tenantId);
+  const requireTask = settings?.requireTaskOnEntry ?? false;
+  const billableDefault = settings?.billableDefault ?? true;
+
+  const target = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
+  assertWeekEditable(target.status); // 422 WEEK_LOCKED on a submitted/approved week
+
+  // Existing (projectId, taskId, date) keys so apply never duplicates or overwrites.
+  const seen = new Set((target.entries || []).map((e) => `${e.projectId}|${e.taskId ?? ''}|${e.date}`));
+
+  let rows = [];
+  try { rows = JSON.parse(template.rows || '[]'); } catch { rows = []; }
+
+  // Cache project/task billability lookups so we don't re-query per (row,day).
+  const projCache = new Map(), taskCache = new Map();
+  const projBillable = async (pid) => {
+    if (!projCache.has(pid)) projCache.set(pid, await repo.getProjectById(tenantId, pid));
+    return projCache.get(pid)?.billable;
+  };
+  const taskBillable = async (tid) => {
+    if (!tid) return undefined;
+    if (!taskCache.has(tid)) taskCache.set(tid, await repo.getTaskById(tenantId, tid));
+    return taskCache.get(tid)?.billable;
+  };
+
+  let created = 0, skipped = 0;
+  for (const row of rows) {
+    const projectId = row?.projectId;
+    const taskId = row?.taskId ?? null;
+    const hbw = Array.isArray(row?.hoursByWeekday) ? row.hoursByWeekday : [];
+    if (!projectId) continue;
+    for (let d = 0; d < 7; d++) {
+      const hours = Number(hbw[d]);
+      if (!Number.isFinite(hours) || hours <= 0) continue; // not a candidate
+      if (requireTask && !taskId) { skipped++; continue; } // taskless-when-required
+      const date = addDaysISO(weekStart, d);
+      const key = `${projectId}|${taskId ?? ''}|${date}`;
+      if (seen.has(key)) { skipped++; continue; } // already exists — leave untouched
+      const billable = (await taskBillable(taskId)) ?? (await projBillable(projectId)) ?? billableDefault;
+      await repo.createEntry(tenantId, target.id, employeeId, {
+        projectId, taskId, date, hours, billable, source: 'MANUAL',
+      });
+      seen.add(key);
+      created++;
+    }
+  }
+
+  const refreshed = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
+  return { timesheet: fmtSheet(refreshed, settings), created, skipped };
+}
+
 // ── M7 Submit reminders ─────────────────────────────────────────────────────────
 
 const REMINDER_PAGE_SIZE = 1000;

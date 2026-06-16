@@ -4527,6 +4527,13 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | GET | `/timesheets/summary` | HR,SA,MGR | `?range=30d|90d&employeeId=`. Utilization summary |
 | GET | `/timesheets/settings` | HR,SA | Timesheet config (see Settings shape below) |
 | PATCH | `/timesheets/settings` | HR,SA | Partial update of timesheet settings |
+| GET | `/timesheets/templates` | ALL | Signed-in user's saved weekly templates. `data: TimesheetTemplate[]` |
+| POST | `/timesheets/templates` | ALL | Create. Body `{ name, rows: TemplateRow[] }`. 201. 422 `VALIDATION_ERROR` if name missing |
+| PATCH | `/timesheets/templates/:id` | ALL | Rename and/or replace rows. Body `{ name?, rows? }`. 404 if not owned/found |
+| DELETE | `/timesheets/templates/:id` | ALL | `data: { deleted: true }`. 404 if not found |
+| POST | `/timesheets/templates/:id/apply` | ALL | Apply to a week. Body `{ weekStart }`. Create-only/non-destructive: for each row×weekday with hours>0, creates an entry only if none exists for (projectId,taskId,date); taskless rows skipped when `requireTaskOnEntry`. `data: { timesheet, created, skipped }`. 404 template/not found · 422 `WEEK_LOCKED` (target not DRAFT/REJECTED) · 422 validation |
+
+**Types:** `TemplateRow = { projectId: string, taskId: string|null, hoursByWeekday: number[7] /* Mon→Sun, decimals */ }` · `TimesheetTemplate = { id, name, rows: TemplateRow[], createdAt }`. Templates are per-employee (`timesheets:write`); accounts with no Employee profile read `[]` and get 400 `NO_EMPLOYEE` on writes.
 
 **Settings shape:** `{ standardWeeklyHours, overtimeThresholdHours, roundingMinutes, approvalRequired, unloggedHoursPolicy(IGNORE/FLAG/DEDUCT), billableDefault, submitReminderDay(int 1..7 ISO weekday | null = disabled, default null), requireTaskOnEntry(bool, default false), updatedAt }`
 

@@ -240,6 +240,7 @@ model Tenant {
   PayrollEvent              PayrollEvent[]
   PayslipTemplate           PayslipTemplate?
   userInvitations           UserInvitation[]
+  timesheetTemplates        TimesheetTemplate[]
 
   @@index([deletedAt])
 }
@@ -1592,6 +1593,24 @@ model TimesheetSettings {
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
+}
+
+// Per-user saved weekly template — a named set of rows reused across weeks (UI PR #9).
+// `rows` is JSON-encoded TemplateRow[] (matches the memberIds-as-JSON convention):
+//   [{ projectId: string, taskId: string|null, hoursByWeekday: number[7] /* Mon→Sun */ }]
+model TimesheetTemplate {
+  id         String   @id @default(cuid())
+  tenantId   String
+  employeeId String
+  name       String
+  rows       String   @default("[]")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([employeeId])
 }
 
 // ── Payroll Phase 3 Extended Models ────────────────────────────────────────────

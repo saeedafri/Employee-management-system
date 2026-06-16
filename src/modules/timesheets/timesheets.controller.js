@@ -190,6 +190,65 @@ export async function updateSettings(request, reply) {
   return reply.send(successResponse(settings));
 }
 
+// ── Templates (weekly saved rows — UI PR #9) ────────────────────────────────────
+
+// Templates are owned by the signed-in employee. Accounts with no Employee profile
+// (e.g. SUPER_ADMIN) have none — reads return [], writes get a clear 400.
+function ownerId(request, reply) {
+  const id = request.user.employeeId;
+  if (!id) { reply.code(400).send(errorResponse('NO_EMPLOYEE', 'This account has no employee profile', {}, request.id)); return null; }
+  return id;
+}
+
+export async function getTemplates(request, reply) {
+  const employeeId = request.user.employeeId;
+  if (!employeeId) return reply.send(successResponse([]));
+  const templates = await service.getTemplates(request.tenant.id, employeeId);
+  return reply.send(successResponse(templates));
+}
+
+export async function createTemplate(request, reply) {
+  try {
+    const employeeId = ownerId(request, reply); if (!employeeId) return;
+    const template = await service.createTemplate(request.tenant.id, employeeId, request.body);
+    return reply.code(201).send(successResponse(template));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
+}
+
+export async function updateTemplate(request, reply) {
+  try {
+    const employeeId = ownerId(request, reply); if (!employeeId) return;
+    const template = await service.updateTemplate(request.tenant.id, employeeId, request.params.id, request.body);
+    if (!template) return reply.code(404).send(errorResponse('NOT_FOUND', 'Template not found', {}, request.id));
+    return reply.send(successResponse(template));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
+}
+
+export async function deleteTemplate(request, reply) {
+  const employeeId = ownerId(request, reply); if (!employeeId) return;
+  const result = await service.deleteTemplate(request.tenant.id, employeeId, request.params.id);
+  if (!result) return reply.code(404).send(errorResponse('NOT_FOUND', 'Template not found', {}, request.id));
+  return reply.send(successResponse({ deleted: true }));
+}
+
+export async function applyTemplate(request, reply) {
+  try {
+    const employeeId = ownerId(request, reply); if (!employeeId) return;
+    const result = await service.applyTemplate(request.tenant.id, employeeId, request.params.id, request.body || {});
+    if (!result) return reply.code(404).send(errorResponse('NOT_FOUND', 'Template not found', {}, request.id));
+    return reply.send(successResponse(result));
+  } catch (err) {
+    if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
+    throw err;
+  }
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function getMonday(d) {

@@ -40,6 +40,27 @@ const Timesheet = {
   },
 };
 
+// Weekly saved template (UI PR #9). `rows` must be declared in full or fast-json-stringify
+// strips the nested fields from the response.
+const TimesheetTemplateRow = {
+  type: 'object',
+  properties: {
+    projectId:      { type: 'string' },
+    taskId:         { type: 'string', nullable: true },
+    hoursByWeekday: { type: 'array', items: { type: 'number' }, description: 'len 7, Mon→Sun, decimals' },
+  },
+};
+
+const TimesheetTemplate = {
+  type: 'object',
+  properties: {
+    id:        { type: 'string' },
+    name:      { type: 'string' },
+    rows:      { type: 'array', items: TimesheetTemplateRow },
+    createdAt: { type: 'string', format: 'date-time' },
+  },
+};
+
 const TimesheetSummaryByEmployee = {
   type: 'object',
   properties: {
@@ -449,4 +470,102 @@ export default async function timesheetsRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(HR_ADMIN)],
   }, controller.updateSettings);
+
+  // ── Templates (weekly saved rows — UI PR #9) ──────────────────────────────────
+  // Owned by the signed-in employee (timesheets:write). All authenticated roles.
+  const templateRowBody = {
+    type: 'object',
+    properties: {
+      projectId:      { type: 'string' },
+      taskId:         { type: 'string', nullable: true },
+      hoursByWeekday: { type: 'array', items: { type: 'number' } },
+    },
+  };
+
+  fastify.get('/timesheets/templates', {
+    schema: {
+      tags: ['Timesheets'],
+      summary: 'List the signed-in user\'s saved weekly templates',
+      security: [{ Bearer: [] }],
+      response: {
+        200: { type: 'object', properties: { success: { type: 'boolean' }, data: { type: 'array', items: TimesheetTemplate } } },
+      },
+    },
+    onRequest: [authenticate, authorize(ALL_AUTH)],
+  }, controller.getTemplates);
+
+  fastify.post('/timesheets/templates', {
+    schema: {
+      tags: ['Timesheets'],
+      summary: 'Create a weekly template',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['name'],
+        properties: {
+          name: { type: 'string', minLength: 1 },
+          rows: { type: 'array', items: templateRowBody },
+        },
+      },
+      response: { 201: { type: 'object', properties: { success: { type: 'boolean' }, data: TimesheetTemplate } } },
+    },
+    onRequest: [authenticate, authorize(ALL_AUTH)],
+  }, controller.createTemplate);
+
+  fastify.patch('/timesheets/templates/:id', {
+    schema: {
+      tags: ['Timesheets'],
+      summary: 'Rename a template or replace its rows',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', minLength: 1 },
+          rows: { type: 'array', items: templateRowBody },
+        },
+      },
+      response: { 200: { type: 'object', properties: { success: { type: 'boolean' }, data: TimesheetTemplate } } },
+    },
+    onRequest: [authenticate, authorize(ALL_AUTH)],
+  }, controller.updateTemplate);
+
+  fastify.delete('/timesheets/templates/:id', {
+    schema: {
+      tags: ['Timesheets'],
+      summary: 'Delete a template',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(ALL_AUTH)],
+  }, controller.deleteTemplate);
+
+  fastify.post('/timesheets/templates/:id/apply', {
+    schema: {
+      tags: ['Timesheets'],
+      summary: 'Apply a template to a week (create-only, non-destructive)',
+      description: 'For each row × weekday with hours>0, creates an entry on that date only if one does not already exist for (projectId, taskId, date). Existing entries are left untouched. Taskless rows are skipped when requireTaskOnEntry is on. 422 WEEK_LOCKED if the target week is not DRAFT/REJECTED.',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: { type: 'object', required: ['weekStart'], properties: { weekStart: { type: 'string', description: 'YYYY-MM-DD (Monday)' } } },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            data: {
+              type: 'object',
+              properties: {
+                timesheet: Timesheet,
+                created: { type: 'integer', description: 'entries created' },
+                skipped: { type: 'integer', description: 'candidates skipped (already existed, or taskless-when-required)' },
+              },
+            },
+          },
+        },
+      },
+    },
+    onRequest: [authenticate, authorize(ALL_AUTH)],
+  }, controller.applyTemplate);
 }
