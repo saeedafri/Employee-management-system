@@ -4510,7 +4510,7 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 |--------|------|-------|-------|
 | GET | `/timesheets` | ALL | `?week=YYYY-MM-DD&employeeId=`. Auto-creates DRAFT if absent |
 | POST | `/timesheets/entries` | ALL | Required: weekStart, projectId, date, hours. `taskId` optional (null/omit OK → stored null). Rejects if sheet SUBMITTED/APPROVED. 422 `TASK_REQUIRED` if `requireTaskOnEntry` is on and taskId missing |
-| PATCH | `/timesheets/entries/:id` | ALL | Update hours, billable, note, taskId. 422 `TASK_REQUIRED` if `requireTaskOnEntry` on and taskId set to null |
+| PATCH | `/timesheets/entries/:id` | ALL | Update hours, billable, note, taskId. Body may also echo `weekStart`/`projectId`/`date` (FE inline-grid + dialog) — only updatable columns are persisted; non-columns (e.g. `weekStart`) are stripped, never forwarded to Prisma (was a 500). 422 `TASK_REQUIRED` if `requireTaskOnEntry` on and taskId set to null |
 | DELETE | `/timesheets/entries/:id` | ALL | Recalculates sheet total |
 
 ### Submit & Approve

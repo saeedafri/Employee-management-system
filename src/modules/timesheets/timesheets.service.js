@@ -176,6 +176,12 @@ export async function createEntry(tenantId, employeeId, body) {
   return entry;
 }
 
+// TimeEntry columns a PATCH may set. The FE echoes week-context fields (weekStart) and
+// identity alongside the edit; weekStart is NOT a TimeEntry column, so forwarding the raw
+// body to prisma.update threw a 500. Whitelist updatable columns only — mirrors createEntry
+// stripping weekStart. (BACKEND_ENTRY_UPDATE_500: PATCH /timesheets/entries/:id 500.)
+const ENTRY_UPDATABLE = ['hours', 'billable', 'note', 'taskId', 'projectId', 'date', 'source'];
+
 export async function updateEntry(tenantId, id, data) {
   normalizeTaskId(data);
   // Only enforce when the caller actually touches taskId (partial PATCH may omit it).
@@ -183,7 +189,9 @@ export async function updateEntry(tenantId, id, data) {
   const existing = await repo.getEntryById(tenantId, id);
   if (!existing) return null;
   assertWeekEditable(existing.timesheet?.status); // can't edit a submitted/approved week
-  const entry = await repo.updateEntry(tenantId, id, data);
+  const clean = {};
+  for (const k of ENTRY_UPDATABLE) if (k in data) clean[k] = data[k];
+  const entry = await repo.updateEntry(tenantId, id, clean);
   if (!entry) return null;
   return entry;
 }
