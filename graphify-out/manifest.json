@@ -775,8 +775,8 @@
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.repository.js": {
-    "mtime": 1781425069.5692732,
-    "ast_hash": "2322ded94c7e697f31f93f35d74613fe",
+    "mtime": 1781518473.56007,
+    "ast_hash": "1f66a6df41f8a6fa8baa76efed69fd42",
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.routes.js": {
@@ -785,8 +785,8 @@
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.service.js": {
-    "mtime": 1781368777.2102387,
-    "ast_hash": "b16a35cc3243e062d5e87857d52255b1",
+    "mtime": 1781518473.560346,
+    "ast_hash": "2171c45f8d868c4b9276e31421eb80dd",
     "semantic_hash": ""
   },
   "src/modules/performance/performance.controller.js": {
@@ -895,23 +895,23 @@
     "semantic_hash": ""
   },
   "src/modules/timesheets/timesheets.controller.js": {
-    "mtime": 1780980881.5259247,
-    "ast_hash": "5d16089a453c4df60ef970ab1d1449f9",
+    "mtime": 1781597058.4104044,
+    "ast_hash": "c5627d47d0a639faabaac7028bd3a7ce",
     "semantic_hash": ""
   },
   "src/modules/timesheets/timesheets.repository.js": {
-    "mtime": 1780978446.3754263,
-    "ast_hash": "fc953ded9a1b5f25de298807fe80f4a6",
+    "mtime": 1781596971.30345,
+    "ast_hash": "38353be8390fce0dfdb127025e39e759",
     "semantic_hash": ""
   },
   "src/modules/timesheets/timesheets.routes.js": {
-    "mtime": 1780978426.582696,
-    "ast_hash": "5c2ee3d2fe2daa5a6abde2894c9eb898",
+    "mtime": 1781597095.7747371,
+    "ast_hash": "6a3635458db26da14135959b5d5170c4",
     "semantic_hash": ""
   },
   "src/modules/timesheets/timesheets.service.js": {
-    "mtime": 1780978446.3754265,
-    "ast_hash": "07d77d21ae963f332b664ecc6534f4a7",
+    "mtime": 1781597040.4348583,
+    "ast_hash": "05add64c977d0910048ebb2fb52a2e09",
     "semantic_hash": ""
   },
   "src/plugins/cors.js": {
@@ -995,8 +995,8 @@
     "semantic_hash": ""
   },
   "src/utils/notifier.js": {
-    "mtime": 1779558764.8434534,
-    "ast_hash": "53dabe5685f47eb129d61d89d010c6a1",
+    "mtime": 1781444985.460549,
+    "ast_hash": "a05bc9259882273a7a3ad2b3cffde78e",
     "semantic_hash": ""
   },
   "src/utils/otp.js": {
@@ -1040,8 +1040,8 @@
     "semantic_hash": ""
   },
   "src/utils/statutoryCalculation.js": {
-    "mtime": 1781365960.4903102,
-    "ast_hash": "39a90637f293822de5169ad5dc90cd28",
+    "mtime": 1781518473.563025,
+    "ast_hash": "cad03e2f10d9471ce98140ec3d9808c5",
     "semantic_hash": ""
   },
   "src/utils/statutoryPackShape.js": {
@@ -1500,27 +1500,27 @@
     "semantic_hash": ""
   },
   "docs/API_MAPPING.md": {
-    "mtime": 1781426808.6213017,
-    "ast_hash": "716c394af6d51883a341c305403e3eb0",
+    "mtime": 1781597368.0062017,
+    "ast_hash": "487258b5ec678e92f40856b103a009f7",
     "semantic_hash": ""
   },
   "docs/BACKEND_TEAM_HANDOFF_FIX_REPORT.md": {
-    "mtime": 1781115442.0796986,
+    "mtime": 1781445701.166324,
     "ast_hash": "5340d12943c037687cfef069505846ac",
     "semantic_hash": ""
   },
   "docs/PAYROLL_PHASE3_CONTRACT_FIXES.md": {
-    "mtime": 1781015426.6529253,
+    "mtime": 1781445701.1664836,
     "ast_hash": "e3162683d570858e1a9e4b141806b88c",
     "semantic_hash": ""
   },
   "docs/PHASE3_BACKEND_CONTRACT_AND_DEPLOYED_UI_FINAL_REPORT.md": {
-    "mtime": 1780939081.5513346,
+    "mtime": 1781445701.1666205,
     "ast_hash": "e590f18d0932697dee178985a1c593f9",
     "semantic_hash": ""
   },
   "docs/PHASE3_FINAL_REMAINING_GAPS_CLOSURE_REPORT.md": {
-    "mtime": 1780978939.211554,
+    "mtime": 1781445701.1667957,
     "ast_hash": "9260c8521b36e288917c63af4c5a0c7f",
     "semantic_hash": ""
   },
@@ -1670,62 +1670,62 @@
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/curl_sequence.sh": {
-    "mtime": 1781366652.2849452,
+    "mtime": 1781445701.1676674,
     "ast_hash": "ab6bc9058ec92915dc2fc8eda8e40048",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/01-register-company.json": {
-    "mtime": 1781374759.0552316,
+    "mtime": 1781445701.167848,
     "ast_hash": "46fd702ebb891898dc2c90419b06b197",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/02-create-ph-statutory-pack.json": {
-    "mtime": 1781374764.0670228,
+    "mtime": 1781445701.1679268,
     "ast_hash": "af8bb649a27504ff655da5210a97b631",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/03-create-ph-legal-entity.json": {
-    "mtime": 1781374766.6496823,
+    "mtime": 1781445701.168001,
     "ast_hash": "89ffde4c405f8a0b0a6a824306dda4da",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/04-create-ph-components.json": {
-    "mtime": 1781374761.1418612,
+    "mtime": 1781445701.1680853,
     "ast_hash": "c6dd5874d21a8fec50992790faca32a4",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/05-create-semi-monthly-pay-group.json": {
-    "mtime": 1781374767.743674,
+    "mtime": 1781445701.1681592,
     "ast_hash": "e823108d85a2ff22657ac5dac51d22aa",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/06-create-ph-employee.json": {
-    "mtime": 1781374769.0923927,
+    "mtime": 1781445701.1682336,
     "ast_hash": "494ddc4a8614b42c3c589636933a6c59",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/07-set-ph-salary.json": {
-    "mtime": 1781374769.945629,
+    "mtime": 1781445701.1683128,
     "ast_hash": "b5e8c94fc522ddc8238b2978d4c05589",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/08-create-h1-run.json": {
-    "mtime": 1781374770.3355656,
+    "mtime": 1781445701.1683912,
     "ast_hash": "479ca55e451ed6407c99e7002c0adf7f",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/09-create-h2-run.json": {
-    "mtime": 1781374773.1780188,
+    "mtime": 1781445701.1684675,
     "ast_hash": "600c75d8d60aaa89290fd8050c404d96",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/10-create-biweekly-run.json": {
-    "mtime": 1781374923.8833277,
+    "mtime": 1781445701.1685452,
     "ast_hash": "577e33c68542d4bc1f1efc012b082ff4",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/11-create-monthly-regression-run.json": {
-    "mtime": 1781374776.7191556,
+    "mtime": 1781445701.168621,
     "ast_hash": "d65ac6796c94875bbbbf3e6cd74c36ce",
     "semantic_hash": ""
   },
@@ -1735,8 +1735,8 @@
     "semantic_hash": ""
   },
   "src/utils/cycleGenerator.js": {
-    "mtime": 1781358605.845826,
-    "ast_hash": "1b9d585f361fbe485487436b01d98b6d",
+    "mtime": 1781429590.4246,
+    "ast_hash": "34623dd229af75de0227fc7110c317d8",
     "semantic_hash": ""
   },
   "src/utils/payFrequency.js": {
@@ -1755,128 +1755,213 @@
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/E2E_SUMMARY.md": {
-    "mtime": 1781374791.8898814,
+    "mtime": 1781445701.167404,
     "ast_hash": "80d18435431efff70fe10cb00b93569b",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/README.md": {
-    "mtime": 1781374791.889358,
+    "mtime": 1781445701.1674914,
     "ast_hash": "e1ab09d25636f127ba8fdde7269a9da8",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/UI_CONTRACT.md": {
-    "mtime": 1781374791.8896291,
+    "mtime": 1781445701.1675768,
     "ast_hash": "5c923d283f087887a08fa09ef4d215b3",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/render-qa-summary.json": {
-    "mtime": 1781374791.888547,
+    "mtime": 1781445701.1677454,
     "ast_hash": "1216bc1d6a839f373ba85f64ebb37130",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/12-create-india-monthly-salary.json": {
-    "mtime": 1781374778.9984014,
+    "mtime": 1781445701.168696,
     "ast_hash": "7ce77d099cf8c2ea232018cc944fb97f",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/13-set-biweekly-salary.json": {
-    "mtime": 1781374781.7627907,
+    "mtime": 1781445701.1687703,
     "ast_hash": "2752ec2bd0000bf46ef5dd3e7f8ae083",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/requests/14-set-workweek-salary.json": {
-    "mtime": 1781374789.8070054,
+    "mtime": 1781445701.1688395,
     "ast_hash": "4a0907892b11d643f8b8baa56b46c3d4",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/01-register-company.response.json": {
-    "mtime": 1781374760.8239014,
+    "mtime": 1781445701.1689665,
     "ast_hash": "c8a993958c22c20e71f62a75f0a0b4ae",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/02-create-ph-statutory-pack.response.json": {
-    "mtime": 1781374764.5399375,
+    "mtime": 1781445701.1690595,
     "ast_hash": "f212dfc270c9ceef9a9610f5987c5141",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/03-create-ph-legal-entity.response.json": {
-    "mtime": 1781374767.099078,
+    "mtime": 1781445701.1691644,
     "ast_hash": "f85369a5790edfd9f12e2b810dc616e3",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/04-create-ph-components.response.json": {
-    "mtime": 1781374764.0659769,
+    "mtime": 1781445701.1692965,
     "ast_hash": "78dfdad3d4479db8d71f4f3e25c619a8",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/05-create-semi-monthly-pay-group.response.json": {
-    "mtime": 1781374769.0918367,
+    "mtime": 1781445701.1693778,
     "ast_hash": "349473205ecae65a0a4b4b1b27172693",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/06-create-ph-employee.response.json": {
-    "mtime": 1781374769.9450934,
+    "mtime": 1781445701.1694634,
     "ast_hash": "4c6473e6a6d61387c888ee4e59ab5ebb",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/07-set-ph-salary.response.json": {
-    "mtime": 1781374770.3350089,
+    "mtime": 1781445701.1695628,
     "ast_hash": "43246f07fb14c1de6033536221d0faae",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/08-create-h1-run.response.json": {
-    "mtime": 1781374770.6752863,
+    "mtime": 1781445701.1696706,
     "ast_hash": "bc1c155fa17f89870dda09b429129b51",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/09-h1-payslip.response.json": {
-    "mtime": 1781374772.2410078,
+    "mtime": 1781445701.1698072,
     "ast_hash": "728e36185654ba8f68907adc1144ce6a",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/10-create-h2-run.response.json": {
-    "mtime": 1781374773.5016468,
+    "mtime": 1781445701.1699252,
     "ast_hash": "8311094932f6f4ecdccb006d3973a981",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/11-h2-payslip.response.json": {
-    "mtime": 1781374775.0035763,
+    "mtime": 1781445701.170067,
     "ast_hash": "ee210307cb1aacf75d243fb1c09f41d2",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/12-ph-monthly-regression.response.json": {
-    "mtime": 1781374778.997579,
+    "mtime": 1781445701.1702147,
     "ast_hash": "f2257ebe3309abb3e2238005dde9dd74",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/13-india-monthly-regression.response.json": {
-    "mtime": 1781374781.7619963,
+    "mtime": 1781445701.1703758,
     "ast_hash": "a1b2a89eb7f9467190038f33318636b1",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/14-biweekly-3-cycle.response.json": {
-    "mtime": 1781374788.020075,
+    "mtime": 1781445701.1706092,
     "ast_hash": "bd05007b0e93d0a32a884763285972b1",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/15-pay-calendar-cycles.response.json": {
-    "mtime": 1781374789.8062997,
+    "mtime": 1781445701.1707993,
     "ast_hash": "45d608c7ad8a15941f93cb173ee108af",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/16-work-week.response.json": {
-    "mtime": 1781374791.8865695,
+    "mtime": 1781445701.17095,
     "ast_hash": "6fa5e9c27694e289c38988a7964cb29a",
     "semantic_hash": ""
   },
   "docs/payroll-submonthly-e2e-evidence/responses/17-ytd.response.json": {
-    "mtime": 1781374791.887523,
+    "mtime": 1781445701.1710587,
     "ast_hash": "beb73954cbf7dd49e559bc80f86ef388",
     "semantic_hash": ""
   },
   "docs/SUBMONTHLY_PAYROLL_DEFECTS_BACKEND_CONTRACT.md": {
-    "mtime": 1781426876.8391595,
+    "mtime": 1781445701.1669564,
     "ast_hash": "832a688de215a4df6451f3a481de95e0",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260614120000_timesheet_reminder_settings/migration.sql": {
+    "mtime": 1781443824.727442,
+    "ast_hash": "f09ef4904f43fec435892fdb89e99048",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260614130000_timesheet_reminder_dedupe_index/migration.sql": {
+    "mtime": 1781445055.9832823,
+    "ast_hash": "ada73215b11333d19b88e4fc7ad43995",
+    "semantic_hash": ""
+  },
+  "scripts/applyTimesheetReminderMigration.mjs": {
+    "mtime": 1781445073.746215,
+    "ast_hash": "48abd73baed938431da888dd46584005",
+    "semantic_hash": ""
+  },
+  "src/jobs/submitReminderJob.js": {
+    "mtime": 1781443956.3688762,
+    "ast_hash": "3b070da714fee605b6ac707f36a1db05",
+    "semantic_hash": ""
+  },
+  "src/modules/timesheets/timesheets.derive.js": {
+    "mtime": 1781457772.3751588,
+    "ast_hash": "1c5d2ff3904c6637f235b89f757148e8",
+    "semantic_hash": ""
+  },
+  "tests/timesheets-derivations.test.js": {
+    "mtime": 1781457910.8751442,
+    "ast_hash": "9065ca274957a9deeacb99d17d90cacd",
+    "semantic_hash": ""
+  },
+  ".github/workflows/timesheet-reminders.yml": {
+    "mtime": 1781446204.3997881,
+    "ast_hash": "64f546faf17363f1c7d89b3524276b3f",
+    "semantic_hash": ""
+  },
+  "docs/BACKEND_REMAINING.md": {
+    "mtime": 1781518473.5592294,
+    "ast_hash": "24976db2773b3963a5c6abda9bdb1000",
+    "semantic_hash": ""
+  },
+  "docs/MSW_BACKEND_PARITY_PAYROLL.md": {
+    "mtime": 1781518473.5593927,
+    "ast_hash": "cb41ec3c54c4782671f9bc2de83bc5c9",
+    "semantic_hash": ""
+  },
+  "docs/MSW_BACKEND_PARITY_TIMESHEETS.md": {
+    "mtime": 1781524689.447196,
+    "ast_hash": "87210e24ba15236b3461d982e8f729d0",
+    "semantic_hash": ""
+  },
+  "docs/PAYROLL_API_RESPONSES.md": {
+    "mtime": 1781518473.5595858,
+    "ast_hash": "107ce5937678113bd03c046b873666a7",
+    "semantic_hash": ""
+  },
+  "docs/TIMESHEETS_API_RESPONSES.md": {
+    "mtime": 1781518473.559817,
+    "ast_hash": "dffa2f34cb65746f849ac316cd354dbe",
+    "semantic_hash": ""
+  },
+  "docs/TIMESHEET_REMINDERS_AND_SETTINGS_API.md": {
+    "mtime": 1781445630.594159,
+    "ast_hash": "90beb504709f3b87c10616f598aef9ba",
+    "semantic_hash": ""
+  },
+  "docs/UI_TEAM_HANDOFF_PAYROLL_FIX.md": {
+    "mtime": 1781445701.1671247,
+    "ast_hash": "5e5d95c784b336f9b63039a818b146fc",
+    "semantic_hash": ""
+  },
+  "docs/backendtimesheetbug.md": {
+    "mtime": 1781445701.1672828,
+    "ast_hash": "cf09429ceef553219293c063f460d0ab",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260616080000_timesheet_templates/migration.sql": {
+    "mtime": 1781596926.3002422,
+    "ast_hash": "3f321d3786f87fec6c0ed64e1789e340",
+    "semantic_hash": ""
+  },
+  "scripts/applyTimesheetTemplatesMigration.mjs": {
+    "mtime": 1781597148.4298897,
+    "ast_hash": "a1fd9ff32527dcd8f8218d483a0375cc",
     "semantic_hash": ""
   }
 }
