@@ -37,20 +37,28 @@ Deployed on **Render**. GitHub: `github.com/saeedafri/Employee-management-system
 ---
 
 ## Database
+> **DB migrated 2026-06-18** — old DB (`employee_m2e9`) expired/suspended (billing). Now on a NEW Render Postgres in a **different Render account** (so the Render web service uses the **external** URL, not internal — internal only resolves within the owning account's network).
+
 | Field | Value |
 |-------|-------|
-| Provider | PostgreSQL |
-| Host | `dpg-d85jt2p9rddc73af0so0-a.oregon-postgres.render.com` |
-| DB Name | `employee_m2e9` |
-| User | `employee_m2e9_user` |
+| Provider | PostgreSQL (v18) |
+| Host (external) | `dpg-d8pv9jm7r5hc739a0cjg-a.oregon-postgres.render.com` |
+| Host (internal) | `dpg-d8pv9jm7r5hc739a0cjg-a` (only resolves inside that DB's own Render account) |
+| DB Name | `employee_management_database_ibyc` |
+| User | `employee_management_database_ibyc_user` |
 | Password | `<see .env file — DATABASE_URL>` |
 | SSL | required |
-| Migrations | Single migration: `20260518155048_init` |
+| Migrations | 19 migrations (`20260518155048_init` … `20260616080000_timesheet_templates`) — all applied |
 | ORM | Prisma v5 (no raw SQL — always use Prisma client) |
 
-### DB Connection (external)
+### DB Connection (external — used by both local AND the Render web service, since the DB is cross-account)
 ```
-postgresql://employee_m2e9_user:<password>@dpg-d85jt2p9rddc73af0so0-a.oregon-postgres.render.com/employee_m2e9?sslmode=require
+postgresql://employee_management_database_ibyc_user:<password>@dpg-d8pv9jm7r5hc739a0cjg-a.oregon-postgres.render.com/employee_management_database_ibyc?sslmode=require
+```
+
+### OLD/EXPIRED DB (reference only — suspended)
+```
+dpg-d85jt2p9rddc73af0so0-a.oregon-postgres.render.com / employee_m2e9
 ```
 
 ### Tenants in DB
@@ -92,7 +100,7 @@ postgresql://employee_m2e9_user:<password>@dpg-d85jt2p9rddc73af0so0-a.oregon-pos
 ### Render Env Vars (key ones)
 - `CORS_ORIGIN` = `http://localhost:3000,http://localhost:3001,http://localhost:5173`
 - `NODE_ENV` = `production`
-- `DATABASE_URL` = internal Render PostgreSQL URL (not the external one above)
+- `DATABASE_URL` = **external** URL of the new cross-account Postgres (`dpg-d8pv9jm7r5hc739a0cjg-a.oregon-postgres.render.com`) — updated 2026-06-18. Internal URL does NOT work here because the DB lives in a different Render account.
 
 ---
 
