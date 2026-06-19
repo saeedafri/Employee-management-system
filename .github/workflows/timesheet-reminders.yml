@@ -1,13 +1,17 @@
 name: Timesheet Submit Reminders
 
-# Free scheduler (GitHub Actions) for the M7 submit-reminder job — no Render Cron needed.
-# Runs once a day; the job itself gates per tenant on submitReminderDay + the tenant's
-# local timezone, so most tenants are a no-op on any given day. Idempotent (a DB unique
-# index means a user can never get two reminders for the same week).
+# SCHEDULE DISABLED 2026-06-19 — the M7 submit-reminder job now runs on the Hostinger VPS
+# via the systemd timer `ems-reminder.timer` (every 12h), against the self-hosted Postgres.
+# This workflow is kept for manual runs only (workflow_dispatch). Re-enable the `schedule:`
+# block below only if you move reminders back to GitHub Actions.
+#
+# The job gates per tenant on submitReminderDay + the tenant's local timezone (most tenants
+# are a no-op on any given day) and is idempotent (a DB unique index prevents duplicate
+# reminders for the same week).
 
 on:
-  schedule:
-    - cron: "0 2 * * *" # daily at 02:00 UTC
+  # schedule:
+  #   - cron: "0 2 * * *" # daily at 02:00 UTC (DISABLED — moved to VPS systemd timer)
   workflow_dispatch:
     inputs:
       force:
