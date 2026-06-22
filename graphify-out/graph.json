@@ -1692,7 +1692,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations",
-      "community": 82,
+      "community": 326,
       "norm_label": "seedphase3integrations.js"
     },
     {
@@ -1702,7 +1702,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations_prisma",
-      "community": 82,
+      "community": 326,
       "norm_label": "prisma"
     },
     {
@@ -1712,7 +1712,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations_counts",
-      "community": 82,
+      "community": 326,
       "norm_label": "counts()"
     },
     {
@@ -1722,7 +1722,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations_main",
-      "community": 82,
+      "community": 326,
       "norm_label": "main()"
     },
     {
@@ -3852,7 +3852,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_app_createapp",
-      "community": 53,
+      "community": 57,
       "norm_label": "createapp()"
     },
     {
@@ -4272,7 +4272,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "middleware_resolvetenant",
-      "community": 327,
+      "community": 171,
       "norm_label": "resolvetenant.js"
     },
     {
@@ -4282,7 +4282,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "middleware_resolvetenant_tenant_optional_routes",
-      "community": 327,
+      "community": 171,
       "norm_label": "tenant_optional_routes"
     },
     {
@@ -4292,7 +4292,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "middleware_resolvetenant_slugfromhost",
-      "community": 327,
+      "community": 171,
       "norm_label": "slugfromhost()"
     },
     {
@@ -4302,7 +4302,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "middleware_resolvetenant_tenantidfromjwt",
-      "community": 327,
+      "community": 171,
       "norm_label": "tenantidfromjwt()"
     },
     {
@@ -4312,7 +4312,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "middleware_resolvetenant_rawtokenfromrequest",
-      "community": 327,
+      "community": 171,
       "norm_label": "rawtokenfromrequest()"
     },
     {
@@ -4322,7 +4322,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "middleware_resolvetenant_resolvetenant",
-      "community": 327,
+      "community": 171,
       "norm_label": "resolvetenant()"
     },
     {
@@ -4942,7 +4942,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "announcements_announcements_repository",
-      "community": 75,
+      "community": 176,
       "norm_label": "announcements.repository.js"
     },
     {
@@ -4952,7 +4952,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getchannels",
-      "community": 75,
+      "community": 176,
       "norm_label": "getchannels()"
     },
     {
@@ -4962,7 +4962,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getevents",
-      "community": 75,
+      "community": 176,
       "norm_label": "getevents()"
     },
     {
@@ -4972,7 +4972,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "announcements_announcements_repository_createevent",
-      "community": 75,
+      "community": 176,
       "norm_label": "createevent()"
     },
     {
@@ -4982,7 +4982,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getannouncements",
-      "community": 75,
+      "community": 176,
       "norm_label": "getannouncements()"
     },
     {
@@ -4992,7 +4992,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getpinnedannouncement",
-      "community": 75,
+      "community": 176,
       "norm_label": "getpinnedannouncement()"
     },
     {
@@ -5002,7 +5002,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "announcements_announcements_repository_createannouncement",
-      "community": 75,
+      "community": 176,
       "norm_label": "createannouncement()"
     },
     {
@@ -5012,7 +5012,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getannouncementbyid",
-      "community": 75,
+      "community": 176,
       "norm_label": "getannouncementbyid()"
     },
     {
@@ -5022,7 +5022,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "announcements_announcements_repository_unpinall",
-      "community": 75,
+      "community": 176,
       "norm_label": "unpinall()"
     },
     {
@@ -5032,7 +5032,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "announcements_announcements_repository_updateannouncement",
-      "community": 75,
+      "community": 176,
       "norm_label": "updateannouncement()"
     },
     {
@@ -5042,7 +5042,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getchannelbyid",
-      "community": 75,
+      "community": 176,
       "norm_label": "getchannelbyid()"
     },
     {
@@ -5302,7 +5302,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "assets_assets_repository",
-      "community": 31,
+      "community": 237,
       "norm_label": "assets.repository.js"
     },
     {
@@ -5312,7 +5312,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "assets_assets_repository_getsummary",
-      "community": 31,
+      "community": 237,
       "norm_label": "getsummary()"
     },
     {
@@ -5322,7 +5322,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "assets_assets_repository_getassets",
-      "community": 31,
+      "community": 237,
       "norm_label": "getassets()"
     },
     {
@@ -5332,7 +5332,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "assets_assets_repository_getassetbyid",
-      "community": 31,
+      "community": 237,
       "norm_label": "getassetbyid()"
     },
     {
@@ -5342,7 +5342,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "assets_assets_repository_createasset",
-      "community": 31,
+      "community": 237,
       "norm_label": "createasset()"
     },
     {
@@ -5352,7 +5352,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "assets_assets_repository_updateasset",
-      "community": 31,
+      "community": 237,
       "norm_label": "updateasset()"
     },
     {
@@ -5362,7 +5362,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "assets_assets_repository_findassetbytag",
-      "community": 31,
+      "community": 237,
       "norm_label": "findassetbytag()"
     },
     {
@@ -5372,7 +5372,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "assets_assets_repository_getrequests",
-      "community": 31,
+      "community": 237,
       "norm_label": "getrequests()"
     },
     {
@@ -5382,7 +5382,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "assets_assets_repository_getrequestbyid",
-      "community": 31,
+      "community": 237,
       "norm_label": "getrequestbyid()"
     },
     {
@@ -5392,7 +5392,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "assets_assets_repository_updaterequest",
-      "community": 31,
+      "community": 237,
       "norm_label": "updaterequest()"
     },
     {
@@ -5402,7 +5402,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "assets_assets_repository_getemployees",
-      "community": 31,
+      "community": 237,
       "norm_label": "getemployees()"
     },
     {
@@ -5682,7 +5682,7 @@
       "source_location": "L398",
       "_origin": "ast",
       "id": "attendance_attendance_controller_uploadregularizationdocument",
-      "community": 15,
+      "community": 175,
       "norm_label": "uploadregularizationdocument()"
     },
     {
@@ -5912,7 +5912,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "attendance_attendance_service",
-      "community": 44,
+      "community": 3,
       "norm_label": "attendance.service.js"
     },
     {
@@ -5922,7 +5922,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "attendance_attendance_service_apperror",
-      "community": 44,
+      "community": 3,
       "norm_label": "apperror"
     },
     {
@@ -5932,7 +5932,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "attendance_attendance_service_apperror_constructor",
-      "community": 44,
+      "community": 3,
       "norm_label": ".constructor()"
     },
     {
@@ -5942,7 +5942,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "attendance_attendance_service_calculatedistance",
-      "community": 44,
+      "community": 3,
       "norm_label": "calculatedistance()"
     },
     {
@@ -5952,7 +5952,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "attendance_attendance_service_checkin",
-      "community": 44,
+      "community": 3,
       "norm_label": "checkin()"
     },
     {
@@ -5962,7 +5962,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "attendance_attendance_service_checkout",
-      "community": 44,
+      "community": 3,
       "norm_label": "checkout()"
     },
     {
@@ -5972,7 +5972,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "attendance_attendance_service_monthtodaterange",
-      "community": 44,
+      "community": 3,
       "norm_label": "monthtodaterange()"
     },
     {
@@ -5982,7 +5982,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "attendance_attendance_service_getattendancerecords",
-      "community": 44,
+      "community": 3,
       "norm_label": "getattendancerecords()"
     },
     {
@@ -5992,7 +5992,7 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "attendance_attendance_service_getteamattendancerecords",
-      "community": 44,
+      "community": 3,
       "norm_label": "getteamattendancerecords()"
     },
     {
@@ -6002,7 +6002,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "attendance_attendance_service_getattendancesummary",
-      "community": 44,
+      "community": 3,
       "norm_label": "getattendancesummary()"
     },
     {
@@ -6012,7 +6012,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "attendance_attendance_service_submitregularizationrequest",
-      "community": 44,
+      "community": 3,
       "norm_label": "submitregularizationrequest()"
     },
     {
@@ -6022,7 +6022,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "id": "attendance_attendance_service_getregularizationrequests",
-      "community": 44,
+      "community": 3,
       "norm_label": "getregularizationrequests()"
     },
     {
@@ -6032,7 +6032,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "attendance_attendance_service_getteamregularizationrequests",
-      "community": 44,
+      "community": 3,
       "norm_label": "getteamregularizationrequests()"
     },
     {
@@ -6042,7 +6042,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "attendance_attendance_service_approveregularization",
-      "community": 44,
+      "community": 3,
       "norm_label": "approveregularization()"
     },
     {
@@ -6052,7 +6052,7 @@
       "source_location": "L261",
       "_origin": "ast",
       "id": "attendance_attendance_service_denyregularization",
-      "community": 44,
+      "community": 3,
       "norm_label": "denyregularization()"
     },
     {
@@ -6062,7 +6062,7 @@
       "source_location": "L287",
       "_origin": "ast",
       "id": "attendance_attendance_service_getteamweeklygrid",
-      "community": 44,
+      "community": 3,
       "norm_label": "getteamweeklygrid()"
     },
     {
@@ -6342,7 +6342,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_recordauditlog",
-      "community": 15,
+      "community": 175,
       "norm_label": "recordauditlog()"
     },
     {
@@ -7462,7 +7462,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_otp_validator",
-      "community": 319,
+      "community": 37,
       "norm_label": "otp.validator.js"
     },
     {
@@ -7472,7 +7472,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "auth_otp_validator_verifyotpschema",
-      "community": 319,
+      "community": 37,
       "norm_label": "verifyotpschema"
     },
     {
@@ -7482,7 +7482,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "auth_otp_validator_resendotpschema",
-      "community": 319,
+      "community": 37,
       "norm_label": "resendotpschema"
     },
     {
@@ -7582,7 +7582,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "billing_billing_controller",
-      "community": 88,
+      "community": 327,
       "norm_label": "billing.controller.js"
     },
     {
@@ -7592,7 +7592,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "billing_billing_controller_fail",
-      "community": 88,
+      "community": 327,
       "norm_label": "fail()"
     },
     {
@@ -7602,7 +7602,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "billing_billing_controller_getsubscription",
-      "community": 88,
+      "community": 327,
       "norm_label": "getsubscription()"
     },
     {
@@ -7612,7 +7612,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "billing_billing_controller_getplans",
-      "community": 88,
+      "community": 327,
       "norm_label": "getplans()"
     },
     {
@@ -7622,7 +7622,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "billing_billing_controller_getinvoices",
-      "community": 88,
+      "community": 327,
       "norm_label": "getinvoices()"
     },
     {
@@ -8782,7 +8782,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "employees_employees_controller_uploaddocument",
-      "community": 15,
+      "community": 175,
       "norm_label": "uploaddocument()"
     },
     {
@@ -8802,7 +8802,7 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "employees_employees_controller_deletedocument",
-      "community": 15,
+      "community": 175,
       "norm_label": "deletedocument()"
     },
     {
@@ -8832,7 +8832,7 @@
       "source_location": "L334",
       "_origin": "ast",
       "id": "employees_employees_controller_bulkexport",
-      "community": 15,
+      "community": 326,
       "norm_label": "bulkexport()"
     },
     {
@@ -8842,7 +8842,7 @@
       "source_location": "L352",
       "_origin": "ast",
       "id": "employees_employees_controller_presigndocument",
-      "community": 15,
+      "community": 175,
       "norm_label": "presigndocument()"
     },
     {
@@ -8872,7 +8872,7 @@
       "source_location": "L415",
       "_origin": "ast",
       "id": "employees_employees_controller_uploadphoto",
-      "community": 15,
+      "community": 175,
       "norm_label": "uploadphoto()"
     },
     {
@@ -8882,7 +8882,7 @@
       "source_location": "L473",
       "_origin": "ast",
       "id": "employees_employees_controller_deletephoto",
-      "community": 15,
+      "community": 175,
       "norm_label": "deletephoto()"
     },
     {
@@ -8902,7 +8902,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "employees_employees_repository",
-      "community": 57,
+      "community": 313,
       "norm_label": "employees.repository.js"
     },
     {
@@ -8912,7 +8912,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "employees_employees_repository_listemployees",
-      "community": 57,
+      "community": 313,
       "norm_label": "listemployees()"
     },
     {
@@ -8922,7 +8922,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "employees_employees_repository_getemployeebyid",
-      "community": 57,
+      "community": 313,
       "norm_label": "getemployeebyid()"
     },
     {
@@ -8932,7 +8932,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "employees_employees_repository_createemployee",
-      "community": 57,
+      "community": 313,
       "norm_label": "createemployee()"
     },
     {
@@ -8942,7 +8942,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "employees_employees_repository_updateemployee",
-      "community": 57,
+      "community": 313,
       "norm_label": "updateemployee()"
     },
     {
@@ -8952,7 +8952,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "employees_employees_repository_softdeleteemployee",
-      "community": 57,
+      "community": 313,
       "norm_label": "softdeleteemployee()"
     },
     {
@@ -8962,7 +8962,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "employees_employees_repository_exportemployeescsv",
-      "community": 57,
+      "community": 313,
       "norm_label": "exportemployeescsv()"
     },
     {
@@ -8972,7 +8972,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "employees_employees_repository_checkemployeecodeexists",
-      "community": 57,
+      "community": 313,
       "norm_label": "checkemployeecodeexists()"
     },
     {
@@ -8982,7 +8982,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "employees_employees_repository_countemployees",
-      "community": 57,
+      "community": 313,
       "norm_label": "countemployees()"
     },
     {
@@ -8992,7 +8992,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "employees_employees_repository_checkworkemailexists",
-      "community": 57,
+      "community": 313,
       "norm_label": "checkworkemailexists()"
     },
     {
@@ -9222,7 +9222,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "export_export_controller",
-      "community": 1,
+      "community": 165,
       "norm_label": "export.controller.js"
     },
     {
@@ -9232,7 +9232,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "export_export_controller_exportemployees",
-      "community": 1,
+      "community": 165,
       "norm_label": "exportemployees()"
     },
     {
@@ -9242,7 +9242,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "export_export_controller_exportattendance",
-      "community": 1,
+      "community": 165,
       "norm_label": "exportattendance()"
     },
     {
@@ -9252,7 +9252,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "export_export_controller_exportleave",
-      "community": 1,
+      "community": 165,
       "norm_label": "exportleave()"
     },
     {
@@ -9262,7 +9262,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "export_export_controller_mime_map",
-      "community": 1,
+      "community": 165,
       "norm_label": "mime_map"
     },
     {
@@ -9272,7 +9272,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "export_export_controller_downloadexport",
-      "community": 1,
+      "community": 165,
       "norm_label": "downloadexport()"
     },
     {
@@ -9282,7 +9282,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "export_export_controller_listexports",
-      "community": 1,
+      "community": 165,
       "norm_label": "listexports()"
     },
     {
@@ -9652,7 +9652,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "holidays_holidays_repository",
-      "community": 57,
+      "community": 319,
       "norm_label": "holidays.repository.js"
     },
     {
@@ -9662,7 +9662,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "holidays_holidays_repository_listholidays",
-      "community": 57,
+      "community": 319,
       "norm_label": "listholidays()"
     },
     {
@@ -9672,7 +9672,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "holidays_holidays_repository_getholidaybyid",
-      "community": 57,
+      "community": 319,
       "norm_label": "getholidaybyid()"
     },
     {
@@ -9682,7 +9682,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "holidays_holidays_repository_createholiday",
-      "community": 57,
+      "community": 319,
       "norm_label": "createholiday()"
     },
     {
@@ -9692,7 +9692,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "holidays_holidays_repository_updateholiday",
-      "community": 57,
+      "community": 319,
       "norm_label": "updateholiday()"
     },
     {
@@ -9702,7 +9702,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "holidays_holidays_repository_deleteholiday",
-      "community": 57,
+      "community": 319,
       "norm_label": "deleteholiday()"
     },
     {
@@ -9712,7 +9712,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "holidays_holidays_repository_getupcomingholidays",
-      "community": 57,
+      "community": 319,
       "norm_label": "getupcomingholidays()"
     },
     {
@@ -9722,7 +9722,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "holidays_holidays_repository_checkholidayexists",
-      "community": 57,
+      "community": 319,
       "norm_label": "checkholidayexists()"
     },
     {
@@ -10112,7 +10112,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "data_leavepacks",
-      "community": 176,
+      "community": 239,
       "norm_label": "leavepacks.js"
     },
     {
@@ -10122,7 +10122,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "data_leavepacks_base",
-      "community": 176,
+      "community": 239,
       "norm_label": "base()"
     },
     {
@@ -10132,7 +10132,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "data_leavepacks_pack",
-      "community": 176,
+      "community": 239,
       "norm_label": "pack()"
     },
     {
@@ -10142,7 +10142,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "data_leavepacks_leave_starter_packs",
-      "community": 176,
+      "community": 239,
       "norm_label": "leave_starter_packs"
     },
     {
@@ -10152,7 +10152,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "data_leavepacks_leave_type_names",
-      "community": 176,
+      "community": 239,
       "norm_label": "leave_type_names"
     },
     {
@@ -10162,7 +10162,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "data_leavepacks_packforcountry",
-      "community": 176,
+      "community": 239,
       "norm_label": "packforcountry()"
     },
     {
@@ -14089,7 +14089,7 @@
       "label": "AppError()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L14",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "payroll_payroll_service_apperror",
       "community": 35,
@@ -14099,7 +14099,7 @@
       "label": "validateComponentData()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L20",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "payroll_payroll_service_validatecomponentdata",
       "community": 35,
@@ -14109,7 +14109,7 @@
       "label": "getComponents()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L38",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "payroll_payroll_service_getcomponents",
       "community": 35,
@@ -14119,7 +14119,7 @@
       "label": "createComponent()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L45",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "payroll_payroll_service_createcomponent",
       "community": 35,
@@ -14129,7 +14129,7 @@
       "label": "updateComponent()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L55",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatecomponent",
       "community": 35,
@@ -14139,7 +14139,7 @@
       "label": "deleteComponent()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L61",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "payroll_payroll_service_deletecomponent",
       "community": 2,
@@ -14149,7 +14149,7 @@
       "label": "getPayGroups()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L67",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpaygroups",
       "community": 330,
@@ -14159,7 +14159,7 @@
       "label": "createPayGroup()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L71",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "payroll_payroll_service_createpaygroup",
       "community": 35,
@@ -14169,7 +14169,7 @@
       "label": "updatePayGroup()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L77",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatepaygroup",
       "community": 35,
@@ -14179,7 +14179,7 @@
       "label": "deletePayGroup()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L82",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "payroll_payroll_service_deletepaygroup",
       "community": 2,
@@ -14189,7 +14189,7 @@
       "label": "getPaySchedules()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L86",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayschedules",
       "community": 330,
@@ -14199,7 +14199,7 @@
       "label": "getEmployeeSalary()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L136",
+      "source_location": "L137",
       "_origin": "ast",
       "id": "payroll_payroll_service_getemployeesalary",
       "community": 35,
@@ -14209,7 +14209,7 @@
       "label": "setEmployeeSalary()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L146",
+      "source_location": "L147",
       "_origin": "ast",
       "id": "payroll_payroll_service_setemployeesalary",
       "community": 35,
@@ -14219,7 +14219,7 @@
       "label": "patchEmployeeSalary()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L168",
+      "source_location": "L169",
       "_origin": "ast",
       "id": "payroll_payroll_service_patchemployeesalary",
       "community": 35,
@@ -14229,7 +14229,7 @@
       "label": "getEmployeePayslips()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L203",
+      "source_location": "L204",
       "_origin": "ast",
       "id": "payroll_payroll_service_getemployeepayslips",
       "community": 35,
@@ -14239,7 +14239,7 @@
       "label": "getEmployeePayslip()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L213",
+      "source_location": "L214",
       "_origin": "ast",
       "id": "payroll_payroll_service_getemployeepayslip",
       "community": 35,
@@ -14249,7 +14249,7 @@
       "label": "getPayrollRuns()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L223",
+      "source_location": "L224",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayrollruns",
       "community": 2,
@@ -14259,7 +14259,7 @@
       "label": "VALID_RUN_TYPES",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L231",
+      "source_location": "L232",
       "_origin": "ast",
       "id": "payroll_payroll_service_valid_run_types",
       "community": 2,
@@ -14269,7 +14269,7 @@
       "label": "createPayrollRun()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L233",
+      "source_location": "L234",
       "_origin": "ast",
       "id": "payroll_payroll_service_createpayrollrun",
       "community": 35,
@@ -14279,7 +14279,7 @@
       "label": "getPayrollRun()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L259",
+      "source_location": "L260",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayrollrun",
       "community": 2,
@@ -14289,7 +14289,7 @@
       "label": "calculatePayrollRun()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L263",
+      "source_location": "L264",
       "_origin": "ast",
       "id": "payroll_payroll_service_calculatepayrollrun",
       "community": 2,
@@ -14299,7 +14299,7 @@
       "label": "approvePayrollRun()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L268",
+      "source_location": "L269",
       "_origin": "ast",
       "id": "payroll_payroll_service_approvepayrollrun",
       "community": 2,
@@ -14309,7 +14309,7 @@
       "label": "markRunPaid()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L272",
+      "source_location": "L273",
       "_origin": "ast",
       "id": "payroll_payroll_service_markrunpaid",
       "community": 2,
@@ -14319,7 +14319,7 @@
       "label": "cancelPayrollRun()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L276",
+      "source_location": "L277",
       "_origin": "ast",
       "id": "payroll_payroll_service_cancelpayrollrun",
       "community": 2,
@@ -14329,7 +14329,7 @@
       "label": "getRunPayslips()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L282",
+      "source_location": "L283",
       "_origin": "ast",
       "id": "payroll_payroll_service_getrunpayslips",
       "community": 2,
@@ -14339,7 +14339,7 @@
       "label": "getRunPayslip()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L291",
+      "source_location": "L292",
       "_origin": "ast",
       "id": "payroll_payroll_service_getrunpayslip",
       "community": 2,
@@ -14349,7 +14349,7 @@
       "label": "updateRunPayslip()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L295",
+      "source_location": "L296",
       "_origin": "ast",
       "id": "payroll_payroll_service_updaterunpayslip",
       "community": 2,
@@ -14359,7 +14359,7 @@
       "label": "exportRunPayslips()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L299",
+      "source_location": "L300",
       "_origin": "ast",
       "id": "payroll_payroll_service_exportrunpayslips",
       "community": 2,
@@ -14369,7 +14369,7 @@
       "label": "SUPPORTED_COUNTRIES",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L305",
+      "source_location": "L306",
       "_origin": "ast",
       "id": "payroll_payroll_service_supported_countries",
       "community": 2,
@@ -14379,7 +14379,7 @@
       "label": "BANK_SCHEMAS",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L312",
+      "source_location": "L313",
       "_origin": "ast",
       "id": "payroll_payroll_service_bank_schemas",
       "community": 2,
@@ -14389,7 +14389,7 @@
       "label": "getBankSchema()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L350",
+      "source_location": "L351",
       "_origin": "ast",
       "id": "payroll_payroll_service_getbankschema",
       "community": 2,
@@ -14399,7 +14399,7 @@
       "label": "getLegalEntities()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L356",
+      "source_location": "L357",
       "_origin": "ast",
       "id": "payroll_payroll_service_getlegalentities",
       "community": 2,
@@ -14409,7 +14409,7 @@
       "label": "createLegalEntity()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L360",
+      "source_location": "L361",
       "_origin": "ast",
       "id": "payroll_payroll_service_createlegalentity",
       "community": 2,
@@ -14419,7 +14419,7 @@
       "label": "updateLegalEntity()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L364",
+      "source_location": "L365",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatelegalentity",
       "community": 2,
@@ -14429,7 +14429,7 @@
       "label": "getStatutoryPacks()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L370",
+      "source_location": "L371",
       "_origin": "ast",
       "id": "payroll_payroll_service_getstatutorypacks",
       "community": 2,
@@ -14439,7 +14439,7 @@
       "label": "getStatutoryPack()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L374",
+      "source_location": "L375",
       "_origin": "ast",
       "id": "payroll_payroll_service_getstatutorypack",
       "community": 2,
@@ -14449,7 +14449,7 @@
       "label": "validateStatutoryPackBody()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L378",
+      "source_location": "L379",
       "_origin": "ast",
       "id": "payroll_payroll_service_validatestatutorypackbody",
       "community": 35,
@@ -14459,7 +14459,7 @@
       "label": "createStatutoryPack()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L397",
+      "source_location": "L398",
       "_origin": "ast",
       "id": "payroll_payroll_service_createstatutorypack",
       "community": 35,
@@ -14469,7 +14469,7 @@
       "label": "updateStatutoryPack()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L412",
+      "source_location": "L413",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatestatutorypack",
       "community": 35,
@@ -14479,7 +14479,7 @@
       "label": "deleteStatutoryPack()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L417",
+      "source_location": "L418",
       "_origin": "ast",
       "id": "payroll_payroll_service_deletestatutorypack",
       "community": 2,
@@ -14489,7 +14489,7 @@
       "label": "getEmployeeYtd()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L423",
+      "source_location": "L424",
       "_origin": "ast",
       "id": "payroll_payroll_service_getemployeeytd",
       "community": 68,
@@ -14499,7 +14499,7 @@
       "label": "getCurrentFiscalYear()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L498",
+      "source_location": "L499",
       "_origin": "ast",
       "id": "payroll_payroll_service_getcurrentfiscalyear",
       "community": 187,
@@ -14509,7 +14509,7 @@
       "label": "getTaxDeclaration()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L507",
+      "source_location": "L508",
       "_origin": "ast",
       "id": "payroll_payroll_service_gettaxdeclaration",
       "community": 187,
@@ -14519,17 +14519,27 @@
       "label": "upsertTaxDeclaration()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L515",
+      "source_location": "L516",
       "_origin": "ast",
       "id": "payroll_payroll_service_upserttaxdeclaration",
       "community": 187,
       "norm_label": "upserttaxdeclaration()"
     },
     {
+      "label": "deriveLoan()",
+      "file_type": "code",
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L533",
+      "_origin": "ast",
+      "id": "payroll_payroll_service_deriveloan",
+      "community": 236,
+      "norm_label": "deriveloan()"
+    },
+    {
       "label": "getEmployeeLoans()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L529",
+      "source_location": "L575",
       "_origin": "ast",
       "id": "payroll_payroll_service_getemployeeloans",
       "community": 2,
@@ -14539,47 +14549,27 @@
       "label": "createEmployeeLoan()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L536",
+      "source_location": "L583",
       "_origin": "ast",
       "id": "payroll_payroll_service_createemployeeloan",
       "community": 236,
       "norm_label": "createemployeeloan()"
     },
     {
-      "label": "buildLoanSchedule()",
-      "file_type": "code",
-      "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L548",
-      "_origin": "ast",
-      "id": "payroll_payroll_service_buildloanschedule",
-      "community": 236,
-      "norm_label": "buildloanschedule()"
-    },
-    {
-      "label": "nextPeriod()",
-      "file_type": "code",
-      "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L567",
-      "_origin": "ast",
-      "id": "payroll_payroll_service_nextperiod",
-      "community": 236,
-      "norm_label": "nextperiod()"
-    },
-    {
       "label": "updateEmployeeLoan()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L571",
+      "source_location": "L626",
       "_origin": "ast",
       "id": "payroll_payroll_service_updateemployeeloan",
-      "community": 2,
+      "community": 236,
       "norm_label": "updateemployeeloan()"
     },
     {
       "label": "getOpeningBalance()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L579",
+      "source_location": "L643",
       "_origin": "ast",
       "id": "payroll_payroll_service_getopeningbalance",
       "community": 187,
@@ -14589,7 +14579,7 @@
       "label": "upsertOpeningBalance()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L585",
+      "source_location": "L649",
       "_origin": "ast",
       "id": "payroll_payroll_service_upsertopeningbalance",
       "community": 187,
@@ -14599,7 +14589,7 @@
       "label": "fmtOpeningBalance()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L603",
+      "source_location": "L667",
       "_origin": "ast",
       "id": "payroll_payroll_service_fmtopeningbalance",
       "community": 2,
@@ -14609,7 +14599,7 @@
       "label": "getAllOpeningBalances()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L620",
+      "source_location": "L684",
       "_origin": "ast",
       "id": "payroll_payroll_service_getallopeningbalances",
       "community": 2,
@@ -14619,7 +14609,7 @@
       "label": "getPayrollEmployees()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L631",
+      "source_location": "L695",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayrollemployees",
       "community": 2,
@@ -14629,7 +14619,7 @@
       "label": "getPayrollMigration()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L666",
+      "source_location": "L730",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayrollmigration",
       "community": 208,
@@ -14639,7 +14629,7 @@
       "label": "listPaymentBatches()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L674",
+      "source_location": "L738",
       "_origin": "ast",
       "id": "payroll_payroll_service_listpaymentbatches",
       "community": 2,
@@ -14649,7 +14639,7 @@
       "label": "getPayrollReportsIndex()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L678",
+      "source_location": "L742",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayrollreportsindex",
       "community": 2,
@@ -14659,7 +14649,7 @@
       "label": "getPayrollSettings()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L698",
+      "source_location": "L762",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayrollsettings",
       "community": 208,
@@ -14669,7 +14659,7 @@
       "label": "getPayrollRoster()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L719",
+      "source_location": "L783",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayrollroster",
       "community": 2,
@@ -14679,7 +14669,7 @@
       "label": "getRunInputs()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L734",
+      "source_location": "L798",
       "_origin": "ast",
       "id": "payroll_payroll_service_getruninputs",
       "community": 2,
@@ -14689,7 +14679,7 @@
       "label": "updateRunInput()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L765",
+      "source_location": "L829",
       "_origin": "ast",
       "id": "payroll_payroll_service_updateruninput",
       "community": 35,
@@ -14699,7 +14689,7 @@
       "label": "importRunInputs()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L793",
+      "source_location": "L857",
       "_origin": "ast",
       "id": "payroll_payroll_service_importruninputs",
       "community": 2,
@@ -14709,7 +14699,7 @@
       "label": "getRunFnf()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L817",
+      "source_location": "L881",
       "_origin": "ast",
       "id": "payroll_payroll_service_getrunfnf",
       "community": 2,
@@ -14719,7 +14709,7 @@
       "label": "getStatutoryReturn()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L839",
+      "source_location": "L903",
       "_origin": "ast",
       "id": "payroll_payroll_service_getstatutoryreturn",
       "community": 2,
@@ -14729,7 +14719,7 @@
       "label": "periodLabel()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L845",
+      "source_location": "L909",
       "_origin": "ast",
       "id": "payroll_payroll_service_periodlabel",
       "community": 238,
@@ -14739,7 +14729,7 @@
       "label": "REGISTER_COLUMNS",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L849",
+      "source_location": "L913",
       "_origin": "ast",
       "id": "payroll_payroll_service_register_columns",
       "community": 2,
@@ -14749,7 +14739,7 @@
       "label": "getRunRegister()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L884",
+      "source_location": "L948",
       "_origin": "ast",
       "id": "payroll_payroll_service_getrunregister",
       "community": 238,
@@ -14759,7 +14749,7 @@
       "label": "exportRunRegister()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L961",
+      "source_location": "L1025",
       "_origin": "ast",
       "id": "payroll_payroll_service_exportrunregister",
       "community": 238,
@@ -14769,7 +14759,7 @@
       "label": "parallelReconcile()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L970",
+      "source_location": "L1034",
       "_origin": "ast",
       "id": "payroll_payroll_service_parallelreconcile",
       "community": 2,
@@ -14779,7 +14769,7 @@
       "label": "getPayCalendars()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L999",
+      "source_location": "L1063",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpaycalendars",
       "community": 330,
@@ -14789,7 +14779,7 @@
       "label": "createPayCalendar()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1003",
+      "source_location": "L1067",
       "_origin": "ast",
       "id": "payroll_payroll_service_createpaycalendar",
       "community": 2,
@@ -14799,7 +14789,7 @@
       "label": "updatePayCalendar()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1007",
+      "source_location": "L1071",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatepaycalendar",
       "community": 2,
@@ -14809,7 +14799,7 @@
       "label": "getPayCalendarCycles()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1011",
+      "source_location": "L1075",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpaycalendarcycles",
       "community": 103,
@@ -14819,7 +14809,7 @@
       "label": "getHistoricalPayslips()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1024",
+      "source_location": "L1088",
       "_origin": "ast",
       "id": "payroll_payroll_service_gethistoricalpayslips",
       "community": 2,
@@ -14829,7 +14819,7 @@
       "label": "importHistoricalPayslips()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1029",
+      "source_location": "L1093",
       "_origin": "ast",
       "id": "payroll_payroll_service_importhistoricalpayslips",
       "community": 2,
@@ -14839,7 +14829,7 @@
       "label": "getMigrationStatus()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1051",
+      "source_location": "L1115",
       "_origin": "ast",
       "id": "payroll_payroll_service_getmigrationstatus",
       "community": 208,
@@ -14849,7 +14839,7 @@
       "label": "updateMigrationStatus()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1065",
+      "source_location": "L1129",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatemigrationstatus",
       "community": 2,
@@ -14859,7 +14849,7 @@
       "label": "getPayEquity()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1078",
+      "source_location": "L1142",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpayequity",
       "community": 35,
@@ -14869,7 +14859,7 @@
       "label": "getAuditPack()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1122",
+      "source_location": "L1186",
       "_origin": "ast",
       "id": "payroll_payroll_service_getauditpack",
       "community": 2,
@@ -14879,7 +14869,7 @@
       "label": "getDataPolicy()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1137",
+      "source_location": "L1201",
       "_origin": "ast",
       "id": "payroll_payroll_service_getdatapolicy",
       "community": 208,
@@ -14889,7 +14879,7 @@
       "label": "updateDataPolicy()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1149",
+      "source_location": "L1213",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatedatapolicy",
       "community": 2,
@@ -14899,7 +14889,7 @@
       "label": "toWorkerClassification()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1161",
+      "source_location": "L1225",
       "_origin": "ast",
       "id": "payroll_payroll_service_toworkerclassification",
       "community": 2,
@@ -14909,7 +14899,7 @@
       "label": "listWorkers()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1166",
+      "source_location": "L1230",
       "_origin": "ast",
       "id": "payroll_payroll_service_listworkers",
       "community": 2,
@@ -14919,7 +14909,7 @@
       "label": "updateWorkerClassification()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1217",
+      "source_location": "L1281",
       "_origin": "ast",
       "id": "payroll_payroll_service_updateworkerclassification",
       "community": 35,
@@ -14929,7 +14919,7 @@
       "label": "getWorkerCostSummary()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1266",
+      "source_location": "L1330",
       "_origin": "ast",
       "id": "payroll_payroll_service_getworkercostsummary",
       "community": 2,
@@ -14939,7 +14929,7 @@
       "label": "fmtContractorInvoice()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1311",
+      "source_location": "L1375",
       "_origin": "ast",
       "id": "payroll_payroll_service_fmtcontractorinvoice",
       "community": 329,
@@ -14949,7 +14939,7 @@
       "label": "listContractorInvoices()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1328",
+      "source_location": "L1392",
       "_origin": "ast",
       "id": "payroll_payroll_service_listcontractorinvoices",
       "community": 2,
@@ -14959,7 +14949,7 @@
       "label": "createContractorInvoice()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1339",
+      "source_location": "L1403",
       "_origin": "ast",
       "id": "payroll_payroll_service_createcontractorinvoice",
       "community": 329,
@@ -14969,7 +14959,7 @@
       "label": "updateContractorInvoice()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1359",
+      "source_location": "L1423",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatecontractorinvoice",
       "community": 329,
@@ -14979,7 +14969,7 @@
       "label": "approveRunLevel()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1375",
+      "source_location": "L1439",
       "_origin": "ast",
       "id": "payroll_payroll_service_approverunlevel",
       "community": 35,
@@ -14989,7 +14979,7 @@
       "label": "getRunVariance()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1391",
+      "source_location": "L1455",
       "_origin": "ast",
       "id": "payroll_payroll_service_getrunvariance",
       "community": 2,
@@ -14999,7 +14989,7 @@
       "label": "mapEventToAuditEntry()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1450",
+      "source_location": "L1514",
       "_origin": "ast",
       "id": "payroll_payroll_service_mapeventtoauditentry",
       "community": 2,
@@ -15009,7 +14999,7 @@
       "label": "getRunAudit()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1462",
+      "source_location": "L1526",
       "_origin": "ast",
       "id": "payroll_payroll_service_getrunaudit",
       "community": 2,
@@ -15019,7 +15009,7 @@
       "label": "recalculatePayslip()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1479",
+      "source_location": "L1543",
       "_origin": "ast",
       "id": "payroll_payroll_service_recalculatepayslip",
       "community": 82,
@@ -15029,7 +15019,7 @@
       "label": "holdPayslip()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1492",
+      "source_location": "L1556",
       "_origin": "ast",
       "id": "payroll_payroll_service_holdpayslip",
       "community": 2,
@@ -15039,7 +15029,7 @@
       "label": "releasePayslip()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1501",
+      "source_location": "L1565",
       "_origin": "ast",
       "id": "payroll_payroll_service_releasepayslip",
       "community": 2,
@@ -15049,7 +15039,7 @@
       "label": "importInputsFromTimesheets()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1510",
+      "source_location": "L1574",
       "_origin": "ast",
       "id": "payroll_payroll_service_importinputsfromtimesheets",
       "community": 82,
@@ -15059,7 +15049,7 @@
       "label": "publishRun()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1524",
+      "source_location": "L1588",
       "_origin": "ast",
       "id": "payroll_payroll_service_publishrun",
       "community": 82,
@@ -15069,7 +15059,7 @@
       "label": "listPayrollEvents()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1537",
+      "source_location": "L1601",
       "_origin": "ast",
       "id": "payroll_payroll_service_listpayrollevents",
       "community": 2,
@@ -15079,7 +15069,7 @@
       "label": "getPaymentBatch()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1550",
+      "source_location": "L1614",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpaymentbatch",
       "community": 2,
@@ -15089,7 +15079,7 @@
       "label": "createPaymentBatch()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1585",
+      "source_location": "L1649",
       "_origin": "ast",
       "id": "payroll_payroll_service_createpaymentbatch",
       "community": 82,
@@ -15099,7 +15089,7 @@
       "label": "BANK_FILE_FORMATS",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1612",
+      "source_location": "L1676",
       "_origin": "ast",
       "id": "payroll_payroll_service_bank_file_formats",
       "community": 2,
@@ -15109,7 +15099,7 @@
       "label": "ZERO_DECIMAL_CURRENCIES",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1659",
+      "source_location": "L1723",
       "_origin": "ast",
       "id": "payroll_payroll_service_zero_decimal_currencies",
       "community": 2,
@@ -15119,7 +15109,7 @@
       "label": "currencyDecimals()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1660",
+      "source_location": "L1724",
       "_origin": "ast",
       "id": "payroll_payroll_service_currencydecimals",
       "community": 2,
@@ -15129,7 +15119,7 @@
       "label": "syntheticBank()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1667",
+      "source_location": "L1731",
       "_origin": "ast",
       "id": "payroll_payroll_service_syntheticbank",
       "community": 2,
@@ -15139,7 +15129,7 @@
       "label": "getBankFile()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1679",
+      "source_location": "L1743",
       "_origin": "ast",
       "id": "payroll_payroll_service_getbankfile",
       "community": 2,
@@ -15149,7 +15139,7 @@
       "label": "getPaymentBatchById()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1707",
+      "source_location": "L1771",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpaymentbatchbyid",
       "community": 2,
@@ -15159,7 +15149,7 @@
       "label": "reconcilePaymentBatch()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1711",
+      "source_location": "L1775",
       "_origin": "ast",
       "id": "payroll_payroll_service_reconcilepaymentbatch",
       "community": 2,
@@ -15169,7 +15159,7 @@
       "label": "DEFAULT_TEMPLATE_SECTIONS",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1720",
+      "source_location": "L1784",
       "_origin": "ast",
       "id": "payroll_payroll_service_default_template_sections",
       "community": 2,
@@ -15179,7 +15169,7 @@
       "label": "DEFAULT_TEMPLATE_FIELDS",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1730",
+      "source_location": "L1794",
       "_origin": "ast",
       "id": "payroll_payroll_service_default_template_fields",
       "community": 2,
@@ -15189,27 +15179,27 @@
       "label": "getPayslipTemplate()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1736",
+      "source_location": "L1800",
       "_origin": "ast",
       "id": "payroll_payroll_service_getpaysliptemplate",
-      "community": 82,
+      "community": 83,
       "norm_label": "getpaysliptemplate()"
     },
     {
       "label": "updatePayslipTemplate()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1755",
+      "source_location": "L1819",
       "_origin": "ast",
       "id": "payroll_payroll_service_updatepaysliptemplate",
-      "community": 82,
+      "community": 83,
       "norm_label": "updatepaysliptemplate()"
     },
     {
       "label": "getTaxForm()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1780",
+      "source_location": "L1844",
       "_origin": "ast",
       "id": "payroll_payroll_service_gettaxform",
       "community": 2,
@@ -15219,7 +15209,7 @@
       "label": "REIMBURSEMENT_CATEGORY_COLORS",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1798",
+      "source_location": "L1862",
       "_origin": "ast",
       "id": "payroll_payroll_service_reimbursement_category_colors",
       "community": 2,
@@ -15229,7 +15219,7 @@
       "label": "listReimbursementCategories()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1800",
+      "source_location": "L1864",
       "_origin": "ast",
       "id": "payroll_payroll_service_listreimbursementcategories",
       "community": 82,
@@ -15239,7 +15229,7 @@
       "label": "listReimbursementClaims()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1819",
+      "source_location": "L1883",
       "_origin": "ast",
       "id": "payroll_payroll_service_listreimbursementclaims",
       "community": 2,
@@ -15249,7 +15239,7 @@
       "label": "fmtReimbursementClaimForUi()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1838",
+      "source_location": "L1902",
       "_origin": "ast",
       "id": "payroll_payroll_service_fmtreimbursementclaimforui",
       "community": 35,
@@ -15259,7 +15249,7 @@
       "label": "submitReimbursementClaim()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1855",
+      "source_location": "L1919",
       "_origin": "ast",
       "id": "payroll_payroll_service_submitreimbursementclaim",
       "community": 35,
@@ -15269,7 +15259,7 @@
       "label": "decideReimbursementClaim()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1880",
+      "source_location": "L1944",
       "_origin": "ast",
       "id": "payroll_payroll_service_decidereimbursementclaim",
       "community": 35,
@@ -15279,7 +15269,7 @@
       "label": "listGarnishments()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1891",
+      "source_location": "L1955",
       "_origin": "ast",
       "id": "payroll_payroll_service_listgarnishments",
       "community": 2,
@@ -15289,27 +15279,27 @@
       "label": "createGarnishment()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1896",
+      "source_location": "L1960",
       "_origin": "ast",
       "id": "payroll_payroll_service_creategarnishment",
-      "community": 83,
+      "community": 82,
       "norm_label": "creategarnishment()"
     },
     {
       "label": "updateGarnishment()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1919",
+      "source_location": "L1983",
       "_origin": "ast",
       "id": "payroll_payroll_service_updategarnishment",
-      "community": 83,
+      "community": 82,
       "norm_label": "updategarnishment()"
     },
     {
       "label": "deleteGarnishment()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1935",
+      "source_location": "L1999",
       "_origin": "ast",
       "id": "payroll_payroll_service_deletegarnishment",
       "community": 35,
@@ -15319,7 +15309,7 @@
       "label": "getRunJournal()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1941",
+      "source_location": "L2005",
       "_origin": "ast",
       "id": "payroll_payroll_service_getrunjournal",
       "community": 35,
@@ -15329,11 +15319,61 @@
       "label": "exportRunJournal()",
       "file_type": "code",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L1979",
+      "source_location": "L2043",
       "_origin": "ast",
       "id": "payroll_payroll_service_exportrunjournal",
       "community": 35,
       "norm_label": "exportrunjournal()"
+    },
+    {
+      "label": "loan.utils.js",
+      "file_type": "code",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "utils_loan_utils",
+      "community": 236,
+      "norm_label": "loan.utils.js"
+    },
+    {
+      "label": "monthlyRate()",
+      "file_type": "code",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "utils_loan_utils_monthlyrate",
+      "community": 236,
+      "norm_label": "monthlyrate()"
+    },
+    {
+      "label": "addMonths()",
+      "file_type": "code",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "utils_loan_utils_addmonths",
+      "community": 236,
+      "norm_label": "addmonths()"
+    },
+    {
+      "label": "computeEmi()",
+      "file_type": "code",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "utils_loan_utils_computeemi",
+      "community": 236,
+      "norm_label": "computeemi()"
+    },
+    {
+      "label": "buildSchedule()",
+      "file_type": "code",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "utils_loan_utils_buildschedule",
+      "community": 236,
+      "norm_label": "buildschedule()"
     },
     {
       "label": "performance.controller.js",
@@ -15572,7 +15612,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "performance_performance_service",
-      "community": 84,
+      "community": 318,
       "norm_label": "performance.service.js"
     },
     {
@@ -15582,7 +15622,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "performance_performance_service_getactivecycle",
-      "community": 84,
+      "community": 318,
       "norm_label": "getactivecycle()"
     },
     {
@@ -15592,7 +15632,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "performance_performance_service_getsummary",
-      "community": 84,
+      "community": 318,
       "norm_label": "getsummary()"
     },
     {
@@ -15602,7 +15642,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "performance_performance_service_getreviews",
-      "community": 84,
+      "community": 318,
       "norm_label": "getreviews()"
     },
     {
@@ -15612,7 +15652,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "performance_performance_service_getgoals",
-      "community": 84,
+      "community": 318,
       "norm_label": "getgoals()"
     },
     {
@@ -15622,7 +15662,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "performance_performance_service_getcalibration",
-      "community": 84,
+      "community": 318,
       "norm_label": "getcalibration()"
     },
     {
@@ -15632,7 +15672,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "performance_performance_service_getemployees",
-      "community": 84,
+      "community": 318,
       "norm_label": "getemployees()"
     },
     {
@@ -15642,7 +15682,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "performance_performance_service_valid_ratings",
-      "community": 84,
+      "community": 318,
       "norm_label": "valid_ratings"
     },
     {
@@ -15652,7 +15692,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "performance_performance_service_updatereview",
-      "community": 84,
+      "community": 318,
       "norm_label": "updatereview()"
     },
     {
@@ -15662,7 +15702,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "performance_performance_service_creategoal",
-      "community": 84,
+      "community": 318,
       "norm_label": "creategoal()"
     },
     {
@@ -17172,7 +17212,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "settings_settings_controller_updatebranding",
-      "community": 15,
+      "community": 175,
       "norm_label": "updatebranding()"
     },
     {
@@ -18812,7 +18852,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "timesheets_timesheets_service",
-      "community": 47,
+      "community": 307,
       "norm_label": "timesheets.service.js"
     },
     {
@@ -18822,7 +18862,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_fmtproject",
-      "community": 313,
+      "community": 307,
       "norm_label": "fmtproject()"
     },
     {
@@ -18842,7 +18882,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_enrichsheetswithnames",
-      "community": 47,
+      "community": 307,
       "norm_label": "enrichsheetswithnames()"
     },
     {
@@ -18852,7 +18892,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_getprojects",
-      "community": 47,
+      "community": 307,
       "norm_label": "getprojects()"
     },
     {
@@ -18862,7 +18902,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_assertuniquecode",
-      "community": 313,
+      "community": 307,
       "norm_label": "assertuniquecode()"
     },
     {
@@ -18872,7 +18912,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_createproject",
-      "community": 313,
+      "community": 307,
       "norm_label": "createproject()"
     },
     {
@@ -18882,7 +18922,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_updateproject",
-      "community": 313,
+      "community": 307,
       "norm_label": "updateproject()"
     },
     {
@@ -18892,7 +18932,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_archiveordeleteproject",
-      "community": 47,
+      "community": 307,
       "norm_label": "archiveordeleteproject()"
     },
     {
@@ -18902,7 +18942,7 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_gettasksbyproject",
-      "community": 47,
+      "community": 307,
       "norm_label": "gettasksbyproject()"
     },
     {
@@ -18912,7 +18952,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_createtask",
-      "community": 47,
+      "community": 307,
       "norm_label": "createtask()"
     },
     {
@@ -18922,7 +18962,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_updatetask",
-      "community": 47,
+      "community": 307,
       "norm_label": "updatetask()"
     },
     {
@@ -18952,7 +18992,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_entry_updatable",
-      "community": 47,
+      "community": 307,
       "norm_label": "entry_updatable"
     },
     {
@@ -19052,7 +19092,7 @@
       "source_location": "L344",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_getapprovals",
-      "community": 47,
+      "community": 307,
       "norm_label": "getapprovals()"
     },
     {
@@ -19062,7 +19102,7 @@
       "source_location": "L353",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_getsummary",
-      "community": 47,
+      "community": 307,
       "norm_label": "getsummary()"
     },
     {
@@ -19082,7 +19122,7 @@
       "source_location": "L376",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_updatesettings",
-      "community": 47,
+      "community": 307,
       "norm_label": "updatesettings()"
     },
     {
@@ -19122,7 +19162,7 @@
       "source_location": "L412",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_gettemplates",
-      "community": 47,
+      "community": 307,
       "norm_label": "gettemplates()"
     },
     {
@@ -19152,7 +19192,7 @@
       "source_location": "L437",
       "_origin": "ast",
       "id": "timesheets_timesheets_service_deletetemplate",
-      "community": 47,
+      "community": 307,
       "norm_label": "deletetemplate()"
     },
     {
@@ -19202,7 +19242,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller",
-      "community": 56,
+      "community": 44,
       "norm_label": "timesheetsconfig.controller.js"
     },
     {
@@ -19212,7 +19252,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_actor",
-      "community": 56,
+      "community": 44,
       "norm_label": "actor()"
     },
     {
@@ -19222,7 +19262,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_fail",
-      "community": 56,
+      "community": 44,
       "norm_label": "fail()"
     },
     {
@@ -19232,7 +19272,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getlocks",
-      "community": 56,
+      "community": 44,
       "norm_label": "getlocks()"
     },
     {
@@ -19242,7 +19282,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_createlock",
-      "community": 56,
+      "community": 44,
       "norm_label": "createlock()"
     },
     {
@@ -19252,7 +19292,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_deletelock",
-      "community": 56,
+      "community": 44,
       "norm_label": "deletelock()"
     },
     {
@@ -19262,7 +19302,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getaudit",
-      "community": 56,
+      "community": 44,
       "norm_label": "getaudit()"
     },
     {
@@ -19272,7 +19312,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getapprovalchain",
-      "community": 56,
+      "community": 44,
       "norm_label": "getapprovalchain()"
     },
     {
@@ -19282,7 +19322,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchapprovalchain",
-      "community": 56,
+      "community": 44,
       "norm_label": "patchapprovalchain()"
     },
     {
@@ -19292,7 +19332,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getratesconfig",
-      "community": 56,
+      "community": 44,
       "norm_label": "getratesconfig()"
     },
     {
@@ -19302,7 +19342,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchratesconfig",
-      "community": 56,
+      "community": 44,
       "norm_label": "patchratesconfig()"
     },
     {
@@ -19312,7 +19352,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getbudgets",
-      "community": 56,
+      "community": 44,
       "norm_label": "getbudgets()"
     },
     {
@@ -19322,7 +19362,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchbudget",
-      "community": 56,
+      "community": 44,
       "norm_label": "patchbudget()"
     },
     {
@@ -19332,7 +19372,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getcostrates",
-      "community": 56,
+      "community": 44,
       "norm_label": "getcostrates()"
     },
     {
@@ -19342,7 +19382,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchcostrate",
-      "community": 56,
+      "community": 44,
       "norm_label": "patchcostrate()"
     },
     {
@@ -19352,7 +19392,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getweekconfig",
-      "community": 56,
+      "community": 44,
       "norm_label": "getweekconfig()"
     },
     {
@@ -19362,7 +19402,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getdelegations",
-      "community": 56,
+      "community": 44,
       "norm_label": "getdelegations()"
     },
     {
@@ -19372,7 +19412,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_createdelegation",
-      "community": 56,
+      "community": 44,
       "norm_label": "createdelegation()"
     },
     {
@@ -19382,7 +19422,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_deletedelegation",
-      "community": 56,
+      "community": 44,
       "norm_label": "deletedelegation()"
     },
     {
@@ -20032,7 +20072,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_server",
-      "community": 53,
+      "community": 171,
       "norm_label": "server.js"
     },
     {
@@ -20042,7 +20082,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_server_logger",
-      "community": 53,
+      "community": 171,
       "norm_label": "logger"
     },
     {
@@ -20052,7 +20092,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_server_start",
-      "community": 53,
+      "community": 171,
       "norm_label": "start()"
     },
     {
@@ -20062,7 +20102,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_cloudinary",
-      "community": 15,
+      "community": 175,
       "norm_label": "cloudinary.js"
     },
     {
@@ -20072,7 +20112,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "utils_cloudinary_ensureconfigured",
-      "community": 15,
+      "community": 175,
       "norm_label": "ensureconfigured()"
     },
     {
@@ -20082,7 +20122,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "utils_cloudinary_uploadtocloudinary",
-      "community": 15,
+      "community": 175,
       "norm_label": "uploadtocloudinary()"
     },
     {
@@ -20092,7 +20132,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "utils_cloudinary_deletefromcloudinary",
-      "community": 15,
+      "community": 175,
       "norm_label": "deletefromcloudinary()"
     },
     {
@@ -20102,7 +20142,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "utils_cloudinary_iscloudinaryconfigured",
-      "community": 15,
+      "community": 175,
       "norm_label": "iscloudinaryconfigured()"
     },
     {
@@ -20402,7 +20442,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "utils_id_generateid",
-      "community": 15,
+      "community": 326,
       "norm_label": "generateid()"
     },
     {
@@ -20492,7 +20532,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_notifier",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifier.js"
     },
     {
@@ -20502,7 +20542,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "utils_notifier_getemployeecontext",
-      "community": 175,
+      "community": 3,
       "norm_label": "getemployeecontext()"
     },
     {
@@ -20512,7 +20552,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "utils_notifier_saveandemit",
-      "community": 175,
+      "community": 3,
       "norm_label": "saveandemit()"
     },
     {
@@ -20522,7 +20562,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "utils_notifier_emitanalyticsrefresh",
-      "community": 175,
+      "community": 3,
       "norm_label": "emitanalyticsrefresh()"
     },
     {
@@ -20532,7 +20572,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "utils_notifier_notifyleaverequested",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifyleaverequested()"
     },
     {
@@ -20542,7 +20582,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "utils_notifier_notifyleaveapproved",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifyleaveapproved()"
     },
     {
@@ -20552,7 +20592,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "utils_notifier_notifyleavedenied",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifyleavedenied()"
     },
     {
@@ -20562,7 +20602,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "utils_notifier_notifyleavewithdrawn",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifyleavewithdrawn()"
     },
     {
@@ -20572,7 +20612,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "utils_notifier_notifycheckin",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifycheckin()"
     },
     {
@@ -20582,7 +20622,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "utils_notifier_notifycheckout",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifycheckout()"
     },
     {
@@ -20592,7 +20632,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "utils_notifier_notifyregularizationrequested",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifyregularizationrequested()"
     },
     {
@@ -20602,7 +20642,7 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "utils_notifier_notifyregularizationapproved",
-      "community": 44,
+      "community": 3,
       "norm_label": "notifyregularizationapproved()"
     },
     {
@@ -20612,7 +20652,7 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "utils_notifier_notifyregularizationdenied",
-      "community": 175,
+      "community": 3,
       "norm_label": "notifyregularizationdenied()"
     },
     {
@@ -20622,7 +20662,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "utils_notifier_submitremindermessage",
-      "community": 47,
+      "community": 307,
       "norm_label": "submitremindermessage()"
     },
     {
@@ -20632,7 +20672,7 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "utils_notifier_createtimesheetremindernotifications",
-      "community": 237,
+      "community": 3,
       "norm_label": "createtimesheetremindernotifications()"
     },
     {
@@ -21102,7 +21142,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "utils_payrolluishapes_componentcolor",
-      "community": 62,
+      "community": 83,
       "norm_label": "componentcolor()"
     },
     {
@@ -21112,7 +21152,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "utils_payrolluishapes_withcomponentcolor",
-      "community": 62,
+      "community": 83,
       "norm_label": "withcomponentcolor()"
     },
     {
@@ -21142,7 +21182,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "utils_payrolluishapes_fmtpaysliptemplateforui",
-      "community": 82,
+      "community": 83,
       "norm_label": "fmtpaysliptemplateforui()"
     },
     {
@@ -21162,7 +21202,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "utils_payrolluishapes_fmtgarnishmentforui",
-      "community": 83,
+      "community": 82,
       "norm_label": "fmtgarnishmentforui()"
     },
     {
@@ -21222,7 +21262,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_sseclients",
-      "community": 237,
+      "community": 3,
       "norm_label": "sseclients.js"
     },
     {
@@ -21232,7 +21272,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "utils_sseclients_clients",
-      "community": 237,
+      "community": 3,
       "norm_label": "clients"
     },
     {
@@ -21242,7 +21282,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "utils_sseclients_addclient",
-      "community": 237,
+      "community": 3,
       "norm_label": "addclient()"
     },
     {
@@ -21252,7 +21292,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "utils_sseclients_removeclient",
-      "community": 237,
+      "community": 3,
       "norm_label": "removeclient()"
     },
     {
@@ -21262,7 +21302,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "utils_sseclients_sendevent",
-      "community": 237,
+      "community": 3,
       "norm_label": "sendevent()"
     },
     {
@@ -21272,7 +21312,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "utils_sseclients_emittouser",
-      "community": 237,
+      "community": 3,
       "norm_label": "emittouser()"
     },
     {
@@ -21282,7 +21322,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "utils_sseclients_emittousers",
-      "community": 237,
+      "community": 3,
       "norm_label": "emittousers()"
     },
     {
@@ -21602,7 +21642,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_auth_logout_test",
-      "community": 53,
+      "community": 332,
       "norm_label": "auth-logout.test.js"
     },
     {
@@ -21612,7 +21652,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "tests_auth_logout_test_cookievalue",
-      "community": 53,
+      "community": 332,
       "norm_label": "cookievalue()"
     },
     {
@@ -21622,7 +21662,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "tests_auth_logout_test_cookiecleared",
-      "community": 53,
+      "community": 332,
       "norm_label": "cookiecleared()"
     },
     {
@@ -21632,7 +21672,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "tests_auth_logout_test_login",
-      "community": 53,
+      "community": 332,
       "norm_label": "login()"
     },
     {
@@ -21742,7 +21782,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_auth_sessions_contract_test",
-      "community": 53,
+      "community": 57,
       "norm_label": "auth-sessions-contract.test.js"
     },
     {
@@ -21752,7 +21792,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "tests_auth_sessions_contract_test_login",
-      "community": 53,
+      "community": 57,
       "norm_label": "login()"
     },
     {
@@ -22224,6 +22264,16 @@
       "id": "tests_payroll_income_tax_public_api_test_ph_train_no_base",
       "community": 68,
       "norm_label": "ph_train_no_base"
+    },
+    {
+      "label": "payroll-loan.utils.test.js",
+      "file_type": "code",
+      "source_file": "tests/payroll-loan.utils.test.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_payroll_loan_utils_test",
+      "community": 236,
+      "norm_label": "payroll-loan.utils.test.js"
     },
     {
       "label": "rbac-policy-contract.test.js",
@@ -31022,7 +31072,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "docs_api_mapping_http_status_code_contract",
-      "community": 318,
+      "community": 21,
       "norm_label": "http status code contract"
     },
     {
@@ -31032,7 +31082,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "docs_api_mapping_validation_error_body_422",
-      "community": 318,
+      "community": 21,
       "norm_label": "validation error body (422)"
     },
     {
@@ -31042,7 +31092,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "docs_api_mapping_what_stays_400",
-      "community": 318,
+      "community": 21,
       "norm_label": "what stays 400"
     },
     {
@@ -32162,7 +32212,7 @@
       "source_location": "L1655",
       "_origin": "ast",
       "id": "docs_api_mapping_audit_logs",
-      "community": 21,
+      "community": 333,
       "norm_label": "audit logs"
     },
     {
@@ -32172,7 +32222,7 @@
       "source_location": "L1657",
       "_origin": "ast",
       "id": "docs_api_mapping_get_audit_logs",
-      "community": 21,
+      "community": 333,
       "norm_label": "`get /audit-logs`"
     },
     {
@@ -32182,7 +32232,7 @@
       "source_location": "L1684",
       "_origin": "ast",
       "id": "docs_api_mapping_get_audit_logs_id",
-      "community": 21,
+      "community": 333,
       "norm_label": "`get /audit-logs/:id`"
     },
     {
@@ -34354,6 +34404,26 @@
       "id": "docs_api_mapping_permissions_phase_10_reconciliation_verified_2026_06_22_no_change_needed",
       "community": 21,
       "norm_label": "permissions \u2014 phase 10 reconciliation (verified 2026-06-22) \u2705 no change needed"
+    },
+    {
+      "label": "\u00a76 Divergence reconciliation \u2014 Loans PR-1 (fixed 2026-06-22) \u2705",
+      "file_type": "document",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5158",
+      "_origin": "ast",
+      "id": "docs_api_mapping_6_divergence_reconciliation_loans_pr_1_fixed_2026_06_22",
+      "community": 21,
+      "norm_label": "\u00a76 divergence reconciliation \u2014 loans pr-1 (fixed 2026-06-22) \u2705"
+    },
+    {
+      "label": "\u00a76 Divergence \u2014 entry-500 (verified fixed 2026-06-22) \u2705",
+      "file_type": "document",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5170",
+      "_origin": "ast",
+      "id": "docs_api_mapping_6_divergence_entry_500_verified_fixed_2026_06_22",
+      "community": 21,
+      "norm_label": "\u00a76 divergence \u2014 entry-500 (verified fixed 2026-06-22) \u2705"
     },
     {
       "label": "BACKEND_REMAINING.md",
@@ -43530,9 +43600,9 @@
       "source_file": "src/app.js",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "billing_billing_routes",
-      "confidence_score": 1.0
+      "target": "billing_billing_routes"
     },
     {
       "relation": "imports_from",
@@ -45418,9 +45488,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "middleware_authenticate",
-      "confidence_score": 1.0
+      "target": "middleware_authenticate"
     },
     {
       "relation": "imports_from",
@@ -45757,9 +45827,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "middleware_authenticate_authenticate",
-      "confidence_score": 1.0
+      "target": "middleware_authenticate_authenticate"
     },
     {
       "relation": "imports",
@@ -46065,9 +46135,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "middleware_authenticate_authorize",
-      "confidence_score": 1.0
+      "target": "middleware_authenticate_authorize"
     },
     {
       "relation": "calls",
@@ -53347,9 +53417,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "billing_billing_controller_fail",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller_fail"
     },
     {
       "relation": "contains",
@@ -53357,9 +53427,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "billing_billing_controller_getinvoices",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller_getinvoices"
     },
     {
       "relation": "contains",
@@ -53367,9 +53437,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "billing_billing_controller_getplans",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller_getplans"
     },
     {
       "relation": "contains",
@@ -53377,9 +53447,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "billing_billing_controller_getsubscription",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller_getsubscription"
     },
     {
       "relation": "imports_from",
@@ -53388,9 +53458,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "billing_billing_service",
-      "confidence_score": 1.0
+      "target": "billing_billing_service"
     },
     {
       "relation": "imports_from",
@@ -53399,9 +53469,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "utils_response",
-      "confidence_score": 1.0
+      "target": "utils_response"
     },
     {
       "relation": "imports",
@@ -53410,9 +53480,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "utils_response_errorresponse",
-      "confidence_score": 1.0
+      "target": "utils_response_errorresponse"
     },
     {
       "relation": "imports",
@@ -53421,9 +53491,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller",
-      "target": "utils_response_successresponse",
-      "confidence_score": 1.0
+      "target": "utils_response_successresponse"
     },
     {
       "relation": "imports_from",
@@ -53432,9 +53502,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "billing_billing_controller",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller"
     },
     {
       "relation": "calls",
@@ -53443,9 +53513,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller_fail",
-      "target": "utils_response_errorresponse",
-      "confidence_score": 1.0
+      "target": "utils_response_errorresponse"
     },
     {
       "relation": "calls",
@@ -53454,9 +53524,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller_getinvoices",
-      "target": "billing_billing_controller_fail",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller_fail"
     },
     {
       "relation": "calls",
@@ -53465,9 +53535,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller_getplans",
-      "target": "billing_billing_controller_fail",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller_fail"
     },
     {
       "relation": "calls",
@@ -53476,9 +53546,9 @@
       "source_file": "src/modules/billing/billing.controller.js",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_controller_getsubscription",
-      "target": "billing_billing_controller_fail",
-      "confidence_score": 1.0
+      "target": "billing_billing_controller_fail"
     },
     {
       "relation": "calls",
@@ -53519,9 +53589,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "billing_billing_routes_admin",
-      "confidence_score": 1.0
+      "target": "billing_billing_routes_admin"
     },
     {
       "relation": "contains",
@@ -53529,9 +53599,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "billing_billing_routes_billingroutes",
-      "confidence_score": 1.0
+      "target": "billing_billing_routes_billingroutes"
     },
     {
       "relation": "contains",
@@ -53539,9 +53609,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "billing_billing_routes_ok",
-      "confidence_score": 1.0
+      "target": "billing_billing_routes_ok"
     },
     {
       "relation": "contains",
@@ -53549,9 +53619,9 @@
       "source_file": "src/modules/billing/billing.routes.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_routes",
-      "target": "billing_billing_routes_t",
-      "confidence_score": 1.0
+      "target": "billing_billing_routes_t"
     },
     {
       "relation": "contains",
@@ -53559,9 +53629,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "billing_billing_service_default_subscription",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_default_subscription"
     },
     {
       "relation": "contains",
@@ -53569,9 +53639,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "billing_billing_service_getblob",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_getblob"
     },
     {
       "relation": "contains",
@@ -53579,9 +53649,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L113",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "billing_billing_service_getinvoices",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_getinvoices"
     },
     {
       "relation": "contains",
@@ -53589,9 +53659,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "billing_billing_service_getplans",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_getplans"
     },
     {
       "relation": "contains",
@@ -53599,9 +53669,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L96",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "billing_billing_service_getsubscription",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_getsubscription"
     },
     {
       "relation": "contains",
@@ -53609,9 +53679,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "billing_billing_service_invoices",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_invoices"
     },
     {
       "relation": "contains",
@@ -53619,9 +53689,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "billing_billing_service_plans",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_plans"
     },
     {
       "relation": "imports_from",
@@ -53630,9 +53700,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "plugins_prisma",
-      "confidence_score": 1.0
+      "target": "plugins_prisma"
     },
     {
       "relation": "imports",
@@ -53641,9 +53711,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service",
-      "target": "plugins_prisma_prisma",
-      "confidence_score": 1.0
+      "target": "plugins_prisma_prisma"
     },
     {
       "relation": "calls",
@@ -53652,9 +53722,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service_getinvoices",
-      "target": "billing_billing_service_getblob",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_getblob"
     },
     {
       "relation": "calls",
@@ -53663,9 +53733,9 @@
       "source_file": "src/modules/billing/billing.service.js",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "billing_billing_service_getsubscription",
-      "target": "billing_billing_service_getblob",
-      "confidence_score": 1.0
+      "target": "billing_billing_service_getblob"
     },
     {
       "relation": "contains",
@@ -60414,6 +60484,17 @@
       "weight": 1.0,
       "source": "engine_accrual_catchupaccrual",
       "target": "engine_proration_periodfraction"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/modules/leave/engine/accrual.js",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "engine_accrual_catchupaccrual",
+      "target": "utils_loan_utils_addmonths"
     },
     {
       "relation": "re_exports",
@@ -70495,16 +70576,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L533",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "payroll_payroll_service",
-      "target": "payroll_payroll_service_buildloanschedule"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/modules/payroll/payroll.service.js",
       "source_location": "L261",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -70700,6 +70771,16 @@
       "confidence_score": 1.0,
       "source": "payroll_payroll_service",
       "target": "payroll_payroll_service_deletestatutorypack"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L533",
+      "weight": 1.0,
+      "source": "payroll_payroll_service",
+      "target": "payroll_payroll_service_deriveloan",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -71345,16 +71426,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L552",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "payroll_payroll_service",
-      "target": "payroll_payroll_service_nextperiod"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/modules/payroll/payroll.service.js",
       "source_location": "L958",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -71734,6 +71805,50 @@
       "confidence_score": 1.0,
       "source": "payroll_payroll_service",
       "target": "utils_formulaeval_detectcirculardep"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "payroll_payroll_service",
+      "target": "utils_loan_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "payroll_payroll_service",
+      "target": "utils_loan_utils_addmonths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "payroll_payroll_service",
+      "target": "utils_loan_utils_buildschedule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "payroll_payroll_service",
+      "target": "utils_loan_utils_computeemi",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -72323,33 +72438,44 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L522",
+      "source_location": "L623",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "payroll_payroll_service_createemployeeloan",
-      "target": "payroll_payroll_service_buildloanschedule"
+      "target": "payroll_payroll_service_deriveloan",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L546",
+      "source_location": "L638",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "payroll_payroll_service_buildloanschedule",
-      "target": "payroll_payroll_service_nextperiod"
+      "source": "payroll_payroll_service_updateemployeeloan",
+      "target": "payroll_payroll_service_deriveloan",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "src/modules/payroll/payroll.service.js",
-      "source_location": "L568",
-      "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "payroll_payroll_service_nextperiod",
-      "target": "utils_payrollperiod_nextperiod"
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L603",
+      "weight": 1.0,
+      "source": "payroll_payroll_service_createemployeeloan",
+      "target": "utils_loan_utils_buildschedule"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/modules/payroll/payroll.service.js",
+      "source_location": "L602",
+      "weight": 1.0,
+      "source": "payroll_payroll_service_createemployeeloan",
+      "target": "utils_loan_utils_computeemi"
     },
     {
       "relation": "calls",
@@ -72691,6 +72817,134 @@
       "confidence_score": 1.0,
       "source": "payroll_payroll_service_exportrunjournal",
       "target": "payroll_payroll_service_getrunjournal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/payroll-loan.utils.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_payroll_loan_utils_test",
+      "target": "utils_loan_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "utils_loan_utils",
+      "target": "utils_loan_utils_addmonths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "utils_loan_utils",
+      "target": "utils_loan_utils_buildschedule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "utils_loan_utils",
+      "target": "utils_loan_utils_computeemi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "utils_loan_utils",
+      "target": "utils_loan_utils_monthlyrate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "utils_loan_utils_buildschedule",
+      "target": "utils_loan_utils_monthlyrate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "utils_loan_utils_computeemi",
+      "target": "utils_loan_utils_monthlyrate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/payroll-loan.utils.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_payroll_loan_utils_test",
+      "target": "utils_loan_utils_addmonths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "utils_loan_utils_buildschedule",
+      "target": "utils_loan_utils_addmonths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/payroll-loan.utils.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_payroll_loan_utils_test",
+      "target": "utils_loan_utils_computeemi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/payroll/utils/loan.utils.js",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "utils_loan_utils_buildschedule",
+      "target": "utils_loan_utils_computeemi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/payroll-loan.utils.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_payroll_loan_utils_test",
+      "target": "utils_loan_utils_buildschedule",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -92904,6 +93158,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5170",
+      "weight": 1.0,
+      "source": "docs_api_mapping_ems_api_actual_response_mapping",
+      "target": "docs_api_mapping_6_divergence_entry_500_verified_fixed_2026_06_22",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5158",
+      "weight": 1.0,
+      "source": "docs_api_mapping_ems_api_actual_response_mapping",
+      "target": "docs_api_mapping_6_divergence_reconciliation_loans_pr_1_fixed_2026_06_22",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/API_MAPPING.md",
       "source_location": "L1689",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -92966,9 +93240,9 @@
       "source_file": "docs/API_MAPPING.md",
       "source_location": "L5142",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_api_mapping_ems_api_actual_response_mapping",
-      "target": "docs_api_mapping_billing_phase_8_4_added_2026_06_22_live_msw_parity_verified",
-      "confidence_score": 1.0
+      "target": "docs_api_mapping_billing_phase_8_4_added_2026_06_22_live_msw_parity_verified"
     },
     {
       "relation": "contains",
@@ -93306,9 +93580,9 @@
       "source_file": "docs/API_MAPPING.md",
       "source_location": "L5152",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_api_mapping_ems_api_actual_response_mapping",
-      "target": "docs_api_mapping_permissions_phase_10_reconciliation_verified_2026_06_22_no_change_needed",
-      "confidence_score": 1.0
+      "target": "docs_api_mapping_permissions_phase_10_reconciliation_verified_2026_06_22_no_change_needed"
     },
     {
       "relation": "contains",
@@ -100512,5 +100786,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "adbd44ffb8b3adc6364d6b4708ebe7de4c6eee26"
+  "built_at_commit": "6d86a8a1e4d1055afec633ca3fce91da89f01524"
 }

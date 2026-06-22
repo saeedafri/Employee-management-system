@@ -656,10 +656,18 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       body: {
         type: 'object',
-        required: ['amount', 'emiAmount', 'startPeriod'],
+        required: ['startPeriod'],
         properties: {
-          amount: { type: 'number' }, emiAmount: { type: 'number' },
-          startPeriod: { type: 'string' }, endPeriod: { type: 'string' },
+          // Contract LoanInput (PAYROLL_EXTRAS §1)
+          type: { type: 'string' },
+          principal: { type: 'number' },
+          currency: { type: 'string' },
+          interestMethod: { type: 'string', enum: ['REDUCING', 'FLAT', 'ZERO'] },
+          annualRatePct: { type: 'number' },
+          tenureMonths: { type: 'integer' },
+          startPeriod: { type: 'string' },
+          // Back-compat (legacy live shape)
+          amount: { type: 'number' }, emiAmount: { type: 'number' }, endPeriod: { type: 'string' },
         },
       },
       response: { 201: obj },

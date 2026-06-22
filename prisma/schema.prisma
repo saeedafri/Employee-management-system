@@ -1303,6 +1303,12 @@ model EmployeeLoan {
   endPeriod   String?
   status      String   @default("ACTIVE")
   schedule    Json     @default("[]")
+  // Phase 6.10 — loan contract metadata (PAYROLL_EXTRAS_BACKEND_CONTRACT §1). Nullable/additive.
+  type          String? // PERSONAL | SALARY_ADVANCE | …
+  interestMethod String? @default("FLAT") // REDUCING | FLAT | ZERO
+  annualRatePct Decimal? @db.Decimal(7, 4)
+  tenureMonths  Int?
+  currency      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

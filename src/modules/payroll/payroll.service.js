@@ -8,8 +8,9 @@ import {
 } from '../../utils/payrollUiShapes.js';
 import { flatBodyToPackData } from '../../utils/statutoryPackShape.js';
 import { resolveFiscalYear } from '../../utils/statutoryCalculation.js';
-import { formatPeriodLabel, nextPeriod as nextPeriodUtil, derivePeriodDatesFromString, isValidPeriod } from '../../utils/payrollPeriod.js';
+import { formatPeriodLabel, derivePeriodDatesFromString, isValidPeriod } from '../../utils/payrollPeriod.js';
 import { generateCycles } from '../../utils/cycleGenerator.js';
+import { computeEmi, buildSchedule, addMonths as addLoanMonths } from './utils/loan.utils.js';
 
 function AppError(message, code, statusCode = 400) {
   const e = new Error(message);
@@ -526,52 +527,115 @@ export async function upsertTaxDeclaration(prisma, employeeId, tenantId, data) {
 
 // ── Phase 3: Loans ────────────────────────────────────────────────────────────
 
+// Loan wire-shape per PAYROLL_EXTRAS_BACKEND_CONTRACT §1: numeric principal/outstandingBalance
+// + derived schedule[] (RECOVERED|PENDING from actual balance) + rolled-up status. Major units
+// (consistent with the run engine's EMI recovery in payroll.repository.js).
+function deriveLoan(row) {
+  const principal = Number(row.amount);
+  const balance = Number(row.balance);
+  const recoveredPrincipal = principal - balance;
+  let acc = 0;
+  const schedule = (Array.isArray(row.schedule) ? row.schedule : []).map((e) => {
+    acc += Number(e.principalComponent || 0);
+    const status =
+      row.status === 'FORECLOSED'
+        ? 'RECOVERED'
+        : acc <= recoveredPrincipal + 0.001
+          ? 'RECOVERED'
+          : 'PENDING';
+    return {
+      installmentNo: e.installmentNo,
+      period: e.period,
+      emi: Number(e.emi),
+      principalComponent: Number(e.principalComponent),
+      interestComponent: Number(e.interestComponent ?? 0),
+      balanceAfter: Number(e.balanceAfter),
+      status,
+    };
+  });
+  const status = row.status === 'ACTIVE' && balance === 0 ? 'CLOSED' : row.status;
+  return {
+    id: row.id,
+    employeeId: row.employeeId,
+    type: row.type ?? 'PERSONAL',
+    principal,
+    currency: row.currency ?? undefined,
+    interestMethod: row.interestMethod ?? 'FLAT',
+    annualRatePct: row.annualRatePct != null ? Number(row.annualRatePct) : 0,
+    tenureMonths: row.tenureMonths ?? schedule.length,
+    startPeriod: row.startPeriod,
+    endPeriod: row.endPeriod ?? null,
+    emiAmount: Number(row.emiAmount),
+    outstandingBalance: balance,
+    status,
+    schedule,
+  };
+}
+
 export async function getEmployeeLoans(prisma, employeeId, tenantId) {
-  return prisma.employeeLoan.findMany({
+  const rows = await prisma.employeeLoan.findMany({
     where: { tenantId, employeeId },
     orderBy: { createdAt: 'desc' },
   });
+  return rows.map(deriveLoan);
 }
 
 export async function createEmployeeLoan(prisma, employeeId, tenantId, data) {
-  const schedule = buildLoanSchedule(data.amount, data.emiAmount, data.startPeriod);
-  return prisma.employeeLoan.create({
+  // Contract LoanInput {type, principal, currency?, interestMethod, annualRatePct, tenureMonths,
+  // startPeriod}. Back-compat: legacy {amount, emiAmount}.
+  const principal = Number(data.principal ?? data.amount ?? 0);
+  const interestMethod = data.interestMethod ?? (data.emiAmount != null ? 'ZERO' : 'FLAT');
+  const annualRatePct = Number(data.annualRatePct ?? 0);
+  const tenureMonths = Number(
+    data.tenureMonths ?? (data.emiAmount ? Math.ceil(principal / Number(data.emiAmount)) : 0),
+  );
+  if (!(principal > 0) || !(tenureMonths > 0)) {
+    throw Object.assign(new Error('Invalid principal or tenure'), {
+      code: 'INVALID_LOAN',
+      statusCode: 422,
+    });
+  }
+  const startPeriod = data.startPeriod;
+  const emiAmount =
+    data.emiAmount != null
+      ? Number(data.emiAmount)
+      : computeEmi(principal, annualRatePct, tenureMonths, interestMethod);
+  const schedule = buildSchedule(principal, annualRatePct, tenureMonths, interestMethod, startPeriod);
+  const endPeriod = data.endPeriod || addLoanMonths(startPeriod, tenureMonths - 1);
+  const row = await prisma.employeeLoan.create({
     data: {
-      tenantId, employeeId,
-      amount: data.amount, balance: data.amount, emiAmount: data.emiAmount,
-      startPeriod: data.startPeriod, endPeriod: data.endPeriod || null,
-      status: 'ACTIVE', schedule,
+      tenantId,
+      employeeId,
+      amount: principal,
+      balance: principal,
+      emiAmount,
+      startPeriod,
+      endPeriod,
+      status: 'ACTIVE',
+      schedule,
+      type: data.type ?? 'PERSONAL',
+      interestMethod,
+      annualRatePct,
+      tenureMonths,
+      currency: data.currency ?? null,
     },
   });
-}
-
-function buildLoanSchedule(amount, emi, startPeriod) {
-  const schedule = [];
-  let balance = amount;
-  let period = startPeriod;
-  let n = 1;
-  while (balance > 0 && n <= 60) {
-    const principal = Math.min(emi, balance);
-    balance = Math.max(0, balance - principal);
-    schedule.push({
-      installmentNo: n, period, emi: principal,
-      principalComponent: principal, interestComponent: 0,
-      balanceAfter: balance, status: 'PENDING',
-    });
-    period = nextPeriod(period);
-    n++;
-  }
-  return schedule;
-}
-
-function nextPeriod(period) {
-  return nextPeriodUtil(period);
+  return deriveLoan(row);
 }
 
 export async function updateEmployeeLoan(prisma, loanId, tenantId, data) {
   const loan = await prisma.employeeLoan.findFirst({ where: { id: loanId, tenantId } });
   if (!loan) return null;
-  return prisma.employeeLoan.update({ where: { id: loanId }, data });
+  let updateData = {};
+  if (data.action === 'foreclose') {
+    updateData = { status: 'FORECLOSED', balance: 0 }; // EMIs stop (run engine filters balance>0)
+  } else {
+    for (const k of ['status', 'balance', 'emiAmount', 'endPeriod']) {
+      if (data[k] !== undefined) updateData[k] = data[k];
+    }
+  }
+  const updated = await prisma.employeeLoan.update({ where: { id: loanId }, data: updateData });
+  return deriveLoan(updated);
 }
 
 // ── Phase 3: Opening Balances ─────────────────────────────────────────────────

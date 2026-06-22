@@ -5152,3 +5152,20 @@ Read-only billing surface (no write path in the contract). Mirrors `ems-frontend
 ## Permissions — Phase 10 reconciliation (verified 2026-06-22) ✅ No change needed
 
 The `/permissions` 404 was a **false alarm**: the FE permissions module (`permissions.api.ts`) never calls `/permissions` — it uses `/settings/roles-permissions` (GET/PATCH), `/settings/roles` (POST), `/settings/roles/:key` (DELETE), all already live. **BE-10** (createRole dropping `permissions`) is **already fixed**: `POST /settings/roles` with `permissions[]` persists them — verified `GET /settings/roles-permissions` → `matrix[newKey]` returns the exact permission set.
+
+---
+
+## §6 Divergence reconciliation — Loans PR-1 (fixed 2026-06-22) ✅
+
+`/payroll/employees/:id/loans` now matches `PAYROLL_EXTRAS_BACKEND_CONTRACT §1` (was the BE PR-1 divergence: string `amount`/`balance`, no `principal`/`outstandingBalance`/`schedule`).
+
+- **POST** accepts contract `LoanInput` `{type, principal, currency?, interestMethod(REDUCING|FLAT|ZERO), annualRatePct, tenureMonths, startPeriod}` (legacy `{amount, emiAmount}` still accepted). Computes EMI + amortization `schedule[]` via the ported `loan.utils` engine. `422 INVALID_LOAN` when `principal<=0` or `tenureMonths<=0`.
+- **GET** returns numeric `principal`, `outstandingBalance`, `emiAmount`, `annualRatePct` + `schedule[]` (per-installment `status: RECOVERED|PENDING` derived from actual balance) + rolled-up `status` (ACTIVE→CLOSED at 0). No more string `amount`/`balance`.
+- **PATCH** `{action:"foreclose"}` → `status:"FORECLOSED"`, balance 0 (run-engine EMI recovery stops via `balance>0` filter). `404 NOT_FOUND` for unknown loan.
+- Money stays **major units** — consistent with the run engine's EMI recovery (`payroll.repository.js` H6) and all live payslip/deduction math. Full minor-unit migration is a payroll-wide Phase 6/12 item, not this divergence.
+- Additive migration `20260622110000_loan_contract_fields` adds nullable `type/interestMethod/annualRatePct/tenureMonths/currency` to `EmployeeLoan`. Engine ported verbatim from `loan.utils.ts` (5 unit tests green).
+
+**Verification:** API end-to-end (contract body→201 numeric shape; 422×2; foreclose→FORECLOSED/0; 404; legacy back-compat) + `tests/payroll-loan.utils.test.js`. Browser-QA deferred to the consolidated MSW-off regression (FE payroll sub-routes redirect to `/payroll` in the local dev env).
+
+## §6 Divergence — entry-500 (verified fixed 2026-06-22) ✅
+`PATCH /timesheets/entries/:id` returns **200** (was 500). Confirmed live: create entry → PATCH `{hours,note,billable}` → 200. Resolved earlier in commit 480dea3.
