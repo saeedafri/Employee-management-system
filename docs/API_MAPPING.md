@@ -5111,3 +5111,28 @@ Per-country restricted-holiday limits + observed-day (substitute) rules, and per
 | DELETE | /holidays/optional-selections/:holidayId?year= | any (auth) | `{ holidayIds }` (year-scoped); 422 `PAST_HOLIDAY` |
 
 Validation order on select: NOT_OPTIONAL → WRONG_COUNTRY → PAST_HOLIDAY → (idempotent) → LIMIT_REACHED (limit 0 = unlimited). `.ics import` (POST /holidays/import + preview/commit) was already live.
+
+---
+
+## Timesheet Workflow Extras — Phase 5.4/5.5 (added 2026-06-22) ✅ Live, MSW-parity verified
+
+Workflow/PSA config for timesheets. Mirrors `ems-frontend/src/mocks/handlers/timesheets.ts`. Pure margin/budget engines (`rateMath.computeMargins`, `budgetMath.classifyBudget`) ported verbatim (6 tests). Config singletons/collections persist as tenant `Setting` JSON blobs (groupKey `timesheets`) — no new tables; budgets are COMPUTED from real `TimeEntry` rows.
+
+| Method | Path | Roles | Notes |
+|--------|------|-------|-------|
+| GET | /timesheets/locks | MANAGER+ | `data: LockPeriod[]` (newest first) |
+| POST | /timesheets/locks | HR_ADMIN, SUPER_ADMIN | body `{startDate,endDate,label?}`; 422 if start>end; sets status LOCKED + lockedBy/lockedAt |
+| DELETE | /timesheets/locks/:id | HR_ADMIN, SUPER_ADMIN | `{id, removed:true}` |
+| GET | /timesheets/audit | MANAGER+ | `data: AuditEntry[]` (filter ?timesheetId/?week/?employeeId) |
+| GET | /timesheets/approval-chain | MANAGER+ | `{steps: ApprovalStep[]}` |
+| PATCH | /timesheets/approval-chain | HR_ADMIN, SUPER_ADMIN | body `{steps[]}` → filters role∈{MANAGER,HR_ADMIN}, renumbers level, MANAGER+EMPLOYEE_MANAGER assignee preserved else ROLE |
+| GET | /timesheets/rates-config | MANAGER+ | `{reportingCurrency, warnThresholdPct}` (default USD/80) |
+| PATCH | /timesheets/rates-config | HR_ADMIN, SUPER_ADMIN | merge patch |
+| GET | /timesheets/budgets | MANAGER+ | `ProjectBudgetStatus[]` — consumed/burn computed from real TimeEntry hours + project rate + cost rates |
+| PATCH | /timesheets/budgets/:projectId | HR_ADMIN, SUPER_ADMIN | body `{basis(HOURS/FEES), cap}`; cap<=0 removes |
+| GET | /timesheets/cost-rates | MANAGER+ | `EmployeeCostRate[]` (lazily seeded from active roster @50) |
+| PATCH | /timesheets/cost-rates/:employeeId | HR_ADMIN, SUPER_ADMIN | body `{costRate}`; 404 if employee absent |
+| GET | /timesheets/week-config | any (auth) | `{weekStartDay}` (default 1=Mon) |
+| GET | /timesheets/delegations | MANAGER+ | `Delegation[]` |
+| POST | /timesheets/delegations | MANAGER+ | body `{delegateId,fromDate,toDate,role?,reason?}`; 422 bad dates/self-delegate; 201 |
+| DELETE | /timesheets/delegations/:id | MANAGER+ | `{deleted:true}`; 404 if absent |

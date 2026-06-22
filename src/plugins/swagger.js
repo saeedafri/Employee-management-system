@@ -268,6 +268,48 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           delete: op('Holidays', 'Deselect a restricted holiday — 422 PAST_HOLIDAY', true, { parameters: [pathParam('holidayId', 'Holiday id'), queryParam('year', 'integer', 'Calendar year')], responses: { 200: r200, 422: r422 } }),
         },
 
+        // ── TIMESHEET WORKFLOW EXTRAS (Phase 5.4/5.5) ─────────────────────────
+        '/timesheets/locks': {
+          get:  op('Timesheets', 'List timesheet period locks (MANAGER+)'),
+          post: op('Timesheets', 'Lock a period (HR_ADMIN, SUPER_ADMIN) — 422 if start>end', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['startDate', 'endDate'], properties: { startDate: { type: 'string' }, endDate: { type: 'string' }, label: { type: 'string' } } } }], responses: { 200: r200, 422: r422 } }),
+        },
+        '/timesheets/locks/{id}': {
+          delete: op('Timesheets', 'Remove a period lock (HR_ADMIN, SUPER_ADMIN)', true, { parameters: idParam }),
+        },
+        '/timesheets/audit': {
+          get: op('Timesheets', 'Timesheet activity audit trail (MANAGER+)', true, { parameters: [queryParam('timesheetId', 'string', ''), queryParam('week', 'string', 'weekStart YYYY-MM-DD'), queryParam('employeeId', 'string', '')] }),
+        },
+        '/timesheets/approval-chain': {
+          get:   op('Timesheets', 'Approval chain steps (MANAGER+)'),
+          patch: op('Timesheets', 'Set approval chain — filters to MANAGER/HR_ADMIN + renumbers (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { steps: { type: 'array' } } } }] }),
+        },
+        '/timesheets/rates-config': {
+          get:   op('Timesheets', 'PSA reporting rates config (reportingCurrency, warnThresholdPct) (MANAGER+)'),
+          patch: op('Timesheets', 'Update rates config (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', schema: { type: 'object', additionalProperties: true } }] }),
+        },
+        '/timesheets/budgets': {
+          get: op('Timesheets', 'Project budgets with computed burn status (consumed from real entries) (MANAGER+)'),
+        },
+        '/timesheets/budgets/{projectId}': {
+          patch: op('Timesheets', 'Set/remove a project budget — cap<=0 removes (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [pathParam('projectId', 'Project id'), { in: 'body', name: 'body', schema: { type: 'object', properties: { basis: { type: 'string', enum: ['HOURS', 'FEES'] }, cap: { type: 'number' } } } }] }),
+        },
+        '/timesheets/cost-rates': {
+          get: op('Timesheets', 'Per-employee cost rates (seeded from roster) (MANAGER+)'),
+        },
+        '/timesheets/cost-rates/{employeeId}': {
+          patch: op('Timesheets', 'Update an employee cost rate — 404 if absent (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [pathParam('employeeId', 'Employee id'), { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['costRate'], properties: { costRate: { type: 'number' } } } }], responses: { 200: r200, 404: r404 } }),
+        },
+        '/timesheets/week-config': {
+          get: op('Timesheets', 'Tenant week-start day (any authenticated)'),
+        },
+        '/timesheets/delegations': {
+          get:  op('Timesheets', 'Approval delegations (MANAGER+)'),
+          post: op('Timesheets', 'Create an approval delegation (MANAGER+) — 422 on bad dates/self-delegate', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['delegateId', 'fromDate', 'toDate'], properties: { delegateId: { type: 'string' }, fromDate: { type: 'string' }, toDate: { type: 'string' }, role: { type: 'string' }, reason: { type: 'string' } } } }], responses: { 201: r201, 422: r422 } }),
+        },
+        '/timesheets/delegations/{id}': {
+          delete: op('Timesheets', 'Remove an approval delegation (MANAGER+) — 404 if absent', true, { parameters: idParam, responses: { 200: r200, 404: r404 } }),
+        },
+
         // ── ATTENDANCE ───────────────────────────────────────────────────────
         '/attendance/check-in': {
           post: op('Attendance', 'Record check-in'),
