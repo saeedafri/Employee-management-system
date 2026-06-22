@@ -51,8 +51,15 @@ All payroll settings/extras screens render clean live (no API failures, no conso
 - **Secrets audit (2026-06-22):** ✅ `.env` gitignored + never committed; ✅ no hardcoded secrets in `src/` (all via `process.env`). **Fixed:** `config/index.js` had a fail-open default `jwtSecret` fallback — production could silently run on the known weak key (token forgery). Now **fail-closed**: the app throws on boot if `NODE_ENV=production` and `JWT_SECRET` is unset/default (verified: prod-sim without secret is BLOCKED; dev keeps the convenience fallback). Render already sets `JWT_SECRET`, so no deploy impact.
 - **Not yet covered by 12.2:** pen-test.
 
+## Phase 12.1 — truly-global browser litmus (2026-06-22) — STARTED, found+fixed bugs
+Additively seeded a **KWD (3-decimal) tenant** (`kwd-litmus-001`, country KW, admin `admin@kwd.test`) on the Render DB (additive-only, no existing data touched) and ran the live browser litmus. Findings:
+- **Backend bug FIXED:** `resolveRunCurrency` hardcoded `return 'INR'` when a tenant had no pay groups → a KWD tenant's run was created as INR. Now falls back to the tenant's `defaultCurrency`. Verified live: a KWD-tenant run now gets `currency: KWD`.
+- **Frontend bug filed (FE-3):** `/payroll` summary cards render hardcoded `₹0` for the KWD tenant instead of `KD 0.000` (backend reports `KWD` via `/settings/tenant`; FE must use it).
+- Engine math already proven multi-country (42/42 incl. JPY/KWD/PHP/INR).
+- Still TODO: sweep the remaining money-screens (analytics, payslip detail) at KWD/JPY in-browser.
+
 ## Genuine remaining work (honest)
-1. **12.1** — full truly-global browser regression at non-default country/currency/work-week per module (only spot-proven, e.g. holidays countryCode at API level).
+1. **12.1** — finish the per-module browser sweep at KWD/JPY (payroll runs with data, analytics, payslips); the harness + KWD tenant are now in place.
 2. **12.2 deepening** — per-route role-correctness sweep, secrets audit, dependency CVE scan.
 3. **Per-field shape parity** for MSW-shadowed modules (payroll-extras, timesheet-workflow) vs their contracts — screens render, exhaustive field diff not done.
 4. **Leave-types taxonomy reconciliation** — `GET /leave/types` now returns engine codes (EL/SL/CL/CO); admin CRUD `POST/PATCH/DELETE /leave/types/:id` still operates on DB `LeaveType` cuid rows. The admin settings screen and self-service screen use different taxonomies until unified.

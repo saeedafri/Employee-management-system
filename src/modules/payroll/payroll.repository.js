@@ -718,7 +718,10 @@ async function resolveRunCurrency(prisma, tenantId, data) {
     for (const c of currencies) counts[c] = (counts[c] || 0) + 1;
     return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
   }
-  return 'INR';
+  // No pay groups configured yet → use the tenant's configured default currency.
+  // Never hardcode INR (config-over-code: multi-country is data, not a country rule).
+  const tenant = await prisma.tenant.findUnique({ where: { id: tenantId }, select: { defaultCurrency: true } });
+  return tenant?.defaultCurrency || 'INR';
 }
 
 export async function createPayrollRun(prisma, tenantId, userId, data) {
