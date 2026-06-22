@@ -85,10 +85,15 @@ export async function deletePayGroup(prisma, id, tenantId) {
 }
 
 export async function getPaySchedules(prisma, tenantId) {
-  const [groups, calendars] = await Promise.all([
+  const [groups, calendars, tenant] = await Promise.all([
     repo.getPayGroups(prisma, tenantId),
     repo.getPayCalendars(prisma, tenantId),
+    prisma.tenant.findUnique({ where: { id: tenantId }, select: { defaultCurrency: true, timezone: true, country: true } }),
   ]);
+  // Config-over-code: derive currency/country/timezone from tenant + country data, never hardcode INR/US/Asia-Kolkata.
+  const tz = tenant?.timezone || 'UTC';
+  const defaultCcy = tenant?.defaultCurrency || 'INR';
+  const tenantCountry = tenant?.country || null;
 
   const fromGroups = groups
     .filter((g) => g.active)
@@ -98,9 +103,9 @@ export async function getPaySchedules(prisma, tenantId) {
       code: g.code,
       frequency: g.paySchedule,
       currency: g.currency,
-      country: g.currency === 'USD' ? 'US' : 'IN',
+      country: countryForCurrency(g.currency) ?? tenantCountry,
       startDate: null,
-      timezone: 'Asia/Kolkata',
+      timezone: tz,
       nextRunDate: null,
       active: g.active,
       source: 'payGroup',
@@ -111,10 +116,10 @@ export async function getPaySchedules(prisma, tenantId) {
     name: c.name,
     code: c.code,
     frequency: c.paySchedule ?? 'MONTHLY',
-    currency: c.country === 'US' ? 'USD' : 'INR',
-    country: c.country ?? 'IN',
+    currency: currencyForCountry(c.country) ?? defaultCcy,
+    country: c.country ?? tenantCountry,
     startDate: c.firstPayDate ? String(c.firstPayDate).split('T')[0] : null,
-    timezone: 'Asia/Kolkata',
+    timezone: tz,
     nextRunDate: null,
     active: true,
     source: 'payCalendar',
@@ -309,6 +314,15 @@ export const SUPPORTED_COUNTRIES = [
   { code: 'GB', name: 'United Kingdom', currency: 'GBP', locale: 'en-GB', fiscalYearStartMonth: 4 },
   { code: 'SG', name: 'Singapore', currency: 'SGD', locale: 'en-SG', fiscalYearStartMonth: 1 },
 ];
+
+// Data-driven country↔currency lookups (no `if (country===...)`). Return undefined when
+// unknown so callers fall back to the tenant's configured default currency/country.
+export function currencyForCountry(code) {
+  return SUPPORTED_COUNTRIES.find((c) => c.code === code)?.currency;
+}
+function countryForCurrency(currency) {
+  return SUPPORTED_COUNTRIES.find((c) => c.currency === currency)?.code;
+}
 
 const BANK_SCHEMAS = {
   IN: {
