@@ -1167,12 +1167,16 @@ export async function updateMigrationStatus(prisma, tenantId, data) {
 // ── Phase 3: Compliance Reports ───────────────────────────────────────────────
 
 export async function getPayEquity(prisma, tenantId, groupBy) {
-  const employees = await prisma.employee.findMany({
-    where: { tenantId, deletedAt: null },
-    include: {
-      salaries: { where: { effectiveTo: null }, take: 1, orderBy: { effectiveFrom: 'desc' } },
-    },
-  });
+  const [employees, tenant] = await Promise.all([
+    prisma.employee.findMany({
+      where: { tenantId, deletedAt: null },
+      include: {
+        salaries: { where: { effectiveTo: null }, take: 1, orderBy: { effectiveFrom: 'desc' } },
+      },
+    }),
+    prisma.tenant.findUnique({ where: { id: tenantId }, select: { defaultCurrency: true } }),
+  ]);
+  const tenantCurrency = tenant?.defaultCurrency || 'INR';
 
   const validGroups = { gender: 'gender', level: 'designation', location: 'location' };
   const field = validGroups[groupBy];
@@ -1204,7 +1208,7 @@ export async function getPayEquity(prisma, tenantId, groupBy) {
   const overallMedianGapPct = Math.max(...enriched.map(g => g.medianGapPct).filter(v => v > 0), 0);
 
   return {
-    groupBy, currency: 'INR', referenceGroup: refGroup.group,
+    groupBy, currency: tenantCurrency, referenceGroup: refGroup.group,
     overallMeanGapPct, overallMedianGapPct,
     groups: enriched, generatedAt: new Date().toISOString(),
   };
@@ -1355,15 +1359,22 @@ export async function updateWorkerClassification(prisma, tenantId, employeeId, b
 }
 
 export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classification') {
-  const employees = await prisma.employee.findMany({
-    where: { tenantId, deletedAt: null, employmentStatus: { in: ['ACTIVE', 'ON_LEAVE'] } },
-    include: {
-      salaries: { where: { effectiveTo: null }, take: 1, orderBy: { effectiveFrom: 'desc' } },
-    },
-  });
+  const [employees, tenant] = await Promise.all([
+    prisma.employee.findMany({
+      where: { tenantId, deletedAt: null, employmentStatus: { in: ['ACTIVE', 'ON_LEAVE'] } },
+      include: {
+        salaries: { where: { effectiveTo: null }, take: 1, orderBy: { effectiveFrom: 'desc' } },
+      },
+    }),
+    prisma.tenant.findUnique({ where: { id: tenantId }, select: { defaultCurrency: true } }),
+  ]);
 
-  const FX_RATES = { INR: 1, USD: 83, EUR: 90, GBP: 105, AED: 22, SGD: 62 };
-  const BASE_CURRENCY = 'INR';
+  // NOTE: placeholder INR-relative FX table. Production should source rates from a configurable
+  // rate provider (see 12.4 follow-up). Unknown currencies (e.g. KWD/JPY) fall back to 1:1.
+  const FX_RATES = { INR: 1, USD: 83, EUR: 90, GBP: 105, AED: 22, SGD: 62, KWD: 270, JPY: 0.55 };
+  // Base currency is the tenant's configured currency (config-over-code), not hardcoded INR.
+  const BASE_CURRENCY = tenant?.defaultCurrency || 'INR';
+  const baseRate = FX_RATES[BASE_CURRENCY] ?? 1;
 
   const map = new Map();
   let totalBaseCost = 0;
@@ -1371,9 +1382,10 @@ export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classifi
 
   for (const e of employees) {
     const salary = e.salaries?.[0];
-    const currency = e.payCurrency || 'INR';
+    const currency = e.payCurrency || BASE_CURRENCY;
     const monthlyLocal = salary ? Number(salary.annualCtc) / 12 : 0;
-    const monthlyBase = Math.round(monthlyLocal * (FX_RATES[currency] ?? 1));
+    // Convert local → tenant base via the INR-relative pivot table.
+    const monthlyBase = Math.round((monthlyLocal * (FX_RATES[currency] ?? 1)) / baseRate);
 
     const classification = toWorkerClassification(e.employmentType);
     const key =
