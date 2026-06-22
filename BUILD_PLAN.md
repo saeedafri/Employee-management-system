@@ -93,6 +93,20 @@ backend reimplemented logic ad hoc.
   `node --test tests/auth-login-contract.test.js` passed 2/2,
   `node --test tests/auth-me.test.js` passed 7/7, and `npm run test:smoke` passed 4/4.
 
+## Phase 12 — Hardening
+
+- [x] 12.1 HTTP status/envelope hardening — fixed malformed JSON to return `400 INVALID_REQUEST`
+  instead of 500, kept Fastify validation errors at `422 VALIDATION_ERROR`, made employee create
+  authorization run before body validation so unauthorized users get 403, relaxed employee id
+  param parsing so unknown ids reach repository lookup and return 404, and shortened tenant
+  registration transactions by upserting global permissions outside the transaction with a longer
+  transaction timeout. Verified 2026-06-22: `BASE=http://127.0.0.1:3000/api/v1 node --test
+  tests/http-status-contract.test.js` passed 12/12, `npm run test:smoke` passed 4/4,
+  `node --test tests/response-envelope.test.js` passed 3/3, auth/RBAC regressions passed 11/11,
+  and MSW-off local UI login reached `/dashboard` with `navigator.serviceWorker` registrations 0,
+  all captured frontend API responses `fromServiceWorker=false`, and dashboard APIs 200.
+  Screenshot: `/tmp/ems-status-hardening-dashboard-25s.png`.
+
 ## Backlog — documented divergences to reconcile (highest value first)
 
 - [ ] Loans PR-1 — align live `amount`/`balance` strings → numeric `principal`/`outstandingBalance`.

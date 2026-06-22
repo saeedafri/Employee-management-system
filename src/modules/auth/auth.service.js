@@ -584,6 +584,11 @@ export async function register(db, { companyName, fullName: _fullName, email, pa
 
   const passwordHash = await hashPassword(password);
   const permissionKeys = SUPER_ADMIN_PERMISSIONS.map((p) => p.key);
+  const permissions = await Promise.all(
+    SUPER_ADMIN_PERMISSIONS.map((p) =>
+      db.permission.upsert({ where: { key: p.key }, update: {}, create: p }),
+    ),
+  );
 
   return db.$transaction(async (tx) => {
     const tenant = await tx.tenant.create({
@@ -601,12 +606,6 @@ export async function register(db, { companyName, fullName: _fullName, email, pa
     await tx.tenantConfig.create({
       data: { tenantId: tenant.id, companyName },
     });
-
-    const permissions = await Promise.all(
-      SUPER_ADMIN_PERMISSIONS.map((p) =>
-        tx.permission.upsert({ where: { key: p.key }, update: {}, create: p }),
-      ),
-    );
 
     const superAdminRole = await tx.role.create({
       data: {
@@ -693,7 +692,7 @@ export async function register(db, { companyName, fullName: _fullName, email, pa
       sessionId: session.id,
       permissions: permissionKeys,
     };
-  });
+  }, { timeout: 15000 });
 }
 
 export { AppError };

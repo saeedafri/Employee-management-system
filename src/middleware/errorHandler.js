@@ -12,6 +12,12 @@ export async function errorHandler(error, request, reply) {
     );
   }
 
+  if (error.statusCode === 400 && !error.validation) {
+    return reply.code(400).send(
+      errorResponse('INVALID_REQUEST', 'Invalid or malformed request', null, requestId),
+    );
+  }
+
   // Fastify AJV schema validation errors
   if (error.code === 'FST_ERR_VALIDATION' && error.validation) {
     const details = error.validation.map((v) => ({

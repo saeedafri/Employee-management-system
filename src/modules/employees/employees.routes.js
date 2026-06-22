@@ -118,6 +118,7 @@ export async function employeesRoutes(fastify) {
           201: { type: 'object', additionalProperties: true },
         },
       },
+      preValidation: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
     },
     createEmployee,
   );
