@@ -30,7 +30,8 @@ export default async function holidaysRoutes(fastify) {
           type: 'object',
           properties: {
             year: { type: 'number' },
-            country: { type: 'string' },
+            country: { type: 'string', description: 'Exact location match (back-compat)' },
+            countryCode: { type: 'string', description: 'Phase 7.3 — ISO alpha-2; server-side per-country scoping (location matches code/display-name, keeps tenant-wide).' },
           },
         },
         response: {

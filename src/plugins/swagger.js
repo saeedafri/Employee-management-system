@@ -227,7 +227,8 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get:  op('Holidays', 'List all holidays', true, {
             parameters: [
               { in: 'query', name: 'year', type: 'number', description: 'Year (default current year)' },
-              { in: 'query', name: 'country', type: 'string' },
+              { in: 'query', name: 'country', type: 'string', description: 'Exact location match (back-compat)' },
+              { in: 'query', name: 'countryCode', type: 'string', description: 'Phase 7.3 — ISO alpha-2; server-side per-country scoping. Keeps tenant-wide (location null) + holidays whose location matches the code or its display name.' },
             ],
           }),
           post: op('Holidays', 'Create holiday (HR_ADMIN)', true, { responses: { 201: r201 } }),

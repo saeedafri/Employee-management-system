@@ -759,7 +759,7 @@ All department count fields (`_count.employees`, `totalHeadcount`, `employeeCoun
 
 ### `GET /holidays`
 
-**Query params:** `year` (number), `country` (string)
+**Query params:** `year` (number), `country` (string — exact location match, back-compat), `countryCode` (string — ISO alpha-2; **Phase 7.3** server-side per-country scoping: keeps tenant-wide holidays (`location: null`) plus any whose free-text `location` matches the code or its display name, e.g. `IN` → "India". Composes with `country` (AND). 2-letter codes never substring-false-positive, e.g. `IN` does not match "Indonesia".)
 
 **Response `data`:**
 ```json

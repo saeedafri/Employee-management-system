@@ -1,10 +1,15 @@
 import * as repo from './holidays.repository.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
+import { resolveApplicableHolidays } from './utils/applicability.js';
 
 export async function listHolidays(tenantId, filters) {
   try {
-    const { year = new Date().getFullYear(), country } = filters;
-    const holidays = await repo.listHolidays(tenantId, year, country);
+    const { year = new Date().getFullYear(), country, countryCode } = filters;
+    let holidays = await repo.listHolidays(tenantId, year, country);
+    // Phase 7.3 — server-side per-country scoping (closes the FE client-side workaround).
+    // Fuzzy: keeps tenant-wide (location null) + holidays whose location matches the country
+    // code or its display name. Mirrors the FE resolveApplicableHolidays.
+    if (countryCode) holidays = resolveApplicableHolidays(holidays, countryCode);
     return successResponse({ holidays, total: holidays.length }, { cached: false });
   } catch (error) {
     return errorResponse('LIST_ERROR', error.message, null);

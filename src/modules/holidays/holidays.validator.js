@@ -6,7 +6,8 @@ export const idParamSchema = z.object({
 
 export const listQuerySchema = z.object({
   year: z.number().int().min(1900).max(2100).optional(),
-  country: z.string().max(100).optional(),
+  country: z.string().max(100).optional(), // exact location match (back-compat)
+  countryCode: z.string().max(8).optional(), // Phase 7.3 — ISO alpha-2; fuzzy applicability filter
 });
 
 export const createHolidaySchema = z.object({
