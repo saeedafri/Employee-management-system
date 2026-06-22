@@ -2,6 +2,8 @@ import { authenticate, authorize } from '../../middleware/authenticate.js';
 import * as reportsController from './reports.controller.js';
 
 export default async function reportsRoutes(fastify) {
+  const adminRoles = ['HR_ADMIN', 'SUPER_ADMIN'];
+
   fastify.get('/reports/attendance', {
     schema: {
       tags: ['Reports'],
@@ -17,7 +19,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, authorize(adminRoles)],
   }, (request, reply) => reportsController.getAttendanceReport(request, reply));
 
   fastify.get('/reports/leaves', {
@@ -36,7 +38,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, authorize(adminRoles)],
   }, (request, reply) => reportsController.getLeavesReport(request, reply));
 
   fastify.get('/reports/payroll', {
@@ -53,7 +55,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, authorize(adminRoles)],
   }, (request, reply) => reportsController.getPayrollReport(request, reply));
 
   fastify.post('/reports/schedule', {
@@ -154,7 +156,6 @@ export default async function reportsRoutes(fastify) {
 
   // ── Domain 4 — Phase 2 Reports ─────────────────────────────────────────────
 
-  const adminRoles = ['HR_ADMIN', 'SUPER_ADMIN'];
   const commonQs = {
     type: 'object',
     properties: {

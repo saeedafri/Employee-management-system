@@ -146,6 +146,23 @@ backend reimplemented logic ad hoc.
   worker. Screenshots: `/tmp/ems-settings-roles-created-msw-off.png`,
   `/tmp/ems-settings-roles-deleted-msw-off.png`.
 
+## Phase 9 — Reports & analytics
+
+- [x] 9.1/9.2 Reports/Analytics server-side access control — reconciled the remaining
+  legacy report reads (`GET /reports/attendance`, `/reports/leaves`, `/reports/payroll`)
+  to the HR_ADMIN/SUPER_ADMIN backend-enforcement rule; the newer reports and analytics
+  routes were already gated. Verified 2026-06-22:
+  `node --test tests/reports-authz-contract.test.js` passed 2/2, proving `EMPLOYEE`
+  receives `403 FORBIDDEN` and `HR_ADMIN` still receives 200 on all three legacy
+  endpoints; `npm run test:smoke` passed 4/4; response/status/auth/RBAC regressions
+  passed 26/26; touched-source ESLint passed. MSW-off browser QA through local
+  frontend (`localhost:3001`) loaded `/reports` as HR via real BFF API calls,
+  confirmed service-worker registrations 0, all captured `/api/*` responses
+  `fromServiceWorker=false`, and verified employee BFF calls to `/api/reports/{attendance,
+  leaves,payroll}` all returned `403 FORBIDDEN`. Screenshots:
+  `/tmp/ems-reports-authz-hr-msw-off.png`,
+  `/tmp/ems-reports-authz-employee-msw-off.png`.
+
 ## Phase 12 — Hardening
 
 - [x] 12.1 HTTP status/envelope hardening — fixed malformed JSON to return `400 INVALID_REQUEST`
