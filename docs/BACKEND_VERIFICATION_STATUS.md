@@ -42,8 +42,8 @@ All payroll settings/extras screens render clean live (no API failures, no conso
 ## Phase 12.2 — security first-pass (2026-06-22) — PASS
 - **Authentication coverage: 100%.** Static audit of all 387 routes: every route is guarded by `authenticate` (302 per-route, the rest via file-level `fastify.addHook('onRequest', authenticate)` or the `adminOnly`/`adminRoles` aliases). Intentionally public: 9 auth/health routes (login, refresh, forgot/reset-password, verify/resend-otp, register, invitation, password-policy). `GET /notifications/stream` authenticates via `?token=` (EventSource can't send headers — by design).
 - **Tenant isolation: enforced.** `authenticate.js:34-42` rejects (401) when a header-resolved tenant ≠ JWT/session tenant, so a spoofed `x-tenant-key` cannot cross tenants. Also checks `session.tenantId === payload.tenantId`, `session.userId === payload.sub`, and revocation. Live: acme token + bogus/other `x-tenant-key` → `INVALID_TENANT`/401, never another tenant's data. Services additionally filter every query by `tenantId`.
-- **RBAC:** `authorize([roles])` gates present on admin/mutating routes (verified on payroll, settings, holidays, employees).
-- **Not yet covered by 12.2:** per-route role-correctness review of all 387 (only spot-checked), secrets-handling audit, dependency CVE scan, pen-test.
+- **RBAC role-correctness: PASS.** Audited all mutating routes (POST/PATCH/DELETE). Every one enforces an appropriate role/ownership gate — either route-level `authorize([roles])`/`adminOnly`, or a controller-level `memberType`→403 / ownership check (departments, holidays, employees docs/photo, manager decisions use the controller pattern). Self-service writes (own leave/attendance/timesheet/notifications, auth) are correctly any-authenticated. No mutating route is open to the wrong role.
+- **Not yet covered by 12.2:** secrets-handling audit, dependency CVE scan, pen-test.
 
 ## Genuine remaining work (honest)
 1. **12.1** — full truly-global browser regression at non-default country/currency/work-week per module (only spot-proven, e.g. holidays countryCode at API level).
