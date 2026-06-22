@@ -1584,18 +1584,128 @@ export async function releasePayslip(prisma, runId, payslipId, tenantId) {
   });
 }
 
-export async function importInputsFromTimesheets(prisma, runId, tenantId) {
+// ── Run inputs: source pre-fill (Domain F.5) ────────────────────────────────
+// A run's inputs are editable only while the run is DRAFT or REVIEW (approval-gated).
+const RUN_INPUTS_EDITABLE = new Set(['DRAFT', 'REVIEW']);
+
+// Resolve a [start,end] date window for the run. Prefer explicit cycle dates;
+// otherwise derive the calendar month from the "YYYY-MM" period string.
+function runPeriodRange(run) {
+  if (run.startDate && run.endDate) return { start: run.startDate, end: run.endDate };
+  const m = /^(\d{4})-(\d{2})/.exec(run.period || '');
+  if (!m) return null;
+  const y = Number(m[1]); const mo = Number(m[2]);
+  return { start: new Date(Date.UTC(y, mo - 1, 1, 0, 0, 0)), end: new Date(Date.UTC(y, mo, 0, 23, 59, 59, 999)) };
+}
+
+async function loadEditableRun(prisma, runId, tenantId) {
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
-  if (!run) return null;
+  if (!run) return { error: 'NOT_FOUND' };
+  if (!RUN_INPUTS_EDITABLE.has(run.status)) return { error: 'RUN_NOT_EDITABLE', status: run.status };
+  return { run };
+}
+
+export async function importInputsFromTimesheets(prisma, runId, tenantId) {
+  const { run, error, status } = await loadEditableRun(prisma, runId, tenantId);
+  if (error) return { error, status };
+  const range = runPeriodRange(run);
   const timesheets = await prisma.timesheet.findMany({
-    where: { tenantId, status: 'APPROVED' },
-    include: { employee: { select: { id: true, firstName: true, lastName: true } } },
+    where: {
+      tenantId, status: 'APPROVED',
+      ...(range ? { weekStart: { lte: range.end } } : {}),
+    },
   }).catch(() => []);
-  const imported = timesheets.length;
+  // OT hours per employee from approved timesheets (idempotent SET, keyed by source).
+  const otByEmp = {};
+  for (const t of timesheets) otByEmp[t.employeeId] = (otByEmp[t.employeeId] || 0) + (t.overtimeHours || 0);
+  let updated = 0;
+  for (const [employeeId, otHours] of Object.entries(otByEmp)) {
+    await prisma.payrollInput.upsert({
+      where: { runId_employeeId: { runId, employeeId } },
+      update: { otHours },
+      create: { tenantId, runId, employeeId, otHours },
+    });
+    updated += 1;
+  }
   await prisma.payrollEvent.create({
-    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'inputs.from-timesheets', runId, summary: `${imported} timesheet records imported` },
+    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'inputs.from-timesheets', runId, summary: `${updated} employee(s) OT pre-filled from approved timesheets` },
   });
-  return { runId, imported, message: `${imported} timesheet records imported into payroll inputs` };
+  return { runId, source: 'timesheets', updated, message: `${updated} employee(s) updated with overtime from approved timesheets` };
+}
+
+// LOP from APPROVED unpaid leave overlapping the run period. Idempotent: sets the
+// employee's lopDays to the recomputed leave total (no double-count on re-run).
+export async function importInputsFromLeave(prisma, runId, tenantId) {
+  const { run, error, status } = await loadEditableRun(prisma, runId, tenantId);
+  if (error) return { error, status };
+  const range = runPeriodRange(run);
+  const unpaid = await prisma.leaveType.findMany({ where: { tenantId, isPaid: false }, select: { id: true } }).catch(() => []);
+  const unpaidIds = new Set(unpaid.map((t) => t.id));
+  const leaves = unpaidIds.size === 0 ? [] : await prisma.leaveRequest.findMany({
+    where: {
+      tenantId, status: 'APPROVED', leaveTypeId: { in: [...unpaidIds] },
+      ...(range ? { startDate: { lte: range.end }, endDate: { gte: range.start } } : {}),
+    },
+    select: { employeeId: true, totalDays: true },
+  }).catch(() => []);
+  const lopByEmp = {};
+  for (const lr of leaves) lopByEmp[lr.employeeId] = (lopByEmp[lr.employeeId] || 0) + (lr.totalDays || 0);
+  let updated = 0;
+  for (const [employeeId, lopDays] of Object.entries(lopByEmp)) {
+    await prisma.payrollInput.upsert({
+      where: { runId_employeeId: { runId, employeeId } },
+      update: { lopDays },
+      create: { tenantId, runId, employeeId, lopDays },
+    });
+    updated += 1;
+  }
+  await prisma.payrollEvent.create({
+    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'inputs.from-leave', runId, summary: `${updated} employee(s) LOP pre-filled from approved unpaid leave` },
+  });
+  return { runId, source: 'leave', updated, message: `${updated} employee(s) updated with LOP from approved unpaid leave` };
+}
+
+// Unexplained-absence LOP from reconciled attendance in the run period. Attendance owns
+// ONLY unexplained absence (status ABSENT — days with approved leave are not ABSENT, so the
+// two sources are disjoint). Reconciler: sets lopDays = unpaid-leave days + absent days so
+// the total is complete and the call is idempotent regardless of how often it runs.
+export async function importInputsFromAttendance(prisma, runId, tenantId) {
+  const { run, error, status } = await loadEditableRun(prisma, runId, tenantId);
+  if (error) return { error, status };
+  const range = runPeriodRange(run);
+  const absents = await prisma.attendanceRecord.findMany({
+    where: { tenantId, status: 'ABSENT', ...(range ? { attendanceDate: { gte: range.start, lte: range.end } } : {}) },
+    select: { employeeId: true },
+  }).catch(() => []);
+  const absByEmp = {};
+  for (const a of absents) absByEmp[a.employeeId] = (absByEmp[a.employeeId] || 0) + 1;
+  // Recompute the leave-LOP portion so the two disjoint sources compose without double-count.
+  const unpaid = await prisma.leaveType.findMany({ where: { tenantId, isPaid: false }, select: { id: true } }).catch(() => []);
+  const unpaidIds = new Set(unpaid.map((t) => t.id));
+  const leaves = unpaidIds.size === 0 ? [] : await prisma.leaveRequest.findMany({
+    where: {
+      tenantId, status: 'APPROVED', leaveTypeId: { in: [...unpaidIds] },
+      ...(range ? { startDate: { lte: range.end }, endDate: { gte: range.start } } : {}),
+    },
+    select: { employeeId: true, totalDays: true },
+  }).catch(() => []);
+  const leaveByEmp = {};
+  for (const lr of leaves) leaveByEmp[lr.employeeId] = (leaveByEmp[lr.employeeId] || 0) + (lr.totalDays || 0);
+  const employeeIds = new Set([...Object.keys(absByEmp), ...Object.keys(leaveByEmp)]);
+  let updated = 0;
+  for (const employeeId of employeeIds) {
+    const lopDays = (leaveByEmp[employeeId] || 0) + (absByEmp[employeeId] || 0);
+    await prisma.payrollInput.upsert({
+      where: { runId_employeeId: { runId, employeeId } },
+      update: { lopDays },
+      create: { tenantId, runId, employeeId, lopDays },
+    });
+    updated += 1;
+  }
+  await prisma.payrollEvent.create({
+    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'inputs.from-attendance', runId, summary: `${updated} employee(s) LOP reconciled from attendance + unpaid leave` },
+  });
+  return { runId, source: 'attendance', updated, message: `${updated} employee(s) updated with unexplained-absence LOP reconciled from attendance` };
 }
 
 export async function publishRun(prisma, runId, tenantId) {

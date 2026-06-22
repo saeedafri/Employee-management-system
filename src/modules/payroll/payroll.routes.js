@@ -1140,11 +1140,27 @@ export default async function payrollRoutes(fastify) {
 
   fastify.post('/payroll/runs/:id/inputs/from-timesheets', {
     schema: {
-      tags: ['Payroll'], description: 'Pre-fill OT/LOP from approved timesheets in the run period', security: [{ Bearer: [] }],
+      tags: ['Payroll'], description: 'Pre-fill OT from approved timesheets in the run period (approval-gated: DRAFT/REVIEW only)', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
     onRequest: [authenticate, authorize(adminRoles)],
   }, ctrl.importInputsFromTimesheets);
+
+  fastify.post('/payroll/runs/:id/inputs/from-leave', {
+    schema: {
+      tags: ['Payroll'], description: 'Pre-fill LOP from approved unpaid leave in the run period (approval-gated: DRAFT/REVIEW only; idempotent)', security: [{ Bearer: [] }],
+      params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.importInputsFromLeave);
+
+  fastify.post('/payroll/runs/:id/inputs/from-attendance', {
+    schema: {
+      tags: ['Payroll'], description: 'Reconcile unexplained-absence LOP from attendance + unpaid leave in the run period (approval-gated: DRAFT/REVIEW only; idempotent)', security: [{ Bearer: [] }],
+      params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
+    },
+    onRequest: [authenticate, authorize(adminRoles)],
+  }, ctrl.importInputsFromAttendance);
 
   fastify.post('/payroll/runs/:id/publish', {
     schema: {

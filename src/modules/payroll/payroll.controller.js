@@ -669,11 +669,34 @@ export async function releasePayslip(request, reply) {
   } catch (err) { handleError(reply, err); }
 }
 
+// Map the run-inputs service result (NOT_FOUND / RUN_NOT_EDITABLE / success) to HTTP.
+function sendRunInputsResult(reply, data) {
+  if (data?.error === 'NOT_FOUND') { reply.code(404).send(errorResponse('NOT_FOUND', 'Run not found')); return; }
+  if (data?.error === 'RUN_NOT_EDITABLE') {
+    reply.code(422).send(errorResponse('RUN_NOT_EDITABLE', `Inputs can only be imported while the run is in draft or review (current: ${data.status}).`));
+    return;
+  }
+  reply.send(successResponse(data));
+}
+
 export async function importInputsFromTimesheets(request, reply) {
   try {
     const data = await service.importInputsFromTimesheets(prisma, request.params.id, request.tenant.id);
-    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Run not found')); return; }
-    reply.send(successResponse(data));
+    sendRunInputsResult(reply, data);
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function importInputsFromLeave(request, reply) {
+  try {
+    const data = await service.importInputsFromLeave(prisma, request.params.id, request.tenant.id);
+    sendRunInputsResult(reply, data);
+  } catch (err) { handleError(reply, err); }
+}
+
+export async function importInputsFromAttendance(request, reply) {
+  try {
+    const data = await service.importInputsFromAttendance(prisma, request.params.id, request.tenant.id);
+    sendRunInputsResult(reply, data);
   } catch (err) { handleError(reply, err); }
 }
 

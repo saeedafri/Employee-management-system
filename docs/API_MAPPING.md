@@ -4600,7 +4600,9 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | POST | `/payroll/runs/:id/payslips/:payslipId/recalculate` | HR,SA | Re-run calculation for single payslip |
 | POST | `/payroll/runs/:runId/payslips/:payslipId/hold` | HR,SA | Body: `{reason}`. Sets status=HELD |
 | POST | `/payroll/runs/:runId/payslips/:payslipId/release` | HR,SA | Releases held payslip back to CALCULATED |
-| POST | `/payroll/runs/:id/inputs/from-timesheets` | HR,SA | Imports approved timesheet hours into run inputs |
+| POST | `/payroll/runs/:id/inputs/from-timesheets` | HR,SA | Pre-fills OT (`otHours`) from APPROVED timesheets in the run period. Approval-gated (DRAFT/REVIEW only → else `422 RUN_NOT_EDITABLE`; `404 NOT_FOUND` if run missing). Idempotent (SET per source). Returns `data: { runId, source:"timesheets", updated, message }`. |
+| POST | `/payroll/runs/:id/inputs/from-leave` | HR,SA | Pre-fills LOP (`lopDays`) from APPROVED **unpaid** leave (`LeaveType.isPaid=false`) overlapping the run period. Approval-gated (DRAFT/REVIEW only → `422 RUN_NOT_EDITABLE`; `404` if missing). Idempotent SET (no double-count on re-run). Returns `data: { runId, source:"leave", updated, message }`. |
+| POST | `/payroll/runs/:id/inputs/from-attendance` | HR,SA | Reconciles unexplained-absence LOP from `AttendanceRecord.status=ABSENT` in the run period. Sets `lopDays = unpaid-leave days + absent days` (disjoint sources composed without double-count; the reconciler). Approval-gated (DRAFT/REVIEW only → `422`; `404` if missing). Idempotent. Returns `data: { runId, source:"attendance", updated, message }`. |
 
 ### F.9 — Disbursement & Payment Batch
 | Method | Path | Roles | Notes |
