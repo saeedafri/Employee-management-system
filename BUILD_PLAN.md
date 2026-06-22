@@ -66,6 +66,14 @@ backend reimplemented logic ad hoc.
   `node --test tests/auth-login-contract.test.js` passed 2/2,
   `node --test tests/auth-me.test.js` passed 7/7,
   `node --test tests/auth-logout.test.js` passed 2/2, and `npm run test:smoke` passed 4/4.
+- [x] 1.2 `POST /auth/refresh` contract — verified refresh-token rotation creates a new
+  session id, rotates both auth cookies, returns the new access token/session id, detects
+  old-token reuse as `TOKEN_REUSE`, and clears both cookies on refresh failure. Malformed
+  refresh cookies now return the published `INVALID_SESSION` contract error. Verified
+  2026-06-22: `node --test tests/auth-refresh-contract.test.js` passed 3/3,
+  `node --test tests/auth-login-contract.test.js` passed 2/2,
+  `node --test tests/auth-me.test.js` passed 7/7,
+  `node --test tests/auth-logout.test.js` passed 2/2, and `npm run test:smoke` passed 4/4.
 
 ## Backlog — documented divergences to reconcile (highest value first)
 

@@ -157,7 +157,7 @@ export async function refreshController(request, reply) {
     if (parts.length !== 2) {
       clearAuthCookies(reply);
       return reply.code(401).send(
-        errorResponse('INVALID_TOKEN_FORMAT', 'Invalid refresh token format', {}, request.id),
+        errorResponse('INVALID_SESSION', 'Invalid refresh session', {}, request.id),
       );
     }
 
