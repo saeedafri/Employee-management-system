@@ -59,8 +59,12 @@ Additively seeded a **KWD (3-decimal) tenant** (`kwd-litmus-001`, country KW, ad
 - **More backend currency hardcodes fixed (config-over-code):**
   - `getPaySchedules` — currency/country/timezone were `country===US?USD:INR` ternaries + hardcoded `Asia/Kolkata`; now from tenant config + data-driven `currencyForCountry`/`countryForCurrency` (commit b31e1c4). Verified: acme unchanged (INR/Asia-Kolkata), KWD clean.
   - `getPayEquity` report currency + `getWorkerCostSummary` `BASE_CURRENCY` were hardcoded `INR`; now `tenant.defaultCurrency` (commit bec5321). Verified: KWD cost-summary now `baseCurrency=KWD`.
-- **Documented 12.4 follow-ups (deep, need tested changes — not safe inline):**
-  1. **Money rounding is 2-decimal (`Math.round(x*100)/100`)** across the payroll calculate path — wrong for KWD (3dp)/JPY (0dp). Fix = thread the existing `currencyDecimals(currency)` helper through the calc/payslip math with full India tax-regression tests (use payroll-engine-specialist).
+## Money rounding — application layer FIXED, persistence BLOCKED by schema (2026-06-23)
+- **DONE (in-memory):** `src/utils/money.js` (`currencyDecimals`/`roundMoney`, ported from FE money.utils) now drives rounding across the calculate path — component amounts, per-payslip gross/net/deductions, run totals, byDept. Verified live on a KWD run: `earningsJson` HRA computes to `400.224` (3dp, was `400.22`); INR byte-identical (equivalence test); JPY 0dp fine. Commits 9f45678 + calc-loop follow-up.
+- **BLOCKED (needs migration):** every money column is `@db.Decimal(15, 2)` (Payslip.grossEarnings/netPay/totalDeductions, PayrollRun totals, SalaryComponent.value, EmployeeSalary.annualCtc, …). Postgres truncates persisted money to **2 decimals**, so KWD/BHD 3-decimal amounts cannot be stored faithfully (gross persists `1400.78`, not `1400.784`). **True 3dp requires a schema migration** to integer minor-units (contract's model) or `Decimal(15,4)` — user-run + touches every money read/write path → dedicated change with payroll-engine-specialist, NOT inline.
+
+## Documented 12.4 follow-ups
+  1. **Schema money precision** (above) — the headline truly-global blocker for 3-decimal currencies.
   2. **`getWorkerCostSummary` FX rates are a hardcoded placeholder table** — should come from a configurable rate provider.
 - Still TODO: sweep the remaining money-screens (analytics, payslip detail) at KWD/JPY in-browser (needs a calculated KWD payslip; blocked on the 2dp-rounding fix to render correct 3-decimal amounts).
 

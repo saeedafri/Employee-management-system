@@ -1060,7 +1060,10 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       // from periods-per-year (no frequency branches): MONTHLY ppy=12 → 1 (unchanged, byte-identical);
       // SEMI_MONTHLY ppy=24 → 0.5; BIWEEKLY ppy=26 → 12/26; WEEKLY ppy=52 → 12/52.
       const periodFactor = 12 / ppy;
-      const r2 = (n) => Math.round(n * 100) / 100;
+      // Round per-payslip money to the employee currency's minor-unit precision
+      // (KWD=3dp, JPY=0dp, INR=2dp → byte-identical to the old Math.round(x*100)/100).
+      const payslipCurrency = sal.currency ?? payGroup.currency ?? 'INR';
+      const r2 = (n) => roundMoney(n, payslipCurrency);
       const pMonth = Number(run.period.slice(5, 7));
       const pYear = Number(run.period.slice(0, 4));
 
@@ -1302,7 +1305,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       const deptName = employee.department?.name || 'Unassigned';
       if (!byDept[deptName]) byDept[deptName] = { departmentName: deptName, employeeCount: 0, totalNet: 0 };
       byDept[deptName].employeeCount++;
-      byDept[deptName].totalNet = Math.round((byDept[deptName].totalNet + netPay) * 100) / 100;
+      byDept[deptName].totalNet = roundMoney(byDept[deptName].totalNet + netPay, currency);
     } catch (err) {
       warnings.push({ employeeId: employee.id, employeeName: `${employee.firstName} ${employee.lastName}`, message: err.message });
     }
