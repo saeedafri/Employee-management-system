@@ -57,6 +57,16 @@ backend reimplemented logic ad hoc.
   `hr@acme.test` reached `/dashboard`; dashboard data loaded from local backend via BFF.
   Evidence: `/tmp/ems-local-dashboard-20s.png`, `/tmp/ems-phase03-dashboard.png`.
 
+## Phase 1 — Auth & identity
+
+- [x] 1.1 `POST /auth/login` contract — reconciled SUPER_ADMIN/no-employee response
+  nullability so contract fields are always present (`employeeId`, `employee`,
+  `tenantContext`, `tenantMemberships`). Added focused contract coverage for login response
+  shape, httpOnly auth cookies, and 422 validation details/requestId. Verified 2026-06-22:
+  `node --test tests/auth-login-contract.test.js` passed 2/2,
+  `node --test tests/auth-me.test.js` passed 7/7,
+  `node --test tests/auth-logout.test.js` passed 2/2, and `npm run test:smoke` passed 4/4.
+
 ## Backlog — documented divergences to reconcile (highest value first)
 
 - [ ] Loans PR-1 — align live `amount`/`balance` strings → numeric `principal`/`outstandingBalance`.
