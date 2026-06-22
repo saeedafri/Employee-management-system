@@ -5182,3 +5182,19 @@ The `/permissions` 404 was a **false alarm**: the FE permissions module (`permis
 - Additive migration `20260622120000_legal_entity_work_time` (nullable `workWeekDays` JSONB + `hoursPerDay` int on LegalEntity).
 
 **Verification:** API round-trip (POST UAE Sun-Thu → GET → PATCH 4-day week; India null fallback) + working-days unit test. Note: `hoursPerDay`-driven OT hourly rate is persisted for use; the engine has no separate OT-hourly path today (no behaviour to change).
+
+---
+
+## §6 Divergence — Sub-monthly payroll (verified fixed 2026-06-22) ✅ code-verified + unit-tested
+
+`SUBMONTHLY_PAYROLL_DEFECTS` 3 bugs are fixed in the run engine (`payroll.repository.js`), implemented by prior commits dda9585/1401977 and confirmed by line-by-line review + unit tests:
+- **Bug 1 (FLAT not prorated):** per-cycle FLAT `amount = value × (12/periodsPerYear)` — MONTHLY ppy=12 → ×1 (byte-identical); SEMI_MONTHLY ppy=24 → ×0.5 (₱100k → ₱50k/cycle). Data-driven, no frequency branches.
+- **Bug 2 (statutory doubling without legalEntityId):** schedule + apportionment resolved from the **run's payGroup.paySchedule** (+ `periodsPerMonth`/`cyclesInMonthFromAnchor`), NOT `salary.legalEntityId` — the contract's preferred fix. Monthly cap apportions across cycles regardless of salary linkage.
+- **Bug 3 (India employer-line leak):** employer contributions come only from the resolved pack's contribution schemes; no hardcoded `PF_ER`/`ESI_ER`.
+- Tests: `tests/payroll-subMonthly.test.js`, `tests/payroll-workingDays.test.js`.
+- **Honest gap:** the full live multi-cycle PH-tenant E2E acceptance run (build statutory pack→legal entity→2 calendars→2 pay groups→employee/salary→2 runs) was NOT executed (≈20 interdependent setup calls); verification is code + unit-test + prior-commit based. A live PH E2E remains a Phase-12 acceptance item.
+
+## §6 Divergence — Attendance UTC date / BR-ATT-2 (mitigated 2026-06-22) ✅ partial
+
+`POST /attendance/check-in` now accepts an optional employee-local **`date`** (YYYY-MM-DD) and stores the attendance day as **UTC-midnight of that calendar date**, so its `YYYY-MM-DD` prefix is stable regardless of server timezone. Root cause confirmed: the server process runs in a non-UTC tz, so the prior `new Date()` classified the day by the server clock (a naive parse shifted the stored day, e.g. IST `2026-06-19` → stored `2026-06-18T18:30Z`). Verified: check-in with `date:'2026-06-17'` stores attendanceDate `2026-06-17`. Bad format → 422.
+- **Honest gap (full fix):** per-employee tz auto-resolution (without the client sending `date`) needs `employee→legalEntity.timezone` via `salary.legalEntityId`, which the backend does not yet populate (same gap as WORK_WEEK_BACKEND_CONTRACT / ATTENDANCE_BACKEND_CONTRACT §85-99). Until then the client supplies its local `date`; absent it, behaviour falls back to the server date (no regression). Tracked as a Phase 3 slice.

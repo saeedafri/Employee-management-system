@@ -13,6 +13,7 @@ export default async function attendanceRoutes(fastify) {
           latitude: { type: 'number' },
           longitude: { type: 'number' },
           note: { type: 'string' },
+          date: { type: 'string', description: 'Employee-local date YYYY-MM-DD (BR-ATT-2 — classify the day in the employee timezone, not server/UTC). Optional; defaults to server date.' },
         },
       },
     },

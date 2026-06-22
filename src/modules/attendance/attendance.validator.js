@@ -4,6 +4,8 @@ export const checkInSchema = z.object({
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
   note: z.string().max(500).optional(),
+  // BR-ATT-2: employee-local date (YYYY-MM-DD) for correct day classification across tz/UTC midnight.
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
 
 export const checkOutSchema = z.object({

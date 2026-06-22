@@ -25,15 +25,26 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-export async function checkIn(tenantId, employeeId, { latitude, longitude, note }) {
+export async function checkIn(tenantId, employeeId, { latitude, longitude, note, date }) {
   const existingRecord = await attendanceRepository.getTodayAttendance(tenantId, employeeId);
 
   if (existingRecord && existingRecord.checkInAt) {
     throw new AppError('Already checked in today', 'ALREADY_CHECKED_IN', 400);
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // BR-ATT-2: classify the day in the EMPLOYEE's local date, not the server/UTC clock.
+  // The client (which knows the employee's timezone) may send `date` (YYYY-MM-DD). Store it as
+  // UTC-midnight of that calendar date so its YYYY-MM-DD prefix is STABLE regardless of server tz
+  // (the server runs in a non-UTC tz, so a naive `new Date(date)` would shift the stored day).
+  // No `date` → fall back to the server date (today's behaviour — no regression).
+  const isYmd = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date);
+  let today;
+  if (isYmd) {
+    today = new Date(`${date}T00:00:00.000Z`);
+  } else {
+    today = new Date();
+    today.setHours(0, 0, 0, 0);
+  }
 
   let geofenceValid = true;
   let locationJson = null;

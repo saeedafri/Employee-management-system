@@ -1692,7 +1692,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations",
-      "community": 326,
+      "community": 38,
       "norm_label": "seedphase3integrations.js"
     },
     {
@@ -1702,7 +1702,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations_prisma",
-      "community": 326,
+      "community": 38,
       "norm_label": "prisma"
     },
     {
@@ -1712,7 +1712,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations_counts",
-      "community": 326,
+      "community": 38,
       "norm_label": "counts()"
     },
     {
@@ -1722,7 +1722,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "prisma_seedphase3integrations_main",
-      "community": 326,
+      "community": 38,
       "norm_label": "main()"
     },
     {
@@ -3302,7 +3302,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_sendtestemail",
-      "community": 171,
+      "community": 80,
       "norm_label": "sendtestemail.js"
     },
     {
@@ -3312,7 +3312,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "scripts_sendtestemail_args",
-      "community": 171,
+      "community": 80,
       "norm_label": "args"
     },
     {
@@ -3322,7 +3322,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "scripts_sendtestemail_emailindex",
-      "community": 171,
+      "community": 80,
       "norm_label": "emailindex"
     },
     {
@@ -3332,7 +3332,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "scripts_sendtestemail_sendtestemail",
-      "community": 171,
+      "community": 80,
       "norm_label": "sendtestemail()"
     },
     {
@@ -3342,7 +3342,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "scripts_sendtestemail_maskemail",
-      "community": 171,
+      "community": 80,
       "norm_label": "maskemail()"
     },
     {
@@ -3522,7 +3522,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive",
-      "community": 171,
+      "community": 53,
       "norm_label": "verifyauthlogoutlive.mjs"
     },
     {
@@ -3532,7 +3532,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_out_dir",
-      "community": 171,
+      "community": 53,
       "norm_label": "out_dir"
     },
     {
@@ -3542,7 +3542,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_parsesetcookies",
-      "community": 171,
+      "community": 53,
       "norm_label": "parsesetcookies()"
     },
     {
@@ -3552,7 +3552,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_apijson",
-      "community": 171,
+      "community": 53,
       "norm_label": "apijson()"
     },
     {
@@ -3562,7 +3562,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_login",
-      "community": 171,
+      "community": 53,
       "norm_label": "login()"
     },
     {
@@ -3572,7 +3572,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_secret",
-      "community": 171,
+      "community": 53,
       "norm_label": "secret"
     },
     {
@@ -3582,7 +3582,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_be1",
-      "community": 171,
+      "community": 53,
       "norm_label": "be1"
     },
     {
@@ -3592,7 +3592,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_fullcookiejar",
-      "community": 171,
+      "community": 53,
       "norm_label": "fullcookiejar"
     },
     {
@@ -3602,7 +3602,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "scripts_verifyauthlogoutlive_report",
-      "community": 171,
+      "community": 53,
       "norm_label": "report"
     },
     {
@@ -3952,7 +3952,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "jobs_emailjob_enqueueotpemail",
-      "community": 102,
+      "community": 76,
       "norm_label": "enqueueotpemail()"
     },
     {
@@ -4332,7 +4332,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "analytics_analytics_controller",
-      "community": 87,
+      "community": 61,
       "norm_label": "analytics.controller.js"
     },
     {
@@ -4342,7 +4342,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "analytics_analytics_controller_extractfilters",
-      "community": 87,
+      "community": 61,
       "norm_label": "extractfilters()"
     },
     {
@@ -4352,7 +4352,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getsummary",
-      "community": 87,
+      "community": 61,
       "norm_label": "getsummary()"
     },
     {
@@ -4362,7 +4362,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getattendance",
-      "community": 87,
+      "community": 61,
       "norm_label": "getattendance()"
     },
     {
@@ -4372,7 +4372,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getheadcountbydepartment",
-      "community": 87,
+      "community": 61,
       "norm_label": "getheadcountbydepartment()"
     },
     {
@@ -4382,7 +4382,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getrecentactivity",
-      "community": 87,
+      "community": 61,
       "norm_label": "getrecentactivity()"
     },
     {
@@ -4392,7 +4392,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getleavesummary",
-      "community": 87,
+      "community": 61,
       "norm_label": "getleavesummary()"
     },
     {
@@ -4402,7 +4402,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getworkforcetrend",
-      "community": 87,
+      "community": 61,
       "norm_label": "getworkforcetrend()"
     },
     {
@@ -4412,7 +4412,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getattrition",
-      "community": 87,
+      "community": 61,
       "norm_label": "getattrition()"
     },
     {
@@ -4422,7 +4422,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getpayrollcost",
-      "community": 87,
+      "community": 61,
       "norm_label": "getpayrollcost()"
     },
     {
@@ -4432,7 +4432,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "analytics_analytics_controller_getdepartmentperformance",
-      "community": 87,
+      "community": 61,
       "norm_label": "getdepartmentperformance()"
     },
     {
@@ -4672,7 +4672,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "analytics_analytics_service",
-      "community": 74,
+      "community": 61,
       "norm_label": "analytics.service.js"
     },
     {
@@ -4682,7 +4682,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "analytics_analytics_service_fetchdata",
-      "community": 74,
+      "community": 61,
       "norm_label": "fetchdata()"
     },
     {
@@ -4692,7 +4692,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "analytics_analytics_service_getsummary",
-      "community": 74,
+      "community": 61,
       "norm_label": "getsummary()"
     },
     {
@@ -4702,7 +4702,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "analytics_analytics_service_getattendance",
-      "community": 74,
+      "community": 61,
       "norm_label": "getattendance()"
     },
     {
@@ -4712,7 +4712,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "analytics_analytics_service_getheadcountbydepartment",
-      "community": 74,
+      "community": 61,
       "norm_label": "getheadcountbydepartment()"
     },
     {
@@ -4722,7 +4722,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "analytics_analytics_service_getrecentactivity",
-      "community": 74,
+      "community": 61,
       "norm_label": "getrecentactivity()"
     },
     {
@@ -4732,7 +4732,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "analytics_analytics_service_getleavesummary",
-      "community": 74,
+      "community": 61,
       "norm_label": "getleavesummary()"
     },
     {
@@ -4742,7 +4742,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "analytics_analytics_service_getworkforcetrend",
-      "community": 74,
+      "community": 61,
       "norm_label": "getworkforcetrend()"
     },
     {
@@ -4752,7 +4752,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "analytics_analytics_service_getattrition",
-      "community": 74,
+      "community": 61,
       "norm_label": "getattrition()"
     },
     {
@@ -4762,7 +4762,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "analytics_analytics_service_getpayrollcost",
-      "community": 74,
+      "community": 61,
       "norm_label": "getpayrollcost()"
     },
     {
@@ -4772,7 +4772,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "analytics_analytics_service_getdepartmentperformance",
-      "community": 74,
+      "community": 61,
       "norm_label": "getdepartmentperformance()"
     },
     {
@@ -4782,7 +4782,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "analytics_analytics_service_invalidateanalyticscache",
-      "community": 74,
+      "community": 61,
       "norm_label": "invalidateanalyticscache()"
     },
     {
@@ -4792,7 +4792,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "analytics_analytics_validator",
-      "community": 135,
+      "community": 61,
       "norm_label": "analytics.validator.js"
     },
     {
@@ -4802,7 +4802,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "analytics_analytics_validator_commonfilters",
-      "community": 135,
+      "community": 61,
       "norm_label": "commonfilters"
     },
     {
@@ -4812,7 +4812,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "analytics_analytics_validator_summaryqueryschema",
-      "community": 135,
+      "community": 61,
       "norm_label": "summaryqueryschema"
     },
     {
@@ -4822,7 +4822,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "analytics_analytics_validator_attendancequeryschema",
-      "community": 135,
+      "community": 61,
       "norm_label": "attendancequeryschema"
     },
     {
@@ -4832,7 +4832,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "analytics_analytics_validator_headcountqueryschema",
-      "community": 135,
+      "community": 61,
       "norm_label": "headcountqueryschema"
     },
     {
@@ -4842,7 +4842,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "analytics_analytics_validator_recentactivityqueryschema",
-      "community": 135,
+      "community": 61,
       "norm_label": "recentactivityqueryschema"
     },
     {
@@ -4852,7 +4852,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "analytics_analytics_validator_leavesummaryqueryschema",
-      "community": 135,
+      "community": 61,
       "norm_label": "leavesummaryqueryschema"
     },
     {
@@ -5682,7 +5682,7 @@
       "source_location": "L398",
       "_origin": "ast",
       "id": "attendance_attendance_controller_uploadregularizationdocument",
-      "community": 175,
+      "community": 15,
       "norm_label": "uploadregularizationdocument()"
     },
     {
@@ -5912,7 +5912,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "attendance_attendance_service",
-      "community": 40,
+      "community": 3,
       "norm_label": "attendance.service.js"
     },
     {
@@ -5922,7 +5922,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "attendance_attendance_service_apperror",
-      "community": 40,
+      "community": 3,
       "norm_label": "apperror"
     },
     {
@@ -5932,7 +5932,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "attendance_attendance_service_apperror_constructor",
-      "community": 40,
+      "community": 3,
       "norm_label": ".constructor()"
     },
     {
@@ -5942,7 +5942,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "attendance_attendance_service_calculatedistance",
-      "community": 40,
+      "community": 3,
       "norm_label": "calculatedistance()"
     },
     {
@@ -5952,117 +5952,117 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "attendance_attendance_service_checkin",
-      "community": 40,
+      "community": 3,
       "norm_label": "checkin()"
     },
     {
       "label": "checkOut()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L85",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "attendance_attendance_service_checkout",
-      "community": 40,
+      "community": 3,
       "norm_label": "checkout()"
     },
     {
       "label": "monthToDateRange()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L127",
+      "source_location": "L138",
       "_origin": "ast",
       "id": "attendance_attendance_service_monthtodaterange",
-      "community": 40,
+      "community": 3,
       "norm_label": "monthtodaterange()"
     },
     {
       "label": "getAttendanceRecords()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L134",
+      "source_location": "L145",
       "_origin": "ast",
       "id": "attendance_attendance_service_getattendancerecords",
-      "community": 40,
+      "community": 3,
       "norm_label": "getattendancerecords()"
     },
     {
       "label": "getTeamAttendanceRecords()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L157",
+      "source_location": "L168",
       "_origin": "ast",
       "id": "attendance_attendance_service_getteamattendancerecords",
-      "community": 40,
+      "community": 3,
       "norm_label": "getteamattendancerecords()"
     },
     {
       "label": "getAttendanceSummary()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L181",
+      "source_location": "L192",
       "_origin": "ast",
       "id": "attendance_attendance_service_getattendancesummary",
-      "community": 40,
+      "community": 3,
       "norm_label": "getattendancesummary()"
     },
     {
       "label": "submitRegularizationRequest()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L188",
+      "source_location": "L199",
       "_origin": "ast",
       "id": "attendance_attendance_service_submitregularizationrequest",
-      "community": 40,
+      "community": 3,
       "norm_label": "submitregularizationrequest()"
     },
     {
       "label": "getRegularizationRequests()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L205",
+      "source_location": "L216",
       "_origin": "ast",
       "id": "attendance_attendance_service_getregularizationrequests",
-      "community": 40,
+      "community": 3,
       "norm_label": "getregularizationrequests()"
     },
     {
       "label": "getTeamRegularizationRequests()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L219",
+      "source_location": "L230",
       "_origin": "ast",
       "id": "attendance_attendance_service_getteamregularizationrequests",
-      "community": 40,
+      "community": 3,
       "norm_label": "getteamregularizationrequests()"
     },
     {
       "label": "approveRegularization()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L233",
+      "source_location": "L244",
       "_origin": "ast",
       "id": "attendance_attendance_service_approveregularization",
-      "community": 40,
+      "community": 3,
       "norm_label": "approveregularization()"
     },
     {
       "label": "denyRegularization()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L261",
+      "source_location": "L272",
       "_origin": "ast",
       "id": "attendance_attendance_service_denyregularization",
-      "community": 40,
+      "community": 3,
       "norm_label": "denyregularization()"
     },
     {
       "label": "getTeamWeeklyGrid()",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.service.js",
-      "source_location": "L287",
+      "source_location": "L298",
       "_origin": "ast",
       "id": "attendance_attendance_service_getteamweeklygrid",
-      "community": 40,
+      "community": 3,
       "norm_label": "getteamweeklygrid()"
     },
     {
@@ -6089,7 +6089,7 @@
       "label": "checkOutSchema",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.validator.js",
-      "source_location": "L9",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "attendance_attendance_validator_checkoutschema",
       "community": 115,
@@ -6099,7 +6099,7 @@
       "label": "getAttendanceRecordsSchema",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.validator.js",
-      "source_location": "L13",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "attendance_attendance_validator_getattendancerecordsschema",
       "community": 115,
@@ -6109,7 +6109,7 @@
       "label": "regularizationRequestSchema",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.validator.js",
-      "source_location": "L21",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "attendance_attendance_validator_regularizationrequestschema",
       "community": 115,
@@ -6119,7 +6119,7 @@
       "label": "getAttendanceSummarySchema",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.validator.js",
-      "source_location": "L26",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "attendance_attendance_validator_getattendancesummaryschema",
       "community": 115,
@@ -6129,7 +6129,7 @@
       "label": "approveRegularizationSchema",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.validator.js",
-      "source_location": "L31",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "attendance_attendance_validator_approveregularizationschema",
       "community": 115,
@@ -6139,7 +6139,7 @@
       "label": "denyRegularizationSchema",
       "file_type": "code",
       "source_file": "src/modules/attendance/attendance.validator.js",
-      "source_location": "L35",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "attendance_attendance_validator_denyregularizationschema",
       "community": 115,
@@ -6282,7 +6282,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service",
-      "community": 331,
+      "community": 55,
       "norm_label": "auditlogs.service.js"
     },
     {
@@ -6292,7 +6292,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_apperror",
-      "community": 331,
+      "community": 55,
       "norm_label": "apperror"
     },
     {
@@ -6302,7 +6302,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_apperror_constructor",
-      "community": 331,
+      "community": 55,
       "norm_label": ".constructor()"
     },
     {
@@ -6312,7 +6312,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_getauditlogs",
-      "community": 331,
+      "community": 55,
       "norm_label": "getauditlogs()"
     },
     {
@@ -6322,7 +6322,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_getauditlogbyid",
-      "community": 331,
+      "community": 55,
       "norm_label": "getauditlogbyid()"
     },
     {
@@ -6332,7 +6332,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_generatedpiareport",
-      "community": 331,
+      "community": 55,
       "norm_label": "generatedpiareport()"
     },
     {
@@ -6342,7 +6342,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_recordauditlog",
-      "community": 175,
+      "community": 55,
       "norm_label": "recordauditlog()"
     },
     {
@@ -6402,7 +6402,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_auth_controller",
-      "community": 37,
+      "community": 40,
       "norm_label": "auth.controller.js"
     },
     {
@@ -6412,7 +6412,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "auth_auth_controller_resolvelogintenantid",
-      "community": 37,
+      "community": 40,
       "norm_label": "resolvelogintenantid()"
     },
     {
@@ -6422,7 +6422,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "auth_auth_controller_logincontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "logincontroller()"
     },
     {
@@ -6432,7 +6432,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "auth_auth_controller_adminlogincontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "adminlogincontroller()"
     },
     {
@@ -6442,7 +6442,7 @@
       "source_location": "L146",
       "_origin": "ast",
       "id": "auth_auth_controller_refreshcontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "refreshcontroller()"
     },
     {
@@ -6452,7 +6452,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "auth_auth_controller_logoutcontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "logoutcontroller()"
     },
     {
@@ -6462,7 +6462,7 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "auth_auth_controller_logoutallcontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "logoutallcontroller()"
     },
     {
@@ -6472,7 +6472,7 @@
       "source_location": "L236",
       "_origin": "ast",
       "id": "auth_auth_controller_getmecontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "getmecontroller()"
     },
     {
@@ -6482,7 +6482,7 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "auth_auth_controller_getsessionscontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "getsessionscontroller()"
     },
     {
@@ -6492,7 +6492,7 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "auth_auth_controller_registercontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "registercontroller()"
     },
     {
@@ -6502,7 +6502,7 @@
       "source_location": "L324",
       "_origin": "ast",
       "id": "auth_auth_controller_revokesessioncontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "revokesessioncontroller()"
     },
     {
@@ -6512,7 +6512,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_auth_cookies",
-      "community": 37,
+      "community": 40,
       "norm_label": "auth.cookies.js"
     },
     {
@@ -6522,7 +6522,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "auth_auth_cookies_authcookieoptions",
-      "community": 37,
+      "community": 40,
       "norm_label": "authcookieoptions()"
     },
     {
@@ -6532,7 +6532,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "auth_auth_cookies_setrefreshtokencookie",
-      "community": 37,
+      "community": 40,
       "norm_label": "setrefreshtokencookie()"
     },
     {
@@ -6542,7 +6542,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "auth_auth_cookies_setaccesstokencookie",
-      "community": 37,
+      "community": 40,
       "norm_label": "setaccesstokencookie()"
     },
     {
@@ -6552,7 +6552,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "auth_auth_cookies_clearauthcookies",
-      "community": 37,
+      "community": 40,
       "norm_label": "clearauthcookies()"
     },
     {
@@ -6822,7 +6822,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_auth_routes",
-      "community": 1,
+      "community": 26,
       "norm_label": "auth.routes.js"
     },
     {
@@ -6832,7 +6832,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "auth_auth_routes_authroutes",
-      "community": 1,
+      "community": 26,
       "norm_label": "authroutes()"
     },
     {
@@ -7272,7 +7272,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_otp_controller",
-      "community": 37,
+      "community": 40,
       "norm_label": "otp.controller.js"
     },
     {
@@ -7282,7 +7282,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "auth_otp_controller_verifyotpcontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "verifyotpcontroller()"
     },
     {
@@ -7292,7 +7292,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "auth_otp_controller_resendotpcontroller",
-      "community": 37,
+      "community": 40,
       "norm_label": "resendotpcontroller()"
     },
     {
@@ -7382,7 +7382,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_otp_service",
-      "community": 102,
+      "community": 76,
       "norm_label": "otp.service.js"
     },
     {
@@ -7392,7 +7392,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "auth_otp_service_generateotpcode",
-      "community": 102,
+      "community": 76,
       "norm_label": "generateotpcode()"
     },
     {
@@ -7402,7 +7402,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "auth_otp_service_generatesecurechallengeid",
-      "community": 102,
+      "community": 76,
       "norm_label": "generatesecurechallengeid()"
     },
     {
@@ -7412,7 +7412,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "auth_otp_service_maskemail",
-      "community": 102,
+      "community": 76,
       "norm_label": "maskemail()"
     },
     {
@@ -7422,7 +7422,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "auth_otp_service_generateotp",
-      "community": 102,
+      "community": 76,
       "norm_label": "generateotp()"
     },
     {
@@ -7432,7 +7432,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "auth_otp_service_verifyotp",
-      "community": 102,
+      "community": 76,
       "norm_label": "verifyotp()"
     },
     {
@@ -7442,7 +7442,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "auth_otp_service_resendotp",
-      "community": 102,
+      "community": 76,
       "norm_label": "resendotp()"
     },
     {
@@ -7452,7 +7452,7 @@
       "source_location": "L325",
       "_origin": "ast",
       "id": "auth_otp_service_initiateotp",
-      "community": 102,
+      "community": 76,
       "norm_label": "initiateotp()"
     },
     {
@@ -7462,7 +7462,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_otp_validator",
-      "community": 37,
+      "community": 87,
       "norm_label": "otp.validator.js"
     },
     {
@@ -7472,7 +7472,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "auth_otp_validator_verifyotpschema",
-      "community": 37,
+      "community": 87,
       "norm_label": "verifyotpschema"
     },
     {
@@ -7482,7 +7482,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "auth_otp_validator_resendotpschema",
-      "community": 37,
+      "community": 87,
       "norm_label": "resendotpschema"
     },
     {
@@ -7492,7 +7492,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_passwordreset_controller",
-      "community": 1,
+      "community": 88,
       "norm_label": "passwordreset.controller.js"
     },
     {
@@ -7502,7 +7502,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "auth_passwordreset_controller_forgotpasswordcontroller",
-      "community": 1,
+      "community": 88,
       "norm_label": "forgotpasswordcontroller()"
     },
     {
@@ -7512,7 +7512,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "auth_passwordreset_controller_validateresettokencontroller",
-      "community": 1,
+      "community": 88,
       "norm_label": "validateresettokencontroller()"
     },
     {
@@ -7522,7 +7522,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "auth_passwordreset_controller_resetpasswordcontroller",
-      "community": 1,
+      "community": 88,
       "norm_label": "resetpasswordcontroller()"
     },
     {
@@ -7582,7 +7582,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "billing_billing_controller",
-      "community": 327,
+      "community": 88,
       "norm_label": "billing.controller.js"
     },
     {
@@ -7592,7 +7592,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "billing_billing_controller_fail",
-      "community": 327,
+      "community": 88,
       "norm_label": "fail()"
     },
     {
@@ -7602,7 +7602,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "billing_billing_controller_getsubscription",
-      "community": 327,
+      "community": 88,
       "norm_label": "getsubscription()"
     },
     {
@@ -7612,7 +7612,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "billing_billing_controller_getplans",
-      "community": 327,
+      "community": 88,
       "norm_label": "getplans()"
     },
     {
@@ -7622,7 +7622,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "billing_billing_controller_getinvoices",
-      "community": 327,
+      "community": 88,
       "norm_label": "getinvoices()"
     },
     {
@@ -8522,7 +8522,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "departments_departments_service_adddepartmentmembers",
-      "community": 331,
+      "community": 55,
       "norm_label": "adddepartmentmembers()"
     },
     {
@@ -8542,7 +8542,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "departments_departments_validator",
-      "community": 27,
+      "community": 74,
       "norm_label": "departments.validator.js"
     },
     {
@@ -8552,7 +8552,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "departments_departments_validator_idparamschema",
-      "community": 27,
+      "community": 74,
       "norm_label": "idparamschema"
     },
     {
@@ -8562,7 +8562,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "departments_departments_validator_listqueryschema",
-      "community": 27,
+      "community": 74,
       "norm_label": "listqueryschema"
     },
     {
@@ -8572,7 +8572,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "departments_departments_validator_createdepartmentschema",
-      "community": 27,
+      "community": 74,
       "norm_label": "createdepartmentschema"
     },
     {
@@ -8582,7 +8582,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "departments_departments_validator_updatedepartmentschema",
-      "community": 27,
+      "community": 74,
       "norm_label": "updatedepartmentschema"
     },
     {
@@ -8592,7 +8592,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "departments_departments_validator_adddepartmentmembersschema",
-      "community": 27,
+      "community": 74,
       "norm_label": "adddepartmentmembersschema"
     },
     {
@@ -8782,7 +8782,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "employees_employees_controller_uploaddocument",
-      "community": 175,
+      "community": 15,
       "norm_label": "uploaddocument()"
     },
     {
@@ -8802,7 +8802,7 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "employees_employees_controller_deletedocument",
-      "community": 175,
+      "community": 15,
       "norm_label": "deletedocument()"
     },
     {
@@ -8832,7 +8832,7 @@
       "source_location": "L334",
       "_origin": "ast",
       "id": "employees_employees_controller_bulkexport",
-      "community": 326,
+      "community": 15,
       "norm_label": "bulkexport()"
     },
     {
@@ -8842,7 +8842,7 @@
       "source_location": "L352",
       "_origin": "ast",
       "id": "employees_employees_controller_presigndocument",
-      "community": 175,
+      "community": 15,
       "norm_label": "presigndocument()"
     },
     {
@@ -8872,7 +8872,7 @@
       "source_location": "L415",
       "_origin": "ast",
       "id": "employees_employees_controller_uploadphoto",
-      "community": 175,
+      "community": 15,
       "norm_label": "uploadphoto()"
     },
     {
@@ -8882,7 +8882,7 @@
       "source_location": "L473",
       "_origin": "ast",
       "id": "employees_employees_controller_deletephoto",
-      "community": 175,
+      "community": 15,
       "norm_label": "deletephoto()"
     },
     {
@@ -9222,7 +9222,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "export_export_controller",
-      "community": 1,
+      "community": 165,
       "norm_label": "export.controller.js"
     },
     {
@@ -9232,7 +9232,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "export_export_controller_exportemployees",
-      "community": 1,
+      "community": 165,
       "norm_label": "exportemployees()"
     },
     {
@@ -9242,7 +9242,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "export_export_controller_exportattendance",
-      "community": 1,
+      "community": 165,
       "norm_label": "exportattendance()"
     },
     {
@@ -9252,7 +9252,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "export_export_controller_exportleave",
-      "community": 1,
+      "community": 165,
       "norm_label": "exportleave()"
     },
     {
@@ -9262,7 +9262,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "export_export_controller_mime_map",
-      "community": 1,
+      "community": 165,
       "norm_label": "mime_map"
     },
     {
@@ -9272,7 +9272,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "export_export_controller_downloadexport",
-      "community": 1,
+      "community": 165,
       "norm_label": "downloadexport()"
     },
     {
@@ -9282,7 +9282,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "export_export_controller_listexports",
-      "community": 1,
+      "community": 165,
       "norm_label": "listexports()"
     },
     {
@@ -9402,7 +9402,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "export_export_service",
-      "community": 80,
+      "community": 61,
       "norm_label": "export.service.js"
     },
     {
@@ -9412,7 +9412,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "export_export_service_apperror",
-      "community": 80,
+      "community": 61,
       "norm_label": "apperror"
     },
     {
@@ -9422,7 +9422,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "export_export_service_apperror_constructor",
-      "community": 80,
+      "community": 61,
       "norm_label": ".constructor()"
     },
     {
@@ -9432,7 +9432,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "export_export_service_queueemployeeexport",
-      "community": 80,
+      "community": 61,
       "norm_label": "queueemployeeexport()"
     },
     {
@@ -9442,7 +9442,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "export_export_service_queueattendanceexport",
-      "community": 80,
+      "community": 61,
       "norm_label": "queueattendanceexport()"
     },
     {
@@ -9452,7 +9452,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "export_export_service_queueleaveexport",
-      "community": 80,
+      "community": 61,
       "norm_label": "queueleaveexport()"
     },
     {
@@ -9462,7 +9462,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "export_export_service_getexportstatus",
-      "community": 80,
+      "community": 61,
       "norm_label": "getexportstatus()"
     },
     {
@@ -9472,7 +9472,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "export_export_service_listexports",
-      "community": 80,
+      "community": 61,
       "norm_label": "listexports()"
     },
     {
@@ -9482,7 +9482,7 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "export_export_service_scheduleexportcleanup",
-      "community": 80,
+      "community": 61,
       "norm_label": "scheduleexportcleanup()"
     },
     {
@@ -9492,7 +9492,7 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "export_export_service_calculateestimatedtime",
-      "community": 80,
+      "community": 61,
       "norm_label": "calculateestimatedtime()"
     },
     {
@@ -9742,7 +9742,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "holidays_holidays_routes_holidaysroutes",
-      "community": 26,
+      "community": 48,
       "norm_label": "holidaysroutes()"
     },
     {
@@ -9942,7 +9942,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service",
-      "community": 53,
+      "community": 48,
       "norm_label": "holidayspolicy.service.js"
     },
     {
@@ -9952,7 +9952,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_today",
-      "community": 53,
+      "community": 48,
       "norm_label": "today()"
     },
     {
@@ -9962,7 +9962,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_seed_policies",
-      "community": 53,
+      "community": 48,
       "norm_label": "seed_policies"
     },
     {
@@ -9972,7 +9972,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_holidayselectionerror",
-      "community": 53,
+      "community": 48,
       "norm_label": "holidayselectionerror"
     },
     {
@@ -9982,7 +9982,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_holidayselectionerror_constructor",
-      "community": 53,
+      "community": 48,
       "norm_label": ".constructor()"
     },
     {
@@ -9992,7 +9992,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_mappolicy",
-      "community": 53,
+      "community": 48,
       "norm_label": "mappolicy()"
     },
     {
@@ -10002,7 +10002,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getpolicies",
-      "community": 53,
+      "community": 48,
       "norm_label": "getpolicies()"
     },
     {
@@ -10012,7 +10012,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getpolicy",
-      "community": 53,
+      "community": 48,
       "norm_label": "getpolicy()"
     },
     {
@@ -10022,7 +10022,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_upsertpolicy",
-      "community": 53,
+      "community": 48,
       "norm_label": "upsertpolicy()"
     },
     {
@@ -10032,7 +10032,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getselectionids",
-      "community": 53,
+      "community": 48,
       "norm_label": "getselectionids()"
     },
     {
@@ -10042,7 +10042,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getholiday",
-      "community": 53,
+      "community": 48,
       "norm_label": "getholiday()"
     },
     {
@@ -10052,7 +10052,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_addselection",
-      "community": 53,
+      "community": 48,
       "norm_label": "addselection()"
     },
     {
@@ -10062,7 +10062,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_removeselection",
-      "community": 53,
+      "community": 48,
       "norm_label": "removeselection()"
     },
     {
@@ -10072,7 +10072,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_applicability",
-      "community": 53,
+      "community": 48,
       "norm_label": "applicability.js"
     },
     {
@@ -10082,7 +10082,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "utils_applicability_resolveapplicableholidays",
-      "community": 53,
+      "community": 48,
       "norm_label": "resolveapplicableholidays()"
     },
     {
@@ -12112,7 +12112,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "notifications_notifications_controller",
-      "community": 338,
+      "community": 88,
       "norm_label": "notifications.controller.js"
     },
     {
@@ -12122,7 +12122,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "notifications_notifications_controller_listnotifications",
-      "community": 338,
+      "community": 88,
       "norm_label": "listnotifications()"
     },
     {
@@ -12132,7 +12132,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "notifications_notifications_controller_getunreadcount",
-      "community": 338,
+      "community": 88,
       "norm_label": "getunreadcount()"
     },
     {
@@ -12142,7 +12142,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "notifications_notifications_controller_markread",
-      "community": 338,
+      "community": 88,
       "norm_label": "markread()"
     },
     {
@@ -12152,7 +12152,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "notifications_notifications_controller_markallread",
-      "community": 338,
+      "community": 88,
       "norm_label": "markallread()"
     },
     {
@@ -12232,7 +12232,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "notifications_notifications_routes",
-      "community": 26,
+      "community": 3,
       "norm_label": "notifications.routes.js"
     },
     {
@@ -12242,7 +12242,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "notifications_notifications_routes_notificationsroutes",
-      "community": 26,
+      "community": 3,
       "norm_label": "notificationsroutes()"
     },
     {
@@ -16872,7 +16872,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "search_search_controller",
-      "community": 317,
+      "community": 57,
       "norm_label": "search.controller.js"
     },
     {
@@ -16882,7 +16882,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "search_search_controller_all_types",
-      "community": 317,
+      "community": 57,
       "norm_label": "all_types"
     },
     {
@@ -16892,7 +16892,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "search_search_controller_searchall",
-      "community": 317,
+      "community": 57,
       "norm_label": "searchall()"
     },
     {
@@ -16902,7 +16902,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "search_search_routes",
-      "community": 317,
+      "community": 26,
       "norm_label": "search.routes.js"
     },
     {
@@ -16912,7 +16912,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "search_search_routes_searchroutes",
-      "community": 317,
+      "community": 26,
       "norm_label": "searchroutes()"
     },
     {
@@ -17212,7 +17212,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "settings_settings_controller_updatebranding",
-      "community": 175,
+      "community": 15,
       "norm_label": "updatebranding()"
     },
     {
@@ -20102,7 +20102,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_cloudinary",
-      "community": 175,
+      "community": 15,
       "norm_label": "cloudinary.js"
     },
     {
@@ -20112,7 +20112,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "utils_cloudinary_ensureconfigured",
-      "community": 175,
+      "community": 15,
       "norm_label": "ensureconfigured()"
     },
     {
@@ -20122,7 +20122,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "utils_cloudinary_uploadtocloudinary",
-      "community": 175,
+      "community": 15,
       "norm_label": "uploadtocloudinary()"
     },
     {
@@ -20132,7 +20132,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "utils_cloudinary_deletefromcloudinary",
-      "community": 175,
+      "community": 15,
       "norm_label": "deletefromcloudinary()"
     },
     {
@@ -20142,7 +20142,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "utils_cloudinary_iscloudinaryconfigured",
-      "community": 175,
+      "community": 15,
       "norm_label": "iscloudinaryconfigured()"
     },
     {
@@ -20402,7 +20402,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "utils_hash_hashsha256",
-      "community": 102,
+      "community": 76,
       "norm_label": "hashsha256()"
     },
     {
@@ -20442,7 +20442,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "utils_id_generateid",
-      "community": 326,
+      "community": 38,
       "norm_label": "generateid()"
     },
     {
@@ -20512,7 +20512,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_logger",
-      "community": 80,
+      "community": 61,
       "norm_label": "logger.js"
     },
     {
@@ -20522,7 +20522,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "utils_logger_logger",
-      "community": 80,
+      "community": 61,
       "norm_label": "logger"
     },
     {
@@ -20532,7 +20532,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_notifier",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifier.js"
     },
     {
@@ -20542,7 +20542,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "utils_notifier_getemployeecontext",
-      "community": 320,
+      "community": 3,
       "norm_label": "getemployeecontext()"
     },
     {
@@ -20552,7 +20552,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "utils_notifier_saveandemit",
-      "community": 320,
+      "community": 3,
       "norm_label": "saveandemit()"
     },
     {
@@ -20562,7 +20562,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "utils_notifier_emitanalyticsrefresh",
-      "community": 320,
+      "community": 3,
       "norm_label": "emitanalyticsrefresh()"
     },
     {
@@ -20572,7 +20572,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "utils_notifier_notifyleaverequested",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifyleaverequested()"
     },
     {
@@ -20582,7 +20582,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "utils_notifier_notifyleaveapproved",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifyleaveapproved()"
     },
     {
@@ -20592,7 +20592,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "utils_notifier_notifyleavedenied",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifyleavedenied()"
     },
     {
@@ -20602,7 +20602,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "utils_notifier_notifyleavewithdrawn",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifyleavewithdrawn()"
     },
     {
@@ -20612,7 +20612,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "utils_notifier_notifycheckin",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifycheckin()"
     },
     {
@@ -20622,7 +20622,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "utils_notifier_notifycheckout",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifycheckout()"
     },
     {
@@ -20632,7 +20632,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "utils_notifier_notifyregularizationrequested",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifyregularizationrequested()"
     },
     {
@@ -20642,7 +20642,7 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "utils_notifier_notifyregularizationapproved",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifyregularizationapproved()"
     },
     {
@@ -20652,7 +20652,7 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "utils_notifier_notifyregularizationdenied",
-      "community": 320,
+      "community": 3,
       "norm_label": "notifyregularizationdenied()"
     },
     {
@@ -20672,7 +20672,7 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "utils_notifier_createtimesheetremindernotifications",
-      "community": 329,
+      "community": 3,
       "norm_label": "createtimesheetremindernotifications()"
     },
     {
@@ -21232,7 +21232,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_response",
-      "community": 1,
+      "community": 88,
       "norm_label": "response.js"
     },
     {
@@ -21262,7 +21262,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_sseclients",
-      "community": 329,
+      "community": 3,
       "norm_label": "sseclients.js"
     },
     {
@@ -21272,7 +21272,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "utils_sseclients_clients",
-      "community": 329,
+      "community": 3,
       "norm_label": "clients"
     },
     {
@@ -21282,7 +21282,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "utils_sseclients_addclient",
-      "community": 329,
+      "community": 3,
       "norm_label": "addclient()"
     },
     {
@@ -21292,7 +21292,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "utils_sseclients_removeclient",
-      "community": 329,
+      "community": 3,
       "norm_label": "removeclient()"
     },
     {
@@ -21302,7 +21302,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "utils_sseclients_sendevent",
-      "community": 329,
+      "community": 3,
       "norm_label": "sendevent()"
     },
     {
@@ -21312,7 +21312,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "utils_sseclients_emittouser",
-      "community": 329,
+      "community": 3,
       "norm_label": "emittouser()"
     },
     {
@@ -21322,7 +21322,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "utils_sseclients_emittousers",
-      "community": 329,
+      "community": 3,
       "norm_label": "emittousers()"
     },
     {
@@ -22274,6 +22274,16 @@
       "id": "tests_payroll_loan_utils_test",
       "community": 236,
       "norm_label": "payroll-loan.utils.test.js"
+    },
+    {
+      "label": "payroll-subMonthly.test.js",
+      "file_type": "code",
+      "source_file": "tests/payroll-subMonthly.test.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_payroll_submonthly_test",
+      "community": 81,
+      "norm_label": "payroll-submonthly.test.js"
     },
     {
       "label": "payroll-workingDays.test.js",
@@ -34444,6 +34454,26 @@
       "id": "docs_api_mapping_6_divergence_reconciliation_legal_entity_work_time_fixed_2026_06_22",
       "community": 21,
       "norm_label": "\u00a76 divergence reconciliation \u2014 legal-entity work-time (fixed 2026-06-22) \u2705"
+    },
+    {
+      "label": "\u00a76 Divergence \u2014 Sub-monthly payroll (verified fixed 2026-06-22) \u2705 code-verified + unit-tested",
+      "file_type": "document",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5188",
+      "_origin": "ast",
+      "id": "docs_api_mapping_6_divergence_sub_monthly_payroll_verified_fixed_2026_06_22_code_verified_unit_tested",
+      "community": 21,
+      "norm_label": "\u00a76 divergence \u2014 sub-monthly payroll (verified fixed 2026-06-22) \u2705 code-verified + unit-tested"
+    },
+    {
+      "label": "\u00a76 Divergence \u2014 Attendance UTC date / BR-ATT-2 (mitigated 2026-06-22) \u2705 partial",
+      "file_type": "document",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5197",
+      "_origin": "ast",
+      "id": "docs_api_mapping_6_divergence_attendance_utc_date_br_att_2_mitigated_2026_06_22_partial",
+      "community": 21,
+      "norm_label": "\u00a76 divergence \u2014 attendance utc date / br-att-2 (mitigated 2026-06-22) \u2705 partial"
     },
     {
       "label": "BACKEND_REMAINING.md",
@@ -83521,6 +83551,17 @@
       "target": "utils_paycalendarshape_normalizeperiodanchor"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/payroll-subMonthly.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_payroll_submonthly_test",
+      "target": "utils_payfrequency",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/utils/payFrequency.js",
@@ -83599,6 +83640,28 @@
       "confidence_score": 1.0,
       "source": "utils_payfrequency",
       "target": "utils_payfrequency_valid_pay_schedules"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/payroll-subMonthly.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_payroll_submonthly_test",
+      "target": "utils_payfrequency_periodsperyear",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/payroll-subMonthly.test.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "tests_payroll_submonthly_test",
+      "target": "utils_payfrequency_periodspermonth",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -84694,9 +84757,9 @@
       "source_file": "tests/payroll-workingDays.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_payroll_workingdays_test",
-      "target": "utils_workingdays",
-      "confidence_score": 1.0
+      "target": "utils_workingdays"
     },
     {
       "relation": "contains",
@@ -84735,9 +84798,9 @@
       "source_file": "tests/payroll-workingDays.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_payroll_workingdays_test",
-      "target": "utils_workingdays_getworkingdays",
-      "confidence_score": 1.0
+      "target": "utils_workingdays_getworkingdays"
     },
     {
       "relation": "imports",
@@ -84746,9 +84809,9 @@
       "source_file": "tests/payroll-workingDays.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_payroll_workingdays_test",
-      "target": "utils_workingdays_parseworkweekpattern",
-      "confidence_score": 1.0
+      "target": "utils_workingdays_parseworkweekpattern"
     },
     {
       "relation": "contains",
@@ -93211,6 +93274,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5197",
+      "weight": 1.0,
+      "source": "docs_api_mapping_ems_api_actual_response_mapping",
+      "target": "docs_api_mapping_6_divergence_attendance_utc_date_br_att_2_mitigated_2026_06_22_partial",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/API_MAPPING.md",
       "source_location": "L5170",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -93223,9 +93296,9 @@
       "source_file": "docs/API_MAPPING.md",
       "source_location": "L5175",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_api_mapping_ems_api_actual_response_mapping",
-      "target": "docs_api_mapping_6_divergence_reconciliation_legal_entity_work_time_fixed_2026_06_22",
-      "confidence_score": 1.0
+      "target": "docs_api_mapping_6_divergence_reconciliation_legal_entity_work_time_fixed_2026_06_22"
     },
     {
       "relation": "contains",
@@ -93236,6 +93309,16 @@
       "confidence_score": 1.0,
       "source": "docs_api_mapping_ems_api_actual_response_mapping",
       "target": "docs_api_mapping_6_divergence_reconciliation_loans_pr_1_fixed_2026_06_22"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5188",
+      "weight": 1.0,
+      "source": "docs_api_mapping_ems_api_actual_response_mapping",
+      "target": "docs_api_mapping_6_divergence_sub_monthly_payroll_verified_fixed_2026_06_22_code_verified_unit_tested",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -100849,5 +100932,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b47bbae4b5851786fd575ed2fb129967b37c0cc5"
+  "built_at_commit": "62aeb2ff5fd52b24b5a0117869a7161520f5a630"
 }
