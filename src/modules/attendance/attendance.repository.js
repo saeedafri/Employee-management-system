@@ -1,6 +1,14 @@
 import { prisma } from '../../plugins/prisma.js';
 import { attendanceDayRange, tenantAttendanceDate } from './attendanceDate.js';
 
+// Tenant-level work-week (coarse pattern + fine-grained override) for the team grid.
+export async function getTenantWorkWeek(tenantId) {
+  return prisma.tenantConfig.findUnique({
+    where: { tenantId },
+    select: { workWeekPattern: true, workWeekDays: true },
+  });
+}
+
 function attRef(r) {
   if (!r) return r;
   const { seqNo, ...rest } = r;

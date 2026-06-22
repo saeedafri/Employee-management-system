@@ -301,7 +301,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           patch: op('Timesheets', 'Update an employee cost rate — 404 if absent (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [pathParam('employeeId', 'Employee id'), { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['costRate'], properties: { costRate: { type: 'number' } } } }], responses: { 200: r200, 404: r404 } }),
         },
         '/timesheets/week-config': {
-          get: op('Timesheets', 'Tenant week-start day (any authenticated)'),
+          get: op('Timesheets', 'Tenant week-start day {weekStartDay} (0=Sun..6=Sat) — derived from the tenant work-week (SUN-THU→0), explicit blob wins'),
         },
         '/timesheets/delegations': {
           get:  op('Timesheets', 'Approval delegations (MANAGER+)'),
@@ -710,8 +710,8 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── SETTINGS ─────────────────────────────────────────────────────────
         '/settings/tenant': {
-          get:   op('Settings', 'Get tenant configuration'),
-          patch: op('Settings', 'Update tenant configuration'),
+          get:   op('Settings', 'Get tenant configuration (incl. work_week_pattern + resolved work_week_days tokens)'),
+          patch: op('Settings', 'Update tenant configuration (accepts work_week_pattern: MON-FRI|MON-SAT|SUN-THU and/or work_week_days: ["SUN".."SAT"])'),
         },
         '/settings/email-templates': {
           get: op('Settings', 'List email templates'),

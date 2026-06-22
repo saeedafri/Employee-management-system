@@ -6,6 +6,7 @@
 import { prisma } from '../../plugins/prisma.js';
 import { computeMargins } from './utils/rateMath.js';
 import { classifyBudget } from './utils/budgetMath.js';
+import { resolveWorkWeekDays, weekStartDayFromDays } from '../../utils/workingDays.js';
 
 const GROUP = 'timesheets';
 const nowIso = () => new Date().toISOString();
@@ -209,8 +210,17 @@ export async function patchBudget(tenantId, projectId, body, userId) {
 
 // ── Week config ──────────────────────────────────────────────────────────────
 export async function getWeekConfig(tenantId) {
-  const cfg = await getBlob(tenantId, 'weekConfig', { weekStartDay: 1 });
-  return { weekStartDay: cfg.weekStartDay ?? 1 };
+  // An explicit weekConfig blob wins; otherwise derive the week-start day from the
+  // canonical tenant work-week (TenantConfig) instead of a hardcoded Monday — so a
+  // Sun–Thu tenant reports weekStartDay=0. (0=Sun..6=Sat.)
+  const cfg = await getBlob(tenantId, 'weekConfig', null);
+  if (cfg && cfg.weekStartDay != null) return { weekStartDay: cfg.weekStartDay };
+  const tc = await prisma.tenantConfig.findUnique({
+    where: { tenantId },
+    select: { workWeekPattern: true, workWeekDays: true },
+  });
+  const days = resolveWorkWeekDays(tc?.workWeekDays, tc?.workWeekPattern);
+  return { weekStartDay: weekStartDayFromDays(days) };
 }
 
 // ── Delegations ──────────────────────────────────────────────────────────────

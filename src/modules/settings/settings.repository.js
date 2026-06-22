@@ -1,4 +1,5 @@
 import { prisma } from '../../plugins/prisma.js';
+import { resolveWorkWeekDays, toDayTokens } from '../../utils/workingDays.js';
 
 export async function getTenantConfig(tenantId) {
   const [tenant, config] = await Promise.all([
@@ -55,6 +56,8 @@ export async function updateTenantConfig(tenantId, data) {
     }
     updateData.inviteEmailTarget = data.invite_email_target;
   }
+  if (data.work_week_pattern !== undefined) updateData.workWeekPattern = data.work_week_pattern;
+  if (data.work_week_days !== undefined) updateData.workWeekDays = data.work_week_days;
 
   return prisma.tenantConfig.upsert({
     where: { tenantId },
@@ -234,14 +237,35 @@ const DEFAULT_ATTENDANCE_RULES = {
 };
 
 export async function getAttendanceRules(tenantId) {
-  const val = await getSetting(tenantId, 'attendance', 'rules', DEFAULT_ATTENDANCE_RULES);
-  return { ...DEFAULT_ATTENDANCE_RULES, ...val };
+  const val = await getSetting(tenantId, 'attendance', 'rules', null);
+  // work_week_days defaults to the canonical tenant work-week (TenantConfig), so the
+  // attendance-rules screen reflects the real work-week instead of a hardcoded Mon–Fri.
+  const config = await prisma.tenantConfig.findUnique({
+    where: { tenantId },
+    select: { workWeekPattern: true, workWeekDays: true },
+  });
+  const tenantWorkWeek = toDayTokens(
+    resolveWorkWeekDays(config?.workWeekDays, config?.workWeekPattern),
+  );
+  return {
+    ...DEFAULT_ATTENDANCE_RULES,
+    work_week_days: val?.work_week_days ?? tenantWorkWeek,
+    ...(val || {}),
+  };
 }
 
 export async function updateAttendanceRules(tenantId, data) {
   const current = await getAttendanceRules(tenantId);
   const updated = { ...current, ...data };
   await upsertSetting(tenantId, 'attendance', 'rules', updated);
+  // Keep the canonical TenantConfig work-week in sync when edited here (write-through),
+  // so attendance grid / timesheets and the FE tenant resolver all agree.
+  if (Array.isArray(data.work_week_days) && data.work_week_days.length > 0) {
+    await prisma.tenantConfig.update({
+      where: { tenantId },
+      data: { workWeekDays: data.work_week_days },
+    }).catch(() => {});
+  }
   return updated;
 }
 

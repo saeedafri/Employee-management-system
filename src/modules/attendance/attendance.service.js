@@ -1,5 +1,6 @@
 import * as attendanceRepository from './attendance.repository.js';
 import { dateFromYmd, tenantAttendanceDate } from './attendanceDate.js';
+import { resolveWorkWeekDays, weekStartDayFromDays } from '../../utils/workingDays.js';
 import {
   notifyCheckIn,
   notifyCheckOut,
@@ -343,16 +344,32 @@ export async function denyRegularization(tenantId, regularizationId, reviewer, c
 }
 
 export async function getTeamWeeklyGrid(tenantId, weekStart, departmentId, managerEmployeeId) {
-  // Build Monday–Sunday dates (5 workdays: Mon–Fri)
-  const startDate = weekStart ? new Date(weekStart) : (() => {
-    const d = new Date(); const day = d.getDay();
-    d.setDate(d.getDate() - (day === 0 ? 6 : day - 1)); d.setHours(0,0,0,0); return d;
-  })();
+  // Truly-global work-week: build the tenant's working-day columns (Sun–Thu, Mon–Fri,
+  // Mon–Sat, …) instead of a hardcoded Mon–Fri. Source = TenantConfig (fine-grained
+  // workWeekDays[] over coarse workWeekPattern, fallback Mon–Fri), parsed to JS day
+  // numbers (0=Sun..6=Sat). Payroll keeps its own per-LegalEntity work-week.
+  const cfg = await attendanceRepository.getTenantWorkWeek(tenantId);
+  const workWeek = resolveWorkWeekDays(cfg?.workWeekDays, cfg?.workWeekPattern);
+  const workSet = new Set(workWeek);
+  const startDow = weekStartDayFromDays(workWeek); // first working day of the week
+  // Column span covers from the first working day through the last (wrap-safe), so a
+  // Sun–Thu week is 5 columns Sun→Thu and Mon–Sat is 6 columns Mon→Sat.
+  const span = workWeek.reduce((m, d) => Math.max(m, (d - startDow + 7) % 7), 0) + 1;
+
+  // Anchor on the caller's weekStart when given, else today; snap back to the work-week's
+  // first day so the grid always begins on a real working day (compensates for a client
+  // that anchors on Monday regardless of the tenant work-week). All date math is UTC so it
+  // stays consistent with toISOString()/attendanceDate formatting (no off-by-one TZ shift).
+  const anchor = weekStart ? new Date(`${weekStart}T00:00:00.000Z`) : new Date();
+  const startDate = new Date(Date.UTC(
+    anchor.getUTCFullYear(), anchor.getUTCMonth(), anchor.getUTCDate(),
+  ));
+  startDate.setUTCDate(startDate.getUTCDate() - ((startDate.getUTCDay() - startDow + 7) % 7));
   const weekDates = [];
-  for (let i = 0; i < 5; i++) {
-    const d = new Date(startDate); d.setDate(d.getDate() + i); weekDates.push(d);
+  for (let i = 0; i < span; i++) {
+    const d = new Date(startDate); d.setUTCDate(d.getUTCDate() + i); weekDates.push(d);
   }
-  const endDate = weekDates[4];
+  const endDate = weekDates[weekDates.length - 1];
 
   const employeeWhere = { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' };
   if (departmentId) employeeWhere.departmentId = departmentId;
@@ -368,9 +385,9 @@ export async function getTeamWeeklyGrid(tenantId, weekStart, departmentId, manag
   const holidayDates = new Set(holidays.map(h => h.holidayDate.toISOString().split('T')[0]));
 
   const codeForDay = (empId, dateStr) => {
-    const dateObj = new Date(dateStr);
-    const dayOfWeek = dateObj.getDay();
-    if (dayOfWeek === 0 || dayOfWeek === 6) return 'O';
+    const dateObj = new Date(`${dateStr}T00:00:00.000Z`);
+    const dayOfWeek = dateObj.getUTCDay();
+    if (!workSet.has(dayOfWeek)) return 'O'; // non-working day per tenant work-week
     if (holidayDates.has(dateStr)) return 'O';
 
     const leave = leaveRecords.find(l => l.employeeId === empId

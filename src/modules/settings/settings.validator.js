@@ -17,6 +17,14 @@ export const updateTenantConfigSchema = z.object({
   working_hours_start: z.string().regex(/^\d{2}:\d{2}$/).optional(),
   working_hours_end: z.string().regex(/^\d{2}:\d{2}$/).optional(),
   invite_email_target: z.enum(['PERSONAL', 'WORK']).optional(),
+  // Tenant-level work-week (truly-global). Coarse pattern for back-compat, plus an
+  // optional fine-grained day-token list (authoritative when present).
+  work_week_pattern: z.enum(['MON-FRI', 'MON-SAT', 'SUN-THU']).optional(),
+  work_week_days: z
+    .array(z.enum(['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']))
+    .min(1)
+    .max(7)
+    .optional(),
 });
 
 export const getEmailTemplatesSchema = z.object({});

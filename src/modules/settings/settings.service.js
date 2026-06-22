@@ -1,4 +1,5 @@
 import * as settingsRepository from './settings.repository.js';
+import { resolveWorkWeekDays, toDayTokens } from '../../utils/workingDays.js';
 
 class AppError extends Error {
   constructor(message, code, statusCode = 400, details = {}) {
@@ -28,6 +29,12 @@ export async function getTenantConfig(tenantId) {
     working_hours_end: config?.workingHoursEnd ?? null,
     fiscal_year_start: config?.fiscalYearStart ?? null,
     invite_email_target: config?.inviteEmailTarget ?? 'PERSONAL',
+    // Tenant work-week (truly-global). Coarse pattern + the resolved fine-grained
+    // day tokens the FE consumes (registry `fromTenant: t => mapWorkWeek(t.work_week_days)`).
+    work_week_pattern: config?.workWeekPattern ?? 'MON-FRI',
+    work_week_days: toDayTokens(
+      resolveWorkWeekDays(config?.workWeekDays, config?.workWeekPattern),
+    ),
   };
 }
 
@@ -40,7 +47,7 @@ export async function updateTenantConfig(tenantId, data) {
     promises.push(settingsRepository.updateTenantFields(tenantId, data));
   }
 
-  const configFields = ['company_name', 'timezone', 'working_hours_start', 'working_hours_end', 'invite_email_target'];
+  const configFields = ['company_name', 'timezone', 'working_hours_start', 'working_hours_end', 'invite_email_target', 'work_week_pattern', 'work_week_days'];
   const hasConfigFields = configFields.some((f) => data[f] !== undefined);
   if (hasConfigFields) {
     promises.push(settingsRepository.updateTenantConfig(tenantId, data));

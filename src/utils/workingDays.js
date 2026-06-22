@@ -46,3 +46,31 @@ export function parseWorkWeekPattern(pattern) {
 
   return [1, 2, 3, 4, 5];
 }
+
+// JS day-of-week index (0=Sun .. 6=Sat) → 3-letter token.
+export const DAY_TOKENS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+/**
+ * Resolve a tenant/entity work-week to an ordered JS day-of-week array (0=Sun..6=Sat).
+ * Prefers the fine-grained `workWeekDays` (array of tokens or numbers) over the coarse
+ * `workWeekPattern` string; falls back to Mon–Fri. Mirrors payroll's resolution order so
+ * non-payroll modules (attendance grid, timesheets week-start) stay consistent.
+ */
+export function resolveWorkWeekDays(workWeekDays, workWeekPattern) {
+  if (Array.isArray(workWeekDays) && workWeekDays.length > 0) {
+    const days = parseWorkWeekPattern(workWeekDays);
+    if (days.length > 0) return days;
+  }
+  return parseWorkWeekPattern(workWeekPattern);
+}
+
+// Ordered JS day numbers → 3-letter tokens (e.g. [0,1,2,3,4] → ['SUN',...,'THU']).
+export function toDayTokens(days) {
+  return (days || []).map((d) => DAY_TOKENS[d]).filter(Boolean);
+}
+
+// The week-start day (0=Sun..6=Sat) for a work-week = its first working day in order.
+// SUN-THU → 0 (Sun); MON-FRI/MON-SAT → 1 (Mon). Falls back to Monday.
+export function weekStartDayFromDays(days) {
+  return Array.isArray(days) && days.length > 0 ? days[0] : 1;
+}

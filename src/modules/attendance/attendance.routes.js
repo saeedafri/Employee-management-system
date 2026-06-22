@@ -85,7 +85,7 @@ export default async function attendanceRoutes(fastify) {
       querystring: {
         type: 'object',
         properties: {
-          weekStart: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$', description: 'Monday of the week (YYYY-MM-DD). Defaults to current week.' },
+          weekStart: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$', description: 'Any date in the target week (YYYY-MM-DD); snapped back to the tenant work-week’s first working day. Defaults to current week.' },
           departmentId: { type: 'string' },
         },
       },
