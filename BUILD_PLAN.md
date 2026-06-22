@@ -39,7 +39,11 @@ backend reimplemented logic ad hoc.
   frontend ran on `http://localhost:3001` with BFF `API_BASE_URL=http://localhost:3000/api/v1`.
   Browser QA login as `hr@acme.test` reached `/dashboard`; dashboard APIs returned 200
   (`/analytics/*`, `/manager/approvals`, notifications). Screenshot: `/tmp/ems-local-dashboard-20s.png`.
-- [ ] 0.2 Cross-cutting envelope/422-details/logging audit — confirm existing matches `CLAUDE.md §4`.
+- [x] 0.2 Cross-cutting envelope/422-details/logging audit — fixed legacy
+  `errorResponse(code, message, requestId)` call compatibility, normalized missing details to
+  `{}`, and made `requestIdPlugin` global via `fastify-plugin` so `request.id`,
+  `request.requestId`, and `x-request-id` are consistently available. Verified 2026-06-22:
+  `node --test tests/response-envelope.test.js` passed 3/3 and `npm run test:smoke` passed 4/4.
 - [ ] 0.3 Tenant-scoping audit — confirm `resolveTenant` + per-query `tenantId` coverage.
 - [ ] 0.4 FE↔backend wiring — point `ems-frontend` `.env.local` at local backend, `NEXT_PUBLIC_USE_MOCKS=false`, browser-QA login.
 
