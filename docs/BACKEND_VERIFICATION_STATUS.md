@@ -13,7 +13,7 @@
 | 2 Core directory | ✅ done | employees/departments render live |
 | 3 Attendance | ✅ done | BR-ATT-2 tz fix |
 | 4 Leave | ✅ live-verified | balance/types/requests render live; **fixed backend bug** (commit 7ceb119): `/leave/types` now uses engine codes (EL/SL/CL/CO) so the balance↔type join resolves — leave screen was crashing on `undefined.color` under MSW-off |
-| 5 Timesheets | ✅ code + screen-live | core + workflow extras render live, no errors |
+| 5 Timesheets | ✅ live-verified | core + all workflow-extras tabs (Approvals/Projects/Rates/Approval Flow/Locks/Delegations) render live MSW-off; timer, totals, submit-banner, real projects; zero console errors; no backend defects |
 | 6 Payroll | ✅ 10/11 | 6.6 from-leave/from-attendance DONE (commit 08cb9cc); **6.7 run types LIVE-verified** (BONUS/ARREARS/OFF_CYCLE/FNF/REVERSAL create+validation+reversal-linkage, no country hardcode); 6.5 async = deferred (see below) |
 | 7 Holidays | ✅ done | 7.3 countryCode live-verified (commit fdce518) |
 | 8 Settings | ✅ done | renders live (redirects to /settings/company-profile) |
