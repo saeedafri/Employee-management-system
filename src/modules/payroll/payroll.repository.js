@@ -1,4 +1,5 @@
 import { evaluateFormula, topologicalSort } from '../../utils/formulaEval.js';
+import { roundMoney } from '../../utils/money.js';
 import {
   fmtComponentStatutoryFields,
   normalizeCostCenterRule,
@@ -267,7 +268,7 @@ export async function deletePayGroup(prisma, id, tenantId) {
 
 // ── Employee Salary ───────────────────────────────────────────────────────────
 
-function buildCalculatedComponents(pgComponents, annualCtc) {
+function buildCalculatedComponents(pgComponents, annualCtc, currency = 'INR') {
   const ctcMonthly = Number(annualCtc) / 12;
 
   const effectiveComponents = pgComponents.map((pgc) => {
@@ -307,7 +308,7 @@ function buildCalculatedComponents(pgComponents, annualCtc) {
     } catch {
       amount = 0;
     }
-    amount = Math.round(amount * 100) / 100;
+    amount = roundMoney(amount, currency);
     computed[comp.code] = amount;
     const item = withComponentColor({ code: comp.code, name: comp.name, type: comp.type, monthlyAmount: amount, taxable: comp.taxable });
     calculated.push(item);
@@ -340,7 +341,7 @@ export async function getEmployeeSalary(prisma, employeeId, tenantId, isHR = tru
   if (!current) return null;
 
   const { calculated, monthlyGross, monthlyDeductions, monthlyNet } =
-    buildCalculatedComponents(current.payGroup.components, current.annualCtc);
+    buildCalculatedComponents(current.payGroup.components, current.annualCtc, current.currency ?? current.payGroup?.currency ?? 'INR');
 
   const bankAccountNumber = isHR
     ? current.bankAccountNumber
@@ -821,14 +822,17 @@ function negateLines(arr) {
 }
 
 async function finalizeRunCalculation(prisma, id, preservedMeta, empCount, totalGross, totalDeductions, totalNet, byDept, warnings, totalEmployerCost = 0) {
+  // Round run totals to the run currency's minor-unit precision (KWD=3dp, JPY=0dp, INR=2dp).
+  const runRow = await prisma.payrollRun.findUnique({ where: { id }, select: { currency: true } });
+  const ccy = runRow?.currency || 'INR';
   await prisma.payrollRun.update({
     where: { id },
     data: {
       status: 'REVIEW', employeeCount: empCount,
-      totalGross: Math.round(totalGross * 100) / 100,
-      totalDeductions: Math.round(totalDeductions * 100) / 100,
-      totalNet: Math.round(totalNet * 100) / 100,
-      employerCost: Math.round(totalEmployerCost * 100) / 100,
+      totalGross: roundMoney(totalGross, ccy),
+      totalDeductions: roundMoney(totalDeductions, ccy),
+      totalNet: roundMoney(totalNet, ccy),
+      employerCost: roundMoney(totalEmployerCost, ccy),
       processedAt: new Date(),
       summaryJson: {
         ...preservedMeta,
