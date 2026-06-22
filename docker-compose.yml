@@ -1,38 +1,45 @@
-version: '3.8'
+# Local-only Postgres for EMS backend development + tests.
+#
+# Reconciled 2026-06-22: the previous version of this file declared MySQL 8 + Redis 7,
+# which do NOT match the real stack. Prisma here uses `provider = "postgresql"` and the
+# codebase has no Redis/BullMQ (queue was removed; ops are synchronous). This file now
+# reflects reality: a single local Postgres, no Redis.
+#
+# ⛔ NEVER point migrations / seeds / tests at the live Hostinger or Render DB.
+#    The UI team depends on the live DB; it has been wiped by accident before.
+#    This compose file gives you an isolated, throwaway local database instead.
+#
+# The test database is named `ems_test` on purpose: .claude/hooks/ems-safety-guard.cjs
+# only permits the test suite to run when DATABASE_URL targets localhost/127.0.0.1
+# or a DB whose name contains `ems_test`.
+#
+# Usage:
+#   docker compose up -d
+#   DATABASE_URL=postgresql://ems:ems_local_dev@127.0.0.1:5432/ems_dev npx prisma migrate deploy
+#   npm run test:smoke
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: ems-mysql
+  postgres:
+    image: postgres:18
+    container_name: ems-postgres-local
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root_password_change_me
-      MYSQL_DATABASE: ems_local
-      MYSQL_USER: ems_user
-      MYSQL_PASSWORD: ems_pass_local
+      POSTGRES_USER: ems
+      POSTGRES_PASSWORD: ems_local_dev
+      POSTGRES_DB: ems_dev
     ports:
-      - '3306:3306'
+      - '5432:5432'
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ems_pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
-      timeout: 20s
+      test: ['CMD-SHELL', 'pg_isready -U ems -d ems_dev']
+      interval: 5s
+      timeout: 5s
       retries: 10
 
-  redis:
-    image: redis:7-alpine
-    container_name: ems-redis
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      timeout: 3s
-      retries: 5
-
 volumes:
-  mysql_data:
-  redis_data:
+  ems_pgdata:
 
 networks:
   default:

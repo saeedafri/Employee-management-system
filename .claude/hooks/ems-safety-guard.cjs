@@ -10,14 +10,16 @@ process.stdin.on('end', () => {
   try { cmd = JSON.parse(data).tool_input?.command || ''; } catch {}
 
   const BLOCKED = [
-    ['prisma migrate',        /prisma\s+migrate/i],
+    // Destructive / DB-resetting Prisma ops — these caused the past wipes. STAY BLOCKED.
+    // `prisma migrate deploy` and `prisma migrate status` are intentionally NOT blocked:
+    // they are forward-only / read-only and are required for the autonomous backend build.
+    ['prisma migrate diff',   /prisma\s+migrate\s+diff/i],   // shadow-db diff RESET the live DB (2026-06-18)
+    ['prisma migrate reset',  /prisma\s+migrate\s+reset/i],
+    ['prisma migrate dev',    /prisma\s+migrate\s+dev/i],     // uses a shadow DB; can reset on drift
     ['prisma db push',        /prisma\s+db\s+push/i],
     ['prisma db seed',        /prisma\s+db\s+seed/i],
     ['prisma db reset',       /prisma\s+db\s+reset/i],
     ['prisma db pull',        /prisma\s+db\s+pull/i],
-    ['prisma migrate reset',  /prisma\s+migrate\s+reset/i],
-    ['prisma migrate dev',    /prisma\s+migrate\s+dev/i],
-    ['prisma migrate deploy', /prisma\s+migrate\s+deploy/i],
     ['seed script',           /node\s+(prisma\/seed|prisma\/seedLargeDemo|prisma\/seedProductionData)/],
     ['seedPayroll script',    /seedPayroll/i],
     ['npm test',              /\bnpm\s+test\b/],

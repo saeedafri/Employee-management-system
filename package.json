@@ -40,6 +40,7 @@
     "verify:phase3-production": "node scripts/verifyPhase3Production.mjs",
     "db:seed:payroll-contract": "node scripts/seedPayrollContractData.mjs",
     "verify:payroll-contract": "node scripts/verifyPayrollLiveContract.mjs",
+    "test:smoke": "node --test tests/bootstrap.smoke.test.js",
     "test:auth-me": "node --test tests/auth-me.test.js",
     "test:auth-logout": "node --test tests/auth-logout.test.js",
     "verify:auth-logout:live": "node scripts/verifyAuthLogoutLive.mjs",
