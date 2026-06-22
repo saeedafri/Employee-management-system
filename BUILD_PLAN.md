@@ -112,6 +112,22 @@ backend reimplemented logic ad hoc.
   `/tmp/ems-auth-extras-reset-invalid-msw-off.png`,
   `/tmp/ems-auth-extras-set-password-invalid-msw-off.png`.
 
+## Phase 10 — Permissions & settings
+
+- [x] 10.2 Custom roles / BE-10-BE-11 — source already persisted `permissions[]` on
+  `POST /settings/roles` and returned `customRoles[]` from `GET /settings/roles-permissions`;
+  added regression coverage so this cannot silently drift. Verified 2026-06-22:
+  `node --test tests/settings-roles-contract.test.js` passed 1/1, creating a temporary
+  role with `employees:read` + `leave:approve`, confirming the create response echoed both
+  permissions, confirming the permissions matrix and `customRoles[]` exposed the role, then
+  deleting it. MSW-off browser QA through local frontend (`localhost:3001`) logged in as
+  `superadmin@acme.test`, opened `/permissions`, loaded `GET /api/settings/roles-permissions`
+  with 200, created a temporary custom role through Add Role with both selected permissions,
+  confirmed `POST /api/settings/roles` returned 201 and echoed both permissions, deleted it
+  with `DELETE /api/settings/roles/:key` 200, and captured no API responses from a service
+  worker. Screenshots: `/tmp/ems-settings-roles-created-msw-off.png`,
+  `/tmp/ems-settings-roles-deleted-msw-off.png`.
+
 ## Phase 12 — Hardening
 
 - [x] 12.1 HTTP status/envelope hardening — fixed malformed JSON to return `400 INVALID_REQUEST`
@@ -130,7 +146,6 @@ backend reimplemented logic ad hoc.
 
 - [ ] Loans PR-1 — align live `amount`/`balance` strings → numeric `principal`/`outstandingBalance`.
 - [ ] Sub-monthly payroll — semi-monthly run doubles pay; needs `salary.legalEntityId`.
-- [ ] `createRole` BE-10 — `POST /settings/roles` drops `permissions[]` on create.
 - [ ] Attendance UTC bug (BR-ATT-2) — classify day in employee tz, not UTC.
 - [ ] Timesheet `PATCH /entries/:id` 500.
 - [ ] Legal-entity work-time — add `workWeekDays[]` + `hoursPerDay`.
