@@ -74,6 +74,17 @@ backend reimplemented logic ad hoc.
   `node --test tests/auth-login-contract.test.js` passed 2/2,
   `node --test tests/auth-me.test.js` passed 7/7,
   `node --test tests/auth-logout.test.js` passed 2/2, and `npm run test:smoke` passed 4/4.
+- [x] 1.3 `GET /auth/me`, `GET/DELETE /auth/sessions`, logout, logout-all — added
+  contract coverage for `/auth/me` user shape, flat session list shape, session revoke,
+  revoked-session token rejection, and current-session continuity after revoking another
+  session. Existing logout tests verify both cookies clear and old access tokens stop
+  working immediately. Verified 2026-06-22:
+  `node --test tests/auth-sessions-contract.test.js` passed 2/2,
+  `node --test tests/auth-me.test.js` passed 7/7,
+  `node --test tests/auth-logout.test.js` passed 2/2,
+  `node --test tests/auth-login-contract.test.js` passed 2/2,
+  `node --test tests/auth-refresh-contract.test.js` passed 3/3, and
+  `npm run test:smoke` passed 4/4.
 
 ## Backlog — documented divergences to reconcile (highest value first)
 
