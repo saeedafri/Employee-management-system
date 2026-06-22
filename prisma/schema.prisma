@@ -1243,7 +1243,11 @@ model LegalEntity {
   fiscalYearStartMonth Int      @default(4)
   timezone             String   @default("Asia/Kolkata")
   locale               String   @default("en-IN")
-  workWeekPattern      String   @default("MON-FRI") // MON-FRI | MON-SAT | SUN-THU — drives cycle working-day counts
+  workWeekPattern      String   @default("MON-FRI") // coarse enum (back-compat): MON-FRI | MON-SAT | SUN-THU
+  // Phase 6.2 / WORK_WEEK_BACKEND_CONTRACT — fine-grained per-entity working time. Authoritative
+  // for payroll working-day count when present; falls back to workWeekPattern then Mon-Fri.
+  workWeekDays         Json? // string[] day abbrevs (e.g. ["SUN","MON","TUE","WED","THU"]) or 0-6 numbers
+  hoursPerDay          Int? // standard paid hours/day (OT hourly rate, hourly workers)
   registrationIds      Json     @default("{}")
   statutoryPackId      String?
   payCalendarId        String?

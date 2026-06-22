@@ -500,7 +500,9 @@ export default async function payrollRoutes(fastify) {
         properties: {
           name: { type: 'string' }, country: { type: 'string' }, currency: { type: 'string' },
           fiscalYearStartMonth: { type: 'integer' }, timezone: { type: 'string' }, locale: { type: 'string' },
-          workWeekPattern: { type: 'string', description: 'Work week, e.g. MON-FRI (default), MON-SAT, SUN-THU. Drives cycle working-day counts.' },
+          workWeekPattern: { type: 'string', description: 'Coarse work week (back-compat): MON-FRI | MON-SAT | SUN-THU.' },
+          workWeekDays: { type: 'array', items: { type: 'string' }, description: 'Fine-grained working days, e.g. ["SUN","MON","TUE","WED","THU"]. Authoritative for payroll working-day count.' },
+          hoursPerDay: { type: 'integer', description: 'Standard paid hours/day (OT hourly rate).' },
           registrationIds: { type: 'object', additionalProperties: true },
           statutoryPackId: { type: 'string' }, payCalendarId: { type: 'string' },
           active: { type: 'boolean', description: 'Entity status for UI badges (default true)' },

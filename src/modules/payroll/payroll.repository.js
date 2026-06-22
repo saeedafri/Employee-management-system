@@ -57,6 +57,8 @@ function fmtLegalEntity(e) {
     timezone: e.timezone,
     locale: e.locale,
     workWeekPattern: e.workWeekPattern ?? 'MON-FRI',
+    workWeekDays: e.workWeekDays ?? null,
+    hoursPerDay: e.hoursPerDay ?? null,
     registrationIds: e.registrationIds ?? {},
     statutoryPackId: e.statutoryPackId ?? null,
     payCalendarId: e.payCalendarId ?? null,
@@ -1062,7 +1064,13 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         where: { tenantId, employeeId: employee.id, attendanceDate: { gte: periodStart, lte: periodEnd } },
         select: { status: true },
       });
-      const workWeekPattern = parseWorkWeekPattern(empLegalEntity?.workWeekPattern);
+      // Authoritative work-week: fine-grained workWeekDays[] when set, else coarse pattern, else Mon-Fri.
+      // parseWorkWeekPattern handles both an abbrev/number array and the "MON-FRI"/"SUN-THU" string.
+      const wwSource =
+        (Array.isArray(empLegalEntity?.workWeekDays) && empLegalEntity.workWeekDays.length > 0)
+          ? empLegalEntity.workWeekDays
+          : empLegalEntity?.workWeekPattern;
+      const workWeekPattern = parseWorkWeekPattern(wwSource);
       const workingDays = getWorkingDays(periodStart, periodEnd, workWeekPattern);
       const hasAttendance = attendance.length > 0;
       const presentDays = hasAttendance
@@ -1492,6 +1500,7 @@ export async function createLegalEntity(prisma, tenantId, data) {
       name: data.name, country: data.country || 'IN', currency: data.currency || 'INR',
       fiscalYearStartMonth: data.fiscalYearStartMonth || 4, timezone: data.timezone || 'Asia/Kolkata',
       locale: data.locale || 'en-IN', workWeekPattern: data.workWeekPattern || 'MON-FRI',
+      workWeekDays: data.workWeekDays ?? null, hoursPerDay: data.hoursPerDay ?? null,
       registrationIds: data.registrationIds || {},
       statutoryPackId: data.statutoryPackId || null, payCalendarId: data.payCalendarId || null,
       active: data.active ?? true,
@@ -1504,7 +1513,7 @@ export async function updateLegalEntity(prisma, id, tenantId, data) {
   const existing = await prisma.legalEntity.findFirst({ where: { id, tenantId } });
   if (!existing) return null;
   const updateData = {};
-  for (const field of ['name', 'country', 'currency', 'fiscalYearStartMonth', 'timezone', 'locale', 'workWeekPattern', 'registrationIds', 'statutoryPackId', 'payCalendarId', 'active']) {
+  for (const field of ['name', 'country', 'currency', 'fiscalYearStartMonth', 'timezone', 'locale', 'workWeekPattern', 'workWeekDays', 'hoursPerDay', 'registrationIds', 'statutoryPackId', 'payCalendarId', 'active']) {
     if (data[field] !== undefined) updateData[field] = data[field];
   }
   const row = await prisma.legalEntity.update({ where: { id }, data: updateData });

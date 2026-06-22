@@ -5169,3 +5169,16 @@ The `/permissions` 404 was a **false alarm**: the FE permissions module (`permis
 
 ## §6 Divergence — entry-500 (verified fixed 2026-06-22) ✅
 `PATCH /timesheets/entries/:id` returns **200** (was 500). Confirmed live: create entry → PATCH `{hours,note,billable}` → 200. Resolved earlier in commit 480dea3.
+
+---
+
+## §6 Divergence reconciliation — Legal-entity work-time (fixed 2026-06-22) ✅
+
+`/payroll/legal-entities` now accepts/persists/returns fine-grained **`workWeekDays[]`** + **`hoursPerDay`** (WORK_WEEK_BACKEND_CONTRACT §2.1) — was only the coarse `workWeekPattern` enum which can't express arbitrary weeks.
+
+- POST/PATCH accept `workWeekDays` (e.g. `["SUN","MON","TUE","WED","THU"]`) + `hoursPerDay`; GET returns both. Coarse `workWeekPattern` still accepted/derived for back-compat.
+- **Run engine** (`payroll.repository.js`) resolves the proration/working-day denominator from `workWeekDays[]` when set, else `workWeekPattern`, else Mon-Fri — `parseWorkWeekPattern` handles both the abbrev/number array and the string. No hardcoded Mon-Fri / `STD_WORKING_DAYS`.
+- **No India regression** — entities without `workWeekDays` fall back to Mon-Fri (verified: India entity → `workWeekDays: null`). UAE Sun-Thu now changes the denominator (Mar 2026: Mon-Fri 22 vs Sun-Thu 23 — `tests/payroll-workingDays.test.js`).
+- Additive migration `20260622120000_legal_entity_work_time` (nullable `workWeekDays` JSONB + `hoursPerDay` int on LegalEntity).
+
+**Verification:** API round-trip (POST UAE Sun-Thu → GET → PATCH 4-day week; India null fallback) + working-days unit test. Note: `hoursPerDay`-driven OT hourly rate is persisted for use; the engine has no separate OT-hourly path today (no behaviour to change).

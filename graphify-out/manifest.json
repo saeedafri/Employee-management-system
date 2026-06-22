@@ -775,13 +775,13 @@
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.repository.js": {
-    "mtime": 1781518473.56007,
-    "ast_hash": "1f66a6df41f8a6fa8baa76efed69fd42",
+    "mtime": 1782125516.5466707,
+    "ast_hash": "4a130a6b45c872f91678a134ad5768a8",
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.routes.js": {
-    "mtime": 1782125001.8221962,
-    "ast_hash": "fa0e97ea859cee3274ae8e11571721a9",
+    "mtime": 1782125537.8113763,
+    "ast_hash": "d78fb8c4dd3d4d4e7a3ae9b4467c7ac6",
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.service.js": {
@@ -1500,8 +1500,8 @@
     "semantic_hash": ""
   },
   "docs/API_MAPPING.md": {
-    "mtime": 1782125331.8993027,
-    "ast_hash": "dd436aae529aeb663d533266d842f03d",
+    "mtime": 1782125656.1403437,
+    "ast_hash": "3da702b5d57694edfa3a12f6a0b64fe8",
     "semantic_hash": ""
   },
   "docs/BACKEND_TEAM_HANDOFF_FIX_REPORT.md": {
@@ -2212,6 +2212,16 @@
   "tests/payroll-loan.utils.test.js": {
     "mtime": 1782125044.2398891,
     "ast_hash": "f964dc99542a2691e698f07dcd3c9188",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260622120000_legal_entity_work_time/migration.sql": {
+    "mtime": 1782125453.050946,
+    "ast_hash": "3c10ca3ab80e3bb67ae45a1423dd3de9",
+    "semantic_hash": ""
+  },
+  "tests/payroll-workingDays.test.js": {
+    "mtime": 1782125570.4061277,
+    "ast_hash": "ad00bdc3b6487892b15e214fca6e0736",
     "semantic_hash": ""
   }
 }
