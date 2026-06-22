@@ -2,13 +2,20 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const INSECURE_JWT_FALLBACK = 'super_secret_key_change_in_production';
+// Fail-closed: never let production run on the known default JWT secret (token-forgery risk).
+// Local/dev still gets a convenience fallback so `npm run dev` works without a .env.
+if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || process.env.JWT_SECRET === INSECURE_JWT_FALLBACK)) {
+  throw new Error('JWT_SECRET must be set to a strong, non-default value in production');
+}
+
 export const config = {
   env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT, 10) || 3000,
   logLevel: process.env.LOG_LEVEL || 'debug',
 
   // JWT
-  jwtSecret: process.env.JWT_SECRET || 'super_secret_key_change_in_production',
+  jwtSecret: process.env.JWT_SECRET || INSECURE_JWT_FALLBACK,
   accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d',
 
