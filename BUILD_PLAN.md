@@ -51,7 +51,11 @@ backend reimplemented logic ad hoc.
   passed 3/3, and browser dashboard smoke through local FE/backend returned 200 for auth,
   notifications, `/analytics/*`, and `/manager/approvals`. Screenshot:
   `/tmp/ems-phase03-dashboard.png`.
-- [ ] 0.4 FE↔backend wiring — point `ems-frontend` `.env.local` at local backend, `NEXT_PUBLIC_USE_MOCKS=false`, browser-QA login.
+- [x] 0.4 FE↔backend wiring — used local frontend only for QA; no frontend commit.
+  `ems-frontend/.env.local` was pointed at `API_BASE_URL=http://localhost:3000/api/v1` with
+  `NEXT_PUBLIC_USE_MOCKS=false`; backend ran on `3000`, frontend on `3001`. Browser login as
+  `hr@acme.test` reached `/dashboard`; dashboard data loaded from local backend via BFF.
+  Evidence: `/tmp/ems-local-dashboard-20s.png`, `/tmp/ems-phase03-dashboard.png`.
 
 ## Backlog — documented divergences to reconcile (highest value first)
 
