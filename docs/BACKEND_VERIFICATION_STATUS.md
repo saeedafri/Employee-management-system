@@ -12,7 +12,7 @@
 | 1 Auth & identity | ✅ done | 20 routes, refresh rotation, RBAC guard, browser login verified live |
 | 2 Core directory | ✅ done | employees/departments render live |
 | 3 Attendance | ✅ done | BR-ATT-2 tz fix |
-| 4 Leave | ✅ code + screen-live | renders live, no API errors; per-field shape parity vs contract = spot-checked only |
+| 4 Leave | ✅ live-verified | balance/types/requests render live; **fixed backend bug** (commit 7ceb119): `/leave/types` now uses engine codes (EL/SL/CL/CO) so the balance↔type join resolves — leave screen was crashing on `undefined.color` under MSW-off |
 | 5 Timesheets | ✅ code + screen-live | core + workflow extras render live, no errors |
 | 6 Payroll | ✅ 10/11 | 6.6 from-leave/from-attendance DONE (commit 08cb9cc); **6.7 run types LIVE-verified** (BONUS/ARREARS/OFF_CYCLE/FNF/REVERSAL create+validation+reversal-linkage, no country hardcode); 6.5 async = deferred (see below) |
 | 7 Holidays | ✅ done | 7.3 countryCode live-verified (commit fdce518) |
@@ -45,7 +45,8 @@ Redis + BullMQ removed from the stack. Payroll `calculate` runs synchronously. S
 ## Genuine remaining work (honest)
 1. **12.1** — full truly-global browser regression at non-default country/currency/work-week per module (only spot-proven, e.g. holidays countryCode at API level).
 2. **12.2 deepening** — per-route role-correctness sweep, secrets audit, dependency CVE scan.
-3. **Per-field shape parity** for MSW-shadowed modules (leave, payroll-extras, timesheet-workflow) vs their contracts — screens render, exhaustive field diff not done.
+3. **Per-field shape parity** for MSW-shadowed modules (payroll-extras, timesheet-workflow) vs their contracts — screens render, exhaustive field diff not done.
+4. **Leave-types taxonomy reconciliation** — `GET /leave/types` now returns engine codes (EL/SL/CL/CO); admin CRUD `POST/PATCH/DELETE /leave/types/:id` still operates on DB `LeaveType` cuid rows. The admin settings screen and self-service screen use different taxonomies until unified.
 4. Frontend follow-ups in `FRONTEND_FOLLOWUPS.md` (not our side).
 
 ## Verified this session (live, MSW-off)
