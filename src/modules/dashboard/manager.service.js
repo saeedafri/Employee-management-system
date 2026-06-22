@@ -4,8 +4,8 @@ import { APPROVAL_TYPE_COLORS } from '../../utils/payrollUiShapes.js';
 
 export async function getManagerDashboard(managerId, tenantId) {
   try {
-    const manager = await prisma.employee.findUnique({
-      where: { id: managerId },
+    const manager = await prisma.employee.findFirst({
+      where: { id: managerId, tenantId },
       include: { user: { select: { email: true } } },
     });
 
@@ -169,7 +169,7 @@ export async function getTeamAttendance(managerId, tenantId, range = '30d') {
 export async function getPendingApprovals(managerId, tenantId, { scope = 'team' } = {}) {
   try {
     if (scope === 'team') {
-      const manager = await prisma.employee.findUnique({ where: { id: managerId } });
+      const manager = await prisma.employee.findFirst({ where: { id: managerId, tenantId } });
       if (!manager) {
         return errorResponse('MANAGER_NOT_FOUND', 'Manager not found', null);
       }
@@ -317,17 +317,13 @@ export async function getPendingApprovals(managerId, tenantId, { scope = 'team' 
 export async function approveLeaveRequest(managerId, leaveRequestId, tenantId, decision, comment = '') {
   try {
     // Verify manager has authority to approve this request
-    const leaveRequest = await prisma.leaveRequest.findUnique({
-      where: { id: leaveRequestId },
+    const leaveRequest = await prisma.leaveRequest.findFirst({
+      where: { id: leaveRequestId, tenantId },
       include: { employee: true },
     });
 
     if (!leaveRequest) {
       return errorResponse('LEAVE_NOT_FOUND', 'Leave request not found', null);
-    }
-
-    if (leaveRequest.tenantId !== tenantId) {
-      return errorResponse('UNAUTHORIZED', 'Tenant mismatch', null);
     }
 
     if (leaveRequest.employee.managerId !== managerId) {
@@ -371,17 +367,13 @@ export async function approveLeaveRequest(managerId, leaveRequestId, tenantId, d
 
 export async function approveRegularizationRequest(managerId, requestId, tenantId, decision, comment = '') {
   try {
-    const request = await prisma.attendanceRegularizationRequest.findUnique({
-      where: { id: requestId },
+    const request = await prisma.attendanceRegularizationRequest.findFirst({
+      where: { id: requestId, tenantId },
       include: { employee: true },
     });
 
     if (!request) {
       return errorResponse('REQUEST_NOT_FOUND', 'Regularization request not found', null);
-    }
-
-    if (request.tenantId !== tenantId) {
-      return errorResponse('UNAUTHORIZED', 'Tenant mismatch', null);
     }
 
     if (request.employee.managerId !== managerId) {

@@ -3,8 +3,8 @@ import { successResponse, errorResponse } from '../../utils/response.js';
 
 export async function getEmployeeDashboard(employeeId, tenantId) {
   try {
-    const employee = await prisma.employee.findUnique({
-      where: { id: employeeId },
+    const employee = await prisma.employee.findFirst({
+      where: { id: employeeId, tenantId },
       include: {
         user: { select: { email: true, memberType: true } },
         department: { select: { name: true } },
@@ -260,8 +260,8 @@ export async function getDocuments(employeeId, tenantId) {
 
 export async function getEmployeeTeam(employeeId, tenantId) {
   try {
-    const employee = await prisma.employee.findUnique({
-      where: { id: employeeId },
+    const employee = await prisma.employee.findFirst({
+      where: { id: employeeId, tenantId },
       select: { managerId: true, departmentId: true },
     });
 
@@ -272,8 +272,8 @@ export async function getEmployeeTeam(employeeId, tenantId) {
     // Get manager
     let manager = null;
     if (employee.managerId) {
-      manager = await prisma.employee.findUnique({
-        where: { id: employee.managerId },
+      manager = await prisma.employee.findFirst({
+        where: { id: employee.managerId, tenantId },
         select: {
           firstName: true,
           lastName: true,

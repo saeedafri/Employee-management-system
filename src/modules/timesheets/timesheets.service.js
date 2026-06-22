@@ -145,7 +145,10 @@ export async function getTimesheet(tenantId, employeeId, weekStart) {
   const [settings, sheet, emp] = await Promise.all([
     repo.getSettings(tenantId),
     repo.getOrCreateTimesheet(tenantId, employeeId, weekStart),
-    prisma.employee.findUnique({ where: { id: employeeId }, select: { firstName: true, lastName: true } }),
+    prisma.employee.findFirst({
+      where: { id: employeeId, tenantId },
+      select: { firstName: true, lastName: true },
+    }),
   ]);
   // Populate employeeName to match the FE mock (which always returns the name).
   const name = emp ? `${emp.firstName} ${emp.lastName}`.trim() : '';

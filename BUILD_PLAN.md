@@ -44,7 +44,13 @@ backend reimplemented logic ad hoc.
   `{}`, and made `requestIdPlugin` global via `fastify-plugin` so `request.id`,
   `request.requestId`, and `x-request-id` are consistently available. Verified 2026-06-22:
   `node --test tests/response-envelope.test.js` passed 3/3 and `npm run test:smoke` passed 4/4.
-- [ ] 0.3 Tenant-scoping audit — confirm `resolveTenant` + per-query `tenantId` coverage.
+- [x] 0.3 Tenant-scoping audit — confirmed `resolveTenant` plus `authenticate()` tenant/session
+  mismatch protection. Fixed narrow high-risk tenant-model reads that used global `id` first:
+  dashboard employee/manager lookups, manager approval lookups, and timesheet employee-name lookup.
+  Verified 2026-06-22: `npm run test:smoke` passed 4/4, `node --test tests/response-envelope.test.js`
+  passed 3/3, and browser dashboard smoke through local FE/backend returned 200 for auth,
+  notifications, `/analytics/*`, and `/manager/approvals`. Screenshot:
+  `/tmp/ems-phase03-dashboard.png`.
 - [ ] 0.4 FE↔backend wiring — point `ems-frontend` `.env.local` at local backend, `NEXT_PUBLIC_USE_MOCKS=false`, browser-QA login.
 
 ## Backlog — documented divergences to reconcile (highest value first)
