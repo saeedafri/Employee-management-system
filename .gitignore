@@ -45,3 +45,4 @@ backups/
 test-results.json
 .mcp.json
 .vercel
+.gstack/

@@ -190,6 +190,10 @@ model Tenant {
   attendanceRegularizations AttendanceRegularizationRequest[]
   leaveTypes                LeaveType[]
   leaveBalances             LeaveBalance[]
+  leavePolicies             LeavePolicy[]
+  leaveAssignments          LeaveAssignment[]
+  leaveLedgerTxns           LeaveLedgerTxn[]
+  compOffRequests           CompOffRequest[]
   leaveRequests             LeaveRequest[]
   holidays                  Holiday[]
   resignations              Resignation[]
@@ -328,6 +332,9 @@ model Employee {
   attendanceRegularizations AttendanceRegularizationRequest[]
   leaveBalances             LeaveBalance[]
   leaveRequests             LeaveRequest[]
+  leaveAssignments          LeaveAssignment[]
+  leaveLedgerTxns           LeaveLedgerTxn[]
+  compOffRequests           CompOffRequest[]
   resignations              Resignation[]
   salaries                  EmployeeSalary[]
   payslips                  Payslip[]
@@ -657,6 +664,99 @@ model LeaveRequest {
   @@index([employeeId])
   @@index([status])
   @@index([tenantId, status, startDate])
+}
+
+// ── Leave Engine (Phase 4): versioned policies + append-only ledger ──────────────
+// Catalog → versioned country-scoped policy → immutable signed ledger (balance = fold).
+// See ems-frontend/docs/leave/LEAVE_BACKEND_CONTRACT.md. Config-over-code: no country branches.
+
+model LeavePolicy {
+  id              String    @id @default(cuid())
+  tenantId        String
+  country         String // ISO-3166 alpha-2 or "GLOBAL"
+  version         String // e.g. "2026.1"
+  effectiveFrom   DateTime
+  effectiveTo     DateTime?
+  status          String    @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
+  applicability   Json // PolicyApplicability { legalEntityId?, employmentTypes[], departmentIds[], tenureTierMonths? }
+  rules           Json // LeaveTypeRule[]
+  statutoryFloors Json? // Record<leaveTypeCode, minDays>
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, country, status])
+}
+
+model LeaveAssignment {
+  id             String   @id @default(cuid())
+  tenantId       String
+  employeeId     String
+  policyId       String
+  country        String
+  version        String
+  leaveTypeCodes Json // string[] of matched leave-type codes
+  assignedAt     DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, employeeId, policyId])
+  @@index([tenantId])
+  @@index([employeeId])
+}
+
+model LeaveLedgerTxn {
+  id              String   @id @default(cuid())
+  tenantId        String
+  employeeId      String
+  leaveTypeId     String // leave-type CODE (EL/SL/CL/PTO/AL/CO)
+  policyId        String
+  policyVersion   String
+  type            String // LedgerTxnType union
+  delta           Decimal  @db.Decimal(10, 2) // signed decimal days
+  effectiveDate   DateTime
+  postedAt        DateTime @default(now())
+  leaveYear       Int
+  sourceRef       String? // request id a hold/settlement belongs to
+  reason          String
+  systemGenerated Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([employeeId])
+  @@index([tenantId, employeeId, leaveTypeId])
+}
+
+model CompOffRequest {
+  id              String    @id @default(cuid())
+  tenantId        String
+  employeeId      String
+  leaveTypeId     String // leave-type CODE (EVENT_CREDITED type, e.g. CO)
+  workDate        DateTime
+  units           Decimal   @db.Decimal(10, 2)
+  reason          String
+  status          String    @default("PENDING") // PENDING | APPROVED | REJECTED
+  expiryDate      DateTime?
+  approverId      String?
+  approverComment String?
+  submittedAt     DateTime  @default(now())
+  decidedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([employeeId])
 }
 
 model Holiday {
@@ -1014,10 +1114,10 @@ model PayrollRun {
   id               String           @id @default(cuid())
   tenantId         String
   period           String // "2024-06" | "2024-06-H1" | "2024-W23"
-  startDate        DateTime?        // Cycle start date (Option B period model)
-  endDate          DateTime?        // Cycle end date
-  payDate          DateTime?        // Scheduled pay date
-  paySchedule      String?          // MONTHLY | SEMI_MONTHLY | BIWEEKLY | WEEKLY
+  startDate        DateTime? // Cycle start date (Option B period model)
+  endDate          DateTime? // Cycle end date
+  payDate          DateTime? // Scheduled pay date
+  paySchedule      String? // MONTHLY | SEMI_MONTHLY | BIWEEKLY | WEEKLY
   type             String           @default("REGULAR") // REGULAR | OFF_CYCLE | BONUS | ARREARS | FNF | REVERSAL
   status           PayrollRunStatus @default(DRAFT)
   employeeCount    Int              @default(0)
@@ -1055,34 +1155,34 @@ model PayrollRun {
 }
 
 model Payslip {
-  id                    String        @id @default(cuid())
-  tenantId              String
-  payrollRunId          String
-  employeeId            String
-  period                String // "2024-06"
-  currency              String        @default("INR")
-  grossEarnings         Decimal       @default(0) @db.Decimal(15, 2)
-  totalDeductions       Decimal       @default(0) @db.Decimal(15, 2)
-  netPay                Decimal       @default(0) @db.Decimal(15, 2)
-  workingDays           Int           @default(0)
-  presentDays           Int           @default(0)
-  leaveDays             Int           @default(0)
-  lopDays               Int           @default(0)
-  status                PayslipStatus @default(PENDING)
-  heldAt                DateTime?
-  holdReason            String?
-  paymentDate           DateTime?
-  paymentReference      String?
-  earningsJson          Json?
+  id                        String        @id @default(cuid())
+  tenantId                  String
+  payrollRunId              String
+  employeeId                String
+  period                    String // "2024-06"
+  currency                  String        @default("INR")
+  grossEarnings             Decimal       @default(0) @db.Decimal(15, 2)
+  totalDeductions           Decimal       @default(0) @db.Decimal(15, 2)
+  netPay                    Decimal       @default(0) @db.Decimal(15, 2)
+  workingDays               Int           @default(0)
+  presentDays               Int           @default(0)
+  leaveDays                 Int           @default(0)
+  lopDays                   Int           @default(0)
+  status                    PayslipStatus @default(PENDING)
+  heldAt                    DateTime?
+  holdReason                String?
+  paymentDate               DateTime?
+  paymentReference          String?
+  earningsJson              Json?
   deductionsJson            Json?
   employerContributionsJson Json?
   oneTimeAdditionsJson      Json?
   oneTimeDeductionsJson     Json?
-  notes                 String?
-  documentUrl           String?
-  generatedAt           DateTime?
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
+  notes                     String?
+  documentUrl               String?
+  generatedAt               DateTime?
+  createdAt                 DateTime      @default(now())
+  updatedAt                 DateTime      @updatedAt
 
   // Relations
   tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -1201,21 +1301,21 @@ model PayrollInput {
 }
 
 model PayCalendar {
-  id                 String   @id @default(cuid())
-  tenantId           String
-  name               String
-  code               String
-  country            String   @default("IN")
-  paySchedule        String   @default("MONTHLY")
-  firstPayDate       String?
-  legalEntityId      String?
-  periodAnchor       String?  @default("MONTH_START")
-  payDateRule        String?  @default("LAST_WORKING_DAY")
-  payDay             Int?
-  cutoffDay          Int?     @default(25)
-  holidayCalendarId  String?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                String   @id @default(cuid())
+  tenantId          String
+  name              String
+  code              String
+  country           String   @default("IN")
+  paySchedule       String   @default("MONTHLY")
+  firstPayDate      String?
+  legalEntityId     String?
+  periodAnchor      String?  @default("MONTH_START")
+  payDateRule       String?  @default("LAST_WORKING_DAY")
+  payDay            Int?
+  cutoffDay         Int?     @default(25)
+  holidayCalendarId String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
@@ -1749,19 +1849,19 @@ model PayslipTemplate {
 }
 
 model UserInvitation {
-  id           String    @id @default(cuid())
-  tenantId     String
-  employeeId   String
-  userId       String
-  tokenHash    String    @unique
-  emailTarget  String    // PERSONAL | WORK
-  email        String    // actual email address the invite was sent to
-  expiresAt    DateTime
-  usedAt       DateTime?
-  revokedAt    DateTime?
-  createdById  String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          String    @id @default(cuid())
+  tenantId    String
+  employeeId  String
+  userId      String
+  tokenHash   String    @unique
+  emailTarget String // PERSONAL | WORK
+  email       String // actual email address the invite was sent to
+  expiresAt   DateTime
+  usedAt      DateTime?
+  revokedAt   DateTime?
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   // Relations
   tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)

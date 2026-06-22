@@ -910,6 +910,57 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Leave', 'Bulk deny (legacy alias — prefer /bulk/reject)'),
         },
 
+        // ── LEAVE ENGINE (Phase 4 — versioned policies, ledger, comp-off) ─────
+        '/leave/policy-packs/catalog': {
+          get: op('Leave Engine', 'Starter leave policy pack catalog (IN/US/AE/GLOBAL) — MANAGER+'),
+        },
+        '/leave/policy-packs/seed': {
+          post: op('Leave Engine', 'Seed starter packs as tenant policies, idempotent (HR_ADMIN, SUPER_ADMIN)', true, {
+            parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { country: { type: 'string', description: 'Optional: seed one country only' } } } }],
+          }),
+        },
+        '/leave/policies': {
+          get:  op('Leave Engine', 'List versioned leave policies — ?country & ?status filters (MANAGER+)', true, { parameters: [queryParam('country', 'string', 'ISO-3166 alpha-2 or GLOBAL'), queryParam('status', 'string', 'DRAFT|PUBLISHED|ARCHIVED')] }),
+          post: op('Leave Engine', 'Create a DRAFT policy version (HR_ADMIN, SUPER_ADMIN)', true, { responses: { 201: r201 }, parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', additionalProperties: true } }] }),
+        },
+        '/leave/policies/{id}/new-version': {
+          post: op('Leave Engine', 'Clone a policy into a new DRAFT version (HR_ADMIN, SUPER_ADMIN)', true, { parameters: idParam, responses: { 201: r201, 404: r404 } }),
+        },
+        '/leave/policies/{id}': {
+          patch: op('Leave Engine', 'Patch a DRAFT policy — 409 if PUBLISHED (HR_ADMIN, SUPER_ADMIN)', true, { parameters: idParam, responses: { 200: r200, 404: r404, 409: r409 } }),
+        },
+        '/leave/policies/{id}/publish': {
+          post: op('Leave Engine', 'Publish a DRAFT (archives prior PUBLISHED for that country) — 409 if not DRAFT', true, { parameters: idParam, responses: { 200: r200, 409: r409 } }),
+        },
+        '/leave/assignments': {
+          get: op('Leave Engine', 'List leave-policy assignments — ?employeeId filter', true, { parameters: [queryParam('employeeId', 'string', 'Filter to one employee')] }),
+        },
+        '/leave/assignments/auto-assign': {
+          post: op('Leave Engine', 'Auto-assign country policy + post opening grants/accruals, idempotent (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { employeeIds: { type: 'array', items: { type: 'string' } }, country: { type: 'string' } } } }] }),
+        },
+        '/leave/ledger': {
+          get: op('Leave Engine', 'Append-only ledger entries + folded balance for an employee/leave-type', true, { parameters: [queryParam('employeeId', 'string', 'Defaults to caller; non-privileged forced to self'), queryParam('leaveTypeId', 'string', 'Leave-type CODE (EL/SL/CL/CO/PTO/AL)')] }),
+        },
+        '/leave/ledger/adjust': {
+          post: op('Leave Engine', 'Post a manual ADJUSTMENT ledger entry (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['employeeId', 'leaveTypeId', 'delta', 'reason'], properties: { employeeId: { type: 'string' }, leaveTypeId: { type: 'string' }, delta: { type: 'number' }, reason: { type: 'string' } } } }] }),
+        },
+        '/leave/comp-off/types': {
+          get: op('Leave Engine', 'Comp-off-eligible leave types for the current user'),
+        },
+        '/leave/comp-off/requests': {
+          get:  op('Leave Engine', 'List comp-off requests — ?scope=team (managers) else own; ?status filter', true, { parameters: [queryParam('scope', 'string', 'team|mine'), queryParam('status', 'string', 'PENDING|APPROVED|REJECTED')] }),
+          post: op('Leave Engine', 'Submit a comp-off-earn request (PENDING)', true, { responses: { 201: r201 }, parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['leaveTypeId', 'workDate', 'units', 'reason'], properties: { leaveTypeId: { type: 'string' }, workDate: { type: 'string' }, units: { type: 'number' }, reason: { type: 'string' } } } }] }),
+        },
+        '/leave/comp-off/requests/{id}/approve': {
+          post: op('Leave Engine', 'Approve comp-off → posts COMP_OFF_EARNED + sets config-driven expiry (MANAGER+)', true, { parameters: idParam, responses: { 200: r200, 409: r409 } }),
+        },
+        '/leave/comp-off/requests/{id}/reject': {
+          post: op('Leave Engine', 'Reject a comp-off request (MANAGER+)', true, { parameters: idParam, responses: { 200: r200, 409: r409 } }),
+        },
+        '/leave/encashment': {
+          post: op('Leave Engine', 'Encash leave days (config-driven daily rate) — 422 if not allowed (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['employeeId', 'leaveTypeCode', 'days'], properties: { employeeId: { type: 'string' }, leaveTypeCode: { type: 'string' }, days: { type: 'number' }, componentsByTag: { type: 'object', additionalProperties: true } } } }], responses: { 200: r200, 422: r422 } }),
+        },
+
         // ── ATTENDANCE (new endpoints) ────────────────────────────────────────
         '/attendance/regularization/{id}/documents': {
           post: op('Attendance', 'Upload supporting doc for a regularization request (PDF/JPG/PNG/DOC/DOCX ≤5 MB)', true, {

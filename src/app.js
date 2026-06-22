@@ -20,6 +20,7 @@ import { employeesRoutes } from './modules/employees/employees.routes.js';
 import departmentsRoutes from './modules/departments/departments.routes.js';
 import holidaysRoutes from './modules/holidays/holidays.routes.js';
 import leaveRoutes from './modules/leave/leave.routes.js';
+import leaveEngineRoutes from './modules/leave/leaveEngine.routes.js';
 import attendanceRoutes from './modules/attendance/attendance.routes.js';
 import reportsRoutes from './modules/reports/reports.routes.js';
 import exportRoutes from './modules/export/export.routes.js';
@@ -75,6 +76,7 @@ export async function createApp() {
       await fastify.register(departmentsRoutes);
       await fastify.register(holidaysRoutes);
       await fastify.register(leaveRoutes);
+      await fastify.register(leaveEngineRoutes);
       await fastify.register(attendanceRoutes);
       await fastify.register(reportsRoutes);
       await fastify.register(exportRoutes);

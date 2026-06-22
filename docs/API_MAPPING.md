@@ -5057,3 +5057,39 @@ All 9 endpoints **accept** these query params without error. Filtering behavior 
 | `/analytics/department-performance` | — (accepted, ignored) | — |
 
 **Note:** "accepted, ignored" means the param is valid (no 400 error) but the response is unfiltered. Full filtering for workforce-trend, attrition, payroll-cost, and department-performance is deferred.
+
+---
+
+## Leave Engine — Phase 4 (added 2026-06-22) ✅ Live, MSW-parity verified
+
+Event-sourced leave engine: versioned country-scoped policies → append-only signed ledger → balance = fold(ledger). Mirrors `ems-frontend/src/mocks/handlers/leave-engine.ts` exactly so MSW can be turned off with zero UI change. Pure engines ported verbatim from the FE reference (`ledger`, `accrual`, `proration`, `requestMath`, `encashment`, `yearEnd`, `applicability`); 20 ported unit tests green. Config-over-code: country behaviour is data (LeavePolicy.rules / starter packs), never branches.
+
+**New tables** (additive migration `20260622090000_leave_engine`): `LeavePolicy`, `LeaveAssignment`, `LeaveLedgerTxn` (append-only), `CompOffRequest`.
+
+Envelope: all responses `{ success, data, meta }` (FE reads `.data`). Leave-type identifiers are **CODES** (EL/SL/CL/CO/PTO/AL), not cuids.
+
+| Method | Path | Roles | Response `data` shape |
+|--------|------|-------|------------------------|
+| GET | /leave/policy-packs/catalog | MANAGER+ | `{ packs: LeavePolicy[] }` (IN/US/AE/GLOBAL starter packs) |
+| POST | /leave/policy-packs/seed | HR_ADMIN, SUPER_ADMIN | `{ seeded: number, policies: LeavePolicy[] }` (idempotent; body `{country?}`) |
+| GET | /leave/policies?country=&status= | MANAGER+ | `{ policies: LeavePolicy[] }` |
+| POST | /leave/policies | HR_ADMIN, SUPER_ADMIN | `LeavePolicy` (201, status DRAFT) — body `{country, effectiveFrom, rules[], applicability?, statutoryFloors?}` |
+| POST | /leave/policies/:id/new-version | HR_ADMIN, SUPER_ADMIN | `LeavePolicy` (201, clone as DRAFT); 404 if missing |
+| PATCH | /leave/policies/:id | HR_ADMIN, SUPER_ADMIN | `LeavePolicy`; 409 `IMMUTABLE` if PUBLISHED; 404 if missing |
+| POST | /leave/policies/:id/publish | HR_ADMIN, SUPER_ADMIN | `LeavePolicy` (PUBLISHED; archives prior PUBLISHED for country); 409 `INVALID_STATE` if not DRAFT |
+| GET | /leave/assignments?employeeId= | any (auth) | `{ assignments: [{id, employeeId, policyId, policyVersion, leaveTypeCodes[], assignedAt, source}] }` |
+| POST | /leave/assignments/auto-assign | HR_ADMIN, SUPER_ADMIN | `{ assigned, skipped, assignments[] }` (idempotent; body `{employeeIds?[], country?}`; empty = all active) |
+| GET | /leave/ledger?employeeId=&leaveTypeId= | any (own; privileged any) | `{ entries: LedgerTxn[], balance: {leaveTypeId, leaveTypeName, leaveTypeCode, total, used, pending, available} }` |
+| POST | /leave/ledger/adjust | HR_ADMIN, SUPER_ADMIN | `{ entry: LedgerTxn, balance }` — body `{employeeId, leaveTypeId, delta, reason}` |
+| GET | /leave/comp-off/types | any (auth) | `{ types: [{id, code, name, expiryDays}] }` (EVENT_CREDITED rules) |
+| POST | /leave/comp-off/requests | any (auth) | `CompOffRequest` (201, PENDING) — body `{leaveTypeId, workDate, units, reason}` |
+| GET | /leave/comp-off/requests?scope=&status= | any (scope=team → MANAGER+) | `{ requests: CompOffRequest[] }` |
+| POST | /leave/comp-off/requests/:id/approve | MANAGER+ | `CompOffRequest` (APPROVED; posts COMP_OFF_EARNED, expiry = workDate + compOff.expiryDays); 409 if not PENDING |
+| POST | /leave/comp-off/requests/:id/reject | MANAGER+ | `CompOffRequest` (REJECTED); 409 if not PENDING |
+| POST | /leave/encashment | HR_ADMIN, SUPER_ADMIN | `{ entry: LedgerTxn, payable: {amount, days, perDay} }`; 422 `NOT_ELIGIBLE` — body `{employeeId, leaveTypeCode, days, componentsByTag}` |
+
+**Reconciliation:** `GET /leave/balance` (and `/leave/balance/me`) now return **engine-derived** balances `{leaveTypeId(code), leaveTypeName, leaveTypeCode, total(granted), used, pending, available}` when the employee is on the engine (has ledger), matching the MSW override; falls back to legacy `LeaveBalance` rows for non-onboarded employees. `GET /leave/types` already matched the engine shape.
+
+**Data isolation:** non-privileged roles (EMPLOYEE/AUDITOR) requesting another employee's ledger/assignments are silently forced to their own (handles the FE's stale `employeeId=emp-1` default gracefully).
+
+`LedgerTxn` = `{id, employeeId, leaveTypeId(code), policyId, policyVersion, type, delta(number), effectiveDate(YYYY-MM-DD), postedAt(ISO), leaveYear, sourceRef?, reason, systemGenerated}`. `type` ∈ OPENING_GRANT | ACCRUAL | CARRY_FORWARD_IN | CARRY_FORWARD_EXPIRED | LEAVE_TAKEN | LEAVE_PENDING_HOLD | LEAVE_PENDING_RELEASE | COMP_OFF_EARNED | ENCASHED | LOP_CONVERSION | ADJUSTMENT | REVERSAL.

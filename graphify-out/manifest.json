@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1781114170.1507514,
-    "ast_hash": "8cbedab4e48079f5c50cf47f4b6f7075",
+    "mtime": 1782117668.743675,
+    "ast_hash": "9eb2e3fcb085b40fbbbd4984b9c0cee8",
     "semantic_hash": ""
   },
   "playwright.config.js": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "src/app.js": {
-    "mtime": 1781373663.4398246,
-    "ast_hash": "ec67840eaf433ec31cb35dda48b1debd",
+    "mtime": 1782118181.3245907,
+    "ast_hash": "40d12fdb4eaa133804e182236427c4fd",
     "semantic_hash": ""
   },
   "src/config/index.js": {
@@ -505,8 +505,8 @@
     "semantic_hash": ""
   },
   "src/modules/auth/auth.controller.js": {
-    "mtime": 1781177181.1454756,
-    "ast_hash": "40ee8b8326386f60bd61913a649f955a",
+    "mtime": 1782112376.660652,
+    "ast_hash": "bbefe6c2ef773acadeccdb6f567bcd70",
     "semantic_hash": ""
   },
   "src/modules/auth/auth.cookies.js": {
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "src/modules/auth/auth.policy.js": {
-    "mtime": 1779121316.0519068,
-    "ast_hash": "3df850a4a6add8437e3ab8209db6c57f",
+    "mtime": 1782112790.3756773,
+    "ast_hash": "ad8506f3ea989d8e4987ea4dab355acb",
     "semantic_hash": ""
   },
   "src/modules/auth/auth.repository.js": {
@@ -530,8 +530,8 @@
     "semantic_hash": ""
   },
   "src/modules/auth/auth.service.js": {
-    "mtime": 1781264304.7255127,
-    "ast_hash": "0dbedfd958909b84638c5d60e083c1fe",
+    "mtime": 1782112129.0088668,
+    "ast_hash": "5d44cdf9c7b89910155bf50135dd81d2",
     "semantic_hash": ""
   },
   "src/modules/auth/auth.validator.js": {
@@ -585,8 +585,8 @@
     "semantic_hash": ""
   },
   "src/modules/dashboard/employee.service.js": {
-    "mtime": 1779803252.6237538,
-    "ast_hash": "08e5cd55717368d0350f08ded8c56009",
+    "mtime": 1782111867.3716528,
+    "ast_hash": "5683c9a5fd696e7bc7314056cf6bfbf9",
     "semantic_hash": ""
   },
   "src/modules/dashboard/manager.controller.js": {
@@ -600,8 +600,8 @@
     "semantic_hash": ""
   },
   "src/modules/dashboard/manager.service.js": {
-    "mtime": 1780992678.7605684,
-    "ast_hash": "6dfb321d00d35b965608040afd3a1d8a",
+    "mtime": 1782111858.4488552,
+    "ast_hash": "a588d08577e3683cb50fe15c9691d9f0",
     "semantic_hash": ""
   },
   "src/modules/departments/departments.controller.js": {
@@ -710,8 +710,8 @@
     "semantic_hash": ""
   },
   "src/modules/leave/leave.controller.js": {
-    "mtime": 1781097999.4629402,
-    "ast_hash": "80c36b01273cdeff86e093fb1a29357e",
+    "mtime": 1782118681.4530995,
+    "ast_hash": "30dd8214c4ed8cf4f402fbed5f52f21f",
     "semantic_hash": ""
   },
   "src/modules/leave/leave.repository.js": {
@@ -880,8 +880,8 @@
     "semantic_hash": ""
   },
   "src/modules/settings/settings.routes.js": {
-    "mtime": 1781293291.0581923,
-    "ast_hash": "ba7d4bc798b9c3ba7ab57223a0172e2e",
+    "mtime": 1782112790.376951,
+    "ast_hash": "f0f54eef16c9a6aa2f3bcc6d0c0d14f0",
     "semantic_hash": ""
   },
   "src/modules/settings/settings.service.js": {
@@ -910,8 +910,8 @@
     "semantic_hash": ""
   },
   "src/modules/timesheets/timesheets.service.js": {
-    "mtime": 1781597040.4348583,
-    "ast_hash": "05add64c977d0910048ebb2fb52a2e09",
+    "mtime": 1782111880.6747684,
+    "ast_hash": "3467950d5b521dc7d21a9b46e5d9313c",
     "semantic_hash": ""
   },
   "src/plugins/cors.js": {
@@ -940,13 +940,13 @@
     "semantic_hash": ""
   },
   "src/plugins/requestId.js": {
-    "mtime": 1779121316.053427,
-    "ast_hash": "c765dcc05fb291a44a41527087bc1fcc",
+    "mtime": 1782111769.1543753,
+    "ast_hash": "d39b8decabafdb1d8a0c5f3fdd050688",
     "semantic_hash": ""
   },
   "src/plugins/swagger.js": {
-    "mtime": 1781426845.7515733,
-    "ast_hash": "49a26065b4a6d5127fdecf0f54d8a377",
+    "mtime": 1782119209.468061,
+    "ast_hash": "758e8fad25d28e80c282981952b56b12",
     "semantic_hash": ""
   },
   "src/server.js": {
@@ -1030,8 +1030,8 @@
     "semantic_hash": ""
   },
   "src/utils/response.js": {
-    "mtime": 1779121316.0544696,
-    "ast_hash": "664cfabe7371ecb8600b835e40435acb",
+    "mtime": 1782111704.19126,
+    "ast_hash": "e54afd967ad54c547ee13678aee1a7c5",
     "semantic_hash": ""
   },
   "src/utils/sseClients.js": {
@@ -1410,8 +1410,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1781357497.1765785,
-    "ast_hash": "9d944a133ddfb719a247bb803fe1dfe2",
+    "mtime": 1781791958.4775162,
+    "ast_hash": "81fc5d9c3add14852aae44257c9e556f",
     "semantic_hash": ""
   },
   "DATABASE_SCHEMA.md": {
@@ -1495,13 +1495,13 @@
     "semantic_hash": ""
   },
   "docker-compose.yml": {
-    "mtime": 1779121316.0500042,
-    "ast_hash": "f7ce41f97a01632e6243fa00dad8ab0b",
+    "mtime": 1782108881.8280249,
+    "ast_hash": "a54c99b9e6b6e9d1f39944aba26cfb2b",
     "semantic_hash": ""
   },
   "docs/API_MAPPING.md": {
-    "mtime": 1781597368.0062017,
-    "ast_hash": "487258b5ec678e92f40856b103a009f7",
+    "mtime": 1782119261.5343988,
+    "ast_hash": "0f328f4130200a10c7558942d4e37961",
     "semantic_hash": ""
   },
   "docs/BACKEND_TEAM_HANDOFF_FIX_REPORT.md": {
@@ -1910,8 +1910,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/timesheet-reminders.yml": {
-    "mtime": 1781446204.3997881,
-    "ast_hash": "64f546faf17363f1c7d89b3524276b3f",
+    "mtime": 1781841474.0522764,
+    "ast_hash": "bc811b4d91e8f71669e940a9ce81a450",
     "semantic_hash": ""
   },
   "docs/BACKEND_REMAINING.md": {
@@ -1962,6 +1962,161 @@
   "scripts/applyTimesheetTemplatesMigration.mjs": {
     "mtime": 1781597148.4298897,
     "ast_hash": "a1fd9ff32527dcd8f8218d483a0375cc",
+    "semantic_hash": ""
+  },
+  "docker/initdb/01-create-test-db.sql": {
+    "mtime": 1782108890.7075899,
+    "ast_hash": "4a35675e060c3f45e4f3dd2b17e3918d",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260618000000_add_recruitment_performance_assets_announcements_invitations/migration.sql": {
+    "mtime": 1781793735.2209067,
+    "ast_hash": "d8df846a3e52e4c894e88627c999e844",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260622090000_leave_engine/migration.sql": {
+    "mtime": 1782116799.179228,
+    "ast_hash": "77b84a6fb014312685add642199486be",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/data/leavePacks.js": {
+    "mtime": 1782117802.0592868,
+    "ast_hash": "6ae4f68913fddd642d09bbf8f7bb69f3",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/accrual.js": {
+    "mtime": 1782117748.9881172,
+    "ast_hash": "30cbf2f7fdd08f8b9e6d7dec5061b5f5",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/applicability.js": {
+    "mtime": 1782117782.2242653,
+    "ast_hash": "c385b7cf10c70345bbd161ae913d16a6",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/encashment.js": {
+    "mtime": 1782117763.9871438,
+    "ast_hash": "e8450bd5b414367d5e9552272c622bbc",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/index.js": {
+    "mtime": 1782117784.430532,
+    "ast_hash": "978f8c438268fe0d8355c75d95e84948",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/ledger.js": {
+    "mtime": 1782110143.9370534,
+    "ast_hash": "44cb1a85bc363baba49bed3eee326c8d",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/proration.js": {
+    "mtime": 1782117736.4557338,
+    "ast_hash": "8f9d7a0505fbeca5e6376d1e3d08385c",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/requestMath.js": {
+    "mtime": 1782117759.550384,
+    "ast_hash": "d52669637c7f2a837f596f01c0d3f1f8",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/engine/yearEnd.js": {
+    "mtime": 1782117776.1031332,
+    "ast_hash": "e6799fd7bf75b1125e5aab86c6006627",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/leaveEngine.controller.js": {
+    "mtime": 1782118128.1360755,
+    "ast_hash": "ee8fbe4b6ddd4c0286ac99fa38d439e2",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/leaveEngine.repository.js": {
+    "mtime": 1782117959.8197997,
+    "ast_hash": "d39e674b267540ae5959770d24fb38ab",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/leaveEngine.routes.js": {
+    "mtime": 1782118162.3806653,
+    "ast_hash": "977dc8a67c3345814c23f30f605d00ef",
+    "semantic_hash": ""
+  },
+  "src/modules/leave/leaveEngine.service.js": {
+    "mtime": 1782118057.0789912,
+    "ast_hash": "14406d1c62506337c168e7cdd72ac8ba",
+    "semantic_hash": ""
+  },
+  "tests/auth-login-contract.test.js": {
+    "mtime": 1782112187.8562298,
+    "ast_hash": "7bc91871ef8dcb9932f3dc4af1eaf88f",
+    "semantic_hash": ""
+  },
+  "tests/auth-refresh-contract.test.js": {
+    "mtime": 1782112376.6620784,
+    "ast_hash": "83da1a028d8e6d0794ad5ef7fa344f1f",
+    "semantic_hash": ""
+  },
+  "tests/auth-sessions-contract.test.js": {
+    "mtime": 1782112531.7575152,
+    "ast_hash": "67dbd733c0544f8afcd7f63c1ce8437e",
+    "semantic_hash": ""
+  },
+  "tests/bootstrap.smoke.test.js": {
+    "mtime": 1782110941.27429,
+    "ast_hash": "37cf39e799a486c27f711b9601fcee01",
+    "semantic_hash": ""
+  },
+  "tests/leave-engine-accrual.test.js": {
+    "mtime": 1782117822.47521,
+    "ast_hash": "1102a5a334e31e6c168d9433ff6efebd",
+    "semantic_hash": ""
+  },
+  "tests/leave-engine-applicability.test.js": {
+    "mtime": 1782117858.1752272,
+    "ast_hash": "375d5daec721965944ae163276beef17",
+    "semantic_hash": ""
+  },
+  "tests/leave-engine-encashment.test.js": {
+    "mtime": 1782117843.3319738,
+    "ast_hash": "638abf7b636eb54451ff0fa3ec60f09a",
+    "semantic_hash": ""
+  },
+  "tests/leave-engine-ledger.test.js": {
+    "mtime": 1782110155.9680598,
+    "ast_hash": "9229fa4dff6f13b13a92b8bceee95427",
+    "semantic_hash": ""
+  },
+  "tests/leave-engine-proration.test.js": {
+    "mtime": 1782117828.1283984,
+    "ast_hash": "126d0d8cbc16d19582afce5ba4d3104d",
+    "semantic_hash": ""
+  },
+  "tests/leave-engine-requestMath.test.js": {
+    "mtime": 1782117833.9507756,
+    "ast_hash": "37268b7f1c79eb3c104c17a1a09ef861",
+    "semantic_hash": ""
+  },
+  "tests/leave-engine-yearEnd.test.js": {
+    "mtime": 1782117852.3541594,
+    "ast_hash": "cc77296949ce1cdc168a0ecee0fda8d5",
+    "semantic_hash": ""
+  },
+  "tests/rbac-policy-contract.test.js": {
+    "mtime": 1782112790.3782089,
+    "ast_hash": "9a6b071826e2f3d9d73a3dd4846ff1cb",
+    "semantic_hash": ""
+  },
+  "tests/response-envelope.test.js": {
+    "mtime": 1782111721.8664691,
+    "ast_hash": "4bf6d03c87ad25fec4fa6f07b487ebc8",
+    "semantic_hash": ""
+  },
+  "BUILD_PLAN.md": {
+    "mtime": 1782112928.6062427,
+    "ast_hash": "ab817369fa13536833adbbdf9907032f",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/plans/2026-06-22-phase0-foundation-harness.md": {
+    "mtime": 1782111228.4238214,
+    "ast_hash": "2d033091b15e8ec0347b7b8a16f86098",
     "semantic_hash": ""
   }
 }

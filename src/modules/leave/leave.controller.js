@@ -1,5 +1,7 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
+import { prisma } from '../../plugins/prisma.js';
 import * as leaveService from './leave.service.js';
+import * as leaveEngineService from './leaveEngine.service.js';
 import * as leaveValidator from './leave.validator.js';
 
 export async function getLeaveTypes(request, reply) {
@@ -267,6 +269,14 @@ export async function getLeaveBalance(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const employeeId = request.user.employeeId;
+
+    // MSW-parity: the leave-engine MSW handler shadows /leave/balance with engine-derived
+    // balances (ledger fold). Prefer the engine when the employee is on it; fall back to the
+    // legacy LeaveBalance rows so non-onboarded employees still see something.
+    const engineBalances = await leaveEngineService.getBalancesForEmployee(prisma, tenantId, employeeId);
+    if (engineBalances && engineBalances.length > 0) {
+      return reply.send(successResponse({ balances: engineBalances }));
+    }
 
     const balances = await leaveService.getLeaveBalance(tenantId, employeeId);
 
