@@ -49,6 +49,7 @@ export default async function attendanceRoutes(fastify) {
           month: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$', description: 'Filter by month, e.g. 2025-06' },
           fromDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           toDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          employeeId: { type: 'string', description: 'HR/manager scoped employee filter' },
         },
       },
     },
@@ -58,7 +59,7 @@ export default async function attendanceRoutes(fastify) {
   fastify.get('/attendance/team/records', {
     schema: {
       tags: ['Attendance'],
-      description: 'Get your team attendance records (managers only). Use ?month=YYYY-MM for a full month.',
+      description: 'Get team attendance records. HR sees tenant records; managers see direct reports. Use ?month=YYYY-MM for a full month.',
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
@@ -69,6 +70,7 @@ export default async function attendanceRoutes(fastify) {
           fromDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           toDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           employeeId: { type: 'string', description: 'Filter by specific employee ID (HR/Manager only)' },
+          departmentId: { type: 'string', description: 'Filter by department ID (HR/Manager only)' },
         },
       },
     },
@@ -102,6 +104,8 @@ export default async function attendanceRoutes(fastify) {
         properties: {
           fromDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
           toDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
+          month: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$', description: 'Filter by month, e.g. 2025-06' },
+          employeeId: { type: 'string', description: 'HR/manager scoped employee filter' },
         },
       },
     },
@@ -118,7 +122,6 @@ export default async function attendanceRoutes(fastify) {
         required: ['attendanceDate', 'reason'],
         properties: {
           attendanceDate: { type: 'string', description: 'Date string, YYYY-MM-DD or full ISO' },
-          type: { type: 'string', enum: ['LATE', 'MISSED_CHECKOUT', 'EARLY_CHECKOUT', 'OTHER'], default: 'LATE' },
           reason: { type: 'string', minLength: 10 },
         },
       },
@@ -136,6 +139,7 @@ export default async function attendanceRoutes(fastify) {
         properties: {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 10 },
+          status: { type: 'string', enum: ['PENDING', 'APPROVED', 'DENIED', 'WITHDRAWN'] },
         },
       },
     },
@@ -152,6 +156,9 @@ export default async function attendanceRoutes(fastify) {
         properties: {
           page: { type: 'integer', default: 1 },
           limit: { type: 'integer', default: 10 },
+          status: { type: 'string', enum: ['PENDING', 'APPROVED', 'DENIED', 'WITHDRAWN'] },
+          employeeId: { type: 'string' },
+          departmentId: { type: 'string' },
         },
       },
     },

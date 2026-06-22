@@ -70,16 +70,51 @@ export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
   return { records: raw.map(attRef), total };
 }
 
-export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filters = {}) {
+function scopedEmployeeWhere(tenantId, requester, filters = {}) {
+  const { employeeId, departmentId } = filters;
+  const isAdmin = ['HR_ADMIN', 'SUPER_ADMIN'].includes(requester?.memberType);
+  const where = {
+    tenantId,
+    deletedAt: null,
+  };
+
+  if (employeeId) {
+    where.id = employeeId;
+  } else if (!isAdmin) {
+    where.managerId = requester?.employeeId || '__none__';
+  }
+
+  if (departmentId) {
+    where.departmentId = departmentId;
+  }
+
+  return where;
+}
+
+export async function findEmployeeForScope(tenantId, employeeId) {
+  if (!employeeId) return null;
+  return prisma.employee.findFirst({
+    where: {
+      tenantId,
+      id: employeeId,
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      managerId: true,
+      departmentId: true,
+    },
+  });
+}
+
+export async function getTeamAttendanceRecords(tenantId, requester, filters = {}) {
   const {
-    fromDate, toDate, limit = 10, offset = 0, employeeId,
+    fromDate, toDate, limit = 10, offset = 0, employeeId, departmentId,
   } = filters;
 
   const where = {
     tenantId,
-    ...(employeeId
-      ? { employeeId }
-      : { employee: { managerId: managerEmployeeId } }),
+    employee: scopedEmployeeWhere(tenantId, requester, { employeeId, departmentId }),
   };
 
   if (fromDate || toDate) {
@@ -189,6 +224,14 @@ export async function findRegularizationRequest(tenantId, regularizationId) {
       id: regularizationId,
       tenantId,
     },
+    include: {
+      employee: {
+        select: {
+          id: true,
+          managerId: true,
+        },
+      },
+    },
   });
 }
 
@@ -219,16 +262,14 @@ export async function getRegularizationRequests(tenantId, employeeId, filters = 
   return { requests: raw.map(regRef), total };
 }
 
-export async function getTeamRegularizationRequests(tenantId, managerEmployeeId, filters = {}) {
+export async function getTeamRegularizationRequests(tenantId, requester, filters = {}) {
   const {
-    limit = 10, offset = 0, status,
+    limit = 10, offset = 0, status, employeeId, departmentId,
   } = filters;
 
   const where = {
     tenantId,
-    employee: {
-      managerId: managerEmployeeId,
-    },
+    employee: scopedEmployeeWhere(tenantId, requester, { employeeId, departmentId }),
   };
 
   if (status) {
@@ -267,18 +308,15 @@ export async function updateRegularizationRequest(tenantId, regularizationId, da
 }
 
 export async function updateAttendanceStatus(tenantId, employeeId, attendanceDate, status) {
-  const date = new Date(attendanceDate);
-  date.setHours(0, 0, 0, 0);
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + 1);
+  const { start, end } = attendanceDayRange(attendanceDate);
 
   return prisma.attendanceRecord.updateMany({
     where: {
       tenantId,
       employeeId,
       attendanceDate: {
-        gte: date,
-        lt: nextDate,
+        gte: start,
+        lt: end,
       },
     },
     data: {

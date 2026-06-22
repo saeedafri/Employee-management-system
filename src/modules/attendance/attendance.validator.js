@@ -19,6 +19,9 @@ export const getAttendanceRecordsSchema = z.object({
   month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'month must be YYYY-MM').optional(),
   fromDate: z.coerce.date().optional(),
   toDate: z.coerce.date().optional(),
+  employeeId: z.string().optional(),
+  departmentId: z.string().optional(),
+  status: z.enum(['PENDING', 'APPROVED', 'DENIED', 'WITHDRAWN']).optional(),
 });
 
 export const regularizationRequestSchema = z.object({
@@ -27,8 +30,10 @@ export const regularizationRequestSchema = z.object({
 });
 
 export const getAttendanceSummarySchema = z.object({
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'month must be YYYY-MM').optional(),
   fromDate: z.coerce.date().optional(),
   toDate: z.coerce.date().optional(),
+  employeeId: z.string().optional(),
 });
 
 export const approveRegularizationSchema = z.object({

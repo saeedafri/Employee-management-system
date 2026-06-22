@@ -90,11 +90,10 @@ export async function checkOut(request, reply) {
 export async function getAttendanceRecords(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const employeeId = request.user.employeeId;
 
     const query = attendanceValidator.getAttendanceRecordsSchema.parse(request.query);
 
-    const { records, total } = await attendanceService.getAttendanceRecords(tenantId, employeeId, query);
+    const { records, total } = await attendanceService.getAttendanceRecords(tenantId, request.user, query);
 
     return reply.send(
       successResponse({
@@ -131,13 +130,12 @@ export async function getAttendanceRecords(request, reply) {
 export async function getTeamAttendanceRecords(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const managerEmployeeId = request.user.employeeId;
 
     const query = attendanceValidator.getAttendanceRecordsSchema.parse(request.query);
 
     const { records, total } = await attendanceService.getTeamAttendanceRecords(
       tenantId,
-      managerEmployeeId,
+      request.user,
       query,
     );
 
@@ -178,11 +176,10 @@ export async function getTeamAttendanceRecords(request, reply) {
 export async function getAttendanceSummary(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const employeeId = request.user.employeeId;
 
     const query = attendanceValidator.getAttendanceSummarySchema.parse(request.query);
 
-    const summary = await attendanceService.getAttendanceSummary(tenantId, employeeId, query.fromDate, query.toDate);
+    const summary = await attendanceService.getAttendanceSummary(tenantId, request.user, query);
 
     return reply.send(successResponse(summary));
   } catch (error) {
@@ -279,13 +276,12 @@ export async function getRegularizationRequests(request, reply) {
 export async function getTeamRegularizationRequests(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const managerEmployeeId = request.user.employeeId;
 
     const query = attendanceValidator.getAttendanceRecordsSchema.parse(request.query);
 
     const { requests, total } = await attendanceService.getTeamRegularizationRequests(
       tenantId,
-      managerEmployeeId,
+      request.user,
       query,
     );
 
@@ -324,7 +320,6 @@ export async function getTeamRegularizationRequests(request, reply) {
 export async function approveRegularization(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const reviewerId = request.user.id;
     const { id } = request.params;
 
     const body = attendanceValidator.approveRegularizationSchema.parse(request.body || {});
@@ -332,14 +327,14 @@ export async function approveRegularization(request, reply) {
     const regularization = await attendanceService.approveRegularization(
       tenantId,
       id,
-      reviewerId,
+      request.user,
       body.reviewerComment,
     );
 
     await request.log.info({
       action: 'REGULARIZATION_APPROVED',
       regularizationId: id,
-      reviewerId,
+      reviewerId: request.user.sub,
     });
 
     return reply.send(
@@ -363,7 +358,6 @@ export async function approveRegularization(request, reply) {
 export async function denyRegularization(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const reviewerId = request.user.id;
     const { id } = request.params;
 
     const body = attendanceValidator.denyRegularizationSchema.parse(request.body);
@@ -371,14 +365,14 @@ export async function denyRegularization(request, reply) {
     const regularization = await attendanceService.denyRegularization(
       tenantId,
       id,
-      reviewerId,
+      request.user,
       body.reviewerComment,
     );
 
     await request.log.info({
       action: 'REGULARIZATION_DENIED',
       regularizationId: id,
-      reviewerId,
+      reviewerId: request.user.sub,
     });
 
     return reply.send(

@@ -130,6 +130,23 @@ backend reimplemented logic ad hoc.
   `/tmp/ems-attendance-msw-off-checked-in.png`,
   `/tmp/ems-attendance-msw-off-checked-out.png`.
 
+- [x] 3.2 `records?month` + `summary` — backend now resolves month filters with
+  UTC month boundaries, supports HR/manager scoped `employeeId`, keeps employees
+  limited to their own records, and returns the documented records/pagination and
+  summary envelope. Verified 2026-06-22:
+  `node --test tests/attendance-phase3-contract.test.js` passed 3/3 and
+  `node --test tests/attendance-timezone-contract.test.js` passed 2/2.
+- [x] 3.3 `regularization` + approve/deny — request submit/list/approve flow is
+  contract-tested; HR/Super can review tenant requests, managers can review direct
+  reports only, employees cannot approve, and reviewer persistence now uses JWT
+  `sub` instead of the previously undefined `request.user.id`. Verified 2026-06-22:
+  `node --test tests/attendance-phase3-contract.test.js` passed 3/3.
+- [x] 3.4 `team/records` — HR/Super tenant-wide records and manager direct-report
+  records now populate from real `AttendanceRecord` rows, with optional
+  `employeeId` and `departmentId` filters. Verified 2026-06-22:
+  `node --test tests/attendance-phase3-contract.test.js` passed 3/3. Touched
+  attendance source ESLint passed; `npm run test:smoke` passed 4/4.
+
 ## Phase 10 — Permissions & settings
 
 - [x] 10.2 Custom roles / BE-10-BE-11 — source already persisted `permissions[]` on

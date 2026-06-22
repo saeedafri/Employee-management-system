@@ -130,61 +130,96 @@ export async function checkOut(tenantId, employeeId, { note } = {}, { timezone =
 
 function monthToDateRange(month) {
   const [year, mon] = month.split('-').map(Number);
-  const from = new Date(year, mon - 1, 1);
-  const to = new Date(year, mon, 0, 23, 59, 59, 999);
+  const from = new Date(Date.UTC(year, mon - 1, 1));
+  const to = new Date(Date.UTC(year, mon, 0, 23, 59, 59, 999));
   return { from, to };
 }
 
-export async function getAttendanceRecords(tenantId, employeeId, filters = {}) {
+function isAdminScope(user) {
+  return ['HR_ADMIN', 'SUPER_ADMIN'].includes(user?.memberType);
+}
+
+async function assertCanViewEmployee(tenantId, requester, requestedEmployeeId) {
+  const ownEmployeeId = requester?.employeeId;
+
+  if (!requestedEmployeeId) {
+    if (!ownEmployeeId) {
+      throw new AppError('User has no employee record', 'NO_EMPLOYEE_RECORD', 400);
+    }
+    return ownEmployeeId;
+  }
+
+  const target = await attendanceRepository.findEmployeeForScope(tenantId, requestedEmployeeId);
+  if (!target) {
+    throw new AppError('Employee not found', 'EMPLOYEE_NOT_FOUND', 404);
+  }
+
+  if (requestedEmployeeId === ownEmployeeId || isAdminScope(requester)) {
+    return requestedEmployeeId;
+  }
+
+  if (requester?.memberType === 'MANAGER' && target.managerId === ownEmployeeId) {
+    return requestedEmployeeId;
+  }
+
+  throw new AppError('Access denied for employee attendance', 'FORBIDDEN', 403);
+}
+
+function resolveDateRange({ month, fromDate, toDate } = {}) {
+  if (month) {
+    return monthToDateRange(month);
+  }
+
+  return {
+    from: fromDate,
+    to: toDate,
+  };
+}
+
+export async function getAttendanceRecords(tenantId, requester, filters = {}) {
   const {
-    page = 1, limit = 10, month, fromDate, toDate,
+    page = 1, limit = 10,
   } = filters;
 
   const offset = (page - 1) * limit;
-  let resolvedFrom = fromDate;
-  let resolvedTo = toDate;
-
-  if (month) {
-    const range = monthToDateRange(month);
-    resolvedFrom = range.from;
-    resolvedTo = range.to;
-  }
+  const employeeId = await assertCanViewEmployee(tenantId, requester, filters.employeeId);
+  const { from, to } = resolveDateRange(filters);
 
   return attendanceRepository.getAttendanceRecords(tenantId, employeeId, {
-    fromDate: resolvedFrom,
-    toDate: resolvedTo,
+    fromDate: from,
+    toDate: to,
     limit,
     offset,
   });
 }
 
-export async function getTeamAttendanceRecords(tenantId, managerEmployeeId, filters = {}) {
+export async function getTeamAttendanceRecords(tenantId, requester, filters = {}) {
   const {
-    page = 1, limit = 10, month, fromDate, toDate, employeeId,
+    page = 1, limit = 10, employeeId, departmentId,
   } = filters;
 
   const offset = (page - 1) * limit;
-  let resolvedFrom = fromDate;
-  let resolvedTo = toDate;
-
-  if (month) {
-    const range = monthToDateRange(month);
-    resolvedFrom = range.from;
-    resolvedTo = range.to;
+  if (employeeId) {
+    await assertCanViewEmployee(tenantId, requester, employeeId);
   }
+  const { from, to } = resolveDateRange(filters);
 
-  return attendanceRepository.getTeamAttendanceRecords(tenantId, managerEmployeeId, {
-    fromDate: resolvedFrom,
-    toDate: resolvedTo,
+  return attendanceRepository.getTeamAttendanceRecords(tenantId, requester, {
+    fromDate: from,
+    toDate: to,
     limit,
     offset,
     employeeId,
+    departmentId,
   });
 }
 
-export async function getAttendanceSummary(tenantId, employeeId, fromDate, toDate) {
-  const startDate = fromDate || new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-  const endDate = toDate || new Date();
+export async function getAttendanceSummary(tenantId, requester, filters = {}) {
+  const employeeId = await assertCanViewEmployee(tenantId, requester, filters.employeeId);
+  const range = resolveDateRange(filters);
+  const now = new Date();
+  const startDate = range.from || new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  const endDate = range.to || now;
 
   return attendanceRepository.getAttendanceSummary(tenantId, employeeId, startDate, endDate);
 }
@@ -220,26 +255,43 @@ export async function getRegularizationRequests(tenantId, employeeId, filters = 
   });
 }
 
-export async function getTeamRegularizationRequests(tenantId, managerEmployeeId, filters = {}) {
+export async function getTeamRegularizationRequests(tenantId, requester, filters = {}) {
   const {
-    page = 1, limit = 10, status,
+    page = 1, limit = 10, status, employeeId, departmentId,
   } = filters;
 
   const offset = (page - 1) * limit;
+  if (employeeId) {
+    await assertCanViewEmployee(tenantId, requester, employeeId);
+  }
 
-  return attendanceRepository.getTeamRegularizationRequests(tenantId, managerEmployeeId, {
+  return attendanceRepository.getTeamRegularizationRequests(tenantId, requester, {
     limit,
     offset,
     status,
+    employeeId,
+    departmentId,
   });
 }
 
-export async function approveRegularization(tenantId, regularizationId, reviewerId, comment = '') {
+async function assertCanReviewRegularization(tenantId, reviewer, request) {
+  if (isAdminScope(reviewer)) return;
+
+  if (reviewer?.memberType === 'MANAGER' && request.employee?.managerId === reviewer.employeeId) {
+    return;
+  }
+
+  throw new AppError('Access denied for regularization request', 'FORBIDDEN', 403);
+}
+
+export async function approveRegularization(tenantId, regularizationId, reviewer, comment = '') {
   const request = await attendanceRepository.findRegularizationRequest(tenantId, regularizationId);
 
   if (!request) {
     throw new AppError('Regularization request not found', 'REGULARIZATION_NOT_FOUND', 404);
   }
+
+  await assertCanReviewRegularization(tenantId, reviewer, request);
 
   if (request.status !== 'PENDING') {
     throw new AppError(
@@ -251,7 +303,7 @@ export async function approveRegularization(tenantId, regularizationId, reviewer
 
   const updated = await attendanceRepository.updateRegularizationRequest(tenantId, regularizationId, {
     status: 'APPROVED',
-    reviewerId,
+    reviewerId: reviewer.sub,
     reviewerComment: comment || null,
   });
 
@@ -262,12 +314,14 @@ export async function approveRegularization(tenantId, regularizationId, reviewer
   return updated;
 }
 
-export async function denyRegularization(tenantId, regularizationId, reviewerId, comment) {
+export async function denyRegularization(tenantId, regularizationId, reviewer, comment) {
   const request = await attendanceRepository.findRegularizationRequest(tenantId, regularizationId);
 
   if (!request) {
     throw new AppError('Regularization request not found', 'REGULARIZATION_NOT_FOUND', 404);
   }
+
+  await assertCanReviewRegularization(tenantId, reviewer, request);
 
   if (request.status !== 'PENDING') {
     throw new AppError(
@@ -279,7 +333,7 @@ export async function denyRegularization(tenantId, regularizationId, reviewerId,
 
   const updated = await attendanceRepository.updateRegularizationRequest(tenantId, regularizationId, {
     status: 'DENIED',
-    reviewerId,
+    reviewerId: reviewer.sub,
     reviewerComment: comment,
   });
 
