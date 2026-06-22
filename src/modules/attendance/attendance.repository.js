@@ -1,4 +1,5 @@
 import { prisma } from '../../plugins/prisma.js';
+import { attendanceDayRange, tenantAttendanceDate } from './attendanceDate.js';
 
 function attRef(r) {
   if (!r) return r;
@@ -12,19 +13,16 @@ function regRef(r) {
   return { ...rest, referenceNo: `REG-${String(seqNo).padStart(4, '0')}` };
 }
 
-export async function getTodayAttendance(tenantId, employeeId) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+export async function getTodayAttendance(tenantId, employeeId, attendanceDate = tenantAttendanceDate()) {
+  const { start, end } = attendanceDayRange(attendanceDate);
 
   return prisma.attendanceRecord.findFirst({
     where: {
       tenantId,
       employeeId,
       attendanceDate: {
-        gte: today,
-        lt: tomorrow,
+        gte: start,
+        lt: end,
       },
     },
   });

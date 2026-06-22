@@ -1,7 +1,8 @@
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
+import { tenantAttendanceDate } from '../attendance/attendanceDate.js';
 
-export async function getEmployeeDashboard(employeeId, tenantId) {
+export async function getEmployeeDashboard(employeeId, tenantId, timezone = 'UTC', now = new Date()) {
   try {
     const employee = await prisma.employee.findFirst({
       where: { id: employeeId, tenantId },
@@ -15,8 +16,7 @@ export async function getEmployeeDashboard(employeeId, tenantId) {
       return errorResponse('EMPLOYEE_NOT_FOUND', 'Employee not found', null);
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = tenantAttendanceDate(now, timezone);
 
     // Get today's attendance
     const todayAttendance = await prisma.attendanceRecord.findFirst({
@@ -83,10 +83,9 @@ export async function getEmployeeDashboard(employeeId, tenantId) {
   }
 }
 
-export async function getEmployeeToday(employeeId, tenantId) {
+export async function getEmployeeToday(employeeId, tenantId, timezone = 'UTC', now = new Date()) {
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = tenantAttendanceDate(now, timezone);
 
     const attendance = await prisma.attendanceRecord.findFirst({
       where: {
@@ -123,10 +122,9 @@ export async function getEmployeeToday(employeeId, tenantId) {
   }
 }
 
-export async function checkIn(employeeId, tenantId) {
+export async function checkIn(employeeId, tenantId, timezone = 'UTC', now = new Date()) {
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = tenantAttendanceDate(now, timezone);
 
     let attendance = await prisma.attendanceRecord.findFirst({
       where: {
@@ -135,8 +133,6 @@ export async function checkIn(employeeId, tenantId) {
         attendanceDate: today,
       },
     });
-
-    const now = new Date();
 
     if (!attendance) {
       attendance = await prisma.attendanceRecord.create({
@@ -164,10 +160,9 @@ export async function checkIn(employeeId, tenantId) {
   }
 }
 
-export async function checkOut(employeeId, tenantId) {
+export async function checkOut(employeeId, tenantId, timezone = 'UTC', now = new Date()) {
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = tenantAttendanceDate(now, timezone);
 
     const attendance = await prisma.attendanceRecord.findFirst({
       where: {
@@ -180,8 +175,6 @@ export async function checkOut(employeeId, tenantId) {
     if (!attendance) {
       return errorResponse('NO_CHECK_IN', 'No check-in record found for today', null);
     }
-
-    const now = new Date();
 
     const updated = await prisma.attendanceRecord.update({
       where: { id: attendance.id },

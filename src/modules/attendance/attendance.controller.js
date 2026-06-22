@@ -15,7 +15,9 @@ export async function checkIn(request, reply) {
 
     const body = attendanceValidator.checkInSchema.parse(request.body);
 
-    const result = await attendanceService.checkIn(tenantId, employeeId, body);
+    const result = await attendanceService.checkIn(tenantId, employeeId, body, {
+      timezone: request.tenant?.timezone || 'UTC',
+    });
 
     await request.log.info({
       action: 'ATTENDANCE_CHECK_IN',
@@ -54,7 +56,9 @@ export async function checkOut(request, reply) {
 
     const body = attendanceValidator.checkOutSchema.parse(request.body || {});
 
-    const result = await attendanceService.checkOut(tenantId, employeeId, body);
+    const result = await attendanceService.checkOut(tenantId, employeeId, body, {
+      timezone: request.tenant?.timezone || 'UTC',
+    });
 
     await request.log.info({
       action: 'ATTENDANCE_CHECK_OUT',

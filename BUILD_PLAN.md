@@ -112,6 +112,24 @@ backend reimplemented logic ad hoc.
   `/tmp/ems-auth-extras-reset-invalid-msw-off.png`,
   `/tmp/ems-auth-extras-set-password-invalid-msw-off.png`.
 
+## Phase 3 — Attendance
+
+- [x] 3.1 `today` · `check-in` · `check-out` — fixed BR-ATT-2 end-to-end by deriving
+  the attendance day from the tenant timezone on the backend, not server-local midnight
+  or a frontend-supplied date. Explicit `date` remains a compatible override, and
+  `workMode` is now accepted on check-in. Verified 2026-06-22:
+  `node --test tests/attendance-timezone-contract.test.js` passed 2/2, proving
+  `2035-01-01T20:00:00.000Z` stores/reads/checks out as `2035-01-02` for
+  `Asia/Kolkata`; `npm run test:smoke` passed 4/4; response/status/auth regressions
+  passed 27/27; touched-source ESLint passed. MSW-off browser QA through local
+  frontend (`localhost:3001`) logged in, loaded `/attendance`, performed check-in
+  and check-out against the local backend, confirmed service-worker registrations 0,
+  all captured `/api/*` responses `fromServiceWorker=false`, and cleaned the temporary
+  current-day row afterward. Screenshots:
+  `/tmp/ems-attendance-msw-off-before.png`,
+  `/tmp/ems-attendance-msw-off-checked-in.png`,
+  `/tmp/ems-attendance-msw-off-checked-out.png`.
+
 ## Phase 10 — Permissions & settings
 
 - [x] 10.2 Custom roles / BE-10-BE-11 — source already persisted `permissions[]` on
@@ -146,7 +164,7 @@ backend reimplemented logic ad hoc.
 
 - [ ] Loans PR-1 — align live `amount`/`balance` strings → numeric `principal`/`outstandingBalance`.
 - [ ] Sub-monthly payroll — semi-monthly run doubles pay; needs `salary.legalEntityId`.
-- [ ] Attendance UTC bug (BR-ATT-2) — classify day in employee tz, not UTC.
+- [x] Attendance UTC bug (BR-ATT-2) — classify day in employee/tenant tz, not UTC.
 - [ ] Timesheet `PATCH /entries/:id` 500.
 - [ ] Legal-entity work-time — add `workWeekDays[]` + `hoursPerDay`.
 

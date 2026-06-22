@@ -1,4 +1,5 @@
 import * as attendanceRepository from './attendance.repository.js';
+import { dateFromYmd, tenantAttendanceDate } from './attendanceDate.js';
 import {
   notifyCheckIn,
   notifyCheckOut,
@@ -25,25 +26,14 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-export async function checkIn(tenantId, employeeId, { latitude, longitude, note, date }) {
-  const existingRecord = await attendanceRepository.getTodayAttendance(tenantId, employeeId);
+export async function checkIn(tenantId, employeeId, {
+  latitude, longitude, note, date, workMode,
+} = {}, { timezone = 'UTC', now = new Date() } = {}) {
+  const today = dateFromYmd(date) || tenantAttendanceDate(now, timezone);
+  const existingRecord = await attendanceRepository.getTodayAttendance(tenantId, employeeId, today);
 
   if (existingRecord && existingRecord.checkInAt) {
     throw new AppError('Already checked in today', 'ALREADY_CHECKED_IN', 400);
-  }
-
-  // BR-ATT-2: classify the day in the EMPLOYEE's local date, not the server/UTC clock.
-  // The client (which knows the employee's timezone) may send `date` (YYYY-MM-DD). Store it as
-  // UTC-midnight of that calendar date so its YYYY-MM-DD prefix is STABLE regardless of server tz
-  // (the server runs in a non-UTC tz, so a naive `new Date(date)` would shift the stored day).
-  // No `date` → fall back to the server date (today's behaviour — no regression).
-  const isYmd = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date);
-  let today;
-  if (isYmd) {
-    today = new Date(`${date}T00:00:00.000Z`);
-  } else {
-    today = new Date();
-    today.setHours(0, 0, 0, 0);
   }
 
   let geofenceValid = true;
@@ -53,7 +43,7 @@ export async function checkIn(tenantId, employeeId, { latitude, longitude, note,
     locationJson = {
       latitude,
       longitude,
-      checkedInAt: new Date(),
+      checkedInAt: now,
     };
 
     const officeLatitude = 28.5244;
@@ -65,19 +55,21 @@ export async function checkIn(tenantId, employeeId, { latitude, longitude, note,
   let attendanceRecord;
   if (existingRecord) {
     attendanceRecord = await attendanceRepository.updateAttendanceRecord(tenantId, existingRecord.id, {
-      checkInAt: new Date(),
+      checkInAt: now,
       notes: note || null,
       locationJson,
+      ...(workMode ? { workMode } : {}),
     });
   } else {
     attendanceRecord = await attendanceRepository.createAttendanceRecord({
       tenantId,
       employeeId,
       attendanceDate: today,
-      checkInAt: new Date(),
+      checkInAt: now,
       status: 'PRESENT',
       notes: note || null,
       locationJson,
+      ...(workMode ? { workMode } : {}),
     });
   }
 
@@ -93,8 +85,9 @@ export async function checkIn(tenantId, employeeId, { latitude, longitude, note,
   return result;
 }
 
-export async function checkOut(tenantId, employeeId, { note } = {}) {
-  const existingRecord = await attendanceRepository.getTodayAttendance(tenantId, employeeId);
+export async function checkOut(tenantId, employeeId, { note } = {}, { timezone = 'UTC', now = new Date() } = {}) {
+  const today = tenantAttendanceDate(now, timezone);
+  const existingRecord = await attendanceRepository.getTodayAttendance(tenantId, employeeId, today);
 
   if (!existingRecord) {
     throw new AppError('No check-in record found for today', 'NO_CHECK_IN', 400);
@@ -108,7 +101,7 @@ export async function checkOut(tenantId, employeeId, { note } = {}) {
     throw new AppError('Already checked out today', 'ALREADY_CHECKED_OUT', 400);
   }
 
-  const checkOutTime = new Date();
+  const checkOutTime = now;
   const checkInTime = new Date(existingRecord.checkInAt);
   const durationMinutes = Math.round((checkOutTime - checkInTime) / (1000 * 60));
 
