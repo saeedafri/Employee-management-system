@@ -143,6 +143,16 @@ export default async function authRoutes(fastify) {
     },
   }, async (request, reply) => passwordResetController.forgotPasswordController(request, reply));
 
+  fastify.get('/auth/password-policy', {
+    schema: {
+      tags: ['Authentication'],
+      description: 'Get public password policy for set-password and reset-password screens',
+      response: {
+        200: { type: 'object', additionalProperties: true },
+      },
+    },
+  }, async (request, reply) => authController.getPasswordPolicyController(request, reply));
+
   fastify.get('/auth/reset-password/validate', {
     schema: {
       tags: ['Password Reset'],
@@ -181,9 +191,14 @@ export default async function authRoutes(fastify) {
       description: 'Reset password using valid reset token',
       body: {
         type: 'object',
-        required: ['token', 'newPassword'],
+        required: ['token'],
+        anyOf: [
+          { required: ['password'] },
+          { required: ['newPassword'] },
+        ],
         properties: {
           token: { type: 'string' },
+          password: { type: 'string', description: 'Frontend contract field' },
           newPassword: { type: 'string' },
         },
       },

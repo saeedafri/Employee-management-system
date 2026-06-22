@@ -245,7 +245,7 @@ export async function updateAttendanceRules(tenantId, data) {
   return updated;
 }
 
-const DEFAULT_AUTH_SETTINGS = {
+export const DEFAULT_AUTH_SETTINGS = {
   password_min_length: 8,
   password_require_symbol: false,
   password_require_number: true,

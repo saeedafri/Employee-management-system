@@ -17,6 +17,7 @@ function maskEmail(email) {
 export async function requestPasswordReset(tenantId, email, ip, userAgent) {
   try {
     const user = await authRepository.findUserByEmail(prisma, tenantId, email);
+    const effectiveTenantId = tenantId ?? user?.tenantId ?? null;
 
     if (!user) {
       await authRepository.createAuditLog(prisma, {
@@ -31,7 +32,7 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
       return { success: true };
     }
 
-    await authRepository.invalidateOldResetTokens(prisma, user.id, tenantId);
+    await authRepository.invalidateOldResetTokens(prisma, user.id, effectiveTenantId);
 
     const rawToken = generateRefreshToken();
     const tokenHash = hashSHA256(rawToken);
@@ -39,7 +40,7 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
 
     const token = await authRepository.createPasswordResetToken(prisma, {
       userId: user.id,
-      tenantId,
+      tenantId: effectiveTenantId,
       tokenHash,
       expiresAt,
       createdByIp: ip,
@@ -47,7 +48,7 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
     });
 
     await authRepository.createAuditLog(prisma, {
-      tenantId,
+      tenantId: effectiveTenantId,
       actorUserId: user.id,
       action: 'PASSWORD_RESET_REQUESTED',
       entityType: 'PasswordResetToken',
@@ -60,7 +61,7 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
       await enqueuePasswordResetEmail(user.email, rawToken, config.resetPasswordTokenTtlMinutes);
 
       await authRepository.createAuditLog(prisma, {
-        tenantId,
+        tenantId: effectiveTenantId,
         actorUserId: user.id,
         action: 'PASSWORD_RESET_EMAIL_QUEUED',
         entityType: 'PasswordResetToken',
@@ -70,7 +71,7 @@ export async function requestPasswordReset(tenantId, email, ip, userAgent) {
       });
     } catch (emailError) {
       await authRepository.createAuditLog(prisma, {
-        tenantId,
+        tenantId: effectiveTenantId,
         actorUserId: user.id,
         action: 'PASSWORD_RESET_FAILED',
         entityType: 'PasswordResetToken',
@@ -93,18 +94,20 @@ export async function validateResetToken(tenantId, rawToken) {
   const token = await prisma.passwordResetToken.findFirst({
     where: {
       tokenHash,
-      tenantId,
+      ...(tenantId ? { tenantId } : {}),
     },
   });
 
   if (!token) {
-    await authRepository.createAuditLog(prisma, {
-      tenantId,
-      actorUserId: null,
-      action: 'PASSWORD_RESET_FAILED',
-      entityType: 'PasswordResetToken',
-      entityId: 'unknown',
-    });
+    if (tenantId) {
+      await authRepository.createAuditLog(prisma, {
+        tenantId,
+        actorUserId: null,
+        action: 'PASSWORD_RESET_FAILED',
+        entityType: 'PasswordResetToken',
+        entityId: 'unknown',
+      });
+    }
     throw {
       code: 'RESET_TOKEN_INVALID',
       message: 'Invalid or expired reset token',
@@ -168,20 +171,22 @@ export async function completePasswordReset(tenantId, rawToken, newPassword, ip,
   const token = await prisma.passwordResetToken.findFirst({
     where: {
       tokenHash,
-      tenantId,
+      ...(tenantId ? { tenantId } : {}),
     },
   });
 
   if (!token) {
-    await authRepository.createAuditLog(prisma, {
-      tenantId,
-      actorUserId: null,
-      action: 'PASSWORD_RESET_FAILED',
-      entityType: 'PasswordResetToken',
-      entityId: 'unknown',
-      ipAddress: ip,
-      userAgent,
-    });
+    if (tenantId) {
+      await authRepository.createAuditLog(prisma, {
+        tenantId,
+        actorUserId: null,
+        action: 'PASSWORD_RESET_FAILED',
+        entityType: 'PasswordResetToken',
+        entityId: 'unknown',
+        ipAddress: ip,
+        userAgent,
+      });
+    }
     throw {
       code: 'RESET_TOKEN_INVALID',
       message: 'Invalid or expired reset token',

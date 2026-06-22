@@ -13,10 +13,9 @@ export async function forgotPasswordController(request, reply) {
     await passwordResetService.requestPasswordReset(tenantId, email, ip, userAgent);
 
     return reply.code(202).send(
-      successResponse(
-        null,
-        { message: 'If an account exists with this email, you will receive a password reset link shortly' },
-      ),
+      successResponse({
+        message: 'If that email exists, a reset link was sent',
+      }),
     );
   } catch (error) {
     request.log.error(error);
@@ -58,7 +57,7 @@ export async function validateResetTokenController(request, reply) {
 
 export async function resetPasswordController(request, reply) {
   try {
-    const { id: tenantId } = request.tenant;
+    const tenantId = request.tenant?.id ?? null;
     const { token, newPassword } = await authValidator.resetPasswordSchema.parseAsync(request.body);
     const ip = request.ip;
     const userAgent = request.headers['user-agent'] || '';

@@ -3,6 +3,7 @@ import { config } from '../../config/index.js';
 import { prisma } from '../../plugins/prisma.js';
 import * as authService from './auth.service.js';
 import * as authValidator from './auth.validator.js';
+import * as settingsService from '../settings/settings.service.js';
 import {
   clearAuthCookies,
   setAccessTokenCookie,
@@ -251,6 +252,16 @@ export async function getSessionsController(request, reply) {
     return reply.send(
       successResponse(sessions, { count: sessions.length }),
     );
+  } catch (error) {
+    request.log.error(error);
+    throw error;
+  }
+}
+
+export async function getPasswordPolicyController(request, reply) {
+  try {
+    const policy = await settingsService.getPublicPasswordPolicy(request.tenant?.id ?? null);
+    return reply.send(successResponse(policy));
   } catch (error) {
     request.log.error(error);
     throw error;

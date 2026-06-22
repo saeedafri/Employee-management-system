@@ -19,15 +19,29 @@ export const validateResetTokenSchema = z.object({
   token: z.string().min(1, 'Reset token required'),
 });
 
+const resetPasswordValueSchema = z.string()
+  .min(10, 'Password must be at least 10 characters')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[0-9]/, 'Password must contain at least one number')
+  .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character');
+
 export const resetPasswordSchema = z.object({
   token: z.string().min(1, 'Reset token required'),
-  newPassword: z.string()
-    .min(10, 'Password must be at least 10 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
-});
+  password: resetPasswordValueSchema.optional(),
+  newPassword: resetPasswordValueSchema.optional(),
+}).superRefine((data, ctx) => {
+  if (!data.password && !data.newPassword) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['password'],
+      message: 'Password required',
+    });
+  }
+}).transform((data) => ({
+  token: data.token,
+  newPassword: data.password ?? data.newPassword,
+}));
 
 export const confirmResetPasswordSchema = resetPasswordSchema;
 

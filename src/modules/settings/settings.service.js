@@ -118,6 +118,17 @@ export async function getAttendanceRules(tenantId) { return settingsRepository.g
 export async function updateAttendanceRules(tenantId, data) { return settingsRepository.updateAttendanceRules(tenantId, data); }
 export async function getAuthSettings(tenantId) { return settingsRepository.getAuthSettings(tenantId); }
 export async function updateAuthSettings(tenantId, data) { return settingsRepository.updateAuthSettings(tenantId, data); }
+export async function getPublicPasswordPolicy(tenantId) {
+  const settings = tenantId
+    ? await settingsRepository.getAuthSettings(tenantId)
+    : settingsRepository.DEFAULT_AUTH_SETTINGS;
+
+  return {
+    minLength: settings.password_min_length,
+    requireSymbol: settings.password_require_symbol,
+    requireNumber: settings.password_require_number,
+  };
+}
 export async function getNotificationPreferences(tenantId, userId) { return settingsRepository.getNotificationPreferences(tenantId, userId); }
 export async function updateNotificationPreferences(tenantId, userId, data) { return settingsRepository.updateNotificationPreferences(tenantId, userId, data); }
 export async function createRole(tenantId, data) { return settingsRepository.createRole(tenantId, data); }

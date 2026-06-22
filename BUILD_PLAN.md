@@ -92,6 +92,25 @@ backend reimplemented logic ad hoc.
   Verified 2026-06-22: `node --test tests/rbac-policy-contract.test.js` passed 2/2,
   `node --test tests/auth-login-contract.test.js` passed 2/2,
   `node --test tests/auth-me.test.js` passed 7/7, and `npm run test:smoke` passed 4/4.
+- [x] 1.6 Auth extras — reconciled `forgot-password`, `reset-password`, `verify-otp`,
+  invitation validation, and public password-policy contracts used by the frontend auth
+  screens. `POST /auth/forgot-password` now returns the documented message in `data`;
+  `POST /auth/reset-password` accepts frontend `{ token, password }` while preserving
+  legacy `{ token, newPassword }`; unauthenticated reset links no longer require tenant
+  context; `GET /auth/password-policy` returns camelCase policy data for set/reset forms.
+  Verified 2026-06-22: `node --test tests/auth-extras-contract.test.js` passed 7/7,
+  auth login/me/refresh regressions passed 12/12, logout/sessions/RBAC regressions passed
+  6/6, `BASE=http://127.0.0.1:3000/api/v1 node --test tests/http-status-contract.test.js`
+  passed 12/12, `node --test tests/invitation.test.js` passed 16/16,
+  `npm run test:smoke` passed 4/4, and `node --test tests/response-envelope.test.js`
+  passed 3/3. MSW-off browser QA through local frontend (`localhost:3001`) confirmed
+  service-worker registrations 0, all captured auth API responses `fromServiceWorker=false`,
+  forgot-password 202 reached "Check your email", password-policy 200, reset-password posted
+  `{ token, password }` and rendered the invalid-link error on `RESET_TOKEN_INVALID`, and
+  set-password unknown token rendered the invalid-invitation screen. Screenshots:
+  `/tmp/ems-auth-extras-forgot-debug-after.png`,
+  `/tmp/ems-auth-extras-reset-invalid-msw-off.png`,
+  `/tmp/ems-auth-extras-set-password-invalid-msw-off.png`.
 
 ## Phase 12 — Hardening
 
