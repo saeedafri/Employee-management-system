@@ -36,6 +36,9 @@ All 16 module screens loaded against the live backend with **zero API 4xx/5xx fa
 ## Deferred by decision (2026-06-22)
 Redis + BullMQ removed from the stack. Payroll `calculate` runs synchronously. Slices **6.5, 11.4, 11.5, 12.3** are deferred, not done — functionally correct, won't scale to thousands of employees without the async path.
 
+## Payroll-extras MSW-off sweep (2026-06-22) — PASS
+All payroll settings/extras screens render clean live (no API failures, no console errors): `/settings/pay/{components,groups,schedules,legal-entities,statutory-packs,payslip-template}`, `/payroll/global`, `/payroll/my-payslips`. Loans §6 PR-1 shape confirmed at source (`deriveLoan`, payroll.service.js:530) — numeric `principal`/`outstandingBalance` per contract; create tolerates `principal ?? amount`.
+
 ## Phase 12.2 — security first-pass (2026-06-22) — PASS
 - **Authentication coverage: 100%.** Static audit of all 387 routes: every route is guarded by `authenticate` (302 per-route, the rest via file-level `fastify.addHook('onRequest', authenticate)` or the `adminOnly`/`adminRoles` aliases). Intentionally public: 9 auth/health routes (login, refresh, forgot/reset-password, verify/resend-otp, register, invitation, password-policy). `GET /notifications/stream` authenticates via `?token=` (EventSource can't send headers — by design).
 - **Tenant isolation: enforced.** `authenticate.js:34-42` rejects (401) when a header-resolved tenant ≠ JWT/session tenant, so a spoofed `x-tenant-key` cannot cross tenants. Also checks `session.tenantId === payload.tenantId`, `session.userId === payload.sub`, and revocation. Live: acme token + bogus/other `x-tenant-key` → `INVALID_TENANT`/401, never another tenant's data. Services additionally filter every query by `tenantId`.
