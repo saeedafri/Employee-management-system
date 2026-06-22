@@ -35,6 +35,7 @@ import assetsRoutes from './modules/assets/assets.routes.js';
 import announcementsRoutes from './modules/announcements/announcements.routes.js';
 import timesheetsRoutes from './modules/timesheets/timesheets.routes.js';
 import timesheetsConfigRoutes from './modules/timesheets/timesheetsConfig.routes.js';
+import billingRoutes from './modules/billing/billing.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -92,6 +93,7 @@ export async function createApp() {
       await fastify.register(announcementsRoutes);
       await fastify.register(timesheetsRoutes);
       await fastify.register(timesheetsConfigRoutes);
+      await fastify.register(billingRoutes);
     },
     { prefix: config.apiPrefix },
   );

@@ -310,6 +310,17 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           delete: op('Timesheets', 'Remove an approval delegation (MANAGER+) — 404 if absent', true, { parameters: idParam, responses: { 200: r200, 404: r404 } }),
         },
 
+        // ── BILLING (Phase 8.4 — read-only) ───────────────────────────────────
+        '/billing/subscription': {
+          get: op('Billing', 'Current tenant subscription (seat usage enriched live from roster) (HR_ADMIN, SUPER_ADMIN)'),
+        },
+        '/billing/plans': {
+          get: op('Billing', 'Available billing plan catalog (HR_ADMIN, SUPER_ADMIN)'),
+        },
+        '/billing/invoices': {
+          get: op('Billing', 'Paginated invoice history (HR_ADMIN, SUPER_ADMIN)', true, { parameters: pageQuery }),
+        },
+
         // ── ATTENDANCE ───────────────────────────────────────────────────────
         '/attendance/check-in': {
           post: op('Attendance', 'Record check-in'),

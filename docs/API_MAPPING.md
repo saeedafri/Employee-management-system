@@ -5136,3 +5136,19 @@ Workflow/PSA config for timesheets. Mirrors `ems-frontend/src/mocks/handlers/tim
 | GET | /timesheets/delegations | MANAGER+ | `Delegation[]` |
 | POST | /timesheets/delegations | MANAGER+ | body `{delegateId,fromDate,toDate,role?,reason?}`; 422 bad dates/self-delegate; 201 |
 | DELETE | /timesheets/delegations/:id | MANAGER+ | `{deleted:true}`; 404 if absent |
+
+---
+
+## Billing — Phase 8.4 (added 2026-06-22) ✅ Live, MSW-parity verified
+
+Read-only billing surface (no write path in the contract). Mirrors `ems-frontend/src/mocks/handlers/billing.ts`. Plan catalog + invoices are config data (overridable via tenant `Setting` blob, groupKey `billing`); `subscription.seats.used` is enriched LIVE from the real active-employee count.
+
+| Method | Path | Roles | Response `data` |
+|--------|------|-------|------------------|
+| GET | /billing/subscription | HR_ADMIN, SUPER_ADMIN | `BillingSubscription` {plan, status, seats{total,used,available}, usage, modules, currentPeriod, nextRenewalDate, trialEndsAt} — seats.used = live active-employee count |
+| GET | /billing/plans | HR_ADMIN, SUPER_ADMIN | `BillingPlan[]` (starter/professional/enterprise) |
+| GET | /billing/invoices?page=&limit= | HR_ADMIN, SUPER_ADMIN | `{ invoices: Invoice[], pagination {page,limit,total,totalPages} }` |
+
+## Permissions — Phase 10 reconciliation (verified 2026-06-22) ✅ No change needed
+
+The `/permissions` 404 was a **false alarm**: the FE permissions module (`permissions.api.ts`) never calls `/permissions` — it uses `/settings/roles-permissions` (GET/PATCH), `/settings/roles` (POST), `/settings/roles/:key` (DELETE), all already live. **BE-10** (createRole dropping `permissions`) is **already fixed**: `POST /settings/roles` with `permissions[]` persists them — verified `GET /settings/roles-permissions` → `matrix[newKey]` returns the exact permission set.

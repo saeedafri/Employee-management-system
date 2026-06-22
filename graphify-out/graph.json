@@ -3232,7 +3232,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_seedtestemailuser",
-      "community": 82,
+      "community": 50,
       "norm_label": "seedtestemailuser.js"
     },
     {
@@ -3242,7 +3242,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "scripts_seedtestemailuser_prisma",
-      "community": 82,
+      "community": 50,
       "norm_label": "prisma"
     },
     {
@@ -3252,7 +3252,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "scripts_seedtestemailuser_args",
-      "community": 82,
+      "community": 50,
       "norm_label": "args"
     },
     {
@@ -3262,7 +3262,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "scripts_seedtestemailuser_emailindex",
-      "community": 82,
+      "community": 50,
       "norm_label": "emailindex"
     },
     {
@@ -3272,7 +3272,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "scripts_seedtestemailuser_mfaflag",
-      "community": 82,
+      "community": 50,
       "norm_label": "mfaflag"
     },
     {
@@ -3282,7 +3282,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "scripts_seedtestemailuser_maskemail",
-      "community": 82,
+      "community": 50,
       "norm_label": "maskemail()"
     },
     {
@@ -3292,7 +3292,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "scripts_seedtestemailuser_seedtestuser",
-      "community": 82,
+      "community": 50,
       "norm_label": "seedtestuser()"
     },
     {
@@ -3462,7 +3462,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_testemaildirect",
-      "community": 37,
+      "community": 171,
       "norm_label": "testemaildirect.js"
     },
     {
@@ -3472,7 +3472,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "scripts_testemaildirect_testemaildirect",
-      "community": 37,
+      "community": 171,
       "norm_label": "testemaildirect()"
     },
     {
@@ -3849,7 +3849,7 @@
       "label": "createApp()",
       "file_type": "code",
       "source_file": "src/app.js",
-      "source_location": "L39",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "src_app_createapp",
       "community": 53,
@@ -3862,7 +3862,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "config_index",
-      "community": 37,
+      "community": 171,
       "norm_label": "index.js"
     },
     {
@@ -3872,7 +3872,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "config_index_config",
-      "community": 37,
+      "community": 171,
       "norm_label": "config"
     },
     {
@@ -3952,7 +3952,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "jobs_emailjob_enqueueotpemail",
-      "community": 76,
+      "community": 102,
       "norm_label": "enqueueotpemail()"
     },
     {
@@ -4942,7 +4942,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "announcements_announcements_repository",
-      "community": 316,
+      "community": 75,
       "norm_label": "announcements.repository.js"
     },
     {
@@ -4952,7 +4952,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getchannels",
-      "community": 316,
+      "community": 75,
       "norm_label": "getchannels()"
     },
     {
@@ -4962,7 +4962,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getevents",
-      "community": 316,
+      "community": 75,
       "norm_label": "getevents()"
     },
     {
@@ -4972,7 +4972,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "announcements_announcements_repository_createevent",
-      "community": 316,
+      "community": 75,
       "norm_label": "createevent()"
     },
     {
@@ -4982,7 +4982,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getannouncements",
-      "community": 316,
+      "community": 75,
       "norm_label": "getannouncements()"
     },
     {
@@ -4992,7 +4992,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getpinnedannouncement",
-      "community": 316,
+      "community": 75,
       "norm_label": "getpinnedannouncement()"
     },
     {
@@ -5002,7 +5002,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "announcements_announcements_repository_createannouncement",
-      "community": 316,
+      "community": 75,
       "norm_label": "createannouncement()"
     },
     {
@@ -5012,7 +5012,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getannouncementbyid",
-      "community": 316,
+      "community": 75,
       "norm_label": "getannouncementbyid()"
     },
     {
@@ -5022,7 +5022,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "announcements_announcements_repository_unpinall",
-      "community": 316,
+      "community": 75,
       "norm_label": "unpinall()"
     },
     {
@@ -5032,7 +5032,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "announcements_announcements_repository_updateannouncement",
-      "community": 316,
+      "community": 75,
       "norm_label": "updateannouncement()"
     },
     {
@@ -5042,7 +5042,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "announcements_announcements_repository_getchannelbyid",
-      "community": 316,
+      "community": 75,
       "norm_label": "getchannelbyid()"
     },
     {
@@ -5302,7 +5302,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "assets_assets_repository",
-      "community": 317,
+      "community": 31,
       "norm_label": "assets.repository.js"
     },
     {
@@ -5312,7 +5312,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "assets_assets_repository_getsummary",
-      "community": 317,
+      "community": 31,
       "norm_label": "getsummary()"
     },
     {
@@ -5322,7 +5322,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "assets_assets_repository_getassets",
-      "community": 317,
+      "community": 31,
       "norm_label": "getassets()"
     },
     {
@@ -5332,7 +5332,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "assets_assets_repository_getassetbyid",
-      "community": 317,
+      "community": 31,
       "norm_label": "getassetbyid()"
     },
     {
@@ -5342,7 +5342,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "assets_assets_repository_createasset",
-      "community": 317,
+      "community": 31,
       "norm_label": "createasset()"
     },
     {
@@ -5352,7 +5352,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "assets_assets_repository_updateasset",
-      "community": 317,
+      "community": 31,
       "norm_label": "updateasset()"
     },
     {
@@ -5362,7 +5362,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "assets_assets_repository_findassetbytag",
-      "community": 317,
+      "community": 31,
       "norm_label": "findassetbytag()"
     },
     {
@@ -5372,7 +5372,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "assets_assets_repository_getrequests",
-      "community": 317,
+      "community": 31,
       "norm_label": "getrequests()"
     },
     {
@@ -5382,7 +5382,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "assets_assets_repository_getrequestbyid",
-      "community": 317,
+      "community": 31,
       "norm_label": "getrequestbyid()"
     },
     {
@@ -5392,7 +5392,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "assets_assets_repository_updaterequest",
-      "community": 317,
+      "community": 31,
       "norm_label": "updaterequest()"
     },
     {
@@ -5402,7 +5402,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "assets_assets_repository_getemployees",
-      "community": 317,
+      "community": 31,
       "norm_label": "getemployees()"
     },
     {
@@ -5682,7 +5682,7 @@
       "source_location": "L398",
       "_origin": "ast",
       "id": "attendance_attendance_controller_uploadregularizationdocument",
-      "community": 113,
+      "community": 15,
       "norm_label": "uploadregularizationdocument()"
     },
     {
@@ -6152,7 +6152,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_controller",
-      "community": 318,
+      "community": 55,
       "norm_label": "auditlogs.controller.js"
     },
     {
@@ -6162,7 +6162,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_controller_getauditlogs",
-      "community": 318,
+      "community": 55,
       "norm_label": "getauditlogs()"
     },
     {
@@ -6172,7 +6172,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_controller_getauditlogbyid",
-      "community": 318,
+      "community": 55,
       "norm_label": "getauditlogbyid()"
     },
     {
@@ -6182,7 +6182,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_controller_generatedpiareport",
-      "community": 318,
+      "community": 55,
       "norm_label": "generatedpiareport()"
     },
     {
@@ -6192,7 +6192,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_controller_exportauditlogs",
-      "community": 318,
+      "community": 55,
       "norm_label": "exportauditlogs()"
     },
     {
@@ -6202,7 +6202,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_controller_converttocsv",
-      "community": 318,
+      "community": 55,
       "norm_label": "converttocsv()"
     },
     {
@@ -6282,7 +6282,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service",
-      "community": 176,
+      "community": 55,
       "norm_label": "auditlogs.service.js"
     },
     {
@@ -6292,7 +6292,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_apperror",
-      "community": 176,
+      "community": 55,
       "norm_label": "apperror"
     },
     {
@@ -6302,7 +6302,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_apperror_constructor",
-      "community": 176,
+      "community": 55,
       "norm_label": ".constructor()"
     },
     {
@@ -6312,7 +6312,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_getauditlogs",
-      "community": 176,
+      "community": 55,
       "norm_label": "getauditlogs()"
     },
     {
@@ -6322,7 +6322,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_getauditlogbyid",
-      "community": 176,
+      "community": 55,
       "norm_label": "getauditlogbyid()"
     },
     {
@@ -6332,7 +6332,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_generatedpiareport",
-      "community": 176,
+      "community": 55,
       "norm_label": "generatedpiareport()"
     },
     {
@@ -6342,7 +6342,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "auditlogs_auditlogs_service_recordauditlog",
-      "community": 113,
+      "community": 15,
       "norm_label": "recordauditlog()"
     },
     {
@@ -6562,7 +6562,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_auth_policy",
-      "community": 53,
+      "community": 113,
       "norm_label": "auth.policy.js"
     },
     {
@@ -6572,7 +6572,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "auth_auth_policy_permission_keys",
-      "community": 53,
+      "community": 113,
       "norm_label": "permission_keys"
     },
     {
@@ -6582,7 +6582,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "auth_auth_policy_haspermission",
-      "community": 53,
+      "community": 113,
       "norm_label": "haspermission()"
     },
     {
@@ -6592,7 +6592,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "auth_auth_policy_requirepermission",
-      "community": 53,
+      "community": 113,
       "norm_label": "requirepermission()"
     },
     {
@@ -6602,7 +6602,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "auth_auth_policy_canmanageuser",
-      "community": 53,
+      "community": 113,
       "norm_label": "canmanageuser()"
     },
     {
@@ -7382,7 +7382,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "auth_otp_service",
-      "community": 76,
+      "community": 102,
       "norm_label": "otp.service.js"
     },
     {
@@ -7392,7 +7392,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "auth_otp_service_generateotpcode",
-      "community": 76,
+      "community": 102,
       "norm_label": "generateotpcode()"
     },
     {
@@ -7402,7 +7402,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "auth_otp_service_generatesecurechallengeid",
-      "community": 76,
+      "community": 102,
       "norm_label": "generatesecurechallengeid()"
     },
     {
@@ -7412,7 +7412,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "auth_otp_service_maskemail",
-      "community": 76,
+      "community": 102,
       "norm_label": "maskemail()"
     },
     {
@@ -7422,7 +7422,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "auth_otp_service_generateotp",
-      "community": 76,
+      "community": 102,
       "norm_label": "generateotp()"
     },
     {
@@ -7432,7 +7432,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "auth_otp_service_verifyotp",
-      "community": 76,
+      "community": 102,
       "norm_label": "verifyotp()"
     },
     {
@@ -7442,7 +7442,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "auth_otp_service_resendotp",
-      "community": 76,
+      "community": 102,
       "norm_label": "resendotp()"
     },
     {
@@ -7452,7 +7452,7 @@
       "source_location": "L325",
       "_origin": "ast",
       "id": "auth_otp_service_initiateotp",
-      "community": 76,
+      "community": 102,
       "norm_label": "initiateotp()"
     },
     {
@@ -7574,6 +7574,186 @@
       "id": "auth_passwordreset_service_completepasswordreset",
       "community": 76,
       "norm_label": "completepasswordreset()"
+    },
+    {
+      "label": "billing.controller.js",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "billing_billing_controller",
+      "community": 88,
+      "norm_label": "billing.controller.js"
+    },
+    {
+      "label": "fail()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "billing_billing_controller_fail",
+      "community": 88,
+      "norm_label": "fail()"
+    },
+    {
+      "label": "getSubscription()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "billing_billing_controller_getsubscription",
+      "community": 88,
+      "norm_label": "getsubscription()"
+    },
+    {
+      "label": "getPlans()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "billing_billing_controller_getplans",
+      "community": 88,
+      "norm_label": "getplans()"
+    },
+    {
+      "label": "getInvoices()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "billing_billing_controller_getinvoices",
+      "community": 88,
+      "norm_label": "getinvoices()"
+    },
+    {
+      "label": "billing.routes.js",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "billing_billing_routes",
+      "community": 26,
+      "norm_label": "billing.routes.js"
+    },
+    {
+      "label": "ok",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "billing_billing_routes_ok",
+      "community": 26,
+      "norm_label": "ok"
+    },
+    {
+      "label": "ADMIN",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "billing_billing_routes_admin",
+      "community": 26,
+      "norm_label": "admin"
+    },
+    {
+      "label": "T",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "billing_billing_routes_t",
+      "community": 26,
+      "norm_label": "t"
+    },
+    {
+      "label": "billingRoutes()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "billing_billing_routes_billingroutes",
+      "community": 26,
+      "norm_label": "billingroutes()"
+    },
+    {
+      "label": "billing.service.js",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "billing_billing_service",
+      "community": 166,
+      "norm_label": "billing.service.js"
+    },
+    {
+      "label": "PLANS",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "billing_billing_service_plans",
+      "community": 166,
+      "norm_label": "plans"
+    },
+    {
+      "label": "DEFAULT_SUBSCRIPTION",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "billing_billing_service_default_subscription",
+      "community": 166,
+      "norm_label": "default_subscription"
+    },
+    {
+      "label": "INVOICES",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "billing_billing_service_invoices",
+      "community": 166,
+      "norm_label": "invoices"
+    },
+    {
+      "label": "getBlob()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L89",
+      "_origin": "ast",
+      "id": "billing_billing_service_getblob",
+      "community": 166,
+      "norm_label": "getblob()"
+    },
+    {
+      "label": "getSubscription()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L96",
+      "_origin": "ast",
+      "id": "billing_billing_service_getsubscription",
+      "community": 166,
+      "norm_label": "getsubscription()"
+    },
+    {
+      "label": "getPlans()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L109",
+      "_origin": "ast",
+      "id": "billing_billing_service_getplans",
+      "community": 166,
+      "norm_label": "getplans()"
+    },
+    {
+      "label": "getInvoices()",
+      "file_type": "code",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "billing_billing_service_getinvoices",
+      "community": 166,
+      "norm_label": "getinvoices()"
     },
     {
       "label": "employee.controller.js",
@@ -8342,7 +8522,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "departments_departments_service_adddepartmentmembers",
-      "community": 176,
+      "community": 55,
       "norm_label": "adddepartmentmembers()"
     },
     {
@@ -8602,7 +8782,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "employees_employees_controller_uploaddocument",
-      "community": 113,
+      "community": 15,
       "norm_label": "uploaddocument()"
     },
     {
@@ -8622,7 +8802,7 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "employees_employees_controller_deletedocument",
-      "community": 113,
+      "community": 15,
       "norm_label": "deletedocument()"
     },
     {
@@ -8692,7 +8872,7 @@
       "source_location": "L415",
       "_origin": "ast",
       "id": "employees_employees_controller_uploadphoto",
-      "community": 113,
+      "community": 15,
       "norm_label": "uploadphoto()"
     },
     {
@@ -8702,7 +8882,7 @@
       "source_location": "L473",
       "_origin": "ast",
       "id": "employees_employees_controller_deletephoto",
-      "community": 113,
+      "community": 15,
       "norm_label": "deletephoto()"
     },
     {
@@ -8722,7 +8902,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "employees_employees_repository",
-      "community": 97,
+      "community": 57,
       "norm_label": "employees.repository.js"
     },
     {
@@ -8732,7 +8912,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "employees_employees_repository_listemployees",
-      "community": 97,
+      "community": 57,
       "norm_label": "listemployees()"
     },
     {
@@ -8742,7 +8922,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "employees_employees_repository_getemployeebyid",
-      "community": 97,
+      "community": 57,
       "norm_label": "getemployeebyid()"
     },
     {
@@ -8752,7 +8932,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "employees_employees_repository_createemployee",
-      "community": 97,
+      "community": 57,
       "norm_label": "createemployee()"
     },
     {
@@ -8762,7 +8942,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "employees_employees_repository_updateemployee",
-      "community": 97,
+      "community": 57,
       "norm_label": "updateemployee()"
     },
     {
@@ -8772,7 +8952,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "employees_employees_repository_softdeleteemployee",
-      "community": 97,
+      "community": 57,
       "norm_label": "softdeleteemployee()"
     },
     {
@@ -8782,7 +8962,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "employees_employees_repository_exportemployeescsv",
-      "community": 97,
+      "community": 57,
       "norm_label": "exportemployeescsv()"
     },
     {
@@ -8792,7 +8972,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "employees_employees_repository_checkemployeecodeexists",
-      "community": 97,
+      "community": 57,
       "norm_label": "checkemployeecodeexists()"
     },
     {
@@ -8802,7 +8982,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "employees_employees_repository_countemployees",
-      "community": 97,
+      "community": 57,
       "norm_label": "countemployees()"
     },
     {
@@ -8812,7 +8992,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "employees_employees_repository_checkworkemailexists",
-      "community": 97,
+      "community": 57,
       "norm_label": "checkworkemailexists()"
     },
     {
@@ -8922,7 +9102,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "employees_employees_service_sendemployeeinvite",
-      "community": 59,
+      "community": 55,
       "norm_label": "sendemployeeinvite()"
     },
     {
@@ -9762,7 +9942,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service",
-      "community": 102,
+      "community": 48,
       "norm_label": "holidayspolicy.service.js"
     },
     {
@@ -9772,7 +9952,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_today",
-      "community": 102,
+      "community": 48,
       "norm_label": "today()"
     },
     {
@@ -9782,7 +9962,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_seed_policies",
-      "community": 102,
+      "community": 48,
       "norm_label": "seed_policies"
     },
     {
@@ -9792,7 +9972,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_holidayselectionerror",
-      "community": 102,
+      "community": 48,
       "norm_label": "holidayselectionerror"
     },
     {
@@ -9802,7 +9982,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_holidayselectionerror_constructor",
-      "community": 102,
+      "community": 48,
       "norm_label": ".constructor()"
     },
     {
@@ -9812,7 +9992,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_mappolicy",
-      "community": 102,
+      "community": 48,
       "norm_label": "mappolicy()"
     },
     {
@@ -9822,7 +10002,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getpolicies",
-      "community": 102,
+      "community": 48,
       "norm_label": "getpolicies()"
     },
     {
@@ -9832,7 +10012,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getpolicy",
-      "community": 102,
+      "community": 48,
       "norm_label": "getpolicy()"
     },
     {
@@ -9842,7 +10022,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_upsertpolicy",
-      "community": 102,
+      "community": 48,
       "norm_label": "upsertpolicy()"
     },
     {
@@ -9852,7 +10032,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getselectionids",
-      "community": 102,
+      "community": 48,
       "norm_label": "getselectionids()"
     },
     {
@@ -9862,7 +10042,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_getholiday",
-      "community": 102,
+      "community": 48,
       "norm_label": "getholiday()"
     },
     {
@@ -9872,7 +10052,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_addselection",
-      "community": 102,
+      "community": 48,
       "norm_label": "addselection()"
     },
     {
@@ -9882,7 +10062,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "holidays_holidayspolicy_service_removeselection",
-      "community": 102,
+      "community": 48,
       "norm_label": "removeselection()"
     },
     {
@@ -9892,7 +10072,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_applicability",
-      "community": 102,
+      "community": 48,
       "norm_label": "applicability.js"
     },
     {
@@ -9902,7 +10082,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "utils_applicability_resolveapplicableholidays",
-      "community": 102,
+      "community": 48,
       "norm_label": "resolveapplicableholidays()"
     },
     {
@@ -9932,7 +10112,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "data_leavepacks",
-      "community": 239,
+      "community": 176,
       "norm_label": "leavepacks.js"
     },
     {
@@ -9942,7 +10122,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "data_leavepacks_base",
-      "community": 239,
+      "community": 176,
       "norm_label": "base()"
     },
     {
@@ -9952,7 +10132,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "data_leavepacks_pack",
-      "community": 239,
+      "community": 176,
       "norm_label": "pack()"
     },
     {
@@ -9962,7 +10142,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "data_leavepacks_leave_starter_packs",
-      "community": 239,
+      "community": 176,
       "norm_label": "leave_starter_packs"
     },
     {
@@ -9972,7 +10152,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "data_leavepacks_leave_type_names",
-      "community": 239,
+      "community": 176,
       "norm_label": "leave_type_names"
     },
     {
@@ -9982,7 +10162,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "data_leavepacks_packforcountry",
-      "community": 239,
+      "community": 176,
       "norm_label": "packforcountry()"
     },
     {
@@ -10112,7 +10292,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_encashment",
-      "community": 314,
+      "community": 251,
       "norm_label": "encashment.js"
     },
     {
@@ -10122,7 +10302,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "engine_encashment_round2",
-      "community": 314,
+      "community": 251,
       "norm_label": "round2()"
     },
     {
@@ -10132,7 +10312,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "engine_encashment_applyrounding",
-      "community": 314,
+      "community": 251,
       "norm_label": "applyrounding()"
     },
     {
@@ -10142,7 +10322,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "engine_encashment_computeencashment",
-      "community": 314,
+      "community": 251,
       "norm_label": "computeencashment()"
     },
     {
@@ -10162,7 +10342,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_ledger",
-      "community": 315,
+      "community": 314,
       "norm_label": "ledger.js"
     },
     {
@@ -10172,7 +10352,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "engine_ledger_positive_grants",
-      "community": 315,
+      "community": 314,
       "norm_label": "positive_grants"
     },
     {
@@ -10182,7 +10362,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "engine_ledger_settled_negatives",
-      "community": 315,
+      "community": 314,
       "norm_label": "settled_negatives"
     },
     {
@@ -10192,7 +10372,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "engine_ledger_round2",
-      "community": 315,
+      "community": 314,
       "norm_label": "round2()"
     },
     {
@@ -10202,7 +10382,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "engine_ledger_foldbalance",
-      "community": 315,
+      "community": 314,
       "norm_label": "foldbalance()"
     },
     {
@@ -11382,7 +11562,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "leave_leaveengine_routes",
-      "community": 26,
+      "community": 315,
       "norm_label": "leaveengine.routes.js"
     },
     {
@@ -11392,7 +11572,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "leave_leaveengine_routes_ok",
-      "community": 26,
+      "community": 315,
       "norm_label": "ok"
     },
     {
@@ -11402,7 +11582,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "leave_leaveengine_routes_created",
-      "community": 26,
+      "community": 315,
       "norm_label": "created"
     },
     {
@@ -11412,7 +11592,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "leave_leaveengine_routes_hr",
-      "community": 26,
+      "community": 315,
       "norm_label": "hr"
     },
     {
@@ -11422,7 +11602,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "leave_leaveengine_routes_mgr",
-      "community": 26,
+      "community": 315,
       "norm_label": "mgr"
     },
     {
@@ -11432,7 +11612,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "leave_leaveengine_routes_leaveengineroutes",
-      "community": 26,
+      "community": 315,
       "norm_label": "leaveengineroutes()"
     },
     {
@@ -11452,7 +11632,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "leave_leaveengine_service_today",
-      "community": 239,
+      "community": 97,
       "norm_label": "today()"
     },
     {
@@ -11472,7 +11652,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "leave_leaveengine_service_buildemployeecontext",
-      "community": 239,
+      "community": 97,
       "norm_label": "buildemployeecontext()"
     },
     {
@@ -11502,7 +11682,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "leave_leaveengine_service_gettenantpolicies",
-      "community": 239,
+      "community": 97,
       "norm_label": "gettenantpolicies()"
     },
     {
@@ -11512,7 +11692,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "leave_leaveengine_service_rulesforemployee",
-      "community": 239,
+      "community": 97,
       "norm_label": "rulesforemployee()"
     },
     {
@@ -11522,7 +11702,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "leave_leaveengine_service_foldfor",
-      "community": 239,
+      "community": 314,
       "norm_label": "foldfor()"
     },
     {
@@ -11532,7 +11712,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "leave_leaveengine_service_derivebalance",
-      "community": 239,
+      "community": 97,
       "norm_label": "derivebalance()"
     },
     {
@@ -11542,7 +11722,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "leave_leaveengine_service_getbalances",
-      "community": 239,
+      "community": 97,
       "norm_label": "getbalances()"
     },
     {
@@ -11552,7 +11732,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "leave_leaveengine_service_probationcleared",
-      "community": 239,
+      "community": 97,
       "norm_label": "probationcleared()"
     },
     {
@@ -11582,7 +11762,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "leave_leaveengine_service_mapassignment",
-      "community": 239,
+      "community": 97,
       "norm_label": "mapassignment()"
     },
     {
@@ -11602,7 +11782,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "leave_leaveengine_service_autoassign",
-      "community": 239,
+      "community": 97,
       "norm_label": "autoassign()"
     },
     {
@@ -11612,7 +11792,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "leave_leaveengine_service_getledger",
-      "community": 239,
+      "community": 97,
       "norm_label": "getledger()"
     },
     {
@@ -11622,7 +11802,7 @@
       "source_location": "L242",
       "_origin": "ast",
       "id": "leave_leaveengine_service_getbalancesforemployee",
-      "community": 239,
+      "community": 97,
       "norm_label": "getbalancesforemployee()"
     },
     {
@@ -11632,7 +11812,7 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "leave_leaveengine_service_postadjustment",
-      "community": 239,
+      "community": 97,
       "norm_label": "postadjustment()"
     },
     {
@@ -11652,7 +11832,7 @@
       "source_location": "L290",
       "_origin": "ast",
       "id": "leave_leaveengine_service_eligiblecompofftypes",
-      "community": 239,
+      "community": 97,
       "norm_label": "eligiblecompofftypes()"
     },
     {
@@ -11712,7 +11892,7 @@
       "source_location": "L382",
       "_origin": "ast",
       "id": "leave_leaveengine_service_encash",
-      "community": 239,
+      "community": 97,
       "norm_label": "encash()"
     },
     {
@@ -11782,7 +11962,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "logs_logs_controller",
-      "community": 166,
+      "community": 1,
       "norm_label": "logs.controller.js"
     },
     {
@@ -11792,7 +11972,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "logs_logs_controller_listlogs",
-      "community": 166,
+      "community": 1,
       "norm_label": "listlogs()"
     },
     {
@@ -11802,7 +11982,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "logs_logs_controller_getlog",
-      "community": 166,
+      "community": 1,
       "norm_label": "getlog()"
     },
     {
@@ -11812,7 +11992,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "logs_logs_controller_exportlogs",
-      "community": 166,
+      "community": 1,
       "norm_label": "exportlogs()"
     },
     {
@@ -11822,7 +12002,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "logs_logs_controller_streamlogs",
-      "community": 166,
+      "community": 1,
       "norm_label": "streamlogs()"
     },
     {
@@ -11832,7 +12012,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "logs_logs_controller_converttocsv",
-      "community": 166,
+      "community": 1,
       "norm_label": "converttocsv()"
     },
     {
@@ -15072,7 +15252,7 @@
       "source_location": "L1838",
       "_origin": "ast",
       "id": "payroll_payroll_service_fmtreimbursementclaimforui",
-      "community": 82,
+      "community": 35,
       "norm_label": "fmtreimbursementclaimforui()"
     },
     {
@@ -15082,7 +15262,7 @@
       "source_location": "L1855",
       "_origin": "ast",
       "id": "payroll_payroll_service_submitreimbursementclaim",
-      "community": 82,
+      "community": 35,
       "norm_label": "submitreimbursementclaim()"
     },
     {
@@ -15092,7 +15272,7 @@
       "source_location": "L1880",
       "_origin": "ast",
       "id": "payroll_payroll_service_decidereimbursementclaim",
-      "community": 82,
+      "community": 35,
       "norm_label": "decidereimbursementclaim()"
     },
     {
@@ -15112,7 +15292,7 @@
       "source_location": "L1896",
       "_origin": "ast",
       "id": "payroll_payroll_service_creategarnishment",
-      "community": 82,
+      "community": 83,
       "norm_label": "creategarnishment()"
     },
     {
@@ -15122,7 +15302,7 @@
       "source_location": "L1919",
       "_origin": "ast",
       "id": "payroll_payroll_service_updategarnishment",
-      "community": 82,
+      "community": 83,
       "norm_label": "updategarnishment()"
     },
     {
@@ -16652,7 +16832,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "search_search_controller",
-      "community": 57,
+      "community": 317,
       "norm_label": "search.controller.js"
     },
     {
@@ -16662,7 +16842,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "search_search_controller_all_types",
-      "community": 57,
+      "community": 317,
       "norm_label": "all_types"
     },
     {
@@ -16672,7 +16852,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "search_search_controller_searchall",
-      "community": 57,
+      "community": 317,
       "norm_label": "searchall()"
     },
     {
@@ -16682,7 +16862,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "search_search_routes",
-      "community": 26,
+      "community": 317,
       "norm_label": "search.routes.js"
     },
     {
@@ -16692,7 +16872,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "search_search_routes_searchroutes",
-      "community": 26,
+      "community": 317,
       "norm_label": "searchroutes()"
     },
     {
@@ -16992,7 +17172,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "settings_settings_controller_updatebranding",
-      "community": 113,
+      "community": 15,
       "norm_label": "updatebranding()"
     },
     {
@@ -17482,7 +17662,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "settings_settings_routes",
-      "community": 26,
+      "community": 113,
       "norm_label": "settings.routes.js"
     },
     {
@@ -17492,7 +17672,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "settings_settings_routes_settingsroutes",
-      "community": 26,
+      "community": 113,
       "norm_label": "settingsroutes()"
     },
     {
@@ -19022,7 +19202,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller",
-      "community": 251,
+      "community": 56,
       "norm_label": "timesheetsconfig.controller.js"
     },
     {
@@ -19032,7 +19212,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_actor",
-      "community": 251,
+      "community": 56,
       "norm_label": "actor()"
     },
     {
@@ -19042,7 +19222,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_fail",
-      "community": 251,
+      "community": 56,
       "norm_label": "fail()"
     },
     {
@@ -19052,7 +19232,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getlocks",
-      "community": 251,
+      "community": 56,
       "norm_label": "getlocks()"
     },
     {
@@ -19062,7 +19242,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_createlock",
-      "community": 251,
+      "community": 56,
       "norm_label": "createlock()"
     },
     {
@@ -19072,7 +19252,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_deletelock",
-      "community": 251,
+      "community": 56,
       "norm_label": "deletelock()"
     },
     {
@@ -19082,7 +19262,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getaudit",
-      "community": 251,
+      "community": 56,
       "norm_label": "getaudit()"
     },
     {
@@ -19092,7 +19272,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getapprovalchain",
-      "community": 251,
+      "community": 56,
       "norm_label": "getapprovalchain()"
     },
     {
@@ -19102,7 +19282,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchapprovalchain",
-      "community": 251,
+      "community": 56,
       "norm_label": "patchapprovalchain()"
     },
     {
@@ -19112,7 +19292,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getratesconfig",
-      "community": 251,
+      "community": 56,
       "norm_label": "getratesconfig()"
     },
     {
@@ -19122,7 +19302,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchratesconfig",
-      "community": 251,
+      "community": 56,
       "norm_label": "patchratesconfig()"
     },
     {
@@ -19132,7 +19312,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getbudgets",
-      "community": 251,
+      "community": 56,
       "norm_label": "getbudgets()"
     },
     {
@@ -19142,7 +19322,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchbudget",
-      "community": 251,
+      "community": 56,
       "norm_label": "patchbudget()"
     },
     {
@@ -19152,7 +19332,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getcostrates",
-      "community": 251,
+      "community": 56,
       "norm_label": "getcostrates()"
     },
     {
@@ -19162,7 +19342,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_patchcostrate",
-      "community": 251,
+      "community": 56,
       "norm_label": "patchcostrate()"
     },
     {
@@ -19172,7 +19352,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getweekconfig",
-      "community": 251,
+      "community": 56,
       "norm_label": "getweekconfig()"
     },
     {
@@ -19182,7 +19362,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_getdelegations",
-      "community": 251,
+      "community": 56,
       "norm_label": "getdelegations()"
     },
     {
@@ -19192,7 +19372,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_createdelegation",
-      "community": 251,
+      "community": 56,
       "norm_label": "createdelegation()"
     },
     {
@@ -19202,7 +19382,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "timesheets_timesheetsconfig_controller_deletedelegation",
-      "community": 251,
+      "community": 56,
       "norm_label": "deletedelegation()"
     },
     {
@@ -19572,7 +19752,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "plugins_cors",
-      "community": 37,
+      "community": 171,
       "norm_label": "cors.js"
     },
     {
@@ -19582,7 +19762,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "plugins_cors_corsplugin",
-      "community": 37,
+      "community": 171,
       "norm_label": "corsplugin()"
     },
     {
@@ -19882,7 +20062,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "utils_cloudinary",
-      "community": 113,
+      "community": 15,
       "norm_label": "cloudinary.js"
     },
     {
@@ -19892,7 +20072,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "utils_cloudinary_ensureconfigured",
-      "community": 113,
+      "community": 15,
       "norm_label": "ensureconfigured()"
     },
     {
@@ -19902,7 +20082,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "utils_cloudinary_uploadtocloudinary",
-      "community": 113,
+      "community": 15,
       "norm_label": "uploadtocloudinary()"
     },
     {
@@ -19912,7 +20092,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "utils_cloudinary_deletefromcloudinary",
-      "community": 113,
+      "community": 15,
       "norm_label": "deletefromcloudinary()"
     },
     {
@@ -19922,7 +20102,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "utils_cloudinary_iscloudinaryconfigured",
-      "community": 113,
+      "community": 15,
       "norm_label": "iscloudinaryconfigured()"
     },
     {
@@ -20182,7 +20362,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "utils_hash_hashsha256",
-      "community": 76,
+      "community": 102,
       "norm_label": "hashsha256()"
     },
     {
@@ -20222,7 +20402,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "utils_id_generateid",
-      "community": 82,
+      "community": 15,
       "norm_label": "generateid()"
     },
     {
@@ -20922,7 +21102,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "utils_payrolluishapes_componentcolor",
-      "community": 83,
+      "community": 62,
       "norm_label": "componentcolor()"
     },
     {
@@ -20932,7 +21112,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "utils_payrolluishapes_withcomponentcolor",
-      "community": 83,
+      "community": 62,
       "norm_label": "withcomponentcolor()"
     },
     {
@@ -20982,7 +21162,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "utils_payrolluishapes_fmtgarnishmentforui",
-      "community": 82,
+      "community": 83,
       "norm_label": "fmtgarnishmentforui()"
     },
     {
@@ -21362,7 +21542,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_login_detailed",
-      "community": 38,
+      "community": 316,
       "norm_label": "test-login-detailed.js"
     },
     {
@@ -21372,7 +21552,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "test_login_detailed_prisma",
-      "community": 38,
+      "community": 316,
       "norm_label": "prisma"
     },
     {
@@ -21382,7 +21562,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "test_login_detailed_testlogin",
-      "community": 38,
+      "community": 316,
       "norm_label": "testlogin()"
     },
     {
@@ -21392,7 +21572,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_auth_login_contract_test",
-      "community": 37,
+      "community": 171,
       "norm_label": "auth-login-contract.test.js"
     },
     {
@@ -21402,7 +21582,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "tests_auth_login_contract_test_setcookierows",
-      "community": 37,
+      "community": 171,
       "norm_label": "setcookierows()"
     },
     {
@@ -21412,7 +21592,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "tests_auth_login_contract_test_cookierow",
-      "community": 37,
+      "community": 171,
       "norm_label": "cookierow()"
     },
     {
@@ -21472,7 +21652,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_auth_refresh_contract_test",
-      "community": 37,
+      "community": 171,
       "norm_label": "auth-refresh-contract.test.js"
     },
     {
@@ -21482,7 +21662,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "tests_auth_refresh_contract_test_cookievalue",
-      "community": 37,
+      "community": 171,
       "norm_label": "cookievalue()"
     },
     {
@@ -21492,7 +21672,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "tests_auth_refresh_contract_test_cookiecleared",
-      "community": 37,
+      "community": 171,
       "norm_label": "cookiecleared()"
     },
     {
@@ -21502,7 +21682,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "tests_auth_refresh_contract_test_login",
-      "community": 37,
+      "community": 171,
       "norm_label": "login()"
     },
     {
@@ -21902,7 +22082,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_leave_engine_encashment_test",
-      "community": 314,
+      "community": 251,
       "norm_label": "leave-engine-encashment.test.js"
     },
     {
@@ -21912,7 +22092,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "tests_leave_engine_encashment_test_cfg",
-      "community": 314,
+      "community": 251,
       "norm_label": "cfg"
     },
     {
@@ -21922,7 +22102,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_leave_engine_ledger_test",
-      "community": 315,
+      "community": 314,
       "norm_label": "leave-engine-ledger.test.js"
     },
     {
@@ -21932,7 +22112,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "tests_leave_engine_ledger_test_t",
-      "community": 315,
+      "community": 314,
       "norm_label": "t()"
     },
     {
@@ -22052,7 +22232,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_rbac_policy_contract_test",
-      "community": 53,
+      "community": 113,
       "norm_label": "rbac-policy-contract.test.js"
     },
     {
@@ -22062,7 +22242,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "tests_rbac_policy_contract_test_login",
-      "community": 53,
+      "community": 113,
       "norm_label": "login()"
     },
     {
@@ -22162,7 +22342,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "verify_user",
-      "community": 38,
+      "community": 316,
       "norm_label": "verify-user.js"
     },
     {
@@ -22172,7 +22352,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "verify_user_prisma",
-      "community": 38,
+      "community": 316,
       "norm_label": "prisma"
     },
     {
@@ -22182,7 +22362,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "verify_user_verify",
-      "community": 38,
+      "community": 316,
       "norm_label": "verify()"
     },
     {
@@ -30842,7 +31022,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "docs_api_mapping_http_status_code_contract",
-      "community": 21,
+      "community": 318,
       "norm_label": "http status code contract"
     },
     {
@@ -30852,7 +31032,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "docs_api_mapping_validation_error_body_422",
-      "community": 21,
+      "community": 318,
       "norm_label": "validation error body (422)"
     },
     {
@@ -30862,7 +31042,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "docs_api_mapping_what_stays_400",
-      "community": 21,
+      "community": 318,
       "norm_label": "what stays 400"
     },
     {
@@ -34154,6 +34334,26 @@
       "id": "docs_api_mapping_timesheet_workflow_extras_phase_5_4_5_5_added_2026_06_22_live_msw_parity_verified",
       "community": 21,
       "norm_label": "timesheet workflow extras \u2014 phase 5.4/5.5 (added 2026-06-22) \u2705 live, msw-parity verified"
+    },
+    {
+      "label": "Billing \u2014 Phase 8.4 (added 2026-06-22) \u2705 Live, MSW-parity verified",
+      "file_type": "document",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5142",
+      "_origin": "ast",
+      "id": "docs_api_mapping_billing_phase_8_4_added_2026_06_22_live_msw_parity_verified",
+      "community": 21,
+      "norm_label": "billing \u2014 phase 8.4 (added 2026-06-22) \u2705 live, msw-parity verified"
+    },
+    {
+      "label": "Permissions \u2014 Phase 10 reconciliation (verified 2026-06-22) \u2705 No change needed",
+      "file_type": "document",
+      "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5152",
+      "_origin": "ast",
+      "id": "docs_api_mapping_permissions_phase_10_reconciliation_verified_2026_06_22_no_change_needed",
+      "community": 21,
+      "norm_label": "permissions \u2014 phase 10 reconciliation (verified 2026-06-22) \u2705 no change needed"
     },
     {
       "label": "BACKEND_REMAINING.md",
@@ -43328,6 +43528,17 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/app.js",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "billing_billing_routes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app.js",
       "source_location": "L4",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -43769,9 +43980,9 @@
       "source_file": "src/app.js",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "timesheets_timesheetsconfig_routes",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_routes"
     },
     {
       "relation": "imports_from",
@@ -45204,6 +45415,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "middleware_authenticate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/modules/dashboard/employee.routes.js",
       "source_location": "L1",
       "weight": 1.0,
@@ -45458,9 +45680,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "middleware_authenticate",
-      "confidence_score": 1.0
+      "target": "middleware_authenticate"
     },
     {
       "relation": "imports",
@@ -45527,6 +45749,17 @@
       "confidence_score": 1.0,
       "source": "auth_auth_routes",
       "target": "middleware_authenticate_authenticate"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "middleware_authenticate_authenticate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -45733,9 +45966,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "middleware_authenticate_authenticate",
-      "confidence_score": 1.0
+      "target": "middleware_authenticate_authenticate"
     },
     {
       "relation": "imports",
@@ -45823,6 +46056,28 @@
       "source_location": "L57",
       "weight": 1.0,
       "source": "auditlogs_auditlogs_routes_auditlogsroutes",
+      "target": "middleware_authenticate_authorize"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "middleware_authenticate_authorize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "billing_billing_routes_billingroutes",
       "target": "middleware_authenticate_authorize"
     },
     {
@@ -46074,9 +46329,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "middleware_authenticate_authorize",
-      "confidence_score": 1.0
+      "target": "middleware_authenticate_authorize"
     },
     {
       "relation": "calls",
@@ -53085,6 +53340,332 @@
       "weight": 1.0,
       "source": "auth_passwordreset_service_completepasswordreset",
       "target": "utils_hash_hashsha256"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "billing_billing_controller_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "billing_billing_controller_getinvoices",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "billing_billing_controller_getplans",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "billing_billing_controller_getsubscription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "billing_billing_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "utils_response",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "utils_response_errorresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "billing_billing_controller",
+      "target": "utils_response_successresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "billing_billing_controller",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "billing_billing_controller_fail",
+      "target": "utils_response_errorresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "billing_billing_controller_getinvoices",
+      "target": "billing_billing_controller_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "billing_billing_controller_getplans",
+      "target": "billing_billing_controller_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "billing_billing_controller_getsubscription",
+      "target": "billing_billing_controller_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "billing_billing_controller_getsubscription",
+      "target": "utils_response_successresponse"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "billing_billing_controller_getplans",
+      "target": "utils_response_successresponse"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/modules/billing/billing.controller.js",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "billing_billing_controller_getinvoices",
+      "target": "utils_response_successresponse"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "billing_billing_routes_admin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "billing_billing_routes_billingroutes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "billing_billing_routes_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.routes.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "billing_billing_routes",
+      "target": "billing_billing_routes_t",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "billing_billing_service_default_subscription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "billing_billing_service_getblob",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "billing_billing_service_getinvoices",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "billing_billing_service_getplans",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "billing_billing_service_getsubscription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "billing_billing_service_invoices",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "billing_billing_service_plans",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "plugins_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "billing_billing_service",
+      "target": "plugins_prisma_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "billing_billing_service_getinvoices",
+      "target": "billing_billing_service_getblob",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/billing/billing.service.js",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "billing_billing_service_getsubscription",
+      "target": "billing_billing_service_getblob",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -79479,9 +80060,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_actor",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_actor"
     },
     {
       "relation": "contains",
@@ -79489,9 +80070,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_createdelegation",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_createdelegation"
     },
     {
       "relation": "contains",
@@ -79499,9 +80080,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_createlock",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_createlock"
     },
     {
       "relation": "contains",
@@ -79509,9 +80090,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_deletedelegation",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_deletedelegation"
     },
     {
       "relation": "contains",
@@ -79519,9 +80100,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_deletelock",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_deletelock"
     },
     {
       "relation": "contains",
@@ -79529,9 +80110,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "contains",
@@ -79539,9 +80120,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getapprovalchain",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getapprovalchain"
     },
     {
       "relation": "contains",
@@ -79549,9 +80130,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getaudit",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getaudit"
     },
     {
       "relation": "contains",
@@ -79559,9 +80140,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getbudgets",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getbudgets"
     },
     {
       "relation": "contains",
@@ -79569,9 +80150,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L79",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getcostrates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getcostrates"
     },
     {
       "relation": "contains",
@@ -79579,9 +80160,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getdelegations",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getdelegations"
     },
     {
       "relation": "contains",
@@ -79589,9 +80170,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getlocks",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getlocks"
     },
     {
       "relation": "contains",
@@ -79599,9 +80180,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getratesconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getratesconfig"
     },
     {
       "relation": "contains",
@@ -79609,9 +80190,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_getweekconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_getweekconfig"
     },
     {
       "relation": "contains",
@@ -79619,9 +80200,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_patchapprovalchain",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_patchapprovalchain"
     },
     {
       "relation": "contains",
@@ -79629,9 +80210,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_patchbudget",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_patchbudget"
     },
     {
       "relation": "contains",
@@ -79639,9 +80220,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_patchcostrate",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_patchcostrate"
     },
     {
       "relation": "contains",
@@ -79649,9 +80230,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_controller_patchratesconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_patchratesconfig"
     },
     {
       "relation": "imports_from",
@@ -79660,9 +80241,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "timesheets_timesheetsconfig_service",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service"
     },
     {
       "relation": "imports_from",
@@ -79671,9 +80252,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "utils_response",
-      "confidence_score": 1.0
+      "target": "utils_response"
     },
     {
       "relation": "imports",
@@ -79682,9 +80263,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "utils_response_errorresponse",
-      "confidence_score": 1.0
+      "target": "utils_response_errorresponse"
     },
     {
       "relation": "imports",
@@ -79693,9 +80274,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller",
-      "target": "utils_response_successresponse",
-      "confidence_score": 1.0
+      "target": "utils_response_successresponse"
     },
     {
       "relation": "imports_from",
@@ -79704,9 +80285,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "timesheets_timesheetsconfig_controller",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller"
     },
     {
       "relation": "calls",
@@ -79715,9 +80296,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_createdelegation",
-      "target": "timesheets_timesheetsconfig_controller_actor",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_actor"
     },
     {
       "relation": "calls",
@@ -79726,9 +80307,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_createlock",
-      "target": "timesheets_timesheetsconfig_controller_actor",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_actor"
     },
     {
       "relation": "calls",
@@ -79737,9 +80318,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_createdelegation",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79748,9 +80329,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_createlock",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79759,9 +80340,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_deletedelegation",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79770,9 +80351,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_deletelock",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79781,9 +80362,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_fail",
-      "target": "utils_response_errorresponse",
-      "confidence_score": 1.0
+      "target": "utils_response_errorresponse"
     },
     {
       "relation": "calls",
@@ -79792,9 +80373,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getapprovalchain",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79803,9 +80384,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getaudit",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79814,9 +80395,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getbudgets",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79825,9 +80406,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getcostrates",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79836,9 +80417,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getdelegations",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79847,9 +80428,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getlocks",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79858,9 +80439,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getratesconfig",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79869,9 +80450,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L91",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_getweekconfig",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79880,9 +80461,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_patchapprovalchain",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79891,9 +80472,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_patchbudget",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79902,9 +80483,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_patchcostrate",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -79913,9 +80494,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.controller.js",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_controller_patchratesconfig",
-      "target": "timesheets_timesheetsconfig_controller_fail",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_controller_fail"
     },
     {
       "relation": "calls",
@@ -80099,9 +80680,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "timesheets_timesheetsconfig_routes_hr",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_routes_hr"
     },
     {
       "relation": "contains",
@@ -80109,9 +80690,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "timesheets_timesheetsconfig_routes_mgr",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_routes_mgr"
     },
     {
       "relation": "contains",
@@ -80119,9 +80700,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "timesheets_timesheetsconfig_routes_ok",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_routes_ok"
     },
     {
       "relation": "contains",
@@ -80129,9 +80710,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "timesheets_timesheetsconfig_routes_t",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_routes_t"
     },
     {
       "relation": "contains",
@@ -80139,9 +80720,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.routes.js",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_routes",
-      "target": "timesheets_timesheetsconfig_routes_timesheetsconfigroutes",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_routes_timesheetsconfigroutes"
     },
     {
       "relation": "imports_from",
@@ -80150,9 +80731,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "plugins_prisma",
-      "confidence_score": 1.0
+      "target": "plugins_prisma"
     },
     {
       "relation": "imports",
@@ -80161,9 +80742,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "plugins_prisma_prisma",
-      "confidence_score": 1.0
+      "target": "plugins_prisma_prisma"
     },
     {
       "relation": "contains",
@@ -80171,9 +80752,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L145",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_budgetstatusof",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_budgetstatusof"
     },
     {
       "relation": "contains",
@@ -80181,9 +80762,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_createdelegation",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_createdelegation"
     },
     {
       "relation": "contains",
@@ -80191,9 +80772,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_createlock",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_createlock"
     },
     {
       "relation": "contains",
@@ -80201,9 +80782,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L99",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_default_rates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_default_rates"
     },
     {
       "relation": "contains",
@@ -80211,9 +80792,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L267",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_deletedelegation",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_deletedelegation"
     },
     {
       "relation": "contains",
@@ -80221,9 +80802,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_deletelock",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_deletelock"
     },
     {
       "relation": "contains",
@@ -80231,9 +80812,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L80",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getapprovalchain",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getapprovalchain"
     },
     {
       "relation": "contains",
@@ -80241,9 +80822,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L67",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getaudit",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getaudit"
     },
     {
       "relation": "contains",
@@ -80251,9 +80832,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "contains",
@@ -80261,9 +80842,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L174",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getbudgets",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getbudgets"
     },
     {
       "relation": "contains",
@@ -80271,9 +80852,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getcostrates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getcostrates"
     },
     {
       "relation": "contains",
@@ -80281,9 +80862,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L217",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getdelegations",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getdelegations"
     },
     {
       "relation": "contains",
@@ -80291,9 +80872,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getlocks",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getlocks"
     },
     {
       "relation": "contains",
@@ -80301,9 +80882,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getratesconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getratesconfig"
     },
     {
       "relation": "contains",
@@ -80311,9 +80892,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L211",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_getweekconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getweekconfig"
     },
     {
       "relation": "contains",
@@ -80321,9 +80902,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_nowiso",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_nowiso"
     },
     {
       "relation": "contains",
@@ -80331,9 +80912,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_patchapprovalchain",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_patchapprovalchain"
     },
     {
       "relation": "contains",
@@ -80341,9 +80922,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_patchbudget",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_patchbudget"
     },
     {
       "relation": "contains",
@@ -80351,9 +80932,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L130",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_patchcostrate",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_patchcostrate"
     },
     {
       "relation": "contains",
@@ -80361,9 +80942,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L103",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_patchratesconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_patchratesconfig"
     },
     {
       "relation": "contains",
@@ -80371,9 +80952,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_round2",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_round2"
     },
     {
       "relation": "contains",
@@ -80381,9 +80962,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L109",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_seedcostrates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_seedcostrates"
     },
     {
       "relation": "contains",
@@ -80391,9 +80972,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "imports_from",
@@ -80402,9 +80983,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "utils_budgetmath",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath"
     },
     {
       "relation": "imports",
@@ -80413,9 +80994,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "utils_budgetmath_classifybudget",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath_classifybudget"
     },
     {
       "relation": "imports_from",
@@ -80424,9 +81005,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "utils_ratemath",
-      "confidence_score": 1.0
+      "target": "utils_ratemath"
     },
     {
       "relation": "imports",
@@ -80435,9 +81016,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service",
-      "target": "utils_ratemath_computemargins",
-      "confidence_score": 1.0
+      "target": "utils_ratemath_computemargins"
     },
     {
       "relation": "calls",
@@ -80446,9 +81027,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L260",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_createdelegation",
-      "target": "timesheets_timesheetsconfig_service_nowiso",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_nowiso"
     },
     {
       "relation": "calls",
@@ -80457,9 +81038,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_createlock",
-      "target": "timesheets_timesheetsconfig_service_nowiso",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_nowiso"
     },
     {
       "relation": "calls",
@@ -80468,9 +81049,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L150",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_budgetstatusof",
-      "target": "timesheets_timesheetsconfig_service_round2",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_round2"
     },
     {
       "relation": "calls",
@@ -80479,9 +81060,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L248",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_createdelegation",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80490,9 +81071,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_createlock",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80501,9 +81082,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L268",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_deletedelegation",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80512,9 +81093,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_deletelock",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80523,9 +81104,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getapprovalchain",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80534,9 +81115,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getaudit",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80545,9 +81126,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L175",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getbudgets",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80556,9 +81137,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L122",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getcostrates",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80567,9 +81148,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L218",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getdelegations",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80578,9 +81159,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getlocks",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80589,9 +81170,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getratesconfig",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80600,9 +81181,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L212",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getweekconfig",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80611,9 +81192,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L190",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchbudget",
-      "target": "timesheets_timesheetsconfig_service_getblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getblob"
     },
     {
       "relation": "calls",
@@ -80622,9 +81203,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L263",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_createdelegation",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80633,9 +81214,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_createlock",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80644,9 +81225,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L275",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_deletedelegation",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80655,9 +81236,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_deletelock",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80666,9 +81247,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L125",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getcostrates",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80677,9 +81258,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L94",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchapprovalchain",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80688,9 +81269,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L194",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchbudget",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80699,9 +81280,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchcostrate",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80710,9 +81291,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L105",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchratesconfig",
-      "target": "timesheets_timesheetsconfig_service_setblob",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_setblob"
     },
     {
       "relation": "calls",
@@ -80721,9 +81302,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L177",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getbudgets",
-      "target": "timesheets_timesheetsconfig_service_getratesconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getratesconfig"
     },
     {
       "relation": "calls",
@@ -80732,9 +81313,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L201",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchbudget",
-      "target": "timesheets_timesheetsconfig_service_getratesconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getratesconfig"
     },
     {
       "relation": "calls",
@@ -80743,9 +81324,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchratesconfig",
-      "target": "timesheets_timesheetsconfig_service_getratesconfig",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getratesconfig"
     },
     {
       "relation": "calls",
@@ -80754,9 +81335,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L124",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getcostrates",
-      "target": "timesheets_timesheetsconfig_service_seedcostrates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_seedcostrates"
     },
     {
       "relation": "calls",
@@ -80765,9 +81346,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L178",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getbudgets",
-      "target": "timesheets_timesheetsconfig_service_getcostrates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getcostrates"
     },
     {
       "relation": "calls",
@@ -80776,9 +81357,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L202",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchbudget",
-      "target": "timesheets_timesheetsconfig_service_getcostrates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getcostrates"
     },
     {
       "relation": "calls",
@@ -80787,9 +81368,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchcostrate",
-      "target": "timesheets_timesheetsconfig_service_getcostrates",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_getcostrates"
     },
     {
       "relation": "calls",
@@ -80798,9 +81379,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L158",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_budgetstatusof",
-      "target": "utils_budgetmath_classifybudget",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath_classifybudget"
     },
     {
       "relation": "calls",
@@ -80809,9 +81390,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_budgetstatusof",
-      "target": "utils_ratemath_computemargins",
-      "confidence_score": 1.0
+      "target": "utils_ratemath_computemargins"
     },
     {
       "relation": "calls",
@@ -80820,9 +81401,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L185",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_getbudgets",
-      "target": "timesheets_timesheetsconfig_service_budgetstatusof",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_budgetstatusof"
     },
     {
       "relation": "calls",
@@ -80831,9 +81412,9 @@
       "source_file": "src/modules/timesheets/timesheetsConfig.service.js",
       "source_location": "L207",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "timesheets_timesheetsconfig_service_patchbudget",
-      "target": "timesheets_timesheetsconfig_service_budgetstatusof",
-      "confidence_score": 1.0
+      "target": "timesheets_timesheetsconfig_service_budgetstatusof"
     },
     {
       "relation": "imports_from",
@@ -80842,9 +81423,9 @@
       "source_file": "tests/timesheet-budgetMath.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_timesheet_budgetmath_test",
-      "target": "utils_budgetmath",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath"
     },
     {
       "relation": "contains",
@@ -80852,9 +81433,9 @@
       "source_file": "src/modules/timesheets/utils/budgetMath.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_budgetmath",
-      "target": "utils_budgetmath_classifybudget",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath_classifybudget"
     },
     {
       "relation": "contains",
@@ -80862,9 +81443,9 @@
       "source_file": "src/modules/timesheets/utils/budgetMath.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_budgetmath",
-      "target": "utils_budgetmath_round2",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath_round2"
     },
     {
       "relation": "calls",
@@ -80873,9 +81454,9 @@
       "source_file": "src/modules/timesheets/utils/budgetMath.js",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_budgetmath_classifybudget",
-      "target": "utils_budgetmath_round2",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath_round2"
     },
     {
       "relation": "imports",
@@ -80884,9 +81465,9 @@
       "source_file": "tests/timesheet-budgetMath.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_timesheet_budgetmath_test",
-      "target": "utils_budgetmath_classifybudget",
-      "confidence_score": 1.0
+      "target": "utils_budgetmath_classifybudget"
     },
     {
       "relation": "imports_from",
@@ -80895,9 +81476,9 @@
       "source_file": "tests/timesheet-rateMath.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_timesheet_ratemath_test",
-      "target": "utils_ratemath",
-      "confidence_score": 1.0
+      "target": "utils_ratemath"
     },
     {
       "relation": "contains",
@@ -80905,9 +81486,9 @@
       "source_file": "src/modules/timesheets/utils/rateMath.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_ratemath",
-      "target": "utils_ratemath_computemargins",
-      "confidence_score": 1.0
+      "target": "utils_ratemath_computemargins"
     },
     {
       "relation": "contains",
@@ -80915,9 +81496,9 @@
       "source_file": "src/modules/timesheets/utils/rateMath.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_ratemath",
-      "target": "utils_ratemath_round2",
-      "confidence_score": 1.0
+      "target": "utils_ratemath_round2"
     },
     {
       "relation": "calls",
@@ -80926,9 +81507,9 @@
       "source_file": "src/modules/timesheets/utils/rateMath.js",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_ratemath_computemargins",
-      "target": "utils_ratemath_round2",
-      "confidence_score": 1.0
+      "target": "utils_ratemath_round2"
     },
     {
       "relation": "imports",
@@ -80937,9 +81518,9 @@
       "source_file": "tests/timesheet-rateMath.test.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_timesheet_ratemath_test",
-      "target": "utils_ratemath_computemargins",
-      "confidence_score": 1.0
+      "target": "utils_ratemath_computemargins"
     },
     {
       "relation": "calls",
@@ -84415,9 +84996,9 @@
       "source_file": "tests/timesheet-rateMath.test.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_timesheet_ratemath_test",
-      "target": "tests_timesheet_ratemath_test_billablerate",
-      "confidence_score": 1.0
+      "target": "tests_timesheet_ratemath_test_billablerate"
     },
     {
       "relation": "contains",
@@ -84425,9 +85006,9 @@
       "source_file": "tests/timesheet-rateMath.test.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_timesheet_ratemath_test",
-      "target": "tests_timesheet_ratemath_test_costrate",
-      "confidence_score": 1.0
+      "target": "tests_timesheet_ratemath_test_costrate"
     },
     {
       "relation": "contains",
@@ -92383,6 +92964,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5142",
+      "weight": 1.0,
+      "source": "docs_api_mapping_ems_api_actual_response_mapping",
+      "target": "docs_api_mapping_billing_phase_8_4_added_2026_06_22_live_msw_parity_verified",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/API_MAPPING.md",
       "source_location": "L1740",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -92713,6 +93304,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/API_MAPPING.md",
+      "source_location": "L5152",
+      "weight": 1.0,
+      "source": "docs_api_mapping_ems_api_actual_response_mapping",
+      "target": "docs_api_mapping_permissions_phase_10_reconciliation_verified_2026_06_22_no_change_needed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/API_MAPPING.md",
       "source_location": "L2869",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -92805,9 +93406,9 @@
       "source_file": "docs/API_MAPPING.md",
       "source_location": "L5117",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_api_mapping_ems_api_actual_response_mapping",
-      "target": "docs_api_mapping_timesheet_workflow_extras_phase_5_4_5_5_added_2026_06_22_live_msw_parity_verified",
-      "confidence_score": 1.0
+      "target": "docs_api_mapping_timesheet_workflow_extras_phase_5_4_5_5_added_2026_06_22_live_msw_parity_verified"
     },
     {
       "relation": "contains",
@@ -99911,5 +100512,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7f0eb3b1af1e674a2d36aa06a91a894dc7562469"
+  "built_at_commit": "adbd44ffb8b3adc6364d6b4708ebe7de4c6eee26"
 }
