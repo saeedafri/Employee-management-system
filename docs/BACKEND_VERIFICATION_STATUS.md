@@ -68,11 +68,20 @@ Additively seeded a **KWD (3-decimal) tenant** (`kwd-litmus-001`, country KW, ad
   2. **`getWorkerCostSummary` FX rates are a hardcoded placeholder table** — should come from a configurable rate provider.
 - Still TODO: sweep the remaining money-screens (analytics, payslip detail) at KWD/JPY in-browser (needs a calculated KWD payslip; blocked on the 2dp-rounding fix to render correct 3-decimal amounts).
 
+## Phase 12.1 (Agent B) — truly-global work-week (2026-06-23) — DONE + live-verified
+Root cause: attendance team grid + timesheets had a hardcoded **Mon–Fri** work-week, and there was **no tenant-level work-week field** any non-payroll module could read (work-week lived only on payroll's `LegalEntity`; `Employee` has no `legalEntityId`). KWD litmus tenant had zero legal entities → couldn't exercise a Sun–Thu path.
+- **Schema (additive):** `TenantConfig.workWeekPattern` (default `MON-FRI`) + `workWeekDays Json?` (migration `20260623090000_tenant_config_work_week`, `ADD COLUMN IF NOT EXISTS`, applied additively to the live DB; data-loss-guard PASS).
+- **Settings (`/settings/tenant`):** GET returns `work_week_pattern` + resolved `work_week_days` tokens; PATCH accepts them (422 on bad pattern). `/settings/attendance-rules.work_week_days` mirrors the canonical source and writes back to it.
+- **Attendance `/attendance/team/weekly`:** builds the tenant's working-day columns (Sun–Thu / Mon–Sat / …), snaps any `weekStart` to the first working day, marks non-working days `O`, UTC date math (fixed a latent off-by-one). Payroll keeps its per-LegalEntity work-week.
+- **Timesheets `/timesheets/week-config`:** `weekStartDay` derived from the tenant work-week (SUN-THU→0), explicit blob still wins. (Timesheet `weekStart` Monday anchor + overtime `standardWeeklyHours` left as-is — overtime already config-driven; the Monday unique-key/reminder anchor is deliberate.)
+- **Live litmus (MSW-off, :4001):** seeded KWD (`kwd-litmus-001`) work-week=`SUN-THU` (additive). `admin@kwd.test`: `/settings/tenant` → `["SUN","MON","TUE","WED","THU"]`; grid weekStart=Sunday, Sun is a workday (was `O`); week-config `weekStartDay:0`. `hr@acme.test` regression-safe (Mon–Fri, 5 cols). `npm run lint` green.
+- **FE follow-up filed:** FE-4 (`weekStartsOn` hardcoded Monday in the settings registry + grid `.slice(0,5)`).
+
 ## Genuine remaining work (honest)
 1. **12.1** — finish the per-module browser sweep at KWD/JPY (payroll runs with data, analytics, payslips); the harness + KWD tenant are now in place.
 2. **12.2 deepening** — per-route role-correctness sweep, secrets audit, dependency CVE scan.
 3. **Per-field shape parity** for MSW-shadowed modules (payroll-extras, timesheet-workflow) vs their contracts — screens render, exhaustive field diff not done.
-4. **Leave-types taxonomy reconciliation** — `GET /leave/types` now returns engine codes (EL/SL/CL/CO); admin CRUD `POST/PATCH/DELETE /leave/types/:id` still operates on DB `LeaveType` cuid rows. The admin settings screen and self-service screen use different taxonomies until unified.
+4. **Leave-types taxonomy reconciliation — RESOLVED.** Verified the FE only **GETs** `/leave/types` (engine codes) and manages leave types via `/leave/policies` + `/leave/assignments` — it never calls `POST/PATCH/DELETE /leave/types`. The legacy DB-row CRUD is orphaned (writes don't surface in GET once policies exist), so there is no broken FE flow. Marked the CRUD **[DEPRECATED]** in Swagger + API_MAPPING, pointing to policies/packs as the source of truth. No rearchitecture needed.
 4. Frontend follow-ups in `FRONTEND_FOLLOWUPS.md` (not our side).
 
 ## Verified this session (live, MSW-off)

@@ -7,7 +7,7 @@ export default async function leaveRoutes(fastify) {
   fastify.get('/leave/types', {
     schema: {
       tags: ['Leave Management'],
-      description: 'Get all active leave types for this tenant',
+      description: 'Get the leave-type catalog. Source of truth = the leave engine/policies: returns types with id===code (e.g. EL/SL/CL/CO) derived from active policies, so the self-service balance↔type join resolves. Falls back to legacy DB LeaveType rows only when no policies exist.',
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
@@ -17,7 +17,7 @@ export default async function leaveRoutes(fastify) {
   fastify.post('/leave/types', {
     schema: {
       tags: ['Leave Management'],
-      description: 'Create a new leave type (HR_ADMIN / SUPER_ADMIN only)',
+      description: '[DEPRECATED — legacy DB-row CRUD] Create a leave type. Leave types are now defined by policies/packs (manage via /leave/policies + /leave/assignments); rows created here do NOT appear in GET /leave/types once policies exist. Retained for back-compat only. HR_ADMIN / SUPER_ADMIN.',
       security: [{ Bearer: [] }],
       body: {
         type: 'object',
@@ -38,7 +38,7 @@ export default async function leaveRoutes(fastify) {
   fastify.patch('/leave/types/:id', {
     schema: {
       tags: ['Leave Management'],
-      description: 'Update a leave type (HR_ADMIN / SUPER_ADMIN only)',
+      description: '[DEPRECATED — legacy DB-row CRUD] Update a leave type by DB id. Catalog is policy-derived (manage via /leave/policies). Retained for back-compat only. HR_ADMIN / SUPER_ADMIN.',
       security: [{ Bearer: [] }],
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       body: {
@@ -59,7 +59,7 @@ export default async function leaveRoutes(fastify) {
   fastify.delete('/leave/types/:id', {
     schema: {
       tags: ['Leave Management'],
-      description: 'Deactivate a leave type (HR_ADMIN / SUPER_ADMIN only)',
+      description: '[DEPRECATED — legacy DB-row CRUD] Deactivate a leave type by DB id. Catalog is policy-derived (manage via /leave/policies). Retained for back-compat only. HR_ADMIN / SUPER_ADMIN.',
       security: [{ Bearer: [] }],
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },

@@ -1897,10 +1897,10 @@ Department detail panel — headcount, sub-departments, managers, employee list.
 
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
-| GET | `/leave/types` | all authenticated | List active leave types |
-| POST | `/leave/types` | HR_ADMIN, SUPER_ADMIN | Create new leave type |
-| PATCH | `/leave/types/:id` | HR_ADMIN, SUPER_ADMIN | Update fields |
-| DELETE | `/leave/types/:id` | HR_ADMIN, SUPER_ADMIN | Soft-deactivate (sets isActive=false) |
+| GET | `/leave/types` | all authenticated | Leave-type catalog. **Source of truth = engine/policies**: returns `id===code` (EL/SL/CL/CO…) from active policies so the balance↔type join resolves; falls back to legacy DB rows only when no policies exist. |
+| POST | `/leave/types` | HR_ADMIN, SUPER_ADMIN | **[DEPRECATED — legacy DB-row CRUD]** Types are defined by policies/packs (manage via `/leave/policies` + `/leave/assignments`); rows created here do NOT appear in GET once policies exist. Back-compat only. |
+| PATCH | `/leave/types/:id` | HR_ADMIN, SUPER_ADMIN | **[DEPRECATED — legacy DB-row CRUD]** Update by DB id; catalog is policy-derived. Back-compat only. |
+| DELETE | `/leave/types/:id` | HR_ADMIN, SUPER_ADMIN | **[DEPRECATED — legacy DB-row CRUD]** Deactivate by DB id; catalog is policy-derived. Back-compat only. |
 
 **POST body:**
 ```json
@@ -2023,9 +2023,19 @@ Response now returns both company identity fields (from `Tenant` model) and oper
   "timezone": "Asia/Kolkata",
   "working_hours_start": "09:00",
   "working_hours_end": "18:00",
-  "fiscal_year_start": 4
+  "fiscal_year_start": 4,
+  "work_week_pattern": "MON-FRI",
+  "work_week_days": ["MON", "TUE", "WED", "THU", "FRI"]
 }
 ```
+
+> **Work-week (truly-global, added 2026-06-23).** `work_week_pattern` is the coarse enum
+> (`MON-FRI` | `MON-SAT` | `SUN-THU`); `work_week_days` is the resolved fine-grained token
+> list (`["SUN".."SAT"]`, authoritative when set, else derived from the pattern). This is the
+> canonical **tenant-level** work-week the FE settings resolver reads (`fromTenant: t => t.work_week_days`).
+> A KWD/Kuwait tenant set to `SUN-THU` returns `["SUN","MON","TUE","WED","THU"]`. Payroll keeps its
+> own per-`LegalEntity` work-week. `/settings/attendance-rules.work_week_days` mirrors this (and
+> writes back to it on PATCH); `/attendance/team/weekly` and `/timesheets/week-config` consume it.
 
 ### `PATCH /settings/tenant` — now accepts Tenant identity fields
 
@@ -2042,10 +2052,14 @@ Extended body — any combination of:
   "company_name": "...",
   "timezone": "Asia/Kolkata",
   "working_hours_start": "09:00",
-  "working_hours_end": "18:00"
+  "working_hours_end": "18:00",
+  "work_week_pattern": "SUN-THU",
+  "work_week_days": ["SUN", "MON", "TUE", "WED", "THU"]
 }
 ```
 All fields optional. Returns the merged settings object (same shape as GET).
+`work_week_pattern` validates against `MON-FRI|MON-SAT|SUN-THU` (422 otherwise);
+`work_week_days` (when present) overrides the pattern.
 
 ---
 
@@ -2376,7 +2390,14 @@ Same response shape as bulk/approve. `comment` optional — defaults to `"Bulk d
 
 **Roles:** MANAGER, HR_ADMIN, SUPER_ADMIN.
 
-**Query params:** `weekStart` (YYYY-MM-DD, defaults to current Mon), `departmentId` (optional).
+**Query params:** `weekStart` (YYYY-MM-DD), `departmentId` (optional).
+
+> **Work-week aware (2026-06-23).** Columns are the tenant's working days, not a hardcoded
+> Mon–Fri: resolved from `TenantConfig` work-week (`work_week_days` over `work_week_pattern`,
+> fallback Mon–Fri). The grid begins on the first working day (SUN-THU → Sunday, 5 cols Sun→Thu;
+> MON-SAT → 6 cols) and any `weekStart` passed is snapped back to that day. Non-working days
+> render `O`. A KWD/`SUN-THU` tenant now correctly shows Sunday as a workday (was `O`). All date
+> math is UTC (no off-by-one).
 
 **Response `data`:**
 ```json
@@ -2399,7 +2420,7 @@ Same response shape as bulk/approve. `comment` optional — defaults to `"Bulk d
 }
 ```
 
-**`code` enum:** `P` (Present) | `A` (Absent) | `L` (Leave) | `W` (WFH) | `H` (Half-day) | `O` (Holiday/weekend).
+**`code` enum:** `P` (Present) | `A` (Absent) | `L` (Leave) | `W` (WFH) | `H` (Half-day) | `O` (Holiday / non-working day per tenant work-week).
 
 ---
 
@@ -5134,7 +5155,7 @@ Workflow/PSA config for timesheets. Mirrors `ems-frontend/src/mocks/handlers/tim
 | PATCH | /timesheets/budgets/:projectId | HR_ADMIN, SUPER_ADMIN | body `{basis(HOURS/FEES), cap}`; cap<=0 removes |
 | GET | /timesheets/cost-rates | MANAGER+ | `EmployeeCostRate[]` (lazily seeded from active roster @50) |
 | PATCH | /timesheets/cost-rates/:employeeId | HR_ADMIN, SUPER_ADMIN | body `{costRate}`; 404 if employee absent |
-| GET | /timesheets/week-config | any (auth) | `{weekStartDay}` (default 1=Mon) |
+| GET | /timesheets/week-config | any (auth) | `{weekStartDay}` (0=Sun..6=Sat) — derived from tenant work-week (SUN-THU→0); explicit `weekConfig` blob wins |
 | GET | /timesheets/delegations | MANAGER+ | `Delegation[]` |
 | POST | /timesheets/delegations | MANAGER+ | body `{delegateId,fromDate,toDate,role?,reason?}`; 422 bad dates/self-delegate; 201 |
 | DELETE | /timesheets/delegations/:id | MANAGER+ | `{deleted:true}`; 404 if absent |
