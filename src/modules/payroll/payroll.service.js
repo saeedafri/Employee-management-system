@@ -572,7 +572,19 @@ function deriveLoan(row) {
   };
 }
 
-export async function getEmployeeLoans(prisma, employeeId, tenantId) {
+// Loans are personal financial data: a non-admin may only read/create their OWN
+// loans; HR_ADMIN/SUPER_ADMIN may act for any employee in the tenant. This matches
+// the FE self-service "Request" button on My Pay (mode==='employee'); foreclosure
+// stays admin-only at the route level.
+function assertLoanAccess(requestingUser, employeeId) {
+  const isHR = ['HR_ADMIN', 'SUPER_ADMIN'].includes(requestingUser?.memberType);
+  if (!isHR && requestingUser?.employeeId !== employeeId) {
+    throw AppError('Access denied', 'FORBIDDEN', 403);
+  }
+}
+
+export async function getEmployeeLoans(prisma, employeeId, tenantId, requestingUser) {
+  assertLoanAccess(requestingUser, employeeId);
   const rows = await prisma.employeeLoan.findMany({
     where: { tenantId, employeeId },
     orderBy: { createdAt: 'desc' },
@@ -580,7 +592,8 @@ export async function getEmployeeLoans(prisma, employeeId, tenantId) {
   return rows.map(deriveLoan);
 }
 
-export async function createEmployeeLoan(prisma, employeeId, tenantId, data) {
+export async function createEmployeeLoan(prisma, employeeId, tenantId, data, requestingUser) {
+  assertLoanAccess(requestingUser, employeeId);
   // Contract LoanInput {type, principal, currency?, interestMethod, annualRatePct, tenureMonths,
   // startPeriod}. Back-compat: legacy {amount, emiAmount}.
   const principal = Number(data.principal ?? data.amount ?? 0);

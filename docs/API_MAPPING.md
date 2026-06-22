@@ -3796,7 +3796,7 @@ The payroll engine normalizes all monetary pack fields to major units before com
 ---
 
 #### `POST /payroll/employees/:id/loans`
-**Roles:** HR, SA
+**Roles:** HR, SA (any employee); EMPLOYEE/MANAGER (own `:id` only — self-service "Request loan/advance" from My Pay). Ownership enforced server-side in `payroll.service.assertLoanAccess`; creating a loan for another employee returns `403 FORBIDDEN`.
 
 **Request body:**
 ```json

@@ -319,14 +319,14 @@ export async function upsertTaxDeclaration(request, reply) {
 
 export async function getEmployeeLoans(request, reply) {
   try {
-    const data = await service.getEmployeeLoans(prisma, request.params.id, request.tenant.id);
+    const data = await service.getEmployeeLoans(prisma, request.params.id, request.tenant.id, request.user);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function createEmployeeLoan(request, reply) {
   try {
-    const data = await service.createEmployeeLoan(prisma, request.params.id, request.tenant.id, request.body);
+    const data = await service.createEmployeeLoan(prisma, request.params.id, request.tenant.id, request.body, request.user);
     reply.code(201).send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }

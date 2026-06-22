@@ -674,7 +674,10 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    // Self-service: an employee may request their OWN loan/advance (FE "Request"
+    // button on My Pay); HR_ADMIN/SUPER_ADMIN may create for anyone. Ownership is
+    // enforced in the service (assertLoanAccess). Foreclosure (PATCH) stays admin-only.
+    onRequest: [authenticate, authorize(allAuth)],
   }, ctrl.createEmployeeLoan);
 
   fastify.patch('/payroll/employees/:id/loans/:loanId', {
