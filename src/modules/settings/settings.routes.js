@@ -1,4 +1,5 @@
 import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as settingsController from './settings.controller.js';
 
 export default async function settingsRoutes(fastify) {
@@ -79,7 +80,8 @@ export default async function settingsRoutes(fastify) {
       description: 'Get role permissions matrix',
       security: [{ Bearer: [] }],
     },
-    onRequest: [authenticate, authorize(['SUPER_ADMIN'])],
+    onRequest: [authenticate],
+    preHandler: [requirePermission('permissions:manage')],
   }, (request, reply) => settingsController.getRolePermissions(request, reply));
 
   fastify.patch('/settings/roles-permissions', {
@@ -99,7 +101,8 @@ export default async function settingsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['SUPER_ADMIN'])],
+    onRequest: [authenticate],
+    preHandler: [requirePermission('permissions:manage')],
   }, (request, reply) => settingsController.updateRolePermissions(request, reply));
 
 

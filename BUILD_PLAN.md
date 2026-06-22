@@ -85,6 +85,13 @@ backend reimplemented logic ad hoc.
   `node --test tests/auth-login-contract.test.js` passed 2/2,
   `node --test tests/auth-refresh-contract.test.js` passed 3/3, and
   `npm run test:smoke` passed 4/4.
+- [x] 1.4 RBAC policy layer — added a backend permission catalog matching the frontend
+  permission-key contract, `hasPermission()`, and a Fastify `preHandler` factory
+  (`requirePermission`). Wired `GET/PATCH /settings/roles-permissions` to enforce
+  `permissions:manage` server-side instead of relying only on UI affordances or role labels.
+  Verified 2026-06-22: `node --test tests/rbac-policy-contract.test.js` passed 2/2,
+  `node --test tests/auth-login-contract.test.js` passed 2/2,
+  `node --test tests/auth-me.test.js` passed 7/7, and `npm run test:smoke` passed 4/4.
 
 ## Backlog — documented divergences to reconcile (highest value first)
 
