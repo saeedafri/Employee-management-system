@@ -994,6 +994,13 @@ model TenantConfig {
   timezone          String   @default("Asia/Kolkata")
   workingHoursStart String   @default("09:00") // HH:mm format
   workingHoursEnd   String   @default("18:00") // HH:mm format
+  // Tenant-level work-week (truly-global). Coarse pattern for back-compat
+  // (MON-FRI | MON-SAT | SUN-THU); workWeekDays is the fine-grained override
+  // (string[] abbrevs e.g. ["SUN","MON","TUE","WED","THU"] or 0-6 numbers).
+  // Read by non-payroll modules (attendance grid, timesheets week-start);
+  // payroll keeps its per-LegalEntity work-week. Parsed via utils/workingDays.js.
+  workWeekPattern   String   @default("MON-FRI")
+  workWeekDays      Json?
   fiscalYearStart   Int      @default(4) // April = 4
   fiscalYearEnd     Int      @default(3) // March = 3
   inviteEmailTarget String   @default("PERSONAL") // PERSONAL | WORK
@@ -1053,7 +1060,7 @@ model SalaryComponent {
   code            String
   type            ComponentType
   calculationType CalculationType
-  value           Decimal?        @db.Decimal(15, 2)
+  value           Decimal?        @db.Decimal(18, 4)
   basisCode       String?
   formula         String?
   taxable         Boolean         @default(true)
@@ -1103,7 +1110,7 @@ model PayGroupComponent {
   payGroupId              String
   componentId             String
   overrideCalculationType CalculationType?
-  overrideValue           Decimal?         @db.Decimal(15, 2)
+  overrideValue           Decimal?         @db.Decimal(18, 4)
   overrideFormula         String?
 
   // Relations
@@ -1120,7 +1127,7 @@ model EmployeeSalary {
   tenantId          String
   employeeId        String
   payGroupId        String
-  annualCtc         Decimal   @db.Decimal(15, 2)
+  annualCtc         Decimal   @db.Decimal(18, 4)
   effectiveFrom     DateTime
   effectiveTo       DateTime?
   country           String?   @default("IN")
@@ -1156,10 +1163,10 @@ model PayrollRun {
   type             String           @default("REGULAR") // REGULAR | OFF_CYCLE | BONUS | ARREARS | FNF | REVERSAL
   status           PayrollRunStatus @default(DRAFT)
   employeeCount    Int              @default(0)
-  totalGross       Decimal          @default(0) @db.Decimal(15, 2)
-  totalDeductions  Decimal          @default(0) @db.Decimal(15, 2)
-  totalNet         Decimal          @default(0) @db.Decimal(15, 2)
-  employerCost     Decimal          @default(0) @db.Decimal(15, 2)
+  totalGross       Decimal          @default(0) @db.Decimal(18, 4)
+  totalDeductions  Decimal          @default(0) @db.Decimal(18, 4)
+  totalNet         Decimal          @default(0) @db.Decimal(18, 4)
+  employerCost     Decimal          @default(0) @db.Decimal(18, 4)
   currency         String           @default("INR")
   initiatedById    String?
   approvedById     String?
@@ -1196,9 +1203,9 @@ model Payslip {
   employeeId                String
   period                    String // "2024-06"
   currency                  String        @default("INR")
-  grossEarnings             Decimal       @default(0) @db.Decimal(15, 2)
-  totalDeductions           Decimal       @default(0) @db.Decimal(15, 2)
-  netPay                    Decimal       @default(0) @db.Decimal(15, 2)
+  grossEarnings             Decimal       @default(0) @db.Decimal(18, 4)
+  totalDeductions           Decimal       @default(0) @db.Decimal(18, 4)
+  netPay                    Decimal       @default(0) @db.Decimal(18, 4)
   workingDays               Int           @default(0)
   presentDays               Int           @default(0)
   leaveDays                 Int           @default(0)
@@ -1300,9 +1307,9 @@ model EmployeeLoan {
   id          String   @id @default(cuid())
   tenantId    String
   employeeId  String
-  amount      Decimal  @db.Decimal(15, 2)
-  balance     Decimal  @db.Decimal(15, 2)
-  emiAmount   Decimal  @db.Decimal(15, 2)
+  amount      Decimal  @db.Decimal(18, 4)
+  balance     Decimal  @db.Decimal(18, 4)
+  emiAmount   Decimal  @db.Decimal(18, 4)
   startPeriod String
   endPeriod   String?
   status      String   @default("ACTIVE")
@@ -1330,7 +1337,7 @@ model PayrollInput {
   employeeId        String
   lopDays           Float    @default(0)
   otHours           Float    @default(0)
-  variablePay       Decimal? @db.Decimal(15, 2)
+  variablePay       Decimal? @db.Decimal(18, 4)
   oneTimeAdditions  Json?
   oneTimeDeductions Json?
   createdAt         DateTime @default(now())
@@ -1373,11 +1380,11 @@ model OpeningBalance {
   tenantId        String
   employeeId      String
   fiscalYear      String
-  grossEarnings   Decimal  @db.Decimal(15, 2)
-  taxableIncome   Decimal  @db.Decimal(15, 2)
-  taxDeducted     Decimal  @db.Decimal(15, 2)
-  totalDeductions Decimal  @db.Decimal(15, 2)
-  netPay          Decimal  @db.Decimal(15, 2)
+  grossEarnings   Decimal  @db.Decimal(18, 4)
+  taxableIncome   Decimal  @db.Decimal(18, 4)
+  taxDeducted     Decimal  @db.Decimal(18, 4)
+  totalDeductions Decimal  @db.Decimal(18, 4)
+  netPay          Decimal  @db.Decimal(18, 4)
   contributions   Json     @default("{}")
   importedAt      DateTime @default(now())
 
@@ -1394,9 +1401,9 @@ model HistoricalPayslip {
   employeeId      String
   employeeCode    String
   period          String
-  grossEarnings   Decimal  @db.Decimal(15, 2)
-  totalDeductions Decimal  @db.Decimal(15, 2)
-  netPay          Decimal  @db.Decimal(15, 2)
+  grossEarnings   Decimal  @db.Decimal(18, 4)
+  totalDeductions Decimal  @db.Decimal(18, 4)
+  netPay          Decimal  @db.Decimal(18, 4)
   importedAt      DateTime @default(now())
 
   tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -1765,7 +1772,7 @@ model ReimbursementCategory {
   tenantId   String
   code       String
   label      String
-  monthlyCap Decimal  @default(0) @db.Decimal(15, 2)
+  monthlyCap Decimal  @default(0) @db.Decimal(18, 4)
   createdAt  DateTime @default(now())
 
   claims ReimbursementClaim[]
@@ -1780,7 +1787,7 @@ model ReimbursementClaim {
   tenantId    String
   employeeId  String
   categoryId  String
-  amount      Decimal   @db.Decimal(15, 2)
+  amount      Decimal   @db.Decimal(18, 4)
   currency    String    @default("INR")
   description String?
   proofUrl    String?
@@ -1807,9 +1814,9 @@ model Garnishment {
   type                   String // CHILD_SUPPORT | SPOUSAL_SUPPORT | TAX_LEVY | COURT_ORDER | DEFAULTED_LOAN
   priority               Int      @default(1)
   amountKind             String   @default("FLAT") // FLAT | PERCENT_OF_DISPOSABLE
-  amountValue            Decimal  @db.Decimal(15, 2)
-  protectedEarningsFloor Decimal  @default(0) @db.Decimal(15, 2)
-  cap                    Decimal? @db.Decimal(15, 2)
+  amountValue            Decimal  @db.Decimal(18, 4)
+  protectedEarningsFloor Decimal  @default(0) @db.Decimal(18, 4)
+  cap                    Decimal? @db.Decimal(18, 4)
   reference              String?
   effectiveFrom          String
   effectiveTo            String?
@@ -1829,10 +1836,10 @@ model ContractorInvoice {
   workerId       String
   workerName     String
   period         String
-  amount         Decimal   @db.Decimal(15, 2)
+  amount         Decimal   @db.Decimal(18, 4)
   currency       String    @default("USD")
   withholdingPct Decimal   @default(0) @db.Decimal(5, 2)
-  netPayable     Decimal   @db.Decimal(15, 2)
+  netPayable     Decimal   @db.Decimal(18, 4)
   status         String    @default("SUBMITTED") // SUBMITTED | APPROVED | PAID | VOIDED
   payoutRef      String?
   submittedAt    DateTime  @default(now())
@@ -1852,7 +1859,7 @@ model PaymentBatch {
   tenantId     String
   runId        String
   count        Int       @default(0)
-  totalAmount  Decimal   @default(0) @db.Decimal(15, 2)
+  totalAmount  Decimal   @default(0) @db.Decimal(18, 4)
   currency     String    @default("INR")
   status       String    @default("PENDING") // PENDING | PROCESSING | COMPLETED
   linesJson    Json      @default("[]")
