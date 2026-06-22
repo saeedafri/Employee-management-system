@@ -196,6 +196,8 @@ model Tenant {
   compOffRequests           CompOffRequest[]
   leaveRequests             LeaveRequest[]
   holidays                  Holiday[]
+  holidayPolicies           HolidayPolicy[]
+  holidayOptionalSelections HolidayOptionalSelection[]
   resignations              Resignation[]
   auditLogs                 AuditLog[]
   logEntries                LogEntry[]
@@ -335,6 +337,7 @@ model Employee {
   leaveAssignments          LeaveAssignment[]
   leaveLedgerTxns           LeaveLedgerTxn[]
   compOffRequests           CompOffRequest[]
+  holidayOptionalSelections HolidayOptionalSelection[]
   resignations              Resignation[]
   salaries                  EmployeeSalary[]
   payslips                  Payslip[]
@@ -774,6 +777,38 @@ model Holiday {
 
   @@index([tenantId])
   @@index([holidayDate])
+}
+
+// ── Holiday Policy (Phase 7.2): per-country restricted-limit + observed-rule ──────
+// Config-over-code: per-country behaviour is data, never `if (country === …)`.
+model HolidayPolicy {
+  id              String   @id @default(cuid())
+  tenantId        String
+  countryCode     String // ISO-3166 alpha-2
+  restrictedLimit Int      @default(0) // max optional picks; 0 = no limit
+  observedRule    String   @default("NONE") // NONE | NEXT_WORKING_DAY | NEAREST_WORKING_DAY
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, countryCode])
+  @@index([tenantId])
+}
+
+model HolidayOptionalSelection {
+  id         String   @id @default(cuid())
+  tenantId   String
+  employeeId String
+  holidayId  String
+  year       Int
+  createdAt  DateTime @default(now())
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, employeeId, holidayId])
+  @@index([tenantId, employeeId, year])
 }
 
 model Resignation {

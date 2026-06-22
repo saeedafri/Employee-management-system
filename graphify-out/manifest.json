@@ -695,8 +695,8 @@
     "semantic_hash": ""
   },
   "src/modules/holidays/holidays.routes.js": {
-    "mtime": 1779803316.7737162,
-    "ast_hash": "66c0236f9201d23512b13c29f0e1b299",
+    "mtime": 1782120145.0808105,
+    "ast_hash": "4a4e1374f460d40231d50774aa41a2b7",
     "semantic_hash": ""
   },
   "src/modules/holidays/holidays.service.js": {
@@ -945,8 +945,8 @@
     "semantic_hash": ""
   },
   "src/plugins/swagger.js": {
-    "mtime": 1782119209.468061,
-    "ast_hash": "758e8fad25d28e80c282981952b56b12",
+    "mtime": 1782120444.8231587,
+    "ast_hash": "6f08bafb74abb12dcace1621ee1621d2",
     "semantic_hash": ""
   },
   "src/server.js": {
@@ -1500,8 +1500,8 @@
     "semantic_hash": ""
   },
   "docs/API_MAPPING.md": {
-    "mtime": 1782119261.5343988,
-    "ast_hash": "0f328f4130200a10c7558942d4e37961",
+    "mtime": 1782120461.8776205,
+    "ast_hash": "6ed4f366d9e1a8e37ad7ca0f2e122aa9",
     "semantic_hash": ""
   },
   "docs/BACKEND_TEAM_HANDOFF_FIX_REPORT.md": {
@@ -2117,6 +2117,36 @@
   "docs/superpowers/plans/2026-06-22-phase0-foundation-harness.md": {
     "mtime": 1782111228.4238214,
     "ast_hash": "2d033091b15e8ec0347b7b8a16f86098",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260622100000_holiday_policy/migration.sql": {
+    "mtime": 1782119977.3028512,
+    "ast_hash": "d87113226994883e2bf914ddfc85b7fd",
+    "semantic_hash": ""
+  },
+  "src/modules/holidays/holidaysPolicy.controller.js": {
+    "mtime": 1782120101.7182035,
+    "ast_hash": "255822a473bf54a9208245214938de36",
+    "semantic_hash": ""
+  },
+  "src/modules/holidays/holidaysPolicy.service.js": {
+    "mtime": 1782120169.3030877,
+    "ast_hash": "018b88fed9d7e9a69e61657a71a4b7f4",
+    "semantic_hash": ""
+  },
+  "src/modules/holidays/utils/applicability.js": {
+    "mtime": 1782120011.0162237,
+    "ast_hash": "23c5080e9e4de9f2dd76ebffb8280ca7",
+    "semantic_hash": ""
+  },
+  "src/modules/holidays/utils/observedDates.js": {
+    "mtime": 1782120021.7857037,
+    "ast_hash": "7b9e4dc34721fd0f1afcd8e83c772f5b",
+    "semantic_hash": ""
+  },
+  "tests/holiday-observedDates.test.js": {
+    "mtime": 1782120044.0040686,
+    "ast_hash": "8349215432896603d04d3674501bb265",
     "semantic_hash": ""
   }
 }

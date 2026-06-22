@@ -255,6 +255,19 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
 
+        // ── HOLIDAY POLICY (Phase 7.2 — per-country restricted-limit + observed-rule) ──
+        '/holidays/policy': {
+          get:   op('Holidays', 'Per-country holiday policies (restricted-limit + observed-rule)'),
+          patch: op('Holidays', 'Upsert a country holiday policy (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['countryCode'], properties: { countryCode: { type: 'string' }, restrictedLimit: { type: 'integer' }, observedRule: { type: 'string', enum: ['NONE', 'NEXT_WORKING_DAY', 'NEAREST_WORKING_DAY'] } } } }] }),
+        },
+        '/holidays/optional-selections': {
+          get:  op('Holidays', 'Restricted-holiday ids selected by an employee for a year', true, { parameters: [queryParam('employeeId', 'string', 'Defaults to caller (privileged only)'), queryParam('year', 'integer', 'Calendar year')] }),
+          post: op('Holidays', 'Select a restricted holiday — 404 if missing, 422 NOT_OPTIONAL/WRONG_COUNTRY/PAST_HOLIDAY/LIMIT_REACHED', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['holidayId', 'year'], properties: { holidayId: { type: 'string' }, year: { type: 'integer' } } } }], responses: { 200: r200, 404: r404, 422: r422 } }),
+        },
+        '/holidays/optional-selections/{holidayId}': {
+          delete: op('Holidays', 'Deselect a restricted holiday — 422 PAST_HOLIDAY', true, { parameters: [pathParam('holidayId', 'Holiday id'), queryParam('year', 'integer', 'Calendar year')], responses: { 200: r200, 422: r422 } }),
+        },
+
         // ── ATTENDANCE ───────────────────────────────────────────────────────
         '/attendance/check-in': {
           post: op('Attendance', 'Record check-in'),

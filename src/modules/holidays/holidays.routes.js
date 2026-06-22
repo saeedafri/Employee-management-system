@@ -9,6 +9,13 @@ import {
   previewImport,
   commitImport,
 } from './holidays.controller.js';
+import {
+  getHolidayPolicy,
+  patchHolidayPolicy,
+  getOptionalSelections,
+  addOptionalSelection,
+  removeOptionalSelection,
+} from './holidaysPolicy.controller.js';
 
 export default async function holidaysRoutes(fastify) {
   fastify.addHook('onRequest', authenticate);
@@ -154,4 +161,72 @@ export default async function holidaysRoutes(fastify) {
     },
     onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
   }, commitImport);
+
+  // ── Holiday Policy (Phase 7.2) — per-country restricted-limit + observed-rule ──
+  fastify.get('/holidays/policy', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Per-country holiday policies (restricted-limit + observed-rule)',
+      security: [{ Bearer: [] }],
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+  }, getHolidayPolicy);
+
+  fastify.patch('/holidays/policy', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Upsert a country holiday policy (HR_ADMIN / SUPER_ADMIN)',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['countryCode'],
+        properties: {
+          countryCode: { type: 'string' },
+          restrictedLimit: { type: 'integer' },
+          observedRule: { type: 'string', enum: ['NONE', 'NEXT_WORKING_DAY', 'NEAREST_WORKING_DAY'] },
+        },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+  }, patchHolidayPolicy);
+
+  // ── Optional (restricted) holiday selections ──
+  fastify.get('/holidays/optional-selections', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Restricted-holiday ids selected by an employee for a year',
+      security: [{ Bearer: [] }],
+      querystring: {
+        type: 'object',
+        properties: { employeeId: { type: 'string' }, year: { type: 'integer' } },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+  }, getOptionalSelections);
+
+  fastify.post('/holidays/optional-selections', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Select a restricted holiday (validates optional/country/past/limit)',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['holidayId', 'year'],
+        properties: { holidayId: { type: 'string' }, year: { type: 'integer' } },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+  }, addOptionalSelection);
+
+  fastify.delete('/holidays/optional-selections/:holidayId', {
+    schema: {
+      tags: ['Holidays'],
+      description: 'Deselect a restricted holiday (422 if past)',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['holidayId'], properties: { holidayId: { type: 'string' } } },
+      querystring: { type: 'object', properties: { year: { type: 'integer' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+  }, removeOptionalSelection);
 }

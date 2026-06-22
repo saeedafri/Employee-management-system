@@ -5093,3 +5093,21 @@ Envelope: all responses `{ success, data, meta }` (FE reads `.data`). Leave-type
 **Data isolation:** non-privileged roles (EMPLOYEE/AUDITOR) requesting another employee's ledger/assignments are silently forced to their own (handles the FE's stale `employeeId=emp-1` default gracefully).
 
 `LedgerTxn` = `{id, employeeId, leaveTypeId(code), policyId, policyVersion, type, delta(number), effectiveDate(YYYY-MM-DD), postedAt(ISO), leaveYear, sourceRef?, reason, systemGenerated}`. `type` ∈ OPENING_GRANT | ACCRUAL | CARRY_FORWARD_IN | CARRY_FORWARD_EXPIRED | LEAVE_TAKEN | LEAVE_PENDING_HOLD | LEAVE_PENDING_RELEASE | COMP_OFF_EARNED | ENCASHED | LOP_CONVERSION | ADJUSTMENT | REVERSAL.
+
+---
+
+## Holiday Policy — Phase 7.2 (added 2026-06-22) ✅ Live, MSW-parity verified
+
+Per-country restricted-holiday limits + observed-day (substitute) rules, and per-employee optional-holiday selections. Mirrors `ems-frontend/src/mocks/handlers/holidays.ts`. Pure `observedDate` + `resolveApplicableHolidays` ported verbatim (10 ported unit tests green). Config-over-code: per-country behaviour is data (`HolidayPolicy` rows), never branches.
+
+**New tables** (additive migration `20260622100000_holiday_policy`): `HolidayPolicy` (unique `tenantId+countryCode`), `HolidayOptionalSelection` (unique `tenantId+employeeId+holidayId`).
+
+| Method | Path | Roles | Response `data` |
+|--------|------|-------|------------------|
+| GET | /holidays/policy | any (auth) | `{ policies: [{countryCode, restrictedLimit, observedRule}] }` (seed defaults IN 2/NONE, US 0/NEAREST when none saved) |
+| PATCH | /holidays/policy | HR_ADMIN, SUPER_ADMIN | `{ policies: [...] }` — body `{countryCode, restrictedLimit?, observedRule?}` (observedRule ∈ NONE/NEXT_WORKING_DAY/NEAREST_WORKING_DAY) |
+| GET | /holidays/optional-selections?employeeId=&year= | any (own; privileged any) | `{ holidayIds: string[] }` |
+| POST | /holidays/optional-selections | any (auth) | `{ holidayIds }` — body `{holidayId, year}`; 404 `NOT_FOUND`; 422 `NOT_OPTIONAL`/`WRONG_COUNTRY`/`PAST_HOLIDAY`/`LIMIT_REACHED`. Idempotent. |
+| DELETE | /holidays/optional-selections/:holidayId?year= | any (auth) | `{ holidayIds }` (year-scoped); 422 `PAST_HOLIDAY` |
+
+Validation order on select: NOT_OPTIONAL → WRONG_COUNTRY → PAST_HOLIDAY → (idempotent) → LIMIT_REACHED (limit 0 = unlimited). `.ics import` (POST /holidays/import + preview/commit) was already live.
