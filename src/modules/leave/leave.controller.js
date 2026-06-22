@@ -7,6 +7,13 @@ import * as leaveValidator from './leave.validator.js';
 export async function getLeaveTypes(request, reply) {
   try {
     const tenantId = request.tenant.id;
+    // MSW-parity: the self-service screen joins /leave/balance (leaveTypeId = engine code
+    // EL/SL/CL/CO) to /leave/types by id. Prefer the engine catalog (id === code) so that
+    // join resolves; fall back to legacy DB LeaveType rows when no policies exist.
+    const engineTypes = await leaveEngineService.getLeaveTypesFromPolicies(prisma, tenantId);
+    if (engineTypes && engineTypes.length > 0) {
+      return reply.code(200).send(successResponse(engineTypes));
+    }
     const types = await leaveService.getLeaveTypes(tenantId);
     return reply.code(200).send(successResponse(types));
   } catch (error) {

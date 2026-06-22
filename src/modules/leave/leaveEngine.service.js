@@ -247,6 +247,33 @@ export async function getBalancesForEmployee(prisma, tenantId, employeeId, count
   return getBalances(ctx, ledger, policies);
 }
 
+/**
+ * Leave-type catalog derived from active policies — mirrors the FE leave-engine
+ * `GET /leave/types` handler so `id === code === leaveTypeCode` (EL/SL/CL/CO).
+ * This keeps the self-service balance↔type join working: `/leave/balance` returns
+ * `leaveTypeId = code`, so `/leave/types` must key on the same code (not a DB cuid),
+ * otherwise the FE join yields undefined and crashes reading `.color`. Union across
+ * all policies' rules (not country-filtered) so every balance code is covered.
+ */
+export async function getLeaveTypesFromPolicies(prisma, tenantId) {
+  const policies = await getTenantPolicies(prisma, tenantId);
+  const seen = new Map();
+  for (const p of policies) {
+    for (const rule of p.rules ?? []) {
+      if (seen.has(rule.leaveTypeCode)) continue;
+      seen.set(rule.leaveTypeCode, {
+        id: rule.leaveTypeCode,
+        code: rule.leaveTypeCode,
+        name: LEAVE_TYPE_NAMES[rule.leaveTypeCode] ?? rule.leaveTypeCode,
+        annualAllowance: rule.annualQuota ?? 0,
+        carryForwardAllowed: rule.carryForward?.allowed ?? false,
+        isPaid: rule.isPaid ?? true,
+      });
+    }
+  }
+  return [...seen.values()];
+}
+
 export async function postAdjustment(prisma, tenantId, employeeId, leaveTypeCode, delta, reason, country) {
   const employee = await repo.getEmployee(prisma, tenantId, employeeId);
   const ctx = buildEmployeeContext(employee ?? { id: employeeId }, country);
