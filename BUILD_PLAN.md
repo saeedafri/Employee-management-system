@@ -194,20 +194,41 @@ backend reimplemented logic ad hoc.
   all captured frontend API responses `fromServiceWorker=false`, and dashboard APIs 200.
   Screenshot: `/tmp/ems-status-hardening-dashboard-25s.png`.
 
+## Live verification pass — 2026-06-23 (against Render DB, MSW-off)
+
+Local backend (`node src/server.js`, `.env` → Render external DB) + read-only API verification.
+**Finding: the backend is feature-complete vs the FE contract; the backlog/MSW lists below were
+stale.** No genuine code defects surfaced. Truly-global litmus PASSED at a **non-default 3-decimal
+currency**: KWD tenant (`admin@kwd.test`) payroll run returned `totalGross 1400.777`,
+`totalNet 1280.71`, `currency "KWD"`, components `1000.555` — zero INR/2dp assumption. ~40 endpoints
+across all 16 modules returned 200; RBAC correct (HR_ADMIN → 403 on SUPER_ADMIN-only roles-permissions);
+employees emit `data.data[] + pagination`; payroll runs emit `data.items[]`; leave engine serves
+`types/balance/ledger/policies/comp-off`. **Operational caveat (not a bug):** Render
+`connection_limit=5` causes intermittent pool-timeout 500s under burst — tune pool, don't patch routes.
+
 ## Backlog — documented divergences to reconcile (highest value first)
 
-- [ ] Loans PR-1 — align live `amount`/`balance` strings → numeric `principal`/`outstandingBalance`.
-- [ ] Sub-monthly payroll — semi-monthly run doubles pay; needs `salary.legalEntityId`.
+- [x] Loans PR-1 — `deriveLoan()` returns numeric `principal`/`outstandingBalance`/`emiAmount` +
+  derived `schedule[]` (payroll.service.js:547). Code-verified; loans endpoints live (200). Not run-exercised.
+- [x] Sub-monthly payroll — **LIVE-VERIFIED 2026-06-23, doubling bug fixed.** Unit test `payroll-subMonthly.test.js`
+  3/3 green (factor `12/ppy`, `SEMI_MONTHLY` ppy=24 → 0.5). Live E2E on the KWD litmus tenant: same employee
+  (annualCtc 12006.66, monthly gross 1400.777) under a SEMI_MONTHLY group → run grossed **700.389 (exactly half)**,
+  ded 60.033, net 640.356 — **not doubled (≠2801.554), not full-monthly (≠1400.777)**, KWD 3dp preserved.
+  State restored (run CANCELLED, employee back on MONTHLY group). Residue: inert labeled litmus group
+  "KWD Semi Litmus" (HR_ADMIN can't delete groups — SUPER_ADMIN-only; harmless, no active emp/run).
 - [x] Attendance UTC bug (BR-ATT-2) — classify day in employee/tenant tz, not UTC.
-- [ ] Timesheet `PATCH /entries/:id` 500.
-- [ ] Legal-entity work-time — add `workWeekDays[]` + `hoursPerDay`.
+- [x] Timesheet `PATCH /entries/:id` 500 — fix present (service strips `weekStart`; `BACKEND_ENTRY_UPDATE_500`
+  in timesheets.service.js:185). `/timesheets/{projects,summary}` live (200). PATCH not row-level exercised this pass.
+- [x] Legal-entity work-time — `LegalEntity.workWeekDays Json?` + `hoursPerDay Int?` present in schema (schema.prisma:1256).
 
-## MSW-only surfaces to implement (FE contract exists, backend 404s)
+## MSW-only surfaces — RECONCILED (implemented; were not actually 404)
 
-- [ ] Leave engine (`balance`/`ledger`/`requests`/`comp-off`/`policies`/`packs`) — port `leave/engine/*`.
-- [ ] Holiday per-country policy / observed / substitute / optional-selection + `?countryCode=`.
-- [ ] Timesheet workflow extras (budgets, rates, locks, audit, delegation, approval-chain, routing, bulk, week-config, templates).
-- [ ] Payroll extras (loans/garnishments/tax-forms/declaration/events/reimbursements/journal/registers/disbursement/...).
+- [x] Leave engine — `balance`/`ledger`/`ledger/adjust`/`comp-off`/`encashment`/`policies`(+versioning/publish)/
+  `policy-packs` all registered and **live-verified 200** (`leaveEngine.routes.js`).
+- [x] Holiday per-country — `/holidays/policy` + optional-selection routes registered, `?countryCode=` (7.3) live (200).
+- [~] Timesheet workflow extras — `timesheetsConfigRoutes` + extras registered & screens live-verified earlier (git `a4f2fd7`); not re-swept per-feature this pass.
+- [x] Payroll extras — loans/garnishments/tax-form/tax-declaration/reimbursements/contractor-invoices/workers/
+  journal/register/statutory-return/payment-batches/migration/cost-summary/events all registered; core reads live (200).
 
 > Tick a box only after its slice passes Definition of Done (`BACKEND_BUILD_PLAN.md`):
 > wire shape exact · engine + ported tests green · Zod 422 details · RBAC enforced ·
