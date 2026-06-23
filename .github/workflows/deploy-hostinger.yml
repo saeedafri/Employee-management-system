@@ -34,11 +34,15 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          # Best-effort known_hosts seed. Never fatal: a transient keyscan blip must
+          # not abort the deploy (the ssh step below uses accept-new as the fallback).
+          ssh-keyscan -T 15 -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || \
+            echo "ssh-keyscan did not return keys (non-fatal); relying on accept-new"
 
       - name: Deploy (backup -> pull -> build -> migrate -> restart)
         run: |
           ssh -i ~/.ssh/deploy_key -o BatchMode=yes \
+            -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=30 \
             "${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}" 'bash -se' <<'EOSSH'
           set -euo pipefail
           cd /opt/ems
