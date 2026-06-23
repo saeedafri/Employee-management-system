@@ -1,7 +1,7 @@
 // Payroll CALCULATING runs as a BullMQ job off the request path (per the backend
 // contract: "heavy payroll compute runs as a BullMQ job, not on the request path").
 // The heavy math is UNCHANGED — the worker calls the same repo.calculatePayrollRun
-// the synchronous path used. Idempotency: jobId `calc:<runId>` dedupes concurrent
+// the synchronous path used. Idempotency: jobId `calc-<runId>` dedupes concurrent
 // enqueues, and the repo's DRAFT-status guard makes a late/duplicate job a no-op.
 import { Queue, Worker } from 'bullmq';
 import { createQueueConnection, redisEnabled } from './redis.js';
@@ -34,7 +34,7 @@ export async function enqueueCalculate(runId, tenantId) {
       'calculate',
       { runId, tenantId },
       {
-        jobId: `calc:${runId}`,
+        jobId: `calc-${runId}`,
         removeOnComplete: 100,
         removeOnFail: 200,
         attempts: 3,
