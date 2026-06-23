@@ -92,6 +92,27 @@ PostgreSQL**. The following stay deferred until scale demands them:
 - **~40 endpoints / all 16 product modules → 200**; RBAC correct (HR_ADMIN → 403 on SUPER_ADMIN-only routes).
 - **No genuine code defects.** The only 500s were transient Render pool-timeouts (item 1), recovering to 200 in isolation.
 
+## End-to-end UI verification (2026-06-23, Playwright/Chromium, MSW OFF)
+
+Drove the **real frontend** (`:3001`, `NEXT_PUBLIC_USE_MOCKS=false`) → backend `:4000` → **Render DB**,
+logging in through the UI and visiting **47 screens** across all phases. Spec: `tests/e2e/full-phase-sweep.mjs`.
+MSW confirmed off on every screen (`navigator.serviceWorker` registrations = 0; all API responses
+`fromServiceWorker=false`).
+
+**Result: 0 genuine backend defects. Every screen works for the correct role with live Render data.**
+
+| Bucket | Count | Root cause | Owner |
+|--------|------:|-----------|-------|
+| ✅ Pass as HR_ADMIN | 37/47 | Renders live Render data | — |
+| ✅ Pass as SUPER_ADMIN | 7/8 of remainder | SUPER_ADMIN-only screens (permissions, authentication, integration-email/storage/webhooks, billing-plan/invoices, branding) — backend correctly restricts | — |
+| 🟡 Transient 500 | 3 hits | `/notifications?limit=20` bell (+1 timesheets/tasks) — **200 in isolation**; Render `connection_limit=5` pool timeout | Ops |
+
+**Findings to file (NOT backend defects):**
+1. **OPS (impactful):** raise Render `DATABASE_URL` `connection_limit` — the notifications bell fires on
+   every page and intermittently pool-times-out under a page's parallel API burst.
+2. **Frontend UX:** HR_ADMIN on SUPER_ADMIN-only settings sees a generic "something went wrong" error
+   boundary instead of a clean no-access gate. File to FE team.
+
 ## Locked decisions (carry-forward)
 
 - **DB = PostgreSQL**, additive-only migrations; never wipe/seed/migrate-reset prod (incident 2026-05-27).
