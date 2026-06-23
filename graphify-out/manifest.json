@@ -945,8 +945,8 @@
     "semantic_hash": ""
   },
   "src/plugins/swagger.js": {
-    "mtime": 1782238269.1657722,
-    "ast_hash": "c7fa319aac6a2104410cc85b8211e8c8",
+    "mtime": 1782240609.4297917,
+    "ast_hash": "39ee7ed907ce080595d70fb501b80520",
     "semantic_hash": ""
   },
   "src/server.js": {
@@ -1500,8 +1500,8 @@
     "semantic_hash": ""
   },
   "docs/API_MAPPING.md": {
-    "mtime": 1782238321.237478,
-    "ast_hash": "6e6a312d51008bd2fa26b2221d5df00f",
+    "mtime": 1782240617.7068772,
+    "ast_hash": "5367bf7e9d2a41d714eae0dc9dd01405",
     "semantic_hash": ""
   },
   "docs/BACKEND_TEAM_HANDOFF_FIX_REPORT.md": {
@@ -2450,8 +2450,8 @@
     "semantic_hash": ""
   },
   "docs/HOLIDAY_ENGINE_BACKEND_CONTRACT.md": {
-    "mtime": 1782239304.6249642,
-    "ast_hash": "b3eefa0f8d4219de761743104eea9590",
+    "mtime": 1782240560.7097433,
+    "ast_hash": "8db830c03fea3e157a72e032545e8df3",
     "semantic_hash": ""
   },
   "docs/payroll/regression-reports/CANADA.md": {
@@ -2722,6 +2722,11 @@
   "tests/holiday-policy-versioning.test.js": {
     "mtime": 1782239694.8482513,
     "ast_hash": "7743c784939f633710ad91fd328e8daf",
+    "semantic_hash": ""
+  },
+  "scripts/holidayEngineLiveLitmus.mjs": {
+    "mtime": 1782240602.0727646,
+    "ast_hash": "5ae79ae48c60893f8e80d3f0e37ba5c3",
     "semantic_hash": ""
   }
 }

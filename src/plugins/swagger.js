@@ -272,7 +272,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         // ── HOLIDAY POLICY (Phase 7.2 — per-country restricted-limit + observed-rule) ──
         '/holidays/policy': {
           get:   op('Holidays', 'Per-country holiday policies (restricted-limit + observed-rule)'),
-          patch: op('Holidays', 'Upsert a country holiday policy (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['countryCode'], properties: { countryCode: { type: 'string' }, restrictedLimit: { type: 'integer' }, observedRule: { type: 'string', enum: ['NONE', 'NEXT_WORKING_DAY', 'NEAREST_WORKING_DAY'] } } } }] }),
+          patch: op('Holidays', 'Upsert a country holiday policy (HR_ADMIN, SUPER_ADMIN). §2.4 — effective-dated/versioned: pass effectiveFrom to create a new version (closes the prior open one); omit to edit the current version in place.', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['countryCode'], properties: { countryCode: { type: 'string' }, restrictedLimit: { type: 'integer' }, observedRule: { type: 'string', enum: ['NONE', 'NEXT_WORKING_DAY', 'NEAREST_WORKING_DAY'] }, effectiveFrom: { type: 'string', format: 'date' }, version: { type: 'string' } } } }] }),
         },
         '/holidays/optional-selections': {
           get:  op('Holidays', 'Restricted-holiday ids selected by an employee for a year', true, { parameters: [queryParam('employeeId', 'string', 'Defaults to caller (privileged only)'), queryParam('year', 'integer', 'Calendar year')] }),

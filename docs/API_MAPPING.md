@@ -5211,8 +5211,8 @@ Per-country restricted-holiday limits + observed-day (substitute) rules, and per
 
 | Method | Path | Roles | Response `data` |
 |--------|------|-------|------------------|
-| GET | /holidays/policy | any (auth) | `{ policies: [{countryCode, restrictedLimit, observedRule}] }` (seed defaults IN 2/NONE, US 0/NEAREST when none saved) |
-| PATCH | /holidays/policy | HR_ADMIN, SUPER_ADMIN | `{ policies: [...] }` — body `{countryCode, restrictedLimit?, observedRule?}` (observedRule ∈ NONE/NEXT_WORKING_DAY/NEAREST_WORKING_DAY) |
+| GET | /holidays/policy | any (auth) | `{ policies: [{countryCode, restrictedLimit, observedRule, version, effectiveFrom, effectiveTo}] }` (seed defaults IN 2/NONE, US 0/NEAREST when none saved) |
+| PATCH | /holidays/policy | HR_ADMIN, SUPER_ADMIN | `{ policies: [...] }` — body `{countryCode, restrictedLimit?, observedRule?, effectiveFrom?, version?}` (observedRule ∈ NONE/NEXT_WORKING_DAY/NEAREST_WORKING_DAY). **§2.4 versioned:** pass `effectiveFrom` (YYYY-MM-DD) to create a NEW effective-dated version (closes the prior open one); omit to edit the current version in place. The resolver picks the version effective at the holiday's reference date. |
 | GET | /holidays/optional-selections?employeeId=&year= | any (own; privileged any) | `{ holidayIds: string[] }` |
 | POST | /holidays/optional-selections | any (auth) | `{ holidayIds }` — body `{holidayId, year}`; 404 `NOT_FOUND`; 422 `NOT_OPTIONAL`/`WRONG_COUNTRY`/`PAST_HOLIDAY`/`LIMIT_REACHED`. Idempotent. |
 | DELETE | /holidays/optional-selections/:holidayId?year= | any (auth) | `{ holidayIds }` (year-scoped); 422 `PAST_HOLIDAY` |
