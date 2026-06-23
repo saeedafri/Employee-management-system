@@ -1,5 +1,13 @@
 # EMS Backend — Build Tracker
 
+> ## ✅ FINAL STATUS — 2026-06-23: all 12 phases functionally complete
+> Backend is **feature-complete** vs the FE contract (~354 routes, 26 migrations, 36 test files,
+> CI green on `ea354f5`). Live-verified MSW-off against the Render DB, incl. the truly-global
+> litmus at **KWD 3-decimal currency + a semi-monthly schedule** (sub-monthly doubling proven
+> fixed: half-period gross 700.389, not 1400.777/2801.554). **Only not-done = the async/scale
+> stack (BullMQ + Redis), deliberately deferred** — synchronous Postgres by design.
+> **Single source of truth: [`docs/BACKEND_STATUS.md`](docs/BACKEND_STATUS.md).**
+
 > Source plan: `docs/superpowers/plans/2026-06-22-phase0-foundation-harness.md`
 > Method: **one slice at a time** → research → plan → tradeoffs → replan → implement →
 > test → review → **STOP, ask to commit, wait for "next"** (per the frontend handoff

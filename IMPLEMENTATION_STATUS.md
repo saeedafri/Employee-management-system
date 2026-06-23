@@ -1,5 +1,9 @@
 # EMS Backend Implementation Status
 
+> ⚠️ **SUPERSEDED — DO NOT TRUST.** This file is stale (2026-05-22) and wrongly lists Payroll,
+> Notifications, and File-upload as "not built". The current source of truth is
+> [`docs/BACKEND_STATUS.md`](docs/BACKEND_STATUS.md) (2026-06-23). Kept only for historical record.
+
 > **Last Updated**: 2026-05-22 — Full source audit + production incident fixes + live API verification (56/58 endpoints passing on Render).
 
 ## Completion Summary — ~90% Complete
