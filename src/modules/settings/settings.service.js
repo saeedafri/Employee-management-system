@@ -1,5 +1,9 @@
 import * as settingsRepository from './settings.repository.js';
 import { resolveWorkWeekDays, toDayTokens } from '../../utils/workingDays.js';
+import { cacheGet, cacheSet, cacheDel } from '../../lib/redis.js';
+
+// Tenant config is read on nearly every page and changes rarely — cache it tenant-scoped.
+const TENANTCFG_KEY = (tenantId) => `cache:tenantcfg:${tenantId}`;
 
 class AppError extends Error {
   constructor(message, code, statusCode = 400, details = {}) {
@@ -11,9 +15,12 @@ class AppError extends Error {
 }
 
 export async function getTenantConfig(tenantId) {
+  const cached = await cacheGet(TENANTCFG_KEY(tenantId));
+  if (cached) return cached;
+
   const { tenant, config } = await settingsRepository.getTenantConfig(tenantId);
 
-  return {
+  const result = {
     // Tenant-level fields (company identity)
     legalName: tenant?.legalName ?? null,
     displayName: tenant?.displayName ?? null,
@@ -36,6 +43,9 @@ export async function getTenantConfig(tenantId) {
       resolveWorkWeekDays(config?.workWeekDays, config?.workWeekPattern),
     ),
   };
+
+  await cacheSet(TENANTCFG_KEY(tenantId), result, 300);
+  return result;
 }
 
 export async function updateTenantConfig(tenantId, data) {
@@ -54,6 +64,8 @@ export async function updateTenantConfig(tenantId, data) {
   }
 
   await Promise.all(promises);
+  // Invalidate before refetch so the returned (and re-cached) config is fresh, not stale.
+  await cacheDel(TENANTCFG_KEY(tenantId));
   return getTenantConfig(tenantId);
 }
 

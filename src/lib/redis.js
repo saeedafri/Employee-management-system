@@ -62,3 +62,19 @@ export async function cacheDel(...keys) {
     /* ignore */
   }
 }
+
+/** Delete all keys starting with `prefix` (SCAN-based; best-effort, never throws). */
+export async function cacheDelByPrefix(prefix) {
+  const r = getRedis();
+  if (!r || !prefix) return;
+  try {
+    let cursor = '0';
+    do {
+      const [next, keys] = await r.scan(cursor, 'MATCH', `${prefix}*`, 'COUNT', 200);
+      cursor = next;
+      if (keys.length) await r.del(...keys);
+    } while (cursor !== '0');
+  } catch {
+    /* ignore invalidation failures */
+  }
+}

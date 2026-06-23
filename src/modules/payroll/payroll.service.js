@@ -12,6 +12,7 @@ import { formatPeriodLabel, derivePeriodDatesFromString, isValidPeriod } from '.
 import { generateCycles } from '../../utils/cycleGenerator.js';
 import { computeEmi, buildSchedule, addMonths as addLoanMonths } from './utils/loan.utils.js';
 import { enqueueCalculate } from '../../lib/payrollQueue.js';
+import { cacheGet, cacheSet, cacheDelByPrefix } from '../../lib/redis.js';
 
 function AppError(message, code, statusCode = 400) {
   const e = new Error(message);
@@ -407,8 +408,19 @@ export async function updateLegalEntity(prisma, id, tenantId, data) {
 
 // ── Phase 3: Statutory Packs ──────────────────────────────────────────────────
 
+// Hot-config cache: the statutory-packs LIST read is hit often by the UI and rarely
+// changes. Cached tenant-scoped with a short TTL + invalidated on every write below.
+// NOTE: the money-compute path uses resolveStatutoryPackForEmployee (uncached) — this
+// cache never affects payroll calculation, only the read API.
+const STATPACK_CACHE_PREFIX = (tenantId) => `cache:statpacks:${tenantId}:`;
+
 export async function getStatutoryPacks(prisma, tenantId, country) {
-  return repo.getStatutoryPacks(prisma, tenantId, country);
+  const key = `${STATPACK_CACHE_PREFIX(tenantId)}${country || 'all'}`;
+  const cached = await cacheGet(key);
+  if (cached) return cached;
+  const data = await repo.getStatutoryPacks(prisma, tenantId, country);
+  await cacheSet(key, data, 300);
+  return data;
 }
 
 export async function getStatutoryPack(prisma, id, tenantId) {
@@ -440,22 +452,28 @@ export async function createStatutoryPack(prisma, tenantId, body) {
     where: { tenantId_country_version: { tenantId, country: body.country, version: body.version } },
   });
   if (existing) throw AppError('Pack version already exists', 'PACK_VERSION_EXISTS', 409);
-  return repo.createStatutoryPack(prisma, tenantId, {
+  const created = await repo.createStatutoryPack(prisma, tenantId, {
     country: body.country,
     version: body.version,
     effectiveFrom: body.effectiveFrom,
     effectiveTo: body.effectiveTo ?? null,
     packData: flatBodyToPackData(body),
   });
+  await cacheDelByPrefix(STATPACK_CACHE_PREFIX(tenantId));
+  return created;
 }
 
 export async function updateStatutoryPack(prisma, id, tenantId, body) {
   validateStatutoryPackBody(body, false);
-  return repo.updateStatutoryPack(prisma, id, tenantId, body);
+  const updated = await repo.updateStatutoryPack(prisma, id, tenantId, body);
+  await cacheDelByPrefix(STATPACK_CACHE_PREFIX(tenantId));
+  return updated;
 }
 
 export async function deleteStatutoryPack(prisma, id, tenantId) {
-  return repo.deleteStatutoryPack(prisma, id, tenantId);
+  const result = await repo.deleteStatutoryPack(prisma, id, tenantId);
+  await cacheDelByPrefix(STATPACK_CACHE_PREFIX(tenantId));
+  return result;
 }
 
 // ── Phase 3: YTD ─────────────────────────────────────────────────────────────
