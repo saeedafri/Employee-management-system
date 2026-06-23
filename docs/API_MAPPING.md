@@ -1562,13 +1562,18 @@ Pending leave and regularization requests.
 All require HR_ADMIN or SUPER_ADMIN.
 
 ### `GET /reports/attendance`
+Query: `from_date`, `to_date` (ISO), `department_id` (optional). **If no date range is given the
+report defaults to the current month** (prevents an unbounded full-table scan). Returns `422
+REPORT_WINDOW_TOO_LARGE` if the requested window exceeds the per-report row cap — narrow the range.
 ```json
 {
-  "period": {},
+  "period": { "from_date": "2026-06-01T00:00:00.000Z", "to_date": "2026-06-30T00:00:00.000Z" },
   "summary": { "present": 67, "absent": 0, "late": 0, "on_time": 0, "leave": 0, "wfh": 0, "half_day": 0, "holiday": 0 },
   "by_department": [
     { "department_id": "...", "department_name": "Engineering", "present": 45, "absent": 0, "late": 0, "on_time": 0, "leave": 0, "wfh": 0, "half_day": 0, "holiday": 0 }
-  ]
+  ],
+  "total_records": 98,
+  "total_holidays": 2
 }
 ```
 

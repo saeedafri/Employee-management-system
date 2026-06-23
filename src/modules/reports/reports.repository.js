@@ -11,22 +11,35 @@ export async function getAttendanceRecords(tenantId, filters = {}) {
     where.employee = { departmentId: filters.departmentId };
   }
 
-  return prisma.attendanceRecord.findMany({
+  // Lean projection: the attendance report aggregates only status + department,
+  // so fetch only those fields (the old `include` pulled full employee objects for
+  // every row and OOM-killed the container on large tenants). `take` is a hard
+  // backstop so a single report can never exhaust memory; callers bound the window.
+  const TAKE_CAP = 500000;
+  const rows = await prisma.attendanceRecord.findMany({
     where,
-    include: {
+    select: {
+      status: true,
+      attendanceDate: true,
       employee: {
         select: {
           id: true,
-          firstName: true,
-          lastName: true,
-          employeeCode: true,
           departmentId: true,
           department: { select: { id: true, name: true } },
         },
       },
     },
     orderBy: { attendanceDate: 'desc' },
+    take: TAKE_CAP + 1,
   });
+  if (rows.length > TAKE_CAP) {
+    // Don't silently truncate aggregates — surface that the window is too wide.
+    throw Object.assign(new Error('Attendance report window too large; narrow the date range'), {
+      code: 'REPORT_WINDOW_TOO_LARGE',
+      statusCode: 422,
+    });
+  }
+  return rows;
 }
 
 export async function getLeaveRequests(tenantId, filters = {}) {

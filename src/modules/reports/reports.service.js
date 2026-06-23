@@ -10,15 +10,26 @@ class AppError extends Error {
 }
 
 export async function getAttendanceReport(tenantId, filters) {
+  // Bound an unfiltered request to the current month so it can't scan the whole
+  // attendance table (which OOM-killed the container on large tenants). The FE
+  // always sends a range; this only guards the no-filter case.
+  let fromDate = filters.from_date;
+  let toDate = filters.to_date;
+  if (!fromDate && !toDate) {
+    const now = new Date();
+    fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  }
+
   const records = await reportsRepository.getAttendanceRecords(tenantId, {
-    fromDate: filters.from_date,
-    toDate: filters.to_date,
+    fromDate,
+    toDate,
     departmentId: filters.department_id,
   });
 
   const holidays = await reportsRepository.getHolidays(tenantId, {
-    fromDate: filters.from_date,
-    toDate: filters.to_date,
+    fromDate,
+    toDate,
   });
 
   const summary = {
@@ -60,8 +71,8 @@ export async function getAttendanceReport(tenantId, filters) {
 
   return {
     period: {
-      from_date: filters.from_date,
-      to_date: filters.to_date,
+      from_date: fromDate,
+      to_date: toDate,
     },
     summary,
     by_department: Object.values(byDepartment),
