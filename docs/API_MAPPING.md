@@ -779,6 +779,50 @@ All department count fields (`_count.employees`, `totalHeadcount`, `employeeCoun
 }
 ```
 
+> `GET /holidays` is the **management (all-countries) list** — unscoped, editable, for the HR holiday screen. It is a *filter*, not the resolved engine. For the per-employee resolved set use `GET /me/holidays` below.
+
+---
+
+## Holiday Applicability Engine (per-employee resolved) — `HOLIDAY_ENGINE_BACKEND_CONTRACT`
+
+One shared resolution path: country-scoped (employee's legal-entity country **+ tenant-wide rows**) + observed-day shifting (against the employee work-week) + optional/restricted selection. The **same** resolver is consumed by `POST /leave/requests/preview`, the payslip detail `holidayBasis`, and the attendance calendar — so a holiday is never a working day in one module and a day off in another (contract §3). Config-over-code: a never-seen country (e.g. `BR`) resolves from data only, no code change (§4).
+
+### `GET /me/holidays`
+Resolves the **logged-in** employee (JWT `employeeId`). Auth: any authenticated user.
+
+**Query params:** `year` (integer, default current year).
+
+**Response `data`:**
+```json
+{
+  "holidays": [
+    {
+      "id": "cuid",
+      "name": "National Day",
+      "holidayDate": "2026-01-04T00:00:00.000Z",
+      "actualDate": "2026-01-02T00:00:00.000Z",
+      "observed": true,
+      "isOptional": false,
+      "selected": true,
+      "countryCode": "KW",
+      "location": "KW"
+    }
+  ],
+  "total": 1,
+  "year": 2026,
+  "context": { "countryCode": "KW", "workWeekDays": [0,1,2,3,4], "observedRule": "NEXT_WORKING_DAY", "restrictedLimit": 0, "resolvedBy": "LEGAL_ENTITY" }
+}
+```
+- `holidayDate` = **observed/effective** date (the day actually off). `actualDate` = original date **only when shifted** (else `null`). `observed` = was it shifted.
+- `isOptional`/`selected` = restricted-holiday picker state (mandatory rows are always `selected:true`; optional rows `selected` only when the employee picked them via `/holidays/optional-selections`).
+- `countryCode` = source country; `null` = tenant-wide (applies to every country).
+- **No employee profile** (e.g. SUPER_ADMIN): `context.countryCode = null`, `resolvedBy = "TENANT_WIDE"` → **tenant-wide rows only** (defined behavior, not "all countries"). Admins use `GET /holidays` for the all-countries management view.
+
+### `GET /employees/:id/holidays`
+Same shape as `/me/holidays`, for a specific employee. Auth: **HR_ADMIN / SUPER_ADMIN**, or the employee viewing **their own** id (403 otherwise; 404 if the employee does not exist).
+
+**Query params:** `year` (integer, default current year).
+
 ---
 
 ### `POST /holidays`
@@ -898,6 +942,29 @@ All department count fields (`_count.employees`, `totalHeadcount`, `employeeCoun
 ```
 
 **Error codes:** `LEAVE_TYPE_NOT_FOUND` (404), `NO_LEAVE_BALANCE` (400), `OVERLAPPING_LEAVE` (400), `INSUFFICIENT_BALANCE` (400)
+
+---
+
+### `POST /leave/requests/preview`
+
+Holiday-aware chargeable-day breakdown for a date range (HOLIDAY_ENGINE_BACKEND_CONTRACT §3). Consumes the **shared holiday engine** — the same resolution the calendar shows and the payslip `holidayBasis` counts. Auth: any authenticated employee.
+
+**Body:** `{ "startDate": "2026-01-01", "endDate": "2026-01-07" }`
+
+**Response `data`:**
+```json
+{
+  "startDate": "2026-01-01",
+  "endDate": "2026-01-07",
+  "calendarDays": 7,
+  "weekendDays": 2,
+  "holidayDays": 1,
+  "chargeableDays": 4,
+  "holidaysExcluded": [{ "date": "2026-01-01", "name": "New Year's Day", "observed": false }],
+  "workWeekDays": [1,2,3,4,5]
+}
+```
+> `chargeableDays` = calendar days − weekends (employee work-week) − resolved public holidays. `422 VALIDATION_ERROR` if `startDate`/`endDate` missing. (Does **not** create a request or change balances — preview only.)
 
 ---
 
@@ -2937,7 +3004,7 @@ Seed script: `npm run db:seed:photos`
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/payroll/employees/:employeeId/payslips` | HR,SA,EMP(own) | `?page&limit&year`. Paginated list. EMPLOYEE sees own only. |
-| GET | `/payroll/employees/:employeeId/payslips/:payslipId` | HR,SA,EMP(own) | Full detail: earnings[], deductions[], oneTimeAdditions[], oneTimeDeductions[], attendance fields, `documentUrl` (Cloudinary WebP URL or null) |
+| GET | `/payroll/employees/:employeeId/payslips/:payslipId` | HR,SA,EMP(own) | Full detail: earnings[], deductions[], oneTimeAdditions[], oneTimeDeductions[], attendance fields, `documentUrl` (Cloudinary WebP URL or null), **`holidayBasis`** = `{ holidayDays, holidaysExcluded:[{date,name,observed}], workWeekDays }` computed live from the shared holiday engine (HOLIDAY_ENGINE_BACKEND_CONTRACT §3 — matches the calendar + leave-preview; additive, does not change any money/working-day field) |
 
 #### 👉 UI TEAM — How to view & download a payslip document
 

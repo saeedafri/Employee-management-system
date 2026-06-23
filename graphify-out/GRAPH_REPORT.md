@@ -1,16 +1,16 @@
 # Graph Report - EMS  (2026-06-23)
 
 ## Corpus Check
-- 433 files · ~457,641 words
+- 462 files · ~661,580 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3994 nodes · 6162 edges · 342 communities (284 shown, 58 thin omitted)
+- 4217 nodes · 6499 edges · 371 communities (308 shown, 63 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 12 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `13cd563f`
+- Built from commit: `51b0b264`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -98,7 +98,6 @@
 - [[_COMMUNITY_Community 81|Community 81]]
 - [[_COMMUNITY_Community 82|Community 82]]
 - [[_COMMUNITY_Community 83|Community 83]]
-- [[_COMMUNITY_Community 84|Community 84]]
 - [[_COMMUNITY_Community 85|Community 85]]
 - [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 87|Community 87]]
@@ -340,16 +339,43 @@
 - [[_COMMUNITY_Community 336|Community 336]]
 - [[_COMMUNITY_Community 337|Community 337]]
 - [[_COMMUNITY_Community 339|Community 339]]
-- [[_COMMUNITY_Community 340|Community 340]]
 - [[_COMMUNITY_Community 341|Community 341]]
 - [[_COMMUNITY_Community 342|Community 342]]
+- [[_COMMUNITY_Community 343|Community 343]]
+- [[_COMMUNITY_Community 344|Community 344]]
+- [[_COMMUNITY_Community 345|Community 345]]
+- [[_COMMUNITY_Community 346|Community 346]]
+- [[_COMMUNITY_Community 347|Community 347]]
+- [[_COMMUNITY_Community 348|Community 348]]
+- [[_COMMUNITY_Community 349|Community 349]]
+- [[_COMMUNITY_Community 350|Community 350]]
+- [[_COMMUNITY_Community 351|Community 351]]
+- [[_COMMUNITY_Community 352|Community 352]]
+- [[_COMMUNITY_Community 353|Community 353]]
+- [[_COMMUNITY_Community 354|Community 354]]
+- [[_COMMUNITY_Community 355|Community 355]]
+- [[_COMMUNITY_Community 356|Community 356]]
+- [[_COMMUNITY_Community 357|Community 357]]
+- [[_COMMUNITY_Community 358|Community 358]]
+- [[_COMMUNITY_Community 359|Community 359]]
+- [[_COMMUNITY_Community 360|Community 360]]
+- [[_COMMUNITY_Community 361|Community 361]]
+- [[_COMMUNITY_Community 362|Community 362]]
+- [[_COMMUNITY_Community 363|Community 363]]
+- [[_COMMUNITY_Community 364|Community 364]]
+- [[_COMMUNITY_Community 365|Community 365]]
+- [[_COMMUNITY_Community 366|Community 366]]
+- [[_COMMUNITY_Community 367|Community 367]]
+- [[_COMMUNITY_Community 368|Community 368]]
+- [[_COMMUNITY_Community 369|Community 369]]
+- [[_COMMUNITY_Community 370|Community 370]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `successResponse()` - 343 edges
-2. `errorResponse()` - 277 edges
+1. `successResponse()` - 347 edges
+2. `errorResponse()` - 281 edges
 3. `handleError()` - 107 edges
-4. `EMS API — Actual Response Mapping` - 59 edges
-5. `prisma` - 52 edges
+4. `EMS API — Actual Response Mapping` - 61 edges
+5. `prisma` - 56 edges
 6. `scripts` - 42 edges
 7. `authorize()` - 35 edges
 8. `authenticate()` - 27 edges
@@ -363,27 +389,27 @@
   src/modules/timesheets/utils/rateMath.js → tests/timesheet-rateMath.test.js
 - `computeMargins()` --calls--> `costRate()`  [INFERRED]
   src/modules/timesheets/utils/rateMath.js → tests/timesheet-rateMath.test.js
-- `verifyPassword()` --calls--> `verify()`  [INFERRED]
-  src/utils/hash.js → verify-user.js
+- `parseIcs()` --calls--> `get()`  [INFERRED]
+  src/utils/icsParser.js → tests/auth-register.test.js
 - `topologicalSort()` --calls--> `visit()`  [INFERRED]
   prisma/seedPayroll.mjs → scripts/deployed-ui-complete-final-audit.mjs
 
 ## Import Cycles
 - None detected.
 
-## Communities (342 total, 58 thin omitted)
+## Communities (371 total, 63 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.05
-Nodes (109): approvePayrollRun(), approveRunLevel(), calculatePayrollRun(), cancelPayrollRun(), createComponent(), createContractorInvoice(), createEmployeeLoan(), createGarnishment() (+101 more)
+Nodes (113): getUnreadCount(), listNotifications(), markAllRead(), markRead(), approvePayrollRun(), approveRunLevel(), calculatePayrollRun(), cancelPayrollRun() (+105 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.05
-Nodes (72): createAnnouncement(), createEvent(), getAnnouncements(), getChannels(), getEvents(), pinAnnouncement(), unpinAnnouncement(), approveRequest() (+64 more)
+Cohesion: 0.04
+Nodes (88): createAnnouncement(), createEvent(), getAnnouncements(), getChannels(), getEvents(), pinAnnouncement(), unpinAnnouncement(), approveRequest() (+80 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.03
-Nodes (20): BANK_FILE_FORMATS, BANK_SCHEMAS, DEFAULT_TEMPLATE_FIELDS, DEFAULT_TEMPLATE_SECTIONS, exportRunRegister(), getAuditPack(), getPayCalendars(), getPayGroups() (+12 more)
+Nodes (17): BANK_FILE_FORMATS, BANK_SCHEMAS, DEFAULT_TEMPLATE_FIELDS, DEFAULT_TEMPLATE_SECTIONS, exportRunRegister(), getAuditPack(), getRunAudit(), getRunRegister() (+9 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.15
@@ -434,12 +460,12 @@ Cohesion: 0.05
 Nodes (38): 1. Authentication Integration, 2. Employee Management, 3. Department Management, 4. Leave Management, 5. Attendance Management, 6. Holidays & Reports, 7. Error Handling, 8. Page-by-Page Integration (+30 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.11
-Nodes (32): uploadRegularizationDocument(), AppError, recordAuditLog(), addDepartmentMembers(), bulkDeactivate(), bulkExport(), confirmDocument(), CONFLICT_CODES (+24 more)
+Cohesion: 0.09
+Nodes (36): uploadRegularizationDocument(), AppError, recordAuditLog(), addDepartmentMembers(), bulkDeactivate(), bulkExport(), confirmDocument(), CONFLICT_CODES (+28 more)
 
 ### Community 16 - "Community 16"
-Cohesion: 0.06
-Nodes (32): approvePayrollRun(), cancelPayrollRun(), COMPONENT_INCLUDE, computePayslipYtd(), createLegalEntity(), createPayGroup(), createPayrollRun(), createStatutoryPack() (+24 more)
+Cohesion: 0.07
+Nodes (31): approvePayrollRun(), cancelPayrollRun(), COMPONENT_INCLUDE, computePayslipYtd(), createLegalEntity(), createPayGroup(), createPayrollRun(), fmtLegalEntity() (+23 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.10
@@ -458,8 +484,8 @@ Cohesion: 0.06
 Nodes (31): API_MAPPING.md Updates, API_MAPPING.md Updates, Auth Register Validation Status Fix, Auth Registration — POST /auth/register, Backend Team Handoff — Fix Report, Background, Background, Files Changed (+23 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.06
-Nodes (35): §6 Divergence — Attendance UTC date / BR-ATT-2 (mitigated 2026-06-22) ✅ partial, §6 Divergence — entry-500 (verified fixed 2026-06-22) ✅, §6 Divergence reconciliation — Legal-entity work-time (fixed 2026-06-22) ✅, §6 Divergence reconciliation — Loans PR-1 (fixed 2026-06-22) ✅, §6 Divergence — Sub-monthly payroll (verified fixed 2026-06-22) ✅ code-verified + unit-tested, Admin Logs, Auth Headers, Billing — Phase 8.4 (added 2026-06-22) ✅ Live, MSW-parity verified (+27 more)
+Cohesion: 0.05
+Nodes (36): §6 Divergence — Attendance UTC date / BR-ATT-2 (mitigated 2026-06-22) ✅ partial, §6 Divergence — entry-500 (verified fixed 2026-06-22) ✅, §6 Divergence reconciliation — Legal-entity work-time (fixed 2026-06-22) ✅, §6 Divergence reconciliation — Loans PR-1 (fixed 2026-06-22) ✅, §6 Divergence — Sub-monthly payroll (verified fixed 2026-06-22) ✅ code-verified + unit-tested, Auth Headers, Billing — Phase 8.4 (added 2026-06-22) ✅ Live, MSW-parity verified, Complete Error Code Reference (+28 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.06
@@ -478,8 +504,8 @@ Cohesion: 0.07
 Nodes (29): 1.1 Header requirements (updated 2026-05-19), 1.2 Login flow, 1.3 Refresh, 1.4 Common error codes, 1. Authentication — Read This First, 2. Test Users — One per Role, 3. Role × Page Matrix, 4. Wireframe → API Mapping (One Section Per Page) (+21 more)
 
 ### Community 26 - "Community 26"
-Cohesion: 0.10
-Nodes (25): announcementsRoutes(), assetsRoutes(), attendanceRoutes(), auditLogsRoutes(), ADMIN, billingRoutes(), ok, T (+17 more)
+Cohesion: 0.15
+Nodes (15): announcementsRoutes(), assetsRoutes(), attendanceRoutes(), auditLogsRoutes(), ADMIN, billingRoutes(), ok, T (+7 more)
 
 ### Community 27 - "Community 27"
 Cohesion: 0.13
@@ -498,7 +524,7 @@ Cohesion: 0.08
 Nodes (25): Auth Headers Reference, Cross-Cutting APIs (Used on Multiple Pages), Document Upload (Employee Profile), EMS — Wireframes → API Mapping (Production Ready), Error Codes Reference, Export Module (Async Jobs), Full API Status (Verified 2026-05-23), How Identity Works — Read This First (+17 more)
 
 ### Community 31 - "Community 31"
-Cohesion: 0.09
+Cohesion: 0.19
 Nodes (6): ALLOWED_STATUSES, assignAsset(), createAsset(), recallAsset(), shapeAsset(), updateAssetStatus()
 
 ### Community 32 - "Community 32"
@@ -515,27 +541,27 @@ Nodes (23): For /graphify add and --watch, For /graphify query, For the commit h
 
 ### Community 35 - "Community 35"
 Cohesion: 0.10
-Nodes (23): AppError(), approveRunLevel(), createComponent(), createPayGroup(), createPayrollRun(), createStatutoryPack(), deleteGarnishment(), exportRunJournal() (+15 more)
+Nodes (23): AppError(), approveRunLevel(), createComponent(), createPayGroup(), createPayrollRun(), decideReimbursementClaim(), deleteGarnishment(), exportRunJournal() (+15 more)
 
 ### Community 36 - "Community 36"
 Cohesion: 0.08
-Nodes (24): dependencies, argon2, cloudinary, date-fns, dotenv, exceljs, fastify, @fastify/cookie (+16 more)
+Nodes (26): dependencies, argon2, bullmq, cloudinary, date-fns, dotenv, exceljs, fastify (+18 more)
 
 ### Community 37 - "Community 37"
-Cohesion: 0.13
-Nodes (21): deleteScheduledReport(), downloadExport(), exportReport(), getAttendanceAbsenteeism(), getAttendanceReport(), getAttendanceSummaryReport(), getExportHistory(), getExportJobStatus() (+13 more)
+Cohesion: 0.08
+Nodes (29): deleteScheduledReport(), downloadExport(), exportReport(), getAttendanceAbsenteeism(), getAttendanceReport(), getAttendanceSummaryReport(), getExportHistory(), getExportJobStatus() (+21 more)
 
 ### Community 38 - "Community 38"
-Cohesion: 0.16
-Nodes (15): adminLogin(), AppError, buildSlug(), completeMfaLogin(), extractPermissions(), findUniqueSlug(), findUniqueTenantKey(), getCurrentUser() (+7 more)
+Cohesion: 0.11
+Nodes (18): adminLogin(), AppError, buildSlug(), completeMfaLogin(), extractPermissions(), findUniqueSlug(), findUniqueTenantKey(), getCurrentUser() (+10 more)
 
 ### Community 39 - "Community 39"
 Cohesion: 0.09
 Nodes (22): Cloudinary on Render (configured 2026-06-09), ✅ FIXED — Added `/employees/me/documents` and `/employees/me/team` route aliases (2026-05-22), ✅ FIXED — Analytics/e2e tests expecting `cached: true` (2026-05-22), ✅ FIXED — `analytics.routes.js` double-hooked `resolveTenant` (2026-05-22), ✅ FIXED — Auth tests expecting `MISSING_TENANT` error (2026-05-22), ✅ FIXED — CI pipeline test job re-enabled with PostgreSQL service container (2026-05-27), ✅ FIXED — Dead Redis/BullMQ/ioredis removed from `package.json` (2026-05-22), ✅ FIXED — Default DB URL was MySQL in `src/config/index.js` (2026-05-22) (+14 more)
 
 ### Community 40 - "Community 40"
-Cohesion: 0.07
-Nodes (35): adminLoginController(), getMeController(), getPasswordPolicyController(), getSessionsController(), loginController(), logoutAllController(), logoutController(), refreshController() (+27 more)
+Cohesion: 0.17
+Nodes (19): adminLoginController(), getMeController(), getPasswordPolicyController(), getSessionsController(), loginController(), logoutAllController(), logoutController(), refreshController() (+11 more)
 
 ### Community 41 - "Community 41"
 Cohesion: 0.09
@@ -562,16 +588,16 @@ Cohesion: 0.14
 Nodes (19): addDaysISO(), applyTemplate(), approveTimesheet(), assertTaskAllowed(), assertWeekEditable(), copyWeek(), createEntry(), deleteEntry() (+11 more)
 
 ### Community 48 - "Community 48"
-Cohesion: 0.07
-Nodes (38): commitImport(), createHoliday(), deleteHoliday(), getUpcomingHolidays(), importHolidays(), listHolidays(), previewImport(), updateHoliday() (+30 more)
+Cohesion: 0.20
+Nodes (14): commitImport(), createHoliday(), deleteHoliday(), getUpcomingHolidays(), importHolidays(), listHolidays(), previewImport(), updateHoliday() (+6 more)
 
 ### Community 49 - "Community 49"
 Cohesion: 0.12
 Nodes (3): createLeaveRequest(), updateLeaveRequest(), withRef()
 
 ### Community 50 - "Community 50"
-Cohesion: 0.20
-Nodes (11): p, DEPARTMENTS, LEAVE_TYPES, prisma, seedProductionData(), prisma, results, runTests() (+3 more)
+Cohesion: 0.12
+Nodes (22): DEPARTMENTS, LEAVE_TYPES, prisma, seedProductionData(), main(), prisma, seedCountry(), upsertHrUser() (+14 more)
 
 ### Community 51 - "Community 51"
 Cohesion: 0.23
@@ -590,24 +616,24 @@ Cohesion: 0.11
 Nodes (17): 1. Database Migration — `20260608100000_add_phase3_extended`, 2. New API Endpoints (28 routes), 3. Previously Implemented Domains (A–G), 4. Seed Data, 5. Documentation Updated, Accounting Journal, Commits (This Session), Disbursement (+9 more)
 
 ### Community 55 - "Community 55"
-Cohesion: 0.23
-Nodes (17): formatEmployeeForApi(), getDescendantIds(), loadAllDeptsByTenant(), validateDepartmentPath(), walkPath(), createEmployee(), deleteEmployee(), deptPathError() (+9 more)
+Cohesion: 0.25
+Nodes (16): formatEmployeeForApi(), getDescendantIds(), loadAllDeptsByTenant(), validateDepartmentPath(), walkPath(), createEmployee(), deleteEmployee(), deptPathError() (+8 more)
 
 ### Community 56 - "Community 56"
 Cohesion: 0.22
 Nodes (22): budgetStatusOf(), createDelegation(), createLock(), DEFAULT_RATES, deleteDelegation(), deleteLock(), getApprovalChain(), getAudit() (+14 more)
 
 ### Community 57 - "Community 57"
-Cohesion: 0.09
-Nodes (9): createLog(), formatLogEntry(), formatTimestampIst(), getLogById(), prisma, ALL_TYPES, searchAll(), sourceEmployeeIds (+1 more)
+Cohesion: 0.12
+Nodes (4): prisma, createApp(), sourceEmployeeIds, engEmployeeIds
 
 ### Community 58 - "Community 58"
 Cohesion: 0.12
 Nodes (13): CONSOLE, consoleLog, empNet, EVIDENCE, firstRow, HR, NET, network (+5 more)
 
 ### Community 59 - "Community 59"
-Cohesion: 0.31
-Nodes (14): acceptInvitation(), createAndSendInvite(), createInviteToken(), dispatchInviteEmail(), getCompanyName(), getInviteEmailTarget(), invalidatePriorInvites(), INVITE_TTL_MS() (+6 more)
+Cohesion: 0.28
+Nodes (15): acceptInvitation(), createAndSendInvite(), createInviteToken(), dispatchInviteEmail(), getCompanyName(), getInviteEmailTarget(), invalidatePriorInvites(), INVITE_TTL_MS() (+7 more)
 
 ### Community 60 - "Community 60"
 Cohesion: 0.12
@@ -642,8 +668,8 @@ Cohesion: 0.14
 Nodes (14): `GET /attendance/team/records` — now supports `?employeeId=`, `GET /audit-logs` — now supports `?entity=` and `?entityId=`, `GET /departments/:id`, `GET /employees/next-code`, `GET /holidays/upcoming`, `GET /leave/balance/me`, `GET /leave/team/calendar`, `GET /leave/team/requests` — now supports `?employeeId=` (+6 more)
 
 ### Community 68 - "Community 68"
-Cohesion: 0.15
-Nodes (21): getEmployeeYtd(), main(), prisma, PH_TRAIN_NO_BASE, computeIncomeTaxFromRegime(), computeSlabTax(), computeStatutoryContributions(), CURRENCY_MINOR_UNITS (+13 more)
+Cohesion: 0.20
+Nodes (14): getEmployeeYtd(), PH_TRAIN_NO_BASE, periodRepresentativeDate(), computeIncomeTaxFromRegime(), computeSlabTax(), computeStatutoryContributions(), CURRENCY_MINOR_UNITS, minorToMajor() (+6 more)
 
 ### Community 69 - "Community 69"
 Cohesion: 0.10
@@ -666,12 +692,12 @@ Cohesion: 0.24
 Nodes (13): AppError, approveRegularization(), assertCanReviewRegularization(), assertCanViewEmployee(), denyRegularization(), getAttendanceRecords(), getAttendanceSummary(), getTeamAttendanceRecords() (+5 more)
 
 ### Community 75 - "Community 75"
-Cohesion: 0.11
+Cohesion: 0.27
 Nodes (8): ANNOUNCEMENT_CATEGORY_COLORS, categoryColor(), createAnnouncement(), getAnnouncements(), getChannels(), normalizeCategory(), pinAnnouncement(), shapeAnnouncement()
 
 ### Community 76 - "Community 76"
-Cohesion: 0.30
-Nodes (10): completePasswordReset(), maskEmail(), requestPasswordReset(), validateResetToken(), enqueuePasswordResetEmail(), getTransporter(), renderEmailTemplate(), sendEmail() (+2 more)
+Cohesion: 0.21
+Nodes (19): generateOtp(), generateOtpCode(), generateSecureChallengeId(), initiateOtp(), maskEmail(), resendOtp(), verifyOtp(), completePasswordReset() (+11 more)
 
 ### Community 77 - "Community 77"
 Cohesion: 0.17
@@ -690,16 +716,16 @@ Cohesion: 0.29
 Nodes (7): createTimesheetReminderNotifications(), addClient(), clients, emitToUser(), emitToUsers(), removeClient(), sendEvent()
 
 ### Community 81 - "Community 81"
-Cohesion: 0.20
-Nodes (11): calculatePayrollRun(), negateLines(), preserveRunMeta(), cyclesInMonthFromAnchor(), PERIODS_PER_YEAR_MAP, periodsPerMonth(), periodsPerYear(), SCHEDULE_STEP_DAYS (+3 more)
+Cohesion: 0.14
+Nodes (16): calculatePayrollRun(), finalizeRunCalculation(), negateLines(), preserveRunMeta(), currencyDecimals(), roundMoney(), THREE_DECIMAL_CURRENCIES, ZERO_DECIMAL_CURRENCIES (+8 more)
 
 ### Community 82 - "Community 82"
-Cohesion: 0.11
-Nodes (25): createGarnishment(), createPaymentBatch(), decideReimbursementClaim(), fmtReimbursementClaimForUi(), importInputsFromAttendance(), importInputsFromLeave(), importInputsFromTimesheets(), listReimbursementCategories() (+17 more)
+Cohesion: 0.29
+Nodes (9): createPaymentBatch(), importInputsFromAttendance(), importInputsFromLeave(), importInputsFromTimesheets(), listReimbursementCategories(), loadEditableRun(), publishRun(), recalculatePayslip() (+1 more)
 
 ### Community 83 - "Community 83"
-Cohesion: 0.16
-Nodes (13): getPayslipTemplate(), updatePayslipTemplate(), ALL_PAYSLIP_SECTION_DEFS, APPROVAL_TYPE_COLORS, COMPONENT_TYPE_COLORS, componentColor(), EVENT_CATEGORY_COLORS, fmtPayslipTemplateForUi() (+5 more)
+Cohesion: 0.13
+Nodes (15): createGarnishment(), getPayslipTemplate(), updateGarnishment(), updatePayslipTemplate(), ALL_PAYSLIP_SECTION_DEFS, APPROVAL_TYPE_COLORS, COMPONENT_TYPE_COLORS, componentColor() (+7 more)
 
 ### Community 85 - "Community 85"
 Cohesion: 0.23
@@ -730,8 +756,8 @@ Cohesion: 0.18
 Nodes (10): author, description, engines, node, keywords, license, main, name (+2 more)
 
 ### Community 92 - "Community 92"
-Cohesion: 0.10
-Nodes (5): AppError, getAuthSettings(), getPublicPasswordPolicy(), getTenantConfig(), updateTenantConfig()
+Cohesion: 0.11
+Nodes (11): cacheDel(), cacheGet(), cacheSet(), getRedis(), getStatutoryPacks(), AppError, getAuthSettings(), getPublicPasswordPolicy() (+3 more)
 
 ### Community 93 - "Community 93"
 Cohesion: 0.18
@@ -758,8 +784,8 @@ Cohesion: 0.27
 Nodes (9): buildCalculatedComponents(), getEmployeeSalary(), setEmployeeSalary(), detectCircularDep(), evaluateFormula(), extractFormulaRefs(), FUNC_NAMES, SPECIAL_VARS (+1 more)
 
 ### Community 100 - "Community 100"
-Cohesion: 0.31
-Nodes (12): resolveRunCycle(), derivePeriodDates(), derivePeriodDatesFromString(), inferScheduleFromPeriod(), isLastCycleInMonth(), isoWeeksInYear(), isoWeekToDateRange(), isValidPeriod() (+4 more)
+Cohesion: 0.05
+Nodes (42): Attendance, Audit Logs, Auth, Completeness Audit — Previously-Undocumented Endpoints (added 2026-06-23) ✅, `DELETE /reports/scheduled/:id` — HR_ADMIN, `GET /attendance/today`, `GET /audit-logs/export?format=csv|json` — HR_ADMIN / SUPER_ADMIN, `GET /auth/password-policy` — Public (+34 more)
 
 ### Community 101 - "Community 101"
 Cohesion: 0.20
@@ -770,8 +796,8 @@ Cohesion: 0.30
 Nodes (10): fetchData(), getAttendance(), getAttrition(), getDepartmentPerformance(), getHeadcountByDepartment(), getLeaveSummary(), getPayrollCost(), getRecentActivity() (+2 more)
 
 ### Community 103 - "Community 103"
-Cohesion: 0.40
-Nodes (12): getPayCalendarCycles(), fmtDate(), genBiweeklyCycles(), generateCycles(), genMonthlyCycles(), genSemiMonthlyCycles(), genWeeklyCycles(), getFirstAnchorDate() (+4 more)
+Cohesion: 0.22
+Nodes (20): getPayCalendarCycles(), fmtDate(), genBiweeklyCycles(), generateCycles(), genMonthlyCycles(), genSemiMonthlyCycles(), genWeeklyCycles(), getFirstAnchorDate() (+12 more)
 
 ### Community 104 - "Community 104"
 Cohesion: 0.22
@@ -782,8 +808,8 @@ Cohesion: 0.22
 Nodes (9): Domain F — Payroll (`/payroll/*`), F.11 — Run Payslips (HR View), F.13 — Payroll Roster, F.16 — Compliance Reporting, F.17 — Previously MSW-Only Endpoints (NOW LIVE ✅ as of 2026-06-08), `GET /payroll/reports/pay-equity`, `GET /payroll/roster`, `GET /payroll/runs/:runId/payslips` (+1 more)
 
 ### Community 106 - "Community 106"
-Cohesion: 0.22
-Nodes (9): `GET /leave/balance`, `GET /leave/requests`, `GET /leave/team/requests`, `GET /leave/types`, Leave, `PATCH /leave/requests/:id/approve`, `PATCH /leave/requests/:id/reject`, `PATCH /leave/requests/:id/withdraw` (+1 more)
+Cohesion: 0.20
+Nodes (10): `GET /leave/balance`, `GET /leave/requests`, `GET /leave/team/requests`, `GET /leave/types`, Leave, `PATCH /leave/requests/:id/approve`, `PATCH /leave/requests/:id/reject`, `PATCH /leave/requests/:id/withdraw` (+2 more)
 
 ### Community 107 - "Community 107"
 Cohesion: 0.22
@@ -806,8 +832,8 @@ Cohesion: 0.22
 Nodes (9): devDependencies, eslint, @eslint/js, globals, node-fetch, playwright, @playwright/test, prettier (+1 more)
 
 ### Community 113 - "Community 113"
-Cohesion: 0.33
-Nodes (4): prisma, testLogin(), prisma, verify()
+Cohesion: 0.20
+Nodes (13): getEmployeeResolvedHolidays(), getMyResolvedHolidays(), yearOf(), buildResolvedHolidays(), isoDay(), offDateSet(), rawHolidaysBetween(), resolveEmployeeHolidayContext() (+5 more)
 
 ### Community 114 - "Community 114"
 Cohesion: 0.09
@@ -862,12 +888,12 @@ Cohesion: 0.33
 Nodes (4): cookieHeader(), login(), REGULARIZATION_DATE, TEST_DATE
 
 ### Community 128 - "Community 128"
-Cohesion: 0.46
-Nodes (7): createComponent(), fmtComponent(), updateComponent(), fmtComponentStatutoryFields(), normalizeCostCenterRule(), parsePayInPeriods(), serializePayInPeriods()
+Cohesion: 0.39
+Nodes (8): createComponent(), fmtComponent(), updateComponent(), fmtComponentStatutoryFields(), normalizeCostCenterRule(), parsePayInPeriods(), serializePayInPeriods(), withComponentColor()
 
 ### Community 129 - "Community 129"
-Cohesion: 0.10
-Nodes (15): employeesRoutes(), errorHandler(), attachRequestLogging(), sensitiveFields, helmetPlugin(), rateLimitPlugin(), requestIdPlugin, createApp() (+7 more)
+Cohesion: 0.16
+Nodes (7): employeesRoutes(), errorHandler(), attachRequestLogging(), sensitiveFields, helmetPlugin(), rateLimitPlugin(), requestIdPlugin
 
 ### Community 130 - "Community 130"
 Cohesion: 0.39
@@ -890,8 +916,8 @@ Cohesion: 0.25
 Nodes (7): CI Pipeline (GitHub Actions), E2E Tests, EMS Backend — Test & Verification Results, Integration Test Suite (local only), Live API Verification (Render), Live Test Credentials, Unit Test Suite (local)
 
 ### Community 135 - "Community 135"
-Cohesion: 0.08
-Nodes (27): applyTemplate(), approveTimesheet(), copyWeek(), createEntry(), createProject(), createTask(), createTemplate(), deleteEntry() (+19 more)
+Cohesion: 0.14
+Nodes (12): forgotPasswordSchema, loginSchema, refreshSchema, registerSchema, resendOtpSchema, resetPasswordSchema, resetPasswordValueSchema, validateResetTokenSchema (+4 more)
 
 ### Community 136 - "Community 136"
 Cohesion: 0.29
@@ -1034,8 +1060,8 @@ Cohesion: 0.33
 Nodes (5): How to Use, References, Rule Categories by Priority, Supabase Postgres Best Practices, When to Apply
 
 ### Community 171 - "Community 171"
-Cohesion: 0.16
-Nodes (8): config, corsPlugin(), args, emailIndex, maskEmail(), sendTestEmail(), cookieValue(), login()
+Cohesion: 0.20
+Nodes (6): config, corsPlugin(), args, emailIndex, maskEmail(), sendTestEmail()
 
 ### Community 172 - "Community 172"
 Cohesion: 0.40
@@ -1054,8 +1080,8 @@ Cohesion: 0.46
 Nodes (12): emitAnalyticsRefresh(), getEmployeeContext(), notifyCheckIn(), notifyCheckOut(), notifyLeaveApproved(), notifyLeaveDenied(), notifyLeaveRequested(), notifyLeaveWithdrawn() (+4 more)
 
 ### Community 176 - "Community 176"
-Cohesion: 0.18
-Nodes (10): createHoliday(), deleteHoliday(), getUpcomingHolidays(), listHolidays(), updateHoliday(), all, mandatory, selectedOpt (+2 more)
+Cohesion: 0.29
+Nodes (5): all, mandatory, selectedOpt, unselectedOpt, resolveApplicableHolidays()
 
 ### Community 177 - "Community 177"
 Cohesion: 0.40
@@ -1070,8 +1096,8 @@ Cohesion: 0.40
 Nodes (5): 1. Clone Repository, 2. Setup Environment, 3. Database Setup, 4. Start Development Server, Quick Start (5 minutes)
 
 ### Community 180 - "Community 180"
-Cohesion: 0.40
-Nodes (5): `DELETE /holidays/:id`, `GET /holidays`, Holidays, `PATCH /holidays/:id`, `POST /holidays`
+Cohesion: 0.32
+Nodes (8): `DELETE /holidays/:id`, `GET /employees/:id/holidays`, `GET /holidays`, `GET /me/holidays`, Holiday Applicability Engine (per-employee resolved) — `HOLIDAY_ENGINE_BACKEND_CONTRACT`, Holidays, `PATCH /holidays/:id`, `POST /holidays`
 
 ### Community 181 - "Community 181"
 Cohesion: 0.40
@@ -1094,8 +1120,8 @@ Cohesion: 0.35
 Nodes (10): extractFilters(), getAttendance(), getAttrition(), getDepartmentPerformance(), getHeadcountByDepartment(), getLeaveSummary(), getPayrollCost(), getRecentActivity() (+2 more)
 
 ### Community 186 - "Community 186"
-Cohesion: 0.40
-Nodes (4): approveLeaveRequestSchema, createLeaveRequestSchema, getLeaveRequestsSchema, rejectLeaveRequestSchema
+Cohesion: 0.09
+Nodes (21): approveLeaveRequest(), bulkApproveLeave(), bulkDenyLeave(), createLeaveRequest(), createLeaveType(), deleteLeaveType(), getLeaveBalance(), getLeaveRequests() (+13 more)
 
 ### Community 187 - "Community 187"
 Cohesion: 0.40
@@ -1374,20 +1400,20 @@ Cohesion: 0.36
 Nodes (4): hasPermission(), PERMISSION_KEYS, requirePermission(), settingsRoutes()
 
 ### Community 318 - "Community 318"
-Cohesion: 0.14
-Nodes (13): Backend Verification Status, Deferred by decision (2026-06-22), Documented 12.4 follow-ups, Extra modules (outside the 59-slice plan, have FE contracts), Genuine remaining work (honest), Live MSW-off screen sweep (2026-06-22), Money rounding — application layer FIXED, persistence BLOCKED by schema (2026-06-23), Payroll-extras MSW-off sweep (2026-06-22) — PASS (+5 more)
+Cohesion: 0.13
+Nodes (14): Backend Verification Status, Deferred / optional (not blocking “backend complete”), Documented 12.4 follow-ups, Extra modules (outside the 59-slice plan, have FE contracts), Genuine remaining work (honest — post Hostinger 100% pass), Hostinger closure (2026-06-23) — ✅ BACKEND COMPLETE, Live MSW-off screen sweep (2026-06-22), Money rounding — application layer FIXED, persistence BLOCKED by schema (2026-06-23) (+6 more)
 
 ### Community 319 - "Community 319"
-Cohesion: 0.44
-Nodes (8): generateOtp(), generateOtpCode(), generateSecureChallengeId(), initiateOtp(), maskEmail(), resendOtp(), verifyOtp(), enqueueOtpEmail()
+Cohesion: 0.22
+Nodes (12): createStatutoryPack(), fmtStatutoryPack(), getStatutoryPackById(), updateStatutoryPack(), main(), prisma, flatBodyToPackData(), fmtStatutoryPackRow() (+4 more)
 
 ### Community 320 - "Community 320"
 Cohesion: 0.29
 Nodes (6): attendanceQuerySchema, commonFilters, headcountQuerySchema, leaveSummaryQuerySchema, recentActivityQuerySchema, summaryQuerySchema
 
 ### Community 321 - "Community 321"
-Cohesion: 0.17
-Nodes (11): Backlog — documented divergences to reconcile (highest value first), Decisions locked, EMS Backend — Build Tracker, MSW-only surfaces to implement (FE contract exists, backend 404s), Phase 0 — Foundation & harness, Phase 10 — Permissions & settings, Phase 12 — Hardening, Phase 1 — Auth & identity (+3 more)
+Cohesion: 0.15
+Nodes (12): Backlog — documented divergences to reconcile (highest value first), Decisions locked, EMS Backend — Build Tracker, Live verification pass — 2026-06-23 (against Render DB, MSW-off), MSW-only surfaces — RECONCILED (implemented; were not actually 404), Phase 0 — Foundation & harness, Phase 10 — Permissions & settings, Phase 12 — Hardening (+4 more)
 
 ### Community 323 - "Community 323"
 Cohesion: 0.25
@@ -1398,20 +1424,24 @@ Cohesion: 0.43
 Nodes (4): mk(), round2(), runYearEndClose(), ctx
 
 ### Community 325 - "Community 325"
-Cohesion: 0.22
-Nodes (8): attendanceReportSchema, exportHistorySchema, leavesReportSchema, listScheduledReportsSchema, now, payrollReportSchema, scheduleReportSchema, updateScheduledReportSchema
+Cohesion: 0.15
+Nodes (12): 🔴 1 — Pin Vercel functions to Mumbai (`bom1`) — **the fix, frontend-owned**, 🟠 2 — Backend nginx — ✅ APPLIED 2026-06-23 (EMS vhost only; rentocloud untouched), 🟡 3 — DB connection pool — ✅ APPLIED 2026-06-23, ⚪ 4 — Operational note, Backend Performance Report — `/auth/me` "slowness" investigation, Confirm it in 30 seconds, Evidence — the backend is fast at every layer, Fixes, by impact (+4 more)
 
 ### Community 326 - "Community 326"
-Cohesion: 0.50
-Nodes (3): apiIds, ids, prisma
+Cohesion: 0.15
+Nodes (12): Async stack (Redis + BullMQ) — LIVE on Hostinger (2026-06-23), CI/CD — Hostinger auto-deploy (LIVE 2026-06-23), Deliberately deferred (NOT gaps — locked decision), EMS Backend — Status of Record, End-to-end UI verification (2026-06-23, Playwright/Chromium, MSW OFF), Hostinger live deployment (2026-06-23), Locked decisions (carry-forward), Open / operational items (none block "done") (+4 more)
 
 ### Community 327 - "Community 327"
-Cohesion: 0.50
-Nodes (3): ids, loanIds, prisma
+Cohesion: 0.28
+Nodes (11): addSelection(), getHoliday(), getPolicies(), getPolicy(), getSelectionIds(), HolidaySelectionError, mapPolicy(), removeSelection() (+3 more)
 
 ### Community 328 - "Community 328"
 Cohesion: 0.50
 Nodes (3): MON_FRI, SUN_THU, observedDate()
+
+### Community 329 - "Community 329"
+Cohesion: 0.17
+Nodes (11): 0. TL;DR — why this is a backend responsibility, 1. The endpoint + wire contract, 2. Rule-coverage checklist (the engine's actual responsibilities), 3. The consistency guarantee (the item that matters most), 4. Config-over-code proof (truly global), 5. Live evidence required (not a Swagger entry), 6. Edge / empty semantics (define each), Definition of "engine confirmed on the backend" (+3 more)
 
 ### Community 331 - "Community 331"
 Cohesion: 0.22
@@ -1430,8 +1460,8 @@ Cohesion: 0.53
 Nodes (5): rawTokenFromRequest(), resolveTenant(), slugFromHost(), TENANT_OPTIONAL_ROUTES, tenantIdFromJwt()
 
 ### Community 335 - "Community 335"
-Cohesion: 0.43
-Nodes (5): finalizeRunCalculation(), currencyDecimals(), roundMoney(), THREE_DECIMAL_CURRENCIES, ZERO_DECIMAL_CURRENCIES
+Cohesion: 0.35
+Nodes (11): computeExpectedLitmus(), COUNTRY_LITMUS, api(), main(), money(), near(), pickDeductions(), REPORT_DIR (+3 more)
 
 ### Community 336 - "Community 336"
 Cohesion: 0.70
@@ -1441,10 +1471,6 @@ Nodes (4): fail(), getInvoices(), getPlans(), getSubscription()
 Cohesion: 0.60
 Nodes (5): createTemplate(), fmtTemplate(), sanitizeRows(), updateTemplate(), validationError()
 
-### Community 340 - "Community 340"
-Cohesion: 0.67
-Nodes (3): HTTP Status Code Contract, Validation error body (422), What stays 400
-
 ### Community 341 - "Community 341"
 Cohesion: 0.67
 Nodes (4): assertUniqueCode(), createProject(), fmtProject(), updateProject()
@@ -1453,25 +1479,109 @@ Nodes (4): assertUniqueCode(), createProject(), fmtProject(), updateProject()
 Cohesion: 0.67
 Nodes (3): createContractorInvoice(), fmtContractorInvoice(), updateContractorInvoice()
 
+### Community 343 - "Community 343"
+Cohesion: 0.20
+Nodes (8): apiCalls, consoleErrors, ERR_PATTERNS, fails, ONLY, results, ROUTES, swServed
+
+### Community 344 - "Community 344"
+Cohesion: 0.31
+Nodes (7): enqueueCalculate(), getPayrollQueue(), startPayrollWorker(), createQueueConnection(), calculatePayrollRun(), logger, start()
+
+### Community 346 - "Community 346"
+Cohesion: 0.22
+Nodes (8): Advisory (not a failure), Configuration (data-driven), Expected engine output (reference litmus), Live API payroll run output, Payroll Regression — Canada (CA), Payslip deduction lines, Statutory pack summary, Verdict
+
+### Community 347 - "Community 347"
+Cohesion: 0.22
+Nodes (8): Advisory (not a failure), Configuration (data-driven), Expected engine output (reference litmus), Live API payroll run output, Payroll Regression — Vietnam (VN), Payslip deduction lines, Statutory pack summary, Verdict
+
+### Community 348 - "Community 348"
+Cohesion: 0.33
+Nodes (8): bulkWhere, countBulk(), countKeep(), deleteBulkAttendance(), deleteBulkEmployees(), EXECUTE, main(), prisma
+
+### Community 349 - "Community 349"
+Cohesion: 0.43
+Nodes (7): addOptionalSelection(), fail(), getHolidayPolicy(), getOptionalSelections(), patchHolidayPolicy(), PRIVILEGED, removeOptionalSelection()
+
+### Community 350 - "Community 350"
+Cohesion: 0.25
+Nodes (7): Configuration (data-driven), Expected engine output (reference litmus), Live API payroll run output, Payroll Regression — Saudi Arabia (SA), Payslip deduction lines, Statutory pack summary, Verdict
+
+### Community 351 - "Community 351"
+Cohesion: 0.25
+Nodes (7): Configuration (data-driven), Expected engine output (reference litmus), Live API payroll run output, Payroll Regression — Singapore (SG), Payslip deduction lines, Statutory pack summary, Verdict
+
+### Community 352 - "Community 352"
+Cohesion: 0.25
+Nodes (7): Advisory notes (not failures — UI/backend awareness), Global Payroll Regression Summary, Reproduce locally, Result: **5/5 countries PASS**, Scripts & config, Test credentials, What was tested
+
+### Community 353 - "Community 353"
+Cohesion: 0.25
+Nodes (7): Configuration (data-driven), Expected engine output (reference litmus), Live API payroll run output, Payroll Regression — United Arab Emirates (AE), Payslip deduction lines, Statutory pack summary, Verdict
+
+### Community 354 - "Community 354"
+Cohesion: 0.43
+Nodes (4): createLog(), formatLogEntry(), formatTimestampIst(), getLogById()
+
+### Community 355 - "Community 355"
+Cohesion: 0.38
+Nodes (6): all, login(), ROLES, runRole(), slug(), summary
+
+### Community 356 - "Community 356"
+Cohesion: 0.33
+Nodes (5): created, HR, leaveEngineRoutes(), MGR, ok
+
+### Community 357 - "Community 357"
+Cohesion: 0.53
+Nodes (6): cacheDelByPrefix(), createStatutoryPack(), deleteStatutoryPack(), STATPACK_CACHE_PREFIX(), updateStatutoryPack(), validateStatutoryPackBody()
+
+### Community 358 - "Community 358"
+Cohesion: 0.33
+Nodes (5): HR, MGR, ok, T, timesheetsConfigRoutes()
+
+### Community 359 - "Community 359"
+Cohesion: 0.40
+Nodes (5): Admin Logs, `GET /logs`, `GET /logs/export`, `GET /logs/:id`, `GET /logs/stream`
+
+### Community 360 - "Community 360"
+Cohesion: 0.40
+Nodes (4): createHolidaySchema, idParamSchema, listQuerySchema, updateHolidaySchema
+
+### Community 361 - "Community 361"
+Cohesion: 0.40
+Nodes (4): apiFails, page, results, ROUTES
+
+### Community 362 - "Community 362"
+Cohesion: 0.50
+Nodes (3): login(), req(), rows
+
+### Community 367 - "Community 367"
+Cohesion: 0.67
+Nodes (3): cookieHeader(), legacyReportPaths, login()
+
+### Community 368 - "Community 368"
+Cohesion: 0.67
+Nodes (3): getPayCalendars(), getPayGroups(), getPaySchedules()
+
 ## Knowledge Gaps
-- **1753 isolated node(s):** `p`, `prisma`, `apiIds`, `ids`, `prisma` (+1748 more)
+- **1870 isolated node(s):** `DEPLOY_INSTRUCTIONS.sh script`, `curl_sequence.sh script`, `name`, `version`, `description` (+1865 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **58 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **63 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `errorResponse()` connect `Community 1` to `Community 0`, `Community 129`, `Community 135`, `Community 15`, `Community 19`, `Community 26`, `Community 27`, `Community 37`, `Community 40`, `Community 44`, `Community 303`, `Community 48`, `Community 176`, `Community 55`, `Community 311`, `Community 316`, `Community 62`, `Community 336`, `Community 88`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
-- **Why does `prisma` connect `Community 57` to `Community 0`, `Community 1`, `Community 4`, `Community 7`, `Community 8`, `Community 15`, `Community 17`, `Community 26`, `Community 31`, `Community 166`, `Community 40`, `Community 300`, `Community 45`, `Community 47`, `Community 48`, `Community 49`, `Community 175`, `Community 51`, `Community 308`, `Community 55`, `Community 311`, `Community 313`, `Community 56`, `Community 59`, `Community 62`, `Community 319`, `Community 72`, `Community 330`, `Community 75`, `Community 76`, `Community 334`, `Community 84`, `Community 88`, `Community 99`, `Community 111`, `Community 127`?**
-  _High betweenness centrality (0.040) - this node is a cross-community bridge._
-- **Why does `successResponse()` connect `Community 0` to `Community 1`, `Community 37`, `Community 135`, `Community 40`, `Community 44`, `Community 303`, `Community 336`, `Community 15`, `Community 48`, `Community 176`, `Community 19`, `Community 55`, `Community 88`, `Community 57`, `Community 27`, `Community 311`, `Community 62`?**
-  _High betweenness centrality (0.036) - this node is a cross-community bridge._
-- **What connects `p`, `prisma`, `apiIds` to the rest of the system?**
-  _1753 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `successResponse()` connect `Community 0` to `Community 1`, `Community 129`, `Community 135`, `Community 15`, `Community 19`, `Community 27`, `Community 37`, `Community 40`, `Community 44`, `Community 303`, `Community 48`, `Community 311`, `Community 55`, `Community 186`, `Community 59`, `Community 62`, `Community 336`, `Community 88`, `Community 349`, `Community 363`, `Community 113`?**
+  _High betweenness centrality (0.057) - this node is a cross-community bridge._
+- **Why does `prisma` connect `Community 57` to `Community 0`, `Community 1`, `Community 3`, `Community 4`, `Community 7`, `Community 8`, `Community 15`, `Community 17`, `Community 26`, `Community 166`, `Community 40`, `Community 300`, `Community 45`, `Community 47`, `Community 48`, `Community 49`, `Community 175`, `Community 51`, `Community 308`, `Community 55`, `Community 311`, `Community 313`, `Community 186`, `Community 59`, `Community 56`, `Community 62`, `Community 327`, `Community 72`, `Community 74`, `Community 330`, `Community 76`, `Community 334`, `Community 338`, `Community 340`, `Community 84`, `Community 88`, `Community 344`, `Community 345`, `Community 354`, `Community 99`, `Community 363`, `Community 111`, `Community 113`, `Community 127`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Why does `errorResponse()` connect `Community 1` to `Community 0`, `Community 129`, `Community 135`, `Community 15`, `Community 19`, `Community 26`, `Community 27`, `Community 37`, `Community 40`, `Community 44`, `Community 303`, `Community 48`, `Community 311`, `Community 55`, `Community 186`, `Community 59`, `Community 316`, `Community 62`, `Community 336`, `Community 88`, `Community 349`, `Community 113`?**
+  _High betweenness centrality (0.041) - this node is a cross-community bridge._
+- **What connects `DEPLOY_INSTRUCTIONS.sh script`, `curl_sequence.sh script`, `name` to the rest of the system?**
+  _1870 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.05287739783152627 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04973302822273074 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.04651898734177215 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.03823024054982818 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.02882882882882883 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.030690537084398978 - nodes in this community are weakly interconnected._

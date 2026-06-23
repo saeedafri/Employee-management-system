@@ -16,9 +16,33 @@ import {
   addOptionalSelection,
   removeOptionalSelection,
 } from './holidaysPolicy.controller.js';
+import {
+  getMyResolvedHolidays,
+  getEmployeeResolvedHolidays,
+} from './holidayResolved.controller.js';
 
 export default async function holidaysRoutes(fastify) {
   fastify.addHook('onRequest', authenticate);
+
+  // ── Holiday Applicability Engine (HOLIDAY_ENGINE_BACKEND_CONTRACT) ──
+  // Fully-resolved per-employee set: country-scoped + observed-shifted + optional/selected
+  // metadata. The SAME resolution leave/payroll/attendance consume server-side (§3).
+  const resolvedSchema = {
+    tags: ['Holidays'],
+    querystring: { type: 'object', properties: { year: { type: 'integer' } } },
+    security: [{ Bearer: [] }],
+    response: { 200: { type: 'object', additionalProperties: true } },
+  };
+  fastify.get('/me/holidays', {
+    schema: { ...resolvedSchema, description: 'Resolved holidays for the logged-in employee (observed/optional metadata). No employee profile → tenant-wide only.' },
+  }, getMyResolvedHolidays);
+  fastify.get('/employees/:id/holidays', {
+    schema: {
+      ...resolvedSchema,
+      description: 'Resolved holidays for an employee (HR/SUPER_ADMIN, or the employee themselves).',
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+    },
+  }, getEmployeeResolvedHolidays);
 
   fastify.get(
     '/holidays',

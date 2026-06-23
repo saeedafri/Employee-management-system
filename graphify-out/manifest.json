@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   ".cursor/settings.json": {
-    "mtime": 1780997635.497768,
-    "ast_hash": "346e6c535f08013d943e7199da172500",
+    "mtime": 1782207748.0586207,
+    "ast_hash": "e6dfc0de688ab6f935b1d42b077542a3",
     "semantic_hash": ""
   },
   "DEPLOY_INSTRUCTIONS.sh": {
@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1782117668.743675,
-    "ast_hash": "9eb2e3fcb085b40fbbbd4984b9c0cee8",
+    "mtime": 1782200502.4000347,
+    "ast_hash": "60bcd82c928a2b3bdda064c4f9e6e437",
     "semantic_hash": ""
   },
   "playwright.config.js": {
@@ -470,8 +470,8 @@
     "semantic_hash": ""
   },
   "src/modules/attendance/attendance.service.js": {
-    "mtime": 1782154036.1608198,
-    "ast_hash": "0b85a0fc5a8cc6c466e036f44ebe394e",
+    "mtime": 1782238138.6318407,
+    "ast_hash": "b0acc47183749896fef1c76d168471e1",
     "semantic_hash": ""
   },
   "src/modules/attendance/attendance.validator.js": {
@@ -695,8 +695,8 @@
     "semantic_hash": ""
   },
   "src/modules/holidays/holidays.routes.js": {
-    "mtime": 1782127254.6382556,
-    "ast_hash": "edc7287a3b220611bf4b9408ffc5b02a",
+    "mtime": 1782238013.6984422,
+    "ast_hash": "b741af9c7c86dd36fc8dfcd653b44d60",
     "semantic_hash": ""
   },
   "src/modules/holidays/holidays.service.js": {
@@ -710,8 +710,8 @@
     "semantic_hash": ""
   },
   "src/modules/leave/leave.controller.js": {
-    "mtime": 1782150001.860629,
-    "ast_hash": "91de58ee2cf5e3978b6a4f418e83c62f",
+    "mtime": 1782238103.839976,
+    "ast_hash": "43c8b4bc60a586839fe340414c6a5355",
     "semantic_hash": ""
   },
   "src/modules/leave/leave.repository.js": {
@@ -720,13 +720,13 @@
     "semantic_hash": ""
   },
   "src/modules/leave/leave.routes.js": {
-    "mtime": 1782154690.3751514,
-    "ast_hash": "d79540e73164cbfad6d5a5b15e3bc281",
+    "mtime": 1782238115.861397,
+    "ast_hash": "9cce64e4b9067a23103de167328d161b",
     "semantic_hash": ""
   },
   "src/modules/leave/leave.service.js": {
-    "mtime": 1779856012.3497498,
-    "ast_hash": "0c20e55453220a714b1018191290b334",
+    "mtime": 1782238093.353818,
+    "ast_hash": "f20c4c562227d6a9e15e1dc026364809",
     "semantic_hash": ""
   },
   "src/modules/leave/leave.validator.js": {
@@ -775,8 +775,8 @@
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.repository.js": {
-    "mtime": 1782153949.7899964,
-    "ast_hash": "90ccc500ec85a2286016f76275dae177",
+    "mtime": 1782238204.220366,
+    "ast_hash": "ca397622513a0d2b347e4ddb49ee5b65",
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.routes.js": {
@@ -785,8 +785,8 @@
     "semantic_hash": ""
   },
   "src/modules/payroll/payroll.service.js": {
-    "mtime": 1782152980.155911,
-    "ast_hash": "dcfa86b6d92ec9fe72ec7bc004086f7f",
+    "mtime": 1782213051.8861248,
+    "ast_hash": "1f082b26863a89f85d5f7f49cb99d645",
     "semantic_hash": ""
   },
   "src/modules/performance/performance.controller.js": {
@@ -835,8 +835,8 @@
     "semantic_hash": ""
   },
   "src/modules/reports/reports.repository.js": {
-    "mtime": 1781097857.1335013,
-    "ast_hash": "f130191d7cce9fab1763564294f4a87c",
+    "mtime": 1782198987.7259316,
+    "ast_hash": "3e648c5e2d83c85904548a483a1c9bf7",
     "semantic_hash": ""
   },
   "src/modules/reports/reports.routes.js": {
@@ -845,8 +845,8 @@
     "semantic_hash": ""
   },
   "src/modules/reports/reports.service.js": {
-    "mtime": 1781101343.016699,
-    "ast_hash": "5985c8dba65aa81f18ff82683eed9ca6",
+    "mtime": 1782199026.374505,
+    "ast_hash": "37875a172d4e0d20a7a53d6a251335fc",
     "semantic_hash": ""
   },
   "src/modules/reports/reports.validator.js": {
@@ -885,8 +885,8 @@
     "semantic_hash": ""
   },
   "src/modules/settings/settings.service.js": {
-    "mtime": 1782153665.0303166,
-    "ast_hash": "28baf09346b16ac16f3343ce03625dc4",
+    "mtime": 1782201759.0079064,
+    "ast_hash": "0d61e6e304a61eceb5dda93e447a85ce",
     "semantic_hash": ""
   },
   "src/modules/settings/settings.validator.js": {
@@ -945,13 +945,13 @@
     "semantic_hash": ""
   },
   "src/plugins/swagger.js": {
-    "mtime": 1782154465.3116343,
-    "ast_hash": "f495f10847efee966ac87d3917f41994",
+    "mtime": 1782238269.1657722,
+    "ast_hash": "c7fa319aac6a2104410cc85b8211e8c8",
     "semantic_hash": ""
   },
   "src/server.js": {
-    "mtime": 1781373663.4310007,
-    "ast_hash": "13369332d7a779a0b556f0a98d576128",
+    "mtime": 1782200480.1531866,
+    "ast_hash": "842424fbe497894fd7498a68cbfa6c8f",
     "semantic_hash": ""
   },
   "src/utils/cloudinary.js": {
@@ -1445,8 +1445,8 @@
     "semantic_hash": ""
   },
   "IMPLEMENTATION_STATUS.md": {
-    "mtime": 1779399330.0048137,
-    "ast_hash": "6f6357cce345868b712b45d732e859f5",
+    "mtime": 1782194604.704245,
+    "ast_hash": "cfe4474fd9ed1853ec5ac17d7c8a797b",
     "semantic_hash": ""
   },
   "MONITORING_GUIDE.md": {
@@ -1500,8 +1500,8 @@
     "semantic_hash": ""
   },
   "docs/API_MAPPING.md": {
-    "mtime": 1782154739.515211,
-    "ast_hash": "dc0e5f3c3d67a6ccce1ded60d6a23f0c",
+    "mtime": 1782238321.237478,
+    "ast_hash": "6e6a312d51008bd2fa26b2221d5df00f",
     "semantic_hash": ""
   },
   "docs/BACKEND_TEAM_HANDOFF_FIX_REPORT.md": {
@@ -2110,8 +2110,8 @@
     "semantic_hash": ""
   },
   "BUILD_PLAN.md": {
-    "mtime": 1782151238.5593414,
-    "ast_hash": "820de1aba0b328405bb74f4014f354ae",
+    "mtime": 1782194653.765297,
+    "ast_hash": "32d954102ea4e3cda0b45c8aa2daa996",
     "semantic_hash": ""
   },
   "docs/superpowers/plans/2026-06-22-phase0-foundation-harness.md": {
@@ -2260,8 +2260,8 @@
     "semantic_hash": ""
   },
   "docs/FRONTEND_FOLLOWUPS.md": {
-    "mtime": 1782154537.428433,
-    "ast_hash": "187221ccb29e177a80e0f607e6a9b290",
+    "mtime": 1782202901.6441717,
+    "ast_hash": "8c06c3a51726a3c573d49a2b316607b3",
     "semantic_hash": ""
   },
   "src/modules/attendance/attendanceDate.js": {
@@ -2275,8 +2275,8 @@
     "semantic_hash": ""
   },
   "docs/BACKEND_VERIFICATION_STATUS.md": {
-    "mtime": 1782155001.583087,
-    "ast_hash": "d468b88a734ab145fcb6538502611b85",
+    "mtime": 1782205730.3411288,
+    "ast_hash": "6d2807cdf287e2f6bcb95d3b979c8328",
     "semantic_hash": ""
   },
   "tests/reports-authz-contract.test.js": {
@@ -2317,6 +2317,401 @@
   "prisma/migrations/20260623100000_money_decimal_precision/migration.sql": {
     "mtime": 1782154958.2675035,
     "ast_hash": "e404d264f058d553af1ffee05035512d",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/EMPLOYEE/results.json": {
+    "mtime": 1782208643.0941904,
+    "ast_hash": "3c0ef9be429b98fb3d629fefda3ff7fa",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/results.json": {
+    "mtime": 1782208540.0950978,
+    "ast_hash": "474d6d73daf1dd59e65c43bc38881206",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/KWD_LITMUS/results.json": {
+    "mtime": 1782208694.1826286,
+    "ast_hash": "6d04e4cae1b8d33f1d83ec6b92e2871a",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/MANAGER/results.json": {
+    "mtime": 1782208615.7400947,
+    "ast_hash": "f138227e0154562a80b6118fcc6fee7b",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/SUPER_ADMIN/results.json": {
+    "mtime": 1782208589.787221,
+    "ast_hash": "3ff6b7456bb98919e3056a814fd76987",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/api-probes.json": {
+    "mtime": 1782208826.7761476,
+    "ast_hash": "0940034b88f38821a8ec28295f34d494",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/summary.json": {
+    "mtime": 1782208694.2178357,
+    "ast_hash": "b45bc4c10b15a9264df8d84a60594180",
+    "semantic_hash": ""
+  },
+  "scripts/cleanupHostingerBulkEmployees.mjs": {
+    "mtime": 1782207203.8465786,
+    "ast_hash": "50cb70cd46d3979aa980ea714c37cd9a",
+    "semantic_hash": ""
+  },
+  "scripts/globalCountryLitmusConfig.mjs": {
+    "mtime": 1782213051.886095,
+    "ast_hash": "c0092b7e5caa41194a3fce3a7bd6d071",
+    "semantic_hash": ""
+  },
+  "scripts/hostingerBrowserSweep.mjs": {
+    "mtime": 1782205730.3411403,
+    "ast_hash": "84d5cef605aa4d95445ffc952f757084",
+    "semantic_hash": ""
+  },
+  "scripts/rigorousApiProbe.mjs": {
+    "mtime": 1782208962.804587,
+    "ast_hash": "b81c8fa527dd6818ad13b8156788a7a2",
+    "semantic_hash": ""
+  },
+  "scripts/rigorousLocalE2E.mjs": {
+    "mtime": 1782208072.8725052,
+    "ast_hash": "2e7306b07465757113d86a04dd01f93a",
+    "semantic_hash": ""
+  },
+  "scripts/runGlobalCountryPayrollRegression.mjs": {
+    "mtime": 1782213051.8690493,
+    "ast_hash": "14b06ad67fb13af56a4f4e8b6010d4e3",
+    "semantic_hash": ""
+  },
+  "scripts/seedGlobalCountryLitmus.mjs": {
+    "mtime": 1782213051.8809686,
+    "ast_hash": "8daa5064845e97d9beebddda58e65b0b",
+    "semantic_hash": ""
+  },
+  "scripts/seedHostingerLitmus.mjs": {
+    "mtime": 1782205730.3411462,
+    "ast_hash": "ed1dfed735986b865e11b4923dd53b69",
+    "semantic_hash": ""
+  },
+  "scripts/startLocalHostingerStack.sh": {
+    "mtime": 1782208962.804587,
+    "ast_hash": "69a4fc07ed6d88ff4a21b0b07409ee5f",
+    "semantic_hash": ""
+  },
+  "scripts/verifyHostingerPhases.mjs": {
+    "mtime": 1782205730.3570657,
+    "ast_hash": "6628e1cf8e6f3e01bde3252b1ecd3949",
+    "semantic_hash": ""
+  },
+  "src/lib/payrollQueue.js": {
+    "mtime": 1782201166.9309647,
+    "ast_hash": "4f54c0ddd9b8125993f6ad600382022e",
+    "semantic_hash": ""
+  },
+  "src/lib/redis.js": {
+    "mtime": 1782201679.1530728,
+    "ast_hash": "b8b4d0b7fec3fe0087b4006d0549b944",
+    "semantic_hash": ""
+  },
+  "src/modules/holidays/holidayResolved.controller.js": {
+    "mtime": 1782238003.7587497,
+    "ast_hash": "6cbc06ee1ddd44f8d6edf189c7b04d02",
+    "semantic_hash": ""
+  },
+  "src/modules/holidays/holidayResolver.service.js": {
+    "mtime": 1782238340.8667681,
+    "ast_hash": "01576f48bd8626b31b6d6e2f5a7ecf70",
+    "semantic_hash": ""
+  },
+  "tests/e2e/full-phase-sweep.mjs": {
+    "mtime": 1782196382.0561738,
+    "ast_hash": "5efa2efe6a707e999f7f76f8427fb9a9",
+    "semantic_hash": ""
+  },
+  "tests/holiday-resolver.test.js": {
+    "mtime": 1782237959.0810735,
+    "ast_hash": "0d17bd9ad6fb95274e8ca9286d22463e",
+    "semantic_hash": ""
+  },
+  ".github/workflows/deploy-hostinger.yml": {
+    "mtime": 1782209014.0405557,
+    "ast_hash": "8042d671cb6619a05ad7b19ae76ac483",
+    "semantic_hash": ""
+  },
+  "docs/BACKEND_PERFORMANCE_REPORT.md": {
+    "mtime": 1782203365.3527966,
+    "ast_hash": "2daac276212f6705a9ce7af93090b632",
+    "semantic_hash": ""
+  },
+  "docs/BACKEND_STATUS.md": {
+    "mtime": 1782202041.3655198,
+    "ast_hash": "37e8465554d0771e743f37d01e8fe64e",
+    "semantic_hash": ""
+  },
+  "docs/HOLIDAY_ENGINE_BACKEND_CONTRACT.md": {
+    "mtime": 1782237294.4199846,
+    "ast_hash": "efc4bdb76bf362593eea0ce48cd7f049",
+    "semantic_hash": ""
+  },
+  "docs/payroll/regression-reports/CANADA.md": {
+    "mtime": 1782213051.8693256,
+    "ast_hash": "6e1146e3161de104b87b313cc089c51c",
+    "semantic_hash": ""
+  },
+  "docs/payroll/regression-reports/SAUDI_ARABIA.md": {
+    "mtime": 1782212948.8161933,
+    "ast_hash": "72b105fc6506b20bec63b999d215d082",
+    "semantic_hash": ""
+  },
+  "docs/payroll/regression-reports/SINGAPORE.md": {
+    "mtime": 1782212950.5571575,
+    "ast_hash": "34c4f22363c62a4932de1f27bde85c79",
+    "semantic_hash": ""
+  },
+  "docs/payroll/regression-reports/SUMMARY.md": {
+    "mtime": 1782213051.8693373,
+    "ast_hash": "b5cce3d632eb986058c1e04c1045dad5",
+    "semantic_hash": ""
+  },
+  "docs/payroll/regression-reports/UAE.md": {
+    "mtime": 1782212949.4102747,
+    "ast_hash": "1dc59c584830f58b414b35943e6bb609",
+    "semantic_hash": ""
+  },
+  "docs/payroll/regression-reports/VIETNAM.md": {
+    "mtime": 1782213051.8689857,
+    "ast_hash": "6bd7bf32279da83cb9d9a209251d38cf",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/EMPLOYEE/00_login_ok.png": {
+    "mtime": 1782208620.1557114,
+    "ast_hash": "5bd6386d975114712e8884142dbbc2b2",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/EMPLOYEE/1_dashboard.png": {
+    "mtime": 1782208625.4684484,
+    "ast_hash": "d4bddeb14deb6fad6974ce727b5048d1",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/EMPLOYEE/3_attendance.png": {
+    "mtime": 1782208630.3330712,
+    "ast_hash": "a91ad26f1b5303def3a736704b0fab33",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/EMPLOYEE/4_leave.png": {
+    "mtime": 1782208634.1361048,
+    "ast_hash": "31f6aea1f359fb4202c1f290aae50fc9",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/EMPLOYEE/5_timesheets.png": {
+    "mtime": 1782208639.183944,
+    "ast_hash": "9c1a8b81c4158fd401960348ff130882",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/EMPLOYEE/6_payroll_my_payslips.png": {
+    "mtime": 1782208643.0561109,
+    "ast_hash": "40205fca857ffdc080829d5d4b8c8ada",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/00_login_ok.png": {
+    "mtime": 1782208365.1346369,
+    "ast_hash": "a2432bc34dda22dfe25383b69be22d35",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/11_announcements.png": {
+    "mtime": 1782208529.3747406,
+    "ast_hash": "75a18151abe38bddbaa1678d51064c11",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/11_assets.png": {
+    "mtime": 1782208533.1659684,
+    "ast_hash": "f083715b4c86176d44407551a74ff3e9",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/11_performance.png": {
+    "mtime": 1782208540.0786057,
+    "ast_hash": "7a97817ba4fee7aa52ac3324ff7ef82a",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/11_recruitment.png": {
+    "mtime": 1782208536.5036693,
+    "ast_hash": "5010d7352067b031c0102adfc23e0ccb",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/1_dashboard.png": {
+    "mtime": 1782208370.183781,
+    "ast_hash": "cbc38f6ab00d44d9585aba8a437a7f98",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/2_departments.png": {
+    "mtime": 1782208378.3878431,
+    "ast_hash": "a739a0052fec6d5791e694cf2d4c4e6d",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/2_employees.png": {
+    "mtime": 1782208374.8787897,
+    "ast_hash": "467e870e2b0923bc34c06e797b0ec716",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/3_attendance.png": {
+    "mtime": 1782208383.7145886,
+    "ast_hash": "36a63761d6f26e1d41dd4198f2becc0e",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/4_leave.png": {
+    "mtime": 1782208387.2255876,
+    "ast_hash": "0133abda2926f07ad3a093a6445e64b2",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/5_timesheets.png": {
+    "mtime": 1782208396.15769,
+    "ast_hash": "bcf4bfa1eb8103962efc345bf07894b5",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/6_payroll.png": {
+    "mtime": 1782208401.9799752,
+    "ast_hash": "d6bc44c5cd443c3194a6909c2d43f64b",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/6_payroll_global.png": {
+    "mtime": 1782208406.4919593,
+    "ast_hash": "1df8f1c21214573328011e340c30c16e",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/6_settings_pay_components.png": {
+    "mtime": 1782208437.4835377,
+    "ast_hash": "fd83e39fb737cb04faefa15d117741c7",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/6_settings_pay_groups.png": {
+    "mtime": 1782208441.0178428,
+    "ast_hash": "886d69b7f87faff3ffe1f759658c69bc",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/6_settings_pay_legal_entities.png": {
+    "mtime": 1782208424.7543426,
+    "ast_hash": "c44b4da0ad8041b10b9c828c7b3f0707",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/6_settings_pay_statutory_packs.png": {
+    "mtime": 1782208421.4249923,
+    "ast_hash": "5664572f0e1c4e9a7e9acb92cb5bcdf0",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/7_holidays.png": {
+    "mtime": 1782208445.3883502,
+    "ast_hash": "7889961b2a4d39fa49abd35adf5496cf",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/8_settings_company_profile.png": {
+    "mtime": 1782208461.5186346,
+    "ast_hash": "47efee8dd44a39d9b92056da68a241da",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/8_settings_locale.png": {
+    "mtime": 1782208477.8005424,
+    "ast_hash": "23057a606e95f0d537211e44f757e3fa",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/8_settings_working_hours.png": {
+    "mtime": 1782208493.872584,
+    "ast_hash": "db17e588943e2f53e2084df9ef1269aa",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/9_analytics.png": {
+    "mtime": 1782208525.642707,
+    "ast_hash": "0051f1210c3a1656e2bf5623c13f8b97",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/HR_ADMIN/9_reports.png": {
+    "mtime": 1782208509.6099024,
+    "ast_hash": "1aa0e3a4ee869209a539733ea9d4878b",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/KWD_LITMUS/00_login_ok.png": {
+    "mtime": 1782208648.7343667,
+    "ast_hash": "20ea103fbba09b7842d18233fb5304eb",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/KWD_LITMUS/12_dashboard.png": {
+    "mtime": 1782208652.602558,
+    "ast_hash": "f8b4ddcc219368019c3c8327618e7cbc",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/KWD_LITMUS/5_timesheets.png": {
+    "mtime": 1782208686.1286685,
+    "ast_hash": "f8fb384d3e7637c779093c711304bc83",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/KWD_LITMUS/6_payroll_global.png": {
+    "mtime": 1782208690.1943321,
+    "ast_hash": "15f0ed327085314eb24460fdf3743ccd",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/KWD_LITMUS/7_holidays.png": {
+    "mtime": 1782208694.1724775,
+    "ast_hash": "996fb15773172f064fd48f119ca655d2",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/KWD_LITMUS/8_settings_locale.png": {
+    "mtime": 1782208671.155866,
+    "ast_hash": "5cc691c01306dd9361921bf99e2bdd27",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/MANAGER/00_login_ok.png": {
+    "mtime": 1782208593.9669926,
+    "ast_hash": "3924d128c79dc00fa1c4a722d4a02fe1",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/MANAGER/1_dashboard.png": {
+    "mtime": 1782208598.476892,
+    "ast_hash": "76ae406e5a3b592bac608d9179afbde2",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/MANAGER/3_attendance.png": {
+    "mtime": 1782208603.4100287,
+    "ast_hash": "02c8efbb31e15a047d15447a406c0033",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/MANAGER/4_leave.png": {
+    "mtime": 1782208606.8677332,
+    "ast_hash": "4f2decd1d7b50177b9a0dbd7e4963da6",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/MANAGER/5_timesheets.png": {
+    "mtime": 1782208612.0310674,
+    "ast_hash": "4d31aed36f2f5d2c7455089efcbe0673",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/MANAGER/6_payroll_my_payslips.png": {
+    "mtime": 1782208615.7237597,
+    "ast_hash": "9c192f76148d8364aced6e47391468e6",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/SUPER_ADMIN/00_login_ok.png": {
+    "mtime": 1782208544.637341,
+    "ast_hash": "ba88106ca87d87ae732323cdef8a3d63",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/SUPER_ADMIN/10_permissions.png": {
+    "mtime": 1782208548.3603206,
+    "ast_hash": "b9d7c5fedaa510df1b58234123f3440a",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/SUPER_ADMIN/6_payroll.png": {
+    "mtime": 1782208571.9630165,
+    "ast_hash": "9b431796f6c3a62149339f03ade0253e",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/SUPER_ADMIN/8_settings_company_profile.png": {
+    "mtime": 1782208565.7138298,
+    "ast_hash": "0044b1e3419de17cda6e837e9de43221",
+    "semantic_hash": ""
+  },
+  "e2e-evidence/rigorous-local-20260623/SUPER_ADMIN/9_analytics.png": {
+    "mtime": 1782208589.7771955,
+    "ast_hash": "bfa875c47e5951f45118f88b265685ab",
     "semantic_hash": ""
   }
 }

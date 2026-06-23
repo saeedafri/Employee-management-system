@@ -25,6 +25,7 @@ import {
   inferScheduleFromPeriod,
 } from '../../utils/payrollPeriod.js';
 import { getWorkingDays, parseWorkWeekPattern } from '../../utils/workingDays.js';
+import { resolveHolidayDateSet } from '../holidays/holidayResolver.service.js';
 
 const COMPONENT_INCLUDE = {
   id: true, name: true, code: true, type: true, calculationType: true,
@@ -587,7 +588,23 @@ export async function getEmployeePayslipById(prisma, employeeId, payslipId, tena
     const err = new Error('Payslip not found'); err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
   }
   const ytd = await computePayslipYtd(prisma, employeeId, tenantId, ps.period);
-  return fmtPayslipDetail(ps, { ytd });
+  const detail = fmtPayslipDetail(ps, { ytd });
+  // HOLIDAY_ENGINE_BACKEND_CONTRACT §3 — payroll consumes the SAME holiday resolution as
+  // leave-preview + the attendance calendar. Computed live on read (additive, never persisted):
+  // does not alter any money or working-day field, so India payroll output is byte-identical.
+  try {
+    const from = ps.payrollRun?.startDate ?? new Date(derivePeriodDatesFromString(ps.period).periodStart);
+    const to = ps.payrollRun?.endDate ?? new Date(derivePeriodDatesFromString(ps.period).periodEnd);
+    const { dates, holidays, workWeekDays } = await resolveHolidayDateSet(prisma, tenantId, {
+      employeeId, from, to,
+    });
+    detail.holidayBasis = {
+      holidayDays: dates.size,
+      holidaysExcluded: holidays.map((hh) => ({ date: hh.holidayDate.slice(0, 10), name: hh.name, observed: hh.observed })),
+      workWeekDays,
+    };
+  } catch { detail.holidayBasis = { holidayDays: 0, holidaysExcluded: [], workWeekDays: [] }; }
+  return detail;
 }
 
 // ── Payroll Runs ──────────────────────────────────────────────────────────────

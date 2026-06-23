@@ -1,4 +1,6 @@
 import * as attendanceRepository from './attendance.repository.js';
+import { prisma } from '../../plugins/prisma.js';
+import { resolveHolidayDateSet } from '../holidays/holidayResolver.service.js';
 import { dateFromYmd, tenantAttendanceDate } from './attendanceDate.js';
 import { resolveWorkWeekDays, weekStartDayFromDays } from '../../utils/workingDays.js';
 import {
@@ -375,14 +377,17 @@ export async function getTeamWeeklyGrid(tenantId, weekStart, departmentId, manag
   if (departmentId) employeeWhere.departmentId = departmentId;
   else if (managerEmployeeId) employeeWhere.managerId = managerEmployeeId;
 
-  const [employees, holidays, attendanceRecords, leaveRecords] = await Promise.all([
+  const [employees, holidayResolution, attendanceRecords, leaveRecords] = await Promise.all([
     attendanceRepository.getTeamMembers(tenantId, departmentId, managerEmployeeId),
-    attendanceRepository.getHolidaysInRange(tenantId, startDate, endDate),
+    // Shared holiday engine (HOLIDAY_ENGINE_BACKEND_CONTRACT §3): tenant-wide, observed-shifted
+    // against the tenant work-week — the SAME resolution leave-preview + payroll consume, so the
+    // calendar can never mark a working day off that payroll counted as worked (or vice-versa).
+    resolveHolidayDateSet(prisma, tenantId, { employeeId: null, from: startDate, to: endDate }),
     attendanceRepository.getAttendanceInRange(tenantId, weekDates.map(d => d), employeeWhere),
     attendanceRepository.getApprovedLeavesInRange(tenantId, startDate, endDate),
   ]);
 
-  const holidayDates = new Set(holidays.map(h => h.holidayDate.toISOString().split('T')[0]));
+  const holidayDates = holidayResolution.dates;
 
   const codeForDay = (empId, dateStr) => {
     const dateObj = new Date(`${dateStr}T00:00:00.000Z`);

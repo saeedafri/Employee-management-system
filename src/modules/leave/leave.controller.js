@@ -62,6 +62,21 @@ export async function createLeaveRequest(request, reply) {
   }
 }
 
+export async function previewLeaveRequest(request, reply) {
+  try {
+    const tenantId = request.tenant.id;
+    const employeeId = request.user.employeeId;
+    const { startDate, endDate } = request.body || {};
+    if (!startDate || !endDate) {
+      return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'startDate and endDate are required', {}, request.id));
+    }
+    const preview = await leaveService.previewLeaveRequest(tenantId, employeeId, { startDate, endDate });
+    return reply.code(200).send(successResponse(preview));
+  } catch (error) {
+    return reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, {}, request.id));
+  }
+}
+
 export async function getLeaveRequests(request, reply) {
   try {
     const tenantId = request.tenant.id;

@@ -238,6 +238,19 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             parameters: [{ in: 'query', name: 'limit', type: 'integer', description: 'Max holidays to return (default 3)' }],
           }),
         },
+
+        // ── HOLIDAY APPLICABILITY ENGINE (per-employee resolved set; HOLIDAY_ENGINE_BACKEND_CONTRACT) ──
+        '/me/holidays': {
+          get: op('Holidays', 'Resolved holidays for the logged-in employee. Country-scoped (via salary→legal-entity) + observed-day shifted + optional/selected metadata. Rows: { id, name, holidayDate(observed), actualDate(original when shifted, else null), observed, isOptional, selected, countryCode, location }. No employee profile (SUPER_ADMIN) → tenant-wide only (context.resolvedBy=TENANT_WIDE). Same resolution leave-preview + payroll + attendance consume (§3).', true, {
+            parameters: [queryParam('year', 'integer', 'Calendar year (default current)')],
+          }),
+        },
+        '/employees/{id}/holidays': {
+          get: op('Holidays', 'Resolved holidays for an employee (HR_ADMIN/SUPER_ADMIN, or the employee themselves) — 403 otherwise, 404 if employee not found. Same shape as /me/holidays.', true, {
+            parameters: [pathParam('id', 'Employee id'), queryParam('year', 'integer', 'Calendar year (default current)')],
+            responses: { 200: r200, 403: r403, 404: r404 },
+          }),
+        },
         '/holidays/{id}': {
           patch:  op('Holidays', 'Update holiday', true, { parameters: idParam }),
           delete: op('Holidays', 'Delete holiday', true, { parameters: idParam }),
@@ -366,6 +379,12 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/leave/requests': {
           get:  op('Leave', 'List my leave requests'),
           post: op('Leave', 'Create leave request', true, { responses: { 201: r201 } }),
+        },
+        '/leave/requests/preview': {
+          post: op('Leave', 'Holiday-aware chargeable-day preview (HOLIDAY_ENGINE_BACKEND_CONTRACT §3). Excludes weekends (employee work-week) + resolved public holidays via the shared holiday engine — same set the calendar shows + payroll counts. Returns { calendarDays, weekendDays, holidayDays, chargeableDays, holidaysExcluded:[{date,name,observed}], workWeekDays }.', true, {
+            parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['startDate', 'endDate'], properties: { startDate: { type: 'string' }, endDate: { type: 'string' } } } }],
+            responses: { 200: r200, 422: r422 },
+          }),
         },
         '/leave/team/requests': {
           get: op('Leave', 'List team leave requests (manager)', true, {

@@ -1,10 +1,46 @@
 import * as leaveRepository from './leave.repository.js';
+import { prisma } from '../../plugins/prisma.js';
+import { resolveHolidayDateSet } from '../holidays/holidayResolver.service.js';
 import {
   notifyLeaveRequested,
   notifyLeaveApproved,
   notifyLeaveDenied,
   notifyLeaveWithdrawn,
 } from '../../utils/notifier.js';
+
+// Iterate each UTC calendar day in [start,end] inclusive.
+function* eachDayUTC(startDate, endDate) {
+  const cur = new Date(`${new Date(startDate).toISOString().slice(0, 10)}T00:00:00.000Z`);
+  const end = new Date(`${new Date(endDate).toISOString().slice(0, 10)}T00:00:00.000Z`);
+  while (cur <= end) { yield new Date(cur); cur.setUTCDate(cur.getUTCDate() + 1); }
+}
+
+/**
+ * Holiday-aware chargeable-day breakdown for a leave request (HOLIDAY_ENGINE_BACKEND_CONTRACT §3).
+ * Consumes the SHARED holiday resolver — the same engine payroll + attendance use — so the
+ * holidays excluded here are identical to the ones the calendar shows and payroll counts.
+ */
+export async function previewLeaveRequest(tenantId, employeeId, { startDate, endDate }) {
+  const { dates, holidays, workWeekDays } = await resolveHolidayDateSet(prisma, tenantId, {
+    employeeId, from: startDate, to: endDate,
+  });
+  const workSet = new Set(workWeekDays);
+  let calendarDays = 0; let weekendDays = 0; let holidayDays = 0; let chargeableDays = 0;
+  for (const d of eachDayUTC(startDate, endDate)) {
+    calendarDays += 1;
+    const ymd = d.toISOString().slice(0, 10);
+    if (!workSet.has(d.getUTCDay())) { weekendDays += 1; continue; }
+    if (dates.has(ymd)) { holidayDays += 1; continue; }
+    chargeableDays += 1;
+  }
+  return {
+    startDate, endDate, calendarDays, weekendDays, holidayDays, chargeableDays,
+    holidaysExcluded: holidays.map((hh) => ({
+      date: hh.holidayDate.slice(0, 10), name: hh.name, observed: hh.observed,
+    })),
+    workWeekDays,
+  };
+}
 
 export async function getLeaveTypes(tenantId) {
   return leaveRepository.getLeaveTypes(tenantId);
