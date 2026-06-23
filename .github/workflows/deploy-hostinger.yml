@@ -51,8 +51,18 @@ jobs:
           ls -t /opt/ems/backups/ems_predeploy_*.sql.gz | tail -n +15 | xargs -r rm -f   # keep newest 14
           echo "::endgroup::"
           echo "::group::pull"
-          git -C /opt/ems/app pull --ff-only origin main
-          git -C /opt/ems/app log -1 --oneline
+          APP=/opt/ems/app
+          git -C "$APP" fetch --prune origin main
+          # A --ff-only pull aborts if an incoming (upstream-tracked) file already exists
+          # untracked on the box. Remove ONLY files that are BOTH untracked locally AND
+          # tracked at origin/main. Box-only files (Dockerfile, .dockerignore, .env*) are
+          # NOT tracked upstream, so this can never delete them.
+          comm -12 \
+            <(git -C "$APP" ls-files --others --exclude-standard | sort) \
+            <(git -C "$APP" ls-tree -r --name-only origin/main | sort) \
+            | while IFS= read -r f; do echo "clearing stray untracked (incoming-tracked): $f"; rm -f "$APP/$f"; done
+          git -C "$APP" pull --ff-only origin main
+          git -C "$APP" log -1 --oneline
           echo "::endgroup::"
           echo "::group::build+up"
           docker compose build ems-backend
