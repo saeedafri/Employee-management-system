@@ -11,6 +11,7 @@ import { resolveFiscalYear } from '../../utils/statutoryCalculation.js';
 import { formatPeriodLabel, derivePeriodDatesFromString, isValidPeriod } from '../../utils/payrollPeriod.js';
 import { generateCycles } from '../../utils/cycleGenerator.js';
 import { computeEmi, buildSchedule, addMonths as addLoanMonths } from './utils/loan.utils.js';
+import { enqueueCalculate } from '../../lib/payrollQueue.js';
 
 function AppError(message, code, statusCode = 400) {
   const e = new Error(message);
@@ -267,8 +268,32 @@ export async function getPayrollRun(prisma, id, tenantId) {
 }
 
 export async function calculatePayrollRun(prisma, id, tenantId) {
-  await repo.calculatePayrollRun(prisma, id, tenantId);
-  return { status: 'CALCULATING', estimatedSeconds: 5 };
+  // Validate synchronously so the API returns proper 404/400 immediately.
+  const run = await prisma.payrollRun.findFirst({
+    where: { id, tenantId },
+    select: { id: true, status: true },
+  });
+  if (!run) {
+    const e = new Error('Payroll run not found');
+    e.code = 'NOT_FOUND';
+    e.statusCode = 404;
+    throw e;
+  }
+  if (run.status !== 'DRAFT') {
+    const e = new Error('Run must be in DRAFT status to calculate');
+    e.code = 'INVALID_STATUS';
+    e.statusCode = 400;
+    throw e;
+  }
+
+  // Heavy compute runs OFF the request path as a BullMQ job when Redis is available;
+  // idempotency key `calc:<id>` dedupes double-submits. Falls back to synchronous
+  // compute when Redis is not configured, so behaviour is unchanged without the queue.
+  const queued = await enqueueCalculate(id, tenantId);
+  if (!queued) {
+    await repo.calculatePayrollRun(prisma, id, tenantId);
+  }
+  return { status: 'CALCULATING', estimatedSeconds: 5, async: queued };
 }
 
 export async function approvePayrollRun(prisma, id, tenantId, userId, data) {

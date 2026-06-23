@@ -1,0 +1,69 @@
+name: Deploy to Hostinger
+
+# Push to main -> auto-deploy to the Hostinger VPS (the REAL server). No manual steps.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build-check + deploy to Hostinger
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # Fail fast before touching prod if the push is broken.
+      - run: npm ci
+      - run: npm run lint
+      - run: npx prisma generate
+      - name: Verify app loads
+        run: node --input-type=module --eval "import('./src/app.js').then(()=>{console.log('app OK');process.exit(0)}).catch(e=>{console.error(e);process.exit(1)})"
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy (backup -> pull -> build -> migrate -> restart)
+        run: |
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes \
+            "${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}" 'bash -se' <<'EOSSH'
+          set -euo pipefail
+          cd /opt/ems
+          echo "::group::backup"
+          docker exec ems-postgres pg_dump -U ems_user -d ems | gzip > "/opt/ems/backups/ems_predeploy_$(date +%Y%m%d_%H%M%S).sql.gz"
+          ls -t /opt/ems/backups/ems_predeploy_*.sql.gz | tail -n +15 | xargs -r rm -f   # keep newest 14
+          echo "::endgroup::"
+          echo "::group::pull"
+          git -C /opt/ems/app pull --ff-only origin main
+          git -C /opt/ems/app log -1 --oneline
+          echo "::endgroup::"
+          echo "::group::build+up"
+          docker compose build ems-backend
+          docker compose up -d ems-backend
+          echo "::endgroup::"
+          echo "::group::migrate"
+          docker exec ems-backend npx prisma migrate deploy
+          echo "::endgroup::"
+          EOSSH
+
+      - name: Health check (live)
+        run: |
+          for i in $(seq 1 40); do
+            code=$(curl -s -m 6 -o /dev/null -w "%{http_code}" https://ems-api.saqibsaeed.cloud/health || echo 000)
+            if [ "$code" = "200" ]; then echo "Hostinger healthy ($code)"; exit 0; fi
+            echo "waiting... ($code)"; sleep 3
+          done
+          echo "Health check FAILED"; exit 1
