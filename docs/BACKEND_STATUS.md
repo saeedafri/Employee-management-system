@@ -113,6 +113,34 @@ MSW confirmed off on every screen (`navigator.serviceWorker` registrations = 0; 
 2. **Frontend UX:** HR_ADMIN on SUPER_ADMIN-only settings sees a generic "something went wrong" error
    boundary instead of a clean no-access gate. File to FE team.
 
+## Hostinger live deployment (2026-06-23)
+
+- **Box:** Hostinger VPS `1067327` (`srv1067327.hstgr.cloud`, 31.97.186.223, Debian 13, 2 CPU / 8GB / 100GB).
+  Shared with **rentocloud** (runs under **PM2**, ports 3000/4000, fronted by nginx) — **never touch PM2/nginx/rentocloud.**
+- **EMS deploy:** Docker Compose at `/opt/ems` — `ems-backend` (built from `./app`, `127.0.0.1:4001`, mem_limit 512m)
+  + `ems-postgres` (postgres:16, `127.0.0.1:5432`, mem_limit 3g), isolated `ems-net`. Public via nginx → `ems-api.saqibsaeed.cloud` (API at `/api/v1`).
+  - `/opt/ems/app` is now a **git clone of `main`**; box-only files (`Dockerfile`, `.dockerignore`, `.env`) are untracked and preserved.
+  - **Deploy = `git -C /opt/ems/app pull` → `docker compose build ems-backend` → `up -d`** (SSH key `~/.ssh/hostinger_ems_ed25519`).
+  - DB: daily backups in `/opt/ems/backups`; **always pg_dump before migrate/seed.**
+- **2026-06-23 deploy:** code → `9e4d1f0`, `prisma migrate deploy` 20→26 (additive), seed already present
+  (tenant `acme-corp-001`, standard logins, **3072 employees**). Live re-smoke **30/30 endpoints 200**, container stable.
+- **Bug found + fixed by the large dataset:** `GET /reports/attendance` OOM-killed the 512m container
+  (unbounded `findMany` + full employee `include`). Fixed in `9e4d1f0` (lean select + default current-month window +
+  no-silent-truncation cap). Verified live: 200, 62MiB/512MiB, restartCount 0.
+
+## CI/CD
+
+- **Render:** `autoDeploy: yes`, trigger `commit`, branch `main` — **every push to GitHub auto-deploys + restarts.** Already working.
+- **Hostinger:** currently **manual** (SSH pull+build). Auto-deploy-on-push would need a GitHub Actions SSH-deploy workflow + a CI deploy key as a repo secret (not yet set up).
+
+## Async stack (Redis + RabbitMQ) — feasibility (investigated 2026-06-23, NOT provisioned)
+
+- **Resource-feasible:** VM uses ~1.6% CPU, ~1.5GB/8GB RAM, ~20GB/100GB disk — Redis (~100MB) + RabbitMQ (~300MB) fit easily.
+- **Caveat:** rentocloud co-resides on this VM (PM2). Safe path = add Redis/RabbitMQ as **new services inside the EMS
+  `docker-compose.yml` only**, on `ems-net`, bound to `127.0.0.1`, with hard `mem_limit`s — zero blast radius to rentocloud.
+- **Not done** per instruction (investigate first). Building the async stack = a real phase (re-add `bullmq`/`ioredis`,
+  move payroll CALCULATING to a worker, cache hot config).
+
 ## Locked decisions (carry-forward)
 
 - **DB = PostgreSQL**, additive-only migrations; never wipe/seed/migrate-reset prod (incident 2026-05-27).
