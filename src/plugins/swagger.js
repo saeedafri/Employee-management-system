@@ -687,25 +687,24 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
 
         // ── ADMIN / SYSTEM LOGS ──────────────────────────────────────────────
-        '/admin/logs': {
-          get: op('System Logs', 'List system logs (SUPER_ADMIN)', true, {
+        '/logs': {
+          get: op('System Logs', 'List system logs (HR_ADMIN, SUPER_ADMIN)', true, {
             parameters: [
               { in: 'query', name: 'level',  type: 'string', description: 'error | warn | info' },
-              { in: 'query', name: 'from',   type: 'string' },
-              { in: 'query', name: 'to',     type: 'string' },
-              { in: 'query', name: 'page',   type: 'number' },
+              { in: 'query', name: 'module', type: 'string' },
+              { in: 'query', name: 'offset', type: 'number' },
               { in: 'query', name: 'limit',  type: 'number' },
             ],
           }),
         },
-        '/admin/logs/{id}': {
+        '/logs/{id}': {
           get: op('System Logs', 'Get system log entry by ID', true, { parameters: idParam }),
         },
-        '/admin/logs/export': {
-          get: op('System Logs', 'Export system logs'),
+        '/logs/export': {
+          get: op('System Logs', 'Export system logs (format=csv|json)'),
         },
-        '/admin/logs/stream': {
-          get: op('System Logs', 'Stream system logs (WebSocket/SSE)'),
+        '/logs/stream': {
+          get: op('System Logs', 'Stream system logs as NDJSON'),
         },
 
         // ── SETTINGS ─────────────────────────────────────────────────────────

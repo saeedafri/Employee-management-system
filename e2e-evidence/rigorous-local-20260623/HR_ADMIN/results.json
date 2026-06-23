@@ -1,0 +1,222 @@
+[
+  {
+    "role": "HR_ADMIN",
+    "phase": "1",
+    "path": "/dashboard",
+    "label": "Dashboard",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/dashboard",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "2",
+    "path": "/employees",
+    "label": "Employees list",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/employees",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "2",
+    "path": "/departments",
+    "label": "Departments",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/departments",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "3",
+    "path": "/attendance",
+    "label": "Attendance",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/attendance",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "4",
+    "path": "/leave",
+    "label": "Leave",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/leave",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "5",
+    "path": "/timesheets",
+    "label": "Timesheets",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/timesheets",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "6",
+    "path": "/payroll",
+    "label": "Payroll runs",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/payroll",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "6",
+    "path": "/payroll/global",
+    "label": "Payroll global",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/payroll/global",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "6",
+    "path": "/settings/pay/statutory-packs",
+    "label": "Statutory packs",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/settings/pay/statutory-packs",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "6",
+    "path": "/settings/pay/legal-entities",
+    "label": "Legal entities",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/settings/pay/legal-entities",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "6",
+    "path": "/settings/pay/components",
+    "label": "Pay components",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/settings/pay/components",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "6",
+    "path": "/settings/pay/groups",
+    "label": "Pay groups",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/settings/pay/groups",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "7",
+    "path": "/holidays",
+    "label": "Holidays",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/holidays",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "8",
+    "path": "/settings/company-profile",
+    "label": "Company profile",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/settings/company-profile",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "8",
+    "path": "/settings/locale",
+    "label": "Locale",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/settings/locale",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "8",
+    "path": "/settings/working-hours",
+    "label": "Working hours",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/settings/working-hours",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "9",
+    "path": "/reports",
+    "label": "Reports",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/reports",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "9",
+    "path": "/analytics",
+    "label": "Analytics",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/analytics",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "11",
+    "path": "/announcements",
+    "label": "Announcements",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/announcements",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "11",
+    "path": "/assets",
+    "label": "Assets",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/assets",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "11",
+    "path": "/recruitment",
+    "label": "Recruitment",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/recruitment",
+    "apiFailures": []
+  },
+  {
+    "role": "HR_ADMIN",
+    "phase": "11",
+    "path": "/performance",
+    "label": "Performance",
+    "ok": true,
+    "note": "",
+    "url": "http://localhost:3001/performance",
+    "apiFailures": []
+  }
+]

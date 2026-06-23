@@ -46,3 +46,8 @@ test-results.json
 .mcp.json
 .vercel
 .gstack/
+
+# Session scratch debug scripts (throwaway)
+.tmp-*.mjs
+.qa-cleanup-*.mjs
+.litmus-*.mjs

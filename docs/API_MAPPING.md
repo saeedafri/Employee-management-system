@@ -1693,10 +1693,22 @@ Single audit log entry (direct object, not wrapped in `logs`).
 
 ## Admin Logs
 
-### `GET /admin/logs`
-**Route:** `/api/v1/admin/logs` (NOT `/api/v1/logs`)
+> **Correction (2026-06-23):** the live routes are mounted at `/api/v1/logs` — **NOT** `/api/v1/admin/logs`.
+> The previous `/admin/logs` documentation (and the matching Swagger paths) were wrong; code registers `/logs*`
+> directly (`src/modules/logs/logs.routes.js`, no `/admin` prefix). Use the `/logs` paths below.
 
-**Required roles:** HR_ADMIN, SUPER_ADMIN. **Query:** `level`, `module`, `limit`, `offset`
+### `GET /logs`
+**Route:** `/api/v1/logs`. **Required roles:** HR_ADMIN, SUPER_ADMIN (403 `FORBIDDEN` otherwise).
+**Query:** `level`, `module`, `limit`, `offset`. Returns the standard list envelope of LogEntry rows.
+
+### `GET /logs/:id`
+**Route:** `/api/v1/logs/:id`. HR_ADMIN / SUPER_ADMIN. Single LogEntry; 404 if not found.
+
+### `GET /logs/export`
+**Route:** `/api/v1/logs/export?format=csv|json`. HR_ADMIN / SUPER_ADMIN. Streams a CSV or JSON file of logs (403 for other roles).
+
+### `GET /logs/stream`
+**Route:** `/api/v1/logs/stream`. HR_ADMIN / SUPER_ADMIN. Streams logs as **NDJSON** (line-delimited JSON), one log object per line.
 
 ---
 
@@ -5226,3 +5238,152 @@ The `/permissions` 404 was a **false alarm**: the FE permissions module (`permis
 
 `POST /attendance/check-in` now accepts an optional employee-local **`date`** (YYYY-MM-DD) and stores the attendance day as **UTC-midnight of that calendar date**, so its `YYYY-MM-DD` prefix is stable regardless of server timezone. Root cause confirmed: the server process runs in a non-UTC tz, so the prior `new Date()` classified the day by the server clock (a naive parse shifted the stored day, e.g. IST `2026-06-19` → stored `2026-06-18T18:30Z`). Verified: check-in with `date:'2026-06-17'` stores attendanceDate `2026-06-17`. Bad format → 422.
 - **Honest gap (full fix):** per-employee tz auto-resolution (without the client sending `date`) needs `employee→legalEntity.timezone` via `salary.legalEntityId`, which the backend does not yet populate (same gap as WORK_WEEK_BACKEND_CONTRACT / ATTENDANCE_BACKEND_CONTRACT §85-99). Until then the client supplies its local `date`; absent it, behaviour falls back to the server date (no regression). Tracked as a Phase 3 slice.
+
+---
+
+## Completeness Audit — Previously-Undocumented Endpoints (added 2026-06-23) ✅
+
+> Found by cross-checking all **387 registered routes** against this file. 36 live endpoints were missing here
+> (and the `/logs` path correction above). Response shapes below are read from the actual handlers/services.
+> Envelope is the standard `{ success, data, meta }` unless noted. Auth = `Bearer` + tenant.
+
+### Auth
+
+#### `POST /auth/admin/login`
+Admin-only login. Restricted to **HR_ADMIN / SUPER_ADMIN** (validated in service → `403` otherwise). Tenant auto-resolved from email; sets refresh + access cookies.
+- **Body:** `{ email, password }`
+- **200:** `{ accessToken, sessionId, user, permissions }` (same shape as `POST /auth/login`). `401 INVALID_CREDENTIALS` on bad creds.
+
+#### `POST /auth/resend-otp` — Public (rate-limited 5/15min)
+Resend an OTP code for an in-flight MFA/forgot-password challenge.
+- **Body:** `{ challengeId }`
+- **200:** `{ success: true, destinationMasked, expiresIn }` (`expiresIn` = seconds). `404` challenge not found, `429` max resends exceeded.
+
+#### `GET /auth/password-policy` — Public
+Public password rules for the set/reset-password screens.
+- **200:** `{ minLength, requireSymbol, requireNumber }`
+
+#### `GET /auth/reset-password/validate?token=<raw>` — Public
+Validate a reset token before showing the change-password form. (`GET /auth/validate-reset-token` is a **deprecated** alias, same shape.)
+- **200 (valid):** `{ valid: true, expiresAt, emailMasked, tokenId, userId, tenantId }`. Invalid/expired → `{ valid: false, reason }`.
+
+### Attendance
+
+#### `GET /attendance/today`
+Caller's own attendance for today (tenant-tz aware). Any authenticated user.
+- **200:** `{ date, status, checkInAt, checkOutAt, duration }` — `status` is `NOT_MARKED` when no record; `duration` is minutes (null until checked out). `meta.cached: false`.
+
+### Manager Dashboard
+
+#### `GET /manager/team/attendance?range=7d|30d|90d`
+Team attendance trend for the manager. **MANAGER only** (`403` otherwise; `400 INVALID_RANGE` for other ranges).
+
+#### `PATCH /manager/leave-requests/:id/decision`
+Approve/deny a team member's leave. **MANAGER only.**
+- **Body:** `{ decision: "approve" | "deny", comment? }` (`400 INVALID_DECISION` otherwise). Returns the updated leave request.
+
+#### `PATCH /manager/regularization-requests/:id/decision`
+Approve/deny an attendance regularization. **MANAGER only.** Same `{ decision, comment }` body; returns the updated request.
+
+### Logs
+Documented above under **§Admin Logs** (`GET /logs`, `/logs/:id`, `/logs/export`, `/logs/stream`).
+
+### Reports — Scheduled & Export History
+
+#### `POST /reports/schedule` — HR_ADMIN
+Schedule a recurring report.
+- **Body:** `{ frequency: "WEEKLY"|"MONTHLY" (required), reportType|report_type: "attendance"|"leaves"|"payroll", emailRecipients|email_recipients: string[] }`
+- **201:** `{ id, report_type, frequency, next_run_date, is_active }`
+
+#### `GET /reports/scheduled` — HR_ADMIN
+- **200:** `{ reports: [{ id, report_type, frequency, email_recipients, next_run_date, is_active, last_run_at, created_at }], total }`
+
+#### `PATCH /reports/scheduled/:id` — HR_ADMIN
+Body: `{ frequency?, is_active?, ... }`. **200:** `{ id, frequency, is_active }`. `404 NOT_FOUND` if missing.
+
+#### `DELETE /reports/scheduled/:id` — HR_ADMIN
+Soft-archive. **200:** `{ id, status: "archived" }`. `404 NOT_FOUND` if missing.
+
+#### `GET /reports/export-history?page&limit&status` — HR_ADMIN
+- **200:** `{ exports: [{ id, report_type, format, status, file_url, error_message, created_at, completed_at }], total, page }`
+
+### Audit Logs
+
+#### `GET /audit-logs/export?format=csv|json` — HR_ADMIN / SUPER_ADMIN
+Exports up to 10,000 audit-log rows as CSV or JSON.
+
+#### `POST /audit-logs/dpia-report` — HR_ADMIN / SUPER_ADMIN
+Generate a DPIA (data-protection) access report.
+- **Body:** `{ from_date, to_date }`
+- **200:** `{ report_date, period: { from_date, to_date }, high_access_users: [{ email, access_count, risk_level: "MEDIUM"|"HIGH" }], data_categories_accessed: string[], total_access_events, compliance_status: "COMPLIANT"|"REVIEW_REQUIRED" }`
+
+### Payroll (admin roles unless noted)
+
+#### `GET /payroll/countries`
+Supported payroll countries (data-driven, no hardcoded country logic).
+- **200:** `[{ code, name, currency, locale, fiscalYearStartMonth }]` — currently IN, US, GB, SG.
+
+#### `GET /payroll/countries/:code/bank-schema`
+Bank-account field schema for a country (drives the FE bank form).
+- **200:** `{ country, fields: [{ key, label, type, required, regex? }] }` (e.g. IN → accountName, accountNumber, ifsc, bankName). `null` for unknown country.
+
+#### `PATCH /payroll/legal-entities/:id` — **SUPER_ADMIN**
+Update a legal entity (partial; any entity field). Returns the updated entity.
+
+#### `PATCH /payroll/pay-calendars/:id`
+Update a pay calendar (name, frequency/paySchedule, periodAnchor, payDay, cutoffDay, legalEntityId, holidayCalendarId). Returns the updated calendar.
+
+#### `PATCH /payroll/employees/:id/tax-declaration` — any auth (ownership enforced)
+HR patch of declaration (e.g. `proofStatus`). `additionalProperties` body; returns the upserted declaration.
+
+#### `PATCH /payroll/employees/:id/loans/:loanId` — admin
+Update loan status/details (e.g. foreclosure). Returns the derived loan object.
+
+#### `GET /payroll/employees/:id/opening-balances`
+- **200:** `{ employeeId, fiscalYear, items: [OpeningBalance] }`
+
+#### `POST /payroll/employees/:id/opening-balances`
+Upsert YTD opening balance for first-run accuracy.
+- **Body:** `{ fiscalYear (required), grossEarnings, taxableIncome, taxDeducted, totalDeductions, netPay, contributions }`. Returns the upserted row.
+
+#### `GET /payroll/runs/:id/fnf`
+Full-and-final settlement for a run.
+- **200:** `{ runId, period, currency, settlements: [{ employeeId, employeeName, grossEarnings, totalDeductions, netPay, leaveEncashment, gratuity }] }`. `null`→404 if run missing.
+
+#### `GET /payroll/runs/:id/register/export?type=...`
+Export the payroll register (file download; `type` = SALARY|STATUTORY|BANK_ADVICE|VARIANCE).
+
+#### `POST /payroll/runs/:runId/inputs/import`
+Bulk-import run inputs from CSV.
+- **Body:** `{ csv: string }`
+- **200:** `{ imported, failed, errors: [{ row, message }] }`
+
+#### `POST /payroll/runs/:id/parallel-reconcile`
+Reconcile computed nets against legacy figures (parallel-run go-live check).
+- **Body:** `{ legacy: [{ employeeCode, netPay }] (required), tolerance? }`
+- **200:** `{ runId, period, currency, tolerance, matched, mismatched, missing, items: [{ employeeId, employeeCode, employeeName, computedNet, legacyNet, diff, status: "MATCH"|"MISMATCH"|"MISSING" }], generatedAt }`
+
+#### `GET /payroll/migration/historical-payslips`
+- **200:** `{ count, rows: [HistoricalPayslip] }`
+
+#### `POST /payroll/migration/historical-payslips`
+Bulk-import historical payslips.
+- **Body:** `{ rows: [...] }`
+- **200:** `{ imported, failed, errors }`
+
+#### `GET /payroll/settings/data-policy`
+Data-residency & retention policy.
+- **200:** `{ defaultRetentionYears, policies: [{ country, residencyRegion, retentionYears, statutoryHold }], updatedAt }`
+
+#### `PATCH /payroll/settings/data-policy`
+Body: `{ defaultRetentionYears?, policies? }`. Returns the stored policy (with `updatedAt`).
+
+### Timesheets
+
+#### `POST /timesheets/copy-week`
+Copy project/task rows from one week into another (idempotent; hours zeroed).
+- **Body:** `{ fromWeekStart, toWeekStart, withNotes? }` (`400 VALIDATION_ERROR` if weeks missing; `422 WEEK_LOCKED` if target already submitted/approved).
+- **200:** `{ sheet: <Timesheet>, copied }`
+
+#### `POST /timesheets/:id/recall` — owner only
+Unsubmit a timesheet (`SUBMITTED → DRAFT`). `404` for non-owner/missing; `422 NOT_RECALLABLE` if not SUBMITTED. Returns the updated timesheet.

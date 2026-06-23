@@ -1,0 +1,33 @@
+{
+  "at": "2026-06-23T09:48:19.919Z",
+  "fe": "http://localhost:3001",
+  "total": 5,
+  "pass": 0,
+  "fail": [
+    {
+      "role": "HR_ADMIN",
+      "ok": false,
+      "note": "CRASH: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/login\nCall log:\n  - navigating to \"http://localhost:3001/login\", waiting until \"networkidle\"\n"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "ok": false,
+      "note": "CRASH: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/login\nCall log:\n  - navigating to \"http://localhost:3001/login\", waiting until \"networkidle\"\n"
+    },
+    {
+      "role": "MANAGER",
+      "ok": false,
+      "note": "CRASH: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/login\nCall log:\n  - navigating to \"http://localhost:3001/login\", waiting until \"networkidle\"\n"
+    },
+    {
+      "role": "EMPLOYEE",
+      "ok": false,
+      "note": "CRASH: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/login\nCall log:\n  - navigating to \"http://localhost:3001/login\", waiting until \"networkidle\"\n"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "ok": false,
+      "note": "CRASH: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/login\nCall log:\n  - navigating to \"http://localhost:3001/login\", waiting until \"networkidle\"\n"
+    }
+  ]
+}
