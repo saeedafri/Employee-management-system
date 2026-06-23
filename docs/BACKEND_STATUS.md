@@ -128,18 +128,34 @@ MSW confirmed off on every screen (`navigator.serviceWorker` registrations = 0; 
   (unbounded `findMany` + full employee `include`). Fixed in `9e4d1f0` (lean select + default current-month window +
   no-silent-truncation cap). Verified live: 200, 62MiB/512MiB, restartCount 0.
 
-## CI/CD
+## CI/CD — Hostinger auto-deploy (LIVE 2026-06-23)
 
-- **Render:** `autoDeploy: yes`, trigger `commit`, branch `main` — **every push to GitHub auto-deploys + restarts.** Already working.
-- **Hostinger:** currently **manual** (SSH pull+build). Auto-deploy-on-push would need a GitHub Actions SSH-deploy workflow + a CI deploy key as a repo secret (not yet set up).
+- **Hostinger (the real server): auto-deploys on every push to `main`** via
+  `.github/workflows/deploy-hostinger.yml` → build-check (lint + app-load) → SSH to the VPS →
+  pg_dump backup → `git pull` → `docker compose build ems-backend` → `prisma migrate deploy` →
+  restart → live health-check. **No manual steps.** Secrets: `HOSTINGER_SSH_KEY` (dedicated CI
+  deploy key, authorized on the box), `HOSTINGER_HOST`, `HOSTINGER_USER`. Verified end-to-end
+  (commits `5c6d48a`, `f4d3b7d` auto-deployed + health-checked green).
+- **Render:** also `autoDeploy: yes` — kept as a throwaway test target only.
 
-## Async stack (Redis + RabbitMQ) — feasibility (investigated 2026-06-23, NOT provisioned)
+## Async stack (Redis + BullMQ) — LIVE on Hostinger (2026-06-23)
 
-- **Resource-feasible:** VM uses ~1.6% CPU, ~1.5GB/8GB RAM, ~20GB/100GB disk — Redis (~100MB) + RabbitMQ (~300MB) fit easily.
-- **Caveat:** rentocloud co-resides on this VM (PM2). Safe path = add Redis/RabbitMQ as **new services inside the EMS
-  `docker-compose.yml` only**, on `ems-net`, bound to `127.0.0.1`, with hard `mem_limit`s — zero blast radius to rentocloud.
-- **Not done** per instruction (investigate first). Building the async stack = a real phase (re-add `bullmq`/`ioredis`,
-  move payroll CALCULATING to a worker, cache hot config).
+> The contract specifies **BullMQ on Redis** (not RabbitMQ). BullMQ *is* the job queue; it runs on Redis.
+
+- **Redis:** `ems-redis` (redis:7-alpine) added to the EMS compose via `docker-compose.override.yml` —
+  `127.0.0.1:6379`, `mem_limit 256m`, `maxmemory 200mb`, `ems-net`, AOF persistence. Isolated from
+  rentocloud. Backend reaches it at `redis://redis:6379` (`REDIS_URL` in `/opt/ems/app/.env`).
+- **BullMQ:** `src/lib/payrollQueue.js` — queue `payroll-calculate` + in-process worker (started in
+  `server.js`). **Payroll CALCULATING now runs as a BullMQ job off the request path**: `calculate`
+  validates synchronously (404/400), enqueues (jobId `calc-<runId>` = idempotency/dedupe), returns
+  `{status:'CALCULATING', async:true}`; the worker calls the **unchanged** `repo.calculatePayrollRun`
+  (math identical) → `REVIEW`. Graceful fallback to synchronous compute if Redis is down.
+- **Redis cache:** `src/lib/redis.js` ships `cacheGet/cacheSet/cacheDel` helpers (no-op without Redis).
+  Infrastructure ready; **wiring specific hot reads (statutory packs / tenant config) is the next slice**
+  (needs invalidation-on-write to avoid stale payroll config).
+- **Verified live (Hostinger):** created a DRAFT run → calculate returned `async:true` → Redis showed
+  `bull:payroll-calculate:calc-<id>` → `:completed` → run reached `REVIEW` (3 emp). Worker log
+  "payroll BullMQ worker started". Test runs cancelled afterward.
 
 ## Locked decisions (carry-forward)
 
