@@ -11,6 +11,19 @@
 
 ---
 
+## ⚠️ Implementation status — 2026-06-23 (commit `24b27fb`, live on Hostinger) — NOT 100% COMPLETE
+
+Verified item-by-item against source + the live API. **17 / 23 checklist items DONE; 3 genuine gaps + 3 live-evidence items blocked by gated seeding.** Per-item state is marked in the checklists below (`[x]` = verified done, `[ ]` = not yet). The contract's **Definition of done is NOT yet met** — part (2) (live multi-country proof + shared-consumption numeric proof) is incomplete.
+
+**Engine core (DONE, verified):** shared resolver `src/modules/holidays/holidayResolver.service.js`; `GET /me/holidays` + `GET /employees/:id/holidays` (live 200, full metadata, camelCase); country scoping (live IN=15 / SUPER_ADMIN tenant-wide=12); optional + per-country cap (`LIMIT_REACHED` enforced); observed-day shift implemented (unit-tested); no country branches; shared service consumed by leave-preview + attendance + payslip `holidayBasis`; 8 pure unit tests green.
+
+**OUTSTANDING (must close before this contract is "fully implemented"):**
+1. **§2.4 — effective-dated / versioned holiday policy: NOT IMPLEMENTED.** `HolidayPolicy` has no `version`/`effectiveFrom`/`effectiveTo` (single row per tenant+country). Needs a schema migration (user-run) to match the StatutoryPack versioning model.
+2. **§3.2 — numeric "identical across leave/payroll/attendance" proof: NOT FULLY VERIFIED.** One code path is shared, but (a) not demonstrated live with matching numbers across all three, and (b) the attendance **team grid** resolves tenant-wide (`employeeId:null`), which can diverge from per-employee resolution for a non-default-country employee.
+3. **§5.1 / §5.2 / §5.5 — live multi-country evidence: BLOCKED (not done live).** US/KWD employees + a payroll run can't be created via API (no pay-group/salary-create endpoint; seeding gated). KWD SUN-THU shift + US-disjoint are proven by deterministic unit tests on the deployed code, NOT by a live probe.
+
+---
+
 ## 0. TL;DR — why this is a backend responsibility
 
 The frontend's `resolveApplicableHolidays(holidays, country, opts)` was **scaffolding from
@@ -34,16 +47,15 @@ item against the **live API** (per our "verify live, not just docs" discipline).
 Confirm there is a **per-employee resolved** holiday endpoint (or that `GET /holidays`
 resolves off the JWT's employee). Pin exactly:
 
-- [ ] **Path + resolution subject** — e.g. `GET /me/holidays?year=YYYY` (resolves the JWT's
-      own employee) and/or `GET /employees/:id/holidays?year=YYYY` (HR/admin viewing another
-      employee). State which exists and the role rules for each.
-- [ ] **Management vs employee view** — HR_ADMIN / SUPER_ADMIN must still be able to fetch the
-      **unscoped, all-countries** list for the management screen (today's `GET /holidays`).
-      Confirm both paths exist and which one each consumer should call.
-- [ ] **Envelope + field casing** — exact success envelope and casing (camelCase expected for
-      this domain), matching the documented `Holiday` shape.
-- [ ] **Resolution metadata on each returned holiday** (load-bearing — the FE cannot render
-      without it):
+- [x] **Path + resolution subject** — **DONE.** `GET /me/holidays?year=YYYY` (resolves JWT
+      `employeeId`; any authenticated user) and `GET /employees/:id/holidays?year=YYYY`
+      (HR_ADMIN/SUPER_ADMIN, or the employee themselves — 403 otherwise, 404 unknown). Live 200.
+- [x] **Management vs employee view** — **DONE.** `GET /holidays` = unscoped all-countries
+      management list (editable via POST/PATCH/DELETE); `GET /me/holidays` = resolved per-employee.
+      Both live.
+- [x] **Envelope + field casing** — **DONE.** `{ success, data, meta }`, camelCase
+      (`holidayDate`, `actualDate`, `isOptional`, `countryCode`) — verified on live response.
+- [x] **Resolution metadata on each returned holiday** — **DONE** (live row carries all of):
   - `holidayDate` = the **observed/effective** date the employee actually gets off.
   - `actualDate` (or equivalent) = the **original** date when shifted, so the UI can show
     "Observed Mon 6 Jan (falls Sat 4 Jan)".
@@ -55,64 +67,84 @@ resolves off the JWT's employee). Pin exactly:
 
 The server must apply **all** of the following, not just the country filter:
 
-- [ ] **Country scoping** = the employee's legal-entity country **plus tenant-wide rows**
-      (`location: null` / no country). Tenant-wide holidays apply to **every** country.
-- [ ] **Optional / restricted selection** applied per employee, **and** the per-country
-      **cap** enforced server-side (not just surfaced for the FE to enforce).
-- [ ] **Observed-day / substitute-day shifting** computed against the employee's **work-week**
-      (e.g. `SUN-THU`) and the country's observed-rule policy.
-- [ ] **Effective-dated / versioned** holiday policy — config, not code (same model as the
-      payroll statutory packs).
+- [x] **Country scoping** — **DONE.** Resolves the employee's legal-entity country (salary→
+      legalEntity, same chain as payroll) + keeps tenant-wide rows (`location: null`). Live:
+      IN employee = 15 (12 tenant-wide + 3 IN); SUPER_ADMIN/no-country = 12 tenant-wide only.
+- [x] **Optional / restricted selection + per-country cap** — **DONE.** Resolver reflects
+      per-employee selections; `POST /holidays/optional-selections` enforces the cap server-side
+      (`holidaysPolicy.service.js` → `422 LIMIT_REACHED` when `current.length >= restrictedLimit`).
+- [x] **Observed-day / substitute-day shifting** — **DONE (code), unit-tested.** `observedDate()`
+      wired into the resolver, computed against the resolved work-week + `HolidayPolicy.observedRule`.
+      Live-exercised only for `NONE`/IN (no shift); the SUN-THU Fri→Sun shift is covered by a unit
+      test on the deployed code — **not yet exercised on a live SUN-THU employee** (see §5.2).
+- [ ] **Effective-dated / versioned** holiday policy — **GAP — NOT IMPLEMENTED.** `HolidayPolicy`
+      is a single row per (tenant, country) with no `version`/`effectiveFrom`/`effectiveTo`. Needs a
+      schema migration to match the StatutoryPack versioning model.
 
 ## 3. The consistency guarantee (the item that matters most)
 
-- [ ] Holiday applicability is a **shared backend service** that **leave** (chargeable-day
-      math), **payroll** (working-day / LOP), and **attendance** (day classification) all
-      **call** — one code path, not re-derived per module.
-- [ ] **Proof:** for the same employee + period, the holidays excluded by a **leave request
-      preview**, counted by a **payroll run**, and shown on the **attendance calendar** are
-      **identical**. If these can diverge, the engine is not done.
+- [x] Holiday applicability is a **shared backend service** — **DONE (code).** `resolveHolidayDateSet`
+      is called by leave (`POST /leave/requests/preview`), attendance (team grid), and payroll
+      (payslip-detail `holidayBasis`). One code path in `holidayResolver.service.js`.
+- [ ] **Proof: identical across leave / payroll / attendance** — **NOT FULLY VERIFIED.** Leave
+      preview live ✓; payroll consumes it but the count is **not yet shown live** (no payslip on box);
+      the attendance **team grid resolves tenant-wide** (`employeeId:null`), which can diverge from a
+      per-employee resolution for a non-default-country employee. Numeric "identical" proof across all
+      three for the same employee+period is outstanding.
 
 ## 4. Config-over-code proof (truly global)
 
-- [ ] A **never-seen country** (e.g. `BR`, `KE`) returns correct scoped holidays from
-      **configuration only** — no code change, no deploy.
-- [ ] Observed-day shifting works for a **non-Mon–Fri week** (e.g. KWD `SUN-THU`).
-- [ ] No `if (country === '…')` branches in the holiday logic (litmus: could a tenant in a
-      country we have never seen run correctly by entering configuration only?).
+- [x] **Never-seen country (`BR`) from config only** — **DONE (code), unit-tested.** Proven by
+      unit test on deployed code; **not exercised live** (no BR data on box).
+- [x] **Observed-day shifting for a non-Mon–Fri week (SUN-THU)** — **DONE (code), unit-tested.**
+      Fri→Sun shift with `actualDate` is a unit test; **not exercised on a live SUN-THU employee**
+      (see §5.2 — blocked).
+- [x] **No `if (country === '…')` branches** — **DONE.** Verified by inspection: resolver +
+      `applicability.js` + `observedDates.js` have zero country branches; all per-country behaviour is
+      data (`HolidayPolicy`, work-week). (The only `countryCode ===` is a default-seed lookup, not a
+      behaviour branch.)
 
 ## 5. Live evidence required (not a Swagger entry)
 
 Provide (or the FE will run) actual live responses demonstrating:
 
-- [ ] **IN** employee and **US** employee → correct, disjoint country sets + shared
-      tenant-wide rows.
-- [ ] **KWD** (`SUN-THU`) employee whose holiday lands on a non-working day → the response
-      carries the **shifted** observed date + the original `actualDate`.
-- [ ] Employee with **no legal entity / unresolved country** → **tenant-wide only**
-      (explicitly defined, not "all countries").
-- [ ] **SUPER_ADMIN** (no employee profile) → defined behavior (all, or empty — but stated).
-- [ ] The **same period** run through **leave preview** and a **payroll run** → holiday count
-      **matches** the resolved calendar (the §3 proof, with numbers).
+- [ ] **IN + US disjoint live** — **PARTIAL.** IN live ✓ (15 = 12 tenant-wide + 3 IN). US employee
+      not on box → US-disjoint proven by unit test only, **not live**. (BLOCKED — no way to create a
+      US employee via API.)
+- [ ] **KWD `SUN-THU` shifted observed + `actualDate` live** — **NOT DONE LIVE (BLOCKED).** Proven by
+      unit test on deployed code; a live KW employee needs a pay-group/salary seed (no API path).
+- [x] **No legal entity / unresolved country → tenant-wide only** — **DONE (live).** SUPER_ADMIN
+      (no employee profile): `context.resolvedBy="TENANT_WIDE"`, `countryCode=null`, 12 tenant-wide rows.
+- [x] **SUPER_ADMIN (no employee profile) → defined behavior** — **DONE (live).** Tenant-wide only,
+      explicitly stated in `context`.
+- [ ] **Same period: leave preview ↔ payroll holiday count match** — **NOT DONE LIVE.** Leave preview
+      live ✓; payroll `holidayBasis` not shown live (no payslip on box).
 
 ## 6. Edge / empty semantics (define each)
 
-- [ ] Year with **no holidays** → shape returned (empty list + total 0).
-- [ ] **Optional cap exceeded** → behavior (reject selection vs clamp) and error code.
-- [ ] **Management (all-countries) view** for HR/SUPER_ADMIN → confirmed unscoped and editable.
+- [x] Year with **no holidays** → **DONE (live).** `GET /me/holidays?year=2099` → `{ holidays:[], total:0 }`.
+- [x] **Optional cap exceeded** → **DONE.** Rejects the selection with `422 LIMIT_REACHED` (no clamp);
+      enforced in `holidaysPolicy.service.js`.
+- [x] **Management (all-countries) view** for HR/SUPER_ADMIN → **DONE.** `GET /holidays` unscoped +
+      editable (POST/PATCH/DELETE) — live.
 
 ---
 
-## Definition of "engine confirmed on the backend"
+## Definition of "engine confirmed on the backend" — STATUS: ⚠️ NOT YET MET
 
 Both must be true, verified with **live multi-country probes** (incl. a never-seen country):
 
 1. A documented endpoint returns the **fully-resolved per-employee** holiday set **with
-   observed/optional metadata** (§1–§2).
+   observed/optional metadata** (§1–§2). — ✅ **MET** (less §2.4 versioning gap).
 2. **Leave + payroll + attendance demonstrably consume that same resolution** server-side (§3).
+   — ⚠️ **PARTIALLY MET.** Shared code path exists; the **live multi-country probe** (KWD SUN-THU,
+   US, payroll holiday-count match) is **not yet done** (blocked by gated seeding), and the §3
+   numeric "identical" proof is outstanding.
 
-Until both hold, the frontend keeps a **thin, explicitly non-authoritative** client mirror for
-preview/UX only, and this document stays open.
+**Document stays OPEN.** The frontend keeps its thin, explicitly non-authoritative client mirror for
+preview/UX until part 2 + §2.4 close. Remaining backend work to fully close: (a) version `HolidayPolicy`
+(migration); (b) seed US/KWD employees + run payroll to produce the live §3/§5 numeric proof;
+(c) decide whether the attendance team grid should resolve per-employee rather than tenant-wide.
 
 ## Frontend transition (once confirmed)
 
@@ -125,11 +157,15 @@ preview/UX only, and this document stays open.
 
 ## Sign-off
 
+Backend status as of commit `24b27fb` (✅ = confirmed done, ⚠️ = partial, ☐ = not done). "Live-verified by FE" left for the FE team.
+
 | # | Item | Backend confirms | Live-verified by FE |
 |---|------|:---:|:---:|
-| 1 | Resolved per-employee endpoint + metadata | ☐ | ☐ |
-| 2 | Country + optional + observed + versioned rules | ☐ | ☐ |
-| 3 | Shared resolution across leave/payroll/attendance | ☐ | ☐ |
-| 4 | Config-over-code (never-seen country, SUN-THU) | ☐ | ☐ |
-| 5 | Live multi-country evidence | ☐ | ☐ |
-| 6 | Edge/empty semantics defined | ☐ | ☐ |
+| 1 | Resolved per-employee endpoint + metadata | ✅ | ☐ |
+| 2 | Country + optional + observed + **versioned** rules | ⚠️ (versioning §2.4 missing) | ☐ |
+| 3 | Shared resolution across leave/payroll/attendance | ⚠️ (shared code; numeric proof not done) | ☐ |
+| 4 | Config-over-code (never-seen country, SUN-THU) | ✅ code / ⚠️ not live | ☐ |
+| 5 | Live multi-country evidence | ☐ (IN+SUPER_ADMIN only; US/KWD/payroll blocked) | ☐ |
+| 6 | Edge/empty semantics defined | ✅ | ☐ |
+
+**Overall: NOT fully implemented.** Items 1 & 6 complete; 2, 3, 4 partial; 5 not done live. See the status banner at the top for the 3 outstanding work items.
