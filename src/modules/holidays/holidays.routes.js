@@ -209,6 +209,8 @@ export default async function holidaysRoutes(fastify) {
           countryCode: { type: 'string' },
           restrictedLimit: { type: 'integer' },
           observedRule: { type: 'string', enum: ['NONE', 'NEXT_WORKING_DAY', 'NEAREST_WORKING_DAY'] },
+          effectiveFrom: { type: 'string', format: 'date', description: '§2.4 — when set, creates a NEW effective-dated version (closes the prior open version); omit to edit the current version in place.' },
+          version: { type: 'string', description: 'Optional version label for the new effective-dated version (auto-incremented when omitted).' },
         },
       },
       response: { 200: { type: 'object', additionalProperties: true } },

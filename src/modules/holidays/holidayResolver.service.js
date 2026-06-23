@@ -8,6 +8,7 @@
 // (observedRule / restrictedLimit) and the work-week. There is NO `if (country === …)`.
 import { resolveApplicableHolidays } from './utils/applicability.js';
 import { observedDate } from './utils/observedDates.js';
+import { getEffectivePolicy } from './holidaysPolicy.service.js';
 import { resolveWorkWeekDays } from '../../utils/workingDays.js';
 
 const isoDay = (v) => new Date(v).toISOString().slice(0, 10); // UTC yyyy-mm-dd
@@ -74,7 +75,7 @@ export function offDateSet(resolvedHolidays) {
 /** Resolve an employee's country + work-week + policy. Mirrors payroll's salary→legalEntity
  *  chain so holiday country == payroll country. Falls back to tenant work-week; country stays
  *  null (→ tenant-wide only) when it cannot be resolved. */
-export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId) {
+export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId, refDate) {
   let countryCode = null;
   let workWeekDays = null;
   let resolvedBy = 'TENANT_WIDE';
@@ -118,18 +119,16 @@ export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId
 
   let observedRule = 'NONE';
   let restrictedLimit = 0;
+  let policyVersion = null;
   if (countryCode) {
-    const pol = await prisma.holidayPolicy.findUnique({
-      where: { tenantId_countryCode: { tenantId, countryCode } },
-      select: { observedRule: true, restrictedLimit: true },
-    });
-    if (pol) {
-      observedRule = pol.observedRule;
-      restrictedLimit = pol.restrictedLimit;
-    }
+    // §2.4 — the policy VERSION effective at refDate (default now). Config-over-code.
+    const pol = await getEffectivePolicy(tenantId, countryCode, refDate);
+    observedRule = pol.observedRule;
+    restrictedLimit = pol.restrictedLimit;
+    policyVersion = pol.version;
   }
 
-  return { countryCode, workWeekDays, observedRule, restrictedLimit, resolvedBy };
+  return { countryCode, workWeekDays, observedRule, restrictedLimit, resolvedBy, policyVersion };
 }
 
 async function rawHolidaysBetween(prisma, tenantId, startISO, endISO) {
@@ -142,8 +141,9 @@ async function rawHolidaysBetween(prisma, tenantId, startISO, endISO) {
 
 /** Fully-resolved per-employee holiday set for a calendar year (the engine endpoint). */
 export async function resolveEmployeeHolidays(prisma, tenantId, { employeeId, year }) {
-  const ctx = await resolveEmployeeHolidayContext(prisma, tenantId, employeeId);
   const y = Number(year) || new Date().getUTCFullYear();
+  // §2.4 — pick the policy version effective in the requested year.
+  const ctx = await resolveEmployeeHolidayContext(prisma, tenantId, employeeId, `${y}-06-30`);
   const holidays = await rawHolidaysBetween(prisma, tenantId, `${y}-01-01`, `${y}-12-31`);
   const selections = employeeId
     ? await prisma.holidayOptionalSelection.findMany({
@@ -163,7 +163,7 @@ export async function resolveEmployeeHolidays(prisma, tenantId, { employeeId, ye
  *  plus the resolved work-week. Leave/payroll/attendance all call THIS. Observed shifting can
  *  move a date up to 14d, so we widen the raw query window then clip to [from,to]. */
 export async function resolveHolidayDateSet(prisma, tenantId, { employeeId, from, to }) {
-  const ctx = await resolveEmployeeHolidayContext(prisma, tenantId, employeeId);
+  const ctx = await resolveEmployeeHolidayContext(prisma, tenantId, employeeId, from);
   const fromISO = isoDay(from);
   const toISO = isoDay(to);
   const widen = (d, days) => { const x = new Date(`${d}T00:00:00.000Z`); x.setUTCDate(x.getUTCDate() + days); return x.toISOString().slice(0, 10); };

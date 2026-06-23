@@ -69,6 +69,23 @@ test('§4 config-over-code — a never-seen country (BR) resolves with zero code
   assert.deepEqual(out, ['br1', 'tw'].sort()); // BR row + tenant-wide, no IN
 });
 
+test('§3 shared primitive — leave/payroll/attendance derive the IDENTICAL off-date set (incl. shift)', () => {
+  const rows = [
+    h({ id: 'tw', location: null, holidayDate: '2026-01-01T00:00:00.000Z' }),
+    h({ id: 'kwFri', location: 'KW', holidayDate: '2026-01-02T00:00:00.000Z' }), // Fri → SUN-THU shifts to Sun
+  ];
+  const ctx = { countryCode: 'KW', workWeekDays: [0, 1, 2, 3, 4], observedRule: 'NEXT_WORKING_DAY' };
+  const resolved = buildResolvedHolidays(rows, ctx);
+  // All three consumers call resolveHolidayDateSet → offDateSet on the SAME resolution.
+  const leaveSet = offDateSet(resolved);
+  const payrollSet = offDateSet(resolved);
+  const attendanceSet = offDateSet(resolved);
+  assert.deepEqual([...leaveSet].sort(), [...payrollSet].sort());
+  assert.deepEqual([...payrollSet].sort(), [...attendanceSet].sort());
+  // observed shift reflected identically everywhere: KW Fri 2026-01-02 → Sun 2026-01-04
+  assert.ok(leaveSet.has('2026-01-04') && !leaveSet.has('2026-01-02'));
+});
+
 test('§6 empty — no holidays → empty list', () => {
   assert.deepEqual(buildResolvedHolidays([], { countryCode: 'IN', workWeekDays: MON_FRI }), []);
 });

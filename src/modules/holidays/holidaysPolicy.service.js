@@ -22,45 +22,83 @@ export class HolidaySelectionError extends Error {
   }
 }
 
+const iso = (d) => (d ? new Date(d).toISOString() : null);
 const mapPolicy = (p) => ({
   countryCode: p.countryCode,
   restrictedLimit: p.restrictedLimit,
   observedRule: p.observedRule,
+  version: p.version ?? 'v1',
+  effectiveFrom: iso(p.effectiveFrom),
+  effectiveTo: iso(p.effectiveTo),
 });
 
-// ── Policy ────────────────────────────────────────────────────────────────────
+// ── Policy (§2.4 effective-dated / versioned) ──────────────────────────────────
+// PURE: from rows ordered effectiveFrom DESC, pick the version whose [effectiveFrom, effectiveTo)
+// contains refMs; if ref predates the earliest version, fall back to the earliest (covers history).
+export function pickEffective(rows, refMs) {
+  const covering = rows.find((r) => new Date(r.effectiveFrom).getTime() <= refMs
+    && (r.effectiveTo == null || new Date(r.effectiveTo).getTime() > refMs));
+  return covering ?? (rows.length ? rows[rows.length - 1] : null);
+}
+
 export async function getPolicies(tenantId) {
-  const rows = await prisma.holidayPolicy.findMany({ where: { tenantId }, orderBy: { countryCode: 'asc' } });
-  if (rows.length === 0) return SEED_POLICIES.map((p) => ({ ...p }));
+  const rows = await prisma.holidayPolicy.findMany({
+    where: { tenantId }, orderBy: [{ countryCode: 'asc' }, { effectiveFrom: 'desc' }],
+  });
+  if (rows.length === 0) return SEED_POLICIES.map((p) => ({ ...p, version: 'seed', effectiveFrom: null, effectiveTo: null }));
   return rows.map(mapPolicy);
 }
 
-export async function getPolicy(tenantId, countryCode) {
-  if (countryCode == null) return { countryCode: '', restrictedLimit: 0, observedRule: 'NONE' };
-  const row = await prisma.holidayPolicy.findFirst({ where: { tenantId, countryCode } });
+/** The effective policy for a country as of refDate (default: now). */
+export async function getEffectivePolicy(tenantId, countryCode, refDate) {
+  if (countryCode == null) return { countryCode: '', restrictedLimit: 0, observedRule: 'NONE', version: null, effectiveFrom: null, effectiveTo: null };
+  const refMs = (refDate ? new Date(refDate) : new Date()).getTime();
+  const rows = await prisma.holidayPolicy.findMany({
+    where: { tenantId, countryCode }, orderBy: { effectiveFrom: 'desc' },
+  });
+  const row = rows.length ? pickEffective(rows, refMs) : null;
   if (row) return mapPolicy(row);
   const seed = SEED_POLICIES.find((p) => p.countryCode === countryCode);
-  return seed ? { ...seed } : { countryCode, restrictedLimit: 0, observedRule: 'NONE' };
+  return seed
+    ? { ...seed, version: 'seed', effectiveFrom: null, effectiveTo: null }
+    : { countryCode, restrictedLimit: 0, observedRule: 'NONE', version: 'default', effectiveFrom: null, effectiveTo: null };
 }
 
+// Back-compat alias (LIMIT_REACHED check, etc.) — effective as of today.
+export const getPolicy = (tenantId, countryCode) => getEffectivePolicy(tenantId, countryCode);
+
 export async function upsertPolicy(tenantId, patch) {
-  const existing = await prisma.holidayPolicy.findFirst({ where: { tenantId, countryCode: patch.countryCode } });
-  const base = existing
-    ? mapPolicy(existing)
-    : SEED_POLICIES.find((p) => p.countryCode === patch.countryCode) ?? {
-      countryCode: patch.countryCode,
-      restrictedLimit: 0,
-      observedRule: 'NONE',
-    };
+  const open = await prisma.holidayPolicy.findFirst({
+    where: { tenantId, countryCode: patch.countryCode }, orderBy: { effectiveFrom: 'desc' },
+  });
+  const base = open
+    ? mapPolicy(open)
+    : SEED_POLICIES.find((p) => p.countryCode === patch.countryCode)
+      ?? { restrictedLimit: 0, observedRule: 'NONE', version: 'v0' };
   const data = {
     restrictedLimit: patch.restrictedLimit !== undefined ? patch.restrictedLimit : base.restrictedLimit,
     observedRule: patch.observedRule !== undefined ? patch.observedRule : base.observedRule,
   };
-  await prisma.holidayPolicy.upsert({
-    where: { tenantId_countryCode: { tenantId, countryCode: patch.countryCode } },
-    create: { tenantId, countryCode: patch.countryCode, ...data },
-    update: data,
-  });
+
+  if (patch.effectiveFrom) {
+    // §2.4 versioning: close the current open version and create a NEW effective-dated version.
+    const ef = new Date(patch.effectiveFrom);
+    if (open && (open.effectiveTo == null) && new Date(open.effectiveFrom).getTime() < ef.getTime()) {
+      await prisma.holidayPolicy.update({ where: { id: open.id }, data: { effectiveTo: ef } });
+    }
+    const nextVersion = `v${(parseInt(String(base.version).replace(/\D/g, ''), 10) || 0) + 1}`;
+    await prisma.holidayPolicy.create({
+      data: { tenantId, countryCode: patch.countryCode, ...data, version: patch.version ?? nextVersion, effectiveFrom: ef },
+    });
+  } else if (open) {
+    // Back-compat: edit the latest version in place (no effective-date change).
+    await prisma.holidayPolicy.update({ where: { id: open.id }, data });
+  } else {
+    // First-ever version for this country → cover all of history (epoch).
+    await prisma.holidayPolicy.create({
+      data: { tenantId, countryCode: patch.countryCode, ...data, version: 'v1', effectiveFrom: new Date('1970-01-01T00:00:00Z') },
+    });
+  }
   return getPolicies(tenantId);
 }
 

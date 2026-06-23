@@ -779,21 +779,28 @@ model Holiday {
   @@index([holidayDate])
 }
 
-// ── Holiday Policy (Phase 7.2): per-country restricted-limit + observed-rule ──────
+// ── Holiday Policy (Phase 7.2 + 7.4 versioning): per-country restricted-limit + observed-rule ──
 // Config-over-code: per-country behaviour is data, never `if (country === …)`.
+// 7.4 (HOLIDAY_ENGINE_BACKEND_CONTRACT §2.4) — EFFECTIVE-DATED / VERSIONED, same model as
+// StatutoryPack: a country can have multiple versions; the one whose [effectiveFrom, effectiveTo)
+// contains the reference date wins. Existing single rows = v1, effectiveFrom epoch (cover all time).
 model HolidayPolicy {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   tenantId        String
   countryCode     String // ISO-3166 alpha-2
-  restrictedLimit Int      @default(0) // max optional picks; 0 = no limit
-  observedRule    String   @default("NONE") // NONE | NEXT_WORKING_DAY | NEAREST_WORKING_DAY
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  restrictedLimit Int       @default(0) // max optional picks; 0 = no limit
+  observedRule    String    @default("NONE") // NONE | NEXT_WORKING_DAY | NEAREST_WORKING_DAY
+  version         String    @default("v1")
+  effectiveFrom   DateTime  @default(now())
+  effectiveTo     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  @@unique([tenantId, countryCode])
+  @@unique([tenantId, countryCode, effectiveFrom])
   @@index([tenantId])
+  @@index([tenantId, countryCode])
 }
 
 model HolidayOptionalSelection {

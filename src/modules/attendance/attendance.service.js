@@ -377,23 +377,27 @@ export async function getTeamWeeklyGrid(tenantId, weekStart, departmentId, manag
   if (departmentId) employeeWhere.departmentId = departmentId;
   else if (managerEmployeeId) employeeWhere.managerId = managerEmployeeId;
 
-  const [employees, holidayResolution, attendanceRecords, leaveRecords] = await Promise.all([
+  const [employees, attendanceRecords, leaveRecords] = await Promise.all([
     attendanceRepository.getTeamMembers(tenantId, departmentId, managerEmployeeId),
-    // Shared holiday engine (HOLIDAY_ENGINE_BACKEND_CONTRACT §3): tenant-wide, observed-shifted
-    // against the tenant work-week — the SAME resolution leave-preview + payroll consume, so the
-    // calendar can never mark a working day off that payroll counted as worked (or vice-versa).
-    resolveHolidayDateSet(prisma, tenantId, { employeeId: null, from: startDate, to: endDate }),
     attendanceRepository.getAttendanceInRange(tenantId, weekDates.map(d => d), employeeWhere),
     attendanceRepository.getApprovedLeavesInRange(tenantId, startDate, endDate),
   ]);
 
-  const holidayDates = holidayResolution.dates;
+  // Shared holiday engine (HOLIDAY_ENGINE_BACKEND_CONTRACT §3): resolve PER EMPLOYEE — each
+  // member's calendar uses their own country/work-week resolution, identical to that employee's
+  // leave-preview + payslip holidayBasis (no tenant-wide divergence for multi-country teams).
+  const holidayByEmp = new Map(
+    await Promise.all(employees.map((e) => resolveHolidayDateSet(prisma, tenantId, {
+      employeeId: e.id, from: startDate, to: endDate,
+    }).then((r) => [e.id, r.dates]))),
+  );
+  const EMPTY = new Set();
 
   const codeForDay = (empId, dateStr) => {
     const dateObj = new Date(`${dateStr}T00:00:00.000Z`);
     const dayOfWeek = dateObj.getUTCDay();
     if (!workSet.has(dayOfWeek)) return 'O'; // non-working day per tenant work-week
-    if (holidayDates.has(dateStr)) return 'O';
+    if ((holidayByEmp.get(empId) || EMPTY).has(dateStr)) return 'O';
 
     const leave = leaveRecords.find(l => l.employeeId === empId
       && new Date(l.startDate) <= dateObj && new Date(l.endDate) >= dateObj);
