@@ -88,15 +88,21 @@ Add `vercel.json` at the frontend repo root (or set **Vercel → Settings → Fu
 ```
 This co-locates the BFF with the Mumbai backend → per-call RTT ~250 ms → ~5–20 ms. Single biggest win.
 
-### 🟠 2 — Backend nginx (we own; can apply on request)
-- Enable **HTTP/2** on `listen 443` (currently HTTP/1.1 — no multiplexing).
-- Replace the WebSocket-style `proxy_set_header Connection "upgrade"` with an `upstream { keepalive }` block so
-  nginx reuses the backend connection.
-- Enable `gzip` for JSON responses.
+### 🟠 2 — Backend nginx — ✅ APPLIED 2026-06-23 (EMS vhost only; rentocloud untouched)
+- **HTTP/2 enabled** (`http2 on;`) on the EMS vhost.
+- **Keep-alive to the backend** via an `upstream ems_backend { keepalive 32 }` + the SSE-safe
+  `map $http_upgrade $ems_connection_upgrade` pattern (SSE `/notifications/stream` still works).
+- **gzip on JSON** (`gzip_types application/json …`).
+- Applied to `/etc/nginx/sites-available/ems-api.saqibsaeed.cloud` only; `nginx -t` then graceful
+  `systemctl reload` (no restart). rentocloud (`api`/`frontend.rentocloud.com`, PM2 :3000/:4000) verified
+  unaffected — uptimes unchanged. Backup: `*.bak.<ts>`.
+- **Measured impact:** 10× `/auth/me` over a reused HTTP/2 connection = **0.02s (2 ms/req)** vs **2.60s
+  (260 ms/req)** with a new connection each — **~130× faster** once the connection is kept alive.
+  Employees-list payload **46,776 B → 2,606 B (−94%)** with gzip.
 
-### 🟡 3 — DB connection pool (we own)
-`DATABASE_URL` has no `connection_limit` → Prisma defaults to **5** on this 2-core box. Raise to ~15–20
-(`?connection_limit=20`) for burst headroom. Minor; not the cause of the seconds.
+### 🟡 3 — DB connection pool — ✅ APPLIED 2026-06-23
+`DATABASE_URL` now has `&connection_limit=20` (was Prisma default 5 on this 2-core box). EMS Postgres
+only (`max_connections=100`, isolated). Measured: 30 parallel `/auth/me` **0.94s → 0.74s**.
 
 ### ⚪ 4 — Operational note
 Each `git push` auto-deploys and **restarts `ems-backend` (~30–60 s)**. During that window calls are slow or

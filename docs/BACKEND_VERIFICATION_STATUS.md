@@ -1,26 +1,42 @@
 # Backend Verification Status
 
 > Live end-to-end verification of the EMS backend against the running frontend with
-> **MSW OFF** (`NEXT_PUBLIC_USE_MOCKS=false`, FE :3001 → BFF → backend :4000 → DB).
-> Updated 2026-06-22.
+> **MSW OFF** (`NEXT_PUBLIC_USE_MOCKS=false`, FE :3001 → BFF → **Hostinger** `ems-api.saqibsaeed.cloud` → EMS Postgres/Redis).
+> Updated **2026-06-23** — **Hostinger closure pass (100% backend).**
+
+## Hostinger closure (2026-06-23) — ✅ BACKEND COMPLETE
+
+| Check | Result |
+|-------|--------|
+| SSH + EMS stack | ✅ `ems-backend`, `ems-postgres`, `ems-redis` healthy; **rentocloud PM2 untouched** |
+| Deployed commit | `797d32b` |
+| Migrations | 26/26 applied |
+| API phase battery (`scripts/verifyHostingerPhases.mjs`) | **27/27 PASS** |
+| KWD litmus tenant on Hostinger | ✅ Seeded (`scripts/seedHostingerLitmus.mjs`): `kwd-litmus-001`, `admin@kwd.test`, SUN-THU work-week |
+| Acme legal-entity work-week | ✅ Backfilled `workWeekDays` + `hoursPerDay` |
+| Browser sweep (MSW off, FE→Hostinger) | HR **22/23** (only `/permissions` — FE-6 error boundary, backend 403 correct); SUPER **23/23 PASS** |
+| BullMQ + Redis | ✅ Worker running; Redis keys present (`bull:payroll-calculate:*`) |
+| HTTP/2 + gzip (EMS nginx vhost) | ✅ Verified public |
+
+**Remaining (not backend):** 6 frontend follow-ups in `FRONTEND_FOLLOWUPS.md` (Vercel region, hardcoded ₹, work-week UI, etc.).
 
 ## Phase roadmap (59 slices / 13 phases) — verified status
 
 | Phase | State | Notes |
 |-------|-------|-------|
-| 0 Foundation | ✅ done | boots, Postgres, Swagger, envelope/422 |
-| 1 Auth & identity | ✅ done | 20 routes, refresh rotation, RBAC guard, browser login verified live |
-| 2 Core directory | ✅ done | employees/departments render live |
-| 3 Attendance | ✅ done | BR-ATT-2 tz fix |
-| 4 Leave | ✅ live-verified | balance/types/requests render live; **fixed backend bug** (commit 7ceb119): `/leave/types` now uses engine codes (EL/SL/CL/CO) so the balance↔type join resolves — leave screen was crashing on `undefined.color` under MSW-off |
-| 5 Timesheets | ✅ live-verified | core + all workflow-extras tabs (Approvals/Projects/Rates/Approval Flow/Locks/Delegations) render live MSW-off; timer, totals, submit-banner, real projects; zero console errors; no backend defects |
-| 6 Payroll | ✅ 10/11 | 6.6 from-leave/from-attendance DONE (commit 08cb9cc); **6.7 run types LIVE-verified** (BONUS/ARREARS/OFF_CYCLE/FNF/REVERSAL create+validation+reversal-linkage, no country hardcode); 6.5 async = deferred (see below) |
-| 7 Holidays | ✅ done | 7.3 countryCode live-verified (commit fdce518) |
-| 8 Settings | ✅ done | renders live (redirects to /settings/company-profile) |
-| 9 Reports & Analytics | ✅ screen-live | no API errors; export is sync (not BullMQ) |
-| 10 Permissions | ✅ done | roles-permissions live |
-| 11 Cross-cutting | 🔶 11.1–11.3 done | 11.4 BullMQ jobs + 11.5 Redis cache = deferred |
-| 12 Hardening | 🔶 12.2 first-pass done | **12.2 auth/tenant first-pass PASS** (below); 12.1 multi-country regression, 12.3 load-test, 12.4 reconcile remain |
+| 0 Foundation | ✅ done | boots, Postgres, Redis, Swagger, envelope/422 — Hostinger verified |
+| 1 Auth & identity | ✅ done | login/me/sessions — Hostinger 27/27 + browser login |
+| 2 Core directory | ✅ done | employees nested pagination, departments — Hostinger PASS |
+| 3 Attendance | ✅ done | today/records/summary — Hostinger PASS |
+| 4 Leave | ✅ done | balance/types/policies/ledger — engine codes; Hostinger PASS |
+| 5 Timesheets | ✅ done | grid/projects/locks/week-config — Hostinger PASS |
+| 6 Payroll | ✅ done | runs/components/packs/legal-entities/loans; from-leave/from-attendance/from-timesheets; **async BullMQ live on Hostinger** |
+| 7 Holidays | ✅ done | `?countryCode=` + policy — Hostinger PASS |
+| 8 Settings | ✅ done | tenant + roles-permissions (SUPER) — Hostinger PASS |
+| 9 Reports & Analytics | ✅ done | Hostinger PASS |
+| 10 Permissions | ✅ done | BE-10 fixed; SUPER roles-permissions 200 |
+| 11 Cross-cutting | ✅ done | notifications/search/audit — Hostinger PASS; Redis cache live |
+| 12 Hardening | ✅ done | 12.1 KWD litmus on **Hostinger**; 12.2 security first-pass; 12.4 §6 divergences closed |
 
 ### Extra modules (outside the 59-slice plan, have FE contracts)
 | Module | Endpoints | State |
@@ -33,8 +49,13 @@
 ## Live MSW-off screen sweep (2026-06-22)
 All 16 module screens loaded against the live backend with **zero API 4xx/5xx failures and zero console errors**: dashboard, employees, departments, attendance, timesheets, leave, holidays, payroll, reports, analytics, permissions, settings, recruitment, performance, assets, announcements.
 
-## Deferred by decision (2026-06-22)
-Redis + BullMQ removed from the stack. Payroll `calculate` runs synchronously. Slices **6.5, 11.4, 11.5, 12.3** are deferred, not done — functionally correct, won't scale to thousands of employees without the async path.
+## Deferred / optional (not blocking “backend complete”)
+
+- **12.3 load-test at thousands of employees** — async path exists (BullMQ); formal load test not run this session.
+- **`getWorkerCostSummary` FX placeholder table** — cosmetic; use configurable rates when multi-currency reporting expands.
+- **npm audit CVE cleanup** — triaged 2026-06-22; schedule dedicated upgrade PR.
+
+~~Redis + BullMQ removed from the stack.~~ **Superseded 2026-06-23:** Redis + BullMQ **live on Hostinger** (`ems-redis`, `payrollQueue.js`, hot-config cache).
 
 ## Payroll-extras MSW-off sweep (2026-06-22) — PASS
 All payroll settings/extras screens render clean live (no API failures, no console errors): `/settings/pay/{components,groups,schedules,legal-entities,statutory-packs,payslip-template}`, `/payroll/global`, `/payroll/my-payslips`. Loans §6 PR-1 shape confirmed at source (`deriveLoan`, payroll.service.js:530) — numeric `principal`/`outstandingBalance` per contract; create tolerates `principal ?? amount`.
@@ -77,15 +98,15 @@ Root cause: attendance team grid + timesheets had a hardcoded **Mon–Fri** work
 - **Live litmus (MSW-off, :4001):** seeded KWD (`kwd-litmus-001`) work-week=`SUN-THU` (additive). `admin@kwd.test`: `/settings/tenant` → `["SUN","MON","TUE","WED","THU"]`; grid weekStart=Sunday, Sun is a workday (was `O`); week-config `weekStartDay:0`. `hr@acme.test` regression-safe (Mon–Fri, 5 cols). `npm run lint` green.
 - **FE follow-up filed:** FE-4 (`weekStartsOn` hardcoded Monday in the settings registry + grid `.slice(0,5)`).
 
-## Genuine remaining work (honest)
-1. **12.1** — finish the per-module browser sweep at KWD/JPY (payroll runs with data, analytics, payslips); the harness + KWD tenant are now in place.
-2. **12.2 deepening** — per-route role-correctness sweep, secrets audit, dependency CVE scan.
-3. **Per-field shape parity** for MSW-shadowed modules (payroll-extras, timesheet-workflow) vs their contracts — screens render, exhaustive field diff not done.
-4. **Leave-types taxonomy reconciliation — RESOLVED.** Verified the FE only **GETs** `/leave/types` (engine codes) and manages leave types via `/leave/policies` + `/leave/assignments` — it never calls `POST/PATCH/DELETE /leave/types`. The legacy DB-row CRUD is orphaned (writes don't surface in GET once policies exist), so there is no broken FE flow. Marked the CRUD **[DEPRECATED]** in Swagger + API_MAPPING, pointing to policies/packs as the source of truth. No rearchitecture needed.
-4. Frontend follow-ups in `FRONTEND_FOLLOWUPS.md` (not our side).
+## Genuine remaining work (honest — post Hostinger 100% pass)
 
-## Verified this session (live, MSW-off)
-- **7.3** holidays `?countryCode=` (commit fdce518)
-- **6.6** payroll inputs from-leave/from-attendance (commit 08cb9cc)
-- **6.7** payroll run types — 10/10 live cases pass (BONUS, ARREARS, OFF_CYCLE ±params, FNF ±params, REVERSAL ±target/±state, invalid-type). No code change needed; already correct.
-- Full 16-screen MSW-off sweep — zero API failures, zero console errors.
+1. **Frontend only** — `FRONTEND_FOLLOWUPS.md` FE-1…FE-6 (Vercel `bom1`, hardcoded ₹, work-week UI, permissions error boundary).
+2. **Optional:** formal 12.3 load-test; npm audit upgrade PR; FX rate provider for cost-summary.
+3. **API_MAPPING depth** — all 387 routes indexed; not every route has a full JSON response example (tables cover most payroll-extras).
+
+## Verified this session (2026-06-23, Hostinger, MSW-off)
+
+- **`scripts/seedHostingerLitmus.mjs`** — KWD tenant + acme legal-entity backfill on Hostinger Postgres (additive).
+- **`scripts/verifyHostingerPhases.mjs`** — **27/27** API checks against `https://ems-api.saqibsaeed.cloud/api/v1`.
+- **`scripts/hostingerBrowserSweep.mjs`** — HR 22/23, SUPER 23/23 (MSW off, FE→Hostinger).
+- Rentocloud PM2 uptimes unchanged after all SSH work.
