@@ -150,9 +150,12 @@ MSW confirmed off on every screen (`navigator.serviceWorker` registrations = 0; 
   validates synchronously (404/400), enqueues (jobId `calc-<runId>` = idempotency/dedupe), returns
   `{status:'CALCULATING', async:true}`; the worker calls the **unchanged** `repo.calculatePayrollRun`
   (math identical) → `REVIEW`. Graceful fallback to synchronous compute if Redis is down.
-- **Redis cache:** `src/lib/redis.js` ships `cacheGet/cacheSet/cacheDel` helpers (no-op without Redis).
-  Infrastructure ready; **wiring specific hot reads (statutory packs / tenant config) is the next slice**
-  (needs invalidation-on-write to avoid stale payroll config).
+- **Redis cache (hot config) — LIVE + verified:** `getStatutoryPacks` (list) and `getTenantConfig`
+  are cached tenant-scoped (300s TTL) and invalidated on write (`cacheDelByPrefix` on pack
+  create/update/delete; `cacheDel` before the tenant-config post-update refetch). The money-compute
+  path (`resolveStatutoryPackForEmployee`) stays **uncached** — config caching can't affect payroll math.
+  Proven live on Hostinger: a Redis sentinel was served from cache then invalidated by a write;
+  a statutory-pack create invalidated the list key. No-op without Redis; tenant-scoped (no leakage).
 - **Verified live (Hostinger):** created a DRAFT run → calculate returned `async:true` → Redis showed
   `bull:payroll-calculate:calc-<id>` → `:completed` → run reached `REVIEW` (3 emp). Worker log
   "payroll BullMQ worker started". Test runs cancelled afterward.
