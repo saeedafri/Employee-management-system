@@ -2,6 +2,7 @@ import { successResponse, errorResponse } from '../../utils/response.js';
 import * as attendanceService from './attendance.service.js';
 import * as attendanceValidator from './attendance.validator.js';
 import { resolveAttendanceCalendar } from './attendanceCalendar.service.js';
+import { resolveEmployeeTimezone } from '../holidays/holidayResolver.service.js';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
 import { prisma } from '../../plugins/prisma.js';
 
@@ -16,9 +17,10 @@ export async function checkIn(request, reply) {
 
     const body = attendanceValidator.checkInSchema.parse(request.body);
 
-    const result = await attendanceService.checkIn(tenantId, employeeId, body, {
-      timezone: request.tenant?.timezone || 'UTC',
-    });
+    // BR-ATT-2: classify the day in the EMPLOYEE's resolved timezone (entity→tenant→UTC),
+    // not the tenant's, so the stored date matches the BE-1 calendar's day boundaries.
+    const timezone = await resolveEmployeeTimezone(prisma, tenantId, employeeId);
+    const result = await attendanceService.checkIn(tenantId, employeeId, body, { timezone });
 
     await request.log.info({
       action: 'ATTENDANCE_CHECK_IN',
@@ -57,9 +59,9 @@ export async function checkOut(request, reply) {
 
     const body = attendanceValidator.checkOutSchema.parse(request.body || {});
 
-    const result = await attendanceService.checkOut(tenantId, employeeId, body, {
-      timezone: request.tenant?.timezone || 'UTC',
-    });
+    // BR-ATT-2: resolve "today" in the employee's timezone (entity→tenant→UTC).
+    const timezone = await resolveEmployeeTimezone(prisma, tenantId, employeeId);
+    const result = await attendanceService.checkOut(tenantId, employeeId, body, { timezone });
 
     await request.log.info({
       action: 'ATTENDANCE_CHECK_OUT',

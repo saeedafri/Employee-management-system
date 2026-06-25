@@ -144,6 +144,31 @@ export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId
   };
 }
 
+/** Employee's resolved timezone via the SAME entity→tenant→UTC chain the calendar uses
+ *  (no policy lookup). BR-ATT-2: check-in/out must classify the day in the employee's tz so
+ *  the stored attendanceDate agrees with the BE-1 calendar's day boundaries. */
+export async function resolveEmployeeTimezone(prisma, tenantId, employeeId) {
+  if (employeeId) {
+    const sal = await prisma.employeeSalary.findFirst({
+      where: { tenantId, employeeId },
+      orderBy: { effectiveFrom: 'desc' },
+      select: { legalEntityId: true },
+    });
+    if (sal?.legalEntityId) {
+      const le = await prisma.legalEntity.findFirst({
+        where: { id: sal.legalEntityId, tenantId },
+        select: { timezone: true },
+      });
+      if (le?.timezone) return le.timezone;
+    }
+  }
+  const tc = await prisma.tenantConfig.findUnique({
+    where: { tenantId },
+    select: { timezone: true },
+  });
+  return tc?.timezone || 'UTC';
+}
+
 async function rawHolidaysBetween(prisma, tenantId, startISO, endISO) {
   return prisma.holiday.findMany({
     where: { tenantId, holidayDate: { gte: new Date(startISO), lte: new Date(endISO) } },
