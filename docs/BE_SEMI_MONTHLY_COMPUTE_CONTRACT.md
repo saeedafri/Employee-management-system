@@ -1,9 +1,21 @@
 # Backend Contract — Semi-monthly payroll compute: earnings proration + statutory wage-base
 
 > **Status: ✅ DONE — 2026-06-25.** Both 🔴 bugs fixed and live-verified on
-> `https://ems-api.saqibsaeed.cloud/api/v1` (Priya Sharma, CTC 900k). For 2026-09:
-> MONTHLY gross 71,600 / PF 1,800 / PF_ER 1,800; H1 gross 35,800 / PF 900; H2 same;
-> **H1 + H2 == MONTHLY line-for-line (earnings, PF, PF_ER, net).**
+> `https://ems-api.saqibsaeed.cloud/api/v1` (Priya Sharma, CTC 900k). For a fresh month:
+> MONTHLY gross 71,600 / PF 1,800 / PF_ER 1,800 / net 64,248; H1 gross 35,800 / PF 900 /
+> net 32,124; H2 same; **H1 + H2 == MONTHLY line-for-line (earnings, PF, PF_ER, every
+> deduction, net).**
+>
+> **Bug A — second pass (deduction proration).** Earnings proration alone left two
+> non-statutory deductions un-prorated, so net didn't sum:
+> - **Withholding/income tax** built its *annual* base from the already-per-cycle earning amount
+>   (`amount × 12`), so a SEMI cycle's annual base was halved → fell under the taxable threshold
+>   → tax computed to **0** for both cycles. Fixed: un-prorate to the monthly figure before
+>   annualising (`(amount / periodFactor) × monthsPaid`) so the annual base is schedule-invariant;
+>   the per-cycle split (`÷ ppm`) then makes H1+H2 == MONTHLY.
+> - **FLAT garnishment** deducted the full *monthly* amount every cycle (2× per month). Fixed:
+>   scale FLAT garnishment amount + cap by `periodFactor` per cycle (PERCENT_OF_DISPOSABLE
+>   already auto-prorates off the per-cycle disposable). Both no-ops for MONTHLY (periodFactor=1).
 >
 > **Bug A root cause + fix:** the compute used the pay GROUP's schedule for proration
 > (`empPaySchedule = payGroup.paySchedule ?? run.paySchedule`), so a SEMI_MONTHLY run on a

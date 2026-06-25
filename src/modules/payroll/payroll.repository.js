@@ -1151,8 +1151,15 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         if (comp.type === 'EARNING') {
           earningsArr.push({ code: comp.code, name: comp.name, amount: paid, taxable: comp.taxable });
           structEarnSum += amount;
-          // H3 — annual taxable base from STRUCTURAL taxable earnings × periods actually paid.
-          if (comp.taxable !== false) annualTaxableStructural += amount * ((payIn && payIn.length) ? payIn.length : 12);
+          // H3 — annual taxable base from STRUCTURAL taxable earnings × MONTHS actually paid.
+          // `amount` is the per-CYCLE share (FLAT scaled by periodFactor=12/ppy), so un-prorate
+          // back to the monthly figure before annualising — the annual tax base must be schedule-
+          // invariant (a semi-monthly employee earns the same yearly salary as a monthly one).
+          // periodFactor=1 for MONTHLY → byte-identical; 0.5 for SEMI_MONTHLY → restores full base.
+          if (comp.taxable !== false) {
+            const monthlyStructural = periodFactor ? amount / periodFactor : amount;
+            annualTaxableStructural += monthlyStructural * ((payIn && payIn.length) ? payIn.length : 12);
+          }
         } else if (comp.type === 'DEDUCTION') {
           deductionsArr.push({ code: comp.code, name: comp.name, amount: paid });
           structDedSum += amount;
@@ -1259,10 +1266,14 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         const disposable = grossEarnings - statutorySoFar;
         let remaining = disposable;
         for (const o of [...garnishments].sort((a, b) => a.priority - b.priority)) {
+          // FLAT garnishment amounts/caps are MONTHLY figures → scale to the cycle's share so
+          // H1 + H2 == the MONTHLY run (periodFactor=1 for MONTHLY, byte-identical). A
+          // PERCENT_OF_DISPOSABLE order already auto-prorates: `disposable` is the per-cycle
+          // (prorated) figure, so its percentage is the cycle's share — leave it untouched.
           let desired = o.amountKind === 'PERCENT_OF_DISPOSABLE'
             ? r2((disposable * Number(o.amountValue)) / 100)
-            : Number(o.amountValue);
-          if (o.cap != null) desired = Math.min(desired, Number(o.cap));
+            : r2(Number(o.amountValue) * periodFactor);
+          if (o.cap != null) desired = Math.min(desired, r2(Number(o.cap) * periodFactor));
           const available = Math.max(0, remaining - Number(o.protectedEarningsFloor ?? 0));
           const actual = Math.max(0, Math.min(desired, available));
           if (actual > 0) {
