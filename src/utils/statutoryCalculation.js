@@ -84,14 +84,20 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
 } = {}) {
   const statutoryDeductions = [];
   const employerContributions = [];
+  const warnings = [];
 
   for (const scheme of contributionSchemes) {
     const wageBaseTag = scheme?.wageBaseTag;
     if (!wageBaseTag) continue;
 
-    const rawBase = earnings
-      .filter((e) => componentByCode.get(e.code)?.statutoryTag === wageBaseTag)
-      .reduce((sum, e) => sum + Number(e.amount ?? 0), 0);
+    const matched = earnings.filter((e) => componentByCode.get(e.code)?.statutoryTag === wageBaseTag);
+    // Bug B guardrail: a scheme demanding a wageBaseTag that NO component carries would
+    // silently compute 0 and drop the contribution. Surface it instead of vanishing.
+    if (matched.length === 0) {
+      warnings.push(`STATUTORY_WAGE_BASE_EMPTY: scheme ${scheme.code ?? scheme.name ?? '?'} found no component tagged ${wageBaseTag}`);
+      continue;
+    }
+    const rawBase = matched.reduce((sum, e) => sum + Number(e.amount ?? 0), 0);
 
     if (rawBase <= 0) continue;
 
@@ -149,7 +155,7 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
     }
   }
 
-  return { statutoryDeductions, employerContributions };
+  return { statutoryDeductions, employerContributions, warnings };
 }
 
 export function sumEmployerContributions(employerContributions = []) {

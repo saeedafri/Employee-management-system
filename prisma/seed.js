@@ -389,7 +389,7 @@ async function main() {
 
   // Salary Components
   const componentDefs = [
-    { code: 'BASIC', name: 'Basic Salary', type: 'EARNING', calculationType: 'FLAT', value: 50000, taxable: true, displayOrder: 1 },
+    { code: 'BASIC', name: 'Basic Salary', type: 'EARNING', calculationType: 'FLAT', value: 50000, taxable: true, displayOrder: 1, statutoryTag: 'PF_WAGE' },
     { code: 'HRA', name: 'House Rent Allowance', type: 'EARNING', calculationType: 'PERCENTAGE', value: 40, basisCode: 'BASIC', taxable: false, displayOrder: 2 },
     { code: 'CONVEYANCE', name: 'Conveyance Allowance', type: 'EARNING', calculationType: 'FLAT', value: 1600, taxable: false, displayOrder: 3 },
     { code: 'MEDICAL', name: 'Medical Allowance', type: 'BENEFIT', calculationType: 'FLAT', value: 1250, taxable: false, displayOrder: 4 },
@@ -525,7 +525,7 @@ async function main() {
     rounding: { mode: 'NEAREST', precision: 0 },
     proration: { basis: 'CALENDAR_DAYS' },
     taxRegimes: [{ code: 'IN_NEW_REGIME', fiscalYear: '2026-27', currency: 'INR', standardDeduction: 7500000, slabs: [{ from: 0, to: 40000000, rate: 0 }, { from: 40000000, to: 80000000, rate: 5 }, { from: 80000000, to: null, rate: 30 }], cess: { rate: 4 } }],
-    contributionSchemes: [{ code: 'IN_EPF', name: "Employees' Provident Fund", wageBaseTag: 'PF_WAGE', wageCeiling: 1500000, employee: { rate: 12, component: 'PF' }, employer: { rate: 12, component: 'PF_ER' } }],
+    contributionSchemes: [{ code: 'IN_EPF', name: "Employees' Provident Fund", wageBaseTag: 'PF_WAGE', wageCeiling: 1500000, apportionmentMode: 'MONTHLY_TOTAL', employee: { rate: 12, component: 'PF' }, employer: { rate: 12, component: 'PF_ER' } }],
     localTaxes: [{ code: 'IN_MH_PT', name: 'Professional Tax (Maharashtra)', component: 'PROF_TAX', slabs: [{ from: 0, to: 750000, amount: 0 }, { from: 750000, to: null, amount: 20000 }] }],
     statutoryComponents: ['PF', 'PF_ER', 'TDS'],
   };

@@ -1058,7 +1058,11 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       });
 
       const componentByCode = new Map(pgComps.map((c) => [c.code, c]));
-      const empPaySchedule = payGroup.paySchedule ?? run.paySchedule ?? 'MONTHLY';
+      // The RUN's schedule drives this run's proration/apportionment — a SEMI_MONTHLY run on a
+      // MONTHLY pay group must still prorate per cycle (Bug A: previously payGroup won, so an
+      // H1 run on a MONTHLY group paid the full month and PF used ppm=1). Falls back to the
+      // group, then MONTHLY; for a true MONTHLY run run.paySchedule is MONTHLY/null → unchanged.
+      const empPaySchedule = run.paySchedule ?? payGroup.paySchedule ?? 'MONTHLY';
       const ppy = periodsPerYear(empPaySchedule);
       // Apportionment cycle count: for fixed-length schedules (BIWEEKLY/WEEKLY) the number of
       // cycles in a calendar month varies (2 or 3 biweekly; 4 or 5 weekly). Use the ACTUAL count
@@ -1155,10 +1159,13 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
         }
       }
 
-      const { statutoryDeductions, employerContributions } = computeStatutoryContributions(
+      const { statutoryDeductions, employerContributions, warnings: statWarnings = [] } = computeStatutoryContributions(
         earningsArr, componentByCode, contributionSchemes,
         { periodsPerMonth: ppm, isLastCycleInMonth: lastCycle },
       );
+      for (const w of statWarnings) {
+        warnings.push({ employeeId: employee.id, employeeName: `${employee.firstName} ${employee.lastName}`, message: w });
+      }
       for (const ded of statutoryDeductions) {
         const idx = deductionsArr.findIndex((d) => d.code === ded.code);
         if (idx >= 0) deductionsArr[idx] = ded;
