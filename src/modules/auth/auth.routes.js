@@ -97,6 +97,21 @@ export default async function authRoutes(fastify) {
     onRequest: [authenticate],
   }, async (request, reply) => authController.getMeController(request, reply));
 
+  fastify.patch('/auth/me/mfa', {
+    schema: {
+      tags: ['Authentication'],
+      description: 'Toggle your own MFA opt-in (contract §6). Under mfa_policy=OPTIONAL this makes "users choose" real. Body { enabled: boolean }.',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['enabled'],
+        properties: { enabled: { type: 'boolean' } },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate],
+  }, async (request, reply) => authController.updateOwnMfaController(request, reply));
+
   fastify.get('/auth/sessions', {
     schema: {
       tags: ['Authentication'],

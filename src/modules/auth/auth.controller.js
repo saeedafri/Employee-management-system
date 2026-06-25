@@ -127,6 +127,18 @@ export async function adminLoginController(request, reply) {
       userAgent,
     );
 
+    // MFA required (policy or per-user opt-in) — same 202 challenge shape as /auth/login (§3.4/§4).
+    if (result.mfaRequired) {
+      return reply.code(202).send(
+        successResponse({
+          mfaRequired: true,
+          challengeId: result.challengeId,
+          destinationMasked: result.destinationMasked,
+          expiresIn: result.expiresIn,
+        }),
+      );
+    }
+
     setRefreshTokenCookie(reply, result.refreshToken);
     setAccessTokenCookie(reply, result.accessToken);
 
@@ -140,6 +152,23 @@ export async function adminLoginController(request, reply) {
     );
   } catch (error) {
     request.log.error(error);
+    throw error;
+  }
+}
+
+// PATCH /auth/me/mfa — self-service per-user MFA opt-in (contract §6).
+export async function updateOwnMfaController(request, reply) {
+  try {
+    const { enabled } = authValidator.updateOwnMfaSchema.parse(request.body);
+    const result = await authService.setOwnMfa(prisma, request.user.sub, enabled);
+    return reply.send(successResponse({ mfaEnabled: result.mfaEnabled }));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) {
+      return reply.status(error.statusCode || 400).send(
+        errorResponse(error.code, error.message, error.details, request.id),
+      );
+    }
     throw error;
   }
 }

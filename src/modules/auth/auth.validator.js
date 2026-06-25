@@ -7,6 +7,10 @@ export const loginSchema = z.object({
 
 export const adminLoginSchema = loginSchema;
 
+export const updateOwnMfaSchema = z.object({
+  enabled: z.boolean(),
+});
+
 export const refreshSchema = z.object({
   // Refresh token comes from cookie, no body needed
 });

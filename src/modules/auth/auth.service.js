@@ -5,6 +5,21 @@ import { generateId } from '../../utils/id.js';
 import { config } from '../../config/index.js';
 import * as authRepository from './auth.repository.js';
 import * as otpService from './otp.service.js';
+import { getAuthSettings } from '../settings/settings.repository.js';
+
+// MFA admin cohort for the REQUIRED_ADMINS policy (contract §3.2; default SUPER_ADMIN + HR_ADMIN).
+const MFA_ADMIN_MEMBER_TYPES = new Set(['SUPER_ADMIN', 'HR_ADMIN']);
+
+// PURE. Does the tenant MFA policy require this user to do MFA at login? Callers OR this with
+// the per-user opt-in (user.mfaEnabled). Values match the FE's three literals exactly (§3.3).
+export function policyRequiresMfa(policy, user) {
+  switch (policy) {
+  case 'REQUIRED_ALL': return true;
+  case 'REQUIRED_ADMINS': return MFA_ADMIN_MEMBER_TYPES.has(user.memberType);
+  case 'OPTIONAL': return false;
+  default: return false;
+  }
+}
 
 class AppError extends Error {
   constructor(message, code, statusCode = 400, details = {}) {
@@ -55,7 +70,9 @@ function extractPermissions(user) {
 export async function login(db, tenantId, email, password, ipAddress, userAgent) {
   const user = await validateLogin(db, tenantId, email, password);
 
-  if (user.mfaEnabled) {
+  // MFA gate (contract §3): tenant policy (mfa_policy) OR the per-user opt-in (mfaEnabled).
+  const { mfa_policy: mfaPolicy } = await getAuthSettings(tenantId);
+  if (user.mfaEnabled || policyRequiresMfa(mfaPolicy, user)) {
     // Generate OTP challenge for MFA
     const otpResult = await otpService.generateOtp(tenantId, user.id, user.email, 'LOGIN', 'EMAIL');
 
@@ -157,6 +174,27 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
     );
   }
 
+  // MFA gate applies to the admin login path too (contract §3.4): policy OR per-user opt-in.
+  const { mfa_policy: mfaPolicy } = await getAuthSettings(tenantId);
+  if (user.mfaEnabled || policyRequiresMfa(mfaPolicy, user)) {
+    const otpResult = await otpService.generateOtp(tenantId, user.id, user.email, 'LOGIN', 'EMAIL');
+    await authRepository.createAuditLog(db, {
+      tenantId,
+      actorUserId: user.id,
+      action: 'MFA_LOGIN_INITIATED',
+      entityType: 'User',
+      entityId: user.id,
+      ipAddress,
+      userAgent,
+    });
+    return {
+      mfaRequired: true,
+      challengeId: otpResult.challengeId,
+      destinationMasked: otpResult.destinationMasked,
+      expiresIn: otpResult.expiresIn,
+    };
+  }
+
   // Same as regular login, but with admin check
   const sessionId = generateId();
   const rawRefreshToken = generateRefreshToken();
@@ -219,6 +257,13 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
     sessionId: session.id,
     permissions,
   };
+}
+
+// Self-service per-user MFA opt-in (contract §6). Writes user.mfaEnabled for the authenticated
+// user — the only code path that sets this flag, making "Optional — users choose" meaningful.
+export async function setOwnMfa(db, userId, enabled) {
+  await db.user.update({ where: { id: userId }, data: { mfaEnabled: !!enabled } });
+  return { mfaEnabled: !!enabled };
 }
 
 export async function completeMfaLogin(db, tenantId, userId, ipAddress, userAgent) {

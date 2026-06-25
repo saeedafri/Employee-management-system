@@ -89,8 +89,13 @@ After login, two httpOnly cookies are set automatically:
 | EMPLOYEE | `priya@acme.test` | `Password123!` | Sees own data only |
 | EMPLOYEE | `dev1@acme.test` | `Password123!` | Engineering employee |
 
-> MFA is **disabled for all users** — `POST /auth/login` returns `accessToken` directly.  
-> OTP is only used in the **forgot-password flow** (`/auth/forgot-password` → email OTP → `/auth/verify-otp` → `/auth/reset-password`).
+> **MFA at login is policy-driven** (`MFA_POLICY_ENFORCEMENT_CONTRACT`). `POST /auth/login` and
+> `POST /auth/admin/login` require MFA when `user.mfaEnabled` **OR** the tenant `mfa_policy`
+> (`GET/PATCH /settings/security/auth`) demands it: `REQUIRED_ALL` → every user; `REQUIRED_ADMINS`
+> → SUPER_ADMIN + HR_ADMIN; `OPTIONAL` → only per-user opt-in. When required, login returns
+> **`202 { mfaRequired:true, challengeId, destinationMasked, expiresIn }`**; otherwise `200` with
+> `accessToken`. Users self-toggle the opt-in via **`PATCH /auth/me/mfa { enabled }`**. OTP is also
+> used in the **forgot-password flow** (`/auth/forgot-password` → email OTP → `/auth/verify-otp` → `/auth/reset-password`).
 
 ---
 

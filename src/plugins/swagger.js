@@ -131,6 +131,11 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             },
           }),
         },
+        '/auth/me/mfa': {
+          patch: op('Authentication', 'Toggle your own MFA opt-in (contract §6). Under tenant mfa_policy=OPTIONAL this makes "users choose" real — sets user.mfaEnabled. Body { enabled: boolean }; returns { mfaEnabled }.', true, {
+            parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['enabled'], properties: { enabled: { type: 'boolean' } } } }],
+          }),
+        },
         '/auth/sessions': {
           get: op('Authentication', 'List all active sessions for current user'),
         },
