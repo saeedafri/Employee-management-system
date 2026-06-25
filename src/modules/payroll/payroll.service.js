@@ -338,7 +338,11 @@ export const SUPPORTED_COUNTRIES = [
   { code: 'IN', name: 'India', currency: 'INR', locale: 'en-IN', fiscalYearStartMonth: 4 },
   { code: 'US', name: 'United States', currency: 'USD', locale: 'en-US', fiscalYearStartMonth: 1 },
   { code: 'GB', name: 'United Kingdom', currency: 'GBP', locale: 'en-GB', fiscalYearStartMonth: 4 },
+  { code: 'SA', name: 'Saudi Arabia', currency: 'SAR', locale: 'ar-SA', fiscalYearStartMonth: 1 },
+  { code: 'AE', name: 'United Arab Emirates', currency: 'AED', locale: 'en-AE', fiscalYearStartMonth: 1 },
+  { code: 'VN', name: 'Vietnam', currency: 'VND', locale: 'vi-VN', fiscalYearStartMonth: 1 },
   { code: 'SG', name: 'Singapore', currency: 'SGD', locale: 'en-SG', fiscalYearStartMonth: 1 },
+  { code: 'CA', name: 'Canada', currency: 'CAD', locale: 'en-CA', fiscalYearStartMonth: 1 },
 ];
 
 // Data-driven country↔currency lookups (no `if (country===...)`). Return undefined when
