@@ -77,6 +77,33 @@ export default async function attendanceRoutes(fastify) {
     onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
   }, (request, reply) => attendanceController.getTeamAttendanceRecords(request, reply));
 
+  // BE-1 — per-employee monthly attendance calendar (full month, reconciled buckets).
+  // month validated in the service so a bad/missing value returns 422 VALIDATION_ERROR
+  // with error.details[] (not Fastify's 400 schema error) per contract §7.
+  const calendarSchema = (description, withParams) => ({
+    tags: ['Attendance'],
+    description,
+    security: [{ Bearer: [] }],
+    ...(withParams ? { params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } } } : {}),
+    querystring: {
+      type: 'object',
+      properties: {
+        month: { type: 'string', description: 'Target month YYYY-MM (required).' },
+      },
+    },
+    response: { 200: { type: 'object', additionalProperties: true } },
+  });
+
+  fastify.get('/attendance/calendar', {
+    schema: calendarSchema('Your monthly attendance calendar (one entry per day, reconciled bucket + summary + LOP days).', false),
+    onRequest: [authenticate],
+  }, (request, reply) => attendanceController.getMyAttendanceCalendar(request, reply));
+
+  fastify.get('/employees/:id/attendance/calendar', {
+    schema: calendarSchema('Monthly attendance calendar for an employee. MANAGER (their team) · HR_ADMIN/SUPER_ADMIN (anyone).', true),
+    onRequest: [authenticate],
+  }, (request, reply) => attendanceController.getEmployeeAttendanceCalendar(request, reply));
+
   fastify.get('/attendance/team/weekly', {
     schema: {
       tags: ['Attendance'],

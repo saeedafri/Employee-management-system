@@ -369,3 +369,19 @@ export async function getApprovedLeavesInRange(tenantId, startDate, endDate) {
     select: { employeeId: true, startDate: true, endDate: true },
   });
 }
+
+// BE-1 calendar: approved-leave spans for ONE employee overlapping [startDate,endDate],
+// carrying the leave type's name + paid-ness so the day classifier can split
+// PAID_LEAVE vs UNPAID_LEAVE (contract §4.3). Unknown type → caller defaults to paid.
+export async function getApprovedLeavesForEmployee(tenantId, employeeId, startDate, endDate) {
+  return prisma.leaveRequest.findMany({
+    where: {
+      tenantId, employeeId, status: 'APPROVED', startDate: { lte: endDate }, endDate: { gte: startDate },
+    },
+    select: {
+      startDate: true,
+      endDate: true,
+      leaveType: { select: { name: true, isPaid: true } },
+    },
+  });
+}

@@ -79,6 +79,10 @@ export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId
   let countryCode = null;
   let workWeekDays = null;
   let resolvedBy = 'TENANT_WIDE';
+  // timezone + hoursPerDay are additive: BE-1 attendance calendar resolves "today" in the
+  // employee's timezone and the full-day minutes basis from the same entity→tenant chain.
+  let timezone = null;
+  let hoursPerDay = null;
 
   if (employeeId) {
     const sal = await prisma.employeeSalary.findFirst({
@@ -90,31 +94,38 @@ export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId
     if (sal?.legalEntityId) {
       le = await prisma.legalEntity.findFirst({
         where: { id: sal.legalEntityId, tenantId },
-        select: { country: true, workWeekDays: true, workWeekPattern: true },
+        select: {
+          country: true, workWeekDays: true, workWeekPattern: true, timezone: true, hoursPerDay: true,
+        },
       });
       if (le) resolvedBy = 'LEGAL_ENTITY';
     } else if (sal?.country) {
       le = await prisma.legalEntity.findFirst({
         where: { tenantId, country: sal.country, active: true },
         orderBy: { createdAt: 'asc' },
-        select: { country: true, workWeekDays: true, workWeekPattern: true },
+        select: {
+          country: true, workWeekDays: true, workWeekPattern: true, timezone: true, hoursPerDay: true,
+        },
       });
       resolvedBy = le ? 'LEGAL_ENTITY' : 'SALARY_COUNTRY';
     }
     if (le) {
       countryCode = le.country;
       workWeekDays = resolveWorkWeekDays(le.workWeekDays, le.workWeekPattern);
+      timezone = le.timezone || null;
+      hoursPerDay = le.hoursPerDay ?? null;
     } else if (sal?.country) {
       countryCode = sal.country;
     }
   }
 
-  if (!workWeekDays) {
+  if (!workWeekDays || !timezone) {
     const tc = await prisma.tenantConfig.findUnique({
       where: { tenantId },
-      select: { workWeekDays: true, workWeekPattern: true },
+      select: { workWeekDays: true, workWeekPattern: true, timezone: true },
     });
-    workWeekDays = resolveWorkWeekDays(tc?.workWeekDays, tc?.workWeekPattern);
+    if (!workWeekDays) workWeekDays = resolveWorkWeekDays(tc?.workWeekDays, tc?.workWeekPattern);
+    if (!timezone) timezone = tc?.timezone || 'UTC';
   }
 
   let observedRule = 'NONE';
@@ -128,7 +139,9 @@ export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId
     policyVersion = pol.version;
   }
 
-  return { countryCode, workWeekDays, observedRule, restrictedLimit, resolvedBy, policyVersion };
+  return {
+    countryCode, workWeekDays, observedRule, restrictedLimit, resolvedBy, policyVersion, timezone, hoursPerDay,
+  };
 }
 
 async function rawHolidaysBetween(prisma, tenantId, startISO, endISO) {

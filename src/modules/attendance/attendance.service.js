@@ -142,7 +142,7 @@ function isAdminScope(user) {
   return ['HR_ADMIN', 'SUPER_ADMIN'].includes(user?.memberType);
 }
 
-async function assertCanViewEmployee(tenantId, requester, requestedEmployeeId) {
+export async function assertCanViewEmployee(tenantId, requester, requestedEmployeeId) {
   const ownEmployeeId = requester?.employeeId;
 
   if (!requestedEmployeeId) {

@@ -355,6 +355,19 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/attendance/summary': {
           get: op('Attendance', 'Get attendance summary/stats'),
         },
+        // ── BE-1 PER-EMPLOYEE MONTHLY CALENDAR (BE1_ATTENDANCE_CALENDAR_CONTRACT) ──
+        '/attendance/calendar': {
+          get: op('Attendance', 'Monthly attendance calendar for the logged-in employee. One entry per calendar day with a reconciled bucket (HOLIDAY|WEEKLY_OFF|PAID_LEAVE|UNPAID_LEAVE|HALF_DAY|WFH|LATE|WORKED|ABSENT|UPCOMING), the day’s record, summary, and lopDays. Uses the shared holiday resolver (same off-days as /me/holidays), the employee’s work-week + timezone, and tenant attendance-rules thresholds. 422 VALIDATION_ERROR if month missing/not YYYY-MM.', true, {
+            parameters: [queryParam('month', 'string', 'Target month YYYY-MM (required)')],
+            responses: { 200: r200, 422: r422 },
+          }),
+        },
+        '/employees/{id}/attendance/calendar': {
+          get: op('Attendance', 'Monthly attendance calendar for an employee. MANAGER (their team) · HR_ADMIN/SUPER_ADMIN (anyone) — 403 outside scope, 404 if employee not found. Same shape as /attendance/calendar.', true, {
+            parameters: [pathParam('id', 'Employee id'), queryParam('month', 'string', 'Target month YYYY-MM (required)')],
+            responses: { 200: r200, 403: r403, 404: r404, 422: r422 },
+          }),
+        },
         '/attendance/team/records': {
           get: op('Attendance', 'Get team attendance records (manager)'),
         },

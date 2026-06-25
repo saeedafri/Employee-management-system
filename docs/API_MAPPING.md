@@ -1074,6 +1074,44 @@ Holiday-aware chargeable-day breakdown for a date range (HOLIDAY_ENGINE_BACKEND_
 
 ---
 
+### `GET /attendance/calendar` and `GET /employees/:id/attendance/calendar` (BE-1)
+
+Per-employee **monthly calendar** — backend transcription of the FE engine
+(`classifyDay.ts`/`classifyMonth.ts`), the single source of truth that retires FE/BE drift.
+Uses the **shared holiday resolver** (same off-days as `GET /me/holidays`: country-scoped,
+observed-shifted, optional-selection applied), the employee's resolved **work-week** and
+**timezone**, and the tenant **attendance-rules** thresholds.
+
+- `GET /attendance/calendar?month=YYYY-MM` — self (EMPLOYEE and up).
+- `GET /employees/:id/attendance/calendar?month=YYYY-MM` — MANAGER (their team) · HR_ADMIN/SUPER_ADMIN (anyone).
+- Casing **camelCase**. `month` required (`422 VALIDATION_ERROR` with `error.details[]` if missing/not `YYYY-MM`). `403` outside scope, `404` unknown `:id`.
+
+**Response `data`:**
+```json
+{
+  "month": "2026-06",
+  "days": [
+    {
+      "date": "2026-06-01",
+      "weekDay": "MON",
+      "bucket": "WORKED",
+      "holidayName": null,
+      "leaveType": null,
+      "isLop": false,
+      "record": { "id": "...", "referenceNo": "ATT-0068", "attendanceDate": "2026-06-01T00:00:00.000Z", "checkInAt": "2026-06-01T09:05:00.000Z", "checkOutAt": "2026-06-01T18:00:00.000Z", "status": "PRESENT", "workMode": "OFFICE", "totalMinutes": 535, "notes": null }
+    }
+  ],
+  "summary": { "totalDays": 21, "present": 18, "wfh": 0, "late": 1, "halfDay": 0, "leave": 1, "absent": 2, "holiday": 1, "weeklyOff": 8, "attendancePercentage": 90 },
+  "lopDays": ["2026-06-12", "2026-06-19"]
+}
+```
+
+- `bucket` enum: `WORKED | WFH | LATE | HALF_DAY | PAID_LEAVE | UNPAID_LEAVE | ABSENT | HOLIDAY | WEEKLY_OFF | UPCOMING`.
+- Precedence (first match wins): **HOLIDAY → WEEKLY_OFF → PAID/UNPAID_LEAVE → worked-family (HALF_DAY→WFH→LATE→WORKED) → ABSENT (strictly-past working day, the only `isLop`) → UPCOMING**.
+- `days[]` has one entry **per calendar day** ascending. `summary.totalDays` = elapsed working days only (`present+wfh+late+halfDay+absent`); `attendancePercentage = round((present+wfh+late+0.5*halfDay)/totalDays*100)`; UPCOMING never counted.
+
+---
+
 ### `POST /attendance/regularization` — Response `data`
 ```json
 { "id": "...", "referenceNo": "REG-0001", "attendanceDate": "...", "status": "PENDING", "reason": "...", "createdAt": "..." }

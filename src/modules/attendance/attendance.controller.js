@@ -1,6 +1,7 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as attendanceService from './attendance.service.js';
 import * as attendanceValidator from './attendance.validator.js';
+import { resolveAttendanceCalendar } from './attendanceCalendar.service.js';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
 import { prisma } from '../../plugins/prisma.js';
 
@@ -438,6 +439,32 @@ export async function uploadRegularizationDocument(request, reply) {
     }
     throw error;
   }
+}
+
+// BE-1: per-employee monthly attendance calendar (reconciled buckets + summary + lopDays).
+async function sendCalendar(request, reply, requestedEmployeeId) {
+  try {
+    const tenantId = request.tenant.id;
+    const month = request.query?.month;
+    const data = await resolveAttendanceCalendar(tenantId, request.user, { month, employeeId: requestedEmployeeId });
+    return reply.send(successResponse(data));
+  } catch (error) {
+    request.log.error(error);
+    if (error.code) {
+      return reply.status(error.statusCode || 400).send(
+        errorResponse(error.code, error.message, error.details, request.id),
+      );
+    }
+    throw error;
+  }
+}
+
+export function getMyAttendanceCalendar(request, reply) {
+  return sendCalendar(request, reply, undefined);
+}
+
+export function getEmployeeAttendanceCalendar(request, reply) {
+  return sendCalendar(request, reply, request.params.id);
 }
 
 export async function getTeamWeekly(request, reply) {
