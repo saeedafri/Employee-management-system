@@ -87,7 +87,7 @@ function renderEmailTemplate(template, data) {
 }
 
 async function sendViaResend(to, subject, html) {
-  const from = config.resendFrom || 'onboarding@resend.dev';
+  const from = config.resendFrom || 'noreply@saqibsaeed.cloud';
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',

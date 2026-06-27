@@ -61,12 +61,12 @@ export const config = {
   smtpPort: parseInt(process.env.SMTP_PORT, 10) || 1025,
   smtpUser: process.env.SMTP_USER || '',
   smtpPass: process.env.SMTP_PASS || '',
-  smtpFrom: process.env.SMTP_FROM || 'noreply@acme.test',
+  smtpFrom: process.env.SMTP_FROM || 'noreply@saqibsaeed.cloud',
   resendApiKey: process.env.RESEND_API_KEY || '',
-  resendFrom: process.env.RESEND_FROM || 'noreply@acme.test',
-  supportEmail: process.env.SUPPORT_EMAIL || process.env.SMTP_FROM || 'support@acme.test',
+  resendFrom: process.env.RESEND_FROM || 'noreply@saqibsaeed.cloud',
+  supportEmail: process.env.SUPPORT_EMAIL || process.env.SMTP_FROM || 'support@saqibsaeed.cloud',
   brevoApiKey: process.env.BREVO_API_KEY || '',
-  brevoFrom: process.env.BREVO_FROM || 'noreply@acme.test',
+  brevoFrom: process.env.BREVO_FROM || 'noreply@saqibsaeed.cloud',
 
   // File Storage — Cloudinary
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
