@@ -1,4 +1,5 @@
 import * as service from './payroll.service.js';
+import * as payoutService from './payout/payout.service.js';
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 
@@ -217,16 +218,18 @@ export async function exportRunPayslips(request, reply) {
 
 // ── Phase 3: Localization ─────────────────────────────────────────────────────
 
+// Reconciled with BANK_PAYOUT_BACKEND_CONTRACT §3: return the full ISO list and a
+// per-country schema that always resolves (tenant catalog → seed → generic IBAN/BIC
+// fallback) with `currency` — never 404, never a `select` field type.
 export async function getCountries(_req, reply) {
   try {
-    reply.send(successResponse(service.SUPPORTED_COUNTRIES));
+    reply.send(successResponse(payoutService.listCountries()));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function getBankSchema(request, reply) {
   try {
-    const data = service.getBankSchema(request.params.code.toUpperCase());
-    if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Country not supported')); return; }
+    const data = await payoutService.resolveBankSchema(prisma, request.tenant.id, request.params.code);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }

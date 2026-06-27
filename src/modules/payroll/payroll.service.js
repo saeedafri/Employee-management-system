@@ -12,6 +12,8 @@ import { formatPeriodLabel, derivePeriodDatesFromString, isValidPeriod } from '.
 import { generateCycles } from '../../utils/cycleGenerator.js';
 import { computeEmi, buildSchedule, addMonths as addLoanMonths } from './utils/loan.utils.js';
 import { enqueueCalculate } from '../../lib/payrollQueue.js';
+import * as payoutService from './payout/payout.service.js';
+import { maskDetails, lastTail as payoutLastTail } from './payout/payoutCrypto.js';
 import { cacheGet, cacheSet, cacheDelByPrefix } from '../../lib/redis.js';
 
 function AppError(message, code, statusCode = 400) {
@@ -1846,21 +1848,67 @@ export async function createPaymentBatch(prisma, runId, tenantId) {
   const { generateId } = await import('../../utils/id.js');
   const run = await prisma.payrollRun.findFirst({ where: { id: runId, tenantId } });
   if (!run) throw AppError('Run not found', 'NOT_FOUND', 404);
+  // §10: only APPROVED/PAID runs are payable.
+  if (run.status !== 'APPROVED' && run.status !== 'PAID') {
+    throw AppError('Run is not payable (must be APPROVED or PAID)', 'RUN_NOT_PAYABLE', 422);
+  }
   const payslips = await prisma.payslip.findMany({
     where: { payrollRunId: runId, tenantId, status: { not: 'HELD' } },
     include: { employee: { select: { employeeCode: true, firstName: true, lastName: true } } },
   });
-  const lines = payslips.map(p => ({ employeeId: p.employeeId, employeeCode: p.employee?.employeeCode || '', name: p.employee ? `${p.employee.firstName} ${p.employee.lastName}`.trim() : '', netPay: Number(p.netPay), accountNumber: 'XXXX', ifsc: 'XXXX0000000', status: 'PENDING' }));
+  // §10 selection: each payslip pays the employee's PRIMARY, ACTIVE, VERIFIED,
+  // currency-matched BANK method (real details, decrypted) — never fabricated.
+  // Others are excluded with a reason (NO_ACCOUNT / UNVERIFIED / CURRENCY_MISMATCH).
+  const runCurrency = run.currency || 'INR';
+  const eligible = [];
+  const excluded = [];
+  for (const p of payslips) {
+    const base = {
+      employeeId: p.employeeId,
+      employeeCode: p.employee?.employeeCode || '',
+      name: p.employee ? `${p.employee.firstName} ${p.employee.lastName}`.trim() : '',
+      netPay: Number(p.netPay),
+    };
+    const currency = p.currency || runCurrency;
+    const res = await payoutService.resolvePayoutForLine(prisma, tenantId, p.employeeId, currency);
+    if (res.excludedReason) {
+      excluded.push({ ...base, status: 'EXCLUDED', reason: res.excludedReason });
+      continue;
+    }
+    const d = res.details || {};
+    // §11: persist only MASKED identifiers in linesJson (it is read back by HR via the
+    // payment-batch JSON API). The bank file re-derives the real numbers from the
+    // encrypted PayoutMethod at generation time (getBankFile) — never stored in plaintext.
+    const masked = maskDetails(d);
+    eligible.push({
+      ...base,
+      status: 'PENDING',
+      currency,
+      country: res.method.country,
+      reference: `PAY/${run.period}/${base.employeeCode}`,
+      accountName: d.accountName ?? base.name,
+      maskedTail: payoutLastTail(d),
+      accountNumber: masked.accountNumber ?? '',
+      ifsc: masked.ifsc ?? '',
+      routingNumber: masked.routingNumber ?? '',
+      iban: masked.iban ?? '',
+      bic: masked.bic ?? '',
+      sortCode: masked.sortCode ?? '',
+    });
+  }
+  if (eligible.length === 0) {
+    throw AppError('No eligible payees. Verify accounts first.', 'NO_ELIGIBLE_PAYEES', 422);
+  }
   const batch = await prisma.paymentBatch.create({
     data: {
       id: generateId(),
       tenantId,
       runId,
-      count: lines.length,
-      totalAmount: lines.reduce((s, l) => s + l.netPay, 0),
-      currency: run.currency || 'INR',
+      count: eligible.length,
+      totalAmount: eligible.reduce((s, l) => s + l.netPay, 0),
+      currency: runCurrency,
       status: 'PENDING',
-      linesJson: lines,
+      linesJson: [...eligible, ...excluded],
     },
   });
   return batch;
@@ -1921,20 +1969,8 @@ function currencyDecimals(currency) {
   return ZERO_DECIMAL_CURRENCIES.has((currency || '').toUpperCase()) ? 0 : 2;
 }
 
-// Deterministic synthetic bank identifiers per employee (mirrors the FE syntheticBank()).
-// Real bank fields would come from the employee country bank schema (§3.4); the demo
-// synthesizes stable values so the file is reproducible. Never country-branched.
-function syntheticBank(employeeCode) {
-  const digits = String(employeeCode || '').replace(/\D/g, '').padStart(6, '0').slice(-6);
-  return {
-    accountNumber: `00${digits}5500`,
-    ifsc: `HDFC0${digits.slice(0, 3)}`,
-    routingNumber: `0210${digits.slice(0, 5)}`,
-    iban: `DE89${digits}0000000000`,
-    bic: 'DEUTDEFFXXX',
-    sortCode: `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4, 6)}`,
-  };
-}
+// (Former demo `syntheticBank()` removed — §10 now reads real, decrypted payout-method
+// details selected in createPaymentBatch; the bank file no longer fabricates identifiers.)
 
 export async function getBankFile(prisma, runId, tenantId, format) {
   const fmt = String(format || 'NACH').toUpperCase();
@@ -1946,20 +1982,33 @@ export async function getBankFile(prisma, runId, tenantId, format) {
   }
   const batch = await prisma.paymentBatch.findFirst({ where: { runId, tenantId }, orderBy: { createdAt: 'desc' } });
   const currency = batch?.currency || 'INR';
-  const lines = batch ? (batch.linesJson ?? []) : [];
+  // §10: only eligible (real, verified) lines reach the bank file; excluded rows are dropped.
+  const lines = (batch ? (batch.linesJson ?? []) : []).filter((l) => l.status !== 'EXCLUDED');
   const header = spec.columns.map(c => c.header).join(spec.delimiter);
-  const body = lines.map(l => {
-    const bank = syntheticBank(l.employeeCode);
+  const body = [];
+  for (const l of lines) {
+    const lineCurrency = l.currency ?? currency;
+    // Re-derive the UNMASKED bank details from the encrypted PayoutMethod at generation
+    // time (linesJson holds only masked values). Re-resolution also re-checks eligibility,
+    // so a method archived/unverified since batch creation is correctly dropped here.
+    const res = await payoutService.resolvePayoutForLine(prisma, tenantId, l.employeeId, lineCurrency);
+    if (res.excludedReason) continue;
+    const d = res.details || {};
     const resolved = {
       employeeCode: l.employeeCode ?? '',
-      employeeName: l.name ?? '',
-      amount: Number(l.netPay ?? 0).toFixed(currencyDecimals(currency)),
-      currency,
-      reference: l.payoutRef ?? '',
-      ...bank,
+      employeeName: d.accountName ?? l.accountName ?? l.name ?? '',
+      amount: Number(l.netPay ?? 0).toFixed(currencyDecimals(lineCurrency)),
+      currency: lineCurrency,
+      reference: l.reference ?? l.payoutRef ?? '',
+      accountNumber: d.accountNumber ?? '',
+      ifsc: d.ifsc ?? '',
+      routingNumber: d.routingNumber ?? '',
+      iban: d.iban ?? '',
+      bic: d.bic ?? '',
+      sortCode: d.sortCode ?? '',
     };
-    return spec.columns.map(c => resolved[c.field]).join(spec.delimiter);
-  });
+    body.push(spec.columns.map(c => resolved[c.field]).join(spec.delimiter));
+  }
   const csv = [header, ...body].join('\n');
   return { csv, filename: `bank-file-${runId}-${fmt}.${fmt === 'NACH' ? 'txt' : 'csv'}` };
 }

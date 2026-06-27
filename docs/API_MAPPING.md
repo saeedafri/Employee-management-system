@@ -255,9 +255,13 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
   "status": "ACTIVE",
   "employee": { "...full employee fields..." },
   "permissions": ["employees:read", "..."],
-  "lastLoginAt": "2026-05-22T12:31:07.353Z"
+  "lastLoginAt": "2026-05-22T12:31:07.353Z",
+  "mfaEnabled": false,
+  "mfaRequiredByPolicy": false
 }
 ```
+
+> `mfaEnabled` (boolean, never null) = the caller's own per-user MFA opt-in (written by `PATCH /auth/me/mfa`). `mfaRequiredByPolicy` (boolean) = the tenant `mfa_policy` applied to the caller's `memberType` (`REQUIRED_ALL`→true for all; `REQUIRED_ADMINS`→true for SUPER_ADMIN/HR_ADMIN; `OPTIONAL`→false) — independent of `mfaEnabled`. Drives the FE self-service toggle's initial + forced state (MFA_BACKEND_REQ).
 
 **Auth behavior:**
 
@@ -5487,6 +5491,74 @@ Data-residency & retention policy.
 
 #### `PATCH /payroll/settings/data-policy`
 Body: `{ defaultRetentionYears?, policies? }`. Returns the stored policy (with `updatedAt`).
+
+### Payout Methods (BANK_PAYOUT_BACKEND_CONTRACT)
+
+Employee bank accounts ("payout methods") with maker-checker approval, verification, and a per-country bank-schema catalog. camelCase; envelope `{success,data}` / `{success,error:{code,message,details?}}`. Bank identifiers are **AES-256-GCM encrypted at rest** (`PAYOUT_ENC_KEY`); reads are **masked** (all but last-4 → `X`) for non-owners and every list; `maskedTail` always present. Replaces the legacy flat `EmployeeSalary.bank*` columns (one-time backfill: `scripts/backfillPayoutMethods.mjs`).
+
+**Country layer**
+
+#### `GET /payroll/countries` — any auth
+Full ISO-3166 list. **200:** `[{ code, name, currency, locale, fiscalYearStartMonth }]` (~249).
+
+#### `GET /payroll/countries/:code/bank-schema` — any auth
+Resolves: tenant catalog → built-in seed → generic IBAN/BIC fallback (**never 404**). **200:** `{ country, currency, fields: BankField[] }`. `BankField = { key, label, type:'text', required, regex?, maxLength?, checksumType?:'IBAN'|'ABA_ROUTING'|'NONE', example?, helpText? }` (no `select` type).
+
+#### `GET /payroll/country-bank-schemas` — SUPER_ADMIN
+**200:** `[CountryBankSchema]` (tenant catalog; auto-seeds the 8 canonical countries on first read).
+
+#### `GET /payroll/country-bank-schemas/:country` — SUPER_ADMIN
+**200:** `CountryBankSchema` or a fallback row (`updatedBy:"system"`, `updatedAt:"1970-01-01T00:00:00.000Z"`). `:country` case-insensitive.
+
+#### `POST /payroll/country-bank-schemas` — SUPER_ADMIN
+Body `{ country, currency, fields }`. **201:** `CountryBankSchema`. **409 SCHEMA_EXISTS** if present.
+
+#### `PATCH /payroll/country-bank-schemas/:country` — SUPER_ADMIN
+Body `{ currency?, fields? }`. **200** / **404 NOT_FOUND**.
+
+#### `DELETE /payroll/country-bank-schemas/:country` — SUPER_ADMIN
+**200:** `{ deleted: true }` (reverts that country to the generic fallback).
+
+**Methods**
+
+#### `GET /payroll/me/payout-methods` — any auth (self)
+**200:** `{ methods: PayoutMethod[] (masked, ARCHIVED excluded), instructions: [] }`. **400 NO_EMPLOYEE_RECORD** if the account has no employee.
+
+#### `GET /payroll/employees/:employeeId/payout-methods` — self or HR/SUPER
+Same `PayoutMethodsResponse`. **403** if an EMPLOYEE targets another employee.
+
+#### `GET /payroll/payout-methods/:id` — any auth
+**200:** `PayoutMethod`. Owner sees full `details`; others **masked**. **404 NOT_FOUND**.
+
+#### `POST /payroll/employees/:employeeId/payout-methods` — self or HR/SUPER
+Body `PayoutMethodInput { type, country, rail, label, holderName, details, makePrimary? }`. Validates `details` against the country schema; derives `currency`; sets `holderName=details.accountName`. **201:** `PayoutMethod` (`lifecycleStatus:PENDING_APPROVAL`, `verificationStatus:UNVERIFIED`, masked) + enqueues a `METHOD_ADD` approval. **422** `error.details:[{field:"details.<key>",message}]` on validation (top-level `field:"label"|"country"`). **403** for cross-employee EMPLOYEE.
+
+#### `POST /payroll/payout-methods/:id/set-primary` — self or HR/SUPER
+Enqueues a `SET_PRIMARY` approval (does **not** flip immediately). **202:** `PayoutApproval`. **404**.
+
+#### `POST /payroll/payout-methods/:id/archive` — self or HR/SUPER
+**200:** `PayoutMethod` (`lifecycleStatus:ARCHIVED`). No approval needed. **404**.
+
+**Approvals (maker-checker)**
+
+#### `GET /payroll/payout-methods/approvals?status=PENDING` — HR/SUPER
+**200:** `{ items: PayoutApproval[], pagination: { page, pageSize, total } }`.
+
+#### `POST /payroll/payout-methods/approvals/:id/approve` — HR/SUPER
+Body `{ note? }`. Applies by kind (`METHOD_ADD`/`METHOD_EDIT`→ACTIVE [+SET_PRIMARY if `makePrimary`]; `SET_PRIMARY`→one primary per employee+currency). **200:** `{ applied: true }`. **403 SELF_APPROVAL_FORBIDDEN** if approver === requester. **404**.
+
+#### `POST /payroll/payout-methods/approvals/:id/reject` — HR/SUPER
+Body `{ note }`. `METHOD_ADD`→method REJECTED. **200:** `{ rejected: true }`. **404**.
+
+**Verification**
+
+#### `GET /payroll/payout-methods/unverified` — HR/SUPER
+**200:** `{ items: PayoutMethod[] }` (ACTIVE + UNVERIFIED + BANK).
+
+#### `POST /payroll/payout-methods/:id/verify` — HR/SUPER
+Body `{ result:"VERIFIED"|"FAILED", note? }`. Only an **ACTIVE** method → else **409 NOT_ACTIVE**. **200:** `PayoutMethod`. **404**.
+
+**Disbursement (§10 rewire)** — `POST /payroll/runs/:id/payment-batch` and `GET /payroll/runs/:id/bank-file?format=NACH|ACH|SEPA|BACS` now select each employee's **primary, ACTIVE, VERIFIED, currency-matched BANK** method (real decrypted details) and exclude the rest (`NO_ACCOUNT`/`UNVERIFIED`/`CURRENCY_MISMATCH`). **422 RUN_NOT_PAYABLE** unless the run is APPROVED/PAID; **422 NO_ELIGIBLE_PAYEES** when nothing is disbursable.
 
 ### Timesheets
 

@@ -1934,3 +1934,111 @@ model UserInvitation {
   @@index([tokenHash])
   @@index([tenantId, userId, usedAt, revokedAt])
 }
+
+// ── Payout Methods (BANK_PAYOUT_BACKEND_CONTRACT) ─────────────────────────────
+// Employee bank accounts ("payout methods"): multi-account, maker-checker approval,
+// verification, multi-currency. Config-over-code: the fields an account needs come
+// from CountryBankSchema (tenant catalog) → built-in ISO seed → generic IBAN/BIC
+// fallback — never `if (country === …)`. Bank identifiers are AES-256-GCM encrypted
+// at rest (detailsEnc); reads mask all but the last 4 (maskedTail) for non-owners
+// and every list response. Replaces the legacy flat EmployeeSalary.bank* columns.
+enum PayoutMethodType {
+  BANK
+  PROVIDER_BENEFICIARY
+  WALLET
+}
+
+enum PayoutRail {
+  BANK_LOCAL
+  BANK_SWIFT
+  SEPA
+  ACH
+  FPS
+  UPI
+  WISE
+  WALLET
+}
+
+enum PayoutLifecycleStatus {
+  DRAFT
+  PENDING_APPROVAL
+  ACTIVE
+  REJECTED
+  ARCHIVED
+}
+
+enum PayoutVerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  FAILED
+}
+
+enum PayoutApprovalKind {
+  METHOD_ADD
+  METHOD_EDIT
+  SET_PRIMARY
+  SPLIT
+}
+
+model PayoutMethod {
+  id                 String                   @id @default(cuid())
+  tenantId           String
+  employeeId         String
+  type               PayoutMethodType         @default(BANK)
+  country            String // ISO-3166 alpha-2
+  currency           String // ISO-4217, derived from country (server-authoritative)
+  rail               PayoutRail               @default(BANK_LOCAL)
+  label              String
+  holderName         String
+  detailsEnc         String // AES-256-GCM ciphertext of the full details JSON (never logged)
+  maskedTail         String // last-4 of the primary identifier; always present
+  isPrimary          Boolean                  @default(false) // primary FOR ITS CURRENCY
+  lifecycleStatus    PayoutLifecycleStatus    @default(PENDING_APPROVAL)
+  verificationStatus PayoutVerificationStatus @default(UNVERIFIED)
+  requestedBy        String? // user id that requested creation (maker)
+  requestedAt        DateTime?
+  reviewedBy         String? // user id that approved/rejected (checker)
+  reviewedAt         DateTime?
+  approvalNote       String?
+  effectiveFrom      DateTime
+  supersededById     String? // set when an EDIT supersedes this method (history, never edit in place)
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+
+  @@index([tenantId, employeeId])
+  @@index([tenantId, employeeId, currency])
+  @@index([tenantId, lifecycleStatus, verificationStatus])
+}
+
+model PayoutApproval {
+  id           String             @id @default(cuid())
+  tenantId     String
+  kind         PayoutApprovalKind
+  employeeId   String
+  employeeName String // denormalized for the queue display { employee: { id, name } }
+  summary      String
+  diffJson     Json? // what changed; e.g. { label, maskedTail, makePrimary }
+  methodId     String? // the method this approval acts on
+  requestedBy  String // user id (maker) — must differ from the approver (checker)
+  requestedAt  DateTime           @default(now())
+  status       String             @default("PENDING") // PENDING | APPROVED | REJECTED (kept for audit)
+  reviewedBy   String?
+  reviewedAt   DateTime?
+  note         String?
+  createdAt    DateTime           @default(now())
+
+  @@index([tenantId, status])
+  @@index([tenantId, methodId])
+}
+
+model CountryBankSchema {
+  tenantId   String
+  country    String // ISO-3166 alpha-2
+  currency   String // ISO-4217
+  fieldsJson Json // BankField[]
+  updatedAt  DateTime @default(now()) // audit — set explicitly in code (no @updatedAt)
+  updatedBy  String // user id/email that last changed it (audit)
+
+  @@id([tenantId, country])
+}

@@ -640,6 +640,54 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/payroll/schedules': {
           get: op('Payroll', 'List non-monthly pay schedules. HR_ADMIN/SUPER_ADMIN.', true),
         },
+
+        // ── PAYROLL · PAYOUT METHODS (BANK_PAYOUT_BACKEND_CONTRACT) ────────────
+        '/payroll/countries': {
+          get: op('Payroll · Payout Methods', 'List all ISO-3166 countries {code,name,currency,locale,fiscalYearStartMonth}. Any authenticated user.', true),
+        },
+        '/payroll/countries/{code}/bank-schema': {
+          get: op('Payroll · Payout Methods', 'Bank-field schema for a country → {country,currency,fields}. Generic IBAN/BIC fallback for unmapped countries (never 404). Any authenticated user.', true, { parameters: [pathParam('code', 'ISO-3166 alpha-2 country code')] }),
+        },
+        '/payroll/country-bank-schemas': {
+          get:  op('Payroll · Payout Methods', 'List the tenant country bank-schema catalog. SUPER_ADMIN.', true),
+          post: op('Payroll · Payout Methods', 'Create a country schema. Body {country,currency,fields[]}. SUPER_ADMIN. 409 SCHEMA_EXISTS.', true, { responses: { 201: r201, 409: r409 } }),
+        },
+        '/payroll/country-bank-schemas/{country}': {
+          get:    op('Payroll · Payout Methods', 'Get one country schema (or generic-fallback row with updatedBy:"system"). SUPER_ADMIN.', true, { parameters: [pathParam('country', 'ISO-3166 alpha-2 (case-insensitive)')] }),
+          patch:  op('Payroll · Payout Methods', 'Update a country schema {currency?,fields?}. SUPER_ADMIN.', true, { parameters: [pathParam('country', 'ISO-3166 alpha-2')], responses: { 200: r200, 404: r404 } }),
+          delete: op('Payroll · Payout Methods', 'Delete a country schema (reverts to generic fallback). SUPER_ADMIN.', true, { parameters: [pathParam('country', 'ISO-3166 alpha-2')] }),
+        },
+        '/payroll/me/payout-methods': {
+          get: op('Payroll · Payout Methods', 'Signed-in employee’s payout methods (masked) + instructions[]. 400 NO_EMPLOYEE_RECORD if the account has no employee.', true, { responses: { 200: r200, 400: r400 } }),
+        },
+        '/payroll/employees/{employeeId}/payout-methods': {
+          get:  op('Payroll · Payout Methods', 'An employee’s payout methods (masked). Self or HR_ADMIN/SUPER_ADMIN.', true, { parameters: [pathParam('employeeId', 'Employee ID')] }),
+          post: op('Payroll · Payout Methods', 'Create a payout method → 201 PENDING_APPROVAL + enqueues a METHOD_ADD approval. Body PayoutMethodInput {type,country,rail,label,holderName,details,makePrimary?}. 422 with error.details[] {field,message} on validation. Self or HR/SUPER.', true, { parameters: [pathParam('employeeId', 'Employee ID')], responses: { 201: r201, 403: r403, 422: r422 } }),
+        },
+        '/payroll/payout-methods/{id}': {
+          get: op('Payroll · Payout Methods', 'Single method. Owner sees full details; everyone else masked.', true, { parameters: idParam, responses: { 200: r200, 404: r404 } }),
+        },
+        '/payroll/payout-methods/{id}/set-primary': {
+          post: op('Payroll · Payout Methods', 'Enqueue a SET_PRIMARY approval → 202 PayoutApproval (does not flip immediately). Self or HR/SUPER.', true, { parameters: idParam, responses: { 202: { description: 'Accepted — approval enqueued' }, 404: r404 } }),
+        },
+        '/payroll/payout-methods/{id}/archive': {
+          post: op('Payroll · Payout Methods', 'Archive a method (removes it from disbursement). No approval needed. Self or HR/SUPER.', true, { parameters: idParam, responses: { 200: r200, 404: r404 } }),
+        },
+        '/payroll/payout-methods/{id}/verify': {
+          post: op('Payroll · Payout Methods', 'Verify an ACTIVE method. Body {result:"VERIFIED"|"FAILED",note?}. 409 NOT_ACTIVE if not ACTIVE. HR/SUPER.', true, { parameters: idParam, responses: { 200: r200, 409: r409 } }),
+        },
+        '/payroll/payout-methods/approvals': {
+          get: op('Payroll · Payout Methods', 'Maker-checker approval queue → {items[],pagination}. ?status=PENDING. HR/SUPER.', true, { parameters: [queryParam('status', 'string', 'PENDING (default) | APPROVED | REJECTED')] }),
+        },
+        '/payroll/payout-methods/approvals/{id}/approve': {
+          post: op('Payroll · Payout Methods', 'Apply a queued change atomically → {applied:true}. 403 if the approver is the requester (maker ≠ checker). HR/SUPER.', true, { parameters: idParam, responses: { 200: r200, 403: r403, 404: r404 } }),
+        },
+        '/payroll/payout-methods/approvals/{id}/reject': {
+          post: op('Payroll · Payout Methods', 'Reject a queued change → {rejected:true}. Body {note}. HR/SUPER.', true, { parameters: idParam, responses: { 200: r200, 404: r404 } }),
+        },
+        '/payroll/payout-methods/unverified': {
+          get: op('Payroll · Payout Methods', 'ACTIVE + UNVERIFIED BANK methods awaiting verification → {items[]}. HR/SUPER.', true),
+        },
         '/payroll/employees/{employeeId}/salary': {
           get:   op('Payroll', 'Get employee salary config. HR sees full; EMPLOYEE sees own (bank masked).', true, { parameters: [pathParam('employeeId', 'Employee ID')] }),
           post:  op('Payroll', 'Set employee salary. HR_ADMIN/SUPER_ADMIN. Required: payGroupId, annualCtc, effectiveFrom. Creates history.', true, { parameters: [pathParam('employeeId', 'Employee ID')], responses: { 201: r201 } }),

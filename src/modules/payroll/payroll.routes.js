@@ -472,18 +472,20 @@ export default async function payrollRoutes(fastify) {
 
   // ── Phase 3: Localization ───────────────────────────────────────────────────
 
+  // Reconciled (BANK_PAYOUT_BACKEND_CONTRACT §3): full ISO list; readable by any
+  // authenticated user (self-service Add-Account form needs the country + bank-schema).
   fastify.get('/payroll/countries', {
-    schema: { tags: ['Payroll'], description: 'List supported payroll countries', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    schema: { tags: ['Payroll'], description: 'List all ISO-3166 countries (code, name, currency, locale, fiscalYearStartMonth)', security: [{ Bearer: [] }], response: { 200: obj } },
+    onRequest: [authenticate, authorize(allAuth)],
   }, ctrl.getCountries);
 
   fastify.get('/payroll/countries/:code/bank-schema', {
     schema: {
-      tags: ['Payroll'], description: 'Get bank account field schema for a country', security: [{ Bearer: [] }],
+      tags: ['Payroll'], description: 'Bank-field schema for a country ({country,currency,fields}); generic IBAN/BIC fallback for unmapped countries (never 404)', security: [{ Bearer: [] }],
       params: { type: 'object', required: ['code'], properties: { code: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, authorize(allAuth)],
   }, ctrl.getBankSchema);
 
   fastify.get('/payroll/legal-entities', {

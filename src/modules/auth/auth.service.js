@@ -518,6 +518,10 @@ export async function getCurrentUser(db, userId) {
 
   const permissions = extractPermissions(user);
 
+  // MFA_BACKEND_REQ: surface the per-user opt-in flag + the policy-only verdict so the
+  // FE self-service toggle can render its initial (mfaEnabled) and forced (policy) state.
+  const { mfa_policy: mfaPolicy } = await getAuthSettings(user.tenantId);
+
   return {
     id: user.id,
     email: user.email,
@@ -528,6 +532,8 @@ export async function getCurrentUser(db, userId) {
     employee: user.employee ?? null,
     permissions,
     lastLoginAt: user.lastLoginAt,
+    mfaEnabled: user.mfaEnabled ?? false,
+    mfaRequiredByPolicy: policyRequiresMfa(mfaPolicy, user),
   };
 }
 

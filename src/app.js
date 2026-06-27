@@ -29,6 +29,7 @@ import settingsRoutes from './modules/settings/settings.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
 import searchRoutes from './modules/search/search.routes.js';
 import payrollRoutes from './modules/payroll/payroll.routes.js';
+import payoutRoutes from './modules/payroll/payout/payout.routes.js';
 import recruitmentRoutes from './modules/recruitment/recruitment.routes.js';
 import performanceRoutes from './modules/performance/performance.routes.js';
 import assetsRoutes from './modules/assets/assets.routes.js';
@@ -48,6 +49,25 @@ export async function createApp() {
         }
         : undefined,
     },
+  });
+
+  // Tolerant JSON body parser: the frontend axios client sends a default
+  // `Content-Type: application/json` on EVERY request, including body-less POSTs
+  // (logout, notifications read-all, payout set-primary/archive). Fastify's default
+  // parser 400s on an empty JSON body; treat empty as {} so those calls succeed.
+  fastify.removeContentTypeParser('application/json');
+  fastify.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
+    if (body === undefined || body === null || String(body).trim() === '') {
+      done(null, {});
+      return;
+    }
+    try {
+      done(null, JSON.parse(body));
+    } catch (err) {
+      err.statusCode = 400;
+      err.code = err.code || 'INVALID_JSON';
+      done(err, undefined);
+    }
   });
 
   // Register plugins (order matters - swagger goes last after routes)
@@ -87,6 +107,7 @@ export async function createApp() {
       await fastify.register(notificationsRoutes);
       await fastify.register(searchRoutes);
       await fastify.register(payrollRoutes);
+      await fastify.register(payoutRoutes);
       await fastify.register(recruitmentRoutes);
       await fastify.register(performanceRoutes);
       await fastify.register(assetsRoutes);
