@@ -188,3 +188,93 @@ Single: `GET /payroll/country-bank-schemas/:country`. Mutations: `POST` / `PATCH
 | 404 | `NOT_FOUND` | unknown method/approval id |
 | 409 | `NOT_ACTIVE` | verifying a non-ACTIVE method |
 | 422 | `VALIDATION_ERROR` | bad body — `details: [{field,message}]` |
+
+---
+
+# 3. BACKEND_ISSUES fixes (2026-06-28) — live-verified
+
+> Five issues the UI team raised in `BACKEND_ISSUES.md` + `EMPLOYEE_TAX_BACKEND_CONTRACT.md`. All fixed, deployed (commits `e9f5a04`, `a035350`), and verified on live.
+
+## Issue 1 — `POST /leave/requests` accepts the policy leave **code**
+
+For policy-driven (ledger) tenants the FE only has the code (`EL`/`SL`/`CL`/`CO`), not a `LeaveType.id`. `leaveTypeId` now accepts **either**.
+
+```jsonc
+// Request
+{ "leaveTypeId": "EL", "startDate": "2026-07-01", "endDate": "2026-07-03", "reason": "Family vacation" }
+
+// 201 → the created LeaveRequest (ledger tenants also post a LEAVE_PENDING_HOLD txn)
+{ "success": true, "data": {
+    "id": "…", "leaveTypeId": "EL", "status": "PENDING",
+    "startDate": "2026-07-01", "endDate": "2026-07-03", "days": 3, "reason": "Family vacation",
+    "createdAt": "2026-06-28T…Z" }, "meta": {} }
+```
+Lifecycle (ledger tenants): approve → `LEAVE_PENDING_RELEASE` + `LEAVE_TAKEN`; reject/withdraw → `LEAVE_PENDING_RELEASE`. Balance fold: `available = granted − used − pending`. Legacy tenants unchanged (`LeaveType`/`LeaveBalance`). A code with no balance → `INSUFFICIENT_BALANCE` (400); unknown code → `LEAVE_TYPE_NOT_FOUND` (404).
+
+## Issue 2 — `GET /auth/me` → `permissions[]` never empty
+
+Resolution: explicit per-user grants win; otherwise role default from the 14-key catalogue.
+
+```jsonc
+// data.permissions for each memberType (when no explicit grants)
+"SUPER_ADMIN": [ /* all 14 */ "employees:read","employees:write","employees:delete","employees:export",
+  "departments:read","departments:write","attendance:read","attendance:write",
+  "leave:read","leave:request","leave:approve","analytics:read","permissions:manage","audit:read" ]
+"HR_ADMIN":   [ /* 13 — no permissions:manage */ ]
+"MANAGER":    [ "employees:read","departments:read","attendance:read","attendance:write",
+                "leave:read","leave:request","leave:approve","analytics:read" ]   // 8
+"EMPLOYEE" / "AUDITOR": [ "employees:read","departments:read","attendance:read",
+                          "attendance:write","leave:read","leave:request" ]        // 6
+```
+
+## Issue 3 — Semi-monthly `PROF_TAX` (local tax) prorated per cycle
+
+Flat monthly local taxes (`pack.localTaxes`, e.g. Professional Tax) are now split across the month's cycles. **Read the itemized amount from the single-payslip detail** (`GET /payroll/runs/:runId/payslips/:payslipId` → `deductions[]`), not the run-list (which returns `deductionsJson: null`).
+
+```jsonc
+// A flat ₹200/month PT, live-verified 2026-06-28:
+MONTHLY  2026-11      → deductions[]: { "code":"PROF_TAX", "amount": 200 }
+SEMI H1  2026-11-H1   → deductions[]: { "code":"PROF_TAX", "amount": 100 }
+SEMI H2  2026-11-H2   → deductions[]: { "code":"PROF_TAX", "amount": 100 }   // H1 + H2 == MONTHLY
+```
+
+## Issue B1 — `GET /payroll/employees/:id/tax-declaration` (country-driven, never 404s)
+
+All money in **MINOR units** (paise/cents — KWD/BHD ×1000, JPY ×1). FE needs nothing from the admin-only `/statutory-packs` route.
+
+```jsonc
+{ "success": true, "data": {
+    "employeeId": "…", "fiscalYear": "2025-26", "country": "IN", "currency": "INR",
+    "annualTaxableMinor": 120000000,                 // annualCtc(major) × minorUnitFactor
+    "regime": "IN_NEW_REGIME",                       // saved regime → else country default → else IN_NEW_REGIME
+    "regimes": [ { "code":"IN_NEW_REGIME", "name":"New Regime", "fiscalYear":"2025-26", "currency":"INR",
+                   "standardDeduction": 7500000,
+                   "slabs": [ {"from":0,"to":30000000,"rate":0}, {"from":30000000,"to":60000000,"rate":5} ],
+                   "cess": {"rate":4} } ],            // passthrough of pack.taxRegimes (minor); [] if no pack
+    "items": [ { "section":"80C", "description":"PPF", "amount":150000 } ],  // saved proofs; [] if none
+    "updatedAt": "2026-01-15T…Z"                     // null until first save
+  }, "meta": {} }
+```
+`POST` (also `PATCH`) upserts `{ fiscalYear?, regime?, items? }` for the `(employeeId, fiscalYear)` pair. `fiscalYear` defaults to the legal-entity FY; `regime` defaults to the country default (no longer hardcoded `NEW`).
+
+## Issue B2 — `GET /payroll/employees/:id/tax-form` → localized `TaxFormDocument`
+
+FE renders **verbatim**. Per-country template (`IN→FORM16`, `US→W2`, `GB→P60`; override with `?type=`). Money is **pre-formatted currency strings** (server runs `Intl.NumberFormat`). 404 only if the employee id is unknown; no payroll yet → zeroed rows.
+
+```jsonc
+{ "success": true, "data": {
+    "type": "FORM16", "title": "Form 16", "fiscalYear": "2025-26",
+    "jurisdiction": "IN", "authority": "Income Tax Department", "currency": "INR",
+    "employer": { "name": "Acme India Pvt Ltd",
+      "identifiers": [ {"label":"TAN","value":"BLRA12345E"}, {"label":"PAN","value":"AAACA1234A"} ] },
+    "employee": { "name": "Priya Sharma", "subtitle": "Senior Engineer",
+      "identifiers": [ {"label":"PAN","value":"ABCDE1234F"}, {"label":"Employee Code","value":"EMP-001"} ] },
+    "sections": [
+      { "title":"Gross Salary", "rows":[ {"label":"Salary as per section 17(1)","value":"₹12,00,000.00"},
+                                          {"label":"Total","value":"₹12,00,000.00"} ] },
+      { "title":"Tax Deducted at Source", "rows":[ {"label":"Total TDS","value":"₹1,20,000.00"} ] }
+    ],
+    "generatedAt": "2026-06-28T…Z"
+  }, "meta": {} }
+```
+Identifier labels come from the template (`TAN`/`PAN`, `EIN`/`SSN`, `PAYE Reference`/`NI Number`); values from `LegalEntity.registrationIds` + `Employee.taxId`, with `Employee Code` always appended; missing → `—`. `employee.subtitle` present only when `Employee.designation` is set.

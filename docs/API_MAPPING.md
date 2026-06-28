@@ -263,6 +263,8 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
 
 > `mfaEnabled` (boolean, never null) = the caller's own per-user MFA opt-in (written by `PATCH /auth/me/mfa`). `mfaRequiredByPolicy` (boolean) = the tenant `mfa_policy` applied to the caller's `memberType` (`REQUIRED_ALL`→true for all; `REQUIRED_ADMINS`→true for SUPER_ADMIN/HR_ADMIN; `OPTIONAL`→false) — independent of `mfaEnabled`. Drives the FE self-service toggle's initial + forced state (MFA_BACKEND_REQ).
 
+> **`permissions` (2026-06-28 fix):** `permissions[]` is **never empty** for an authenticated user. Resolution: explicit per-user grants win; otherwise the caller's `memberType` maps to a role-default set from the canonical 14-key catalogue (`employees:{read,write,delete,export}`, `departments:{read,write}`, `attendance:{read,write}`, `leave:{read,request,approve}`, `analytics:read`, `permissions:manage`, `audit:read`). SUPER_ADMIN → all 14; HR_ADMIN → 13 (no `permissions:manage`); MANAGER → 8 (`employees:read`, `departments:read`, `attendance:{read,write}`, `leave:{read,request,approve}`, `analytics:read`); EMPLOYEE/AUDITOR → 6 (`employees:read`, `departments:read`, `attendance:{read,write}`, `leave:{read,request}`). Previously returned `[]` for users without explicit grants, breaking the FE permission-gated UI.
+
 **Auth behavior:**
 
 | Case | Status | Error code |
@@ -949,6 +951,8 @@ Same shape as `/me/holidays`, for a specific employee. Auth: **HR_ADMIN / SUPER_
   "reason": "Family vacation trip"
 }
 ```
+
+> **`leaveTypeId` (2026-06-28 fix):** accepts **both** a legacy `LeaveType.id` **and** a policy leave code (`EL` / `SL` / `CL` / `CO`). For **policy-driven tenants** (ledger model) the FE only knows the policy code — the backend now resolves the code via the tenant's leave policies, bridges it to a backing `LeaveType` (`ensureLeaveTypeByCode`), validates available balance against the ledger fold (`granted − used − pending`), and posts a `LEAVE_PENDING_HOLD` ledger txn on submit. Approve → `LEAVE_PENDING_RELEASE` + `LEAVE_TAKEN`; reject/withdraw → `LEAVE_PENDING_RELEASE`. **Legacy tenants** still use `LeaveType`/`LeaveBalance` unchanged. Previously a policy code returned `LEAVE_TYPE_NOT_FOUND` (404).
 
 **Error codes:** `LEAVE_TYPE_NOT_FOUND` (404), `NO_LEAVE_BALANCE` (400), `OVERLAPPING_LEAVE` (400), `INSUFFICIENT_BALANCE` (400)
 
@@ -3871,38 +3875,63 @@ The payroll engine normalizes all monetary pack fields to major units before com
 
 #### `GET /payroll/employees/:id/tax-declaration`
 **Roles:** HR, SA, EMPLOYEE (own)  
-**Query:** `?fy=2025-26`
+**Query:** `?fy=2025-26` (optional — resolved from the employee's legal-entity fiscal year when omitted)
+
+**B1 enrichment (2026-06-28):** response is country-driven and **never 404s**. It carries everything the FE editor + projected-tax preview needs (jurisdiction, currency, annual taxable base, and the full regime catalogue from the statutory pack) so an EMPLOYEE no longer needs the admin-only `/statutory-packs` route. `annualTaxableMinor` and every `slabs[]` amount are in **MINOR units** (paise/cents; KWD/BHD ×1000, JPY ×1).
 
 **Response 200:**
 ```json
 {
   "success": true,
   "data": {
-    "id": "td-001",
     "employeeId": "cmq3cxlim001egfijd7jy32pt",
     "fiscalYear": "2025-26",
-    "regime": "NEW",
-    "proofStatus": null,
+    "country": "IN",
+    "currency": "INR",
+    "annualTaxableMinor": 120000000,
+    "regime": "IN_NEW_REGIME",
+    "regimes": [
+      {
+        "code": "IN_NEW_REGIME",
+        "name": "New Regime",
+        "fiscalYear": "2025-26",
+        "currency": "INR",
+        "standardDeduction": 7500000,
+        "slabs": [
+          { "from": 0, "to": 30000000, "rate": 0 },
+          { "from": 30000000, "to": 60000000, "rate": 5 }
+        ],
+        "cess": { "rate": 4 }
+      }
+    ],
     "items": [
       { "section": "80C", "description": "PPF Contribution", "amount": 150000 },
       { "section": "80D", "description": "Health Insurance Premium", "amount": 25000 }
     ],
-    "createdAt": "2026-01-15T00:00:00.000Z"
+    "updatedAt": "2026-01-15T00:00:00.000Z"
   },
   "meta": {}
 }
 ```
 
+**Field notes:**
+- `country` / `currency` — resolved from the employee's `EmployeeSalary.legalEntityId → LegalEntity`, then salary, then country default. No hardcoded country.
+- `annualTaxableMinor` — `EmployeeSalary.annualCtc` (major) × `minorUnitFactor(currency)`. `0` when no active salary row.
+- `regime` — the saved declaration's regime, else the country's default regime (`regimes[0].code`), else `IN_NEW_REGIME`.
+- `regimes[]` — passthrough of the active statutory pack's `taxRegimes` (already minor units): `standardDeduction`, `slabs[]`, and optional `surcharge` / `cess` / `taxCredits` / `taxCode` / `allowedExemptions`. Empty `[]` if no pack.
+- `items[]` — the saved declarant proofs (free-form `{ section, description, amount }`). Empty `[]` if no declaration saved yet.
+- `updatedAt` — `null` until a declaration is saved.
+
 ---
 
-#### `POST /payroll/employees/:id/tax-declaration`
+#### `POST /payroll/employees/:id/tax-declaration`  ·  also `PATCH` (alias)
 **Roles:** HR, SA, EMPLOYEE (own)
 
 **Request body:**
 ```json
 {
   "fiscalYear": "2026-27",
-  "regime": "NEW",
+  "regime": "IN_OLD_REGIME",
   "items": [
     { "section": "80C", "description": "PPF Contribution", "amount": 150000 },
     { "section": "80D", "description": "Health Insurance Premium", "amount": 25000 },
@@ -3911,8 +3940,7 @@ The payroll engine normalizes all monetary pack fields to major units before com
 }
 ```
 
-**Notes:** replaces the existing declaration for that `(employeeId, fiscalYear)` pair.  
-`regime` values: `NEW` | `OLD`
+**Notes:** upserts (replaces) the declaration for that `(employeeId, fiscalYear)` pair. `fiscalYear` defaults to the resolved legal-entity FY when omitted. `regime` defaults to the country's default regime (from the statutory pack) — **no longer hardcoded to `NEW`**. Returns the persisted `TaxDeclaration` row.
 
 ---
 
@@ -4793,9 +4821,55 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 ### F.13 — Tax Forms
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
-| GET | `/payroll/employees/:id/tax-form` | HR,SA | `?type=FORM16|W2|P60&fy=YYYY-YY`. Returns tax form summary |
+| GET | `/payroll/employees/:id/tax-form` | HR,SA | `?type=FORM16|W2|P60&fy=YYYY-YY`. Returns localized `TaxFormDocument` |
 
-**Tax form shape:** `{ formType, fiscalYear, employee: {id, name, employeeCode, pan}, employer: {name, tan}, incomeDetails: {grossIncome, netTaxableIncome, taxDeducted}, downloadUrl }`
+**B2 `TaxFormDocument` (2026-06-28):** the FE renders this **verbatim**. The server selects a per-country/form-type template (Form 16 / W-2 / P60) and fills jurisdiction, authority, statutory identifiers, and **pre-formatted money strings** (server runs `Intl.NumberFormat` so the FE prints rows as-is). `type` defaults to the country default (`IN→FORM16`, `US→W2`, `GB→P60`). 404 only when the employee id doesn't exist; no payroll yet → zeroed rows, not 404.
+
+```json
+{
+  "success": true,
+  "data": {
+    "type": "FORM16",
+    "title": "Form 16",
+    "fiscalYear": "2025-26",
+    "jurisdiction": "IN",
+    "authority": "Income Tax Department",
+    "currency": "INR",
+    "employer": {
+      "name": "Acme India Pvt Ltd",
+      "identifiers": [
+        { "label": "TAN", "value": "BLRA12345E" },
+        { "label": "PAN", "value": "AAACA1234A" }
+      ]
+    },
+    "employee": {
+      "name": "Priya Sharma",
+      "subtitle": "Senior Engineer",
+      "identifiers": [
+        { "label": "PAN", "value": "ABCDE1234F" },
+        { "label": "Employee Code", "value": "EMP-001" }
+      ]
+    },
+    "sections": [
+      { "title": "Gross Salary", "rows": [
+        { "label": "Salary as per section 17(1)", "value": "₹12,00,000.00" },
+        { "label": "Total", "value": "₹12,00,000.00" }
+      ] },
+      { "title": "Tax Deducted at Source", "rows": [
+        { "label": "Total TDS", "value": "₹1,20,000.00" }
+      ] }
+    ],
+    "generatedAt": "2026-06-28T00:00:00.000Z"
+  },
+  "meta": {}
+}
+```
+
+**Field notes:**
+- `type` / `title` / `authority` — from the form template (`W2` → "Form W-2…" / "Internal Revenue Service"; `P60` → "P60 End of Year Certificate" / "HM Revenue & Customs").
+- `employer.identifiers` / `employee.identifiers` — labels come from the template (`TAN`/`PAN`, `EIN`/`SSN`, `PAYE Reference`/`NI Number`); values from `LegalEntity.registrationIds` and `Employee.taxId`, with `Employee Code` always appended. Missing values render `—`.
+- `sections[].rows[].value` — **pre-formatted currency strings** from YTD payroll (`grossEarnings`/`taxableIncome`/`taxDeducted`/`netPay`), localized via the legal entity's locale.
+- `employee.subtitle` — present only when `Employee.designation` is set.
 
 #### PayslipDetail — `GET /payroll/runs/:runId/payslips/:payslipId`
 
@@ -5345,6 +5419,7 @@ The `/permissions` 404 was a **false alarm**: the FE permissions module (`permis
 - **Bug 1 (FLAT not prorated):** per-cycle FLAT `amount = value × (12/periodsPerYear)` — MONTHLY ppy=12 → ×1 (byte-identical); SEMI_MONTHLY ppy=24 → ×0.5 (₱100k → ₱50k/cycle). Data-driven, no frequency branches.
 - **Bug 2 (statutory doubling without legalEntityId):** schedule + apportionment resolved from the **run's payGroup.paySchedule** (+ `periodsPerMonth`/`cyclesInMonthFromAnchor`), NOT `salary.legalEntityId` — the contract's preferred fix. Monthly cap apportions across cycles regardless of salary linkage.
 - **Bug 3 (India employer-line leak):** employer contributions come only from the resolved pack's contribution schemes; no hardcoded `PF_ER`/`ESI_ER`.
+- **Bug 4 (local taxes not prorated on semi-monthly — fixed 2026-06-28):** `pack.localTaxes` (e.g. `PROF_TAX`) is a flat monthly charge. The slab is now **matched on the monthly-equivalent gross** (`grossEarnings × ppm`) and the resolved amount is **divided by `ppm`** for the cycle (`perCycle = amount / ppm`). So a flat ₹200 PT yields **₹100 on H1 + ₹100 on H2 = ₹200/month** — previously each half-cycle charged the full ₹200 (2× overcharge). Monthly runs (`ppm = 1`) are byte-identical. **Live-verified 2026-06-28** on a PT-pack tenant: MONTHLY `PROF_TAX [200]`, H1 `[100]`, H2 `[100]`. Read the itemized value from the **single-payslip detail** (`GET /payroll/runs/:runId/payslips/:payslipId`), not the run-list (which returns `deductionsJson: null`).
 - Tests: `tests/payroll-subMonthly.test.js`, `tests/payroll-workingDays.test.js`.
 - **Honest gap:** the full live multi-cycle PH-tenant E2E acceptance run (build statutory pack→legal entity→2 calendars→2 pay groups→employee/salary→2 runs) was NOT executed (≈20 interdependent setup calls); verification is code + unit-test + prior-commit based. A live PH E2E remains a Phase-12 acceptance item.
 
