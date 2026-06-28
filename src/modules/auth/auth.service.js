@@ -510,13 +510,51 @@ export async function logoutAll(db, userId, _currentSessionId) {
   });
 }
 
+// Default permission sets per role, keyed on the canonical Permission catalogue.
+// Used as a fallback so a user with no explicit RolePermission grants (the out-of-box
+// state for every non-SUPER_ADMIN role) still reports the permissions their role implies
+// — the FE gates UI on this array, so an empty array locks HR/Auditor out of their jobs.
+// Mirrors the role intent already enforced by authorize() (memberType-based).
+const DEFAULT_PERMISSIONS_BY_ROLE = {
+  SUPER_ADMIN: [
+    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
+    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
+    'permissions:manage',
+  ],
+  HR_ADMIN: [
+    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
+    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
+  ],
+  MANAGER: [
+    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request', 'leave:approve', 'analytics:read',
+  ],
+  EMPLOYEE: [
+    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request',
+  ],
+  AUDITOR: [
+    'employees:read', 'departments:read', 'attendance:read', 'leave:read',
+    'analytics:read', 'audit:read',
+  ],
+};
+
+// Explicit RolePermission grants win; fall back to the role default when none exist.
+function resolvePermissions(user) {
+  const explicit = extractPermissions(user);
+  if (explicit.length > 0) return explicit;
+  return DEFAULT_PERMISSIONS_BY_ROLE[user.memberType] ?? [];
+}
+
 export async function getCurrentUser(db, userId) {
   const user = await authRepository.findUserById(db, userId);
   if (!user) {
     throw new AppError('User not found', 'USER_NOT_FOUND', 404);
   }
 
-  const permissions = extractPermissions(user);
+  const permissions = resolvePermissions(user);
 
   // MFA_BACKEND_REQ: surface the per-user opt-in flag + the policy-only verdict so the
   // FE self-service toggle can render its initial (mfaEnabled) and forced (policy) state.

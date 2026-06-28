@@ -171,6 +171,24 @@ export async function getLeaveType(tenantId, leaveTypeId) {
   });
 }
 
+// Bridge policy-engine leave types (id===code, e.g. EL/SL/CL/CO) into the legacy
+// LeaveType table so a LeaveRequest row (which FK-references LeaveType.id) can be
+// created for them. Idempotent: find-by-code first, create only if missing.
+export async function ensureLeaveTypeByCode(tenantId, t) {
+  const existing = await prisma.leaveType.findFirst({ where: { tenantId, code: t.code } });
+  if (existing) return existing;
+  return prisma.leaveType.create({
+    data: {
+      tenantId,
+      code: t.code,
+      name: t.name ?? t.code,
+      annualAllowance: t.annualAllowance ?? 0,
+      carryForwardAllowed: t.carryForwardAllowed ?? false,
+      isPaid: t.isPaid !== false,
+    },
+  });
+}
+
 export async function checkOverlappingLeaves(tenantId, employeeId, startDate, endDate, excludeId = null) {
   const query = {
     tenantId,

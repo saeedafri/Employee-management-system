@@ -274,6 +274,29 @@ export async function getLeaveTypesFromPolicies(prisma, tenantId) {
   return [...seen.values()];
 }
 
+// Post a leave-lifecycle ledger txn (HOLD on submit, RELEASE + TAKEN on approve,
+// RELEASE on reject/withdraw). `code` is the leave-type CODE (EL/SL/CL/CO); `requestId`
+// is the sourceRef the fold uses to pair a hold with its release. Consumption is signed
+// negative; the fold uses Math.abs for HOLD/RELEASE/TAKEN so the sign is audit-only.
+export async function postLeaveLedger(prisma, tenantId, {
+  type, employeeId, code, days, requestId, reason, policyId, policyVersion,
+}) {
+  return repo.createLedgerTxn(prisma, tenantId, {
+    employeeId,
+    leaveTypeId: code,
+    policyId: policyId ?? 'manual',
+    policyVersion: policyVersion ?? '1',
+    type,
+    delta: -Math.abs(days),
+    effectiveDate: new Date(today()),
+    postedAt: new Date(),
+    leaveYear: new Date().getFullYear(),
+    sourceRef: requestId,
+    reason: reason ?? 'Leave lifecycle ledger entry',
+    systemGenerated: true,
+  });
+}
+
 export async function postAdjustment(prisma, tenantId, employeeId, leaveTypeCode, delta, reason, country) {
   const employee = await repo.getEmployee(prisma, tenantId, employeeId);
   const ctx = buildEmployeeContext(employee ?? { id: employeeId }, country);

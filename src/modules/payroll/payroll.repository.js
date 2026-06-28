@@ -1186,18 +1186,25 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
       const localTaxes = statutoryPack?.localTaxes ?? [];
       if (Array.isArray(localTaxes) && localTaxes.length > 0) {
         const empJurisdiction = sal.jurisdiction ?? employee.jurisdiction ?? empLegalEntity?.jurisdiction ?? null;
+        // Flat local taxes (e.g. Professional Tax) are MONTH-level statutory amounts. On a
+        // sub-monthly calendar the slab band must be matched on the full monthly gross
+        // (not the prorated cycle gross), and the resolved amount allocated once across the
+        // month's cycles — else each half-cycle charges the full flat amount (2× per month).
+        // Monthly runs (ppm === 1) are unchanged: monthly-equiv gross === grossEarnings, amt/1 === amt.
+        const monthlyEquivGross = ppm > 1 ? grossEarnings * ppm : grossEarnings;
         for (const lt of localTaxes) {
           if (lt.jurisdiction && empJurisdiction && lt.jurisdiction !== empJurisdiction) continue;
           let amt = 0;
           for (const b of (lt.slabs ?? lt.bands ?? [])) {
             const upper = b.to == null ? Infinity : Number(b.to);
-            if (grossEarnings >= Number(b.from ?? 0) && grossEarnings < upper) { amt = Number(b.amount ?? 0); break; }
+            if (monthlyEquivGross >= Number(b.from ?? 0) && monthlyEquivGross < upper) { amt = Number(b.amount ?? 0); break; }
           }
           if (amt > 0) {
+            const perCycle = ppm > 1 ? r2(amt / ppm) : amt;
             const code = lt.component ?? 'PROF_TAX';
             const idx = deductionsArr.findIndex((d) => d.code === code);
-            if (idx >= 0) deductionsArr[idx].amount = amt;
-            else deductionsArr.push({ code, name: lt.name ?? 'Professional Tax', amount: amt, taxable: false });
+            if (idx >= 0) deductionsArr[idx].amount = perCycle;
+            else deductionsArr.push({ code, name: lt.name ?? 'Professional Tax', amount: perCycle, taxable: false });
           }
         }
       }

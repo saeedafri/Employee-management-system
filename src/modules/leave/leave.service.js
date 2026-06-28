@@ -1,4 +1,5 @@
 import * as leaveRepository from './leave.repository.js';
+import * as leaveEngineService from './leaveEngine.service.js';
 import { prisma } from '../../plugins/prisma.js';
 import { resolveHolidayDateSet } from '../holidays/holidayResolver.service.js';
 import {
@@ -112,17 +113,73 @@ function calculateTotalDays(startDate, endDate) {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 }
 
+// Resolve the submitted leaveTypeId to a concrete legacy LeaveType row id (needed for
+// the LeaveRequest FK), classifying the request as 'legacy' (DB LeaveType by id) or
+// 'policy' (engine code EL/SL/CL/CO from active policies — what GET /leave/types serves).
+// Mirrors the controller's /leave/types resolution so any type the dropdown offers is accepted.
+async function resolveRequestLeaveType(tenantId, leaveTypeId) {
+  const legacy = await leaveRepository.getLeaveType(tenantId, leaveTypeId);
+  if (legacy) return { mode: 'legacy', typeRowId: legacy.id, code: legacy.code };
+
+  const engineTypes = await leaveEngineService.getLeaveTypesFromPolicies(prisma, tenantId);
+  const match = engineTypes.find((t) => t.code === leaveTypeId || t.id === leaveTypeId);
+  if (!match) return null;
+
+  const row = await leaveRepository.ensureLeaveTypeByCode(tenantId, match);
+  return { mode: 'policy', typeRowId: row.id, code: match.code };
+}
+
+// Given a stored LeaveRequest's leaveTypeId (a LeaveType row id), decide whether it
+// belongs to the policy engine (its code is an active-policy code) so approve/reject/
+// withdraw post to the ledger instead of the legacy LeaveBalance table.
+async function classifyStoredLeaveType(tenantId, typeRowId) {
+  const type = await leaveRepository.getLeaveType(tenantId, typeRowId);
+  if (!type) return { mode: 'legacy', code: null };
+  const engineTypes = await leaveEngineService.getLeaveTypesFromPolicies(prisma, tenantId);
+  const isPolicy = engineTypes.some((t) => t.code === type.code);
+  return { mode: isPolicy ? 'policy' : 'legacy', code: type.code };
+}
+
 export async function createLeaveRequest(tenantId, employeeId, {
   leaveTypeId, startDate, endDate, reason,
 }) {
-  const leaveType = await leaveRepository.getLeaveType(tenantId, leaveTypeId);
-  if (!leaveType) {
+  const resolved = await resolveRequestLeaveType(tenantId, leaveTypeId);
+  if (!resolved) {
     throw new AppError('Leave type not found', 'LEAVE_TYPE_NOT_FOUND', 404);
   }
 
-  const balance = await leaveRepository.getLeaveBalance(tenantId, employeeId, leaveTypeId);
-  if (!balance) {
-    throw new AppError('No leave balance found for this leave type', 'NO_LEAVE_BALANCE', 400);
+  const totalDays = calculateTotalDays(startDate, endDate);
+
+  // Balance check — engine ledger (source of truth for /leave/balance) for policy types,
+  // legacy LeaveBalance rows otherwise.
+  if (resolved.mode === 'policy') {
+    const balances = await leaveEngineService.getBalancesForEmployee(prisma, tenantId, employeeId);
+    const b = balances.find((x) => x.leaveTypeCode === resolved.code || x.leaveTypeId === resolved.code);
+    if (!b) {
+      throw new AppError('No leave balance found for this leave type', 'NO_LEAVE_BALANCE', 400);
+    }
+    if (totalDays > b.available) {
+      throw new AppError(
+        `Insufficient leave balance. Available: ${b.available}, Requested: ${totalDays}`,
+        'INSUFFICIENT_BALANCE',
+        400,
+        { available: b.available, requested: totalDays },
+      );
+    }
+  } else {
+    const balance = await leaveRepository.getLeaveBalance(tenantId, employeeId, resolved.typeRowId);
+    if (!balance) {
+      throw new AppError('No leave balance found for this leave type', 'NO_LEAVE_BALANCE', 400);
+    }
+    const availableBalance = balance.balance - balance.pending;
+    if (totalDays > availableBalance) {
+      throw new AppError(
+        `Insufficient leave balance. Available: ${availableBalance}, Requested: ${totalDays}`,
+        'INSUFFICIENT_BALANCE',
+        400,
+        { available: availableBalance, requested: totalDays },
+      );
+    }
   }
 
   const overlappingLeave = await leaveRepository.checkOverlappingLeaves(
@@ -140,22 +197,10 @@ export async function createLeaveRequest(tenantId, employeeId, {
     );
   }
 
-  const totalDays = calculateTotalDays(startDate, endDate);
-  const availableBalance = balance.balance - balance.pending;
-
-  if (totalDays > availableBalance) {
-    throw new AppError(
-      `Insufficient leave balance. Available: ${availableBalance}, Requested: ${totalDays}`,
-      'INSUFFICIENT_BALANCE',
-      400,
-      { available: availableBalance, requested: totalDays },
-    );
-  }
-
   const leaveRequest = await leaveRepository.createLeaveRequest({
     tenantId,
     employeeId,
-    leaveTypeId,
+    leaveTypeId: resolved.typeRowId,
     startDate: new Date(startDate),
     endDate: new Date(endDate),
     totalDays,
@@ -163,9 +208,22 @@ export async function createLeaveRequest(tenantId, employeeId, {
     status: 'PENDING',
   });
 
-  await leaveRepository.updateLeaveBalance(tenantId, employeeId, leaveTypeId, {
-    pending: balance.pending + totalDays,
-  });
+  if (resolved.mode === 'policy') {
+    // Reflect the pending request in the engine ledger (a hold reduces `available`).
+    await leaveEngineService.postLeaveLedger(prisma, tenantId, {
+      type: 'LEAVE_PENDING_HOLD',
+      employeeId,
+      code: resolved.code,
+      days: totalDays,
+      requestId: leaveRequest.id,
+      reason: 'Leave request submitted (pending)',
+    });
+  } else {
+    const balance = await leaveRepository.getLeaveBalance(tenantId, employeeId, resolved.typeRowId);
+    await leaveRepository.updateLeaveBalance(tenantId, employeeId, resolved.typeRowId, {
+      pending: balance.pending + totalDays,
+    });
+  }
 
   notifyLeaveRequested(tenantId, employeeId, leaveRequest).catch(() => {});
 
@@ -229,17 +287,37 @@ export async function approveLeaveRequest(tenantId, leaveRequestId, approverId, 
     decidedAt: new Date(),
   });
 
-  const balance = await leaveRepository.getLeaveBalance(
-    tenantId,
-    leaveRequest.employeeId,
-    leaveRequest.leaveTypeId,
-  );
-
-  if (balance) {
-    await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
-      pending: Math.max(0, balance.pending - leaveRequest.totalDays),
-      used: balance.used + leaveRequest.totalDays,
+  const cls = await classifyStoredLeaveType(tenantId, leaveRequest.leaveTypeId);
+  if (cls.mode === 'policy') {
+    // Release the pending hold and settle it as taken in the engine ledger.
+    await leaveEngineService.postLeaveLedger(prisma, tenantId, {
+      type: 'LEAVE_PENDING_RELEASE',
+      employeeId: leaveRequest.employeeId,
+      code: cls.code,
+      days: leaveRequest.totalDays,
+      requestId: leaveRequest.id,
+      reason: 'Leave approved — release hold',
     });
+    await leaveEngineService.postLeaveLedger(prisma, tenantId, {
+      type: 'LEAVE_TAKEN',
+      employeeId: leaveRequest.employeeId,
+      code: cls.code,
+      days: leaveRequest.totalDays,
+      requestId: leaveRequest.id,
+      reason: 'Leave approved',
+    });
+  } else {
+    const balance = await leaveRepository.getLeaveBalance(
+      tenantId,
+      leaveRequest.employeeId,
+      leaveRequest.leaveTypeId,
+    );
+    if (balance) {
+      await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
+        pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+        used: balance.used + leaveRequest.totalDays,
+      });
+    }
   }
 
   notifyLeaveApproved(tenantId, leaveRequest.employeeId, updated).catch(() => {});
@@ -269,16 +347,27 @@ export async function rejectLeaveRequest(tenantId, leaveRequestId, approverId, c
     decidedAt: new Date(),
   });
 
-  const balance = await leaveRepository.getLeaveBalance(
-    tenantId,
-    leaveRequest.employeeId,
-    leaveRequest.leaveTypeId,
-  );
-
-  if (balance) {
-    await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
-      pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+  const cls = await classifyStoredLeaveType(tenantId, leaveRequest.leaveTypeId);
+  if (cls.mode === 'policy') {
+    await leaveEngineService.postLeaveLedger(prisma, tenantId, {
+      type: 'LEAVE_PENDING_RELEASE',
+      employeeId: leaveRequest.employeeId,
+      code: cls.code,
+      days: leaveRequest.totalDays,
+      requestId: leaveRequest.id,
+      reason: 'Leave rejected — release hold',
     });
+  } else {
+    const balance = await leaveRepository.getLeaveBalance(
+      tenantId,
+      leaveRequest.employeeId,
+      leaveRequest.leaveTypeId,
+    );
+    if (balance) {
+      await leaveRepository.updateLeaveBalance(tenantId, leaveRequest.employeeId, leaveRequest.leaveTypeId, {
+        pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+      });
+    }
   }
 
   notifyLeaveDenied(tenantId, leaveRequest.employeeId, updated).catch(() => {});
@@ -313,16 +402,27 @@ export async function withdrawLeaveRequest(tenantId, employeeId, leaveRequestId)
     status: 'WITHDRAWN',
   });
 
-  const balance = await leaveRepository.getLeaveBalance(
-    tenantId,
-    employeeId,
-    leaveRequest.leaveTypeId,
-  );
-
-  if (balance) {
-    await leaveRepository.updateLeaveBalance(tenantId, employeeId, leaveRequest.leaveTypeId, {
-      pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+  const cls = await classifyStoredLeaveType(tenantId, leaveRequest.leaveTypeId);
+  if (cls.mode === 'policy') {
+    await leaveEngineService.postLeaveLedger(prisma, tenantId, {
+      type: 'LEAVE_PENDING_RELEASE',
+      employeeId,
+      code: cls.code,
+      days: leaveRequest.totalDays,
+      requestId: leaveRequest.id,
+      reason: 'Leave withdrawn — release hold',
     });
+  } else {
+    const balance = await leaveRepository.getLeaveBalance(
+      tenantId,
+      employeeId,
+      leaveRequest.leaveTypeId,
+    );
+    if (balance) {
+      await leaveRepository.updateLeaveBalance(tenantId, employeeId, leaveRequest.leaveTypeId, {
+        pending: Math.max(0, balance.pending - leaveRequest.totalDays),
+      });
+    }
   }
 
   notifyLeaveWithdrawn(tenantId, employeeId, updated).catch(() => {});
