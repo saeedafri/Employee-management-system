@@ -251,7 +251,7 @@ All money in **MINOR units** (paise/cents — KWD/BHD ×1000, JPY ×1). FE needs
                    "standardDeduction": 7500000,
                    "slabs": [ {"from":0,"to":30000000,"rate":0}, {"from":30000000,"to":60000000,"rate":5} ],
                    "cess": {"rate":4} } ],            // passthrough of pack.taxRegimes (minor); [] if no pack
-    "items": [ { "section":"80C", "description":"PPF", "amount":150000 } ],  // saved proofs; [] if none
+    "items": [ { "code":"80C", "amount":150000, "meta":null, "proofStatus":"PENDING" } ],  // TaxDeclarationItem; stored/returned verbatim; [] if none
     "updatedAt": "2026-01-15T…Z"                     // null until first save
   }, "meta": {} }
 ```

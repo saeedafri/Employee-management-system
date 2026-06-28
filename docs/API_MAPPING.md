@@ -3905,8 +3905,8 @@ The payroll engine normalizes all monetary pack fields to major units before com
       }
     ],
     "items": [
-      { "section": "80C", "description": "PPF Contribution", "amount": 150000 },
-      { "section": "80D", "description": "Health Insurance Premium", "amount": 25000 }
+      { "code": "80C", "amount": 150000, "meta": null, "proofStatus": "PENDING" },
+      { "code": "80D", "amount": 25000, "meta": null, "proofStatus": "VERIFIED" }
     ],
     "updatedAt": "2026-01-15T00:00:00.000Z"
   },
@@ -3918,7 +3918,8 @@ The payroll engine normalizes all monetary pack fields to major units before com
 - `country` / `currency` — resolved from the employee's `EmployeeSalary.legalEntityId → LegalEntity`, then salary, then country default. No hardcoded country.
 - `annualTaxableMinor` — `EmployeeSalary.annualCtc` (major) × `minorUnitFactor(currency)`. `0` when no active salary row.
 - `regime` — the saved declaration's regime, else the country's default regime (`regimes[0].code`), else `IN_NEW_REGIME`.
-- `regimes[]` — passthrough of the active statutory pack's `taxRegimes` (already minor units): `standardDeduction`, `slabs[]`, and optional `surcharge` / `cess` / `taxCredits` / `taxCode` / `allowedExemptions`. Empty `[]` if no pack.
+- `regimes[]` — passthrough of the active statutory pack's `taxRegimes` (already minor units): `standardDeduction`, `slabs[]`, and optional `surcharge` / `cess` / `taxCredits` / `taxCode` / `allowedExemptions`. Empty `[]` if no pack. (Regime exemptions are exposed as `allowedExemptions: string[]` of codes — per the contract the FE renders the raw code when no label is supplied.)
+- `items[]` = `TaxDeclarationItem` `{ code, amount (minor units), meta?, proofStatus ∈ PENDING|VERIFIED|REJECTED }` — **stored and returned verbatim** (the backend does not transform declarant items; whatever the FE POSTs is what it reads back). Empty `[]` until a declaration is saved.
 - `items[]` — the saved declarant proofs (free-form `{ section, description, amount }`). Empty `[]` if no declaration saved yet.
 - `updatedAt` — `null` until a declaration is saved.
 

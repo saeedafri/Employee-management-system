@@ -122,7 +122,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
         '/auth/me': {
-          get: op('Authentication', 'Get current user profile', true, {
+          get: op('Authentication', 'Get current user profile. `data.permissions[]` is never empty: explicit per-user RolePermission grants win, otherwise the caller’s memberType maps to a role-default set (SUPER_ADMIN 14 / HR_ADMIN 13 / MANAGER 8 / EMPLOYEE 6 / AUDITOR 6 incl audit:read). Also returns mfaEnabled + mfaRequiredByPolicy.', true, {
             responses: {
               200: r200,
               400: { description: 'Explicit invalid tenant context (for example bad X-Tenant-Key or tenant subdomain)' },
@@ -396,7 +396,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/leave/requests': {
           get:  op('Leave', 'List my leave requests'),
-          post: op('Leave', 'Create leave request', true, { responses: { 201: r201 } }),
+          post: op('Leave', 'Create leave request. Body { leaveTypeId, startDate, endDate, reason }. `leaveTypeId` accepts EITHER a legacy LeaveType id OR a policy leave code (EL/SL/CL/CO) — on policy-pack tenants the code from GET /leave/types is resolved via active policies and bridged to a backing LeaveType, validated against the ledger balance (granted − used − pending), and a LEAVE_PENDING_HOLD ledger txn is posted. 404 LEAVE_TYPE_NOT_FOUND only when the code matches no policy/legacy type; 400 INSUFFICIENT_BALANCE when no balance.', true, { responses: { 201: r201, 400: { description: 'INSUFFICIENT_BALANCE | OVERLAPPING_LEAVE' }, 404: { description: 'LEAVE_TYPE_NOT_FOUND' } } }),
         },
         '/leave/requests/preview': {
           post: op('Leave', 'Holiday-aware chargeable-day preview (HOLIDAY_ENGINE_BACKEND_CONTRACT §3). Excludes weekends (employee work-week) + resolved public holidays via the shared holiday engine — same set the calendar shows + payroll counts. Returns { calendarDays, weekendDays, holidayDays, chargeableDays, holidaysExcluded:[{date,name,observed}], workWeekDays }.', true, {
@@ -698,6 +698,14 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/payroll/employees/{employeeId}/payslips/{payslipId}': {
           get: op('Payroll', 'Get payslip detail with earnings/deductions breakdown. Response includes `documentUrl` — direct Cloudinary WebP link to the downloadable payslip (null if not generated yet).', true, { parameters: [pathParam('employeeId', 'Employee ID'), pathParam('payslipId', 'Payslip ID')] }),
+        },
+        '/payroll/employees/{employeeId}/tax-declaration': {
+          get: op('Payroll', 'EMPLOYEE_TAX_BACKEND_CONTRACT §B1 — country-driven tax declaration. Any authenticated user (EMPLOYEE reads self; HR/SUPER read anyone). Never 404s. Returns { employeeId, fiscalYear, country, currency, annualTaxableMinor (integer minor units), regime, regimes: TaxRegime[] (codes/slabs/standardDeduction/surcharge?/cess?/allowedExemptions? — passthrough of the resolved statutory pack, minor units), items: [{ section/code, description?, amount, meta?, proofStatus? }], updatedAt|null }. Removes the FE dependency on the admin-only /payroll/statutory-packs. `?fy` optional (defaults to the legal-entity fiscal year).', true, { parameters: [pathParam('employeeId', 'Employee ID'), queryParam('fy', 'string', 'Fiscal year e.g. 2026-27 (optional; resolved from legal entity when omitted)')] }),
+          post: op('Payroll', 'Upsert the tax declaration for (employeeId, fiscalYear). Any authenticated user (EMPLOYEE writes self; HR/SUPER anyone). Body { fiscalYear?, regime?, items?: [{ section/code, amount, meta?, proofStatus? }] }. fiscalYear defaults to the legal-entity FY; regime defaults to the country default regime (not hardcoded). Returns the persisted declaration.', true, { parameters: [pathParam('employeeId', 'Employee ID')], responses: { 200: r200, 422: r422 } }),
+          patch: op('Payroll', 'HR patch of an existing declaration (e.g. proofStatus). additionalProperties body; returns the upserted declaration.', true, { parameters: [pathParam('employeeId', 'Employee ID')] }),
+        },
+        '/payroll/employees/{employeeId}/tax-form': {
+          get: op('Payroll', 'EMPLOYEE_TAX_BACKEND_CONTRACT §B2 — localized TaxFormDocument the FE renders verbatim. Any authenticated user (EMPLOYEE reads self; HR/SUPER anyone). 404 only when the employee id is unknown; no payroll yet → zeroed rows (not 404). `?type` = FORM16|W2|P60 (defaults to the country default: IN→FORM16, US→W2, GB→P60). Returns { type, title, fiscalYear, jurisdiction, authority, currency, employer: { name, subtitle?, identifiers: [{label,value}] }, employee: { name, subtitle?, identifiers: [{label,value}] }, sections: [{ title, rows: [{ label, value }] }], generatedAt }. Money values are PRE-FORMATTED currency strings (server applies Intl locale); FE prints as-is.', true, { parameters: [pathParam('employeeId', 'Employee ID'), queryParam('type', 'string', 'FORM16 | W2 | P60 (optional; country default when omitted)'), queryParam('fy', 'string', 'Fiscal year (optional)')], responses: { 200: r200, 404: r404 } }),
         },
         '/payroll/runs': {
           get:  op('Payroll', 'List payroll runs. HR_ADMIN/SUPER_ADMIN. ?page&limit&year&status', true),
