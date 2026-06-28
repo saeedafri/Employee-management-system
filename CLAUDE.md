@@ -592,6 +592,13 @@ curl -X POST https://employee-management-system-2b9q.onrender.com/api/v1/auth/lo
 
 ---
 
+## Live Verification Inbox (MFA / OTP / email flows)
+- Designated real test inbox: **`mohammadsaeedafri9@gmail.com`** — use this for any flow that requires receiving a real email (MFA enrollment, OTP login, password-reset links, email verification). Verify everything end-to-end against this inbox, not just API field assertions.
+- Read it via the **`gmail` MCP server** (`@gongrzhe/server-gmail-autoauth-mcp`). OAuth creds + refresh token live in `~/.gmail-mcp/` (Desktop client, scopes `gmail.modify` + `gmail.settings.basic`) — **outside the repo, never commit them**. Google project `folkloric-clock-361104`; the inbox is added as a Test user (consent screen in Testing mode).
+- If `mcp__gmail__*` tools aren't present, the session must be restarted (newly-added MCP servers load at session start).
+
+---
+
 ## Rules for This Project
 1. **Always work in `/Users/mohdsaeedafri/All-Code-Base/EMS`** — never other dirs
 2. DB: use Prisma client only — never raw SQL
