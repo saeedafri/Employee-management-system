@@ -14,13 +14,19 @@ const CURRENCY_MINOR_UNITS = {
   CLP: 0, JPY: 0, KRW: 0, VND: 0,
 };
 
-function minorUnitFactor(currency = 'INR') {
+export function minorUnitFactor(currency = 'INR') {
   return 10 ** (CURRENCY_MINOR_UNITS[currency] ?? 2);
 }
 
 function moneyMinorToMajor(value, currency) {
   if (value == null) return value;
   return Number(value) / minorUnitFactor(currency);
+}
+
+// Major (display) units → minor (integer storage) units, ISO-4217 exponent aware.
+export function moneyMajorToMinor(value, currency) {
+  if (value == null) return value;
+  return Math.round(Number(value) * minorUnitFactor(currency));
 }
 
 /**

@@ -7,7 +7,8 @@ import {
   normalizePayslipTemplateSection,
 } from '../../utils/payrollUiShapes.js';
 import { flatBodyToPackData } from '../../utils/statutoryPackShape.js';
-import { resolveFiscalYear } from '../../utils/statutoryCalculation.js';
+import { resolveFiscalYear, moneyMajorToMinor } from '../../utils/statutoryCalculation.js';
+import { TAX_FORM_TEMPLATES, DEFAULT_FORM_TYPE_BY_COUNTRY, formatMoney, buildIdentifiers } from './taxForms.js';
 import { formatPeriodLabel, derivePeriodDatesFromString, isValidPeriod } from '../../utils/payrollPeriod.js';
 import { generateCycles } from '../../utils/cycleGenerator.js';
 import { computeEmi, buildSchedule, addMonths as addLoanMonths } from './utils/loan.utils.js';
@@ -568,19 +569,91 @@ function getCurrentFiscalYear() {
 
 // ── Phase 3: Tax Declaration ──────────────────────────────────────────────────
 
-export async function getTaxDeclaration(prisma, employeeId, tenantId, fy) {
-  const fiscalYear = fy || getCurrentFiscalYear();
-  const decl = await prisma.taxDeclaration.findUnique({
-    where: { tenantId_employeeId_fiscalYear: { tenantId, employeeId, fiscalYear } },
+// EMPLOYEE_TAX_BACKEND_CONTRACT — resolve the employee's tax context (country, currency,
+// fiscal year, applicable regimes, annual taxable base) from their legal entity + the
+// country's statutory pack. Config-driven; no hardcoded country/regime. Pack taxRegimes are
+// already in MINOR units (the FE's unit) so they pass through unchanged.
+async function resolveEmployeeTaxContext(prisma, employeeId, tenantId, fy) {
+  const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId } });
+
+  const sal = await prisma.employeeSalary.findFirst({
+    where: { tenantId, employeeId, effectiveTo: null },
+    orderBy: { effectiveFrom: 'desc' },
   });
-  return decl || { employeeId, fiscalYear, regime: 'IN_NEW_REGIME', items: [] };
+  let legalEntity = sal?.legalEntityId
+    ? await prisma.legalEntity.findFirst({ where: { id: sal.legalEntityId, tenantId } })
+    : null;
+  const country = (legalEntity?.country ?? sal?.country ?? 'IN').toUpperCase();
+  if (!legalEntity) {
+    legalEntity = await prisma.legalEntity.findFirst({
+      where: { tenantId, country, active: true }, orderBy: { createdAt: 'asc' },
+    });
+  }
+  const currency = sal?.currency ?? legalEntity?.currency ?? currencyForCountry(country) ?? 'INR';
+  const meta = SUPPORTED_COUNTRIES.find((c) => c.code === country);
+  const fyStartMonth = legalEntity?.fiscalYearStartMonth ?? meta?.fiscalYearStartMonth ?? 4;
+
+  let fiscalYear = fy;
+  if (!fiscalYear) {
+    const now = new Date();
+    const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    ({ fiscalYear } = resolveFiscalYear(currentPeriod, fyStartMonth));
+  }
+
+  const packs = await getStatutoryPacks(prisma, tenantId, country);
+  const activePack = (packs || []).find((p) => p.effectiveTo === null) ?? (packs || [])[0] ?? null;
+  const rawRegimes = Array.isArray(activePack?.taxRegimes) ? activePack.taxRegimes : [];
+  const regimes = rawRegimes.map((r) => ({
+    code: r.code,
+    name: r.name ?? r.taxName ?? r.code,
+    fiscalYear: r.fiscalYear ?? fiscalYear,
+    currency: r.currency ?? currency,
+    standardDeduction: r.standardDeduction ?? 0,
+    slabs: Array.isArray(r.slabs) ? r.slabs : [],
+    ...(r.surcharge ? { surcharge: r.surcharge } : {}),
+    ...(r.cess ? { cess: r.cess } : {}),
+    ...(Array.isArray(r.taxCredits) ? { taxCredits: r.taxCredits } : {}),
+    ...(r.taxCode ? { taxCode: r.taxCode } : {}),
+    ...(Array.isArray(r.allowedExemptions) ? { allowedExemptions: r.allowedExemptions } : {}),
+  }));
+
+  // Annual taxable base in MINOR units (FE feeds it to computeRegimeTax alongside minor slabs).
+  const annualCtcMajor = sal?.annualCtc != null ? Number(sal.annualCtc) : 0;
+  const annualTaxableMinor = moneyMajorToMinor(annualCtcMajor, currency);
+
+  return {
+    employee, legalEntity, sal, country, currency, fiscalYear, fyStartMonth,
+    regimes, annualTaxableMinor, defaultRegime: regimes[0]?.code ?? null,
+  };
+}
+
+// B1: enriched so an EMPLOYEE can render the declaration editor + projected-tax preview
+// without calling the admin-only /statutory-packs route. Never 404s.
+export async function getTaxDeclaration(prisma, employeeId, tenantId, fy) {
+  const ctx = await resolveEmployeeTaxContext(prisma, employeeId, tenantId, fy);
+  const decl = await prisma.taxDeclaration.findUnique({
+    where: { tenantId_employeeId_fiscalYear: { tenantId, employeeId, fiscalYear: ctx.fiscalYear } },
+  });
+  return {
+    employeeId,
+    fiscalYear: ctx.fiscalYear,
+    country: ctx.country,
+    currency: ctx.currency,
+    annualTaxableMinor: ctx.annualTaxableMinor,
+    regime: decl?.regime ?? ctx.defaultRegime ?? 'IN_NEW_REGIME',
+    regimes: ctx.regimes,
+    items: Array.isArray(decl?.items) ? decl.items : [],
+    updatedAt: decl?.updatedAt ?? null,
+  };
 }
 
 export async function upsertTaxDeclaration(prisma, employeeId, tenantId, data) {
-  const fiscalYear = data.fiscalYear || getCurrentFiscalYear();
+  const ctx = await resolveEmployeeTaxContext(prisma, employeeId, tenantId, data.fiscalYear);
+  const fiscalYear = data.fiscalYear || ctx.fiscalYear;
+  const defaultRegime = ctx.defaultRegime || 'IN_NEW_REGIME';
   return prisma.taxDeclaration.upsert({
     where: { tenantId_employeeId_fiscalYear: { tenantId, employeeId, fiscalYear } },
-    create: { tenantId, employeeId, fiscalYear, regime: data.regime || 'IN_NEW_REGIME', items: data.items || [] },
+    create: { tenantId, employeeId, fiscalYear, regime: data.regime || defaultRegime, items: data.items || [] },
     update: {
       ...(data.regime && { regime: data.regime }),
       ...(data.items && { items: data.items }),
@@ -2086,22 +2159,50 @@ export async function updatePayslipTemplate(prisma, tenantId, data) {
   return fmtPayslipTemplateForUi(updated);
 }
 
+// B2: localized TaxFormDocument (sections[]/identifiers[]/authority/jurisdiction) built from a
+// per-country form template + YTD payroll + the legal entity. Replaces the flat India-hardcoded
+// payload the FE could not render. 404 only when the employee id doesn't exist.
 export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
-  const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId } });
-  if (!employee) return null;
-  const currentFY = fy || `${new Date().getFullYear() - 1}-${String(new Date().getFullYear()).slice(2)}`;
-  const payslips = await prisma.payslip.findMany({ where: { employeeId, tenantId } });
-  const grossAnnual = payslips.reduce((s, p) => s + Number(p.grossEarnings || 0), 0);
-  const _netAnnual = payslips.reduce((s, p) => s + Number(p.netPay || 0), 0);
-  const taxDeducted = payslips.reduce((s, p) => s + Number(p.totalDeductions || 0), 0);
-  return {
-    formType: type,
-    fiscalYear: currentFY,
-    employee: { id: employee.id, name: `${employee.firstName} ${employee.lastName}`.trim(), employeeCode: employee.employeeCode, pan: employee.taxId || 'XXXXX0000X' },
-    employer: { name: 'Acme Corp', tan: 'MUMB00000B' },
-    incomeDetails: { grossIncome: grossAnnual, netTaxableIncome: grossAnnual, taxDeducted },
-    downloadUrl: null,
+  const ctx = await resolveEmployeeTaxContext(prisma, employeeId, tenantId, fy);
+  if (!ctx.employee) return null;
+  const emp = ctx.employee;
+
+  const formType = (type || DEFAULT_FORM_TYPE_BY_COUNTRY[ctx.country] || 'FORM16').toUpperCase();
+  const template = TAX_FORM_TEMPLATES[formType] || TAX_FORM_TEMPLATES.FORM16;
+
+  // YTD payroll for the resolved fiscal year (major units). No payroll yet → zeroed rows, not 404.
+  const ytd = await getEmployeeYtd(prisma, employeeId, tenantId, ctx.fiscalYear);
+  const grossMajor = ytd?.grossEarnings ?? 0;
+  const taxDeductedMajor = ytd?.taxDeducted ?? 0;
+  const netMajor = ytd?.netPay ?? 0;
+  const taxableMajor = ytd?.taxableIncome ?? grossMajor;
+  const fmt = (v) => formatMoney(v, ctx.currency, ctx.legalEntity?.locale);
+
+  const employeeIds = buildIdentifiers(template.employeeIdLabels, {}, emp.taxId || '—');
+  employeeIds.push({ label: 'Employee Code', value: String(emp.employeeCode ?? '—') });
+
+  const doc = {
+    type: formType,
+    title: template.title,
+    fiscalYear: ctx.fiscalYear,
+    jurisdiction: ctx.country,
+    authority: template.authority,
+    currency: ctx.currency,
+    employer: {
+      name: ctx.legalEntity?.name ?? 'Employer',
+      identifiers: buildIdentifiers(template.employerIdLabels, ctx.legalEntity?.registrationIds || {}),
+    },
+    employee: {
+      name: `${emp.firstName ?? ''} ${emp.lastName ?? ''}`.trim() || String(emp.employeeCode ?? ''),
+      identifiers: employeeIds,
+    },
+    sections: template.sections({
+      gross: fmt(grossMajor), taxable: fmt(taxableMajor), taxDeducted: fmt(taxDeductedMajor), net: fmt(netMajor),
+    }),
+    generatedAt: new Date().toISOString(),
   };
+  if (emp.designation) doc.employee.subtitle = emp.designation;
+  return doc;
 }
 
 const REIMBURSEMENT_CATEGORY_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4'];
