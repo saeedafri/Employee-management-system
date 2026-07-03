@@ -1,0 +1,635 @@
+{
+  "generatedAt": "2026-07-03T06:05:56.183Z",
+  "verdict": "NOT READY FOR PRODUCTION",
+  "tenants": [
+    {
+      "tenantKey": "acme-corp-001",
+      "name": "Acme Corp",
+      "country": "India",
+      "currency": "INR",
+      "employeeCount": 75,
+      "userCount": 13
+    },
+    {
+      "tenantKey": "global-payroll-litmus-001",
+      "name": "Global Payroll Litmus Co",
+      "country": "US",
+      "currency": "USD",
+      "employeeCount": 6,
+      "userCount": 6
+    },
+    {
+      "tenantKey": "kwd-litmus-001",
+      "name": "Kuwait Litmus Co",
+      "country": "KW",
+      "currency": "KWD",
+      "employeeCount": 1,
+      "userCount": 1
+    },
+    {
+      "tenantKey": "qa-regression-org-001",
+      "name": "QA Regression Org",
+      "country": "",
+      "currency": "INR",
+      "employeeCount": 13,
+      "userCount": 20
+    }
+  ],
+  "statutoryPacks": [
+    {
+      "tenantKey": "acme-corp-001",
+      "country": "IN",
+      "version": "2026.1"
+    },
+    {
+      "tenantKey": "global-payroll-litmus-001",
+      "country": "AE",
+      "version": "2026.1"
+    },
+    {
+      "tenantKey": "global-payroll-litmus-001",
+      "country": "CA",
+      "version": "2026.1"
+    },
+    {
+      "tenantKey": "global-payroll-litmus-001",
+      "country": "SA",
+      "version": "2026.1"
+    },
+    {
+      "tenantKey": "global-payroll-litmus-001",
+      "country": "SG",
+      "version": "2026.1"
+    },
+    {
+      "tenantKey": "global-payroll-litmus-001",
+      "country": "VN",
+      "version": "2026.1"
+    },
+    {
+      "tenantKey": "qa-regression-org-001",
+      "country": "IN",
+      "version": "PT_VERIFY_v1"
+    }
+  ],
+  "apiGapsCorrected": [
+    {
+      "name": "audit_logs_export",
+      "status": 500,
+      "code": "INTERNAL_SERVER_ERROR",
+      "pass": false,
+      "severity": "P0"
+    },
+    {
+      "name": "leave_create",
+      "status": 422,
+      "code": "VALIDATION_ERROR",
+      "validationErrors": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request validation failed",
+        "details": [
+          {
+            "field": "reason",
+            "message": "Reason must be at least 10 characters"
+          }
+        ],
+        "requestId": "01f224dc-7859-42df-a121-175cf428748c"
+      },
+      "pass": true
+    },
+    {
+      "name": "pay_groups_create",
+      "status": 422,
+      "code": "VALIDATION_ERROR",
+      "validationErrors": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request validation failed",
+        "details": [
+          {
+            "field": "code",
+            "message": "must have required property 'code'"
+          }
+        ],
+        "requestId": "a1d40b8b-7b08-415c-b026-c4c007ded592"
+      },
+      "pass": true
+    }
+  ],
+  "payrollEngine": [
+    {
+      "country": "IN",
+      "tenant": "acme-corp-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "country": "IN",
+      "tenant": "acme-corp-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "AE",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "AE",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "CA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "CA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "SA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "SA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "SG",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "SG",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "VN",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "VN",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "IN",
+      "tenant": "qa-regression-org-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "country": "IN",
+      "tenant": "qa-regression-org-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "GB",
+      "tenant": "N/A",
+      "check": "pack_load",
+      "pass": false,
+      "note": "DATA_GAP"
+    },
+    {
+      "country": "US",
+      "tenant": "N/A",
+      "check": "pack_load",
+      "pass": false,
+      "note": "DATA_GAP"
+    },
+    {
+      "country": "KW",
+      "tenant": "N/A",
+      "check": "pack_load",
+      "pass": false,
+      "note": "DATA_GAP"
+    }
+  ],
+  "edgeCases": {
+    "generatedAt": "2026-07-03T03:09:57.468Z",
+    "total": 20,
+    "pass": 17,
+    "fail": 3,
+    "results": [
+      {
+        "id": 1,
+        "case": "wrong_password_login",
+        "pass": true,
+        "detail": "INVALID_CREDENTIALS",
+        "at": "2026-07-03T03:08:25.964Z"
+      },
+      {
+        "id": 2,
+        "case": "cross_tenant_token_mismatch",
+        "pass": true,
+        "detail": "401 INVALID_TOKEN",
+        "at": "2026-07-03T03:08:26.315Z"
+      },
+      {
+        "id": 3,
+        "case": "unauthenticated_deep_link",
+        "pass": true,
+        "detail": "http://localhost:3001/login?next=%2Femployees%2Fcmqqf21fw00046adzo6h2a22w",
+        "screenshot": "docs/e2e-screenshots/phase4/edge/edge-unauth-deep-link-1783048109417.png",
+        "at": "2026-07-03T03:08:29.463Z"
+      },
+      {
+        "id": 4,
+        "case": "invalid_uuid_url",
+        "pass": true,
+        "detail": "api404=true errUi=true",
+        "screenshot": "docs/e2e-screenshots/phase4/edge/edge-invalid-uuid-1783048115027.png",
+        "at": "2026-07-03T03:08:35.058Z"
+      },
+      {
+        "id": 5,
+        "case": "browser_back_after_form",
+        "pass": true,
+        "detail": "http://localhost:3001/dashboard",
+        "at": "2026-07-03T03:08:40.502Z"
+      },
+      {
+        "id": 6,
+        "case": "double_click_submit",
+        "pass": true,
+        "detail": "loginPosts=1",
+        "at": "2026-07-03T03:08:44.054Z"
+      },
+      {
+        "id": 7,
+        "case": "empty_required_form_submit",
+        "pass": true,
+        "detail": "validationMarkers=3",
+        "screenshot": "docs/e2e-screenshots/phase4/edge/edge-empty-form-1783048158983.png",
+        "at": "2026-07-03T03:09:19.026Z"
+      },
+      {
+        "id": 8,
+        "case": "pagination_last_page",
+        "pass": true,
+        "detail": "page=1 status=200 items=undefined",
+        "at": "2026-07-03T03:09:19.469Z"
+      },
+      {
+        "id": 9,
+        "case": "search_special_chars",
+        "pass": true,
+        "detail": "' OR 1=1--:200; 😀测试:200; üñîçødé:200; <script>aler:200",
+        "at": "2026-07-03T03:09:20.135Z"
+      },
+      {
+        "id": 10,
+        "case": "role_forbidden_route",
+        "pass": true,
+        "detail": "denied=true api403=false url=http://localhost:3001/permissions",
+        "screenshot": "docs/e2e-screenshots/phase4/edge/edge-employee-forbidden-route-1783048165007.png",
+        "at": "2026-07-03T03:09:25.040Z"
+      },
+      {
+        "id": 11,
+        "case": "super_admin_no_employee",
+        "pass": false,
+        "detail": "STILL_BROKEN:5",
+        "severity": "P1",
+        "at": "2026-07-03T03:09:30.577Z"
+      },
+      {
+        "id": 12,
+        "case": "session_refresh_persist",
+        "pass": true,
+        "detail": "http://localhost:3001/dashboard",
+        "at": "2026-07-03T03:09:38.903Z"
+      },
+      {
+        "id": 13,
+        "case": "mobile_viewport_375",
+        "pass": true,
+        "detail": "dashboard_ok",
+        "screenshot": "docs/e2e-screenshots/phase4/edge/edge-mobile-375-1783048183587.png",
+        "at": "2026-07-03T03:09:43.620Z"
+      },
+      {
+        "id": 14,
+        "case": "large_table_scroll",
+        "pass": true,
+        "detail": "scroll_ok",
+        "at": "2026-07-03T03:09:49.133Z"
+      },
+      {
+        "id": 15,
+        "case": "file_upload_ui",
+        "pass": false,
+        "detail": "NO_EMPLOYEE_OR_LOGIN",
+        "at": "2026-07-03T03:09:49.593Z"
+      },
+      {
+        "id": 16,
+        "case": "logout_flow",
+        "pass": true,
+        "detail": "clicked=true onLogin=true logoutApi=true",
+        "screenshot": "docs/e2e-screenshots/phase4/edge/edge-logout-after-1783048194439.png",
+        "at": "2026-07-03T03:09:54.477Z"
+      },
+      {
+        "id": 17,
+        "case": "logout_relogin",
+        "pass": true,
+        "detail": "ok",
+        "at": "2026-07-03T03:09:56.771Z"
+      },
+      {
+        "id": 18,
+        "case": "testorg_tenant_login",
+        "pass": false,
+        "detail": "INVALID_CREDENTIALS",
+        "severity": "P1",
+        "at": "2026-07-03T03:09:57.008Z"
+      },
+      {
+        "id": 19,
+        "case": "auditor_role_login",
+        "pass": true,
+        "detail": "AUDITOR_OK",
+        "at": "2026-07-03T03:09:57.251Z"
+      },
+      {
+        "id": 20,
+        "case": "auditor_auth_me",
+        "pass": true,
+        "detail": "status=200",
+        "at": "2026-07-03T03:09:57.326Z"
+      }
+    ]
+  },
+  "ui": {
+    "totalButtonClicks": 2629,
+    "matrixRows": 2629,
+    "tally": {
+      "PASS": 2359,
+      "FAIL": 6,
+      "PARTIAL": 264,
+      "SKIP": 0
+    },
+    "screenshots": 5218
+  },
+  "screenshotCount": 5225,
+  "rolesTested": [
+    "HR_ADMIN",
+    "SUPER_ADMIN",
+    "MANAGER",
+    "EMPLOYEE",
+    "EMPLOYEE_DEV",
+    "EMPLOYEE_FIN",
+    "EMPLOYEE_ONLEAVE",
+    "KWD_HR",
+    "GLOBAL_HR",
+    "AUDITOR"
+  ],
+  "counts": {
+    "tenants": 4,
+    "countriesInDb": 6,
+    "apiGapTests": 14,
+    "engineChecks": 17,
+    "edgeCases": 20,
+    "edgePass": 17,
+    "buttonClicks": 2629,
+    "screenshots": 5225
+  },
+  "notTested": [
+    {
+      "item": "/resignations UI",
+      "reason": "No frontend route exists (src/app has no resignations page)"
+    },
+    {
+      "item": "testorg tenant",
+      "reason": "Tenant test-key-123456789 not on Hostinger DB"
+    },
+    {
+      "item": "GB/US statutory packs",
+      "reason": "No StatutoryPack rows for GB or US in Hostinger DB"
+    },
+    {
+      "item": "KW statutory pack",
+      "reason": "kwd-litmus-001 has no StatutoryPack row"
+    }
+  ],
+  "scripts": [
+    "scripts/phase4E2EAudit.mjs",
+    "scripts/phase4EdgeCases.mjs",
+    "scripts/phase4ExhaustiveUI.mjs"
+  ],
+  "exitCodes": {
+    "edge": 1,
+    "ui": 0
+  },
+  "apiGapsCorrected": [
+    {
+      "name": "audit_logs_export",
+      "status": 500,
+      "code": "INTERNAL_SERVER_ERROR",
+      "pass": false,
+      "severity": "P0"
+    },
+    {
+      "name": "leave_create",
+      "status": 422,
+      "code": "VALIDATION_ERROR",
+      "validationErrors": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request validation failed",
+        "details": [
+          {
+            "field": "reason",
+            "message": "Reason must be at least 10 characters"
+          }
+        ],
+        "requestId": "01f224dc-7859-42df-a121-175cf428748c"
+      },
+      "pass": true
+    },
+    {
+      "name": "pay_groups_create",
+      "status": 422,
+      "code": "VALIDATION_ERROR",
+      "validationErrors": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request validation failed",
+        "details": [
+          {
+            "field": "code",
+            "message": "must have required property 'code'"
+          }
+        ],
+        "requestId": "a1d40b8b-7b08-415c-b026-c4c007ded592"
+      },
+      "pass": true
+    }
+  ],
+  "payrollEngineCorrected": [
+    {
+      "country": "IN",
+      "tenant": "acme-corp-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "country": "IN",
+      "tenant": "acme-corp-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "AE",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "AE",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "CA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "CA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "SA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "SA",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "SG",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "SG",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "VN",
+      "tenant": "global-payroll-litmus-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 5
+    },
+    {
+      "country": "VN",
+      "tenant": "global-payroll-litmus-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "IN",
+      "tenant": "qa-regression-org-001",
+      "check": "pack_load",
+      "pass": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "country": "IN",
+      "tenant": "qa-regression-org-001",
+      "check": "draft_calculate",
+      "pass": false,
+      "note": "no_draft_run"
+    },
+    {
+      "country": "GB",
+      "tenant": "N/A",
+      "check": "pack_load",
+      "pass": false,
+      "note": "DATA_GAP"
+    },
+    {
+      "country": "US",
+      "tenant": "N/A",
+      "check": "pack_load",
+      "pass": false,
+      "note": "DATA_GAP"
+    },
+    {
+      "country": "KW",
+      "tenant": "N/A",
+      "check": "pack_load",
+      "pass": false,
+      "note": "DATA_GAP"
+    }
+  ],
+  "correctedAt": "2026-07-03T06:06:38.432Z"
+}

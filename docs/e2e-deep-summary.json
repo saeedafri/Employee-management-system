@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-07-03T02:50:00.000Z",
+  "verdict": "NOT READY FOR PRODUCTION",
+  "api": {
+    "baseUrl": "https://ems-api.saqibsaeed.cloud/api/v1",
+    "routesCatalogued": 409,
+    "getMatrixTests": 1301,
+    "pass": 811,
+    "expectedFail": 548,
+    "unexpectedFail": 14,
+    "realFailures": 1,
+    "falsePositiveShapeFails": 13,
+    "mutationProbes": 72,
+    "p1Failures": 1,
+    "loginMatrix": [
+      { "actor": "HR_ADMIN", "tenant": "acme-corp-001", "ok": true },
+      { "actor": "SUPER_ADMIN", "tenant": "acme-corp-001", "ok": true },
+      { "actor": "MANAGER", "tenant": "acme-corp-001", "ok": true },
+      { "actor": "EMPLOYEE", "tenant": "acme-corp-001", "ok": true },
+      { "actor": "EMPLOYEE_FIN", "tenant": "acme-corp-001", "ok": true },
+      { "actor": "EMPLOYEE_DEV", "tenant": "acme-corp-001", "ok": true },
+      { "actor": "KWD_HR", "tenant": "kwd-litmus-001", "ok": true },
+      { "actor": "TESTORG_HR", "tenant": "test-key-123456789", "ok": false, "error": "INVALID_CREDENTIALS" }
+    ],
+    "crossTenantIsolation": "PASS",
+    "criticalFailure": {
+      "method": "GET",
+      "path": "/audit-logs/export",
+      "actor": "SUPER_ADMIN",
+      "status": 500,
+      "code": "INTERNAL_SERVER_ERROR"
+    }
+  },
+  "crud": {
+    "total": 50,
+    "pass": 42,
+    "fail": 8,
+    "passRate": 0.84,
+    "failedOps": [
+      "leave.create",
+      "attendance.regularization",
+      "payroll.calculate",
+      "pay_components.delete",
+      "pay_groups.create",
+      "announcements.update",
+      "announcements.delete",
+      "multi_tenant.testorg_login"
+    ]
+  },
+  "engine": {
+    "total": 17,
+    "pass": 11,
+    "fail": 6,
+    "manualVerification": {
+      "IN_PF_on_PAID_run": true,
+      "IN_TDS_on_PAID_run": true,
+      "IN_ESI": "not_applicable_threshold",
+      "IN_PT": "not_applicable",
+      "grossEarnings_netPay": true
+    },
+    "failures": [
+      "IN_draft_run_calculate_mixed",
+      "KWD_admin_salary_config",
+      "automated_PF_scan_false_negative",
+      "automated_ESI_scan",
+      "automated_PT_scan",
+      "automated_gross_net_field_names"
+    ]
+  },
+  "ui": {
+    "deepInteractionsBeyondPhase2": 30,
+    "phase2BaselineClicks": 1731,
+    "newFailures": [
+      "timesheets_history_error_boundary",
+      "permissions_rbac_bypass",
+      "employee_profile_401_race"
+    ]
+  },
+  "issues": {
+    "newBackendPhase3": 8,
+    "newFrontendPhase3": 6,
+    "blockerCount": 10
+  },
+  "evidence": {
+    "apiResults": "docs/e2e-deep-api-results.json",
+    "crudResults": "docs/e2e-deep-crud-results.json",
+    "masterReport": "docs/E2E_DEEP_AUDIT.md",
+    "screenshots": "docs/e2e-screenshots/deep/",
+    "backendIssues": "docs/E2E_BACKEND_ISSUES.md#phase-3",
+    "frontendIssues": "docs/E2E_FRONTEND_ISSUES.md#phase-3"
+  },
+  "scripts": {
+    "orchestrator": "npm run test:e2e:deep",
+    "apiOnly": "npm run test:e2e:deep:api",
+    "crudOnly": "npm run test:e2e:deep:crud"
+  }
+}

@@ -4,7 +4,7 @@
 > Frontend: http://localhost:3001 | API: https://ems-api.saqibsaeed.cloud/api/v1  
 > MSW: OFF (`NEXT_PUBLIC_USE_MOCKS=false`)
 
-**Total issues: 4**
+**Total issues: 4** (Phase 1) + **45** (Phase 2) + **6** (Phase 3) = **55 documented**
 
 ---
 
@@ -549,3 +549,223 @@ Deep clickthrough (HR_ADMIN): dashboard approvals, employee CRUD, department cre
 - **Actual:** Page loads at `/permissions` without access denial — permissions matrix visible to employee role
 - **Screenshot:** Edge case captured during Phase 2 strict audit
 - **UI symptom:** Missing route guard for SUPER_ADMIN-only permissions screen
+
+## Phase 3
+
+> Deep audit: 2026-07-03T02:50:00.000Z  
+> Scripts: `scripts/deepCrudE2EAudit.mjs` (UI deep sweep — 30 new interactions beyond Phase 2's 1,731 clicks)
+
+**New issues this phase: 6**
+
+### P3-1. Timesheets History — error boundary on 403 (EMPLOYEE)
+
+- **Severity:** P1
+- **Classification:** Frontend
+- **Steps:** Login `priya@acme.test`, `/timesheets`, click **History** tab
+- **Expected:** Friendly "not authorized" message; no crash (backend correctly returns 403 for `GET /timesheets/audit`)
+- **Actual:** Error boundary — "Something went wrong"
+- **API endpoint:** `GET /timesheets/audit` → 403 (correct RBAC)
+- **Screenshot:** `docs/e2e-screenshots/deep/employee-timesheets-history-2026-07-03T02-47-02.png`
+
+### P3-2. Timesheets History — error boundary on 403 (EMPLOYEE_DEV)
+
+- **Severity:** P1
+- **Classification:** Frontend
+- **Steps:** Login `dev1@acme.test`, `/timesheets`, click **History**
+- **Expected:** Graceful unauthorized state
+- **Actual:** Error boundary on 403
+- **Screenshot:** `docs/e2e-screenshots/deep/employee-dev-timesheets-history-2026-07-03T02-47-10.png`
+
+### P3-3. Permissions page — EMPLOYEE RBAC bypass (reconfirmed)
+
+- **Severity:** P1
+- **Classification:** Frontend (RBAC)
+- **Steps:** Login `priya@acme.test`, navigate directly to `/permissions`
+- **Expected:** Redirect or forbidden state; nav hidden
+- **Actual:** Permissions matrix loads without access denial
+- **Note:** First flagged Phase 2; Phase 3 deep sweep reconfirmed
+
+### P3-4. SUPER_ADMIN attendance — UI calls employee-scoped APIs (reconfirmed)
+
+- **Severity:** P1
+- **Classification:** Frontend
+- **Steps:** Login `superadmin@acme.test`, `/attendance`
+- **Expected:** UI detects missing `employeeId`, shows admin/team view without calling `/me/` attendance endpoints
+- **Actual:** Calls employee-scoped endpoints → backend 400 `NO_EMPLOYEE_RECORD`
+- **Screenshot:** `docs/e2e-screenshots/deep/super-admin-attendance-fail-2026-07-03T02-46-49.png`
+
+### P3-5. Employee profile tabs — 401 auth race (HR_ADMIN)
+
+- **Severity:** P2
+- **Classification:** Frontend (auth/session)
+- **Steps:** HR_ADMIN opens employee profile, clicks Job/Documents/Compensation tabs rapidly
+- **Expected:** No 401s during authenticated session
+- **Actual:** `GET /api/auth/me` 401 + `POST /api/auth/refresh` `REFRESH_TOKEN_MISSING` logged during tab switches
+- **Screenshot:** `docs/e2e-screenshots/deep/hr-admin-employee-profile-tabs-2026-07-03T02-45-34.png`
+
+### P3-6. Performance module — duplicate React keys (reconfirmed across roles)
+
+- **Severity:** P2
+- **Classification:** Frontend
+- **Steps:** Any admin role on `/performance` — console shows duplicate key warnings
+- **Expected:** Unique keys per list item
+- **Actual:** `Encountered two children with the same key` (employee ID `cmqjpydv6002ykpjdw0kveq0p`)
+- **Note:** Phase 1/2 issue; still present in Phase 3 console capture
+
+
+## Phase 4
+
+> Phase 4 exhaustive audit: 2026-07-03T06:05:56.190Z
+> Scripts: `scripts/phase4E2EAudit.mjs`, `phase4EdgeCases.mjs`, `phase4ExhaustiveUI.mjs`
+
+**New issues this phase: 25**
+
+### P4F-1. /performance — "Switch to light mode"
+
+- **Severity:** P2
+- **Area:** /performance — "Switch to light mode"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-switch-to-light-mode-after.png`
+
+### P4F-2. /performance — "1"
+
+- **Severity:** P2
+- **Area:** /performance — "1"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-1-after.png`
+
+### P4F-3. /performance — "HA"
+
+- **Severity:** P2
+- **Area:** /performance — "HA"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-ha-after.png`
+
+### P4F-4. /performance — "Export"
+
+- **Severity:** P2
+- **Area:** /performance — "Export"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-export-after.png`
+
+### P4F-5. /performance — "Start a Review"
+
+- **Severity:** P2
+- **Area:** /performance — "Start a Review"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-start-a-review-after.png`
+
+### P4F-6. /performance — "Reviews"
+
+- **Severity:** P2
+- **Area:** /performance — "Reviews"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-reviews-after.png`
+
+### P4F-7. /performance — "Goals"
+
+- **Severity:** P2
+- **Area:** /performance — "Goals"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-goals-after.png`
+
+### P4F-8. /performance — "Calibration"
+
+- **Severity:** P2
+- **Area:** /performance — "Calibration"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-calibration-after.png`
+
+### P4F-9. /performance — "All departments"
+
+- **Severity:** P2
+- **Area:** /performance — "All departments"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-all-departments-after.png`
+
+### P4F-10. /performance — "Filter"
+
+- **Severity:** P2
+- **Area:** /performance — "Filter"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-filter-after.png`
+
+### P4F-11. /performance — "View"
+
+- **Severity:** P2
+- **Area:** /performance — "View"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-view-after.png`
+
+### P4F-12. /performance — "Open"
+
+- **Severity:** P2
+- **Area:** /performance — "Open"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-open-after.png`
+
+### P4F-13. /performance — "Review"
+
+- **Severity:** P2
+- **Area:** /performance — "Review"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-HR_ADMIN-performance-review-after.png`
+
+### P4F-14. /performance — "Switch to light mode"
+
+- **Severity:** P2
+- **Area:** /performance — "Switch to light mode"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-switch-to-light-mode-after.png`
+
+### P4F-15. /performance — "7"
+
+- **Severity:** P2
+- **Area:** /performance — "7"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-7-after.png`
+
+### P4F-16. /performance — "S"
+
+- **Severity:** P2
+- **Area:** /performance — "S"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-s-after.png`
+
+### P4F-17. /performance — "Export"
+
+- **Severity:** P2
+- **Area:** /performance — "Export"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-export-after.png`
+
+### P4F-18. /performance — "Start a Review"
+
+- **Severity:** P2
+- **Area:** /performance — "Start a Review"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-start-a-review-after.png`
+
+### P4F-19. /performance — "Reviews"
+
+- **Severity:** P2
+- **Area:** /performance — "Reviews"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-reviews-after.png`
+
+### P4F-20. /performance — "Goals"
+
+- **Severity:** P2
+- **Area:** /performance — "Goals"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-goals-after.png`
+
+### P4F-21. /performance — "Calibration"
+
+- **Severity:** P2
+- **Area:** /performance — "Calibration"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-calibration-after.png`
+
+### P4F-22. /performance — "All departments"
+
+- **Severity:** P2
+- **Area:** /performance — "All departments"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-all-departments-after.png`
+
+### P4F-23. /performance — "Filter"
+
+- **Severity:** P2
+- **Area:** /performance — "Filter"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-filter-after.png`
+
+### P4F-24. /performance — "View"
+
+- **Severity:** P2
+- **Area:** /performance — "View"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-view-after.png`
+
+### P4F-25. /performance — "Open"
+
+- **Severity:** P2
+- **Area:** /performance — "Open"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-performance-open-after.png`

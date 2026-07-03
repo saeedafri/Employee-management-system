@@ -1,0 +1,667 @@
+{
+  "generatedAt": "2026-07-03T02:47:16.689Z",
+  "crud": {
+    "total": 50,
+    "pass": 42,
+    "fail": 8,
+    "results": [
+      {
+        "module": "departments",
+        "op": "create",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bz8t0001jgrlnxdxg7d9k",
+        "at": "2026-07-03T02:45:17.832Z"
+      },
+      {
+        "module": "departments",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:18.108Z"
+      },
+      {
+        "module": "departments",
+        "op": "update",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:18.204Z"
+      },
+      {
+        "module": "departments",
+        "op": "delete",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:18.279Z"
+      },
+      {
+        "module": "holidays",
+        "op": "create",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bz97u001lgrln6s4enzgt",
+        "at": "2026-07-03T02:45:18.361Z"
+      },
+      {
+        "module": "holidays",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:18.435Z"
+      },
+      {
+        "module": "holidays",
+        "op": "update",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:18.511Z"
+      },
+      {
+        "module": "holidays",
+        "op": "delete",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:18.628Z"
+      },
+      {
+        "module": "announcements",
+        "op": "create",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bz9hj001ngrlnwgxdql15",
+        "at": "2026-07-03T02:45:18.711Z"
+      },
+      {
+        "module": "announcements",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:18.785Z"
+      },
+      {
+        "module": "announcements",
+        "op": "update",
+        "pass": false,
+        "status": 404,
+        "at": "2026-07-03T02:45:18.863Z"
+      },
+      {
+        "module": "announcements",
+        "op": "delete",
+        "pass": false,
+        "status": 404,
+        "at": "2026-07-03T02:45:18.945Z"
+      },
+      {
+        "module": "pay_components",
+        "op": "create",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bz9qg001pgrlngv99hunj",
+        "at": "2026-07-03T02:45:19.031Z"
+      },
+      {
+        "module": "pay_components",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:19.115Z"
+      },
+      {
+        "module": "pay_components",
+        "op": "update",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:19.194Z"
+      },
+      {
+        "module": "pay_components",
+        "op": "delete",
+        "pass": false,
+        "status": 403,
+        "at": "2026-07-03T02:45:19.280Z"
+      },
+      {
+        "module": "pay_groups",
+        "op": "create",
+        "pass": false,
+        "status": 422,
+        "at": "2026-07-03T02:45:19.454Z"
+      },
+      {
+        "module": "settings",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:19.551Z"
+      },
+      {
+        "module": "settings",
+        "op": "update",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:19.648Z"
+      },
+      {
+        "module": "employees",
+        "op": "create",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bzad0001ugrlncvnb5krk",
+        "at": "2026-07-03T02:45:19.850Z"
+      },
+      {
+        "module": "employees",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:19.933Z"
+      },
+      {
+        "module": "employees",
+        "op": "update",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:20.026Z"
+      },
+      {
+        "module": "employees",
+        "op": "documents_read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:20.115Z"
+      },
+      {
+        "module": "employees",
+        "op": "soft_delete",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:20.208Z"
+      },
+      {
+        "module": "assets",
+        "op": "create",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bzapq001ygrlneqzbx3hy",
+        "at": "2026-07-03T02:45:20.303Z"
+      },
+      {
+        "module": "assets",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:20.378Z"
+      },
+      {
+        "module": "payroll",
+        "op": "create_draft",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bzb1a0020grln6910vymg",
+        "at": "2026-07-03T02:45:20.720Z"
+      },
+      {
+        "module": "payroll",
+        "op": "read_detail",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:20.805Z"
+      },
+      {
+        "module": "payroll",
+        "op": "calculate",
+        "pass": false,
+        "status": 202,
+        "at": "2026-07-03T02:45:20.895Z"
+      },
+      {
+        "module": "legal_entities",
+        "op": "create",
+        "pass": true,
+        "status": 201,
+        "id": "cmr4bzbhh002egrlnel53pfw1",
+        "at": "2026-07-03T02:45:21.302Z"
+      },
+      {
+        "module": "legal_entities",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.380Z"
+      },
+      {
+        "module": "legal_entities",
+        "op": "update",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.470Z"
+      },
+      {
+        "module": "leave",
+        "op": "create",
+        "pass": false,
+        "status": 400,
+        "at": "2026-07-03T02:45:21.628Z"
+      },
+      {
+        "module": "leave",
+        "op": "read_balance",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.719Z"
+      },
+      {
+        "module": "leave",
+        "op": "read_list",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.795Z"
+      },
+      {
+        "module": "attendance",
+        "op": "check_in",
+        "pass": true,
+        "status": 400,
+        "code": "ALREADY_CHECKED_IN",
+        "at": "2026-07-03T02:45:21.877Z"
+      },
+      {
+        "module": "attendance",
+        "op": "read_records",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.959Z"
+      },
+      {
+        "module": "attendance",
+        "op": "regularization",
+        "pass": false,
+        "status": 422,
+        "at": "2026-07-03T02:45:22.033Z"
+      },
+      {
+        "module": "notifications",
+        "op": "read_list",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:22.135Z"
+      },
+      {
+        "module": "notifications",
+        "op": "unread_count",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:22.223Z"
+      },
+      {
+        "module": "notifications",
+        "op": "mark_read",
+        "pass": true,
+        "note": "no notifications to mark",
+        "at": "2026-07-03T02:45:22.223Z"
+      },
+      {
+        "module": "timesheets",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:22.301Z"
+      },
+      {
+        "module": "timesheets",
+        "op": "locks_read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:22.367Z"
+      },
+      {
+        "module": "timesheets",
+        "op": "history_employee_403",
+        "pass": true,
+        "status": 403,
+        "at": "2026-07-03T02:45:22.445Z"
+      },
+      {
+        "module": "timesheets",
+        "op": "history_manager",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:22.520Z"
+      },
+      {
+        "module": "multi_tenant",
+        "op": "testorg_login",
+        "pass": false,
+        "status": 401,
+        "error": "INVALID_CREDENTIALS",
+        "at": "2026-07-03T02:45:23.044Z"
+      },
+      {
+        "module": "statutory_packs",
+        "op": "read_IN",
+        "pass": true,
+        "status": 200,
+        "count": 1,
+        "at": "2026-07-03T02:45:23.125Z"
+      },
+      {
+        "module": "statutory_packs",
+        "op": "read_KW",
+        "pass": true,
+        "status": 200,
+        "count": 1,
+        "at": "2026-07-03T02:45:23.200Z"
+      },
+      {
+        "module": "leave_types",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:23.357Z"
+      },
+      {
+        "module": "leave_policies",
+        "op": "read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:23.357Z"
+      }
+    ]
+  },
+  "engine": {
+    "total": 17,
+    "pass": 11,
+    "fail": 6,
+    "results": [
+      {
+        "name": "IN_statutory_packs_list",
+        "pass": true,
+        "count": 1,
+        "at": "2026-07-03T02:45:20.456Z"
+      },
+      {
+        "name": "IN_employee_with_salary",
+        "pass": true,
+        "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+        "at": "2026-07-03T02:45:20.552Z"
+      },
+      {
+        "name": "IN_salary_config_read",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:20.625Z"
+      },
+      {
+        "name": "IN_payslips_after_calculate",
+        "pass": true,
+        "count": 4,
+        "at": "2026-07-03T02:45:20.989Z"
+      },
+      {
+        "name": "IN_PF_component",
+        "pass": false,
+        "note": "missing in payslip",
+        "at": "2026-07-03T02:45:20.989Z"
+      },
+      {
+        "name": "IN_ESI_component",
+        "pass": false,
+        "note": "missing (may be below threshold)",
+        "at": "2026-07-03T02:45:20.989Z"
+      },
+      {
+        "name": "IN_PT_component",
+        "pass": false,
+        "note": "missing",
+        "at": "2026-07-03T02:45:20.989Z"
+      },
+      {
+        "name": "IN_TDS_component",
+        "pass": false,
+        "note": "missing",
+        "at": "2026-07-03T02:45:20.989Z"
+      },
+      {
+        "name": "IN_gross_net_present",
+        "pass": false,
+        "net": 61258,
+        "at": "2026-07-03T02:45:20.989Z"
+      },
+      {
+        "name": "IN_bank_file_export",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.063Z"
+      },
+      {
+        "name": "IN_statutory_return",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.139Z"
+      },
+      {
+        "name": "IN_run_cancel_cleanup",
+        "pass": true,
+        "status": 200,
+        "at": "2026-07-03T02:45:21.223Z"
+      },
+      {
+        "name": "KWD_currency",
+        "pass": true,
+        "currency": "KWD",
+        "at": "2026-07-03T02:45:22.611Z"
+      },
+      {
+        "name": "KWD_work_week_SUN",
+        "pass": true,
+        "workWeek": [
+          "SUN",
+          "MON",
+          "TUE",
+          "WED",
+          "THU"
+        ],
+        "at": "2026-07-03T02:45:22.611Z"
+      },
+      {
+        "name": "KWD_statutory_packs",
+        "pass": true,
+        "count": 0,
+        "at": "2026-07-03T02:45:22.685Z"
+      },
+      {
+        "name": "KWD_admin_salary_config",
+        "pass": false,
+        "status": 404,
+        "code": "NOT_FOUND",
+        "at": "2026-07-03T02:45:22.874Z"
+      },
+      {
+        "name": "KWD_week_config",
+        "pass": true,
+        "weekStartDay": 0,
+        "at": "2026-07-03T02:45:22.968Z"
+      }
+    ]
+  },
+  "ui": {
+    "interactions": 30,
+    "results": [
+      {
+        "role": "HR_ADMIN",
+        "area": "employee_tab_job",
+        "pass": false,
+        "apis": [
+          {
+            "url": "http://localhost:3001/api/auth/me",
+            "status": 401,
+            "method": "GET",
+            "code": "UNAUTHORIZED"
+          },
+          {
+            "url": "http://localhost:3001/api/auth/refresh",
+            "status": 401,
+            "method": "POST",
+            "code": "REFRESH_TOKEN_MISSING"
+          }
+        ]
+      },
+      {
+        "role": "HR_ADMIN",
+        "area": "employee_tab_documents",
+        "pass": false,
+        "apis": [
+          {
+            "url": "http://localhost:3001/api/auth/me",
+            "status": 401,
+            "method": "GET",
+            "code": "UNAUTHORIZED"
+          },
+          {
+            "url": "http://localhost:3001/api/auth/refresh",
+            "status": 401,
+            "method": "POST",
+            "code": "REFRESH_TOKEN_MISSING"
+          }
+        ]
+      },
+      {
+        "role": "HR_ADMIN",
+        "area": "employee_tab_compensation",
+        "pass": false,
+        "apis": [
+          {
+            "url": "http://localhost:3001/api/auth/me",
+            "status": 401,
+            "method": "GET",
+            "code": "UNAUTHORIZED"
+          },
+          {
+            "url": "http://localhost:3001/api/auth/refresh",
+            "status": 401,
+            "method": "POST",
+            "code": "REFRESH_TOKEN_MISSING"
+          }
+        ]
+      },
+      {
+        "role": "HR_ADMIN",
+        "area": "employee_profile",
+        "screenshot": "docs/e2e-screenshots/deep/hr-admin-employee-profile-tabs-2026-07-03T02-45-34.png"
+      },
+      {
+        "role": "SUPER_ADMIN",
+        "area": "attendance_admin_no_employee",
+        "pass": true,
+        "apis": [
+          {
+            "url": "http://localhost:3001/api/attendance/records?month=2026-07&limit=31",
+            "status": 400,
+            "method": "GET",
+            "code": "NO_EMPLOYEE_RECORD"
+          },
+          {
+            "url": "http://localhost:3001/api/attendance/calendar?month=2026-07",
+            "status": 400,
+            "method": "GET",
+            "code": "NO_EMPLOYEE_RECORD"
+          },
+          {
+            "url": "http://localhost:3001/api/attendance/today",
+            "status": 400,
+            "method": "GET",
+            "code": "NO_EMPLOYEE_RECORD"
+          }
+        ],
+        "errorBoundary": false
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "timesheets_history",
+        "pass": false,
+        "errorBoundary": true,
+        "audit403": true
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "permissions_rbac",
+        "pass": false,
+        "onPage": true,
+        "forbidden": false
+      },
+      {
+        "role": "EMPLOYEE_DEV",
+        "area": "timesheets_history",
+        "pass": false,
+        "errorBoundary": true,
+        "audit403": true
+      }
+    ]
+  },
+  "backendIssues": [
+    {
+      "id": "P3-BE-kwd-salary-missing",
+      "severity": "P1",
+      "endpoint": "GET /payroll/employees/cmqqf21fw00046adzo6h2a22w/salary",
+      "note": "KWD admin has no salary configuration"
+    },
+    {
+      "id": "P3-BE-testorg-login",
+      "severity": "P1",
+      "endpoint": "POST /auth/login",
+      "note": "testorg login failed: INVALID_CREDENTIALS"
+    },
+    {
+      "id": "P3-BE-superadmin-attendance-400",
+      "severity": "P1",
+      "area": "/attendance",
+      "apis": [
+        {
+          "url": "http://localhost:3001/api/attendance/records?month=2026-07&limit=31",
+          "status": 400,
+          "method": "GET",
+          "code": "NO_EMPLOYEE_RECORD"
+        },
+        {
+          "url": "http://localhost:3001/api/attendance/calendar?month=2026-07",
+          "status": 400,
+          "method": "GET",
+          "code": "NO_EMPLOYEE_RECORD"
+        },
+        {
+          "url": "http://localhost:3001/api/attendance/today",
+          "status": 400,
+          "method": "GET",
+          "code": "NO_EMPLOYEE_RECORD"
+        }
+      ]
+    }
+  ],
+  "frontendIssues": [
+    {
+      "id": "P3-FE-superadmin-attendance",
+      "severity": "P1",
+      "area": "/attendance",
+      "screenshot": "docs/e2e-screenshots/deep/super-admin-attendance-fail-2026-07-03T02-46-49.png"
+    },
+    {
+      "id": "P3-FE-timesheets-history-EMPLOYEE",
+      "severity": "P1",
+      "area": "/timesheets History",
+      "screenshot": "docs/e2e-screenshots/deep/employee-timesheets-history-2026-07-03T02-47-02.png"
+    },
+    {
+      "id": "P3-FE-employee-permissions",
+      "severity": "P1",
+      "area": "/permissions",
+      "note": "EMPLOYEE can access permissions page"
+    },
+    {
+      "id": "P3-FE-timesheets-history-EMPLOYEE_DEV",
+      "severity": "P1",
+      "area": "/timesheets History",
+      "screenshot": "docs/e2e-screenshots/deep/employee-dev-timesheets-history-2026-07-03T02-47-10.png"
+    }
+  ]
+}

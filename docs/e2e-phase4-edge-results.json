@@ -1,0 +1,156 @@
+{
+  "generatedAt": "2026-07-03T03:09:57.468Z",
+  "total": 20,
+  "pass": 17,
+  "fail": 3,
+  "results": [
+    {
+      "id": 1,
+      "case": "wrong_password_login",
+      "pass": true,
+      "detail": "INVALID_CREDENTIALS",
+      "at": "2026-07-03T03:08:25.964Z"
+    },
+    {
+      "id": 2,
+      "case": "cross_tenant_token_mismatch",
+      "pass": true,
+      "detail": "401 INVALID_TOKEN",
+      "at": "2026-07-03T03:08:26.315Z"
+    },
+    {
+      "id": 3,
+      "case": "unauthenticated_deep_link",
+      "pass": true,
+      "detail": "http://localhost:3001/login?next=%2Femployees%2Fcmqqf21fw00046adzo6h2a22w",
+      "screenshot": "docs/e2e-screenshots/phase4/edge/edge-unauth-deep-link-1783048109417.png",
+      "at": "2026-07-03T03:08:29.463Z"
+    },
+    {
+      "id": 4,
+      "case": "invalid_uuid_url",
+      "pass": true,
+      "detail": "api404=true errUi=true",
+      "screenshot": "docs/e2e-screenshots/phase4/edge/edge-invalid-uuid-1783048115027.png",
+      "at": "2026-07-03T03:08:35.058Z"
+    },
+    {
+      "id": 5,
+      "case": "browser_back_after_form",
+      "pass": true,
+      "detail": "http://localhost:3001/dashboard",
+      "at": "2026-07-03T03:08:40.502Z"
+    },
+    {
+      "id": 6,
+      "case": "double_click_submit",
+      "pass": true,
+      "detail": "loginPosts=1",
+      "at": "2026-07-03T03:08:44.054Z"
+    },
+    {
+      "id": 7,
+      "case": "empty_required_form_submit",
+      "pass": true,
+      "detail": "validationMarkers=3",
+      "screenshot": "docs/e2e-screenshots/phase4/edge/edge-empty-form-1783048158983.png",
+      "at": "2026-07-03T03:09:19.026Z"
+    },
+    {
+      "id": 8,
+      "case": "pagination_last_page",
+      "pass": true,
+      "detail": "page=1 status=200 items=undefined",
+      "at": "2026-07-03T03:09:19.469Z"
+    },
+    {
+      "id": 9,
+      "case": "search_special_chars",
+      "pass": true,
+      "detail": "' OR 1=1--:200; 😀测试:200; üñîçødé:200; <script>aler:200",
+      "at": "2026-07-03T03:09:20.135Z"
+    },
+    {
+      "id": 10,
+      "case": "role_forbidden_route",
+      "pass": true,
+      "detail": "denied=true api403=false url=http://localhost:3001/permissions",
+      "screenshot": "docs/e2e-screenshots/phase4/edge/edge-employee-forbidden-route-1783048165007.png",
+      "at": "2026-07-03T03:09:25.040Z"
+    },
+    {
+      "id": 11,
+      "case": "super_admin_no_employee",
+      "pass": false,
+      "detail": "STILL_BROKEN:5",
+      "severity": "P1",
+      "at": "2026-07-03T03:09:30.577Z"
+    },
+    {
+      "id": 12,
+      "case": "session_refresh_persist",
+      "pass": true,
+      "detail": "http://localhost:3001/dashboard",
+      "at": "2026-07-03T03:09:38.903Z"
+    },
+    {
+      "id": 13,
+      "case": "mobile_viewport_375",
+      "pass": true,
+      "detail": "dashboard_ok",
+      "screenshot": "docs/e2e-screenshots/phase4/edge/edge-mobile-375-1783048183587.png",
+      "at": "2026-07-03T03:09:43.620Z"
+    },
+    {
+      "id": 14,
+      "case": "large_table_scroll",
+      "pass": true,
+      "detail": "scroll_ok",
+      "at": "2026-07-03T03:09:49.133Z"
+    },
+    {
+      "id": 15,
+      "case": "file_upload_ui",
+      "pass": false,
+      "detail": "NO_EMPLOYEE_OR_LOGIN",
+      "at": "2026-07-03T03:09:49.593Z"
+    },
+    {
+      "id": 16,
+      "case": "logout_flow",
+      "pass": true,
+      "detail": "clicked=true onLogin=true logoutApi=true",
+      "screenshot": "docs/e2e-screenshots/phase4/edge/edge-logout-after-1783048194439.png",
+      "at": "2026-07-03T03:09:54.477Z"
+    },
+    {
+      "id": 17,
+      "case": "logout_relogin",
+      "pass": true,
+      "detail": "ok",
+      "at": "2026-07-03T03:09:56.771Z"
+    },
+    {
+      "id": 18,
+      "case": "testorg_tenant_login",
+      "pass": false,
+      "detail": "INVALID_CREDENTIALS",
+      "severity": "P1",
+      "at": "2026-07-03T03:09:57.008Z"
+    },
+    {
+      "id": 19,
+      "case": "auditor_role_login",
+      "pass": true,
+      "detail": "AUDITOR_OK",
+      "at": "2026-07-03T03:09:57.251Z"
+    },
+    {
+      "id": 20,
+      "case": "auditor_auth_me",
+      "pass": true,
+      "detail": "status=200",
+      "at": "2026-07-03T03:09:57.326Z"
+    }
+  ]
+}

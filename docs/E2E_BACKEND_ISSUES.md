@@ -5,7 +5,7 @@
 > MSW: OFF (`NEXT_PUBLIC_USE_MOCKS=false`)  
 > MFA fix applied: disabled `mfaEnabled` for `aman@acme.test` and `priya@acme.test` on Hostinger Postgres
 
-**Total issues: 4**
+**Total issues: 4** (Phase 1) + **16** (Phase 2) + **8** (Phase 3) = **28 documented**
 
 ---
 
@@ -253,3 +253,270 @@ All 27 phase checks **PASSED** including health, all role logins, HR endpoints, 
 - **Actual:** ERROR_BOUNDARY; API 403 /api/timesheets/audit
 - **API:** `/api/timesheets/audit` status `403`
 - **Screenshot:** `docs/e2e-screenshots/strict/acme-EMPLOYEE_DEV-timesheets-history-after.png`
+
+## Phase 3
+
+> Deep audit: 2026-07-03T02:50:00.000Z  
+> Scripts: `scripts/deepApiAudit.mjs`, `scripts/deepCrudE2EAudit.mjs`, `npm run test:e2e:deep`  
+> API matrix: 409 routes × 6 acme roles + KWD payroll subset = **1,301 GET tests** + **72 mutation probes**
+
+**New issues this phase: 8**
+
+### P3-1. Audit Logs Export — 500 Internal Server Error
+
+- **Severity:** P0
+- **Classification:** Backend
+- **Steps:** Login as `superadmin@acme.test`, `GET /audit-logs/export` with Bearer token + `x-tenant-key: acme-corp-001`
+- **Expected:** 200 with CSV/stream export body
+- **Actual:** 500 `INTERNAL_SERVER_ERROR` — `{"success":false,"error":{"code":"INTERNAL_SERVER_ERROR","message":"An unexpected error occurred"}}`
+- **API endpoint:** `GET /audit-logs/export`
+- **Evidence:** `docs/e2e-deep-api-results.json` → `summary.failures[0]`; reproduced live 2026-07-03
+
+### P3-2. Multi-tenant — testorg login still invalid
+
+- **Severity:** P1
+- **Classification:** Backend (data/seed)
+- **Steps:** `POST /auth/login` with `admin@testorg.com` / `password123` + tenant `test-key-123456789`
+- **Expected:** accessToken for HR_ADMIN secondary tenant
+- **Actual:** 401 `INVALID_CREDENTIALS`
+- **API endpoint:** `POST /auth/login`
+- **Evidence:** API login matrix + CRUD `multi_tenant.testorg_login`
+
+### P3-3. KWD tenant — admin employee missing salary config
+
+- **Severity:** P1
+- **Classification:** Backend (data)
+- **Steps:** Login `admin@kwd.test` (tenant `kwd-litmus-001`), `GET /payroll/employees/{adminEmployeeId}/salary`
+- **Expected:** 200 with salary configuration for KWD litmus admin
+- **Actual:** 404 `NOT_FOUND` — "No salary configuration found for this employee"
+- **API endpoint:** `GET /payroll/employees/cmqqf21fw00046adzo6h2a22w/salary`
+- **Evidence:** `docs/e2e-deep-crud-results.json` → engine `KWD_admin_salary_config`
+
+### P3-4. SUPER_ADMIN — NO_EMPLOYEE_RECORD on attendance APIs (confirmed)
+
+- **Severity:** P1
+- **Classification:** Backend
+- **Steps:** Login `superadmin@acme.test` (no linked employee), navigate `/attendance`
+- **Expected:** Admin-scoped team/org view or graceful empty state (200)
+- **Actual:** 400 on `GET /attendance/today`, `/attendance/records`, `/attendance/calendar` — `NO_EMPLOYEE_RECORD`
+- **API endpoint:** `GET /attendance/today`, `GET /attendance/records`, `GET /attendance/calendar`
+- **Screenshot:** `docs/e2e-screenshots/deep/super-admin-attendance-fail-2026-07-03T02-46-49.png`
+
+### P3-5. Payroll engine — statutory pack not resolved for employees
+
+- **Severity:** P1
+- **Classification:** Backend (payroll engine / data)
+- **Steps:** Inspect `GET /payroll/runs/{id}` for 2026-06 REVIEW run after calculate
+- **Expected:** All active employees with salary config have statutory pack resolved; PF/ESI/PT/TDS computed
+- **Actual:** Run warnings include `"No statutory pack resolved — statutory contributions skipped"` for multiple employees; 60+ employees skipped with `"No salary config assigned"`
+- **API endpoint:** `GET /payroll/runs/:id` (summary.warnings)
+- **Note:** Manual verification on **2026-05 PAID** run shows PF + TDS present on payslip detail for configured employees; ESI/PT absent for test employee (may be threshold). Engine partially works but data coverage incomplete.
+
+### P3-6. Payroll calculate — 422 on some draft runs
+
+- **Severity:** P2
+- **Classification:** Backend
+- **Steps:** Create draft run `POST /payroll/runs` then `POST /payroll/runs/:id/calculate`
+- **Expected:** 200 calculate success
+- **Actual:** 422 `VALIDATION_ERROR` on calculate for some newly created DRAFT runs (period conflicts / RUN_EXISTS 409 on duplicate periods)
+- **API endpoint:** `POST /payroll/runs/:id/calculate`
+- **Evidence:** CRUD `payroll.calculate` fail; live probe on CANCELLED placeholder run returned 422
+
+### P3-7. Pay component delete — 403 for HR_ADMIN
+
+- **Severity:** P2
+- **Classification:** Backend (RBAC — verify intent)
+- **Steps:** HR_ADMIN creates component via `POST /payroll/components`, then `DELETE /payroll/components/:id`
+- **Expected:** 200/204 delete for HR_ADMIN if UI allows delete
+- **Actual:** 403 Forbidden
+- **API endpoint:** `DELETE /payroll/components/:id`
+- **Evidence:** CRUD `pay_components.delete` status 403
+
+### P3-8. Storage Integration — provider field still missing (reconfirmed)
+
+- **Severity:** P2
+- **Classification:** Backend
+- **Steps:** `GET /settings/integrations/storage` as HR_ADMIN
+- **Expected:** `{ provider: "cloudinary", configured: true, cloudName: "..." }`
+- **Actual:** `provider` undefined in response (Phase 1 issue, reconfirmed in settings sweep)
+- **API endpoint:** `GET /settings/integrations/storage`
+
+
+## Phase 4
+
+> Phase 4 exhaustive audit: 2026-07-03T06:05:56.189Z
+> Scripts: `scripts/phase4E2EAudit.mjs`, `phase4EdgeCases.mjs`, `phase4ExhaustiveUI.mjs`
+
+**New issues this phase: 25**
+
+### P4B-1. audit_logs_export
+
+- **Severity:** P0
+- **API endpoint:** `GET /audit-logs/export`
+- **Actual:** 500 INTERNAL_SERVER_ERROR
+
+### P4B-2. leave_create_validation
+
+- **Severity:** P1
+- **API endpoint:** `POST /leave/requests`
+- **Actual:** 404 LEAVE_TYPE_NOT_FOUND
+- **Detail:** {}
+
+### P4B-3. pay_groups_create
+
+- **Severity:** P1
+- **API endpoint:** `POST /payroll/pay-groups`
+- **Actual:** 404 
+
+### P4B-4. announcements_update
+
+- **Severity:** P1
+- **API endpoint:** `announcements_update`
+- **Actual:** undefined 
+- **Detail:** no announcement to test
+
+### P4B-5. announcements_delete
+
+- **Severity:** P1
+- **API endpoint:** `announcements_delete`
+- **Actual:** undefined 
+- **Detail:** no announcement to test
+
+### P4B-6. testorg_login
+
+- **Severity:** P1
+- **API endpoint:** `testorg_login`
+- **Actual:** 401 INVALID_CREDENTIALS
+
+### P4B-7. /attendance — "Switch to dark mode"
+
+- **Severity:** P1
+- **API endpoint:** `/api/attendance/records`
+- **Area:** /attendance — "Switch to dark mode"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-attendance-switch-to-dark-mode-after.png`
+
+### P4B-8. /attendance — "Previous month"
+
+- **Severity:** P1
+- **API endpoint:** `/api/attendance/records`
+- **Area:** /attendance — "Previous month"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-attendance-previous-month-after.png`
+
+### P4B-9. /attendance — "Next month"
+
+- **Severity:** P1
+- **API endpoint:** `/api/attendance/records`
+- **Area:** /attendance — "Next month"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-attendance-next-month-after.png`
+
+### P4B-10. /attendance — "Table"
+
+- **Severity:** P1
+- **API endpoint:** `/api/attendance/calendar`
+- **Area:** /attendance — "Table"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-attendance-table-after.png`
+
+### P4B-11. /timesheets — "Copy last week"
+
+- **Severity:** P0
+- **API endpoint:** `/api/timesheets/copy-week`
+- **Area:** /timesheets — "Copy last week"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-SUPER_ADMIN-timesheets-copy-last-week-after.png`
+
+### P4B-12. /employees — "Priya Sharma"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpyds7001kkpjdnlhjygrp`
+- **Area:** /employees — "Priya Sharma"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-priya-sharma-after.png`
+
+### P4B-13. /employees — "Rajesh Sharma"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydtj0022kpjd7hbikivl`
+- **Area:** /employees — "Rajesh Sharma"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-rajesh-sharma-after.png`
+
+### P4B-14. /employees — "Neha Kumar"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydtv0028kpjdz9s1w2kl`
+- **Area:** /employees — "Neha Kumar"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-neha-kumar-after.png`
+
+### P4B-15. /employees — "Arjun Malhotra"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydu5002ekpjdjxysqafe`
+- **Area:** /employees — "Arjun Malhotra"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-arjun-malhotra-after.png`
+
+### P4B-16. /employees — "Zara Bhat"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpyduf002kkpjdj5cnqitt`
+- **Area:** /employees — "Zara Bhat"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-zara-bhat-after.png`
+
+### P4B-17. /employees — "Nikhil Patel"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydur002qkpjdqk63skk3`
+- **Area:** /employees — "Nikhil Patel"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-nikhil-patel-after.png`
+
+### P4B-18. /employees — "Ritika Gupta"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydv2002wkpjdrwzyc9lr`
+- **Area:** /employees — "Ritika Gupta"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-ritika-gupta-after.png`
+
+### P4B-19. /employees — "Rahul Rao"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydve0032kpjdx4ljg1mz`
+- **Area:** /employees — "Rahul Rao"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-rahul-rao-after.png`
+
+### P4B-20. /employees — "Preeti Singh"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydvr0038kpjdgswasdwa`
+- **Area:** /employees — "Preeti Singh"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-preeti-singh-after.png`
+
+### P4B-21. /employees — "Harish Verma"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydw3003ekpjdbr28pdhd`
+- **Area:** /employees — "Harish Verma"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-harish-verma-after.png`
+
+### P4B-22. /employees — "Shreya Joshi"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydwi003kkpjdipkg1fzr`
+- **Area:** /employees — "Shreya Joshi"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-shreya-joshi-after.png`
+
+### P4B-23. /employees — "Ravi Sharma"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydww003qkpjdri5e2wbb`
+- **Area:** /employees — "Ravi Sharma"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-ravi-sharma-after.png`
+
+### P4B-24. /employees — "Nisha Kumar"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydxb003wkpjdieodvlb8`
+- **Area:** /employees — "Nisha Kumar"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-nisha-kumar-after.png`
+
+### P4B-25. /employees — "Pawan Malhotra"
+
+- **Severity:** P1
+- **API endpoint:** `/api/employees/cmqjpydxp0042kpjd5k23qf0e`
+- **Area:** /employees — "Pawan Malhotra"
+- **Screenshot:** `docs/e2e-screenshots/phase4/ui/acme-MANAGER-employees-pawan-malhotra-after.png`
