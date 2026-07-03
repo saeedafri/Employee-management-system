@@ -1,0 +1,67 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:38:11.033Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  }
+]

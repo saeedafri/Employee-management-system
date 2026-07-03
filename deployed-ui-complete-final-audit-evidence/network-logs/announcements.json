@@ -1,0 +1,750 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:37:33.154Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/announcements/events",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "events": [
+          {
+            "id": "ev-001",
+            "date": "2026-06-02",
+            "title": "Q2 All-Hands",
+            "meta": "4:00 PM · Main hall + Zoom",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-002",
+            "date": "2026-06-07",
+            "title": "Self-Review Deadline",
+            "meta": "Performance cycle closes",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-003",
+            "date": "2026-06-08",
+            "title": "VPN Maintenance Window",
+            "meta": "2:00–4:00 PM IST",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-004",
+            "date": "2026-06-10",
+            "title": "Bengaluru Renovation Starts",
+            "meta": "Floor 3 closed until Jun 20",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-005",
+            "date": "2026-06-14",
+            "title": "Manager Review Deadline",
+            "meta": "H1 2026 cycle step 2",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-006",
+            "date": "2026-06-15",
+            "title": "Security Training Deadline",
+            "meta": "Mandatory — all employees",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-007",
+            "date": "2026-06-20",
+            "title": "Bengaluru Renovation Ends",
+            "meta": "Floor 3 reopens",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-008",
+            "date": "2026-06-21",
+            "title": "H1 Calibration Meeting",
+            "meta": "10:00 AM · Conference Room A",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-009",
+            "date": "2026-06-25",
+            "title": "Team Offsite — Coorg",
+            "meta": "2 days · All Bengaluru team",
+            "color": "#64748b"
+          },
+          {
+            "id": "ev-010",
+            "date": "2026-06-30",
+            "title": "Q2 Close",
+            "meta": "Finance team deadline",
+            "color": "#64748b"
+          }
+        ]
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/announcements",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "pinned": {
+          "id": "ann-000",
+          "category": "Company",
+          "color": "#3b82f6",
+          "channelId": "ch-001",
+          "title": "🎉 Acme Hits $10M ARR — A Team Milestone",
+          "body": "We reached $10M ARR this quarter. Every team member contributed to this milestone. The leadership will share more at Friday's all-hands. Thank you for your relentless work!",
+          "author": {
+            "name": "Rahul Sharma",
+            "role": "CEO"
+          },
+          "audience": "All employees",
+          "readCount": 182,
+          "postedAt": "2026-05-28T00:00:00.000Z",
+          "isPinned": true
+        },
+        "feed": [
+          {
+            "id": "ann-001",
+            "category": "Company",
+            "color": "#3b82f6",
+            "channelId": "ch-001",
+            "title": "Welcome 7 New Joiners — June Batch",
+            "body": "Please give a warm welcome to our new colleagues joining this month across Engineering, Design, Sales, and HR. Their onboarding week starts June 10.",
+            "author": {
+              "name": "Sunita Verma",
+              "role": "Head of HR"
+            },
+            "audience": "All employees",
+            "readCount": 74,
+            "postedAt": "2026-06-03T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-011",
+            "category": "IT",
+            "color": "#f59e0b",
+            "channelId": "ch-004",
+            "title": "VPN Upgrade Scheduled — June 8, 2–4 PM",
+            "body": "The corporate VPN will be upgraded on June 8 between 2–4 PM IST. Save your work and disconnect before 2 PM. The new version has improved speed and MFA support.",
+            "author": {
+              "name": "Deepak Nair",
+              "role": "IT Manager"
+            },
+            "audience": "All employees",
+            "readCount": 62,
+            "postedAt": "2026-06-02T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-015",
+            "category": "Office",
+            "color": "#10b981",
+            "channelId": "ch-005",
+            "title": "Team Offsite — Coorg — June 25–26",
+            "body": "The Bengaluru team offsite is set for June 25–26 in Coorg. Travel and accommodation are covered. RSVP by June 15. Activities include team-building games and a dinner.",
+            "author": {
+              "name": "Sunita Verma",
+              "role": "Head of HR"
+            },
+            "audience": "Bengaluru",
+            "readCount": 91,
+            "postedAt": "2026-06-01T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-008",
+            "category": "Product",
+            "color": "#8b5cf6",
+            "channelId": "ch-003",
+            "title": "EMS v2.5 Preview — Recruitment & Assets",
+            "body": "Phase 3 of EMS is in testing — Recruitment pipeline, Asset management, Performance reviews, and Company announcements. Target launch: June 2026.",
+            "author": {
+              "name": "Aman Khanna",
+              "role": "Engineering Manager"
+            },
+            "audience": "All employees",
+            "readCount": 43,
+            "postedAt": "2026-06-01T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-002",
+            "category": "Company",
+            "color": "#3b82f6",
+            "channelId": "ch-001",
+            "title": "Acme Ranked #12 Best Tech Workplace 2026",
+            "body": "We are proud to be ranked 12th on the Great Place to Work list for 2026. This reflects our culture of trust, inclusion, and continuous improvement.",
+            "author": {
+              "name": "Rahul Sharma",
+              "role": "CEO"
+            },
+            "audience": "All employees",
+            "readCount": 159,
+            "postedAt": "2026-05-30T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-003",
+            "category": "People",
+            "color": "#ec4899",
+            "channelId": "ch-002",
+            "title": "New Parental Leave: 26 Weeks Paid",
+            "body": "Starting July 1, primary caregivers receive 26 weeks fully paid parental leave; secondary caregivers get 8 weeks. Retroactive for anyone currently on leave.",
+            "author": {
+              "name": "Sunita Verma",
+              "role": "Head of HR"
+            },
+            "audience": "All employees",
+            "readCount": 95,
+            "postedAt": "2026-05-25T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-007",
+            "category": "Product",
+            "color": "#8b5cf6",
+            "channelId": "ch-003",
+            "title": "EMS v2.4 — Payroll Module Now Live",
+            "body": "The Payroll module is live. HR admins can run payroll, manage salary components, and generate payslips. Training sessions run June 3–5. Check the calendar.",
+            "author": {
+              "name": "Aman Khanna",
+              "role": "Engineering Manager"
+            },
+            "audience": "All employees",
+            "readCount": 67,
+            "postedAt": "2026-05-22T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-009",
+            "category": "Product",
+            "color": "#8b5cf6",
+            "channelId": "ch-003",
+            "title": "Mobile App Update — Attendance on iOS",
+            "body": "The EMS mobile app v1.8 is available on the App Store. New features: one-tap check-in, leave balance widget, and push notifications for approvals.",
+            "author": {
+              "name": "Deepa Rao",
+              "role": "Product Manager"
+            },
+            "audience": "All employees",
+            "readCount": 131,
+            "postedAt": "2026-05-20T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-010",
+            "category": "IT",
+            "color": "#f59e0b",
+            "channelId": "ch-004",
+            "title": "Mandatory Security Training by June 15",
+            "body": "All employees must complete the annual security awareness training by June 15. The 45-minute course covers phishing, password hygiene, and data handling. Link on Slack.",
+            "author": {
+              "name": "Deepak Nair",
+              "role": "IT Manager"
+            },
+            "audience": "All employees",
+            "readCount": 44,
+            "postedAt": "2026-05-20T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-013",
+            "category": "Office",
+            "color": "#10b981",
+            "channelId": "ch-005",
+            "title": "Bengaluru Floor 3 Closed — June 10–20",
+            "body": "Floor 3 of the Bengaluru office will be closed for renovation June 10–20. Use hot-desking on floor 2. Bookings via the office portal. Sorry for the inconvenience.",
+            "author": {
+              "name": "Kavita Reddy",
+              "role": "Office Manager"
+            },
+            "audience": "Bengaluru",
+            "readCount": 28,
+            "postedAt": "2026-05-18T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-012",
+            "category": "IT",
+            "color": "#f59e0b",
+            "channelId": "ch-004",
+            "title": "New SSO Login for All Internal Tools",
+            "body": "Single Sign-On is now live for Slack, Jira, Confluence, and Figma. Use your @acme.test email. Legacy passwords expire June 30. Reset instructions sent to your inbox.",
+            "author": {
+              "name": "Deepak Nair",
+              "role": "IT Manager"
+            },
+            "audience": "All employees",
+            "readCount": 178,
+            "postedAt": "2026-05-18T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-004",
+            "category": "People",
+            "color": "#ec4899",
+            "channelId": "ch-002",
+            "title": "H1 2026 Performance Cycle — Now Open",
+            "body": "Self-reviews are open from May 15 to June 7. Manager reviews run June 8–14. Use the Performance tab in EMS to submit your review.",
+            "author": {
+              "name": "Priya Mehta",
+              "role": "HRBP"
+            },
+            "audience": "All employees",
+            "readCount": 112,
+            "postedAt": "2026-05-15T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-014",
+            "category": "Office",
+            "color": "#10b981",
+            "channelId": "ch-005",
+            "title": "New Pantry Hours — 8 AM to 8 PM",
+            "body": "The office pantry will now be open from 8 AM to 8 PM on weekdays. Complimentary breakfast is available 8–10 AM. Snack bar restocked every Monday.",
+            "author": {
+              "name": "Kavita Reddy",
+              "role": "Office Manager"
+            },
+            "audience": "All employees",
+            "readCount": 55,
+            "postedAt": "2026-05-14T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-005",
+            "category": "People",
+            "color": "#ec4899",
+            "channelId": "ch-002",
+            "title": "Learning Budget Refresh — ₹15,000 per Employee",
+            "body": "Your annual L&D budget of ₹15,000 has been refreshed. Use it for online courses, books, or conferences. Submit claims through the expense portal.",
+            "author": {
+              "name": "Sunita Verma",
+              "role": "Head of HR"
+            },
+            "audience": "All employees",
+            "readCount": 88,
+            "postedAt": "2026-05-12T00:00:00.000Z",
+            "isPinned": false
+          },
+          {
+            "id": "ann-006",
+            "category": "People",
+            "color": "#ec4899",
+            "channelId": "ch-002",
+            "title": "Referral Bonus Doubled — Refer & Earn ₹50K",
+            "body": "For this quarter, all successful employee referrals for senior positions earn ₹50,000. Junior positions earn ₹25,000. See open roles in the Recruitment tab.",
+            "author": {
+              "name": "Sunita Verma",
+              "role": "Head of HR"
+            },
+            "audience": "All employees",
+            "readCount": 204,
+            "postedAt": "2026-05-08T00:00:00.000Z",
+            "isPinned": false
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 16,
+          "totalPages": 1
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/announcements/channels",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": [
+          {
+            "id": "ch-001",
+            "name": "Company-wide",
+            "postCount": 142,
+            "category": "Company",
+            "color": "#3b82f6"
+          },
+          {
+            "id": "ch-002",
+            "name": "People & Culture",
+            "postCount": 89,
+            "category": "People",
+            "color": "#ec4899"
+          },
+          {
+            "id": "ch-003",
+            "name": "Product Updates",
+            "postCount": 54,
+            "category": "Product",
+            "color": "#8b5cf6"
+          },
+          {
+            "id": "ch-004",
+            "name": "IT & Security",
+            "postCount": 31,
+            "category": "IT",
+            "color": "#f59e0b"
+          },
+          {
+            "id": "ch-005",
+            "name": "Office Ops",
+            "postCount": 27,
+            "category": "Office",
+            "color": "#10b981"
+          }
+        ]
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  }
+]

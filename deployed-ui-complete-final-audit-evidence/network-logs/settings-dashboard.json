@@ -1,0 +1,5028 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:34:45.127Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/headcount-by-department",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "departmentId": "cmqjpydr60012kpjd7tl3efld",
+          "departmentName": "Engineering",
+          "employeeCount": 14,
+          "activeCount": 12
+        },
+        {
+          "departmentId": "cmqjpydrb0014kpjdiu4yk32p",
+          "departmentName": "Sales",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "departmentName": "HR",
+          "employeeCount": 9,
+          "activeCount": 7
+        },
+        {
+          "departmentId": "cmqjpydrh0018kpjdo5t9ue7b",
+          "departmentName": "Finance",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydro001ckpjdb1aatiu8",
+          "departmentName": "Product",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydrw001gkpjdh8uedxjx",
+          "departmentName": "Customer Success",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydrk001akpjdxmb5ai3i",
+          "departmentName": "Operations",
+          "employeeCount": 8,
+          "activeCount": 6
+        },
+        {
+          "departmentId": "cmqjpydrr001ekpjdb0f1229w",
+          "departmentName": "Marketing",
+          "employeeCount": 8,
+          "activeCount": 6
+        }
+      ],
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:34:47.510Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/manager/approvals",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "items": [
+          {
+            "id": "cmqmul0bb009z817uz86gi15m",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-19",
+            "attendanceDate": "2026-06-19T00:00:00.000Z",
+            "reason": "ZZZ E2E regularization test - was present, system missed checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-20T21:06:15.383Z"
+          },
+          {
+            "id": "cmqjpymtg002w79i5005uqy13",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-12",
+            "attendanceDate": "2026-06-12T00:00:00.000Z",
+            "reason": "Road accident blocked the highway for 2 hours",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.468Z"
+          },
+          {
+            "id": "cmqjpymtf002u79i5mv122eym",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-13",
+            "attendanceDate": "2026-06-13T00:00:00.000Z",
+            "reason": "Network issues prevented attendance system access",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.467Z"
+          },
+          {
+            "id": "cmqjpymtd002s79i5k0gp3lb9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Medical emergency — left early with manager verbal approval",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.466Z"
+          },
+          {
+            "id": "cmqjpymtc002q79i5o97qal0a",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Power outage caused system shutdown without checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.464Z"
+          },
+          {
+            "id": "cmqjpymta002o79i50oxy6xhw",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Public transport strike disrupted commute",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.463Z"
+          },
+          {
+            "id": "cmqjpymsz002879i53gbsagh9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfgi000pdwad5t94e94s",
+            "employeeCode": "E0103",
+            "employeeName": "Mohit Jain",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Doctor appointment that could not be rescheduled",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.451Z"
+          },
+          {
+            "id": "cmqjpymsx002679i5f3hvm249",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg9000ldwad1kmuo7rg",
+            "employeeCode": "E0102",
+            "employeeName": "Sneha Reddy",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-17",
+            "attendanceDate": "2026-06-17T00:00:00.000Z",
+            "reason": "Metro breakdown near Cyber City station",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.450Z"
+          },
+          {
+            "id": "cmqjpymsw002479i5cqox61uh",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg2000hdwadx8a86bfv",
+            "employeeCode": "E0101",
+            "employeeName": "Arjun Nair",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Had to leave for a family emergency and forgot to check out",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.448Z"
+          },
+          {
+            "id": "cmqjpymst002279i5noqxap9r",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Traffic delay on NH-48, was stuck for 45 minutes",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.445Z"
+          },
+          {
+            "id": "cmqjpyfmq005zdwadgbjdkuph",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": "E0001",
+            "employeeName": "Aman Kumar",
+            "leaveType": "Annual Leave",
+            "title": "Leave request",
+            "subtitle": "Annual Leave",
+            "startDate": "2026-06-21T00:00:00.000Z",
+            "endDate": "2026-06-25T00:00:00.000Z",
+            "totalDays": 5,
+            "reason": "Annual vacation",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.155Z"
+          },
+          {
+            "id": "cmqjpyfmp005xdwadmp1pvy4s",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Casual Leave",
+            "title": "Leave request",
+            "subtitle": "Casual Leave",
+            "startDate": "2026-06-28T00:00:00.000Z",
+            "endDate": "2026-06-28T00:00:00.000Z",
+            "totalDays": 1,
+            "reason": "Personal work",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.153Z"
+          },
+          {
+            "id": "cmqjpyfmm005vdwadg1xze0z2",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Annual Leave",
+            "title": "Leave request",
+            "subtitle": "Annual Leave",
+            "startDate": "2026-06-23T00:00:00.000Z",
+            "endDate": "2026-06-25T00:00:00.000Z",
+            "totalDays": 3,
+            "reason": "Family vacation to Goa",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.151Z"
+          },
+          {
+            "id": "cmqjpyhmo000n12onz4jlx7ao",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": "E0001",
+            "employeeName": "Aman Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhpv005312onqo2ruyoe",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhsz009j12oncxrxe5gz",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhw900dz12onhz7117id",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtj0022kpjd7hbikivl",
+            "employeeCode": "E0004",
+            "employeeName": "Rajesh Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi1600if12onc8cpavvh",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": "E0005",
+            "employeeName": "Sakshi Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi4800mv12onxd63wav0",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+            "employeeCode": "E0006",
+            "employeeName": "Vikram Patel",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi7i00rb12onqj2bw4xi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+            "employeeCode": "E0007",
+            "employeeName": "Neha Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiaq00vr12onlie5r8xa",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": "E0008",
+            "employeeName": "Amit Verma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyif5010712onya7sna9m",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+            "employeeCode": "E0009",
+            "employeeName": "Deepika Gupta",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyik0014n12onp9cjjsh8",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyioh019312on1demt1b5",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyisb01dj12onosvscmj1",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiw001hz12on3sw5cxcv",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyizc01mf12on4ondvlgi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyj2n01qv12onuoqwagor",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydun002okpjdcfk4q73v",
+            "employeeCode": "E0015",
+            "employeeName": "Pooja Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "req-008",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": null,
+            "employeeName": "Amit Verma",
+            "title": "Asset request",
+            "subtitle": "External SSD 2TB",
+            "status": "Pending",
+            "submittedAt": "2026-06-04T00:00:00.000Z"
+          },
+          {
+            "id": "req-005",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": null,
+            "employeeName": "Sakshi Singh",
+            "title": "Asset request",
+            "subtitle": "MacBook Pro 14\"",
+            "status": "Pending",
+            "submittedAt": "2026-06-03T00:00:00.000Z"
+          },
+          {
+            "id": "req-003",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": null,
+            "employeeName": "HR Admin",
+            "title": "Asset request",
+            "subtitle": "Laptop Dock",
+            "status": "Pending",
+            "submittedAt": "2026-06-01T00:00:00.000Z"
+          },
+          {
+            "id": "req-001",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": null,
+            "employeeName": "Aman Kumar",
+            "title": "Asset request",
+            "subtitle": "Monitor — 27\" 4K",
+            "status": "Pending",
+            "submittedAt": "2026-05-27T00:00:00.000Z"
+          }
+        ],
+        "leaveRequests": [
+          {
+            "id": "cmqjpyfmq005zdwadgbjdkuph",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": "E0001",
+            "employeeName": "Aman Kumar",
+            "leaveType": "Annual Leave",
+            "title": "Leave request",
+            "subtitle": "Annual Leave",
+            "startDate": "2026-06-21T00:00:00.000Z",
+            "endDate": "2026-06-25T00:00:00.000Z",
+            "totalDays": 5,
+            "reason": "Annual vacation",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.155Z"
+          },
+          {
+            "id": "cmqjpyfmp005xdwadmp1pvy4s",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Casual Leave",
+            "title": "Leave request",
+            "subtitle": "Casual Leave",
+            "startDate": "2026-06-28T00:00:00.000Z",
+            "endDate": "2026-06-28T00:00:00.000Z",
+            "totalDays": 1,
+            "reason": "Personal work",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.153Z"
+          },
+          {
+            "id": "cmqjpyfmm005vdwadg1xze0z2",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Annual Leave",
+            "title": "Leave request",
+            "subtitle": "Annual Leave",
+            "startDate": "2026-06-23T00:00:00.000Z",
+            "endDate": "2026-06-25T00:00:00.000Z",
+            "totalDays": 3,
+            "reason": "Family vacation to Goa",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.151Z"
+          }
+        ],
+        "regularizationRequests": [
+          {
+            "id": "cmqmul0bb009z817uz86gi15m",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-19",
+            "attendanceDate": "2026-06-19T00:00:00.000Z",
+            "reason": "ZZZ E2E regularization test - was present, system missed checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-20T21:06:15.383Z"
+          },
+          {
+            "id": "cmqjpymtg002w79i5005uqy13",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-12",
+            "attendanceDate": "2026-06-12T00:00:00.000Z",
+            "reason": "Road accident blocked the highway for 2 hours",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.468Z"
+          },
+          {
+            "id": "cmqjpymtf002u79i5mv122eym",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-13",
+            "attendanceDate": "2026-06-13T00:00:00.000Z",
+            "reason": "Network issues prevented attendance system access",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.467Z"
+          },
+          {
+            "id": "cmqjpymtd002s79i5k0gp3lb9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Medical emergency — left early with manager verbal approval",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.466Z"
+          },
+          {
+            "id": "cmqjpymtc002q79i5o97qal0a",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Power outage caused system shutdown without checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.464Z"
+          },
+          {
+            "id": "cmqjpymta002o79i50oxy6xhw",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Public transport strike disrupted commute",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.463Z"
+          },
+          {
+            "id": "cmqjpymsz002879i53gbsagh9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfgi000pdwad5t94e94s",
+            "employeeCode": "E0103",
+            "employeeName": "Mohit Jain",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Doctor appointment that could not be rescheduled",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.451Z"
+          },
+          {
+            "id": "cmqjpymsx002679i5f3hvm249",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg9000ldwad1kmuo7rg",
+            "employeeCode": "E0102",
+            "employeeName": "Sneha Reddy",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-17",
+            "attendanceDate": "2026-06-17T00:00:00.000Z",
+            "reason": "Metro breakdown near Cyber City station",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.450Z"
+          },
+          {
+            "id": "cmqjpymsw002479i5cqox61uh",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg2000hdwadx8a86bfv",
+            "employeeCode": "E0101",
+            "employeeName": "Arjun Nair",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Had to leave for a family emergency and forgot to check out",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.448Z"
+          },
+          {
+            "id": "cmqjpymst002279i5noqxap9r",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Traffic delay on NH-48, was stuck for 45 minutes",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.445Z"
+          }
+        ],
+        "timesheetRequests": [
+          {
+            "id": "cmqjpyhmo000n12onz4jlx7ao",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": "E0001",
+            "employeeName": "Aman Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhpv005312onqo2ruyoe",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhsz009j12oncxrxe5gz",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhw900dz12onhz7117id",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtj0022kpjd7hbikivl",
+            "employeeCode": "E0004",
+            "employeeName": "Rajesh Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi1600if12onc8cpavvh",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": "E0005",
+            "employeeName": "Sakshi Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi4800mv12onxd63wav0",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+            "employeeCode": "E0006",
+            "employeeName": "Vikram Patel",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi7i00rb12onqj2bw4xi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+            "employeeCode": "E0007",
+            "employeeName": "Neha Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiaq00vr12onlie5r8xa",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": "E0008",
+            "employeeName": "Amit Verma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyif5010712onya7sna9m",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+            "employeeCode": "E0009",
+            "employeeName": "Deepika Gupta",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyik0014n12onp9cjjsh8",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyioh019312on1demt1b5",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyisb01dj12onosvscmj1",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiw001hz12on3sw5cxcv",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyizc01mf12on4ondvlgi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyj2n01qv12onuoqwagor",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydun002okpjdcfk4q73v",
+            "employeeCode": "E0015",
+            "employeeName": "Pooja Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          }
+        ],
+        "assetRequests": [
+          {
+            "id": "req-008",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": null,
+            "employeeName": "Amit Verma",
+            "title": "Asset request",
+            "subtitle": "External SSD 2TB",
+            "status": "Pending",
+            "submittedAt": "2026-06-04T00:00:00.000Z"
+          },
+          {
+            "id": "req-005",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": null,
+            "employeeName": "Sakshi Singh",
+            "title": "Asset request",
+            "subtitle": "MacBook Pro 14\"",
+            "status": "Pending",
+            "submittedAt": "2026-06-03T00:00:00.000Z"
+          },
+          {
+            "id": "req-003",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": null,
+            "employeeName": "HR Admin",
+            "title": "Asset request",
+            "subtitle": "Laptop Dock",
+            "status": "Pending",
+            "submittedAt": "2026-06-01T00:00:00.000Z"
+          },
+          {
+            "id": "req-001",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": null,
+            "employeeName": "Aman Kumar",
+            "title": "Asset request",
+            "subtitle": "Monitor — 27\" 4K",
+            "status": "Pending",
+            "submittedAt": "2026-05-27T00:00:00.000Z"
+          }
+        ],
+        "total": 32,
+        "approvalBreakdown": {
+          "leave": 3,
+          "regularization": 10,
+          "timesheet": 15,
+          "asset": 4
+        }
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/recent-activity?limit=8",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmr3sb8g6006fu7x1dqgfhcud",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:34:45.126Z",
+          "createdAtIstDisplay": "02/07/2026 11:04:45 pm IST IST",
+          "created_at": "2026-07-02T17:34:45.126Z",
+          "timestamp": "2026-07-02T17:34:45.126Z",
+          "displayTime": "02/07/2026 11:04:45 pm IST"
+        },
+        {
+          "id": "cmr3sb6st006bu7x1esmu9smr",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:34:42.990Z",
+          "createdAtIstDisplay": "02/07/2026 11:04:42 pm IST IST",
+          "created_at": "2026-07-02T17:34:42.990Z",
+          "timestamp": "2026-07-02T17:34:42.990Z",
+          "displayTime": "02/07/2026 11:04:42 pm IST"
+        },
+        {
+          "id": "cmr3sb6ph0069u7x1sebiqff9",
+          "user_email": "superadmin@acme.test",
+          "actorName": "Superadmin",
+          "actorEmail": "superadmin@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "Superadmin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqe000qkpjd8q8idw1k",
+          "entity_label": "User #8q8idw1k",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqe000qkpjd8q8idw1k",
+          "resourceLabel": "User #8q8idw1k",
+          "createdAt": "2026-07-02T17:34:42.870Z",
+          "createdAtIstDisplay": "02/07/2026 11:04:42 pm IST IST",
+          "created_at": "2026-07-02T17:34:42.870Z",
+          "timestamp": "2026-07-02T17:34:42.870Z",
+          "displayTime": "02/07/2026 11:04:42 pm IST"
+        },
+        {
+          "id": "cmr3sb3vw0065u7x1a52b1dbn",
+          "user_email": "System",
+          "actorName": "System",
+          "actorEmail": null,
+          "action": "employee updated",
+          "actionCode": "EMPLOYEE_UPDATED",
+          "actionLabel": "employee updated",
+          "description": "System employee updated",
+          "entity_type": "Employee",
+          "entity_id": "cmqjpyds0001ikpjd5br3r2uh",
+          "entity_label": "Aman Kumar · E0001",
+          "entity_url": "/employees/cmqjpyds0001ikpjd5br3r2uh",
+          "entityType": "Employee",
+          "entityId": "cmqjpyds0001ikpjd5br3r2uh",
+          "resourceLabel": "Aman Kumar · E0001",
+          "createdAt": "2026-07-02T17:34:39.212Z",
+          "createdAtIstDisplay": "02/07/2026 11:04:39 pm IST IST",
+          "created_at": "2026-07-02T17:34:39.212Z",
+          "timestamp": "2026-07-02T17:34:39.212Z",
+          "displayTime": "02/07/2026 11:04:39 pm IST"
+        },
+        {
+          "id": "cmr3sb35w005tu7x1akl6aimi",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:34:38.276Z",
+          "createdAtIstDisplay": "02/07/2026 11:04:38 pm IST IST",
+          "created_at": "2026-07-02T17:34:38.276Z",
+          "timestamp": "2026-07-02T17:34:38.276Z",
+          "displayTime": "02/07/2026 11:04:38 pm IST"
+        },
+        {
+          "id": "cmr3saxm3005ru7x1vseqwabk",
+          "user_email": "superadmin@acme.test",
+          "actorName": "Superadmin",
+          "actorEmail": "superadmin@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "Superadmin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqe000qkpjd8q8idw1k",
+          "entity_label": "User #8q8idw1k",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqe000qkpjd8q8idw1k",
+          "resourceLabel": "User #8q8idw1k",
+          "createdAt": "2026-07-02T17:34:31.083Z",
+          "createdAtIstDisplay": "02/07/2026 11:04:31 pm IST IST",
+          "created_at": "2026-07-02T17:34:31.083Z",
+          "timestamp": "2026-07-02T17:34:31.083Z",
+          "displayTime": "02/07/2026 11:04:31 pm IST"
+        },
+        {
+          "id": "cmr3s9lm9005hu7x1xqsaws0b",
+          "user_email": "priya@acme.test",
+          "actorName": "Priya Sharma",
+          "actorEmail": "priya@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "Priya Sharma logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqn000wkpjd02gyqzd3",
+          "entity_label": "User #02gyqzd3",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqn000wkpjd02gyqzd3",
+          "resourceLabel": "User #02gyqzd3",
+          "createdAt": "2026-07-02T17:33:28.881Z",
+          "createdAtIstDisplay": "02/07/2026 11:03:28 pm IST IST",
+          "created_at": "2026-07-02T17:33:28.881Z",
+          "timestamp": "2026-07-02T17:33:28.881Z",
+          "displayTime": "02/07/2026 11:03:28 pm IST"
+        },
+        {
+          "id": "cmr3s9kr2005fu7x1nec3if29",
+          "user_email": "priya@acme.test",
+          "actorName": "Priya Sharma",
+          "actorEmail": "priya@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "Priya Sharma logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqn000wkpjd02gyqzd3",
+          "entity_label": "User #02gyqzd3",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqn000wkpjd02gyqzd3",
+          "resourceLabel": "User #02gyqzd3",
+          "createdAt": "2026-07-02T17:33:27.758Z",
+          "createdAtIstDisplay": "02/07/2026 11:03:27 pm IST IST",
+          "created_at": "2026-07-02T17:33:27.758Z",
+          "timestamp": "2026-07-02T17:33:27.758Z",
+          "displayTime": "02/07/2026 11:03:27 pm IST"
+        }
+      ],
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:34:47.530Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/attendance?range=30d",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "range": "30d",
+        "series": [
+          {
+            "date": "2026-06-03",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-04",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-05",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-06",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-07",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-08",
+            "present": 3,
+            "absent": 5,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-09",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 5,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-10",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 5,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-11",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 5
+          },
+          {
+            "date": "2026-06-12",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-13",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-14",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-15",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-16",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-17",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-18",
+            "present": 1,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-19",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-20",
+            "present": 2,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-21",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-22",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-23",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-24",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-25",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-26",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-27",
+            "present": 1,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-28",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-29",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-30",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-07-01",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-07-02",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-07-03",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          }
+        ]
+      },
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:34:47.535Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/summary",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "totalEmployees": 75,
+        "activeToday": 3,
+        "onLeaveToday": 0,
+        "openRequests": 13,
+        "deltas": {
+          "totalEmployees": {
+            "delta": 0,
+            "deltaLabel": "vs last month"
+          },
+          "activeToday": {
+            "deltaPercent": 4
+          },
+          "onLeaveToday": {
+            "delta": 0
+          },
+          "openRequests": {
+            "urgent": 1
+          }
+        }
+      },
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:34:47.590Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/requests/cmqjpyfmq005zdwadgbjdkuph/approve",
+    "method": "PATCH",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyfmq005zdwadgbjdkuph",
+        "referenceNo": "LVR-0003",
+        "status": "APPROVED",
+        "decidedAt": "2026-07-02T17:34:50.376Z",
+        "approverComment": null
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/manager/approvals",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "items": [
+          {
+            "id": "cmqmul0bb009z817uz86gi15m",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-19",
+            "attendanceDate": "2026-06-19T00:00:00.000Z",
+            "reason": "ZZZ E2E regularization test - was present, system missed checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-20T21:06:15.383Z"
+          },
+          {
+            "id": "cmqjpymtg002w79i5005uqy13",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-12",
+            "attendanceDate": "2026-06-12T00:00:00.000Z",
+            "reason": "Road accident blocked the highway for 2 hours",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.468Z"
+          },
+          {
+            "id": "cmqjpymtf002u79i5mv122eym",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-13",
+            "attendanceDate": "2026-06-13T00:00:00.000Z",
+            "reason": "Network issues prevented attendance system access",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.467Z"
+          },
+          {
+            "id": "cmqjpymtd002s79i5k0gp3lb9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Medical emergency — left early with manager verbal approval",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.466Z"
+          },
+          {
+            "id": "cmqjpymtc002q79i5o97qal0a",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Power outage caused system shutdown without checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.464Z"
+          },
+          {
+            "id": "cmqjpymta002o79i50oxy6xhw",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Public transport strike disrupted commute",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.463Z"
+          },
+          {
+            "id": "cmqjpymsz002879i53gbsagh9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfgi000pdwad5t94e94s",
+            "employeeCode": "E0103",
+            "employeeName": "Mohit Jain",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Doctor appointment that could not be rescheduled",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.451Z"
+          },
+          {
+            "id": "cmqjpymsx002679i5f3hvm249",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg9000ldwad1kmuo7rg",
+            "employeeCode": "E0102",
+            "employeeName": "Sneha Reddy",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-17",
+            "attendanceDate": "2026-06-17T00:00:00.000Z",
+            "reason": "Metro breakdown near Cyber City station",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.450Z"
+          },
+          {
+            "id": "cmqjpymsw002479i5cqox61uh",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg2000hdwadx8a86bfv",
+            "employeeCode": "E0101",
+            "employeeName": "Arjun Nair",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Had to leave for a family emergency and forgot to check out",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.448Z"
+          },
+          {
+            "id": "cmqjpymst002279i5noqxap9r",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Traffic delay on NH-48, was stuck for 45 minutes",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.445Z"
+          },
+          {
+            "id": "cmqjpyfmp005xdwadmp1pvy4s",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Casual Leave",
+            "title": "Leave request",
+            "subtitle": "Casual Leave",
+            "startDate": "2026-06-28T00:00:00.000Z",
+            "endDate": "2026-06-28T00:00:00.000Z",
+            "totalDays": 1,
+            "reason": "Personal work",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.153Z"
+          },
+          {
+            "id": "cmqjpyfmm005vdwadg1xze0z2",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Annual Leave",
+            "title": "Leave request",
+            "subtitle": "Annual Leave",
+            "startDate": "2026-06-23T00:00:00.000Z",
+            "endDate": "2026-06-25T00:00:00.000Z",
+            "totalDays": 3,
+            "reason": "Family vacation to Goa",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.151Z"
+          },
+          {
+            "id": "cmqjpyhmo000n12onz4jlx7ao",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": "E0001",
+            "employeeName": "Aman Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhpv005312onqo2ruyoe",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhsz009j12oncxrxe5gz",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhw900dz12onhz7117id",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtj0022kpjd7hbikivl",
+            "employeeCode": "E0004",
+            "employeeName": "Rajesh Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi1600if12onc8cpavvh",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": "E0005",
+            "employeeName": "Sakshi Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi4800mv12onxd63wav0",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+            "employeeCode": "E0006",
+            "employeeName": "Vikram Patel",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi7i00rb12onqj2bw4xi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+            "employeeCode": "E0007",
+            "employeeName": "Neha Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiaq00vr12onlie5r8xa",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": "E0008",
+            "employeeName": "Amit Verma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyif5010712onya7sna9m",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+            "employeeCode": "E0009",
+            "employeeName": "Deepika Gupta",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyik0014n12onp9cjjsh8",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyioh019312on1demt1b5",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyisb01dj12onosvscmj1",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiw001hz12on3sw5cxcv",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyizc01mf12on4ondvlgi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyj2n01qv12onuoqwagor",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydun002okpjdcfk4q73v",
+            "employeeCode": "E0015",
+            "employeeName": "Pooja Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "req-008",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": null,
+            "employeeName": "Amit Verma",
+            "title": "Asset request",
+            "subtitle": "External SSD 2TB",
+            "status": "Pending",
+            "submittedAt": "2026-06-04T00:00:00.000Z"
+          },
+          {
+            "id": "req-005",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": null,
+            "employeeName": "Sakshi Singh",
+            "title": "Asset request",
+            "subtitle": "MacBook Pro 14\"",
+            "status": "Pending",
+            "submittedAt": "2026-06-03T00:00:00.000Z"
+          },
+          {
+            "id": "req-003",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": null,
+            "employeeName": "HR Admin",
+            "title": "Asset request",
+            "subtitle": "Laptop Dock",
+            "status": "Pending",
+            "submittedAt": "2026-06-01T00:00:00.000Z"
+          },
+          {
+            "id": "req-001",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": null,
+            "employeeName": "Aman Kumar",
+            "title": "Asset request",
+            "subtitle": "Monitor — 27\" 4K",
+            "status": "Pending",
+            "submittedAt": "2026-05-27T00:00:00.000Z"
+          }
+        ],
+        "leaveRequests": [
+          {
+            "id": "cmqjpyfmp005xdwadmp1pvy4s",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Casual Leave",
+            "title": "Leave request",
+            "subtitle": "Casual Leave",
+            "startDate": "2026-06-28T00:00:00.000Z",
+            "endDate": "2026-06-28T00:00:00.000Z",
+            "totalDays": 1,
+            "reason": "Personal work",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.153Z"
+          },
+          {
+            "id": "cmqjpyfmm005vdwadg1xze0z2",
+            "type": "leave",
+            "color": "#3b82f6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "leaveType": "Annual Leave",
+            "title": "Leave request",
+            "subtitle": "Annual Leave",
+            "startDate": "2026-06-23T00:00:00.000Z",
+            "endDate": "2026-06-25T00:00:00.000Z",
+            "totalDays": 3,
+            "reason": "Family vacation to Goa",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:25.151Z"
+          }
+        ],
+        "regularizationRequests": [
+          {
+            "id": "cmqmul0bb009z817uz86gi15m",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-19",
+            "attendanceDate": "2026-06-19T00:00:00.000Z",
+            "reason": "ZZZ E2E regularization test - was present, system missed checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-20T21:06:15.383Z"
+          },
+          {
+            "id": "cmqjpymtg002w79i5005uqy13",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-12",
+            "attendanceDate": "2026-06-12T00:00:00.000Z",
+            "reason": "Road accident blocked the highway for 2 hours",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.468Z"
+          },
+          {
+            "id": "cmqjpymtf002u79i5mv122eym",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-13",
+            "attendanceDate": "2026-06-13T00:00:00.000Z",
+            "reason": "Network issues prevented attendance system access",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.467Z"
+          },
+          {
+            "id": "cmqjpymtd002s79i5k0gp3lb9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Medical emergency — left early with manager verbal approval",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.466Z"
+          },
+          {
+            "id": "cmqjpymtc002q79i5o97qal0a",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Power outage caused system shutdown without checkout",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.464Z"
+          },
+          {
+            "id": "cmqjpymta002o79i50oxy6xhw",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Public transport strike disrupted commute",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.463Z"
+          },
+          {
+            "id": "cmqjpymsz002879i53gbsagh9",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfgi000pdwad5t94e94s",
+            "employeeCode": "E0103",
+            "employeeName": "Mohit Jain",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-14",
+            "attendanceDate": "2026-06-14T00:00:00.000Z",
+            "reason": "Doctor appointment that could not be rescheduled",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.451Z"
+          },
+          {
+            "id": "cmqjpymsx002679i5f3hvm249",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg9000ldwad1kmuo7rg",
+            "employeeCode": "E0102",
+            "employeeName": "Sneha Reddy",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-17",
+            "attendanceDate": "2026-06-17T00:00:00.000Z",
+            "reason": "Metro breakdown near Cyber City station",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.450Z"
+          },
+          {
+            "id": "cmqjpymsw002479i5cqox61uh",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyfg2000hdwadx8a86bfv",
+            "employeeCode": "E0101",
+            "employeeName": "Arjun Nair",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-15",
+            "attendanceDate": "2026-06-15T00:00:00.000Z",
+            "reason": "Had to leave for a family emergency and forgot to check out",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.448Z"
+          },
+          {
+            "id": "cmqjpymst002279i5noqxap9r",
+            "type": "regularization",
+            "color": "#f97316",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Attendance regularization",
+            "subtitle": "2026-06-16",
+            "attendanceDate": "2026-06-16T00:00:00.000Z",
+            "reason": "Traffic delay on NH-48, was stuck for 45 minutes",
+            "status": "PENDING",
+            "submittedAt": "2026-06-18T16:33:34.445Z"
+          }
+        ],
+        "timesheetRequests": [
+          {
+            "id": "cmqjpyhmo000n12onz4jlx7ao",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": "E0001",
+            "employeeName": "Aman Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhpv005312onqo2ruyoe",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeCode": "E0002",
+            "employeeName": "Priya Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhsz009j12oncxrxe5gz",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": "E0003",
+            "employeeName": "HR Admin",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyhw900dz12onhz7117id",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtj0022kpjd7hbikivl",
+            "employeeCode": "E0004",
+            "employeeName": "Rajesh Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi1600if12onc8cpavvh",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": "E0005",
+            "employeeName": "Sakshi Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi4800mv12onxd63wav0",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+            "employeeCode": "E0006",
+            "employeeName": "Vikram Patel",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyi7i00rb12onqj2bw4xi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+            "employeeCode": "E0007",
+            "employeeName": "Neha Kumar",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiaq00vr12onlie5r8xa",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": "E0008",
+            "employeeName": "Amit Verma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyif5010712onya7sna9m",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+            "employeeCode": "E0009",
+            "employeeName": "Deepika Gupta",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyik0014n12onp9cjjsh8",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeCode": "E0010",
+            "employeeName": "Arjun Malhotra",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyioh019312on1demt1b5",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeCode": "E0011",
+            "employeeName": "Ananya Joshi",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyisb01dj12onosvscmj1",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeCode": "E0012",
+            "employeeName": "Rohan Rao",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.25,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyiw001hz12on3sw5cxcv",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeCode": "E0013",
+            "employeeName": "Zara Bhat",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 40,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyizc01mf12on4ondvlgi",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeCode": "E0014",
+            "employeeName": "Karan Sharma",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.75,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          },
+          {
+            "id": "cmqjpyj2n01qv12onuoqwagor",
+            "type": "timesheet",
+            "color": "#8b5cf6",
+            "employeeId": "cmqjpydun002okpjdcfk4q73v",
+            "employeeCode": "E0015",
+            "employeeName": "Pooja Singh",
+            "title": "Timesheet approval",
+            "subtitle": "2026-06-08 – 2026-06-14",
+            "weekStart": "2026-06-08",
+            "weekEnd": "2026-06-14",
+            "totalHours": 39.5,
+            "status": "SUBMITTED",
+            "submittedAt": "2026-06-08T09:00:00.000Z"
+          }
+        ],
+        "assetRequests": [
+          {
+            "id": "req-008",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeCode": null,
+            "employeeName": "Amit Verma",
+            "title": "Asset request",
+            "subtitle": "External SSD 2TB",
+            "status": "Pending",
+            "submittedAt": "2026-06-04T00:00:00.000Z"
+          },
+          {
+            "id": "req-005",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeCode": null,
+            "employeeName": "Sakshi Singh",
+            "title": "Asset request",
+            "subtitle": "MacBook Pro 14\"",
+            "status": "Pending",
+            "submittedAt": "2026-06-03T00:00:00.000Z"
+          },
+          {
+            "id": "req-003",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeCode": null,
+            "employeeName": "HR Admin",
+            "title": "Asset request",
+            "subtitle": "Laptop Dock",
+            "status": "Pending",
+            "submittedAt": "2026-06-01T00:00:00.000Z"
+          },
+          {
+            "id": "req-001",
+            "type": "asset",
+            "color": "#10b981",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeCode": null,
+            "employeeName": "Aman Kumar",
+            "title": "Asset request",
+            "subtitle": "Monitor — 27\" 4K",
+            "status": "Pending",
+            "submittedAt": "2026-05-27T00:00:00.000Z"
+          }
+        ],
+        "total": 31,
+        "approvalBreakdown": {
+          "leave": 2,
+          "regularization": 10,
+          "timesheet": 15,
+          "asset": 4
+        }
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:34:45.127Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/event-catalogue",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "type": "payroll.run.created",
+          "label": "Run Created",
+          "description": "A new payroll run was initiated",
+          "category": "run",
+          "color": "#6366f1"
+        },
+        {
+          "type": "payroll.run.calculated",
+          "label": "Run Calculated",
+          "description": "Payroll calculation completed",
+          "category": "run",
+          "color": "#6366f1"
+        },
+        {
+          "type": "payroll.run.approved",
+          "label": "Run Approved",
+          "description": "Run approved by all approvers",
+          "category": "run",
+          "color": "#6366f1"
+        },
+        {
+          "type": "payroll.run.paid",
+          "label": "Run Paid",
+          "description": "Run marked as paid",
+          "category": "run",
+          "color": "#6366f1"
+        },
+        {
+          "type": "payslip.published",
+          "label": "Payslips Published",
+          "description": "Payslips published to employees",
+          "category": "payslip",
+          "color": "#3b82f6"
+        },
+        {
+          "type": "payment.failed",
+          "label": "Payment Failed",
+          "description": "A payment failed during disbursement",
+          "category": "payment",
+          "color": "#ef4444"
+        },
+        {
+          "type": "salary.revised",
+          "label": "Salary Revised",
+          "description": "Employee salary configuration changed",
+          "category": "employee",
+          "color": "#10b981"
+        },
+        {
+          "type": "claim.approved",
+          "label": "Claim Approved",
+          "description": "Reimbursement claim approved",
+          "category": "employee",
+          "color": "#10b981"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/payslip-templates",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "1ade56a5-2675-41d2-9617-0a4b7b9728f2",
+        "name": "Acme Standard Payslip",
+        "locale": "en-IN",
+        "logoUrl": null,
+        "sections": [
+          {
+            "key": "earnings",
+            "label": "Earnings",
+            "enabled": true,
+            "order": 1,
+            "color": "#16a34a"
+          },
+          {
+            "key": "deductions",
+            "label": "Deductions",
+            "enabled": true,
+            "order": 2,
+            "color": "#dc2626"
+          },
+          {
+            "key": "employerContributions",
+            "label": "Employer Contributions",
+            "enabled": true,
+            "order": 3,
+            "color": "#7c3aed"
+          },
+          {
+            "key": "oneTime",
+            "label": "One-Time Items",
+            "enabled": false,
+            "order": 4,
+            "color": "#ca8a04"
+          },
+          {
+            "key": "ytd",
+            "label": "Year to Date",
+            "enabled": false,
+            "order": 5,
+            "color": "#0891b2"
+          },
+          {
+            "key": "attendance",
+            "label": "Attendance",
+            "enabled": false,
+            "order": 6,
+            "color": "#64748b"
+          },
+          {
+            "key": "paymentInfo",
+            "label": "Payment Info",
+            "enabled": false,
+            "order": 7,
+            "color": "#64748b"
+          }
+        ],
+        "fields": [
+          {
+            "key": "employeeCode",
+            "label": "Employee ID",
+            "enabled": true
+          },
+          {
+            "key": "department",
+            "label": "Department",
+            "enabled": true
+          },
+          {
+            "key": "designation",
+            "label": "Designation",
+            "enabled": true
+          },
+          {
+            "key": "bankAccount",
+            "label": "Bank Account",
+            "enabled": false
+          },
+          {
+            "key": "pan",
+            "label": "PAN",
+            "enabled": false
+          },
+          {
+            "key": "uan",
+            "label": "UAN",
+            "enabled": true
+          }
+        ],
+        "updatedAt": "2026-06-18T16:33:31.077Z"
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:34:54.997Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/schedules",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmqjpye8s00bakpjdjs8kwqco",
+          "name": "India Monthly Payroll",
+          "frequency": "MONTHLY",
+          "currency": "INR",
+          "country": "India",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payCalendar",
+          "periodAnchor": 1,
+          "payDateRule": "LAST_WORKING_DAY",
+          "cutoffDay": 25
+        },
+        {
+          "id": "cmqte0hmr001fuj6z81v8aul5",
+          "name": "SM Litmus 2026 (claude verify)",
+          "frequency": "MONTHLY",
+          "currency": "INR",
+          "country": "India",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payCalendar",
+          "periodAnchor": 1,
+          "payDateRule": "LAST_WORKING_DAY",
+          "cutoffDay": 25
+        },
+        {
+          "id": "cmr3sb38r005vu7x1ktp0obqp",
+          "name": "India Monthly",
+          "frequency": "MONTHLY",
+          "currency": "INR",
+          "country": "India",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payCalendar",
+          "periodAnchor": 1,
+          "payDateRule": "LAST_WORKING_DAY",
+          "cutoffDay": 25
+        },
+        {
+          "id": "cmr3sb3fc005xu7x1jvanet1e",
+          "name": "India Bi-Weekly",
+          "frequency": "MONTHLY",
+          "currency": "INR",
+          "country": "India",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payCalendar",
+          "periodAnchor": 1,
+          "payDateRule": "LAST_WORKING_DAY",
+          "cutoffDay": 25
+        },
+        {
+          "id": "cmr3sb3hi005zu7x1ni4z4piw",
+          "name": "US Bi-Weekly",
+          "frequency": "MONTHLY",
+          "currency": "INR",
+          "country": "India",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payCalendar",
+          "periodAnchor": 1,
+          "payDateRule": "LAST_WORKING_DAY",
+          "cutoffDay": 25
+        },
+        {
+          "id": "cmr3sb3k90061u7x1h80l33y4",
+          "name": "US Weekly",
+          "frequency": "MONTHLY",
+          "currency": "INR",
+          "country": "India",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payCalendar",
+          "periodAnchor": 1,
+          "payDateRule": "LAST_WORKING_DAY",
+          "cutoffDay": 25
+        },
+        {
+          "id": "cmqjpye6900a0kpjdc37v6so2",
+          "name": "Standard Pay Group",
+          "code": "STANDARD",
+          "frequency": "MONTHLY",
+          "currency": "INR",
+          "country": "IN",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payGroup"
+        },
+        {
+          "id": "cmqqzt70o0007in8y7o91fhdt",
+          "name": "Litmus Multi-currency",
+          "code": "LITMUS-MULTI",
+          "frequency": "MONTHLY",
+          "currency": "USD",
+          "country": "US",
+          "startDate": null,
+          "timezone": "Asia/Kolkata",
+          "nextRunDate": null,
+          "active": true,
+          "source": "payGroup"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:34:54.997Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:34:54.997Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:34:54.997Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  }
+]

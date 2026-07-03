@@ -1,0 +1,1578 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:36:39.597Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets?week=2026-06-22&employeeId=cmqjpydsb001mkpjdxlgw74tv",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqqefkc50009645gqzleramz",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "employeeName": "HR Admin",
+        "weekStart": "2026-06-22",
+        "weekEnd": "2026-06-28",
+        "status": "DRAFT",
+        "totalHours": 0,
+        "billableHours": 0,
+        "overtimeHours": 0,
+        "standardHours": 40,
+        "requireTaskOnEntry": false,
+        "submittedAt": null,
+        "decidedBy": null,
+        "decidedAt": null,
+        "comment": null,
+        "entries": []
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/projects?memberId=cmqjpydsb001mkpjdxlgw74tv",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "prj-seed-6",
+          "name": "Compliance & Audit",
+          "code": "COMP",
+          "clientName": null,
+          "status": "ACTIVE",
+          "billable": false,
+          "defaultRate": 0,
+          "memberIds": [],
+          "createdAt": "2026-06-18T16:33:27.692Z",
+          "updatedAt": "2026-06-18T16:33:27.692Z"
+        },
+        {
+          "id": "prj-seed-5",
+          "name": "Customer Portal v2",
+          "code": "CPV2",
+          "clientName": "Gamma Ltd",
+          "status": "ACTIVE",
+          "billable": true,
+          "defaultRate": 6000,
+          "memberIds": [],
+          "createdAt": "2026-06-18T16:33:27.690Z",
+          "updatedAt": "2026-06-18T16:33:27.690Z"
+        },
+        {
+          "id": "prj-seed-4",
+          "name": "DevOps Infrastructure",
+          "code": "DEV",
+          "clientName": null,
+          "status": "ACTIVE",
+          "billable": false,
+          "defaultRate": 0,
+          "memberIds": [],
+          "createdAt": "2026-06-18T16:33:27.689Z",
+          "updatedAt": "2026-06-18T16:33:27.689Z"
+        },
+        {
+          "id": "prj-seed-3",
+          "name": "Data Analytics Platform",
+          "code": "DAP",
+          "clientName": "Beta Corp",
+          "status": "ACTIVE",
+          "billable": true,
+          "defaultRate": 5500,
+          "memberIds": [],
+          "createdAt": "2026-06-18T16:33:27.687Z",
+          "updatedAt": "2026-06-18T16:33:27.687Z"
+        },
+        {
+          "id": "prj-seed-2",
+          "name": "Internal Portal",
+          "code": "INT",
+          "clientName": null,
+          "status": "ACTIVE",
+          "billable": false,
+          "defaultRate": 0,
+          "memberIds": [],
+          "createdAt": "2026-06-18T16:33:27.685Z",
+          "updatedAt": "2026-06-18T16:33:27.685Z"
+        },
+        {
+          "id": "prj-seed-1",
+          "name": "Acme Mobile App",
+          "code": "AMA",
+          "clientName": "Acme Inc",
+          "status": "ACTIVE",
+          "billable": true,
+          "defaultRate": 4500,
+          "memberIds": [],
+          "createdAt": "2026-06-18T16:33:27.682Z",
+          "updatedAt": "2026-06-18T16:33:27.682Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets?week=2026-06-29&employeeId=cmqjpydsb001mkpjdxlgw74tv",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmr3qpkt50023u7x1gcs06b2r",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "employeeName": "HR Admin",
+        "weekStart": "2026-06-29",
+        "weekEnd": "2026-07-05",
+        "status": "DRAFT",
+        "totalHours": 0,
+        "billableHours": 0,
+        "overtimeHours": 0,
+        "standardHours": 40,
+        "requireTaskOnEntry": false,
+        "submittedAt": null,
+        "decidedBy": null,
+        "decidedAt": null,
+        "comment": null,
+        "entries": []
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/week-config",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "weekStartDay": 1
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/tenant",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "legalName": "Acme Corporation Pvt Ltd",
+        "displayName": "Acme",
+        "country": "India",
+        "defaultCurrency": "INR",
+        "primaryContactEmail": "hr@acme.test",
+        "supportPhone": "+91 11 40000000",
+        "logoUrl": null,
+        "company_name": "Acme Corp",
+        "timezone": "Asia/Kolkata",
+        "working_hours_start": "09:00",
+        "working_hours_end": "18:00",
+        "fiscal_year_start": 4,
+        "invite_email_target": "PERSONAL",
+        "work_week_pattern": "MON-FRI",
+        "work_week_days": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ]
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/templates",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": []
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/attendance-rules",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "work_week_days": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ],
+        "late_after": "09:30",
+        "half_day_threshold_minutes": 240,
+        "full_day_threshold_minutes": 480,
+        "regularization_window_days": 7,
+        "geo_fencing_enabled": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/legal-entities",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "le_cmqjpydkv0000kpjdelztyg88_in",
+          "name": "Acme India Pvt Ltd",
+          "country": "IN",
+          "currency": "INR",
+          "fiscalYearStartMonth": 4,
+          "timezone": "Asia/Kolkata",
+          "locale": "en-IN",
+          "workWeekPattern": "MON-FRI",
+          "workWeekDays": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "hoursPerDay": 8,
+          "registrationIds": {
+            "PF": "MHBAN1234567",
+            "ESI": "12345678901234",
+            "PAN": "AAAAA1234A"
+          },
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:23.347Z",
+          "updatedAt": "2026-06-23T09:02:52.260Z"
+        },
+        {
+          "id": "cmqqyw66n0009uojodughf6zb",
+          "name": "Acme Kuwait WLL (litmus)",
+          "country": "KW",
+          "currency": "KWD",
+          "fiscalYearStartMonth": 4,
+          "timezone": "Asia/Kuwait",
+          "locale": "ar-KW",
+          "workWeekPattern": "SUN-THU",
+          "workWeekDays": [
+            "SUN",
+            "MON",
+            "TUE",
+            "WED",
+            "THU"
+          ],
+          "hoursPerDay": null,
+          "registrationIds": {},
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-23T18:17:59.375Z",
+          "updatedAt": "2026-06-23T18:17:59.375Z"
+        },
+        {
+          "id": "cmqqzt6nk0005in8yp8e8iygj",
+          "name": "Acme USA Inc (litmus)",
+          "country": "US",
+          "currency": "USD",
+          "fiscalYearStartMonth": 4,
+          "timezone": "America/New_York",
+          "locale": "en-US",
+          "workWeekPattern": "MON-FRI",
+          "workWeekDays": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "hoursPerDay": null,
+          "registrationIds": {},
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-23T18:43:39.632Z",
+          "updatedAt": "2026-06-23T18:43:39.632Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/salary",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpye6x00aekpjdd556fxh6",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "payGroupId": "cmqjpye6900a0kpjdc37v6so2",
+        "payGroup": {
+          "id": "cmqjpye6900a0kpjdc37v6so2",
+          "name": "Standard Pay Group",
+          "code": "STANDARD",
+          "currency": "INR",
+          "paySchedule": "MONTHLY"
+        },
+        "annualCtc": 1200000,
+        "country": "IN",
+        "currency": null,
+        "legalEntityId": null,
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "bankAccountName": null,
+        "bankAccountNumber": "0001234567890",
+        "bankIfscCode": "SBIN0001234",
+        "bankName": "SBI",
+        "calculatedComponents": [
+          {
+            "code": "BASIC",
+            "name": "Basic Salary",
+            "type": "EARNING",
+            "monthlyAmount": 50000,
+            "taxable": true,
+            "color": "#16a34a",
+            "amount": 50000
+          },
+          {
+            "code": "HRA",
+            "name": "House Rent Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 20000,
+            "taxable": false,
+            "color": "#16a34a",
+            "amount": 20000
+          },
+          {
+            "code": "CONVEYANCE",
+            "name": "Conveyance Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 1600,
+            "taxable": false,
+            "color": "#16a34a",
+            "amount": 1600
+          },
+          {
+            "code": "MEDICAL",
+            "name": "Medical Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 1250,
+            "taxable": false,
+            "color": "#2563eb",
+            "amount": 1250
+          },
+          {
+            "code": "PF",
+            "name": "Provident Fund (Employee)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 6000,
+            "taxable": false,
+            "color": "#dc2626",
+            "amount": 6000
+          },
+          {
+            "code": "TDS",
+            "name": "Income Tax (TDS)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 5000,
+            "taxable": false,
+            "color": "#dc2626",
+            "amount": 5000
+          }
+        ],
+        "monthlyGross": 71600,
+        "monthlyDeductions": 11000,
+        "monthlyNet": 60600,
+        "history": [],
+        "createdAt": "2026-06-18T16:33:23.289Z",
+        "updatedAt": "2026-06-18T16:33:23.289Z"
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpydsb001mkpjdxlgw74tv/holidays?year=2026",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "holidays": [
+          {
+            "id": "cmqjpygi900vvdwadj9lxotpj",
+            "name": "New Year's Day",
+            "holidayDate": "2026-01-01T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygic00vxdwadgvlhjv0z",
+            "name": "Republic Day",
+            "holidayDate": "2026-01-26T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygid00vzdwadhgddwvja",
+            "name": "Holi",
+            "holidayDate": "2026-03-14T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygih00w3dwad5m67rwjl",
+            "name": "Eid al-Fitr",
+            "holidayDate": "2026-03-30T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygik00w5dwadtw3c4k84",
+            "name": "Ram Navami",
+            "holidayDate": "2026-04-06T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygif00w1dwado9x2b0e1",
+            "name": "Good Friday",
+            "holidayDate": "2026-04-18T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygin00w7dwadgrrxbfj8",
+            "name": "Maharashtra Day",
+            "holidayDate": "2026-05-01T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygio00w9dwadym49pnct",
+            "name": "Eid al-Adha",
+            "holidayDate": "2026-06-06T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydta001ukpjdhe9l7qsv",
+            "name": "Independence Day",
+            "holidayDate": "2026-08-15T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          },
+          {
+            "id": "cmqjpygir00wbdwadjshmfj26",
+            "name": "Onam",
+            "holidayDate": "2026-09-05T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydtc001wkpjd3zl84ecq",
+            "name": "Gandhi Jayanti",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          },
+          {
+            "id": "cmqjpygiu00wddwadegfnbwv5",
+            "name": "Dussehra",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygiw00wfdwadzbyzptjz",
+            "name": "Diwali",
+            "holidayDate": "2026-10-20T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygiy00whdwad3db6p5fr",
+            "name": "Guru Nanak Jayanti",
+            "holidayDate": "2026-11-05T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydte001ykpjdbsq9y3k7",
+            "name": "Christmas",
+            "holidayDate": "2026-12-25T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          }
+        ],
+        "total": 15,
+        "year": 2026,
+        "context": {
+          "countryCode": "IN",
+          "workWeekDays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "observedRule": "NONE",
+          "restrictedLimit": 2,
+          "resolvedBy": "LEGAL_ENTITY",
+          "policyVersion": "seed",
+          "timezone": "Asia/Kolkata",
+          "hoursPerDay": 8
+        }
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/locks",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/budgets",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/requests",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "requests": [
+          {
+            "id": "cmqjpyfna006fdwadtwp9ooog",
+            "referenceNo": "LVR-0011",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "leaveTypeName": "Annual Leave",
+            "startDate": "2026-04-29T00:00:00.000Z",
+            "endDate": "2026-05-02T00:00:00.000Z",
+            "totalDays": 4,
+            "status": "APPROVED",
+            "reason": "Travel",
+            "submittedAt": "2026-04-27T00:00:00.000Z",
+            "decidedAt": "2026-04-28T00:00:00.000Z",
+            "approverComment": "Approved"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "pages": 1
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets?week=2026-06-15&employeeId=cmqjpydsb001mkpjdxlgw74tv",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyhsl008z12on2lud0pk2",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "employeeName": "HR Admin",
+        "weekStart": "2026-06-15",
+        "weekEnd": "2026-06-21",
+        "status": "DRAFT",
+        "totalHours": 62.5,
+        "billableHours": 57,
+        "overtimeHours": 22.5,
+        "standardHours": 40,
+        "requireTaskOnEntry": false,
+        "submittedAt": null,
+        "decidedBy": null,
+        "decidedAt": null,
+        "comment": null,
+        "entries": [
+          {
+            "id": "cmqjpyhsm009112on8toh1d19",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-1",
+            "date": "2026-06-15",
+            "hours": 7.5,
+            "billable": true,
+            "note": "Sprint planning + dev",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhso009312onfnf2vlsb",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-2",
+            "date": "2026-06-16",
+            "hours": 7.5,
+            "billable": true,
+            "note": "Bug fixes",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhsp009512ona8rrqdig",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-2",
+            "taskId": "tsk-seed-4",
+            "date": "2026-06-16",
+            "hours": 0.5,
+            "billable": false,
+            "note": "Pipeline maintenance",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhsq009712onxau7kiqz",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-3",
+            "taskId": "tsk-seed-6",
+            "date": "2026-06-17",
+            "hours": 6,
+            "billable": true,
+            "note": "Feature implementation",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhsr009912onfjqe8y0m",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-5",
+            "taskId": "tsk-seed-9",
+            "date": "2026-06-17",
+            "hours": 2,
+            "billable": true,
+            "note": "UI work",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhst009b12on4v2duv8a",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-3",
+            "date": "2026-06-18",
+            "hours": 5,
+            "billable": true,
+            "note": "Code review",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhsu009d12onnu37oazl",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-4",
+            "taskId": "tsk-seed-8",
+            "date": "2026-06-18",
+            "hours": 3,
+            "billable": false,
+            "note": "CI/CD work",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhsv009f12on1y8cq0ra",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-3",
+            "taskId": "tsk-seed-7",
+            "date": "2026-06-19",
+            "hours": 6,
+            "billable": true,
+            "note": "QA testing",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhsw009h12onht3yf7ch",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-6",
+            "taskId": "tsk-seed-11",
+            "date": "2026-06-19",
+            "hours": 2,
+            "billable": false,
+            "note": "Compliance review",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqxmhtb80009u7x1kd7mebar",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-1",
+            "date": "2026-06-18",
+            "hours": 7.5,
+            "billable": true,
+            "note": null,
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqxmht6f0005u7x1pdfzyxm5",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-5",
+            "taskId": "tsk-seed-9",
+            "date": "2026-06-16",
+            "hours": 8,
+            "billable": true,
+            "note": "",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqxmht930007u7x18jw8xr33",
+            "timesheetId": "cmqjpyhsl008z12on2lud0pk2",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-1",
+            "date": "2026-06-17",
+            "hours": 7.5,
+            "billable": true,
+            "note": null,
+            "source": "MANUAL"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets?week=2026-06-08&employeeId=cmqjpydsb001mkpjdxlgw74tv",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyhsz009j12oncxrxe5gz",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "employeeName": "HR Admin",
+        "weekStart": "2026-06-08",
+        "weekEnd": "2026-06-14",
+        "status": "SUBMITTED",
+        "totalHours": 39.5,
+        "billableHours": 34,
+        "overtimeHours": 0,
+        "standardHours": 40,
+        "requireTaskOnEntry": false,
+        "submittedAt": "2026-06-08T09:00:00.000Z",
+        "decidedBy": null,
+        "decidedAt": null,
+        "comment": null,
+        "entries": [
+          {
+            "id": "cmqjpyht1009l12ond12ig3zg",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-1",
+            "date": "2026-06-08",
+            "hours": 7.5,
+            "billable": true,
+            "note": "Sprint planning + dev",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyht3009n12ontlk56u7l",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-2",
+            "date": "2026-06-09",
+            "hours": 7.5,
+            "billable": true,
+            "note": "Bug fixes",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyht4009p12onxva1fuhx",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-2",
+            "taskId": "tsk-seed-4",
+            "date": "2026-06-09",
+            "hours": 0.5,
+            "billable": false,
+            "note": "Pipeline maintenance",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyht5009r12onakdraqf3",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-3",
+            "taskId": "tsk-seed-6",
+            "date": "2026-06-10",
+            "hours": 6,
+            "billable": true,
+            "note": "Feature implementation",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyht6009t12ondvbrcg63",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-5",
+            "taskId": "tsk-seed-9",
+            "date": "2026-06-10",
+            "hours": 2,
+            "billable": true,
+            "note": "UI work",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyht7009v12onamq2gyvh",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-3",
+            "date": "2026-06-11",
+            "hours": 5,
+            "billable": true,
+            "note": "Code review",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyht8009x12onnp6szqcu",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-4",
+            "taskId": "tsk-seed-8",
+            "date": "2026-06-11",
+            "hours": 3,
+            "billable": false,
+            "note": "CI/CD work",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhta009z12onfmd2oxvt",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-3",
+            "taskId": "tsk-seed-7",
+            "date": "2026-06-12",
+            "hours": 6,
+            "billable": true,
+            "note": "QA testing",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhtb00a112on4q4nz3tt",
+            "timesheetId": "cmqjpyhsz009j12oncxrxe5gz",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-6",
+            "taskId": "tsk-seed-11",
+            "date": "2026-06-12",
+            "hours": 2,
+            "billable": false,
+            "note": "Compliance review",
+            "source": "MANUAL"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets?week=2026-06-01&employeeId=cmqjpydsb001mkpjdxlgw74tv",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyhtd00a312ontn7kpjg0",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "employeeName": "HR Admin",
+        "weekStart": "2026-06-01",
+        "weekEnd": "2026-06-07",
+        "status": "APPROVED",
+        "totalHours": 39.5,
+        "billableHours": 34,
+        "overtimeHours": 0,
+        "standardHours": 40,
+        "requireTaskOnEntry": false,
+        "submittedAt": "2026-06-01T09:00:00.000Z",
+        "decidedBy": "HR Admin",
+        "decidedAt": "2026-06-01T17:00:00.000Z",
+        "comment": null,
+        "entries": [
+          {
+            "id": "cmqjpyhte00a512on5in1amt8",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-1",
+            "date": "2026-06-01",
+            "hours": 7.5,
+            "billable": true,
+            "note": "Sprint planning + dev",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhtf00a712on13edws9o",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-2",
+            "date": "2026-06-02",
+            "hours": 7.5,
+            "billable": true,
+            "note": "Bug fixes",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhtg00a912onxtvtx9ly",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-2",
+            "taskId": "tsk-seed-4",
+            "date": "2026-06-02",
+            "hours": 0.5,
+            "billable": false,
+            "note": "Pipeline maintenance",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhti00ab12onjzhveosv",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-3",
+            "taskId": "tsk-seed-6",
+            "date": "2026-06-03",
+            "hours": 6,
+            "billable": true,
+            "note": "Feature implementation",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhtj00ad12onkum0757x",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-5",
+            "taskId": "tsk-seed-9",
+            "date": "2026-06-03",
+            "hours": 2,
+            "billable": true,
+            "note": "UI work",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhtk00af12on3z2orran",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-1",
+            "taskId": "tsk-seed-3",
+            "date": "2026-06-04",
+            "hours": 5,
+            "billable": true,
+            "note": "Code review",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhtl00ah12on3xiyxkf5",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-4",
+            "taskId": "tsk-seed-8",
+            "date": "2026-06-04",
+            "hours": 3,
+            "billable": false,
+            "note": "CI/CD work",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhtm00aj12ongnmsijlw",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-3",
+            "taskId": "tsk-seed-7",
+            "date": "2026-06-05",
+            "hours": 6,
+            "billable": true,
+            "note": "QA testing",
+            "source": "MANUAL"
+          },
+          {
+            "id": "cmqjpyhto00al12ontgcexggc",
+            "timesheetId": "cmqjpyhtd00a312ontn7kpjg0",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "projectId": "prj-seed-6",
+            "taskId": "tsk-seed-11",
+            "date": "2026-06-05",
+            "hours": 2,
+            "billable": false,
+            "note": "Compliance review",
+            "source": "MANUAL"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/projects/prj-seed-5/tasks",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "tsk-seed-9",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-5",
+          "name": "UI Implementation",
+          "billable": true,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.710Z",
+          "updatedAt": "2026-06-18T16:33:27.710Z"
+        },
+        {
+          "id": "tsk-seed-10",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-5",
+          "name": "API Integration",
+          "billable": true,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.712Z",
+          "updatedAt": "2026-06-18T16:33:27.712Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/projects/prj-seed-1/tasks",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "tsk-seed-1",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-1",
+          "name": "Sprint Board",
+          "billable": true,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.694Z",
+          "updatedAt": "2026-06-18T16:33:27.694Z"
+        },
+        {
+          "id": "tsk-seed-2",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-1",
+          "name": "Bug Fixes",
+          "billable": true,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.698Z",
+          "updatedAt": "2026-06-18T16:33:27.698Z"
+        },
+        {
+          "id": "tsk-seed-3",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-1",
+          "name": "Code Review",
+          "billable": true,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.699Z",
+          "updatedAt": "2026-06-18T16:33:27.699Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/projects/prj-seed-2/tasks",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "tsk-seed-4",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-2",
+          "name": "Pipeline Fix",
+          "billable": false,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.701Z",
+          "updatedAt": "2026-06-18T16:33:27.701Z"
+        },
+        {
+          "id": "tsk-seed-5",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-2",
+          "name": "Documentation",
+          "billable": false,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.703Z",
+          "updatedAt": "2026-06-18T16:33:27.703Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/timesheets/projects/prj-seed-3/tasks",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "tsk-seed-6",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-3",
+          "name": "Feature Dev",
+          "billable": true,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.704Z",
+          "updatedAt": "2026-06-18T16:33:27.704Z"
+        },
+        {
+          "id": "tsk-seed-7",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "projectId": "prj-seed-3",
+          "name": "Testing",
+          "billable": true,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:27.707Z",
+          "updatedAt": "2026-06-18T16:33:27.707Z"
+        }
+      ],
+      "meta": {}
+    }
+  }
+]

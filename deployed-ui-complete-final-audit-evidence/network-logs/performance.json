@@ -1,0 +1,1049 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:37:19.663Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/performance/summary",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "reviewsComplete": 30,
+        "reviewsTotal": 45,
+        "goalsOnTrackPct": 50,
+        "goalsOnTrackDelta": 6,
+        "avgRating": 3.1,
+        "overdueReviews": 10
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/performance/cycles/active",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cycle-h1-2026",
+        "name": "H1 2026 Review Cycle",
+        "selfReviewDue": "2026-06-07",
+        "managerReviewDue": "2026-06-14",
+        "calibrationDate": "2026-06-21",
+        "progressPct": 58,
+        "status": "In progress",
+        "startedAt": "2026-05-15T00:00:00.000Z"
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/performance/reviews",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "reviews": [
+          {
+            "employeeId": "cmqjpydv6002ykpjdw0kveq0p",
+            "employeeName": "Aditya Malhotra",
+            "department": "Engineering",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Developing",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydv2002wkpjdrwzyc9lr",
+            "employeeName": "Ritika Gupta",
+            "department": "Customer Success",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyduy002ukpjdfs4emgvf",
+            "employeeName": "Sanjay Verma",
+            "department": "Marketing",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyduv002skpjdfiu65jhz",
+            "employeeName": "Anjali Kumar",
+            "department": "Product",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydur002qkpjdqk63skk3",
+            "employeeName": "Nikhil Patel",
+            "department": "Operations",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Strong",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydun002okpjdcfk4q73v",
+            "employeeName": "Pooja Singh",
+            "department": "Finance",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Exceeds",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeName": "Karan Sharma",
+            "department": "HR",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Below",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeName": "Zara Bhat",
+            "department": "Sales",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Developing",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeName": "Rohan Rao",
+            "department": "Engineering",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeName": "Ananya Joshi",
+            "department": "Customer Success",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeName": "Arjun Malhotra",
+            "department": "Marketing",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+            "employeeName": "Deepika Gupta",
+            "department": "Product",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Strong",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeName": "Amit Verma",
+            "department": "Operations",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Exceeds",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+            "employeeName": "Neha Kumar",
+            "department": "Finance",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Below",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+            "employeeName": "Vikram Patel",
+            "department": "HR",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Developing",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeName": "Sakshi Singh",
+            "department": "Sales",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydtj0022kpjd7hbikivl",
+            "employeeName": "Rajesh Sharma",
+            "department": "Engineering",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeName": "HR Admin",
+            "department": "HR",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeName": "Priya Sharma",
+            "department": "Engineering",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Strong",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeName": "Aman Kumar",
+            "department": "Engineering",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Exceeds",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydvr0038kpjdgswasdwa",
+            "employeeName": "Preeti Singh",
+            "department": "Product",
+            "reviewerName": "Aman Kumar",
+            "status": "Not started",
+            "rating": null,
+            "selfComplete": false,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydvk0036kpjdzfhfd323",
+            "employeeName": "Manish Sharma",
+            "department": "Operations",
+            "reviewerName": null,
+            "status": "Self review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydvh0034kpjdd0jb0127",
+            "employeeName": "Divya Bhat",
+            "department": "Finance",
+            "reviewerName": null,
+            "status": "Manager review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydve0032kpjdx4ljg1mz",
+            "employeeName": "Rahul Rao",
+            "department": "HR",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Exceeds",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydva0030kpjdsuckv50d",
+            "employeeName": "Sneha Joshi",
+            "department": "Sales",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Below",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydv6002ykpjdw0kveq0p",
+            "employeeName": "Aditya Malhotra",
+            "department": "Engineering",
+            "reviewerName": null,
+            "status": "Not started",
+            "rating": null,
+            "selfComplete": false,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydv2002wkpjdrwzyc9lr",
+            "employeeName": "Ritika Gupta",
+            "department": "Customer Success",
+            "reviewerName": "Aman Kumar",
+            "status": "Self review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpyduy002ukpjdfs4emgvf",
+            "employeeName": "Sanjay Verma",
+            "department": "Marketing",
+            "reviewerName": null,
+            "status": "Manager review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpyduv002skpjdfiu65jhz",
+            "employeeName": "Anjali Kumar",
+            "department": "Product",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydur002qkpjdqk63skk3",
+            "employeeName": "Nikhil Patel",
+            "department": "Operations",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Strong",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydun002okpjdcfk4q73v",
+            "employeeName": "Pooja Singh",
+            "department": "Finance",
+            "reviewerName": null,
+            "status": "Not started",
+            "rating": null,
+            "selfComplete": false,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeName": "Karan Sharma",
+            "department": "HR",
+            "reviewerName": null,
+            "status": "Self review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeName": "Zara Bhat",
+            "department": "Sales",
+            "reviewerName": "Aman Kumar",
+            "status": "Manager review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeName": "Rohan Rao",
+            "department": "Engineering",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeName": "Ananya Joshi",
+            "department": "Customer Success",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Meets",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeName": "Arjun Malhotra",
+            "department": "Marketing",
+            "reviewerName": "Aman Kumar",
+            "status": "Not started",
+            "rating": null,
+            "selfComplete": false,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+            "employeeName": "Deepika Gupta",
+            "department": "Product",
+            "reviewerName": null,
+            "status": "Self review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeName": "Amit Verma",
+            "department": "Operations",
+            "reviewerName": null,
+            "status": "Manager review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+            "employeeName": "Neha Kumar",
+            "department": "Finance",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Below",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+            "employeeName": "Vikram Patel",
+            "department": "HR",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Developing",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeName": "Sakshi Singh",
+            "department": "Sales",
+            "reviewerName": null,
+            "status": "Not started",
+            "rating": null,
+            "selfComplete": false,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydtj0022kpjd7hbikivl",
+            "employeeName": "Rajesh Sharma",
+            "department": "Engineering",
+            "reviewerName": "Aman Kumar",
+            "status": "Self review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeName": "HR Admin",
+            "department": "HR",
+            "reviewerName": null,
+            "status": "Manager review",
+            "rating": null,
+            "selfComplete": true,
+            "managerComplete": false
+          },
+          {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeName": "Priya Sharma",
+            "department": "Engineering",
+            "reviewerName": "Aman Kumar",
+            "status": "Calibrated",
+            "rating": "Strong",
+            "selfComplete": true,
+            "managerComplete": true
+          },
+          {
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeName": "Aman Kumar",
+            "department": "Engineering",
+            "reviewerName": null,
+            "status": "Calibrated",
+            "rating": "Exceeds",
+            "selfComplete": true,
+            "managerComplete": true
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 50,
+          "total": 45,
+          "totalPages": 1
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/performance/goals",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "goals": [
+          {
+            "id": "goal-rich-020",
+            "employeeId": "cmqjpydv6002ykpjdw0kveq0p",
+            "employeeName": "Aditya Malhotra",
+            "title": "Complete DSAR automation project",
+            "progressPct": 40,
+            "dueDate": "2025-12-31",
+            "status": "Done"
+          },
+          {
+            "id": "goal-rich-019",
+            "employeeId": "cmqjpydv2002wkpjdrwzyc9lr",
+            "employeeName": "Ritika Gupta",
+            "title": "Launch referral program — 20 hires",
+            "progressPct": 100,
+            "dueDate": "2025-12-31",
+            "status": "At risk"
+          },
+          {
+            "id": "goal-rich-018",
+            "employeeId": "cmqjpyduy002ukpjdfs4emgvf",
+            "employeeName": "Sanjay Verma",
+            "title": "Grow NPS from 38 to 50",
+            "progressPct": 60,
+            "dueDate": "2025-12-31",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-017",
+            "employeeId": "cmqjpyduv002skpjdfiu65jhz",
+            "employeeName": "Anjali Kumar",
+            "title": "Migrate legacy codebase from CJS to ESM",
+            "progressPct": 75,
+            "dueDate": "2025-12-31",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-016",
+            "employeeId": "cmqjpydur002qkpjdqk63skk3",
+            "employeeName": "Nikhil Patel",
+            "title": "Set up SIEM and alerting for SOC readiness",
+            "progressPct": 15,
+            "dueDate": "2025-12-31",
+            "status": "Done"
+          },
+          {
+            "id": "goal-rich-015",
+            "employeeId": "cmqjpydun002okpjdcfk4q73v",
+            "employeeName": "Pooja Singh",
+            "title": "Achieve 95% on-time payroll for 3 months",
+            "progressPct": 95,
+            "dueDate": "2025-12-31",
+            "status": "At risk"
+          },
+          {
+            "id": "goal-rich-014",
+            "employeeId": "cmqjpyduj002mkpjdgsw4t599",
+            "employeeName": "Karan Sharma",
+            "title": "Roll out 360 feedback across all teams",
+            "progressPct": 50,
+            "dueDate": "2025-12-31",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-013",
+            "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+            "employeeName": "Zara Bhat",
+            "title": "Document all engineering runbooks",
+            "progressPct": 85,
+            "dueDate": "2025-12-31",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-012",
+            "employeeId": "cmqjpyduc002ikpjdo589teh3",
+            "employeeName": "Rohan Rao",
+            "title": "Build ML-based attrition prediction model",
+            "progressPct": 35,
+            "dueDate": "2025-12-31",
+            "status": "Done"
+          },
+          {
+            "id": "goal-rich-011",
+            "employeeId": "cmqjpydu9002gkpjdywx910uq",
+            "employeeName": "Ananya Joshi",
+            "title": "Launch self-service employee portal v2",
+            "progressPct": 65,
+            "dueDate": "2025-12-31",
+            "status": "At risk"
+          },
+          {
+            "id": "goal-rich-010",
+            "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+            "employeeName": "Arjun Malhotra",
+            "title": "Reduce cloud spend by 15%",
+            "progressPct": 20,
+            "dueDate": "2026-06-30",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-009",
+            "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+            "employeeName": "Deepika Gupta",
+            "title": "Onboard 3 enterprise clients in Q2",
+            "progressPct": 90,
+            "dueDate": "2026-06-30",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-008",
+            "employeeId": "cmqjpydty002akpjdz73z8ozq",
+            "employeeName": "Amit Verma",
+            "title": "Deploy observability stack (Grafana + Prom)",
+            "progressPct": 45,
+            "dueDate": "2026-06-30",
+            "status": "Done"
+          },
+          {
+            "id": "goal-rich-007",
+            "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+            "employeeName": "Neha Kumar",
+            "title": "Complete ISO 27001 gap assessment",
+            "progressPct": 70,
+            "dueDate": "2026-06-30",
+            "status": "At risk"
+          },
+          {
+            "id": "goal-rich-006",
+            "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+            "employeeName": "Vikram Patel",
+            "title": "Run Q2 demand-gen campaign — 500 MQLs",
+            "progressPct": 55,
+            "dueDate": "2026-06-30",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-005",
+            "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+            "employeeName": "Sakshi Singh",
+            "title": "Migrate auth service to microservices",
+            "progressPct": 30,
+            "dueDate": "2026-06-30",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-004",
+            "employeeId": "cmqjpydtj0022kpjd7hbikivl",
+            "employeeName": "Rajesh Sharma",
+            "title": "Hire 5 senior engineers Q2",
+            "progressPct": 100,
+            "dueDate": "2026-06-30",
+            "status": "Done"
+          },
+          {
+            "id": "goal-rich-003",
+            "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+            "employeeName": "HR Admin",
+            "title": "Launch mobile app v3 — iOS + Android",
+            "progressPct": 40,
+            "dueDate": "2026-06-30",
+            "status": "At risk"
+          },
+          {
+            "id": "goal-rich-002",
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "employeeName": "Priya Sharma",
+            "title": "Reduce p95 API latency below 200ms",
+            "progressPct": 60,
+            "dueDate": "2026-06-30",
+            "status": "On track"
+          },
+          {
+            "id": "goal-rich-001",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "employeeName": "Aman Kumar",
+            "title": "Ship design-system v2 to all squads",
+            "progressPct": 80,
+            "dueDate": "2026-06-30",
+            "status": "On track"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 50,
+          "total": 20,
+          "totalPages": 1
+        }
+      },
+      "meta": {}
+    }
+  }
+]

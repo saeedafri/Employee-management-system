@@ -1,0 +1,1772 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:37:58.097Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/workforce-trend?range=6m",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "month": "2026-02",
+          "monthLabel": "Feb 2026",
+          "headcount": 72,
+          "hires": 0,
+          "exits": 0,
+          "netChange": 0
+        },
+        {
+          "month": "2026-03",
+          "monthLabel": "Mar 2026",
+          "headcount": 72,
+          "hires": 0,
+          "exits": 0,
+          "netChange": 0
+        },
+        {
+          "month": "2026-04",
+          "monthLabel": "Apr 2026",
+          "headcount": 72,
+          "hires": 0,
+          "exits": 0,
+          "netChange": 0
+        },
+        {
+          "month": "2026-05",
+          "monthLabel": "May 2026",
+          "headcount": 72,
+          "hires": 0,
+          "exits": 0,
+          "netChange": 0
+        },
+        {
+          "month": "2026-06",
+          "monthLabel": "Jun 2026",
+          "headcount": 75,
+          "hires": 5,
+          "exits": 2,
+          "netChange": 3
+        },
+        {
+          "month": "2026-07",
+          "monthLabel": "Jul 2026",
+          "headcount": 75,
+          "hires": 0,
+          "exits": 0,
+          "netChange": 0
+        }
+      ],
+      "meta": {
+        "generatedAt": "2026-07-02T17:38:00.079Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/attrition?range=6m",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "currentMonthRate": 0,
+        "rollingAnnualRate": 4,
+        "trend": [
+          {
+            "month": "2026-02",
+            "monthLabel": "Feb 2026",
+            "rate": 0,
+            "exits": 0
+          },
+          {
+            "month": "2026-03",
+            "monthLabel": "Mar 2026",
+            "rate": 0,
+            "exits": 0
+          },
+          {
+            "month": "2026-04",
+            "monthLabel": "Apr 2026",
+            "rate": 0,
+            "exits": 0
+          },
+          {
+            "month": "2026-05",
+            "monthLabel": "May 2026",
+            "rate": 0,
+            "exits": 0
+          },
+          {
+            "month": "2026-06",
+            "monthLabel": "Jun 2026",
+            "rate": 2.7,
+            "exits": 2
+          },
+          {
+            "month": "2026-07",
+            "monthLabel": "Jul 2026",
+            "rate": 0,
+            "exits": 0
+          }
+        ]
+      },
+      "meta": {
+        "generatedAt": "2026-07-02T17:38:00.107Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/tenant",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "legalName": "Acme Corporation Pvt Ltd",
+        "displayName": "Acme",
+        "country": "India",
+        "defaultCurrency": "INR",
+        "primaryContactEmail": "hr@acme.test",
+        "supportPhone": "+91 11 40000000",
+        "logoUrl": null,
+        "company_name": "Acme Corp",
+        "timezone": "Asia/Kolkata",
+        "working_hours_start": "09:00",
+        "working_hours_end": "18:00",
+        "fiscal_year_start": 4,
+        "invite_email_target": "PERSONAL",
+        "work_week_pattern": "MON-FRI",
+        "work_week_days": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ]
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/attendance-rules",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "work_week_days": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ],
+        "late_after": "09:30",
+        "half_day_threshold_minutes": 240,
+        "full_day_threshold_minutes": 480,
+        "regularization_window_days": 7,
+        "geo_fencing_enabled": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/legal-entities",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "le_cmqjpydkv0000kpjdelztyg88_in",
+          "name": "Acme India Pvt Ltd",
+          "country": "IN",
+          "currency": "INR",
+          "fiscalYearStartMonth": 4,
+          "timezone": "Asia/Kolkata",
+          "locale": "en-IN",
+          "workWeekPattern": "MON-FRI",
+          "workWeekDays": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "hoursPerDay": 8,
+          "registrationIds": {
+            "PF": "MHBAN1234567",
+            "ESI": "12345678901234",
+            "PAN": "AAAAA1234A"
+          },
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:23.347Z",
+          "updatedAt": "2026-06-23T09:02:52.260Z"
+        },
+        {
+          "id": "cmqqyw66n0009uojodughf6zb",
+          "name": "Acme Kuwait WLL (litmus)",
+          "country": "KW",
+          "currency": "KWD",
+          "fiscalYearStartMonth": 4,
+          "timezone": "Asia/Kuwait",
+          "locale": "ar-KW",
+          "workWeekPattern": "SUN-THU",
+          "workWeekDays": [
+            "SUN",
+            "MON",
+            "TUE",
+            "WED",
+            "THU"
+          ],
+          "hoursPerDay": null,
+          "registrationIds": {},
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-23T18:17:59.375Z",
+          "updatedAt": "2026-06-23T18:17:59.375Z"
+        },
+        {
+          "id": "cmqqzt6nk0005in8yp8e8iygj",
+          "name": "Acme USA Inc (litmus)",
+          "country": "US",
+          "currency": "USD",
+          "fiscalYearStartMonth": 4,
+          "timezone": "America/New_York",
+          "locale": "en-US",
+          "workWeekPattern": "MON-FRI",
+          "workWeekDays": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "hoursPerDay": null,
+          "registrationIds": {},
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-23T18:43:39.632Z",
+          "updatedAt": "2026-06-23T18:43:39.632Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/payroll-cost?range=6m",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "month": "2026-02",
+          "monthLabel": "Feb 2026",
+          "totalNet": 5068800,
+          "totalGross": 5760000,
+          "employeeCount": 72,
+          "avgNetPerEmployee": 70400
+        },
+        {
+          "month": "2026-03",
+          "monthLabel": "Mar 2026",
+          "totalNet": 5068800,
+          "totalGross": 5760000,
+          "employeeCount": 72,
+          "avgNetPerEmployee": 70400
+        },
+        {
+          "month": "2026-04",
+          "monthLabel": "Apr 2026",
+          "totalNet": 5068800,
+          "totalGross": 5760000,
+          "employeeCount": 72,
+          "avgNetPerEmployee": 70400
+        },
+        {
+          "month": "2026-05",
+          "monthLabel": "May 2026",
+          "totalNet": 5068800,
+          "totalGross": 5760000,
+          "employeeCount": 72,
+          "avgNetPerEmployee": 70400
+        },
+        {
+          "month": "2026-06",
+          "monthLabel": "Jun 2026",
+          "totalNet": 5280000,
+          "totalGross": 6000000,
+          "employeeCount": 75,
+          "avgNetPerEmployee": 70400
+        },
+        {
+          "month": "2026-07",
+          "monthLabel": "Jul 2026",
+          "totalNet": 5280000,
+          "totalGross": 6000000,
+          "employeeCount": 75,
+          "avgNetPerEmployee": 70400
+        }
+      ],
+      "meta": {
+        "generatedAt": "2026-07-02T17:38:00.211Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/summary?range=30d",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "totalEmployees": 75,
+        "activeToday": 3,
+        "onLeaveToday": 0,
+        "openRequests": 12,
+        "deltas": {
+          "totalEmployees": {
+            "delta": 0,
+            "deltaLabel": "vs last month"
+          },
+          "activeToday": {
+            "deltaPercent": 4
+          },
+          "onLeaveToday": {
+            "delta": 0
+          },
+          "openRequests": {
+            "urgent": 0
+          }
+        }
+      },
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:38:00.233Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/department-performance?range=30d",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "departmentId": "cmqjpydr60012kpjd7tl3efld",
+          "departmentName": "Engineering",
+          "headcount": 14,
+          "attendanceRate": 91.7,
+          "leaveRate": 2.4,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 59.7
+        },
+        {
+          "departmentId": "cmqjpydrb0014kpjdiu4yk32p",
+          "departmentName": "Sales",
+          "headcount": 9,
+          "attendanceRate": 81.8,
+          "leaveRate": 0,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 59.9
+        },
+        {
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "departmentName": "HR",
+          "headcount": 9,
+          "attendanceRate": 100,
+          "leaveRate": 0,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 52.3
+        },
+        {
+          "departmentId": "cmqjpydrh0018kpjdo5t9ue7b",
+          "departmentName": "Finance",
+          "headcount": 9,
+          "attendanceRate": 81.8,
+          "leaveRate": 0,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 36.7
+        },
+        {
+          "departmentId": "cmqjpydrk001akpjdxmb5ai3i",
+          "departmentName": "Operations",
+          "headcount": 8,
+          "attendanceRate": 0,
+          "leaveRate": 0,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 74.2
+        },
+        {
+          "departmentId": "cmqjpydro001ckpjdb1aatiu8",
+          "departmentName": "Product",
+          "headcount": 9,
+          "attendanceRate": 0,
+          "leaveRate": 0,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 54.3
+        },
+        {
+          "departmentId": "cmqjpydrr001ekpjdb0f1229w",
+          "departmentName": "Marketing",
+          "headcount": 8,
+          "attendanceRate": 81.8,
+          "leaveRate": 0,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 48.3
+        },
+        {
+          "departmentId": "cmqjpydrw001gkpjdh8uedxjx",
+          "departmentName": "Customer Success",
+          "headcount": 9,
+          "attendanceRate": 0,
+          "leaveRate": 0,
+          "pendingApprovals": 12,
+          "avgTenureMonths": 28.2
+        }
+      ],
+      "meta": {
+        "generatedAt": "2026-07-02T17:38:00.238Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/departments",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmqjpydrw001gkpjdh8uedxjx",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Customer Success",
+          "departmentCode": "CUS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.749Z",
+          "updatedAt": "2026-06-18T16:33:22.749Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydr60012kpjd7tl3efld",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Engineering",
+          "departmentCode": "ENG",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.722Z",
+          "updatedAt": "2026-06-18T16:33:22.722Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 14,
+          "_count": {
+            "employees": 14
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfec0003dwad15vby0bp",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Backend Engineering",
+              "departmentCode": "ENG-BE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.852Z",
+              "updatedAt": "2026-06-18T16:33:24.852Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfe80001dwad8gqk1v20",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Frontend Engineering",
+              "departmentCode": "ENG-FE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.848Z",
+              "updatedAt": "2026-06-18T16:33:24.848Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfef0005dwad26vgadh9",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "QA & Testing",
+              "departmentCode": "ENG-QA",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.855Z",
+              "updatedAt": "2026-06-18T16:33:24.855Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydrh0018kpjdo5t9ue7b",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Finance",
+          "departmentCode": "FIN",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.733Z",
+          "updatedAt": "2026-06-18T16:33:22.733Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydre0016kpjd8t70672t",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "HR",
+          "departmentCode": "HR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.730Z",
+          "updatedAt": "2026-06-18T16:33:22.730Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrr001ekpjdb0f1229w",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Marketing",
+          "departmentCode": "MAR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.744Z",
+          "updatedAt": "2026-06-18T16:33:22.744Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrk001akpjdxmb5ai3i",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Operations",
+          "departmentCode": "OPS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.736Z",
+          "updatedAt": "2026-06-18T16:33:22.736Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfep000bdwad233917lg",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrk001akpjdxmb5ai3i",
+              "name": "IT Support",
+              "departmentCode": "OPS-IT",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.865Z",
+              "updatedAt": "2026-06-18T16:33:24.865Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydro001ckpjdb1aatiu8",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Product",
+          "departmentCode": "PRO",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.740Z",
+          "updatedAt": "2026-06-18T16:33:22.740Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrb0014kpjdiu4yk32p",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Sales",
+          "departmentCode": "SALES",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.727Z",
+          "updatedAt": "2026-06-18T16:33:22.727Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfej0007dwad5jzaivta",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - North",
+              "departmentCode": "SALES-N",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.859Z",
+              "updatedAt": "2026-06-18T16:33:24.859Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfem0009dwadbkazwl7a",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - South",
+              "departmentCode": "SALES-S",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.862Z",
+              "updatedAt": "2026-06-18T16:33:24.862Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/attendance?range=30d",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "range": "30d",
+        "series": [
+          {
+            "date": "2026-06-03",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-04",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-05",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-06",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-07",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-08",
+            "present": 3,
+            "absent": 5,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-09",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 5,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-10",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 5,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-11",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 5
+          },
+          {
+            "date": "2026-06-12",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-13",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-14",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-15",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-16",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-17",
+            "present": 8,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-18",
+            "present": 1,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-19",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-20",
+            "present": 2,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-21",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-22",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-23",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-24",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-25",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-26",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-27",
+            "present": 1,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-28",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-29",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-06-30",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-07-01",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-07-02",
+            "present": 3,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          },
+          {
+            "date": "2026-07-03",
+            "present": 0,
+            "absent": 0,
+            "leave": 0,
+            "wfh": 0,
+            "halfDay": 0
+          }
+        ]
+      },
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:38:00.334Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/headcount-by-department",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "departmentId": "cmqjpydr60012kpjd7tl3efld",
+          "departmentName": "Engineering",
+          "employeeCount": 14,
+          "activeCount": 12
+        },
+        {
+          "departmentId": "cmqjpydrb0014kpjdiu4yk32p",
+          "departmentName": "Sales",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "departmentName": "HR",
+          "employeeCount": 9,
+          "activeCount": 7
+        },
+        {
+          "departmentId": "cmqjpydrh0018kpjdo5t9ue7b",
+          "departmentName": "Finance",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydro001ckpjdb1aatiu8",
+          "departmentName": "Product",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydrw001gkpjdh8uedxjx",
+          "departmentName": "Customer Success",
+          "employeeCount": 9,
+          "activeCount": 9
+        },
+        {
+          "departmentId": "cmqjpydrk001akpjdxmb5ai3i",
+          "departmentName": "Operations",
+          "employeeCount": 8,
+          "activeCount": 6
+        },
+        {
+          "departmentId": "cmqjpydrr001ekpjdb0f1229w",
+          "departmentName": "Marketing",
+          "employeeCount": 8,
+          "activeCount": 6
+        }
+      ],
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:38:00.358Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/leave-summary?range=30d",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "pending": 2,
+        "approved": 4,
+        "rejected": 1,
+        "withdrawn": 1
+      },
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:38:00.371Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/analytics/recent-activity?limit=10",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmr3sfdcg008iu7x1qcecb31b",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:58.096Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:58 pm IST IST",
+          "created_at": "2026-07-02T17:37:58.096Z",
+          "timestamp": "2026-07-02T17:37:58.096Z",
+          "displayTime": "02/07/2026 11:07:58 pm IST"
+        },
+        {
+          "id": "cmr3sf8xv008gu7x1odww0kpe",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:52.387Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:52 pm IST IST",
+          "created_at": "2026-07-02T17:37:52.387Z",
+          "timestamp": "2026-07-02T17:37:52.387Z",
+          "displayTime": "02/07/2026 11:07:52 pm IST"
+        },
+        {
+          "id": "cmr3sf4i8008eu7x17iu5w0op",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:46.640Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:46 pm IST IST",
+          "created_at": "2026-07-02T17:37:46.640Z",
+          "timestamp": "2026-07-02T17:37:46.640Z",
+          "displayTime": "02/07/2026 11:07:46 pm IST"
+        },
+        {
+          "id": "cmr3sezy4008cu7x1ucdck0mk",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:40.732Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:40 pm IST IST",
+          "created_at": "2026-07-02T17:37:40.732Z",
+          "timestamp": "2026-07-02T17:37:40.732Z",
+          "displayTime": "02/07/2026 11:07:40 pm IST"
+        },
+        {
+          "id": "cmr3sext30088u7x12npqtu5g",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:37.960Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:37 pm IST IST",
+          "created_at": "2026-07-02T17:37:37.960Z",
+          "timestamp": "2026-07-02T17:37:37.960Z",
+          "displayTime": "02/07/2026 11:07:37 pm IST"
+        },
+        {
+          "id": "cmr3seu3k0086u7x15op6eus8",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:33.153Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:33 pm IST IST",
+          "created_at": "2026-07-02T17:37:33.153Z",
+          "timestamp": "2026-07-02T17:37:33.153Z",
+          "displayTime": "02/07/2026 11:07:33 pm IST"
+        },
+        {
+          "id": "cmr3serzn0082u7x1x0lsx133",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:30.420Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:30 pm IST IST",
+          "created_at": "2026-07-02T17:37:30.420Z",
+          "timestamp": "2026-07-02T17:37:30.420Z",
+          "displayTime": "02/07/2026 11:07:30 pm IST"
+        },
+        {
+          "id": "cmr3seobr0080u7x182z9l541",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:25.671Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:25 pm IST IST",
+          "created_at": "2026-07-02T17:37:25.671Z",
+          "timestamp": "2026-07-02T17:37:25.671Z",
+          "displayTime": "02/07/2026 11:07:25 pm IST"
+        },
+        {
+          "id": "cmr3senh8007yu7x1ul80xgfm",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:24.572Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:24 pm IST IST",
+          "created_at": "2026-07-02T17:37:24.572Z",
+          "timestamp": "2026-07-02T17:37:24.572Z",
+          "displayTime": "02/07/2026 11:07:24 pm IST"
+        },
+        {
+          "id": "cmr3sejou007wu7x1babg627p",
+          "user_email": "hr@acme.test",
+          "actorName": "HR Admin",
+          "actorEmail": "hr@acme.test",
+          "action": "logged in",
+          "actionCode": "LOGIN",
+          "actionLabel": "logged in",
+          "description": "HR Admin logged in",
+          "entity_type": "User",
+          "entity_id": "cmqjpydqj000skpjdp2l6cvg5",
+          "entity_label": "User #p2l6cvg5",
+          "entity_url": null,
+          "entityType": "User",
+          "entityId": "cmqjpydqj000skpjdp2l6cvg5",
+          "resourceLabel": "User #p2l6cvg5",
+          "createdAt": "2026-07-02T17:37:19.662Z",
+          "createdAtIstDisplay": "02/07/2026 11:07:19 pm IST IST",
+          "created_at": "2026-07-02T17:37:19.662Z",
+          "timestamp": "2026-07-02T17:37:19.662Z",
+          "displayTime": "02/07/2026 11:07:19 pm IST"
+        }
+      ],
+      "meta": {
+        "cached": false,
+        "generatedAt": "2026-07-02T17:38:00.389Z"
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/salary",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpye6x00aekpjdd556fxh6",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "payGroupId": "cmqjpye6900a0kpjdc37v6so2",
+        "payGroup": {
+          "id": "cmqjpye6900a0kpjdc37v6so2",
+          "name": "Standard Pay Group",
+          "code": "STANDARD",
+          "currency": "INR",
+          "paySchedule": "MONTHLY"
+        },
+        "annualCtc": 1200000,
+        "country": "IN",
+        "currency": null,
+        "legalEntityId": null,
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "bankAccountName": null,
+        "bankAccountNumber": "0001234567890",
+        "bankIfscCode": "SBIN0001234",
+        "bankName": "SBI",
+        "calculatedComponents": [
+          {
+            "code": "BASIC",
+            "name": "Basic Salary",
+            "type": "EARNING",
+            "monthlyAmount": 50000,
+            "taxable": true,
+            "color": "#16a34a",
+            "amount": 50000
+          },
+          {
+            "code": "HRA",
+            "name": "House Rent Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 20000,
+            "taxable": false,
+            "color": "#16a34a",
+            "amount": 20000
+          },
+          {
+            "code": "CONVEYANCE",
+            "name": "Conveyance Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 1600,
+            "taxable": false,
+            "color": "#16a34a",
+            "amount": 1600
+          },
+          {
+            "code": "MEDICAL",
+            "name": "Medical Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 1250,
+            "taxable": false,
+            "color": "#2563eb",
+            "amount": 1250
+          },
+          {
+            "code": "PF",
+            "name": "Provident Fund (Employee)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 6000,
+            "taxable": false,
+            "color": "#dc2626",
+            "amount": 6000
+          },
+          {
+            "code": "TDS",
+            "name": "Income Tax (TDS)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 5000,
+            "taxable": false,
+            "color": "#dc2626",
+            "amount": 5000
+          }
+        ],
+        "monthlyGross": 71600,
+        "monthlyDeductions": 11000,
+        "monthlyNet": 60600,
+        "history": [],
+        "createdAt": "2026-06-18T16:33:23.289Z",
+        "updatedAt": "2026-06-18T16:33:23.289Z"
+      },
+      "meta": {}
+    }
+  }
+]

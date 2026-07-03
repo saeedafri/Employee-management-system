@@ -16,7 +16,10 @@ const ROUTES = [
   '/settings/pay/components', '/settings/pay/statutory-packs', '/settings/pay/legal-entities',
 ];
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  channel: process.env.PW_CHANNEL || 'chrome',
+});
 const page = await (await browser.newContext()).newPage();
 const apiFails = [];
 page.on('response', (r) => {

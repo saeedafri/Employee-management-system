@@ -1,0 +1,4723 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:37:40.736Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/attendance/records?month=2026-07&limit=31",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "records": [
+          {
+            "id": "cmr3s33gw0051u7x1otop7mul",
+            "referenceNo": "ATT-1121069",
+            "attendanceDate": "2026-07-02T00:00:00.000Z",
+            "checkInAt": "2026-07-02T17:28:25.416Z",
+            "checkOutAt": "2026-07-02T17:28:26.462Z",
+            "status": "PRESENT",
+            "workMode": "OFFICE",
+            "totalMinutes": 0,
+            "notes": null
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 31,
+          "total": 1,
+          "pages": 1
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/attendance-rules",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "work_week_days": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ],
+        "late_after": "09:30",
+        "half_day_threshold_minutes": 240,
+        "full_day_threshold_minutes": 480,
+        "regularization_window_days": 7,
+        "geo_fencing_enabled": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/legal-entities",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "le_cmqjpydkv0000kpjdelztyg88_in",
+          "name": "Acme India Pvt Ltd",
+          "country": "IN",
+          "currency": "INR",
+          "fiscalYearStartMonth": 4,
+          "timezone": "Asia/Kolkata",
+          "locale": "en-IN",
+          "workWeekPattern": "MON-FRI",
+          "workWeekDays": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "hoursPerDay": 8,
+          "registrationIds": {
+            "PF": "MHBAN1234567",
+            "ESI": "12345678901234",
+            "PAN": "AAAAA1234A"
+          },
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-18T16:33:23.347Z",
+          "updatedAt": "2026-06-23T09:02:52.260Z"
+        },
+        {
+          "id": "cmqqyw66n0009uojodughf6zb",
+          "name": "Acme Kuwait WLL (litmus)",
+          "country": "KW",
+          "currency": "KWD",
+          "fiscalYearStartMonth": 4,
+          "timezone": "Asia/Kuwait",
+          "locale": "ar-KW",
+          "workWeekPattern": "SUN-THU",
+          "workWeekDays": [
+            "SUN",
+            "MON",
+            "TUE",
+            "WED",
+            "THU"
+          ],
+          "hoursPerDay": null,
+          "registrationIds": {},
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-23T18:17:59.375Z",
+          "updatedAt": "2026-06-23T18:17:59.375Z"
+        },
+        {
+          "id": "cmqqzt6nk0005in8yp8e8iygj",
+          "name": "Acme USA Inc (litmus)",
+          "country": "US",
+          "currency": "USD",
+          "fiscalYearStartMonth": 4,
+          "timezone": "America/New_York",
+          "locale": "en-US",
+          "workWeekPattern": "MON-FRI",
+          "workWeekDays": [
+            "MON",
+            "TUE",
+            "WED",
+            "THU",
+            "FRI"
+          ],
+          "hoursPerDay": null,
+          "registrationIds": {},
+          "statutoryPackId": null,
+          "payCalendarId": null,
+          "active": true,
+          "createdAt": "2026-06-23T18:43:39.632Z",
+          "updatedAt": "2026-06-23T18:43:39.632Z"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/salary",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpye6x00aekpjdd556fxh6",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "payGroupId": "cmqjpye6900a0kpjdc37v6so2",
+        "payGroup": {
+          "id": "cmqjpye6900a0kpjdc37v6so2",
+          "name": "Standard Pay Group",
+          "code": "STANDARD",
+          "currency": "INR",
+          "paySchedule": "MONTHLY"
+        },
+        "annualCtc": 1200000,
+        "country": "IN",
+        "currency": null,
+        "legalEntityId": null,
+        "effectiveFrom": "2026-01-01",
+        "effectiveTo": null,
+        "bankAccountName": null,
+        "bankAccountNumber": "0001234567890",
+        "bankIfscCode": "SBIN0001234",
+        "bankName": "SBI",
+        "calculatedComponents": [
+          {
+            "code": "BASIC",
+            "name": "Basic Salary",
+            "type": "EARNING",
+            "monthlyAmount": 50000,
+            "taxable": true,
+            "color": "#16a34a",
+            "amount": 50000
+          },
+          {
+            "code": "HRA",
+            "name": "House Rent Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 20000,
+            "taxable": false,
+            "color": "#16a34a",
+            "amount": 20000
+          },
+          {
+            "code": "CONVEYANCE",
+            "name": "Conveyance Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 1600,
+            "taxable": false,
+            "color": "#16a34a",
+            "amount": 1600
+          },
+          {
+            "code": "MEDICAL",
+            "name": "Medical Allowance",
+            "type": "EARNING",
+            "monthlyAmount": 1250,
+            "taxable": false,
+            "color": "#2563eb",
+            "amount": 1250
+          },
+          {
+            "code": "PF",
+            "name": "Provident Fund (Employee)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 6000,
+            "taxable": false,
+            "color": "#dc2626",
+            "amount": 6000
+          },
+          {
+            "code": "TDS",
+            "name": "Income Tax (TDS)",
+            "type": "DEDUCTION",
+            "monthlyAmount": 5000,
+            "taxable": false,
+            "color": "#dc2626",
+            "amount": 5000
+          }
+        ],
+        "monthlyGross": 71600,
+        "monthlyDeductions": 11000,
+        "monthlyNet": 60600,
+        "history": [],
+        "createdAt": "2026-06-18T16:33:23.289Z",
+        "updatedAt": "2026-06-18T16:33:23.289Z"
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/tenant",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "legalName": "Acme Corporation Pvt Ltd",
+        "displayName": "Acme",
+        "country": "India",
+        "defaultCurrency": "INR",
+        "primaryContactEmail": "hr@acme.test",
+        "supportPhone": "+91 11 40000000",
+        "logoUrl": null,
+        "company_name": "Acme Corp",
+        "timezone": "Asia/Kolkata",
+        "working_hours_start": "09:00",
+        "working_hours_end": "18:00",
+        "fiscal_year_start": 4,
+        "invite_email_target": "PERSONAL",
+        "work_week_pattern": "MON-FRI",
+        "work_week_days": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ]
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/requests?status=APPROVED&limit=100",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "requests": [
+          {
+            "id": "cmqjpyfna006fdwadtwp9ooog",
+            "referenceNo": "LVR-0011",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "leaveTypeName": "Annual Leave",
+            "startDate": "2026-04-29T00:00:00.000Z",
+            "endDate": "2026-05-02T00:00:00.000Z",
+            "totalDays": 4,
+            "status": "APPROVED",
+            "reason": "Travel",
+            "submittedAt": "2026-04-27T00:00:00.000Z",
+            "decidedAt": "2026-04-28T00:00:00.000Z",
+            "approverComment": "Approved"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 100,
+          "total": 1,
+          "pages": 1
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/attendance/today",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "date": "2026-07-02T00:00:00.000Z",
+        "status": "PRESENT",
+        "checkInAt": "2026-07-02T17:28:25.416Z",
+        "checkOutAt": "2026-07-02T17:28:26.462Z",
+        "duration": 0
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/me/holidays?year=2026",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "holidays": [
+          {
+            "id": "cmqjpygi900vvdwadj9lxotpj",
+            "name": "New Year's Day",
+            "holidayDate": "2026-01-01T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygic00vxdwadgvlhjv0z",
+            "name": "Republic Day",
+            "holidayDate": "2026-01-26T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygid00vzdwadhgddwvja",
+            "name": "Holi",
+            "holidayDate": "2026-03-14T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygih00w3dwad5m67rwjl",
+            "name": "Eid al-Fitr",
+            "holidayDate": "2026-03-30T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygik00w5dwadtw3c4k84",
+            "name": "Ram Navami",
+            "holidayDate": "2026-04-06T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygif00w1dwado9x2b0e1",
+            "name": "Good Friday",
+            "holidayDate": "2026-04-18T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygin00w7dwadgrrxbfj8",
+            "name": "Maharashtra Day",
+            "holidayDate": "2026-05-01T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygio00w9dwadym49pnct",
+            "name": "Eid al-Adha",
+            "holidayDate": "2026-06-06T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydta001ukpjdhe9l7qsv",
+            "name": "Independence Day",
+            "holidayDate": "2026-08-15T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          },
+          {
+            "id": "cmqjpygir00wbdwadjshmfj26",
+            "name": "Onam",
+            "holidayDate": "2026-09-05T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydtc001wkpjd3zl84ecq",
+            "name": "Gandhi Jayanti",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          },
+          {
+            "id": "cmqjpygiu00wddwadegfnbwv5",
+            "name": "Dussehra",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygiw00wfdwadzbyzptjz",
+            "name": "Diwali",
+            "holidayDate": "2026-10-20T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygiy00whdwad3db6p5fr",
+            "name": "Guru Nanak Jayanti",
+            "holidayDate": "2026-11-05T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydte001ykpjdbsq9y3k7",
+            "name": "Christmas",
+            "holidayDate": "2026-12-25T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          }
+        ],
+        "total": 15,
+        "year": 2026,
+        "context": {
+          "countryCode": "IN",
+          "workWeekDays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "observedRule": "NONE",
+          "restrictedLimit": 2,
+          "resolvedBy": "LEGAL_ENTITY",
+          "policyVersion": "seed",
+          "timezone": "Asia/Kolkata",
+          "hoursPerDay": 8
+        }
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/attendance/calendar?month=2026-07",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "month": "2026-07",
+        "days": [
+          {
+            "date": "2026-07-01",
+            "weekDay": "WED",
+            "bucket": "ABSENT",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": true,
+            "record": null
+          },
+          {
+            "date": "2026-07-02",
+            "weekDay": "THU",
+            "bucket": "HALF_DAY",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": {
+              "id": "cmr3s33gw0051u7x1otop7mul",
+              "referenceNo": "ATT-1121069",
+              "attendanceDate": "2026-07-02T00:00:00.000Z",
+              "checkInAt": "2026-07-02T17:28:25.416Z",
+              "checkOutAt": "2026-07-02T17:28:26.462Z",
+              "status": "PRESENT",
+              "workMode": "OFFICE",
+              "totalMinutes": 0,
+              "notes": null
+            }
+          },
+          {
+            "date": "2026-07-03",
+            "weekDay": "FRI",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-04",
+            "weekDay": "SAT",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-05",
+            "weekDay": "SUN",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-06",
+            "weekDay": "MON",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-07",
+            "weekDay": "TUE",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-08",
+            "weekDay": "WED",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-09",
+            "weekDay": "THU",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-10",
+            "weekDay": "FRI",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-11",
+            "weekDay": "SAT",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-12",
+            "weekDay": "SUN",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-13",
+            "weekDay": "MON",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-14",
+            "weekDay": "TUE",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-15",
+            "weekDay": "WED",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-16",
+            "weekDay": "THU",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-17",
+            "weekDay": "FRI",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-18",
+            "weekDay": "SAT",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-19",
+            "weekDay": "SUN",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-20",
+            "weekDay": "MON",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-21",
+            "weekDay": "TUE",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-22",
+            "weekDay": "WED",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-23",
+            "weekDay": "THU",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-24",
+            "weekDay": "FRI",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-25",
+            "weekDay": "SAT",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-26",
+            "weekDay": "SUN",
+            "bucket": "WEEKLY_OFF",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-27",
+            "weekDay": "MON",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-28",
+            "weekDay": "TUE",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-29",
+            "weekDay": "WED",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-30",
+            "weekDay": "THU",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          },
+          {
+            "date": "2026-07-31",
+            "weekDay": "FRI",
+            "bucket": "UPCOMING",
+            "holidayName": null,
+            "leaveType": null,
+            "isLop": false,
+            "record": null
+          }
+        ],
+        "summary": {
+          "totalDays": 2,
+          "present": 0,
+          "wfh": 0,
+          "late": 0,
+          "halfDay": 1,
+          "leave": 0,
+          "absent": 1,
+          "holiday": 0,
+          "weeklyOff": 8,
+          "attendancePercentage": 25
+        },
+        "lopDays": [
+          "2026-07-01"
+        ]
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/departments",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmqjpydrw001gkpjdh8uedxjx",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Customer Success",
+          "departmentCode": "CUS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.749Z",
+          "updatedAt": "2026-06-18T16:33:22.749Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydr60012kpjd7tl3efld",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Engineering",
+          "departmentCode": "ENG",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.722Z",
+          "updatedAt": "2026-06-18T16:33:22.722Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 14,
+          "_count": {
+            "employees": 14
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfec0003dwad15vby0bp",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Backend Engineering",
+              "departmentCode": "ENG-BE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.852Z",
+              "updatedAt": "2026-06-18T16:33:24.852Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfe80001dwad8gqk1v20",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Frontend Engineering",
+              "departmentCode": "ENG-FE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.848Z",
+              "updatedAt": "2026-06-18T16:33:24.848Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfef0005dwad26vgadh9",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "QA & Testing",
+              "departmentCode": "ENG-QA",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.855Z",
+              "updatedAt": "2026-06-18T16:33:24.855Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydrh0018kpjdo5t9ue7b",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Finance",
+          "departmentCode": "FIN",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.733Z",
+          "updatedAt": "2026-06-18T16:33:22.733Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydre0016kpjd8t70672t",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "HR",
+          "departmentCode": "HR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.730Z",
+          "updatedAt": "2026-06-18T16:33:22.730Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrr001ekpjdb0f1229w",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Marketing",
+          "departmentCode": "MAR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.744Z",
+          "updatedAt": "2026-06-18T16:33:22.744Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrk001akpjdxmb5ai3i",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Operations",
+          "departmentCode": "OPS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.736Z",
+          "updatedAt": "2026-06-18T16:33:22.736Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfep000bdwad233917lg",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrk001akpjdxmb5ai3i",
+              "name": "IT Support",
+              "departmentCode": "OPS-IT",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.865Z",
+              "updatedAt": "2026-06-18T16:33:24.865Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydro001ckpjdb1aatiu8",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Product",
+          "departmentCode": "PRO",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.740Z",
+          "updatedAt": "2026-06-18T16:33:22.740Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrb0014kpjdiu4yk32p",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Sales",
+          "departmentCode": "SALES",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.727Z",
+          "updatedAt": "2026-06-18T16:33:22.727Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfej0007dwad5jzaivta",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - North",
+              "departmentCode": "SALES-N",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.859Z",
+              "updatedAt": "2026-06-18T16:33:24.859Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfem0009dwadbkazwl7a",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - South",
+              "departmentCode": "SALES-S",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.862Z",
+              "updatedAt": "2026-06-18T16:33:24.862Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees?limit=100&page=1",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "data": [
+          {
+            "id": "cmqjpyds0001ikpjd5br3r2uh",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpydql000ukpjdbhesbmpi",
+            "employeeCode": "E0001",
+            "firstName": "Aman",
+            "lastName": "Kumar",
+            "workEmail": "aman@acme.test",
+            "personalEmail": "aman.kumar@gmail.com",
+            "phone": "+91 98765 43210",
+            "dateOfBirth": "1990-03-15T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Priya Kumar",
+            "emergencyContactPhone": "+91 98765 43215",
+            "designation": "Senior Engineer 2026-07-02",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-01-15T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.752Z",
+            "updatedAt": "2026-07-02T17:35:56.709Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "aman@acme.test",
+              "memberType": "MANAGER",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyds7001kkpjdnlhjygrp",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpydqn000wkpjd02gyqzd3",
+            "employeeCode": "E0002",
+            "firstName": "Priya",
+            "lastName": "Sharma",
+            "workEmail": "priya@acme.test",
+            "personalEmail": "priya.sharma@gmail.com",
+            "phone": "+91 98765 43211",
+            "dateOfBirth": "1995-08-22T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Noida, India",
+            "emergencyContactName": "Raj Sharma",
+            "emergencyContactPhone": "+91 98765 43216",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-06-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.759Z",
+            "updatedAt": "2026-06-18T16:33:22.759Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": {
+              "email": "priya@acme.test",
+              "memberType": "EMPLOYEE",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydsb001mkpjdxlgw74tv",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpydqj000skpjdp2l6cvg5",
+            "employeeCode": "E0003",
+            "firstName": "HR",
+            "lastName": "Admin",
+            "workEmail": "hr@acme.test",
+            "personalEmail": "hr@acme.test",
+            "phone": "+91 98765 43212",
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "HR Manager",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2019-01-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.764Z",
+            "updatedAt": "2026-06-18T16:33:22.764Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "hr@acme.test",
+              "memberType": "HR_ADMIN",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtj0022kpjd7hbikivl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0004",
+            "firstName": "Rajesh",
+            "lastName": "Sharma",
+            "workEmail": "emp4@acme.test",
+            "personalEmail": "emp4@gmail.com",
+            "phone": "+91 98765 10000",
+            "dateOfBirth": "1985-01-01T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Rajesh Family",
+            "emergencyContactPhone": "+91 98765 20000",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-01T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.807Z",
+            "updatedAt": "2026-06-18T16:33:22.807Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtn0024kpjddj2ztzer",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0005",
+            "firstName": "Sakshi",
+            "lastName": "Singh",
+            "workEmail": "emp5@acme.test",
+            "personalEmail": "emp5@gmail.com",
+            "phone": "+91 98765 10001",
+            "dateOfBirth": "1986-02-02T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Sakshi Family",
+            "emergencyContactPhone": "+91 98765 20001",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-02T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.811Z",
+            "updatedAt": "2026-06-18T16:33:22.811Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtr0026kpjd0jp8m2qu",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0006",
+            "firstName": "Vikram",
+            "lastName": "Patel",
+            "workEmail": "emp6@acme.test",
+            "personalEmail": "emp6@gmail.com",
+            "phone": "+91 98765 10002",
+            "dateOfBirth": "1987-03-03T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Vikram Family",
+            "emergencyContactPhone": "+91 98765 20002",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-03-03T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.815Z",
+            "updatedAt": "2026-06-18T16:33:22.815Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtv0028kpjdz9s1w2kl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0007",
+            "firstName": "Neha",
+            "lastName": "Kumar",
+            "workEmail": "emp7@acme.test",
+            "personalEmail": "emp7@gmail.com",
+            "phone": "+91 98765 10003",
+            "dateOfBirth": "1988-04-04T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Neha Family",
+            "emergencyContactPhone": "+91 98765 20003",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2023-04-04T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.819Z",
+            "updatedAt": "2026-06-18T16:33:22.819Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydty002akpjdz73z8ozq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0008",
+            "firstName": "Amit",
+            "lastName": "Verma",
+            "workEmail": "emp8@acme.test",
+            "personalEmail": "emp8@gmail.com",
+            "phone": "+91 98765 10004",
+            "dateOfBirth": "1989-05-05T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Amit Family",
+            "emergencyContactPhone": "+91 98765 20004",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-05-05T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.822Z",
+            "updatedAt": "2026-06-18T16:33:22.822Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydu2002ckpjd02rpsaho",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0009",
+            "firstName": "Deepika",
+            "lastName": "Gupta",
+            "workEmail": "emp9@acme.test",
+            "personalEmail": "emp9@gmail.com",
+            "phone": "+91 98765 10005",
+            "dateOfBirth": "1990-06-06T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Deepika Family",
+            "emergencyContactPhone": "+91 98765 20005",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-06-06T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.826Z",
+            "updatedAt": "2026-06-18T16:33:22.826Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydu5002ekpjdjxysqafe",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0010",
+            "firstName": "Arjun",
+            "lastName": "Malhotra",
+            "workEmail": "emp10@acme.test",
+            "personalEmail": "emp10@gmail.com",
+            "phone": "+91 98765 10006",
+            "dateOfBirth": "1991-07-07T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Arjun Family",
+            "emergencyContactPhone": "+91 98765 20006",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-07-07T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.829Z",
+            "updatedAt": "2026-06-18T16:33:22.829Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydu9002gkpjdywx910uq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0011",
+            "firstName": "Ananya",
+            "lastName": "Joshi",
+            "workEmail": "emp11@acme.test",
+            "personalEmail": "emp11@gmail.com",
+            "phone": "+91 98765 10007",
+            "dateOfBirth": "1992-08-08T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Ananya Family",
+            "emergencyContactPhone": "+91 98765 20007",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-08-08T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.833Z",
+            "updatedAt": "2026-06-18T16:33:22.833Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduc002ikpjdo589teh3",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0012",
+            "firstName": "Rohan",
+            "lastName": "Rao",
+            "workEmail": "emp12@acme.test",
+            "personalEmail": "emp12@gmail.com",
+            "phone": "+91 98765 10008",
+            "dateOfBirth": "1993-09-09T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Rohan Family",
+            "emergencyContactPhone": "+91 98765 20008",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-09-09T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.836Z",
+            "updatedAt": "2026-06-18T16:33:22.836Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduf002kkpjdj5cnqitt",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0013",
+            "firstName": "Zara",
+            "lastName": "Bhat",
+            "workEmail": "emp13@acme.test",
+            "personalEmail": "emp13@gmail.com",
+            "phone": "+91 98765 10009",
+            "dateOfBirth": "1994-10-10T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Zara Family",
+            "emergencyContactPhone": "+91 98765 20009",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-10-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.840Z",
+            "updatedAt": "2026-06-18T16:33:22.840Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduj002mkpjdgsw4t599",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0014",
+            "firstName": "Karan",
+            "lastName": "Sharma",
+            "workEmail": "emp14@acme.test",
+            "personalEmail": "emp14@gmail.com",
+            "phone": "+91 98765 10010",
+            "dateOfBirth": "1995-11-11T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Karan Family",
+            "emergencyContactPhone": "+91 98765 20010",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-11-11T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.843Z",
+            "updatedAt": "2026-06-18T16:33:22.843Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydun002okpjdcfk4q73v",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0015",
+            "firstName": "Pooja",
+            "lastName": "Singh",
+            "workEmail": "emp15@acme.test",
+            "personalEmail": "emp15@gmail.com",
+            "phone": "+91 98765 10011",
+            "dateOfBirth": "1996-12-12T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Pooja Family",
+            "emergencyContactPhone": "+91 98765 20011",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-12-12T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.847Z",
+            "updatedAt": "2026-06-18T16:33:22.847Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydur002qkpjdqk63skk3",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0016",
+            "firstName": "Nikhil",
+            "lastName": "Patel",
+            "workEmail": "emp16@acme.test",
+            "personalEmail": "emp16@gmail.com",
+            "phone": "+91 98765 10012",
+            "dateOfBirth": "1997-01-13T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Nikhil Family",
+            "emergencyContactPhone": "+91 98765 20012",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-13T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.851Z",
+            "updatedAt": "2026-06-18T16:33:22.851Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduv002skpjdfiu65jhz",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0017",
+            "firstName": "Anjali",
+            "lastName": "Kumar",
+            "workEmail": "emp17@acme.test",
+            "personalEmail": "emp17@gmail.com",
+            "phone": "+91 98765 10013",
+            "dateOfBirth": "1998-02-14T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Anjali Family",
+            "emergencyContactPhone": "+91 98765 20013",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-14T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.855Z",
+            "updatedAt": "2026-06-18T16:33:22.855Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduy002ukpjdfs4emgvf",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0018",
+            "firstName": "Sanjay",
+            "lastName": "Verma",
+            "workEmail": "emp18@acme.test",
+            "personalEmail": "emp18@gmail.com",
+            "phone": "+91 98765 10014",
+            "dateOfBirth": "1999-03-15T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Sanjay Family",
+            "emergencyContactPhone": "+91 98765 20014",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-03-15T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.859Z",
+            "updatedAt": "2026-06-18T16:33:22.859Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydv2002wkpjdrwzyc9lr",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0019",
+            "firstName": "Ritika",
+            "lastName": "Gupta",
+            "workEmail": "emp19@acme.test",
+            "personalEmail": "emp19@gmail.com",
+            "phone": "+91 98765 10015",
+            "dateOfBirth": "2000-04-16T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Ritika Family",
+            "emergencyContactPhone": "+91 98765 20015",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2023-04-16T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.862Z",
+            "updatedAt": "2026-06-18T16:33:22.862Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydv6002ykpjdw0kveq0p",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0020",
+            "firstName": "Aditya",
+            "lastName": "Malhotra",
+            "workEmail": "emp20@acme.test",
+            "personalEmail": "emp20@gmail.com",
+            "phone": "+91 98765 10016",
+            "dateOfBirth": "2001-05-17T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Aditya Family",
+            "emergencyContactPhone": "+91 98765 20016",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-05-17T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.866Z",
+            "updatedAt": "2026-06-18T16:33:22.866Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydva0030kpjdsuckv50d",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0021",
+            "firstName": "Sneha",
+            "lastName": "Joshi",
+            "workEmail": "emp21@acme.test",
+            "personalEmail": "emp21@gmail.com",
+            "phone": "+91 98765 10017",
+            "dateOfBirth": "2002-06-18T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Sneha Family",
+            "emergencyContactPhone": "+91 98765 20017",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-06-18T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.870Z",
+            "updatedAt": "2026-06-18T16:33:22.870Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydve0032kpjdx4ljg1mz",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0022",
+            "firstName": "Rahul",
+            "lastName": "Rao",
+            "workEmail": "emp22@acme.test",
+            "personalEmail": "emp22@gmail.com",
+            "phone": "+91 98765 10018",
+            "dateOfBirth": "2003-07-19T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Rahul Family",
+            "emergencyContactPhone": "+91 98765 20018",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-07-19T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.874Z",
+            "updatedAt": "2026-06-18T16:33:22.874Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydvh0034kpjdd0jb0127",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0023",
+            "firstName": "Divya",
+            "lastName": "Bhat",
+            "workEmail": "emp23@acme.test",
+            "personalEmail": "emp23@gmail.com",
+            "phone": "+91 98765 10019",
+            "dateOfBirth": "2004-08-20T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Divya Family",
+            "emergencyContactPhone": "+91 98765 20019",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-08-20T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.877Z",
+            "updatedAt": "2026-06-18T16:33:22.877Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydvk0036kpjdzfhfd323",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0024",
+            "firstName": "Manish",
+            "lastName": "Sharma",
+            "workEmail": "emp24@acme.test",
+            "personalEmail": "emp24@gmail.com",
+            "phone": "+91 98765 10020",
+            "dateOfBirth": "2005-09-21T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Manish Family",
+            "emergencyContactPhone": "+91 98765 20020",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-09-21T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.881Z",
+            "updatedAt": "2026-06-18T16:33:22.881Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydvr0038kpjdgswasdwa",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0025",
+            "firstName": "Preeti",
+            "lastName": "Singh",
+            "workEmail": "emp25@acme.test",
+            "personalEmail": "emp25@gmail.com",
+            "phone": "+91 98765 10021",
+            "dateOfBirth": "2006-10-22T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Preeti Family",
+            "emergencyContactPhone": "+91 98765 20021",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-10-22T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.887Z",
+            "updatedAt": "2026-06-18T16:33:22.887Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydvv003akpjdt541pqsw",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0026",
+            "firstName": "Varun",
+            "lastName": "Patel",
+            "workEmail": "emp26@acme.test",
+            "personalEmail": "emp26@gmail.com",
+            "phone": "+91 98765 10022",
+            "dateOfBirth": "2007-11-23T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Varun Family",
+            "emergencyContactPhone": "+91 98765 20022",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-11-23T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.891Z",
+            "updatedAt": "2026-06-18T16:33:22.891Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydvy003ckpjdkljde5ta",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0027",
+            "firstName": "Swati",
+            "lastName": "Kumar",
+            "workEmail": "emp27@acme.test",
+            "personalEmail": "emp27@gmail.com",
+            "phone": "+91 98765 10023",
+            "dateOfBirth": "2008-12-24T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Swati Family",
+            "emergencyContactPhone": "+91 98765 20023",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-12-24T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.894Z",
+            "updatedAt": "2026-06-18T16:33:22.894Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydw3003ekpjdbr28pdhd",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0028",
+            "firstName": "Harish",
+            "lastName": "Verma",
+            "workEmail": "emp28@acme.test",
+            "personalEmail": "emp28@gmail.com",
+            "phone": "+91 98765 10024",
+            "dateOfBirth": "2009-01-25T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Harish Family",
+            "emergencyContactPhone": "+91 98765 20024",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-25T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.899Z",
+            "updatedAt": "2026-06-18T16:33:22.899Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydw7003gkpjd1un6css4",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0029",
+            "firstName": "Pallavi",
+            "lastName": "Gupta",
+            "workEmail": "emp29@acme.test",
+            "personalEmail": "emp29@gmail.com",
+            "phone": "+91 98765 10025",
+            "dateOfBirth": "1985-02-26T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Pallavi Family",
+            "emergencyContactPhone": "+91 98765 20025",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-26T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.904Z",
+            "updatedAt": "2026-06-18T16:33:22.904Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydwd003ikpjdbs6pheul",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0030",
+            "firstName": "Ashok",
+            "lastName": "Malhotra",
+            "workEmail": "emp30@acme.test",
+            "personalEmail": "emp30@gmail.com",
+            "phone": "+91 98765 10026",
+            "dateOfBirth": "1986-03-27T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Ashok Family",
+            "emergencyContactPhone": "+91 98765 20026",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-03-27T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.909Z",
+            "updatedAt": "2026-06-18T16:33:22.909Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydwi003kkpjdipkg1fzr",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0031",
+            "firstName": "Shreya",
+            "lastName": "Joshi",
+            "workEmail": "emp31@acme.test",
+            "personalEmail": "emp31@gmail.com",
+            "phone": "+91 98765 10027",
+            "dateOfBirth": "1987-04-28T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Shreya Family",
+            "emergencyContactPhone": "+91 98765 20027",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2023-04-28T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.914Z",
+            "updatedAt": "2026-06-18T16:33:22.914Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydwn003mkpjd3c9jyofw",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0032",
+            "firstName": "Suresh",
+            "lastName": "Rao",
+            "workEmail": "emp32@acme.test",
+            "personalEmail": "emp32@gmail.com",
+            "phone": "+91 98765 10028",
+            "dateOfBirth": "1988-05-01T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Suresh Family",
+            "emergencyContactPhone": "+91 98765 20028",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-05-01T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.919Z",
+            "updatedAt": "2026-06-18T16:33:22.919Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydwr003okpjdcgwtdchd",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0033",
+            "firstName": "Avni",
+            "lastName": "Bhat",
+            "workEmail": "emp33@acme.test",
+            "personalEmail": "emp33@gmail.com",
+            "phone": "+91 98765 10029",
+            "dateOfBirth": "1989-06-02T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Avni Family",
+            "emergencyContactPhone": "+91 98765 20029",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-06-02T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.923Z",
+            "updatedAt": "2026-06-18T16:33:22.923Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydww003qkpjdri5e2wbb",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0034",
+            "firstName": "Ravi",
+            "lastName": "Sharma",
+            "workEmail": "emp34@acme.test",
+            "personalEmail": "emp34@gmail.com",
+            "phone": "+91 98765 10030",
+            "dateOfBirth": "1990-07-03T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Ravi Family",
+            "emergencyContactPhone": "+91 98765 20030",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-07-03T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.928Z",
+            "updatedAt": "2026-06-18T16:33:22.928Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydx0003skpjd9owb92nk",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0035",
+            "firstName": "Isha",
+            "lastName": "Singh",
+            "workEmail": "emp35@acme.test",
+            "personalEmail": "emp35@gmail.com",
+            "phone": "+91 98765 10031",
+            "dateOfBirth": "1991-08-04T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Isha Family",
+            "emergencyContactPhone": "+91 98765 20031",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-08-04T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.932Z",
+            "updatedAt": "2026-06-18T16:33:22.932Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydx5003ukpjdndmr9f14",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0036",
+            "firstName": "Manoj",
+            "lastName": "Patel",
+            "workEmail": "emp36@acme.test",
+            "personalEmail": "emp36@gmail.com",
+            "phone": "+91 98765 10032",
+            "dateOfBirth": "1992-09-05T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Manoj Family",
+            "emergencyContactPhone": "+91 98765 20032",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-09-05T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.936Z",
+            "updatedAt": "2026-06-18T16:33:22.936Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydxb003wkpjdieodvlb8",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0037",
+            "firstName": "Nisha",
+            "lastName": "Kumar",
+            "workEmail": "emp37@acme.test",
+            "personalEmail": "emp37@gmail.com",
+            "phone": "+91 98765 10033",
+            "dateOfBirth": "1993-10-06T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Nisha Family",
+            "emergencyContactPhone": "+91 98765 20033",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-10-06T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.943Z",
+            "updatedAt": "2026-06-18T16:33:22.943Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydxf003ykpjdkbbkq6rl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0038",
+            "firstName": "Shailesh",
+            "lastName": "Verma",
+            "workEmail": "emp38@acme.test",
+            "personalEmail": "emp38@gmail.com",
+            "phone": "+91 98765 10034",
+            "dateOfBirth": "1994-11-07T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Shailesh Family",
+            "emergencyContactPhone": "+91 98765 20034",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-11-07T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.948Z",
+            "updatedAt": "2026-06-18T16:33:22.948Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydxl0040kpjdfyokw3ww",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0039",
+            "firstName": "Diya",
+            "lastName": "Gupta",
+            "workEmail": "emp39@acme.test",
+            "personalEmail": "emp39@gmail.com",
+            "phone": "+91 98765 10035",
+            "dateOfBirth": "1995-12-08T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Diya Family",
+            "emergencyContactPhone": "+91 98765 20035",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-12-08T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.953Z",
+            "updatedAt": "2026-06-18T16:33:22.953Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydxp0042kpjd5k23qf0e",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0040",
+            "firstName": "Pawan",
+            "lastName": "Malhotra",
+            "workEmail": "emp40@acme.test",
+            "personalEmail": "emp40@gmail.com",
+            "phone": "+91 98765 10036",
+            "dateOfBirth": "1996-01-09T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Pawan Family",
+            "emergencyContactPhone": "+91 98765 20036",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-09T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.957Z",
+            "updatedAt": "2026-06-18T16:33:22.957Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydxt0044kpjdtj0zmhsu",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0041",
+            "firstName": "Aarav",
+            "lastName": "Joshi",
+            "workEmail": "emp41@acme.test",
+            "personalEmail": "emp41@gmail.com",
+            "phone": "+91 98765 10037",
+            "dateOfBirth": "1997-02-10T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Aarav Family",
+            "emergencyContactPhone": "+91 98765 20037",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.961Z",
+            "updatedAt": "2026-06-18T16:33:22.961Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydxw0046kpjdu0lq5guo",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0042",
+            "firstName": "Anushka",
+            "lastName": "Rao",
+            "workEmail": "emp42@acme.test",
+            "personalEmail": "emp42@gmail.com",
+            "phone": "+91 98765 10038",
+            "dateOfBirth": "1998-03-11T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Anushka Family",
+            "emergencyContactPhone": "+91 98765 20038",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-03-11T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.965Z",
+            "updatedAt": "2026-06-18T16:33:22.965Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydy30048kpjdmtl631wx",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0043",
+            "firstName": "Naveen",
+            "lastName": "Bhat",
+            "workEmail": "emp43@acme.test",
+            "personalEmail": "emp43@gmail.com",
+            "phone": "+91 98765 10039",
+            "dateOfBirth": "1999-04-12T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Naveen Family",
+            "emergencyContactPhone": "+91 98765 20039",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2023-04-12T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.971Z",
+            "updatedAt": "2026-06-18T16:33:22.971Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydya004akpjdp5gbbhh5",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0044",
+            "firstName": "Jaya",
+            "lastName": "Sharma",
+            "workEmail": "emp44@acme.test",
+            "personalEmail": "emp44@gmail.com",
+            "phone": "+91 98765 10040",
+            "dateOfBirth": "2000-05-13T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Jaya Family",
+            "emergencyContactPhone": "+91 98765 20040",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-05-13T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.978Z",
+            "updatedAt": "2026-06-18T16:33:22.978Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydye004ckpjdp53gsdcl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0045",
+            "firstName": "Kartik",
+            "lastName": "Singh",
+            "workEmail": "emp45@acme.test",
+            "personalEmail": "emp45@gmail.com",
+            "phone": "+91 98765 10041",
+            "dateOfBirth": "2001-06-14T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Kartik Family",
+            "emergencyContactPhone": "+91 98765 20041",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-06-14T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.982Z",
+            "updatedAt": "2026-06-18T16:33:22.982Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydyn004ekpjdbv15js10",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0046",
+            "firstName": "Tanya",
+            "lastName": "Patel",
+            "workEmail": "emp46@acme.test",
+            "personalEmail": "emp46@gmail.com",
+            "phone": "+91 98765 10042",
+            "dateOfBirth": "2002-07-15T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Tanya Family",
+            "emergencyContactPhone": "+91 98765 20042",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-07-15T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.991Z",
+            "updatedAt": "2026-06-18T16:33:22.991Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydyr004gkpjd29ytt54x",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0047",
+            "firstName": "Subhash",
+            "lastName": "Kumar",
+            "workEmail": "emp47@acme.test",
+            "personalEmail": "emp47@gmail.com",
+            "phone": "+91 98765 10043",
+            "dateOfBirth": "2003-08-16T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Subhash Family",
+            "emergencyContactPhone": "+91 98765 20043",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-08-16T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.995Z",
+            "updatedAt": "2026-06-18T16:33:22.995Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydz1004ikpjdzd0hhqvl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0048",
+            "firstName": "Akshita",
+            "lastName": "Verma",
+            "workEmail": "emp48@acme.test",
+            "personalEmail": "emp48@gmail.com",
+            "phone": "+91 98765 10044",
+            "dateOfBirth": "2004-09-17T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Akshita Family",
+            "emergencyContactPhone": "+91 98765 20044",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-09-17T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.005Z",
+            "updatedAt": "2026-06-18T16:33:23.005Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydz5004kkpjdlt8owys0",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0049",
+            "firstName": "Mahesh",
+            "lastName": "Gupta",
+            "workEmail": "emp49@acme.test",
+            "personalEmail": "emp49@gmail.com",
+            "phone": "+91 98765 10045",
+            "dateOfBirth": "2005-10-18T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Mahesh Family",
+            "emergencyContactPhone": "+91 98765 20045",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-10-18T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.009Z",
+            "updatedAt": "2026-06-18T16:33:23.009Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydz9004mkpjd8zl3ot2r",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0050",
+            "firstName": "Kavya",
+            "lastName": "Malhotra",
+            "workEmail": "emp50@acme.test",
+            "personalEmail": "emp50@gmail.com",
+            "phone": "+91 98765 10046",
+            "dateOfBirth": "2006-11-19T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Kavya Family",
+            "emergencyContactPhone": "+91 98765 20046",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-11-19T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.013Z",
+            "updatedAt": "2026-06-18T16:33:23.013Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydzg004okpjdb5a9pyji",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0051",
+            "firstName": "Sameer",
+            "lastName": "Joshi",
+            "workEmail": "emp51@acme.test",
+            "personalEmail": "emp51@gmail.com",
+            "phone": "+91 98765 10047",
+            "dateOfBirth": "2007-12-20T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Sameer Family",
+            "emergencyContactPhone": "+91 98765 20047",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-12-20T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.020Z",
+            "updatedAt": "2026-06-18T16:33:23.020Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydzj004qkpjd19iorso3",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0052",
+            "firstName": "Esha",
+            "lastName": "Rao",
+            "workEmail": "emp52@acme.test",
+            "personalEmail": "emp52@gmail.com",
+            "phone": "+91 98765 10048",
+            "dateOfBirth": "2008-01-21T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Esha Family",
+            "emergencyContactPhone": "+91 98765 20048",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-21T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.024Z",
+            "updatedAt": "2026-06-18T16:33:23.024Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydzo004skpjdpap8t09z",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0053",
+            "firstName": "Aryan",
+            "lastName": "Bhat",
+            "workEmail": "emp53@acme.test",
+            "personalEmail": "emp53@gmail.com",
+            "phone": "+91 98765 10049",
+            "dateOfBirth": "2009-02-22T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Aryan Family",
+            "emergencyContactPhone": "+91 98765 20049",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-22T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.028Z",
+            "updatedAt": "2026-06-18T16:33:23.028Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydzt004ukpjdarl9vpwb",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0054",
+            "firstName": "Rajesh",
+            "lastName": "Sharma",
+            "workEmail": "emp54@acme.test",
+            "personalEmail": "emp54@gmail.com",
+            "phone": "+91 98765 10050",
+            "dateOfBirth": "1985-03-23T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Rajesh Family",
+            "emergencyContactPhone": "+91 98765 20050",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-03-23T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.033Z",
+            "updatedAt": "2026-06-18T16:33:23.033Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydzx004wkpjdie6ofsi8",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0055",
+            "firstName": "Sakshi",
+            "lastName": "Singh",
+            "workEmail": "emp55@acme.test",
+            "personalEmail": "emp55@gmail.com",
+            "phone": "+91 98765 10051",
+            "dateOfBirth": "1986-04-24T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Sakshi Family",
+            "emergencyContactPhone": "+91 98765 20051",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2023-04-24T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.037Z",
+            "updatedAt": "2026-06-18T16:33:23.037Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye02004ykpjdy4bacji5",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0056",
+            "firstName": "Vikram",
+            "lastName": "Patel",
+            "workEmail": "emp56@acme.test",
+            "personalEmail": "emp56@gmail.com",
+            "phone": "+91 98765 10052",
+            "dateOfBirth": "1987-05-25T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Vikram Family",
+            "emergencyContactPhone": "+91 98765 20052",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-05-25T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.042Z",
+            "updatedAt": "2026-06-18T16:33:23.042Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye050050kpjdv9l7wj0v",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0057",
+            "firstName": "Neha",
+            "lastName": "Kumar",
+            "workEmail": "emp57@acme.test",
+            "personalEmail": "emp57@gmail.com",
+            "phone": "+91 98765 10053",
+            "dateOfBirth": "1988-06-26T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Neha Family",
+            "emergencyContactPhone": "+91 98765 20053",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-06-26T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.045Z",
+            "updatedAt": "2026-06-18T16:33:23.045Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye090052kpjd29lt7ydq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0058",
+            "firstName": "Amit",
+            "lastName": "Verma",
+            "workEmail": "emp58@acme.test",
+            "personalEmail": "emp58@gmail.com",
+            "phone": "+91 98765 10054",
+            "dateOfBirth": "1989-07-27T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Amit Family",
+            "emergencyContactPhone": "+91 98765 20054",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-07-27T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.049Z",
+            "updatedAt": "2026-06-18T16:33:23.049Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye0c0054kpjdhf1gvihx",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0059",
+            "firstName": "Deepika",
+            "lastName": "Gupta",
+            "workEmail": "emp59@acme.test",
+            "personalEmail": "emp59@gmail.com",
+            "phone": "+91 98765 10055",
+            "dateOfBirth": "1990-08-28T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Deepika Family",
+            "emergencyContactPhone": "+91 98765 20055",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-08-28T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.052Z",
+            "updatedAt": "2026-06-18T16:33:23.052Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye0f0056kpjdcv2qahkm",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0060",
+            "firstName": "Arjun",
+            "lastName": "Malhotra",
+            "workEmail": "emp60@acme.test",
+            "personalEmail": "emp60@gmail.com",
+            "phone": "+91 98765 10056",
+            "dateOfBirth": "1991-09-01T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Arjun Family",
+            "emergencyContactPhone": "+91 98765 20056",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-09-01T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.055Z",
+            "updatedAt": "2026-06-18T16:33:23.055Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye0i0058kpjdc2ztiec0",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0061",
+            "firstName": "Ananya",
+            "lastName": "Joshi",
+            "workEmail": "emp61@acme.test",
+            "personalEmail": "emp61@gmail.com",
+            "phone": "+91 98765 10057",
+            "dateOfBirth": "1992-10-02T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Ananya Family",
+            "emergencyContactPhone": "+91 98765 20057",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-10-02T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.058Z",
+            "updatedAt": "2026-06-18T16:33:23.058Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye0m005akpjde48at52q",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0062",
+            "firstName": "Rohan",
+            "lastName": "Rao",
+            "workEmail": "emp62@acme.test",
+            "personalEmail": "emp62@gmail.com",
+            "phone": "+91 98765 10058",
+            "dateOfBirth": "1993-11-03T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Rohan Family",
+            "emergencyContactPhone": "+91 98765 20058",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-11-03T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.062Z",
+            "updatedAt": "2026-06-18T16:33:23.062Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye0q005ckpjdkx39qwsn",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0063",
+            "firstName": "Zara",
+            "lastName": "Bhat",
+            "workEmail": "emp63@acme.test",
+            "personalEmail": "emp63@gmail.com",
+            "phone": "+91 98765 10059",
+            "dateOfBirth": "1994-12-04T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Zara Family",
+            "emergencyContactPhone": "+91 98765 20059",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-12-04T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.066Z",
+            "updatedAt": "2026-06-18T16:33:23.066Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye0u005ekpjd51xzttrc",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0064",
+            "firstName": "Karan",
+            "lastName": "Sharma",
+            "workEmail": "emp64@acme.test",
+            "personalEmail": "emp64@gmail.com",
+            "phone": "+91 98765 10060",
+            "dateOfBirth": "1995-01-05T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Karan Family",
+            "emergencyContactPhone": "+91 98765 20060",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-05T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.070Z",
+            "updatedAt": "2026-06-18T16:33:23.070Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpye0y005gkpjd2p2kty17",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0065",
+            "firstName": "Pooja",
+            "lastName": "Singh",
+            "workEmail": "emp65@acme.test",
+            "personalEmail": "emp65@gmail.com",
+            "phone": "+91 98765 10061",
+            "dateOfBirth": "1996-02-06T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Pooja Family",
+            "emergencyContactPhone": "+91 98765 20061",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-06T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:23.074Z",
+            "updatedAt": "2026-06-18T16:33:23.074Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqqxorwf003c98m7i8vgcyk6",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "4e31e48bee932cda3cbe038f",
+            "employeeCode": "E0073",
+            "firstName": "Aarav",
+            "lastName": "Mehta",
+            "workEmail": "aarav.mehta@acme.test",
+            "personalEmail": "aarav.mehta@gmail.com",
+            "phone": "+919876543210",
+            "dateOfBirth": "1995-05-14T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "12 MG Road, Bengaluru, Karnataka 560001",
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Software Engineer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2026-06-23T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bengaluru, India",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": null,
+            "updatedBy": null,
+            "createdAt": "2026-06-23T17:44:14.654Z",
+            "updatedAt": "2026-06-23T17:44:14.670Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "aarav.mehta@acme.test",
+              "memberType": "EMPLOYEE",
+              "status": "INVITED"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqvidmiq008ixgu3msngysol",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "1897d0fccddc058a17efcbfa",
+            "employeeCode": "E0076",
+            "firstName": "Mohammad",
+            "lastName": "Saqib",
+            "workEmail": "mohdsaqib4442@gmail.com",
+            "personalEmail": "md.saqib9119@gmail.com",
+            "phone": "+917408485420",
+            "dateOfBirth": null,
+            "gender": "MALE",
+            "address": "Mehrauli - Badarpur Road\nNear Batra Hospital, Hamdard Nagar",
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Rental Service Provider",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2026-06-27T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Iran",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": null,
+            "updatedBy": null,
+            "createdAt": "2026-06-26T22:34:31.105Z",
+            "updatedAt": "2026-06-26T22:34:31.120Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "mohdsaqib4442@gmail.com",
+              "memberType": "EMPLOYEE",
+              "status": "INVITED"
+            },
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqwcdrt80008neb3zmtemojx",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "4843050b0ad44a952f4e5de4",
+            "employeeCode": "E0077",
+            "firstName": "Test123",
+            "lastName": "test",
+            "workEmail": "vatapex797@noproposal.com",
+            "personalEmail": "vatapex797@noproposal.com",
+            "phone": null,
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Developer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2026-06-27T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Australia",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": null,
+            "updatedBy": null,
+            "createdAt": "2026-06-27T12:34:26.445Z",
+            "updatedAt": "2026-06-27T12:34:26.460Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "vatapex797@noproposal.com",
+              "memberType": "EMPLOYEE",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyffr000fdwad3zar96w6",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpyffl000ddwadjxhweozn",
+            "employeeCode": "E0100",
+            "firstName": "Riya",
+            "lastName": "Kapoor",
+            "workEmail": "riya@acme.test",
+            "personalEmail": null,
+            "phone": "+91 99000 00100",
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Sales Manager",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-01-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:24.903Z",
+            "updatedAt": "2026-06-18T16:33:24.903Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "riya@acme.test",
+              "memberType": "MANAGER",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyfg2000hdwadx8a86bfv",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpydqr0010kpjdycwhkrfd",
+            "employeeCode": "E0101",
+            "firstName": "Arjun",
+            "lastName": "Nair",
+            "workEmail": "dev1@acme.test",
+            "personalEmail": null,
+            "phone": "+91 99000 00101",
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Frontend Developer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-01-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:24.914Z",
+            "updatedAt": "2026-06-18T16:33:24.914Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": {
+              "email": "dev1@acme.test",
+              "memberType": "EMPLOYEE",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyfg9000ldwad1kmuo7rg",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpyfg5000jdwadtqo168qe",
+            "employeeCode": "E0102",
+            "firstName": "Sneha",
+            "lastName": "Reddy",
+            "workEmail": "dev2@acme.test",
+            "personalEmail": null,
+            "phone": "+91 99000 00102",
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Backend Developer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-01-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:24.922Z",
+            "updatedAt": "2026-06-18T16:33:24.922Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": {
+              "email": "dev2@acme.test",
+              "memberType": "EMPLOYEE",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyfgi000pdwad5t94e94s",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpyfgf000ndwad065q2qtq",
+            "employeeCode": "E0103",
+            "firstName": "Mohit",
+            "lastName": "Jain",
+            "workEmail": "fin1@acme.test",
+            "personalEmail": null,
+            "phone": "+91 99000 00103",
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Finance Analyst",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-01-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:24.930Z",
+            "updatedAt": "2026-06-18T16:33:24.930Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": {
+              "email": "fin1@acme.test",
+              "memberType": "EMPLOYEE",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyfgr000tdwadfuw9oxw6",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpyfgo000rdwadgvwh8vax",
+            "employeeCode": "E0104",
+            "firstName": "Sara",
+            "lastName": "Ali",
+            "workEmail": "onleave@acme.test",
+            "personalEmail": null,
+            "phone": "+91 99000 00104",
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "Marketing Specialist",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-01-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ON_LEAVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:24.939Z",
+            "updatedAt": "2026-06-18T16:33:24.939Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": {
+              "email": "onleave@acme.test",
+              "memberType": "EMPLOYEE",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqqzt7bq000hin8yymigfc5e",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "LITMUS-KW-1",
+            "firstName": "KwLitmus",
+            "lastName": "LitmusZZ",
+            "workEmail": "litmus-kw-1@litmus.acme.test",
+            "personalEmail": null,
+            "phone": null,
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": null,
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2026-01-01T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": null,
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": null,
+            "updatedBy": null,
+            "createdAt": "2026-06-23T18:43:40.502Z",
+            "updatedAt": "2026-06-23T18:43:40.502Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqqzt791000ein8y1gjbrezq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "LITMUS-US-1",
+            "firstName": "UsLitmus",
+            "lastName": "LitmusZZ",
+            "workEmail": "litmus-us-1@litmus.acme.test",
+            "personalEmail": null,
+            "phone": null,
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": null,
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2026-01-01T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": null,
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": null,
+            "updatedBy": null,
+            "createdAt": "2026-06-23T18:43:40.405Z",
+            "updatedAt": "2026-06-23T18:43:40.405Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 100,
+          "total": 75,
+          "pages": 1
+        }
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  }
+]

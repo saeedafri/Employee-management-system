@@ -193,7 +193,10 @@ async function runRole(browser, role) {
   return results;
 }
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  channel: process.env.PW_CHANNEL || 'chrome',
+});
 const all = [];
 for (const role of ROLES) {
   console.log(`\n=== ${role.key} (${role.email}) ===`);

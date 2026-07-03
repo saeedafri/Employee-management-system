@@ -34,6 +34,7 @@
     "test:deployed-ui:smoke": "node scripts/deployed-ui-full-audit.mjs",
     "test:deployed-ui:deep": "node scripts/deployed-ui-deep-clickthrough.mjs",
     "test:deployed-ui": "node scripts/deployed-ui-complete-final-audit.mjs",
+    "test:e2e:strict": "node scripts/strictButtonE2EAudit.mjs",
     "test:playwright:deployed": "playwright test tests/e2e/deployed-full-clickthrough.spec.ts --project=chromium --workers=1",
     "db:seed:deep": "node prisma/seedDeepClickthrough.js",
     "seed:production-api": "node scripts/seedProductionViaApi.mjs",

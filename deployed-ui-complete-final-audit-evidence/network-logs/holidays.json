@@ -1,0 +1,727 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:37:52.391Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/holidays?year=2026",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "holidays": [
+          {
+            "id": "cmqjpygi900vvdwadj9lxotpj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "New Year's Day",
+            "holidayDate": "2026-01-01T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.290Z",
+            "updatedAt": "2026-06-18T16:33:26.290Z"
+          },
+          {
+            "id": "cmqjpygic00vxdwadgvlhjv0z",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Republic Day",
+            "holidayDate": "2026-01-26T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.292Z",
+            "updatedAt": "2026-06-18T16:33:26.292Z"
+          },
+          {
+            "id": "cmqjpygid00vzdwadhgddwvja",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Holi",
+            "holidayDate": "2026-03-14T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.294Z",
+            "updatedAt": "2026-06-18T16:33:26.294Z"
+          },
+          {
+            "id": "cmqjpygih00w3dwad5m67rwjl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Eid al-Fitr",
+            "holidayDate": "2026-03-30T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.298Z",
+            "updatedAt": "2026-06-18T16:33:26.298Z"
+          },
+          {
+            "id": "cmqjpygik00w5dwadtw3c4k84",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Ram Navami",
+            "holidayDate": "2026-04-06T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.301Z",
+            "updatedAt": "2026-06-18T16:33:26.301Z"
+          },
+          {
+            "id": "cmqjpygif00w1dwado9x2b0e1",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Good Friday",
+            "holidayDate": "2026-04-18T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.296Z",
+            "updatedAt": "2026-06-18T16:33:26.296Z"
+          },
+          {
+            "id": "cmqjpygin00w7dwadgrrxbfj8",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Maharashtra Day",
+            "holidayDate": "2026-05-01T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.303Z",
+            "updatedAt": "2026-06-18T16:33:26.303Z"
+          },
+          {
+            "id": "cmqjpygio00w9dwadym49pnct",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Eid al-Adha",
+            "holidayDate": "2026-06-06T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.305Z",
+            "updatedAt": "2026-06-18T16:33:26.305Z"
+          },
+          {
+            "id": "cmqqzt76b000bin8ykvbyy5dv",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "KW National Day (litmus)",
+            "holidayDate": "2026-06-26T00:00:00.000Z",
+            "location": "KW",
+            "isOptional": false,
+            "createdAt": "2026-06-23T18:43:40.307Z",
+            "updatedAt": "2026-06-23T18:43:40.307Z"
+          },
+          {
+            "id": "cmqqzt73i0009in8yqa6h3mw4",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "US Independence Day (litmus)",
+            "holidayDate": "2026-07-04T00:00:00.000Z",
+            "location": "United States",
+            "isOptional": false,
+            "createdAt": "2026-06-23T18:43:40.207Z",
+            "updatedAt": "2026-06-23T18:43:40.207Z"
+          },
+          {
+            "id": "cmqjpydta001ukpjdhe9l7qsv",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Independence Day",
+            "holidayDate": "2026-08-15T00:00:00.000Z",
+            "location": "India",
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:22.798Z",
+            "updatedAt": "2026-06-18T16:33:22.798Z"
+          },
+          {
+            "id": "cmqjpygir00wbdwadjshmfj26",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Onam",
+            "holidayDate": "2026-09-05T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.307Z",
+            "updatedAt": "2026-06-18T16:33:26.307Z"
+          },
+          {
+            "id": "cmqjpydtc001wkpjd3zl84ecq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Gandhi Jayanti",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "location": "India",
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:22.801Z",
+            "updatedAt": "2026-06-18T16:33:22.801Z"
+          },
+          {
+            "id": "cmqjpygiu00wddwadegfnbwv5",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Dussehra",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.310Z",
+            "updatedAt": "2026-06-18T16:33:26.310Z"
+          },
+          {
+            "id": "cmqjpygiw00wfdwadzbyzptjz",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Diwali",
+            "holidayDate": "2026-10-20T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.312Z",
+            "updatedAt": "2026-06-18T16:33:26.312Z"
+          },
+          {
+            "id": "cmqjpygiy00whdwad3db6p5fr",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Guru Nanak Jayanti",
+            "holidayDate": "2026-11-05T00:00:00.000Z",
+            "location": null,
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:26.314Z",
+            "updatedAt": "2026-06-18T16:33:26.314Z"
+          },
+          {
+            "id": "cmqjpydte001ykpjdbsq9y3k7",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "name": "Christmas",
+            "holidayDate": "2026-12-25T00:00:00.000Z",
+            "location": "India",
+            "isOptional": false,
+            "createdAt": "2026-06-18T16:33:22.803Z",
+            "updatedAt": "2026-06-18T16:33:22.803Z"
+          }
+        ],
+        "total": 17
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/me/holidays?year=2026",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "holidays": [
+          {
+            "id": "cmqjpygi900vvdwadj9lxotpj",
+            "name": "New Year's Day",
+            "holidayDate": "2026-01-01T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygic00vxdwadgvlhjv0z",
+            "name": "Republic Day",
+            "holidayDate": "2026-01-26T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygid00vzdwadhgddwvja",
+            "name": "Holi",
+            "holidayDate": "2026-03-14T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygih00w3dwad5m67rwjl",
+            "name": "Eid al-Fitr",
+            "holidayDate": "2026-03-30T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygik00w5dwadtw3c4k84",
+            "name": "Ram Navami",
+            "holidayDate": "2026-04-06T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygif00w1dwado9x2b0e1",
+            "name": "Good Friday",
+            "holidayDate": "2026-04-18T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygin00w7dwadgrrxbfj8",
+            "name": "Maharashtra Day",
+            "holidayDate": "2026-05-01T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygio00w9dwadym49pnct",
+            "name": "Eid al-Adha",
+            "holidayDate": "2026-06-06T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydta001ukpjdhe9l7qsv",
+            "name": "Independence Day",
+            "holidayDate": "2026-08-15T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          },
+          {
+            "id": "cmqjpygir00wbdwadjshmfj26",
+            "name": "Onam",
+            "holidayDate": "2026-09-05T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydtc001wkpjd3zl84ecq",
+            "name": "Gandhi Jayanti",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          },
+          {
+            "id": "cmqjpygiu00wddwadegfnbwv5",
+            "name": "Dussehra",
+            "holidayDate": "2026-10-02T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygiw00wfdwadzbyzptjz",
+            "name": "Diwali",
+            "holidayDate": "2026-10-20T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpygiy00whdwad3db6p5fr",
+            "name": "Guru Nanak Jayanti",
+            "holidayDate": "2026-11-05T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": null,
+            "location": null
+          },
+          {
+            "id": "cmqjpydte001ykpjdbsq9y3k7",
+            "name": "Christmas",
+            "holidayDate": "2026-12-25T00:00:00.000Z",
+            "actualDate": null,
+            "observed": false,
+            "isOptional": false,
+            "selected": true,
+            "countryCode": "IN",
+            "location": "India"
+          }
+        ],
+        "total": 15,
+        "year": 2026,
+        "context": {
+          "countryCode": "IN",
+          "workWeekDays": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "observedRule": "NONE",
+          "restrictedLimit": 2,
+          "resolvedBy": "LEGAL_ENTITY",
+          "policyVersion": "seed",
+          "timezone": "Asia/Kolkata",
+          "hoursPerDay": 8
+        }
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  }
+]

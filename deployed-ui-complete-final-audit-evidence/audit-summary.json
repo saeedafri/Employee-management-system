@@ -1,0 +1,414 @@
+{
+  "deployedUrl": "http://localhost:3001",
+  "testedAt": "2026-07-02T17:38:17.161Z",
+  "accounts": [
+    "HR",
+    "HR_ACME",
+    "SUPER",
+    "MANAGER",
+    "PRIYA",
+    "DEV1"
+  ],
+  "results": [
+    {
+      "module": "StatutoryPacks",
+      "action": "create flat",
+      "endpoint": "POST /payroll/statutory-packs",
+      "result": "PASS",
+      "ts": "2026-07-02T17:34:42.690Z"
+    },
+    {
+      "module": "StatutoryPacks",
+      "action": "gratuity roundtrip",
+      "result": "PASS",
+      "ts": "2026-07-02T17:34:42.892Z"
+    },
+    {
+      "module": "PayrollRuns",
+      "action": "invalid run type",
+      "result": "PASS",
+      "ts": "2026-07-02T17:34:43.056Z"
+    },
+    {
+      "module": "Dashboard",
+      "action": "pending approvals load",
+      "endpoint": "GET /manager/approvals",
+      "screenshot": "dashboard_pending_approvals_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:34:49.808Z"
+    },
+    {
+      "module": "Dashboard",
+      "action": "approval action",
+      "screenshot": "dashboard_approval_action_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:34:51.105Z"
+    },
+    {
+      "module": "Settings",
+      "action": "payslip template save",
+      "endpoint": "PATCH /payroll/payslip-templates",
+      "screenshot": "settings_payslip_template_save_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:24.796Z"
+    },
+    {
+      "module": "Settings",
+      "action": "pay schedules",
+      "endpoint": "GET /payroll/schedules",
+      "screenshot": "settings_pay_schedules_loaded_with_data.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:28.587Z"
+    },
+    {
+      "module": "Settings",
+      "action": "email integration load",
+      "endpoint": "GET /settings/integrations/email",
+      "screenshot": "settings_email_resend_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:31.632Z"
+    },
+    {
+      "module": "Settings",
+      "action": "storage integration",
+      "endpoint": "GET /settings/integrations/storage",
+      "screenshot": "settings_storage_cloudinary_loaded.png",
+      "result": "PARTIAL",
+      "note": "provider=undefined",
+      "ts": "2026-07-02T17:35:34.491Z"
+    },
+    {
+      "module": "Settings",
+      "action": "webhooks list",
+      "endpoint": "GET /settings/webhooks",
+      "screenshot": "settings_webhooks_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:37.399Z"
+    },
+    {
+      "module": "Settings",
+      "action": "create webhook",
+      "endpoint": "POST /settings/webhooks",
+      "screenshot": "settings_webhook_create_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:37.665Z"
+    },
+    {
+      "module": "Settings",
+      "action": "console errors",
+      "result": "PARTIAL",
+      "note": "Failed to load resource: the server responded with a status of 401 (Unauthorized); Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "ts": "2026-07-02T17:35:38.133Z"
+    },
+    {
+      "module": "Employees",
+      "action": "document upload (API seed)",
+      "endpoint": "POST /employees/cmqjpyds0001ikpjd5br3r2uh/documents",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:46.255Z"
+    },
+    {
+      "module": "Employees",
+      "action": "profile load",
+      "endpoint": "GET /employees/cmqjpyds0001ikpjd5br3r2uh",
+      "screenshot": "employee_profile_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:47.739Z"
+    },
+    {
+      "module": "Employees",
+      "action": "compensation",
+      "endpoint": "GET /payroll/employees/:id/salary",
+      "screenshot": "employee_compensation_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:48.707Z"
+    },
+    {
+      "module": "Employees",
+      "action": "documents list",
+      "endpoint": "GET /employees/cmqjpyds0001ikpjd5br3r2uh/documents",
+      "screenshot": "employee_documents_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:50.542Z"
+    },
+    {
+      "module": "Employees",
+      "action": "document download",
+      "screenshot": "employee_document_download_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:52.008Z"
+    },
+    {
+      "module": "Employees",
+      "action": "activity tab",
+      "endpoint": "GET /employees/:id/activity",
+      "screenshot": "employee_activity_loaded_with_rows.png",
+      "result": "PASS",
+      "note": "10 rows (API)",
+      "ts": "2026-07-02T17:35:53.040Z"
+    },
+    {
+      "module": "Employees",
+      "action": "edit save",
+      "endpoint": "PATCH /employees/cmqjpyds0001ikpjd5br3r2uh",
+      "screenshot": "employee_edit_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:35:57.460Z"
+    },
+    {
+      "module": "Departments",
+      "action": "list",
+      "endpoint": "GET /departments",
+      "screenshot": "departments_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:03.079Z"
+    },
+    {
+      "module": "Departments",
+      "action": "create",
+      "endpoint": "POST /departments",
+      "screenshot": "department_create_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:05.643Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "list",
+      "endpoint": "GET /payroll/runs",
+      "screenshot": "payroll_list_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:12.605Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "run detail",
+      "endpoint": "GET /payroll/runs/:id",
+      "screenshot": "payroll_run_detail_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:13.733Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "view payslip",
+      "endpoint": "GET /payroll/runs/:id/payslips/:slipId",
+      "screenshot": "payroll_view_payslip_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:16.888Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_export_register_success",
+      "endpoint": "GET /payroll/runs/:id/register",
+      "screenshot": "payroll_export_register_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:19.321Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_publish_payslips_success",
+      "endpoint": "POST /payroll/runs/:id/publish",
+      "screenshot": "payroll_publish_payslips_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:21.668Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_payment_batch_generated",
+      "endpoint": "POST /payroll/runs/:id/payment-batch",
+      "screenshot": "payroll_payment_batch_generated.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:23.895Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_bank_file_downloaded",
+      "endpoint": "GET /payroll/runs/:id/bank-file",
+      "screenshot": "payroll_bank_file_downloaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:26.220Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_audit_pack_export_success",
+      "endpoint": "GET /payroll/reports/audit-pack",
+      "screenshot": "payroll_audit_pack_export_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:28.417Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "payroll_statutory_return_export_success",
+      "endpoint": "GET /payroll/runs/:id/statutory-return",
+      "screenshot": "payroll_statutory_return_export_success.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:30.628Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "accounting journal",
+      "endpoint": "GET /payroll/runs/:id/journal",
+      "screenshot": "payroll_accounting_journal_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:32.799Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "audit trail",
+      "screenshot": "payroll_audit_trail_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:35.151Z"
+    },
+    {
+      "module": "Payroll",
+      "action": "events",
+      "screenshot": "payroll_events_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:37.333Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "HR_ADMIN load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_hr_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:44.041Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "MANAGER load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_manager_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:50.024Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "EMPLOYEE priya load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_employee_priya_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:36:55.894Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "EMPLOYEE dev1 load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_employee_dev1_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:01.642Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "SUPER_ADMIN load",
+      "endpoint": "GET /timesheets",
+      "screenshot": "timesheets_superadmin_graceful_state.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:07.424Z"
+    },
+    {
+      "module": "Timesheets",
+      "action": "mutations (add/edit/submit/approve)",
+      "endpoint": "POST/PATCH /timesheets/*",
+      "screenshot": "timesheets_add_entry_success.png",
+      "result": "PARTIAL",
+      "note": "2 API steps ok",
+      "ts": "2026-07-02T17:37:12.166Z"
+    },
+    {
+      "module": "Recruitment",
+      "action": "page load",
+      "screenshot": "recruitment_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:17.860Z"
+    },
+    {
+      "module": "Performance",
+      "action": "page load",
+      "screenshot": "performance_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:23.874Z"
+    },
+    {
+      "module": "Assets",
+      "action": "page load",
+      "screenshot": "assets_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:29.740Z"
+    },
+    {
+      "module": "Assets",
+      "action": "create action",
+      "screenshot": "assets_assign_success.png",
+      "result": "PASS",
+      "endpoint": "POST /assets",
+      "ts": "2026-07-02T17:37:31.529Z"
+    },
+    {
+      "module": "Announcements",
+      "action": "page load",
+      "screenshot": "announcements_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:37.272Z"
+    },
+    {
+      "module": "Announcements",
+      "action": "create action",
+      "screenshot": "announcements_create_success.png",
+      "result": "PASS",
+      "endpoint": "POST /announcements",
+      "ts": "2026-07-02T17:37:39.034Z"
+    },
+    {
+      "module": "Attendance",
+      "action": "page load",
+      "route": "/attendance",
+      "screenshot": "attendance_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:45.089Z"
+    },
+    {
+      "module": "Leave",
+      "action": "page load",
+      "route": "/leave",
+      "screenshot": "leave_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:50.720Z"
+    },
+    {
+      "module": "Holidays",
+      "action": "page load",
+      "route": "/holidays",
+      "screenshot": "holidays_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:37:56.527Z"
+    },
+    {
+      "module": "Analytics",
+      "action": "page load",
+      "route": "/analytics",
+      "screenshot": "analytics_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:38:02.943Z"
+    },
+    {
+      "module": "Reports",
+      "action": "page load",
+      "route": "/reports",
+      "screenshot": "reports_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:38:09.463Z"
+    },
+    {
+      "module": "Permissions",
+      "action": "page load",
+      "route": "/settings/permissions",
+      "screenshot": "permissions_loaded.png",
+      "result": "PASS",
+      "ts": "2026-07-02T17:38:16.813Z"
+    }
+  ],
+  "failures": 0,
+  "partial": 3,
+  "verdict": "PARTIAL",
+  "evidenceDir": "/Users/mohdsaeedafri/All-Code-Base/EMS/deployed-ui-complete-final-audit-evidence"
+}

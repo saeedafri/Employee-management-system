@@ -1,0 +1,883 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:37:25.672Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/assets/summary",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "totalAssets": 30,
+        "assigned": 13,
+        "available": 11,
+        "inRepair": 4,
+        "utilizationPct": 43,
+        "avgRepairDays": 6
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/assets",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "assets": [
+          {
+            "id": "asset-030",
+            "tag": "OTH-0040",
+            "name": "iPad Pro 12.9\"",
+            "type": "Other",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+              "name": "Zara Bhat"
+            },
+            "assignedSince": "2026-05-01",
+            "createdAt": "2026-06-18T16:33:32.894Z"
+          },
+          {
+            "id": "asset-029",
+            "tag": "MON-0110",
+            "name": "Philips 32\" 4K",
+            "type": "Monitor",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.892Z"
+          },
+          {
+            "id": "asset-028",
+            "tag": "LAP-0300",
+            "name": "HP ZBook Studio",
+            "type": "Laptop",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.889Z"
+          },
+          {
+            "id": "asset-027",
+            "tag": "PHN-0160",
+            "name": "OnePlus 12",
+            "type": "Phone",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpyduc002ikpjdo589teh3",
+              "name": "Rohan Rao"
+            },
+            "assignedSince": "2026-04-01",
+            "createdAt": "2026-06-18T16:33:32.886Z"
+          },
+          {
+            "id": "asset-026",
+            "tag": "OTH-0030",
+            "name": "Jabra Evolve2 Headset",
+            "type": "Other",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.885Z"
+          },
+          {
+            "id": "asset-025",
+            "tag": "LAP-0290",
+            "name": "ASUS ROG Zephyrus",
+            "type": "Laptop",
+            "status": "Repair",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.883Z"
+          },
+          {
+            "id": "asset-024",
+            "tag": "MON-0100",
+            "name": "Dell UltraSharp 24\"",
+            "type": "Monitor",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpydu9002gkpjdywx910uq",
+              "name": "Ananya Joshi"
+            },
+            "assignedSince": "2026-03-15",
+            "createdAt": "2026-06-18T16:33:32.881Z"
+          },
+          {
+            "id": "asset-023",
+            "tag": "PHN-0145",
+            "name": "Samsung S23",
+            "type": "Phone",
+            "status": "Retired",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.879Z"
+          },
+          {
+            "id": "asset-022",
+            "tag": "LAP-0280",
+            "name": "MacBook Pro 13\" M2",
+            "type": "Laptop",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.877Z"
+          },
+          {
+            "id": "asset-021",
+            "tag": "OTH-0020",
+            "name": "Ergonomic Chair — Herman Miller",
+            "type": "Other",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+              "name": "Arjun Malhotra"
+            },
+            "assignedSince": "2025-07-01",
+            "createdAt": "2026-06-18T16:33:32.875Z"
+          },
+          {
+            "id": "asset-020",
+            "tag": "LAP-0270",
+            "name": "Surface Laptop 5",
+            "type": "Laptop",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+              "name": "Deepika Gupta"
+            },
+            "assignedSince": "2026-02-01",
+            "createdAt": "2026-06-18T16:33:32.873Z"
+          },
+          {
+            "id": "asset-019",
+            "tag": "OTH-0010",
+            "name": "Logitech MX Keys Keyboard",
+            "type": "Other",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.872Z"
+          },
+          {
+            "id": "asset-018",
+            "tag": "MON-0090",
+            "name": "ASUS ProArt 27\"",
+            "type": "Monitor",
+            "status": "Repair",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.870Z"
+          },
+          {
+            "id": "asset-017",
+            "tag": "PHN-0130",
+            "name": "Pixel 8 Pro",
+            "type": "Phone",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpydty002akpjdz73z8ozq",
+              "name": "Amit Verma"
+            },
+            "assignedSince": "2026-01-10",
+            "createdAt": "2026-06-18T16:33:32.868Z"
+          },
+          {
+            "id": "asset-016",
+            "tag": "LAP-0260",
+            "name": "MacBook Air M3",
+            "type": "Laptop",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.866Z"
+          },
+          {
+            "id": "asset-015",
+            "tag": "OTH-0001",
+            "name": "USB-C Docking Station",
+            "type": "Other",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+              "name": "Neha Kumar"
+            },
+            "assignedSince": "2025-12-01",
+            "createdAt": "2026-06-18T16:33:32.864Z"
+          },
+          {
+            "id": "asset-014",
+            "tag": "MON-0075",
+            "name": "BenQ 27\" IPS",
+            "type": "Monitor",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.862Z"
+          },
+          {
+            "id": "asset-013",
+            "tag": "LAP-0250",
+            "name": "Lenovo IdeaPad Pro",
+            "type": "Laptop",
+            "status": "Repair",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.860Z"
+          },
+          {
+            "id": "asset-012",
+            "tag": "LAP-0245",
+            "name": "HP EliteBook 840",
+            "type": "Laptop",
+            "status": "Assigned",
+            "assignedTo": {
+              "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+              "name": "Vikram Patel"
+            },
+            "assignedSince": "2025-11-01",
+            "createdAt": "2026-06-18T16:33:32.858Z"
+          },
+          {
+            "id": "asset-011",
+            "tag": "PHN-0115",
+            "name": "iPhone 14",
+            "type": "Phone",
+            "status": "Available",
+            "assignedTo": null,
+            "assignedSince": null,
+            "createdAt": "2026-06-18T16:33:32.856Z"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 30,
+          "totalPages": 2
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/assets/employees",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "employeeId": "cmqqxorwf003c98m7i8vgcyk6",
+          "name": "Aarav Mehta"
+        },
+        {
+          "employeeId": "cmqjpydxt0044kpjdtj0zmhsu",
+          "name": "Aarav Joshi"
+        },
+        {
+          "employeeId": "cmqjpydv6002ykpjdw0kveq0p",
+          "name": "Aditya Malhotra"
+        },
+        {
+          "employeeId": "cmqjpydz1004ikpjdzd0hhqvl",
+          "name": "Akshita Verma"
+        },
+        {
+          "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+          "name": "Aman Kumar"
+        },
+        {
+          "employeeId": "cmqjpye090052kpjd29lt7ydq",
+          "name": "Amit Verma"
+        },
+        {
+          "employeeId": "cmqjpydty002akpjdz73z8ozq",
+          "name": "Amit Verma"
+        },
+        {
+          "employeeId": "cmqjpye0i0058kpjdc2ztiec0",
+          "name": "Ananya Joshi"
+        },
+        {
+          "employeeId": "cmqjpydu9002gkpjdywx910uq",
+          "name": "Ananya Joshi"
+        },
+        {
+          "employeeId": "cmqjpyduv002skpjdfiu65jhz",
+          "name": "Anjali Kumar"
+        },
+        {
+          "employeeId": "cmqjpydxw0046kpjdu0lq5guo",
+          "name": "Anushka Rao"
+        },
+        {
+          "employeeId": "cmqjpyfg2000hdwadx8a86bfv",
+          "name": "Arjun Nair"
+        },
+        {
+          "employeeId": "cmqjpydu5002ekpjdjxysqafe",
+          "name": "Arjun Malhotra"
+        },
+        {
+          "employeeId": "cmqjpye0f0056kpjdcv2qahkm",
+          "name": "Arjun Malhotra"
+        },
+        {
+          "employeeId": "cmqjpydzo004skpjdpap8t09z",
+          "name": "Aryan Bhat"
+        },
+        {
+          "employeeId": "cmqjpydwd003ikpjdbs6pheul",
+          "name": "Ashok Malhotra"
+        },
+        {
+          "employeeId": "cmqjpydwr003okpjdcgwtdchd",
+          "name": "Avni Bhat"
+        },
+        {
+          "employeeId": "cmqjpye0c0054kpjdhf1gvihx",
+          "name": "Deepika Gupta"
+        },
+        {
+          "employeeId": "cmqjpydu2002ckpjd02rpsaho",
+          "name": "Deepika Gupta"
+        },
+        {
+          "employeeId": "cmqjpydvh0034kpjdd0jb0127",
+          "name": "Divya Bhat"
+        },
+        {
+          "employeeId": "cmqjpydxl0040kpjdfyokw3ww",
+          "name": "Diya Gupta"
+        },
+        {
+          "employeeId": "cmqjpydzj004qkpjd19iorso3",
+          "name": "Esha Rao"
+        },
+        {
+          "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+          "name": "HR Admin"
+        },
+        {
+          "employeeId": "cmqjpydw3003ekpjdbr28pdhd",
+          "name": "Harish Verma"
+        },
+        {
+          "employeeId": "cmqjpydx0003skpjd9owb92nk",
+          "name": "Isha Singh"
+        },
+        {
+          "employeeId": "cmqjpydye004ckpjdp53gsdcl",
+          "name": "Kartik Singh"
+        },
+        {
+          "employeeId": "cmqjpydz9004mkpjd8zl3ot2r",
+          "name": "Kavya Malhotra"
+        },
+        {
+          "employeeId": "cmqqzt7bq000hin8yymigfc5e",
+          "name": "KwLitmus LitmusZZ"
+        },
+        {
+          "employeeId": "cmqjpydz5004kkpjdlt8owys0",
+          "name": "Mahesh Gupta"
+        },
+        {
+          "employeeId": "cmqjpydx5003ukpjdndmr9f14",
+          "name": "Manoj Patel"
+        },
+        {
+          "employeeId": "cmqvidmiq008ixgu3msngysol",
+          "name": "Mohammad Saqib"
+        },
+        {
+          "employeeId": "cmqjpyfgi000pdwad5t94e94s",
+          "name": "Mohit Jain"
+        },
+        {
+          "employeeId": "cmqjpydy30048kpjdmtl631wx",
+          "name": "Naveen Bhat"
+        },
+        {
+          "employeeId": "cmqjpydtv0028kpjdz9s1w2kl",
+          "name": "Neha Kumar"
+        },
+        {
+          "employeeId": "cmqjpye050050kpjdv9l7wj0v",
+          "name": "Neha Kumar"
+        },
+        {
+          "employeeId": "cmqjpydur002qkpjdqk63skk3",
+          "name": "Nikhil Patel"
+        },
+        {
+          "employeeId": "cmqjpydxb003wkpjdieodvlb8",
+          "name": "Nisha Kumar"
+        },
+        {
+          "employeeId": "cmqjpydw7003gkpjd1un6css4",
+          "name": "Pallavi Gupta"
+        },
+        {
+          "employeeId": "cmqjpydxp0042kpjd5k23qf0e",
+          "name": "Pawan Malhotra"
+        },
+        {
+          "employeeId": "cmqjpye0y005gkpjd2p2kty17",
+          "name": "Pooja Singh"
+        },
+        {
+          "employeeId": "cmqjpydun002okpjdcfk4q73v",
+          "name": "Pooja Singh"
+        },
+        {
+          "employeeId": "cmqjpydvr0038kpjdgswasdwa",
+          "name": "Preeti Singh"
+        },
+        {
+          "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+          "name": "Priya Sharma"
+        },
+        {
+          "employeeId": "cmqjpydve0032kpjdx4ljg1mz",
+          "name": "Rahul Rao"
+        },
+        {
+          "employeeId": "cmqjpydv2002wkpjdrwzyc9lr",
+          "name": "Ritika Gupta"
+        },
+        {
+          "employeeId": "cmqjpyffr000fdwad3zar96w6",
+          "name": "Riya Kapoor"
+        },
+        {
+          "employeeId": "cmqjpye0m005akpjde48at52q",
+          "name": "Rohan Rao"
+        },
+        {
+          "employeeId": "cmqjpyduc002ikpjdo589teh3",
+          "name": "Rohan Rao"
+        },
+        {
+          "employeeId": "cmqjpydzx004wkpjdie6ofsi8",
+          "name": "Sakshi Singh"
+        },
+        {
+          "employeeId": "cmqjpydtn0024kpjddj2ztzer",
+          "name": "Sakshi Singh"
+        },
+        {
+          "employeeId": "cmqjpydzg004okpjdb5a9pyji",
+          "name": "Sameer Joshi"
+        },
+        {
+          "employeeId": "cmqjpyduy002ukpjdfs4emgvf",
+          "name": "Sanjay Verma"
+        },
+        {
+          "employeeId": "cmqjpydxf003ykpjdkbbkq6rl",
+          "name": "Shailesh Verma"
+        },
+        {
+          "employeeId": "cmqjpydwi003kkpjdipkg1fzr",
+          "name": "Shreya Joshi"
+        },
+        {
+          "employeeId": "cmqjpydva0030kpjdsuckv50d",
+          "name": "Sneha Joshi"
+        },
+        {
+          "employeeId": "cmqjpyfg9000ldwad1kmuo7rg",
+          "name": "Sneha Reddy"
+        },
+        {
+          "employeeId": "cmqjpydyr004gkpjd29ytt54x",
+          "name": "Subhash Kumar"
+        },
+        {
+          "employeeId": "cmqjpydwn003mkpjd3c9jyofw",
+          "name": "Suresh Rao"
+        },
+        {
+          "employeeId": "cmqjpydvy003ckpjdkljde5ta",
+          "name": "Swati Kumar"
+        },
+        {
+          "employeeId": "cmqjpydyn004ekpjdbv15js10",
+          "name": "Tanya Patel"
+        },
+        {
+          "employeeId": "cmqwcdrt80008neb3zmtemojx",
+          "name": "Test123 test"
+        },
+        {
+          "employeeId": "cmqqzt791000ein8y1gjbrezq",
+          "name": "UsLitmus LitmusZZ"
+        },
+        {
+          "employeeId": "cmqjpydvv003akpjdt541pqsw",
+          "name": "Varun Patel"
+        },
+        {
+          "employeeId": "cmqjpye02004ykpjdy4bacji5",
+          "name": "Vikram Patel"
+        },
+        {
+          "employeeId": "cmqjpydtr0026kpjd0jp8m2qu",
+          "name": "Vikram Patel"
+        },
+        {
+          "employeeId": "cmqjpyduf002kkpjdj5cnqitt",
+          "name": "Zara Bhat"
+        },
+        {
+          "employeeId": "cmqjpye0q005ckpjdkx39qwsn",
+          "name": "Zara Bhat"
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  }
+]

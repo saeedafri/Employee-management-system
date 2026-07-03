@@ -1,0 +1,1514 @@
+{
+  "generatedAt": "2026-07-02T17:45:00.000Z",
+  "frontend": "http://localhost:3001",
+  "api": "https://ems-api.saqibsaeed.cloud/api/v1",
+  "mswOff": true,
+  "mfaFixApplied": "Disabled mfaEnabled for aman@acme.test and priya@acme.test on Hostinger Postgres",
+  "apiVerification": {
+    "total": 27,
+    "pass": 27,
+    "fail": 0
+  },
+  "playwright": {
+    "total": 130,
+    "pass": 130,
+    "fail": 0
+  },
+  "deepClickthrough": {
+    "total": 47,
+    "pass": 44,
+    "partial": 3,
+    "fail": 0,
+    "evidenceDir": "deployed-ui-complete-final-audit-evidence"
+  },
+  "screenshotsCount": 137,
+  "backendIssuesCount": 4,
+  "frontendIssuesCount": 4,
+  "reports": {
+    "backend": "docs/E2E_BACKEND_ISSUES.md",
+    "frontend": "docs/E2E_FRONTEND_ISSUES.md",
+    "screenshots": "docs/e2e-screenshots/"
+  },
+  "tests": [
+    {
+      "role": "HR_ADMIN",
+      "module": "login",
+      "action": "UI login",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-login-pass-2026-07-02T17-28-10.png",
+      "at": "2026-07-02T17:28:10.119Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "dashboard",
+      "action": "visit /dashboard",
+      "path": "/dashboard",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-dashboard-pass-2026-07-02T17-28-12.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:12.407Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "employees",
+      "action": "visit /employees",
+      "path": "/employees",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-employees-pass-2026-07-02T17-28-16.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:16.811Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "departments",
+      "action": "visit /departments",
+      "path": "/departments",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-departments-pass-2026-07-02T17-28-21.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:21.350Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "attendance",
+      "action": "visit /attendance",
+      "path": "/attendance",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-attendance-pass-2026-07-02T17-28-24.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:24.861Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "timesheets",
+      "action": "visit /timesheets",
+      "path": "/timesheets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-timesheets-pass-2026-07-02T17-28-29.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:29.625Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "leave",
+      "action": "visit /leave",
+      "path": "/leave",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-leave-pass-2026-07-02T17-28-31.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:31.754Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "holidays",
+      "action": "visit /holidays",
+      "path": "/holidays",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-holidays-pass-2026-07-02T17-28-35.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:35.159Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "payroll",
+      "action": "visit /payroll",
+      "path": "/payroll",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-payroll-pass-2026-07-02T17-28-38.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:38.694Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "payroll-global",
+      "action": "visit /payroll/global",
+      "path": "/payroll/global",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-payroll-global-pass-2026-07-02T17-28-42.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:42.370Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "payroll-my-payslips",
+      "action": "visit /payroll/my-payslips",
+      "path": "/payroll/my-payslips",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-payroll-my-payslips-pass-2026-07-02T17-28-46.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:46.565Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "payout-methods",
+      "action": "visit /payout-methods",
+      "path": "/payout-methods",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-payout-methods-pass-2026-07-02T17-28-51.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:51.999Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "reports",
+      "action": "visit /reports",
+      "path": "/reports",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-reports-pass-2026-07-02T17-28-54.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:54.958Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "analytics",
+      "action": "visit /analytics",
+      "path": "/analytics",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-analytics-pass-2026-07-02T17-28-57.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:28:57.939Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "permissions",
+      "action": "visit /permissions",
+      "path": "/permissions",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-permissions-pass-2026-07-02T17-29-00.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:00.217Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings",
+      "action": "visit /settings",
+      "path": "/settings",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pass-2026-07-02T17-29-04.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:04.374Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "recruitment",
+      "action": "visit /recruitment",
+      "path": "/recruitment",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-recruitment-pass-2026-07-02T17-29-06.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:07.014Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "performance",
+      "action": "visit /performance",
+      "path": "/performance",
+      "pass": true,
+      "note": "CONSOLE:40",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-performance-pass-2026-07-02T17-29-09.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:09.475Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "assets",
+      "action": "visit /assets",
+      "path": "/assets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-assets-pass-2026-07-02T17-29-11.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:11.723Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "announcements",
+      "action": "visit /announcements",
+      "path": "/announcements",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-announcements-pass-2026-07-02T17-29-13.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:13.970Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-company-profile",
+      "action": "visit /settings/company-profile",
+      "path": "/settings/company-profile",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-company-profile-pass-2026-07-02T17-29-16.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:16.099Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-locale",
+      "action": "visit /settings/locale",
+      "path": "/settings/locale",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-locale-pass-2026-07-02T17-29-18.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:18.297Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-working-hours",
+      "action": "visit /settings/working-hours",
+      "path": "/settings/working-hours",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-working-hours-pass-2026-07-02T17-29-20.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:20.444Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-pay-components",
+      "action": "visit /settings/pay/components",
+      "path": "/settings/pay/components",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pay-components-pass-2026-07-02T17-29-22.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:22.749Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-pay-statutory-packs",
+      "action": "visit /settings/pay/statutory-packs",
+      "path": "/settings/pay/statutory-packs",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pay-statutory-packs-pass-2026-07-02T17-29-24.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:24.859Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-pay-legal-entities",
+      "action": "visit /settings/pay/legal-entities",
+      "path": "/settings/pay/legal-entities",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pay-legal-entities-pass-2026-07-02T17-29-27.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:27.084Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-pay-groups",
+      "action": "visit /settings/pay/groups",
+      "path": "/settings/pay/groups",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pay-groups-pass-2026-07-02T17-29-29.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:29.216Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-pay-schedules",
+      "action": "visit /settings/pay/schedules",
+      "path": "/settings/pay/schedules",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pay-schedules-pass-2026-07-02T17-29-32.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:32.794Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-pay-payslip-template",
+      "action": "visit /settings/pay/payslip-template",
+      "path": "/settings/pay/payslip-template",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pay-payslip-template-pass-2026-07-02T17-29-35.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:35.798Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-pay-data-policy",
+      "action": "visit /settings/pay/data-policy",
+      "path": "/settings/pay/data-policy",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-pay-data-policy-pass-2026-07-02T17-29-41.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:41.230Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-leave-types",
+      "action": "visit /settings/leave-types",
+      "path": "/settings/leave-types",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-leave-types-pass-2026-07-02T17-29-45.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:45.811Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-leave-policies",
+      "action": "visit /settings/leave-policies",
+      "path": "/settings/leave-policies",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-leave-policies-pass-2026-07-02T17-29-50.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:50.262Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-leave-packs",
+      "action": "visit /settings/leave-packs",
+      "path": "/settings/leave-packs",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-leave-packs-pass-2026-07-02T17-29-54.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:54.232Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-leave-assignments",
+      "action": "visit /settings/leave-assignments",
+      "path": "/settings/leave-assignments",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-leave-assignments-pass-2026-07-02T17-29-56.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:29:57.055Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-attendance-rules",
+      "action": "visit /settings/attendance-rules",
+      "path": "/settings/attendance-rules",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-attendance-rules-pass-2026-07-02T17-30-00.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:00.107Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-timesheets",
+      "action": "visit /settings/timesheets",
+      "path": "/settings/timesheets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-timesheets-pass-2026-07-02T17-30-04.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:04.367Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-notifications",
+      "action": "visit /settings/notifications",
+      "path": "/settings/notifications",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-notifications-pass-2026-07-02T17-30-10.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:10.377Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-email-templates",
+      "action": "visit /settings/email-templates",
+      "path": "/settings/email-templates",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-email-templates-pass-2026-07-02T17-30-16.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:16.163Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-branding",
+      "action": "visit /settings/branding",
+      "path": "/settings/branding",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-branding-pass-2026-07-02T17-30-20.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:20.557Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-authentication",
+      "action": "visit /settings/authentication",
+      "path": "/settings/authentication",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-authentication-pass-2026-07-02T17-30-24.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:24.358Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-sessions",
+      "action": "visit /settings/sessions",
+      "path": "/settings/sessions",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-sessions-pass-2026-07-02T17-30-27.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:28.003Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-audit-log",
+      "action": "visit /settings/audit-log",
+      "path": "/settings/audit-log",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-audit-log-pass-2026-07-02T17-30-30.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:30.910Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-integration-email",
+      "action": "visit /settings/integration-email",
+      "path": "/settings/integration-email",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-integration-email-pass-2026-07-02T17-30-35.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:35.508Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-integration-storage",
+      "action": "visit /settings/integration-storage",
+      "path": "/settings/integration-storage",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-integration-storage-pass-2026-07-02T17-30-39.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:40.039Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "settings-integration-webhooks",
+      "action": "visit /settings/integration-webhooks",
+      "path": "/settings/integration-webhooks",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-settings-integration-webhooks-pass-2026-07-02T17-30-44.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:44.589Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "employees-new",
+      "action": "visit /employees/new",
+      "path": "/employees/new",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-employees-new-pass-2026-07-02T17-30-47.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:47.584Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "notifications",
+      "action": "open bell + mark read",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-notifications-pass-2026-07-02T17-30-51.png",
+      "at": "2026-07-02T17:30:51.528Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "global-search",
+      "action": "search q=test",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-global-search-pass-2026-07-02T17-30-53.png",
+      "at": "2026-07-02T17:30:53.082Z"
+    },
+    {
+      "role": "HR_ADMIN",
+      "module": "profile-menu",
+      "action": "open profile dropdown",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/HR_ADMIN-profile-menu-pass-2026-07-02T17-30-54.png",
+      "at": "2026-07-02T17:30:54.181Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "login",
+      "action": "UI login",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-login-pass-2026-07-02T17-30-57.png",
+      "at": "2026-07-02T17:30:57.489Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "dashboard",
+      "action": "visit /dashboard",
+      "path": "/dashboard",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-dashboard-pass-2026-07-02T17-30-59.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:30:59.773Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "employees",
+      "action": "visit /employees",
+      "path": "/employees",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-employees-pass-2026-07-02T17-31-04.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:04.311Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "departments",
+      "action": "visit /departments",
+      "path": "/departments",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-departments-pass-2026-07-02T17-31-08.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:08.807Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "attendance",
+      "action": "visit /attendance",
+      "path": "/attendance",
+      "pass": true,
+      "note": "API:400/api/attendance/records,400/api/attendance/calendar,400/api/attendance/today,400/api/attendance/records,400/api/attendance/today CONSOLE:5",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-attendance-pass-2026-07-02T17-31-12.png",
+      "apiFailures": [
+        {
+          "endpoint": "/api/attendance/records",
+          "status": 400,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NO_EMPLOYEE_RECORD",
+              "message": "User has no employee record",
+              "details": {},
+              "requestId": "1874ad6b-13e8-4c22-90fe-fcf04cfb0434"
+            }
+          }
+        },
+        {
+          "endpoint": "/api/attendance/calendar",
+          "status": 400,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NO_EMPLOYEE_RECORD",
+              "message": "User has no employee record",
+              "details": {},
+              "requestId": "89965427-bb77-4ef7-8b7b-ce83036a0a25"
+            }
+          }
+        },
+        {
+          "endpoint": "/api/attendance/today",
+          "status": 400,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NO_EMPLOYEE_RECORD",
+              "message": "User has no employee record",
+              "details": {},
+              "requestId": "ec7d4579-40fb-48ce-930c-bc2daee9b798"
+            }
+          }
+        },
+        {
+          "endpoint": "/api/attendance/records",
+          "status": 400,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NO_EMPLOYEE_RECORD",
+              "message": "User has no employee record",
+              "details": {},
+              "requestId": "f85d0a0a-b6fb-4832-a873-d2a063da48d0"
+            }
+          }
+        },
+        {
+          "endpoint": "/api/attendance/today",
+          "status": 400,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NO_EMPLOYEE_RECORD",
+              "message": "User has no employee record",
+              "details": {},
+              "requestId": "5b9a0e46-9474-480a-a31d-ff0fb7c8ac89"
+            }
+          }
+        }
+      ],
+      "at": "2026-07-02T17:31:12.272Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "timesheets",
+      "action": "visit /timesheets",
+      "path": "/timesheets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-timesheets-pass-2026-07-02T17-31-14.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:14.656Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "leave",
+      "action": "visit /leave",
+      "path": "/leave",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-leave-pass-2026-07-02T17-31-16.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:16.846Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "holidays",
+      "action": "visit /holidays",
+      "path": "/holidays",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-holidays-pass-2026-07-02T17-31-20.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:20.160Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "payroll",
+      "action": "visit /payroll",
+      "path": "/payroll",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-payroll-pass-2026-07-02T17-31-23.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:23.745Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "payroll-global",
+      "action": "visit /payroll/global",
+      "path": "/payroll/global",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-payroll-global-pass-2026-07-02T17-31-27.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:27.076Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "payroll-my-payslips",
+      "action": "visit /payroll/my-payslips",
+      "path": "/payroll/my-payslips",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-payroll-my-payslips-pass-2026-07-02T17-31-30.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:30.691Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "payout-methods",
+      "action": "visit /payout-methods",
+      "path": "/payout-methods",
+      "pass": true,
+      "note": "API:400/api/payroll/me/payout-methods,400/api/payroll/me/payout-methods CONSOLE:2",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-payout-methods-pass-2026-07-02T17-31-33.png",
+      "apiFailures": [
+        {
+          "endpoint": "/api/payroll/me/payout-methods",
+          "status": 400,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NO_EMPLOYEE_RECORD",
+              "message": "Your account is not linked to an employee record",
+              "details": {}
+            }
+          }
+        },
+        {
+          "endpoint": "/api/payroll/me/payout-methods",
+          "status": 400,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NO_EMPLOYEE_RECORD",
+              "message": "Your account is not linked to an employee record",
+              "details": {}
+            }
+          }
+        }
+      ],
+      "at": "2026-07-02T17:31:33.877Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "reports",
+      "action": "visit /reports",
+      "path": "/reports",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-reports-pass-2026-07-02T17-31-36.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:36.424Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "analytics",
+      "action": "visit /analytics",
+      "path": "/analytics",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-analytics-pass-2026-07-02T17-31-38.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:38.900Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "permissions",
+      "action": "visit /permissions",
+      "path": "/permissions",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-permissions-pass-2026-07-02T17-31-41.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:41.472Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings",
+      "action": "visit /settings",
+      "path": "/settings",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pass-2026-07-02T17-31-43.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:43.667Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "recruitment",
+      "action": "visit /recruitment",
+      "path": "/recruitment",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-recruitment-pass-2026-07-02T17-31-45.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:46.010Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "performance",
+      "action": "visit /performance",
+      "path": "/performance",
+      "pass": true,
+      "note": "CONSOLE:20",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-performance-pass-2026-07-02T17-31-48.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:48.339Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "assets",
+      "action": "visit /assets",
+      "path": "/assets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-assets-pass-2026-07-02T17-31-50.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:50.623Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "announcements",
+      "action": "visit /announcements",
+      "path": "/announcements",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-announcements-pass-2026-07-02T17-31-52.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:52.781Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-company-profile",
+      "action": "visit /settings/company-profile",
+      "path": "/settings/company-profile",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-company-profile-pass-2026-07-02T17-31-54.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:54.906Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-locale",
+      "action": "visit /settings/locale",
+      "path": "/settings/locale",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-locale-pass-2026-07-02T17-31-57.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:57.150Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-working-hours",
+      "action": "visit /settings/working-hours",
+      "path": "/settings/working-hours",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-working-hours-pass-2026-07-02T17-31-59.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:31:59.410Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-pay-components",
+      "action": "visit /settings/pay/components",
+      "path": "/settings/pay/components",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pay-components-pass-2026-07-02T17-32-01.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:01.778Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-pay-statutory-packs",
+      "action": "visit /settings/pay/statutory-packs",
+      "path": "/settings/pay/statutory-packs",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pay-statutory-packs-pass-2026-07-02T17-32-03.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:04.014Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-pay-legal-entities",
+      "action": "visit /settings/pay/legal-entities",
+      "path": "/settings/pay/legal-entities",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pay-legal-entities-pass-2026-07-02T17-32-06.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:06.358Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-pay-groups",
+      "action": "visit /settings/pay/groups",
+      "path": "/settings/pay/groups",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pay-groups-pass-2026-07-02T17-32-08.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:08.531Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-pay-schedules",
+      "action": "visit /settings/pay/schedules",
+      "path": "/settings/pay/schedules",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pay-schedules-pass-2026-07-02T17-32-10.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:10.713Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-pay-payslip-template",
+      "action": "visit /settings/pay/payslip-template",
+      "path": "/settings/pay/payslip-template",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pay-payslip-template-pass-2026-07-02T17-32-12.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:12.923Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-pay-data-policy",
+      "action": "visit /settings/pay/data-policy",
+      "path": "/settings/pay/data-policy",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-pay-data-policy-pass-2026-07-02T17-32-15.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:15.090Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-leave-types",
+      "action": "visit /settings/leave-types",
+      "path": "/settings/leave-types",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-leave-types-pass-2026-07-02T17-32-17.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:17.243Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-leave-policies",
+      "action": "visit /settings/leave-policies",
+      "path": "/settings/leave-policies",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-leave-policies-pass-2026-07-02T17-32-19.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:19.412Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-leave-packs",
+      "action": "visit /settings/leave-packs",
+      "path": "/settings/leave-packs",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-leave-packs-pass-2026-07-02T17-32-21.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:21.547Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-leave-assignments",
+      "action": "visit /settings/leave-assignments",
+      "path": "/settings/leave-assignments",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-leave-assignments-pass-2026-07-02T17-32-23.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:23.669Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-attendance-rules",
+      "action": "visit /settings/attendance-rules",
+      "path": "/settings/attendance-rules",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-attendance-rules-pass-2026-07-02T17-32-25.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:25.796Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-timesheets",
+      "action": "visit /settings/timesheets",
+      "path": "/settings/timesheets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-timesheets-pass-2026-07-02T17-32-27.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:28.047Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-notifications",
+      "action": "visit /settings/notifications",
+      "path": "/settings/notifications",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-notifications-pass-2026-07-02T17-32-30.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:30.192Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-email-templates",
+      "action": "visit /settings/email-templates",
+      "path": "/settings/email-templates",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-email-templates-pass-2026-07-02T17-32-32.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:32.513Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-branding",
+      "action": "visit /settings/branding",
+      "path": "/settings/branding",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-branding-pass-2026-07-02T17-32-34.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:34.628Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-authentication",
+      "action": "visit /settings/authentication",
+      "path": "/settings/authentication",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-authentication-pass-2026-07-02T17-32-36.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:36.727Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-sessions",
+      "action": "visit /settings/sessions",
+      "path": "/settings/sessions",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-sessions-pass-2026-07-02T17-32-38.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:38.874Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-audit-log",
+      "action": "visit /settings/audit-log",
+      "path": "/settings/audit-log",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-audit-log-pass-2026-07-02T17-32-40.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:41.076Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-integration-email",
+      "action": "visit /settings/integration-email",
+      "path": "/settings/integration-email",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-integration-email-pass-2026-07-02T17-32-43.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:43.364Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-integration-storage",
+      "action": "visit /settings/integration-storage",
+      "path": "/settings/integration-storage",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-integration-storage-pass-2026-07-02T17-32-45.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:45.498Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "settings-integration-webhooks",
+      "action": "visit /settings/integration-webhooks",
+      "path": "/settings/integration-webhooks",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-settings-integration-webhooks-pass-2026-07-02T17-32-47.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:47.595Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "employees-new",
+      "action": "visit /employees/new",
+      "path": "/employees/new",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-employees-new-pass-2026-07-02T17-32-49.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:32:49.735Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "notifications",
+      "action": "open bell + mark read",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-notifications-pass-2026-07-02T17-32-53.png",
+      "at": "2026-07-02T17:32:53.603Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "global-search",
+      "action": "search q=test",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-global-search-pass-2026-07-02T17-32-55.png",
+      "at": "2026-07-02T17:32:55.152Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "module": "profile-menu",
+      "action": "open profile dropdown",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/SUPER_ADMIN-profile-menu-pass-2026-07-02T17-32-56.png",
+      "at": "2026-07-02T17:32:56.258Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "login",
+      "action": "UI login",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/MANAGER-login-pass-2026-07-02T17-32-59.png",
+      "at": "2026-07-02T17:32:59.500Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "dashboard",
+      "action": "visit /dashboard",
+      "path": "/dashboard",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-dashboard-pass-2026-07-02T17-33-01.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:02.013Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "attendance",
+      "action": "visit /attendance",
+      "path": "/attendance",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-attendance-pass-2026-07-02T17-33-05.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:05.399Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "leave",
+      "action": "visit /leave",
+      "path": "/leave",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-leave-pass-2026-07-02T17-33-09.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:09.828Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "timesheets",
+      "action": "visit /timesheets",
+      "path": "/timesheets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-timesheets-pass-2026-07-02T17-33-13.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:13.473Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "payroll-my-payslips",
+      "action": "visit /payroll/my-payslips",
+      "path": "/payroll/my-payslips",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-payroll-my-payslips-pass-2026-07-02T17-33-15.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:15.642Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "holidays",
+      "action": "visit /holidays",
+      "path": "/holidays",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-holidays-pass-2026-07-02T17-33-18.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:18.893Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "employees",
+      "action": "visit /employees",
+      "path": "/employees",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-employees-pass-2026-07-02T17-33-21.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:21.079Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "notifications",
+      "action": "open bell + mark read",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/MANAGER-notifications-pass-2026-07-02T17-33-24.png",
+      "at": "2026-07-02T17:33:24.263Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "global-search",
+      "action": "search q=test",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/MANAGER-global-search-pass-2026-07-02T17-33-25.png",
+      "at": "2026-07-02T17:33:25.829Z"
+    },
+    {
+      "role": "MANAGER",
+      "module": "profile-menu",
+      "action": "open profile dropdown",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/MANAGER-profile-menu-pass-2026-07-02T17-33-26.png",
+      "at": "2026-07-02T17:33:26.941Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "login",
+      "action": "UI login",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-login-pass-2026-07-02T17-33-30.png",
+      "at": "2026-07-02T17:33:30.079Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "dashboard",
+      "action": "visit /dashboard",
+      "path": "/dashboard",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-dashboard-pass-2026-07-02T17-33-32.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:32.357Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "attendance",
+      "action": "visit /attendance",
+      "path": "/attendance",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-attendance-pass-2026-07-02T17-33-34.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:34.564Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "leave",
+      "action": "visit /leave",
+      "path": "/leave",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-leave-pass-2026-07-02T17-33-38.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:38.922Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "timesheets",
+      "action": "visit /timesheets",
+      "path": "/timesheets",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-timesheets-pass-2026-07-02T17-33-42.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:42.584Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "payroll-my-payslips",
+      "action": "visit /payroll/my-payslips",
+      "path": "/payroll/my-payslips",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-payroll-my-payslips-pass-2026-07-02T17-33-44.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:44.824Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "holidays",
+      "action": "visit /holidays",
+      "path": "/holidays",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-holidays-pass-2026-07-02T17-33-48.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:48.111Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "employees",
+      "action": "visit /employees",
+      "path": "/employees",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-employees-pass-2026-07-02T17-33-50.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:33:50.281Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "notifications",
+      "action": "open bell + mark read",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-notifications-pass-2026-07-02T17-33-53.png",
+      "at": "2026-07-02T17:33:53.464Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "global-search",
+      "action": "search q=test",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-global-search-pass-2026-07-02T17-33-54.png",
+      "at": "2026-07-02T17:33:55.032Z"
+    },
+    {
+      "role": "EMPLOYEE",
+      "module": "profile-menu",
+      "action": "open profile dropdown",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/EMPLOYEE-profile-menu-pass-2026-07-02T17-33-56.png",
+      "at": "2026-07-02T17:33:56.129Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "login",
+      "action": "UI login",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-login-pass-2026-07-02T17-33-59.png",
+      "at": "2026-07-02T17:33:59.586Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "dashboard",
+      "action": "visit /dashboard",
+      "path": "/dashboard",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-dashboard-pass-2026-07-02T17-34-01.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:34:02.037Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "settings-locale",
+      "action": "visit /settings/locale",
+      "path": "/settings/locale",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-settings-locale-pass-2026-07-02T17-34-04.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:34:04.329Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "timesheets",
+      "action": "visit /timesheets",
+      "path": "/timesheets",
+      "pass": true,
+      "note": "API:404/api/payroll/employees/cmqqf21fw00046adzo6h2a22w/salary CONSOLE:1",
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-timesheets-pass-2026-07-02T17-34-07.png",
+      "apiFailures": [
+        {
+          "endpoint": "/api/payroll/employees/cmqqf21fw00046adzo6h2a22w/salary",
+          "status": 404,
+          "body": {
+            "success": false,
+            "error": {
+              "code": "NOT_FOUND",
+              "message": "No salary configuration found for this employee",
+              "details": {},
+              "requestId": "c7ac2091-7818-448f-97af-77eabba98a1a"
+            }
+          }
+        }
+      ],
+      "at": "2026-07-02T17:34:07.075Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "payroll-global",
+      "action": "visit /payroll/global",
+      "path": "/payroll/global",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-payroll-global-pass-2026-07-02T17-34-09.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:34:09.243Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "holidays",
+      "action": "visit /holidays",
+      "path": "/holidays",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-holidays-pass-2026-07-02T17-34-12.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:34:12.461Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "settings-working-hours",
+      "action": "visit /settings/working-hours",
+      "path": "/settings/working-hours",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-settings-working-hours-pass-2026-07-02T17-34-15.png",
+      "apiFailures": [],
+      "at": "2026-07-02T17:34:15.840Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "notifications",
+      "action": "open bell + mark read",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-notifications-pass-2026-07-02T17-34-16.png",
+      "at": "2026-07-02T17:34:16.965Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "global-search",
+      "action": "search q=test",
+      "pass": true,
+      "note": "",
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-global-search-pass-2026-07-02T17-34-18.png",
+      "at": "2026-07-02T17:34:18.536Z"
+    },
+    {
+      "role": "KWD_LITMUS",
+      "module": "profile-menu",
+      "action": "open profile dropdown",
+      "pass": true,
+      "screenshot": "docs/e2e-screenshots/KWD_LITMUS-profile-menu-pass-2026-07-02T17-34-19.png",
+      "at": "2026-07-02T17:34:19.634Z"
+    }
+  ]
+}

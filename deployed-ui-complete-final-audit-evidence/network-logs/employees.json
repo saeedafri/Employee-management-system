@@ -1,0 +1,5313 @@
+[
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:35:39.706Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/departments",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmqjpydrw001gkpjdh8uedxjx",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Customer Success",
+          "departmentCode": "CUS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.749Z",
+          "updatedAt": "2026-06-18T16:33:22.749Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydr60012kpjd7tl3efld",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Engineering",
+          "departmentCode": "ENG",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.722Z",
+          "updatedAt": "2026-06-18T16:33:22.722Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 14,
+          "_count": {
+            "employees": 14
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfec0003dwad15vby0bp",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Backend Engineering",
+              "departmentCode": "ENG-BE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.852Z",
+              "updatedAt": "2026-06-18T16:33:24.852Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfe80001dwad8gqk1v20",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Frontend Engineering",
+              "departmentCode": "ENG-FE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.848Z",
+              "updatedAt": "2026-06-18T16:33:24.848Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfef0005dwad26vgadh9",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "QA & Testing",
+              "departmentCode": "ENG-QA",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.855Z",
+              "updatedAt": "2026-06-18T16:33:24.855Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydrh0018kpjdo5t9ue7b",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Finance",
+          "departmentCode": "FIN",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.733Z",
+          "updatedAt": "2026-06-18T16:33:22.733Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydre0016kpjd8t70672t",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "HR",
+          "departmentCode": "HR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.730Z",
+          "updatedAt": "2026-06-18T16:33:22.730Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrr001ekpjdb0f1229w",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Marketing",
+          "departmentCode": "MAR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.744Z",
+          "updatedAt": "2026-06-18T16:33:22.744Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrk001akpjdxmb5ai3i",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Operations",
+          "departmentCode": "OPS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.736Z",
+          "updatedAt": "2026-06-18T16:33:22.736Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfep000bdwad233917lg",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrk001akpjdxmb5ai3i",
+              "name": "IT Support",
+              "departmentCode": "OPS-IT",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.865Z",
+              "updatedAt": "2026-06-18T16:33:24.865Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydro001ckpjdb1aatiu8",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Product",
+          "departmentCode": "PRO",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.740Z",
+          "updatedAt": "2026-06-18T16:33:22.740Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrb0014kpjdiu4yk32p",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Sales",
+          "departmentCode": "SALES",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.727Z",
+          "updatedAt": "2026-06-18T16:33:22.727Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfej0007dwad5jzaivta",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - North",
+              "departmentCode": "SALES-N",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.859Z",
+              "updatedAt": "2026-06-18T16:33:24.859Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfem0009dwadbkazwl7a",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - South",
+              "departmentCode": "SALES-S",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.862Z",
+              "updatedAt": "2026-06-18T16:33:24.862Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees?page=1&limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "data": [
+          {
+            "id": "cmqjpyds0001ikpjd5br3r2uh",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpydql000ukpjdbhesbmpi",
+            "employeeCode": "E0001",
+            "firstName": "Aman",
+            "lastName": "Kumar",
+            "workEmail": "aman@acme.test",
+            "personalEmail": "aman.kumar@gmail.com",
+            "phone": "+91 98765 43210",
+            "dateOfBirth": "1990-03-15T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Priya Kumar",
+            "emergencyContactPhone": "+91 98765 43215",
+            "designation": "Senior Engineer 2026-07-02",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-01-15T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.752Z",
+            "updatedAt": "2026-07-02T17:34:39.193Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "aman@acme.test",
+              "memberType": "MANAGER",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyds7001kkpjdnlhjygrp",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpydqn000wkpjd02gyqzd3",
+            "employeeCode": "E0002",
+            "firstName": "Priya",
+            "lastName": "Sharma",
+            "workEmail": "priya@acme.test",
+            "personalEmail": "priya.sharma@gmail.com",
+            "phone": "+91 98765 43211",
+            "dateOfBirth": "1995-08-22T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Noida, India",
+            "emergencyContactName": "Raj Sharma",
+            "emergencyContactPhone": "+91 98765 43216",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-06-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.759Z",
+            "updatedAt": "2026-06-18T16:33:22.759Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": {
+              "email": "priya@acme.test",
+              "memberType": "EMPLOYEE",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydsb001mkpjdxlgw74tv",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": "cmqjpydqj000skpjdp2l6cvg5",
+            "employeeCode": "E0003",
+            "firstName": "HR",
+            "lastName": "Admin",
+            "workEmail": "hr@acme.test",
+            "personalEmail": "hr@acme.test",
+            "phone": "+91 98765 43212",
+            "dateOfBirth": null,
+            "gender": null,
+            "address": null,
+            "emergencyContactName": null,
+            "emergencyContactPhone": null,
+            "designation": "HR Manager",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2019-01-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.764Z",
+            "updatedAt": "2026-06-18T16:33:22.764Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": {
+              "email": "hr@acme.test",
+              "memberType": "HR_ADMIN",
+              "status": "ACTIVE"
+            },
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtj0022kpjd7hbikivl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0004",
+            "firstName": "Rajesh",
+            "lastName": "Sharma",
+            "workEmail": "emp4@acme.test",
+            "personalEmail": "emp4@gmail.com",
+            "phone": "+91 98765 10000",
+            "dateOfBirth": "1985-01-01T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Rajesh Family",
+            "emergencyContactPhone": "+91 98765 20000",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-01T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.807Z",
+            "updatedAt": "2026-06-18T16:33:22.807Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtn0024kpjddj2ztzer",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0005",
+            "firstName": "Sakshi",
+            "lastName": "Singh",
+            "workEmail": "emp5@acme.test",
+            "personalEmail": "emp5@gmail.com",
+            "phone": "+91 98765 10001",
+            "dateOfBirth": "1986-02-02T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Sakshi Family",
+            "emergencyContactPhone": "+91 98765 20001",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-02T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.811Z",
+            "updatedAt": "2026-06-18T16:33:22.811Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtr0026kpjd0jp8m2qu",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0006",
+            "firstName": "Vikram",
+            "lastName": "Patel",
+            "workEmail": "emp6@acme.test",
+            "personalEmail": "emp6@gmail.com",
+            "phone": "+91 98765 10002",
+            "dateOfBirth": "1987-03-03T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Vikram Family",
+            "emergencyContactPhone": "+91 98765 20002",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-03-03T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.815Z",
+            "updatedAt": "2026-06-18T16:33:22.815Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydtv0028kpjdz9s1w2kl",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0007",
+            "firstName": "Neha",
+            "lastName": "Kumar",
+            "workEmail": "emp7@acme.test",
+            "personalEmail": "emp7@gmail.com",
+            "phone": "+91 98765 10003",
+            "dateOfBirth": "1988-04-04T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Neha Family",
+            "emergencyContactPhone": "+91 98765 20003",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2023-04-04T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.819Z",
+            "updatedAt": "2026-06-18T16:33:22.819Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydty002akpjdz73z8ozq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0008",
+            "firstName": "Amit",
+            "lastName": "Verma",
+            "workEmail": "emp8@acme.test",
+            "personalEmail": "emp8@gmail.com",
+            "phone": "+91 98765 10004",
+            "dateOfBirth": "1989-05-05T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Amit Family",
+            "emergencyContactPhone": "+91 98765 20004",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-05-05T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.822Z",
+            "updatedAt": "2026-06-18T16:33:22.822Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydu2002ckpjd02rpsaho",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0009",
+            "firstName": "Deepika",
+            "lastName": "Gupta",
+            "workEmail": "emp9@acme.test",
+            "personalEmail": "emp9@gmail.com",
+            "phone": "+91 98765 10005",
+            "dateOfBirth": "1990-06-06T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Deepika Family",
+            "emergencyContactPhone": "+91 98765 20005",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-06-06T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.826Z",
+            "updatedAt": "2026-06-18T16:33:22.826Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydu5002ekpjdjxysqafe",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0010",
+            "firstName": "Arjun",
+            "lastName": "Malhotra",
+            "workEmail": "emp10@acme.test",
+            "personalEmail": "emp10@gmail.com",
+            "phone": "+91 98765 10006",
+            "dateOfBirth": "1991-07-07T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Arjun Family",
+            "emergencyContactPhone": "+91 98765 20006",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2022-07-07T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.829Z",
+            "updatedAt": "2026-06-18T16:33:22.829Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydu9002gkpjdywx910uq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0011",
+            "firstName": "Ananya",
+            "lastName": "Joshi",
+            "workEmail": "emp11@acme.test",
+            "personalEmail": "emp11@gmail.com",
+            "phone": "+91 98765 10007",
+            "dateOfBirth": "1992-08-08T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Ananya Family",
+            "emergencyContactPhone": "+91 98765 20007",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-08-08T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.833Z",
+            "updatedAt": "2026-06-18T16:33:22.833Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduc002ikpjdo589teh3",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0012",
+            "firstName": "Rohan",
+            "lastName": "Rao",
+            "workEmail": "emp12@acme.test",
+            "personalEmail": "emp12@gmail.com",
+            "phone": "+91 98765 10008",
+            "dateOfBirth": "1993-09-09T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Rohan Family",
+            "emergencyContactPhone": "+91 98765 20008",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-09-09T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.836Z",
+            "updatedAt": "2026-06-18T16:33:22.836Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduf002kkpjdj5cnqitt",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0013",
+            "firstName": "Zara",
+            "lastName": "Bhat",
+            "workEmail": "emp13@acme.test",
+            "personalEmail": "emp13@gmail.com",
+            "phone": "+91 98765 10009",
+            "dateOfBirth": "1994-10-10T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Zara Family",
+            "emergencyContactPhone": "+91 98765 20009",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrb0014kpjdiu4yk32p"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2021-10-10T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.840Z",
+            "updatedAt": "2026-06-18T16:33:22.840Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrb0014kpjdiu4yk32p",
+                "name": "Sales"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduj002mkpjdgsw4t599",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0014",
+            "firstName": "Karan",
+            "lastName": "Sharma",
+            "workEmail": "emp14@acme.test",
+            "personalEmail": "emp14@gmail.com",
+            "phone": "+91 98765 10010",
+            "dateOfBirth": "1995-11-11T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Karan Family",
+            "emergencyContactPhone": "+91 98765 20010",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydre0016kpjd8t70672t"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-11-11T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "INACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.843Z",
+            "updatedAt": "2026-06-18T16:33:22.843Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydre0016kpjd8t70672t",
+                "name": "HR"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydun002okpjdcfk4q73v",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0015",
+            "firstName": "Pooja",
+            "lastName": "Singh",
+            "workEmail": "emp15@acme.test",
+            "personalEmail": "emp15@gmail.com",
+            "phone": "+91 98765 10011",
+            "dateOfBirth": "1996-12-12T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Pooja Family",
+            "emergencyContactPhone": "+91 98765 20011",
+            "designation": "Operations Coordinator",
+            "departmentId": [
+              "cmqjpydrh0018kpjdo5t9ue7b"
+            ],
+            "managerId": null,
+            "joinedOn": "2023-12-12T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.847Z",
+            "updatedAt": "2026-06-18T16:33:22.847Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrh0018kpjdo5t9ue7b",
+                "name": "Finance"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydur002qkpjdqk63skk3",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0016",
+            "firstName": "Nikhil",
+            "lastName": "Patel",
+            "workEmail": "emp16@acme.test",
+            "personalEmail": "emp16@gmail.com",
+            "phone": "+91 98765 10012",
+            "dateOfBirth": "1997-01-13T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Bangalore, India",
+            "emergencyContactName": "Nikhil Family",
+            "emergencyContactPhone": "+91 98765 20012",
+            "designation": "Senior Engineer",
+            "departmentId": [
+              "cmqjpydrk001akpjdxmb5ai3i"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2020-01-13T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.851Z",
+            "updatedAt": "2026-06-18T16:33:22.851Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrk001akpjdxmb5ai3i",
+                "name": "Operations"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduv002skpjdfiu65jhz",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0017",
+            "firstName": "Anjali",
+            "lastName": "Kumar",
+            "workEmail": "emp17@acme.test",
+            "personalEmail": "emp17@gmail.com",
+            "phone": "+91 98765 10013",
+            "dateOfBirth": "1998-02-14T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Hyderabad, India",
+            "emergencyContactName": "Anjali Family",
+            "emergencyContactPhone": "+91 98765 20013",
+            "designation": "Software Developer",
+            "departmentId": [
+              "cmqjpydro001ckpjdb1aatiu8"
+            ],
+            "managerId": null,
+            "joinedOn": "2021-02-14T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.855Z",
+            "updatedAt": "2026-06-18T16:33:22.855Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydro001ckpjdb1aatiu8",
+                "name": "Product"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpyduy002ukpjdfs4emgvf",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0018",
+            "firstName": "Sanjay",
+            "lastName": "Verma",
+            "workEmail": "emp18@acme.test",
+            "personalEmail": "emp18@gmail.com",
+            "phone": "+91 98765 10014",
+            "dateOfBirth": "1999-03-15T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Pune, India",
+            "emergencyContactName": "Sanjay Family",
+            "emergencyContactPhone": "+91 98765 20014",
+            "designation": "Product Manager",
+            "departmentId": [
+              "cmqjpydrr001ekpjdb0f1229w"
+            ],
+            "managerId": null,
+            "joinedOn": "2022-03-15T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Bangalore",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.859Z",
+            "updatedAt": "2026-06-18T16:33:22.859Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrr001ekpjdb0f1229w",
+                "name": "Marketing"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydv2002wkpjdrwzyc9lr",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0019",
+            "firstName": "Ritika",
+            "lastName": "Gupta",
+            "workEmail": "emp19@acme.test",
+            "personalEmail": "emp19@gmail.com",
+            "phone": "+91 98765 10015",
+            "dateOfBirth": "2000-04-16T00:00:00.000Z",
+            "gender": "FEMALE",
+            "address": "Delhi, India",
+            "emergencyContactName": "Ritika Family",
+            "emergencyContactPhone": "+91 98765 20015",
+            "designation": "Sales Executive",
+            "departmentId": [
+              "cmqjpydrw001gkpjdh8uedxjx"
+            ],
+            "managerId": "cmqjpyds0001ikpjd5br3r2uh",
+            "joinedOn": "2023-04-16T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Delhi",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.862Z",
+            "updatedAt": "2026-06-18T16:33:22.862Z",
+            "deletedAt": null,
+            "manager": {
+              "id": "cmqjpyds0001ikpjd5br3r2uh",
+              "firstName": "Aman",
+              "lastName": "Kumar"
+            },
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydrw001gkpjdh8uedxjx",
+                "name": "Customer Success"
+              }
+            ]
+          },
+          {
+            "id": "cmqjpydv6002ykpjdw0kveq0p",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "userId": null,
+            "employeeCode": "E0020",
+            "firstName": "Aditya",
+            "lastName": "Malhotra",
+            "workEmail": "emp20@acme.test",
+            "personalEmail": "emp20@gmail.com",
+            "phone": "+91 98765 10016",
+            "dateOfBirth": "2001-05-17T00:00:00.000Z",
+            "gender": "MALE",
+            "address": "Mumbai, India",
+            "emergencyContactName": "Aditya Family",
+            "emergencyContactPhone": "+91 98765 20016",
+            "designation": "Financial Analyst",
+            "departmentId": [
+              "cmqjpydr60012kpjd7tl3efld"
+            ],
+            "managerId": null,
+            "joinedOn": "2020-05-17T00:00:00.000Z",
+            "employmentType": "FULL_TIME",
+            "employmentStatus": "ACTIVE",
+            "location": "Mumbai",
+            "profilePhotoUrl": null,
+            "payCurrency": "INR",
+            "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+            "updatedBy": null,
+            "createdAt": "2026-06-18T16:33:22.866Z",
+            "updatedAt": "2026-06-18T16:33:22.866Z",
+            "deletedAt": null,
+            "manager": null,
+            "user": null,
+            "department": [
+              {
+                "id": "cmqjpydr60012kpjd7tl3efld",
+                "name": "Engineering"
+              }
+            ]
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 75,
+          "pages": 4
+        }
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:34:39.193Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:35:44.464Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:34:39.193Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmr3scjxx006ou7x1mghwubzc",
+            "documentType": "OTHER",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:35:44.464Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:34:39.193Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmr3scjxx006ou7x1mghwubzc",
+            "documentType": "OTHER",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:35:44.464Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:34:39.193Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmr3scjxx006ou7x1mghwubzc",
+            "documentType": "OTHER",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:35:44.464Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:34:39.193Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmr3scjxx006ou7x1mghwubzc",
+            "documentType": "OTHER",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:35:44.464Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:34:39.193Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmr3scjxx006ou7x1mghwubzc",
+            "documentType": "OTHER",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/auth/me",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpydqj000skpjdp2l6cvg5",
+        "email": "hr@acme.test",
+        "memberType": "HR_ADMIN",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv",
+        "status": "ACTIVE",
+        "employee": {
+          "id": "cmqjpydsb001mkpjdxlgw74tv",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "employeeCode": "E0003",
+          "firstName": "HR",
+          "lastName": "Admin",
+          "workEmail": "hr@acme.test",
+          "personalEmail": "hr@acme.test",
+          "phone": "+91 98765 43212",
+          "dateOfBirth": null,
+          "gender": null,
+          "address": null,
+          "emergencyContactName": null,
+          "emergencyContactPhone": null,
+          "designation": "HR Manager",
+          "departmentId": "cmqjpydre0016kpjd8t70672t",
+          "managerId": null,
+          "joinedOn": "2019-01-10T00:00:00.000Z",
+          "employmentType": "FULL_TIME",
+          "employmentStatus": "ACTIVE",
+          "location": "Delhi",
+          "profilePhotoUrl": null,
+          "payCurrency": "INR",
+          "createdBy": "cmqjpydqe000qkpjd8q8idw1k",
+          "updatedBy": null,
+          "createdAt": "2026-06-18T16:33:22.764Z",
+          "updatedAt": "2026-06-18T16:33:22.764Z",
+          "deletedAt": null
+        },
+        "permissions": [
+          "employees:read",
+          "employees:write",
+          "employees:delete",
+          "employees:export",
+          "departments:read",
+          "departments:write",
+          "attendance:read",
+          "attendance:write",
+          "leave:read",
+          "leave:approve",
+          "analytics:read",
+          "audit:read"
+        ],
+        "lastLoginAt": "2026-07-02T17:35:44.464Z",
+        "mfaEnabled": false,
+        "mfaRequiredByPolicy": false
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/settings/notifications/preferences",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "channels": {
+          "in_app": true,
+          "email": true
+        },
+        "events": {
+          "leave_approved": [
+            "in_app",
+            "email"
+          ],
+          "leave_rejected": [
+            "in_app",
+            "email"
+          ],
+          "leave_requested": [
+            "in_app"
+          ],
+          "attendance_regularization": [
+            "in_app",
+            "email"
+          ]
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:34:39.193Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmr3scjxx006ou7x1mghwubzc",
+            "documentType": "OTHER",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/notifications?limit=20",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "notifications": [
+          {
+            "id": "385afcfd15ebe2e9662803dc",
+            "type": "attendance_checkout",
+            "title": "Check-Out Recorded",
+            "body": "HR Admin checked out after 0 minute(s)",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:26.470Z"
+          },
+          {
+            "id": "9328b01d06753efccb5f787d",
+            "type": "attendance_checkin",
+            "title": "Check-In Recorded",
+            "body": "HR Admin checked in",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-07-02T17:28:25.439Z"
+          },
+          {
+            "id": "bcb0435b5192ff92063f1d3f",
+            "type": "leave_withdrawn",
+            "title": "Leave Request Withdrawn",
+            "body": "Arjun Nair has withdrawn their leave request",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:58:09.270Z"
+          },
+          {
+            "id": "fce9a7daa289104eaac10e9a",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "body": "Arjun Nair requested 2 day(s) of Earned Leave",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-28T03:57:21.491Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_1",
+            "type": "info",
+            "title": "Bulk 1",
+            "body": "Message body 1",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T04:04:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_2",
+            "type": "info",
+            "title": "Bulk 2",
+            "body": "Message body 2",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:57:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_3",
+            "type": "info",
+            "title": "Bulk 3",
+            "body": "Message body 3",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:50:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_4",
+            "type": "info",
+            "title": "Bulk 4",
+            "body": "Message body 4",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:43:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_5",
+            "type": "info",
+            "title": "Bulk 5",
+            "body": "Message body 5",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:36:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_6",
+            "type": "info",
+            "title": "Bulk 6",
+            "body": "Message body 6",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:29:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_7",
+            "type": "info",
+            "title": "Bulk 7",
+            "body": "Message body 7",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:22:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_8",
+            "type": "info",
+            "title": "Bulk 8",
+            "body": "Message body 8",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:15:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_9",
+            "type": "info",
+            "title": "Bulk 9",
+            "body": "Message body 9",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:08:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_10",
+            "type": "info",
+            "title": "Bulk 10",
+            "body": "Message body 10",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T03:01:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_11",
+            "type": "info",
+            "title": "Bulk 11",
+            "body": "Message body 11",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:54:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_12",
+            "type": "info",
+            "title": "Bulk 12",
+            "body": "Message body 12",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:47:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_13",
+            "type": "info",
+            "title": "Bulk 13",
+            "body": "Message body 13",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:40:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_14",
+            "type": "info",
+            "title": "Bulk 14",
+            "body": "Message body 14",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:33:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_15",
+            "type": "info",
+            "title": "Bulk 15",
+            "body": "Message body 15",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:26:09.305Z"
+          },
+          {
+            "id": "notifbulk_cmqjpydqj000skpjdp2l6cvg5_16",
+            "type": "info",
+            "title": "Bulk 16",
+            "body": "Message body 16",
+            "entityType": null,
+            "entityId": null,
+            "actionUrl": null,
+            "isRead": true,
+            "createdAt": "2026-06-19T02:19:09.305Z"
+          }
+        ],
+        "unreadCount": 0,
+        "pagination": {
+          "page": 1,
+          "limit": 20,
+          "total": 20009,
+          "pages": 1001
+        }
+      },
+      "meta": {}
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/departments",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "cmqjpydrw001gkpjdh8uedxjx",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Customer Success",
+          "departmentCode": "CUS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.749Z",
+          "updatedAt": "2026-06-18T16:33:22.749Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydr60012kpjd7tl3efld",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Engineering",
+          "departmentCode": "ENG",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.722Z",
+          "updatedAt": "2026-06-18T16:33:22.722Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 14,
+          "_count": {
+            "employees": 14
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfec0003dwad15vby0bp",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Backend Engineering",
+              "departmentCode": "ENG-BE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.852Z",
+              "updatedAt": "2026-06-18T16:33:24.852Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfe80001dwad8gqk1v20",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "Frontend Engineering",
+              "departmentCode": "ENG-FE",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.848Z",
+              "updatedAt": "2026-06-18T16:33:24.848Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfef0005dwad26vgadh9",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydr60012kpjd7tl3efld",
+              "name": "QA & Testing",
+              "departmentCode": "ENG-QA",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.855Z",
+              "updatedAt": "2026-06-18T16:33:24.855Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydrh0018kpjdo5t9ue7b",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Finance",
+          "departmentCode": "FIN",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.733Z",
+          "updatedAt": "2026-06-18T16:33:22.733Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydre0016kpjd8t70672t",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "HR",
+          "departmentCode": "HR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.730Z",
+          "updatedAt": "2026-06-18T16:33:22.730Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrr001ekpjdb0f1229w",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Marketing",
+          "departmentCode": "MAR",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.744Z",
+          "updatedAt": "2026-06-18T16:33:22.744Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrk001akpjdxmb5ai3i",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Operations",
+          "departmentCode": "OPS",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.736Z",
+          "updatedAt": "2026-06-18T16:33:22.736Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 8,
+          "_count": {
+            "employees": 8
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfep000bdwad233917lg",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrk001akpjdxmb5ai3i",
+              "name": "IT Support",
+              "departmentCode": "OPS-IT",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.865Z",
+              "updatedAt": "2026-06-18T16:33:24.865Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "cmqjpydro001ckpjdb1aatiu8",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Product",
+          "departmentCode": "PRO",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.740Z",
+          "updatedAt": "2026-06-18T16:33:22.740Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": []
+        },
+        {
+          "id": "cmqjpydrb0014kpjdiu4yk32p",
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "parentId": null,
+          "name": "Sales",
+          "departmentCode": "SALES",
+          "headEmployeeId": null,
+          "depth": 0,
+          "createdAt": "2026-06-18T16:33:22.727Z",
+          "updatedAt": "2026-06-18T16:33:22.727Z",
+          "deletedAt": null,
+          "headEmployee": null,
+          "directEmployeeCount": 9,
+          "_count": {
+            "employees": 9
+          },
+          "headEmployeeFirstName": null,
+          "headEmployeeLastName": null,
+          "headEmployeeName": null,
+          "children": [
+            {
+              "id": "cmqjpyfej0007dwad5jzaivta",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - North",
+              "departmentCode": "SALES-N",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.859Z",
+              "updatedAt": "2026-06-18T16:33:24.859Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            },
+            {
+              "id": "cmqjpyfem0009dwadbkazwl7a",
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "parentId": "cmqjpydrb0014kpjdiu4yk32p",
+              "name": "Sales - South",
+              "departmentCode": "SALES-S",
+              "headEmployeeId": null,
+              "depth": 1,
+              "createdAt": "2026-06-18T16:33:24.862Z",
+              "updatedAt": "2026-06-18T16:33:24.862Z",
+              "deletedAt": null,
+              "headEmployee": null,
+              "directEmployeeCount": 0,
+              "_count": {
+                "employees": 0
+              },
+              "headEmployeeFirstName": null,
+              "headEmployeeLastName": null,
+              "headEmployeeName": null,
+              "children": []
+            }
+          ]
+        }
+      ],
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh",
+    "method": "PATCH",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:35:56.709Z",
+        "deletedAt": null,
+        "manager": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER"
+        },
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/employees/cmqjpyds0001ikpjd5br3r2uh?includeTerminated=true",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": {
+        "id": "cmqjpyds0001ikpjd5br3r2uh",
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "employeeCode": "E0001",
+        "firstName": "Aman",
+        "lastName": "Kumar",
+        "workEmail": "aman@acme.test",
+        "personalEmail": "aman.kumar@gmail.com",
+        "phone": "+91 98765 43210",
+        "dateOfBirth": "1990-03-15T00:00:00.000Z",
+        "gender": "MALE",
+        "address": "Delhi, India",
+        "emergencyContactName": "Priya Kumar",
+        "emergencyContactPhone": "+91 98765 43215",
+        "designation": "Senior Engineer 2026-07-02",
+        "departmentId": [
+          "cmqjpydr60012kpjd7tl3efld"
+        ],
+        "managerId": null,
+        "joinedOn": "2020-01-15T00:00:00.000Z",
+        "employmentType": "FULL_TIME",
+        "employmentStatus": "ACTIVE",
+        "location": "Delhi",
+        "profilePhotoUrl": null,
+        "payCurrency": "INR",
+        "createdBy": "cmqjpydqj000skpjdp2l6cvg5",
+        "updatedBy": null,
+        "createdAt": "2026-06-18T16:33:22.752Z",
+        "updatedAt": "2026-07-02T17:35:56.709Z",
+        "deletedAt": null,
+        "user": {
+          "email": "aman@acme.test",
+          "memberType": "MANAGER",
+          "status": "ACTIVE",
+          "mfaEnabled": false
+        },
+        "manager": null,
+        "leaveBalances": [
+          {
+            "id": "cmqjpye12005ikpjdj9qcmvik",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydsy001okpjdqd9sxmu5",
+            "balance": 21,
+            "used": 5,
+            "pending": 0,
+            "updatedAt": "2026-07-02T17:34:50.395Z",
+            "leaveType": {
+              "name": "Annual Leave",
+              "code": "ANNUAL"
+            }
+          },
+          {
+            "id": "cmqjpye17005kkpjd0b7udvgq",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt4001qkpjd4x02aijg",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.084Z",
+            "leaveType": {
+              "name": "Sick Leave",
+              "code": "SICK"
+            }
+          },
+          {
+            "id": "cmqjpye1a005mkpjdnl2ky8bj",
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "employeeId": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveTypeId": "cmqjpydt6001skpjdl57rij6k",
+            "balance": 10,
+            "used": 0,
+            "pending": 0,
+            "updatedAt": "2026-06-18T16:33:23.086Z",
+            "leaveType": {
+              "name": "Casual Leave",
+              "code": "CASUAL"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "id": "cmqjpymtq003479i5hvte9i51",
+            "documentType": "OFFER_LETTER",
+            "verificationStatus": "VERIFIED"
+          },
+          {
+            "id": "cmqjpymtt003679i5l9jwbyi5",
+            "documentType": "ID_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmqjpymtv003879i5f5vlwlyb",
+            "documentType": "ADDRESS_PROOF",
+            "verificationStatus": "PENDING"
+          },
+          {
+            "id": "cmr3scjxx006ou7x1mghwubzc",
+            "documentType": "OTHER",
+            "verificationStatus": "PENDING"
+          }
+        ],
+        "department": [
+          {
+            "id": "cmqjpydr60012kpjd7tl3efld",
+            "name": "Engineering"
+          }
+        ]
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  },
+  {
+    "url": "http://localhost:3001/api/leave/types",
+    "method": "GET",
+    "status": 200,
+    "fromServiceWorker": false,
+    "body": {
+      "success": true,
+      "data": [
+        {
+          "id": "EL",
+          "code": "EL",
+          "name": "Earned Leave",
+          "annualAllowance": 18,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        },
+        {
+          "id": "SL",
+          "code": "SL",
+          "name": "Sick Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CL",
+          "code": "CL",
+          "name": "Casual Leave",
+          "annualAllowance": 12,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "CO",
+          "code": "CO",
+          "name": "Comp Off",
+          "annualAllowance": 0,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "PTO",
+          "code": "PTO",
+          "name": "Paid Time Off",
+          "annualAllowance": 15,
+          "carryForwardAllowed": false,
+          "isPaid": true
+        },
+        {
+          "id": "AL",
+          "code": "AL",
+          "name": "Annual Leave",
+          "annualAllowance": 30,
+          "carryForwardAllowed": true,
+          "isPaid": true
+        }
+      ],
+      "meta": {}
+    }
+  }
+]
