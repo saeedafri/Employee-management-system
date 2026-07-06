@@ -1,0 +1,18 @@
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+HR["POST /reports/schedule"] --> SR["ScheduledReport row in DB"]
+    SR --> NOTE["⚠ No in-process cron worker yet"]
+    NOTE --> FUTURE["Future: BullMQ repeatable job reads schedule"]
+    SR --> LIST["GET /reports/scheduled paginated"]
+    LIST --> PATCH["PATCH /reports/scheduled/:id"]
+    PATCH --> SOFT["Soft-disable via isActive flag"]
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class HR client
+    class LIST,PATCH,SOFT api
+    class SR db
+    class FUTURE,NOTE external

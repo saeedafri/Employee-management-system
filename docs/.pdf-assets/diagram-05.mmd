@@ -1,0 +1,27 @@
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+REQ[Incoming Request] --> L1{Layer 1:<br/>Subdomain slug?}
+    L1 -->|acme.yourems.com| SLUG[Lookup Tenant by slug]
+    L1 -->|No subdomain| L2{Layer 2:<br/>X-Tenant-Key header?}
+    L2 -->|Header present| KEY[Lookup Tenant by tenantKey]
+    L2 -->|No header| L3{Layer 3:<br/>JWT tenantId?}
+    L3 -->|Token decoded| JWT[Lookup Tenant by id]
+    L3 -->|No token/tenantId| L4{Layer 4:<br/>DEFAULT_TENANT_KEY?}
+    L4 -->|Env set| DEF[Lookup Tenant by key]
+    L4 -->|None| ERR{Route tenant-optional?}
+    ERR -->|Yes| PASS[Continue without tenant]
+    ERR -->|No| E400[400 MISSING_TENANT]
+    SLUG --> FOUND{Tenant found<br/>and active?}
+    KEY --> FOUND
+    JWT --> FOUND
+    DEF --> FOUND
+    FOUND -->|Yes| SET["request.tenant populated"]
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class REQ client
+    class DEF,FOUND,JWT,KEY,L1,L2,L3,L4,PASS,SET,SLUG api
+    class E400,ERR warn

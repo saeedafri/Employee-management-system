@@ -1,0 +1,23 @@
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+A[Client sends ems_session cookie] --> B[Hash cookie value]
+    B --> C{Match active Session?}
+    C -->|No| D[401 — re-login required]
+    C -->|Yes| E[Generate new refresh token]
+    E --> F[Update session.refreshTokenHash]
+    F --> G[Issue new accessToken JWT]
+    G --> H[Set new httpOnly cookies]
+
+    subgraph Reuse Detection
+        I[Old refresh token presented] --> J{sessionFamilyId match<br/>but hash mismatch?}
+        J -->|Yes| K[Revoke entire session family]
+        K --> L[401 — possible token theft]
+    end
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class C client
+    class A,B,D,E,F,G,H,I,J,K,L api

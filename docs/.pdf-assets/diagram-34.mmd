@@ -1,0 +1,20 @@
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+IN[Incoming request] --> RID[requestId]
+    RID --> COOKIE[cookie parser]
+    COOKIE --> PRISMA[prisma decorator]
+    PRISMA --> CORS["cors: CORS_ORIGIN + credentials"]
+    CORS --> HELMET["helmet CSP disabled for Swagger"]
+    HELMET --> RATE[rateLimit 100/15m]
+    RATE --> MULTI[multipart 10MB]
+    MULTI --> LOG[requestLogging hook]
+    LOG --> RT[resolveTenant on /api/v1]
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class IN client
+    class COOKIE,CORS,HELMET,LOG,MULTI,RATE,RID,RT api
+    class PRISMA db

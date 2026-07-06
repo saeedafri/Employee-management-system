@@ -1,0 +1,29 @@
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+START([HTTP Request]) --> GLOBAL[Global plugins:<br/>requestId → cookie → prisma → cors → helmet → rateLimit → multipart]
+    GLOBAL --> PREFIX{Path starts with /api/v1?}
+    PREFIX -->|No| HEALTH["health healthz docs - no tenant hook"]
+    PREFIX -->|Yes| RT[onRequest: resolveTenant]
+
+    RT --> TENANT{request.tenant set<br/>or route tenant-optional?}
+    TENANT -->|Missing tenant on protected route| E400[400 MISSING_TENANT]
+    TENANT -->|OK| ROUTE[Route handler registration]
+
+    ROUTE --> AUTHZ{Route defines onRequest?}
+    AUTHZ -->|None| HANDLER[Controller]
+    AUTHZ -->|authenticate only| AUTH[authenticate JWT + session check]
+    AUTHZ -->|authenticate + authorize| AUTH --> ROLE{memberType in roles<br/>or SUPER_ADMIN?}
+    ROLE -->|No| E403[403 FORBIDDEN]
+    ROLE -->|Yes| HANDLER
+    AUTH -->|Invalid token| E401[401 UNAUTHORIZED]
+
+    HANDLER --> SVC[Service → Repository → Prisma]
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class PREFIX,START client
+    class AUTH,AUTHZ,GLOBAL,HANDLER,HEALTH,ROLE,ROUTE,RT,SVC,TENANT api
+    class E400,E401,E403 warn

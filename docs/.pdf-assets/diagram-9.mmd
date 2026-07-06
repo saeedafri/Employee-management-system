@@ -1,0 +1,17 @@
+erDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#fff3e0', 'primaryTextColor': '#e65100', 'lineColor': '#1976d2'}}}%%
+Tenant ||--o{ User : has
+    Tenant ||--o{ Employee : has
+    Tenant ||--o{ Department : has
+    User |o--o| Employee : "1:1 optional"
+    Employee }o--|| Department : belongs_to
+    Employee |o--o| Employee : "manager hierarchy"
+    User ||--o{ Session : has
+    Employee ||--o{ AttendanceRecord : has
+    Employee ||--o{ LeaveRequest : submits
+    Employee ||--o{ EmployeeSalary : has
+    PayGroup ||--o{ PayGroupComponent : contains
+    PayGroup ||--o{ EmployeeSalary : assigns
+    PayrollRun ||--o{ Payslip : generates
+    StatutoryPack ||--o{ LegalEntity : configures
+    Tenant ||--o{ StatutoryPack : owns

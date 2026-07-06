@@ -1,0 +1,48 @@
+flowchart TB
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+subgraph Clients["🔵 Clients"]
+        FE[Next.js Frontend]
+        SW[Swagger / Postman]
+        MOB[Mobile / Integrations]
+    end
+
+    subgraph Edge["Edge Layer (Hostinger VPS)"]
+        NGINX[nginx<br/>TLS :443 → :4001<br/>ems-api.saqibsaeed.cloud]
+    end
+
+    subgraph App["🟢 Application Layer"]
+        FAST[Fastify v4<br/>Node.js 20]
+        MW[Middleware Chain]
+        MOD[Domain Modules]
+        REDIS[(Redis BullMQ + cache)]
+    end
+
+    subgraph Data["🟠 Data Layer"]
+        PRISMA[Prisma ORM v5]
+        PG[(PostgreSQL 18)]
+    end
+
+    subgraph External["🟣 External Services"]
+        RESEND[Resend Email API]
+        CLD[Cloudinary CDN]
+    end
+
+    FE --> NGINX
+    SW --> NGINX
+    MOB --> NGINX
+    NGINX --> FAST
+    FAST --> MW --> MOD
+    MOD --> PRISMA --> PG
+    MOD --> REDIS
+    MOD --> RESEND
+    MOD --> CLD
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class FE,MOB,SW client
+    class App,Clients,Data,Edge,External,FAST,Layer,MOD,MW,NGINX api
+    class PG,PRISMA db
+    class CLD,REDIS,RESEND external

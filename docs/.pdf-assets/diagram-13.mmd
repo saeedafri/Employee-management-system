@@ -1,0 +1,19 @@
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant C as Client
+    participant API as EMS API
+    participant SH as sharp
+    participant CL as Cloudinary
+
+    C->>API: POST /employees/:id/documents (multipart)
+    API->>API: authenticate + authorize
+    API->>API: isCloudinaryConfigured()?
+    alt Not configured
+        API-->>C: 503 STORAGE_NOT_CONFIGURED
+    end
+    API->>SH: Convert image → WebP (quality 90)
+    SH-->>API: webpBuffer
+    API->>CL: upload_stream(folder, publicId)
+    CL-->>API: secure_url, publicId
+    API->>API: Save EmployeeDocument metadata
+    API-->>C: 201 {fileUrl, ...}

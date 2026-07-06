@@ -1,0 +1,35 @@
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant C as Client
+    participant N as nginx
+    participant F as Fastify
+    participant RT as resolveTenant
+    participant AU as authenticate
+    participant AZ as authorize
+    participant CT as Controller
+    participant SV as Service
+    participant RP as Repository
+    participant DB as PostgreSQL
+
+    C->>N: HTTPS request
+    N->>F: Proxy to Node :3000
+    F->>F: requestId, CORS, helmet, rateLimit
+    F->>F: JSON body parser (tolerant empty body)
+    F->>RT: onRequest hook
+    RT->>DB: Lookup Tenant (if identifier present)
+    RT-->>F: request.tenant populated
+    F->>AU: Route-level onRequest (protected routes)
+    AU->>DB: Verify session not revoked
+    AU-->>F: request.user populated
+    F->>AZ: authorize(roles[]) if configured
+    AZ-->>F: 403 or continue
+    F->>CT: Route handler
+    CT->>SV: Business logic
+    SV->>RP: Data access
+    RP->>DB: Prisma query
+    DB-->>RP: Result
+    RP-->>SV: Domain object
+    SV-->>CT: Response DTO
+    CT-->>F: successResponse() envelope
+    F-->>N: JSON response
+    N-->>C: HTTPS response

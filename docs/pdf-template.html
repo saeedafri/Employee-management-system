@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>EMS Backend — Technical Documentation v3</title>
+  <style>
+    @page { size: A4; margin: 18mm 14mm 20mm 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-size: 10.5pt; line-height: 1.55; color: #1e293b;
+      margin: 0; padding: 0 6mm;
+    }
+
+    /* Cover — single page, no trailing blank */
+    .cover {
+      text-align: center;
+      height: 100vh;
+      max-height: 257mm;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      page-break-after: always;
+      break-after: page;
+    }
+    .cover h1 { font-size: 30pt; color: #0f172a; margin: 0 0 8pt; border: none; }
+    .cover .subtitle { font-size: 13pt; color: #475569; margin-bottom: 24pt; }
+    .cover .version-badge {
+      display: inline-block; background: #e3f2fd; color: #1565c0;
+      padding: 4pt 14pt; border-radius: 20pt; font-weight: 600; font-size: 10pt;
+      margin-bottom: 28pt;
+    }
+    .cover table { margin: 0 auto; font-size: 10.5pt; border-collapse: collapse; }
+    .cover td { padding: 5pt 14pt; text-align: left; border: none; }
+    .cover td:first-child { font-weight: 600; color: #64748b; width: 120pt; }
+    .cover .legend {
+      margin-top: 32pt; font-size: 9.5pt; color: #64748b;
+    }
+    .cover .legend span { display: inline-block; margin: 0 8pt; padding: 2pt 8pt; border-radius: 4pt; }
+    .legend-ui { background: #e3f2fd; color: #1565c0; }
+    .legend-bff { background: #e8f5e9; color: #2e7d32; }
+    .legend-api { background: #fff3e0; color: #ef6c00; }
+    .legend-state { background: #f3e5f5; color: #7b1fa2; }
+
+    /* Typography */
+    h1 { font-size: 17pt; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 5pt; margin: 22pt 0 10pt; page-break-after: avoid; }
+    h2 { font-size: 13pt; color: #1e40af; margin: 18pt 0 8pt; page-break-after: avoid; border-left: 4px solid #3b82f6; padding-left: 8pt; }
+    h3 { font-size: 11pt; color: #334155; margin: 14pt 0 6pt; page-break-after: avoid; }
+    h4 { font-size: 10pt; color: #475569; margin: 10pt 0 4pt; page-break-after: avoid; }
+
+    /* Page breaks — only when explicitly marked */
+    .page-break-before { page-break-before: always; break-before: page; height: 0; margin: 0; padding: 0; }
+    .section-divider { border: none; border-top: 2px solid #e2e8f0; margin: 20pt 0; }
+
+    /* Callout boxes */
+    .callout-simple {
+      background: #f8fafc; border-left: 4px solid #6366f1;
+      padding: 8pt 12pt; margin: 10pt 0 12pt; border-radius: 0 6pt 6pt 0;
+      font-size: 10pt;
+    }
+    .callout-what {
+      background: #e3f2fd; border-left: 4px solid #1976d2;
+      padding: 6pt 12pt; margin: 6pt 0; border-radius: 0 4pt 4pt 0; font-size: 9.5pt;
+    }
+    .callout-why {
+      background: #e8f5e9; border-left: 4px solid #388e3c;
+      padding: 6pt 12pt; margin: 6pt 0; border-radius: 0 4pt 4pt 0; font-size: 9.5pt;
+    }
+    .callout-how {
+      background: #fff3e0; border-left: 4px solid #f57c00;
+      padding: 6pt 12pt; margin: 6pt 0 12pt; border-radius: 0 4pt 4pt 0; font-size: 9.5pt;
+    }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin: 10pt 0; }
+    th { background: #f1f5f9; font-weight: 600; padding: 5pt 7pt; border: 1px solid #cbd5e1; text-align: left; }
+    td { padding: 4pt 7pt; border: 1px solid #e2e8f0; vertical-align: top; }
+    tbody tr:nth-child(even) td { background: #f8fafc; }
+    tbody tr:nth-child(odd) td { background: #ffffff; }
+
+    /* Code */
+    code { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 8.5pt; background: #f1f5f9; padding: 1pt 4pt; border-radius: 3pt; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 10pt; border-radius: 6pt; font-size: 7.5pt; overflow-x: auto; page-break-inside: avoid; margin: 10pt 0; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+
+    /* Diagrams */
+    figure.diagram { margin: 12pt 0; page-break-inside: avoid; text-align: center; }
+    figure.diagram img { max-width: 100%; height: auto; }
+
+    /* Legacy blockquote fallback */
+    blockquote { border-left: 3px solid #3b82f6; margin: 10pt 0; padding: 6pt 12pt; background: #eff6ff; color: #1e40af; font-size: 9.5pt; }
+
+    /* TOC — pandoc generates <nav id="TOC"> with href="#heading-id" links */
+    #TOC { page-break-after: always; break-after: page; margin: 0 0 18pt; }
+    #TOC > h2#toc-title {
+      font-size: 17pt; color: #0f172a; border-bottom: 2px solid #3b82f6;
+      padding-bottom: 5pt; margin: 0 0 12pt; page-break-after: avoid;
+    }
+    #TOC ul { list-style: none; padding-left: 0; margin: 0; }
+    #TOC > ul { padding-left: 0; }
+    #TOC ul ul { padding-left: 16pt; margin-top: 2pt; }
+    #TOC a { text-decoration: none; color: #1e40af; }
+    #TOC a:hover { text-decoration: underline; }
+    #TOC li { margin: 4pt 0; font-size: 10pt; line-height: 1.4; }
+
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 14pt 0; }
+
+    /* Prevent empty pages from orphaned breaks */
+    p:empty, div:empty:not(.page-break-before) { display: none; }
+  </style>
+</head>
+<body>
+<div class="cover">
+  <div class="version-badge">v3.0 · July 2026</div>
+  <h1>EMS Backend</h1>
+  <div class="subtitle">Technical Documentation</div>
+  <p style="color:#64748b;font-size:11pt;margin:0 0 28pt;">Employee Management System · REST API · Hostinger Production</p>
+  <table>
+    <tr><td>Version</td><td>3.0</td></tr>
+    <tr><td>Repository</td><td>Employee-management-system</td></tr>
+    <tr><td>Runtime</td><td>Node.js 20+ · Fastify 4 · Prisma 5</td></tr>
+    <tr><td>Primary API</td><td>ems-api.saqibsaeed.cloud</td></tr>
+    <tr><td>Database</td><td>PostgreSQL (Hostinger VPS)</td></tr>
+    <tr><td>Audience</td><td>Backend engineers, architects, DevOps</td></tr>
+  </table>
+  <div class="legend">
+    <span class="legend-ui">Client (blue)</span>
+    <span class="legend-bff">API (green)</span>
+    <span class="legend-api">Database (orange)</span>
+    <span class="legend-state">External (purple)</span>
+  </div>
+</div>
+$if(toc)$
+<nav id="TOC" role="doc-toc">
+$if(toc-title)$
+<h2 id="toc-title">$toc-title$</h2>
+$endif$
+$toc$
+</nav>
+$endif$
+$body$
+</body>
+</html>

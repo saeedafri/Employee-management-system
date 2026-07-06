@@ -1,0 +1,11 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#e3f2fd",
+    "primaryTextColor": "#1565c0",
+    "lineColor": "#1976d2",
+    "actorBkg": "#e8f5e9",
+    "actorTextColor": "#1b5e20",
+    "actorLineColor": "#2e7d32"
+  }
+}

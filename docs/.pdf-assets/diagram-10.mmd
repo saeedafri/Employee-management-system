@@ -1,0 +1,26 @@
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+START[HR creates PayrollRun<br/>status: DRAFT] --> SELECT[Select pay group + period]
+    SELECT --> CALC[POST calculate<br/>status: CALCULATING]
+
+    CALC --> LOOP{For each active<br/>employee in pay group}
+    LOOP --> PACK[Resolve StatutoryPack<br/>by legal entity / country / date]
+    PACK --> COMP[Build salary components<br/>FLAT / PERCENTAGE / FORMULA]
+    COMP --> PRORATE[Prorate for partial periods<br/>join/leave dates]
+    PRORATE --> STAT[computeStatutoryContributions<br/>PF, ESI, tax slabs]
+    STAT --> TAX[computeIncomeTaxFromRegime<br/>old/new regime India]
+    TAX --> DED[Apply loans, garnishments,<br/>reimbursements, inputs]
+    DED --> SLIP[Create Payslip record]
+    SLIP --> LOOP
+
+    LOOP -->|Done| REVIEW[status: REVIEW]
+    REVIEW --> APPROVE[HR approves → APPROVED]
+    APPROVE --> PAID[Mark PAID + payment batch]
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class START client
+    class APPROVE,CALC,COMP,DED,LOOP,PACK,PAID,PRORATE,REVIEW,SELECT,SLIP,STAT,TAX api

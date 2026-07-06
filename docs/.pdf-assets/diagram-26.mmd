@@ -1,0 +1,20 @@
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant E as Employee
+    participant API as Attendance API
+    participant DB as PostgreSQL
+    participant M as Manager
+
+    E->>API: ① POST /attendance/check-in
+    API->>DB: Upsert AttendanceRecord (workMode, location)
+    API-->>E: 200 checkInAt
+
+    E->>API: ② POST /attendance/check-out
+    API->>DB: Set checkOutAt, durationMinutes
+    API-->>E: 200 summary
+
+    Note over E,M: Missed punch path
+    E->>API: ③ POST /attendance/regularization
+    API->>DB: AttendanceRegularizationRequest PENDING
+    M->>API: ④ PATCH .../approve
+    API->>DB: Update record + request APPROVED

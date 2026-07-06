@@ -1,0 +1,53 @@
+/* Mermaid PDF theme — EMS Backend v3 color legend */
+.node rect,
+.node circle,
+.node ellipse,
+.node polygon,
+.node path {
+  stroke-width: 2px !important;
+}
+
+.node.client rect,
+.node.client circle,
+.node.client ellipse,
+.node.client polygon {
+  fill: #e3f2fd !important;
+  stroke: #1565c0 !important;
+  color: #0d47a1 !important;
+}
+
+.node.api rect,
+.node.api circle,
+.node.api ellipse,
+.node.api polygon {
+  fill: #e8f5e9 !important;
+  stroke: #2e7d32 !important;
+  color: #1b5e20 !important;
+}
+
+.node.db rect,
+.node.db circle,
+.node.db ellipse,
+.node.db polygon {
+  fill: #fff3e0 !important;
+  stroke: #ef6c00 !important;
+  color: #e65100 !important;
+}
+
+.node.external rect,
+.node.external circle,
+.node.external ellipse,
+.node.external polygon {
+  fill: #f3e5f5 !important;
+  stroke: #7b1fa2 !important;
+  color: #4a148c !important;
+}
+
+.node.warn rect,
+.node.warn circle,
+.node.warn ellipse,
+.node.warn polygon {
+  fill: #ffebee !important;
+  stroke: #c62828 !important;
+  color: #b71c1c !important;
+}

@@ -1,0 +1,39 @@
+flowchart TB
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+subgraph Internet
+        DNS["DNS ems-api.saqibsaeed.cloud → 31.97.186.223"]
+        GHA["GitHub Actions deploy-hostinger.yml"]
+        DEV["Developer SSH tunnel"]
+    end
+
+    subgraph VPS["Hostinger VPS srv1067327 — SHARED with rentocloud"]
+        NGINX["nginx :443 TLS termination<br/>ems-api.saqibsaeed.cloud"]
+        subgraph DockerEMS["Docker Compose /opt/ems"]
+            BE["ems-backend container<br/>Node 20 Fastify<br/>127.0.0.1:4001"]
+            PG["ems-postgres postgres:16<br/>127.0.0.1:5432"]
+            RD["ems-redis redis:7-alpine<br/>127.0.0.1:6379"]
+        end
+        subgraph Rentocloud["⚠ rentocloud — DO NOT TOUCH"]
+            PM2["PM2 :3000 / :4000"]
+            RAPI["api.rentocloud.com vhosts"]
+        end
+        BACKUP["/opt/ems/backups pg_dump"]
+    end
+
+    DNS --> NGINX
+    NGINX -->|proxy_pass| BE
+    BE --> PG
+    BE --> RD
+    GHA -->|SSH| VPS
+    DEV -->|SSH -L 15432:5432 -L 16379:6379| PG
+    DEV --> RD
+    GHA --> BACKUP
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class BE,DockerEMS,NGINX,PM2,RAPI,Rentocloud,VPS api
+    class BACKUP,PG db
+    class DEV,DNS,GHA,RD external

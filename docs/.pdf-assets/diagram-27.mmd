@@ -1,0 +1,8 @@
+stateDiagram-v2
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e8f5e9', 'primaryTextColor': '#1b5e20', 'lineColor': '#1976d2'}}}%%
+[*] --> DRAFT: Week created
+    DRAFT --> SUBMITTED: Employee submit
+    SUBMITTED --> APPROVED: Manager approve
+    SUBMITTED --> REJECTED: Manager reject
+    REJECTED --> DRAFT: Resubmit
+    SUBMITTED --> DRAFT: Employee recall

@@ -1,0 +1,31 @@
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant U as User
+    participant API as EMS API
+    participant DB as PostgreSQL
+    participant Email as Resend
+
+    U->>API: POST /auth/login {email, password}
+    API->>DB: Resolve tenant + validate credentials
+
+    alt MFA required (policy or user.mfaEnabled)
+        API->>Email: Send OTP
+        API-->>U: 202 {mfaRequired, challengeId}
+        U->>API: POST /auth/verify-otp {challengeId, code}
+        API->>DB: Validate OTP challenge
+    end
+
+    API->>DB: Create Session (refresh token hash, familyId)
+    API->>API: Sign JWT access token (15m)
+    API-->>U: 200 {accessToken, user} + httpOnly cookies
+    Note over U,API: accessToken cookie (15m)<br/>ems_session cookie (30d refresh)
+
+    U->>API: Protected request (cookie auto-sent)
+    API->>API: authenticate() — verify JWT + session not revoked
+    API->>API: authorize(roles) — check memberType
+    API-->>U: 200 response
+
+    Note over U,API: Token refresh
+    U->>API: POST /auth/refresh (ems_session cookie)
+    API->>DB: Validate refresh hash, rotate token
+    API-->>U: New accessToken + rotated refresh cookie

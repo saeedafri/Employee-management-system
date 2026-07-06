@@ -1,0 +1,22 @@
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant FE as Frontend
+    participant API as GET /notifications/stream
+    participant SSE as sseClients Map
+    participant DB as PostgreSQL
+
+    FE->>API: ?token=<accessToken>
+    API->>API: verifyToken(token) → userId
+    API-->>FE: 200 text/event-stream
+    API->>SSE: addClient(userId, reply)
+
+    loop Every 25s
+        API-->>FE: : heartbeat
+    end
+
+    Note over API,DB: On notification create
+    API->>SSE: broadcast to userId clients
+    SSE-->>FE: data: {notification JSON}
+
+    FE->>API: Connection close
+    API->>SSE: removeClient(userId, reply)
