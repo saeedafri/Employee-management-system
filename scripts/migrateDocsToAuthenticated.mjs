@@ -10,8 +10,7 @@
 //   node scripts/migrateDocsToAuthenticated.mjs                 # migrate all
 //   node scripts/migrateDocsToAuthenticated.mjs --revert        # roll back to public
 import { prisma } from '../src/plugins/prisma.js';
-import { moveToAuthenticated } from '../src/utils/cloudinary.js';
-import { v2 as cloudinary } from 'cloudinary';
+import { changeDeliveryType } from '../src/utils/cloudinary.js';
 
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
@@ -48,7 +47,7 @@ async function main() {
     const to = revert ? 'upload' : 'authenticated';
     if (dryRun) { console.log(`  DRY  ${d.documentType} ${resourceType} ${publicId}  ${from}->${to}`); done++; continue; }
     try {
-      await cloudinary.uploader.rename(publicId, publicId, { resource_type: resourceType, type: from, to_type: to, overwrite: true, invalidate: true });
+      await changeDeliveryType({ publicId, resourceType, from, to });
       await prisma.employeeDocument.update({ where: { id: d.id }, data: { storageKey: publicId } });
       console.log(`  OK   ${d.documentType} ${resourceType} ${publicId}  ${from}->${to}`);
       done++;
@@ -64,5 +63,3 @@ async function main() {
 }
 
 main().catch(async (e) => { console.error(e); await prisma.$disconnect(); process.exit(1); });
-// moveToAuthenticated kept imported for callers that prefer the helper over inline rename.
-void moveToAuthenticated;

@@ -75,17 +75,18 @@ export function getSignedDocumentUrl({ storageKey, mimeType, expiresInSec = 300 
 }
 
 /**
- * Migrate an existing public ('upload') asset to access-controlled
- * ('authenticated') delivery, keeping the same public_id. Idempotent-ish:
- * a second run for an already-authenticated asset throws "not found" which the
- * caller should treat as already-migrated. Reversible by swapping type/to_type.
+ * Change an asset's Cloudinary delivery type in place (same public_id).
+ * Default moves public 'upload' -> access-controlled 'authenticated'; pass
+ * from/to swapped to revert. Calls ensureConfigured() so the SDK always has
+ * credentials. Idempotent-ish: renaming an asset already at `to` throws
+ * "not found", which callers treat as already-migrated. Reversible.
  */
-export async function moveToAuthenticated({ publicId, resourceType = 'raw' }) {
+export async function changeDeliveryType({ publicId, resourceType = 'raw', from = 'upload', to = 'authenticated' }) {
   ensureConfigured();
   return cloudinary.uploader.rename(publicId, publicId, {
     resource_type: resourceType,
-    type: 'upload',
-    to_type: 'authenticated',
+    type: from,
+    to_type: to,
     overwrite: true,
     invalidate: true,
   });
