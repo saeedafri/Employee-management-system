@@ -86,6 +86,38 @@ export default async function announcementsRoutes(fastify) {
     onRequest: [authenticate, authorize(HR_MANAGER)],
   }, controller.createAnnouncement);
 
+  fastify.patch('/announcements/:id', {
+    schema: {
+      tags: ['Announcements'],
+      summary: 'Edit an announcement (title/body/category/channelId/audience)',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          body: { type: 'string' },
+          category: { type: 'string' },
+          channelId: { type: 'string' },
+          audience: { type: 'string' },
+        },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(HR_MANAGER)],
+  }, controller.updateAnnouncement);
+
+  fastify.delete('/announcements/:id', {
+    schema: {
+      tags: ['Announcements'],
+      summary: 'Delete an announcement',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, authorize(HR_ONLY)],
+  }, controller.deleteAnnouncement);
+
   fastify.patch('/announcements/:id/pin', {
     schema: {
       tags: ['Announcements'],

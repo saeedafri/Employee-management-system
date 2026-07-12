@@ -138,6 +138,33 @@ export async function createAnnouncement(tenantId, userRole, data) {
   return shapeAnnouncement(ann);
 }
 
+const EDITABLE_FIELDS = ['title', 'body', 'category', 'channelId', 'audience'];
+
+export async function updateAnnouncement(tenantId, id, data) {
+  const ann = await repo.getAnnouncementById(tenantId, id);
+  if (!ann) {
+    const err = new Error('Announcement not found');
+    err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
+  }
+  const patch = {};
+  for (const f of EDITABLE_FIELDS) {
+    if (data[f] !== undefined) patch[f] = data[f];
+  }
+  if (Object.keys(patch).length === 0) return shapeAnnouncement(ann);
+  const updated = await repo.updateAnnouncement(id, patch);
+  return shapeAnnouncement(updated);
+}
+
+export async function deleteAnnouncement(tenantId, id) {
+  const ann = await repo.getAnnouncementById(tenantId, id);
+  if (!ann) {
+    const err = new Error('Announcement not found');
+    err.code = 'NOT_FOUND'; err.statusCode = 404; throw err;
+  }
+  await repo.deleteAnnouncement(id);
+  return { deleted: true };
+}
+
 export async function pinAnnouncement(tenantId, id) {
   const ann = await repo.getAnnouncementById(tenantId, id);
   if (!ann) {

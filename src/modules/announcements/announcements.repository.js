@@ -59,6 +59,10 @@ export async function updateAnnouncement(id, data) {
   return prisma.announcement.update({ where: { id }, data });
 }
 
+export async function deleteAnnouncement(id) {
+  return prisma.announcement.delete({ where: { id } });
+}
+
 export async function getChannelById(tenantId, id) {
   return prisma.announcementChannel.findFirst({ where: { id, tenantId } });
 }
