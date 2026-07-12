@@ -9,6 +9,30 @@ class AppError extends Error {
   }
 }
 
+/**
+ * Normalize an audit-log value column for API output.
+ *
+ * `oldValuesJson` / `newValuesJson` are Prisma `Json?` columns, so Prisma
+ * returns them already deserialized (object / array / scalar). Calling
+ * JSON.parse() on an object coerces it to the string "[object Object]" and
+ * throws SyntaxError — which used to 500 the whole export the moment a single
+ * non-null row appeared (BE-API-1). Legacy rows written via JSON.stringify are
+ * instead stored as a JSON-string scalar, so we still parse strings when we can.
+ * Never throws: a value that can't be parsed is returned as-is.
+ */
+export function normalizeAuditJson(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'object') return value; // already-parsed Json column
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value; // legacy / non-JSON string — surface raw rather than crash
+    }
+  }
+  return value; // number / boolean scalar
+}
+
 export async function getAuditLogs(tenantId, page, limit, filters) {
   const { logs, total } = await auditLogsRepository.getAuditLogs(
     tenantId,
@@ -31,8 +55,8 @@ export async function getAuditLogs(tenantId, page, limit, filters) {
       action: log.action,
       entity_type: log.entityType,
       entity_id: log.entityId,
-      old_value: log.oldValuesJson ? JSON.parse(log.oldValuesJson) : null,
-      new_value: log.newValuesJson ? JSON.parse(log.newValuesJson) : null,
+      old_value: normalizeAuditJson(log.oldValuesJson),
+      new_value: normalizeAuditJson(log.newValuesJson),
       ip_address: log.ipAddress,
       user_agent: log.userAgent,
       created_at: log.createdAt,
@@ -54,8 +78,8 @@ export async function getAuditLogById(id, tenantId) {
     action: log.action,
     entity_type: log.entityType,
     entity_id: log.entityId,
-    old_value: log.oldValuesJson ? JSON.parse(log.oldValuesJson) : null,
-    new_value: log.newValuesJson ? JSON.parse(log.newValuesJson) : null,
+    old_value: normalizeAuditJson(log.oldValuesJson),
+    new_value: normalizeAuditJson(log.newValuesJson),
     ip_address: log.ipAddress,
     user_agent: log.userAgent,
     created_at: log.createdAt,
