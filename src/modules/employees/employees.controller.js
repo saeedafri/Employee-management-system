@@ -210,7 +210,11 @@ export async function uploadDocument(request, reply) {
         employee: { connect: { id: employeeId } },
         documentType,
         fileName: uploadFileName,
-        fileUrl: uploaded.url,
+        // Do NOT persist a working delivery URL: an authenticated upload's
+        // secure_url is signed but non-expiring, so storing it would re-create a
+        // permanent link (BE-SEC-1). Downloads mint a short-lived signed URL from
+        // storageKey at request time instead.
+        fileUrl: '',
         storageKey: uploaded.publicId,
         mimeType: uploadMimeType,
         sizeBytes: uploaded.bytes,
@@ -249,7 +253,13 @@ export async function listDocuments(request, reply) {
       where: { tenantId, employeeId },
       orderBy: { createdAt: 'desc' },
     });
-    reply.code(200).send({ success: true, data: docs });
+    // fileUrl is intentionally not a working link (BE-SEC-1); expose the
+    // request-time signed download endpoint the FE should use instead.
+    const withDownload = docs.map((d) => ({
+      ...d,
+      downloadUrl: `/api/v1/employees/${employeeId}/documents/${d.id}/download`,
+    }));
+    reply.code(200).send({ success: true, data: withDownload });
   } catch (err) {
     reply.code(500).send(errorResponse('QUERY_ERROR', err.message, request.requestId));
   }
