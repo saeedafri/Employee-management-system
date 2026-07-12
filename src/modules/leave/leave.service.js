@@ -107,11 +107,19 @@ class AppError extends Error {
   }
 }
 
-function calculateTotalDays(startDate, endDate) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const diffTime = Math.abs(end - start);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+// BE-PAY-2: count only CHARGEABLE days — working days in [start,end] excluding
+// weekly-offs and holidays. Pure; shared by createLeaveRequest and the preview so
+// the number charged on submit equals what preview showed. (Raw calendar days used
+// to over-charge: a Mon–Fri span with one holiday deducted 5 not 4; Fri→Mon 4 not 2.)
+export function chargeableDaysBetween(startDate, endDate, workWeekDays, holidayYmdSet) {
+  const workSet = new Set(workWeekDays);
+  let n = 0;
+  for (const d of eachDayUTC(startDate, endDate)) {
+    if (!workSet.has(d.getUTCDay())) continue;              // weekly-off
+    if (holidayYmdSet.has(d.toISOString().slice(0, 10))) continue; // holiday
+    n += 1;
+  }
+  return n;
 }
 
 // Resolve the submitted leaveTypeId to a concrete legacy LeaveType row id (needed for
@@ -149,7 +157,19 @@ export async function createLeaveRequest(tenantId, employeeId, {
     throw new AppError('Leave type not found', 'LEAVE_TYPE_NOT_FOUND', 404);
   }
 
-  const totalDays = calculateTotalDays(startDate, endDate);
+  // BE-PAY-2: charge only working, non-holiday days — same resolver the preview,
+  // calendar, and payroll use, so submit == preview == what payroll counts.
+  const { dates: holidaySet, workWeekDays } = await resolveHolidayDateSet(prisma, tenantId, {
+    employeeId, from: startDate, to: endDate,
+  });
+  const totalDays = chargeableDaysBetween(startDate, endDate, workWeekDays, holidaySet);
+  if (totalDays <= 0) {
+    throw new AppError(
+      'Selected dates contain no chargeable working days (all weekly-offs/holidays)',
+      'NO_CHARGEABLE_DAYS',
+      400,
+    );
+  }
 
   // Balance check — engine ledger (source of truth for /leave/balance) for policy types,
   // legacy LeaveBalance rows otherwise.
