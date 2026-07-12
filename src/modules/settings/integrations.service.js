@@ -2,6 +2,7 @@ import { config } from '../../config/index.js';
 import { prisma } from '../../plugins/prisma.js';
 import { generateId } from '../../utils/id.js';
 import { isCloudinaryConfigured } from '../../utils/cloudinary.js';
+import { assertSafeWebhookUrl } from '../../utils/ssrfGuard.js';
 
 const SETTING_GROUP = 'integrations';
 
@@ -206,6 +207,7 @@ export async function listWebhooks(tenantId) {
 }
 
 export async function createWebhook(tenantId, data) {
+  await assertSafeWebhookUrl(data.url); // BE-SEC-6: block SSRF targets
   const { webhooks } = await listWebhooks(tenantId);
   const webhook = {
     id: generateId(),
@@ -225,6 +227,7 @@ export async function createWebhook(tenantId, data) {
 }
 
 export async function updateWebhook(tenantId, id, data) {
+  if (data.url !== undefined) await assertSafeWebhookUrl(data.url); // BE-SEC-6
   const current = await listWebhooks(tenantId);
   const idx = current.webhooks.findIndex((w) => w.id === id);
   if (idx === -1) return null;
