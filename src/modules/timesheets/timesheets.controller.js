@@ -126,7 +126,8 @@ export async function submitTimesheet(request, reply) {
 export async function approveTimesheet(request, reply) {
   try {
     const { comment } = request.body || {};
-    const sheet = await service.approveTimesheet(request.tenant.id, request.params.id, request.user.employeeId, comment);
+    const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
+    const sheet = await service.approveTimesheet(request.tenant.id, request.params.id, actor, comment);
     if (!sheet) return reply.code(404).send(errorResponse('NOT_FOUND', 'Timesheet not found', {}, request.id));
     return reply.send(successResponse(sheet));
   } catch (err) {
@@ -138,7 +139,8 @@ export async function approveTimesheet(request, reply) {
 export async function rejectTimesheet(request, reply) {
   try {
     const { comment } = request.body || {};
-    const sheet = await service.rejectTimesheet(request.tenant.id, request.params.id, request.user.employeeId, comment);
+    const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
+    const sheet = await service.rejectTimesheet(request.tenant.id, request.params.id, actor, comment);
     if (!sheet) return reply.code(404).send(errorResponse('NOT_FOUND', 'Timesheet not found', {}, request.id));
     return reply.send(successResponse(sheet));
   } catch (err) {

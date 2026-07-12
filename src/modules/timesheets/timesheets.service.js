@@ -1,5 +1,6 @@
 import * as repo from './timesheets.repository.js';
 import { prisma } from '../../plugins/prisma.js';
+import { assertCanApprove } from '../../utils/approvalGuard.js';
 import {
   normalizeTaskId,
   uniqueCopyRows,
@@ -305,9 +306,11 @@ export async function recallTimesheet(tenantId, id, employeeId) {
   return fmtSheet(updated, settings);
 }
 
-export async function approveTimesheet(tenantId, id, decidedBy, comment) {
+export async function approveTimesheet(tenantId, id, actor, comment) {
   const sheet = await repo.getTimesheetById(id, tenantId);
   if (!sheet) return null;
+  // BE-SEC-3: only the subject's direct manager or HR/SA may decide; no self-approval.
+  await assertCanApprove(prisma, tenantId, actor, sheet.employeeId);
   if (sheet.status !== 'SUBMITTED') {
     const err = new Error('Only submitted weeks can be approved.');
     err.statusCode = 422;
@@ -316,13 +319,15 @@ export async function approveTimesheet(tenantId, id, decidedBy, comment) {
   }
   const settings = await repo.getSettings(tenantId);
   // Approval comment is optional; trim to null so blanks aren't stored (matches the mock).
-  const updated = await repo.decideTimesheet(id, 'APPROVED', decidedBy, comment?.trim() || null);
+  const updated = await repo.decideTimesheet(id, 'APPROVED', actor.employeeId, comment?.trim() || null);
   return fmtSheet(updated, settings);
 }
 
-export async function rejectTimesheet(tenantId, id, decidedBy, comment) {
+export async function rejectTimesheet(tenantId, id, actor, comment) {
   const sheet = await repo.getTimesheetById(id, tenantId);
   if (!sheet) return null;
+  // BE-SEC-3: only the subject's direct manager or HR/SA may decide; no self-approval.
+  await assertCanApprove(prisma, tenantId, actor, sheet.employeeId);
   if (sheet.status !== 'SUBMITTED') {
     const err = new Error('Only submitted weeks can be rejected.');
     err.statusCode = 422;
@@ -337,7 +342,7 @@ export async function rejectTimesheet(tenantId, id, decidedBy, comment) {
     throw err;
   }
   const settings = await repo.getSettings(tenantId);
-  const updated = await repo.decideTimesheet(id, 'REJECTED', decidedBy, comment.trim());
+  const updated = await repo.decideTimesheet(id, 'REJECTED', actor.employeeId, comment.trim());
   return fmtSheet(updated, settings);
 }
 

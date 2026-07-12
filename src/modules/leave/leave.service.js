@@ -2,6 +2,7 @@ import * as leaveRepository from './leave.repository.js';
 import * as leaveEngineService from './leaveEngine.service.js';
 import { prisma } from '../../plugins/prisma.js';
 import { resolveHolidayDateSet } from '../holidays/holidayResolver.service.js';
+import { assertCanApprove } from '../../utils/approvalGuard.js';
 import {
   notifyLeaveRequested,
   notifyLeaveApproved,
@@ -51,11 +52,11 @@ export async function getTeamCalendar(tenantId, managerEmployeeId, month) {
   return leaveRepository.getTeamCalendar(tenantId, managerEmployeeId, month);
 }
 
-export async function bulkApproveLeaveRequests(tenantId, ids, approverId, comment) {
+export async function bulkApproveLeaveRequests(tenantId, ids, actor, comment) {
   const results = [];
   for (const id of ids) {
     try {
-      const result = await approveLeaveRequest(tenantId, id, approverId, comment);
+      const result = await approveLeaveRequest(tenantId, id, actor, comment);
       results.push({ id, status: 'approved', referenceNo: result.referenceNo });
     } catch (err) {
       results.push({ id, status: 'failed', error: err.message });
@@ -64,11 +65,11 @@ export async function bulkApproveLeaveRequests(tenantId, ids, approverId, commen
   return results;
 }
 
-export async function bulkDenyLeaveRequests(tenantId, ids, approverId, comment) {
+export async function bulkDenyLeaveRequests(tenantId, ids, actor, comment) {
   const results = [];
   for (const id of ids) {
     try {
-      const result = await rejectLeaveRequest(tenantId, id, approverId, comment || 'Bulk denied');
+      const result = await rejectLeaveRequest(tenantId, id, actor, comment || 'Bulk denied');
       results.push({ id, status: 'denied', referenceNo: result.referenceNo });
     } catch (err) {
       results.push({ id, status: 'failed', error: err.message });
@@ -265,12 +266,15 @@ export async function getTeamLeaveRequests(tenantId, managerEmployeeId, filters 
   });
 }
 
-export async function approveLeaveRequest(tenantId, leaveRequestId, approverId, comment = '') {
+export async function approveLeaveRequest(tenantId, leaveRequestId, actor, comment = '') {
   const leaveRequest = await leaveRepository.findLeaveRequest(tenantId, leaveRequestId);
 
   if (!leaveRequest) {
     throw new AppError('Leave request not found', 'LEAVE_REQUEST_NOT_FOUND', 404);
   }
+
+  // BE-SEC-2: only the subject's direct manager or HR/SA may decide; no self-approval.
+  await assertCanApprove(prisma, tenantId, actor, leaveRequest.employeeId);
 
   if (leaveRequest.status !== 'PENDING') {
     throw new AppError(
@@ -282,7 +286,7 @@ export async function approveLeaveRequest(tenantId, leaveRequestId, approverId, 
 
   const updated = await leaveRepository.updateLeaveRequest(tenantId, leaveRequestId, {
     status: 'APPROVED',
-    approverId,
+    approverId: actor.id,
     approverComment: comment || null,
     decidedAt: new Date(),
   });
@@ -325,12 +329,15 @@ export async function approveLeaveRequest(tenantId, leaveRequestId, approverId, 
   return updated;
 }
 
-export async function rejectLeaveRequest(tenantId, leaveRequestId, approverId, comment) {
+export async function rejectLeaveRequest(tenantId, leaveRequestId, actor, comment) {
   const leaveRequest = await leaveRepository.findLeaveRequest(tenantId, leaveRequestId);
 
   if (!leaveRequest) {
     throw new AppError('Leave request not found', 'LEAVE_REQUEST_NOT_FOUND', 404);
   }
+
+  // BE-SEC-2: only the subject's direct manager or HR/SA may decide; no self-approval.
+  await assertCanApprove(prisma, tenantId, actor, leaveRequest.employeeId);
 
   if (leaveRequest.status !== 'PENDING') {
     throw new AppError(
@@ -342,7 +349,7 @@ export async function rejectLeaveRequest(tenantId, leaveRequestId, approverId, c
 
   const updated = await leaveRepository.updateLeaveRequest(tenantId, leaveRequestId, {
     status: 'DENIED',
-    approverId,
+    approverId: actor.id,
     approverComment: comment,
     decidedAt: new Date(),
   });

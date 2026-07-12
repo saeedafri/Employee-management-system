@@ -6,6 +6,7 @@ import { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured, getSi
 import { prisma } from '../../plugins/prisma.js';
 import { generateId } from '../../utils/id.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
+import { assertCanViewEmployee } from '../../utils/approvalGuard.js';
 import sharp from 'sharp';
 
 const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS', 'ALREADY_ACTIVE', 'EMPLOYEE_TERMINATED']);
@@ -60,8 +61,11 @@ export async function getEmployeeActivity(request, reply) {
   const tenantId = request.tenant.id;
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
-    if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER'].includes(user.memberType)) {
-      return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee activity', {}, request.id));
+    // BE-SEC-4: self, HR/SA, or the subject's DIRECT manager only (was: any manager).
+    try {
+      await assertCanViewEmployee(prisma, tenantId, user, id);
+    } catch (e) {
+      return reply.code(e.statusCode || 403).send(errorResponse(e.code || 'FORBIDDEN', e.message, {}, request.id));
     }
     const result = await service.getEmployeeActivity(id, tenantId, { limit: Number(request.query.limit) || 50 });
     reply.code(result.error ? (result.error.code === 'NOT_FOUND' ? 404 : 400) : 200).send(result);

@@ -183,11 +183,12 @@ export async function approveLeaveRequest(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const approverId = request.user.id;
+    const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
     const { id } = request.params;
 
     const body = leaveValidator.approveLeaveRequestSchema.parse(request.body);
 
-    const leaveRequest = await leaveService.approveLeaveRequest(tenantId, id, approverId, body.approverComment);
+    const leaveRequest = await leaveService.approveLeaveRequest(tenantId, id, actor, body.approverComment);
 
     await request.log.info({
       action: 'LEAVE_REQUEST_APPROVED',
@@ -219,6 +220,7 @@ export async function rejectLeaveRequest(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const approverId = request.user.id;
+    const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
     const { id } = request.params;
 
     const body = leaveValidator.rejectLeaveRequestSchema.parse(request.body);
@@ -226,7 +228,7 @@ export async function rejectLeaveRequest(request, reply) {
     const leaveRequest = await leaveService.rejectLeaveRequest(
       tenantId,
       id,
-      approverId,
+      actor,
       body.approverComment,
     );
 
@@ -384,9 +386,9 @@ function splitBulkResults(results) {
 export async function bulkApproveLeave(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const approverId = request.user.id;
+    const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
     const { ids, comment } = request.body;
-    const results = await leaveService.bulkApproveLeaveRequests(tenantId, ids, approverId, comment);
+    const results = await leaveService.bulkApproveLeaveRequests(tenantId, ids, actor, comment);
     return reply.send(successResponse(splitBulkResults(results)));
   } catch (error) {
     request.log.error(error);
@@ -397,9 +399,9 @@ export async function bulkApproveLeave(request, reply) {
 export async function bulkDenyLeave(request, reply) {
   try {
     const tenantId = request.tenant.id;
-    const approverId = request.user.id;
+    const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
     const { ids, comment } = request.body;
-    const results = await leaveService.bulkDenyLeaveRequests(tenantId, ids, approverId, comment);
+    const results = await leaveService.bulkDenyLeaveRequests(tenantId, ids, actor, comment);
     return reply.send(successResponse(splitBulkResults(results)));
   } catch (error) {
     request.log.error(error);
