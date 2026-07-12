@@ -1168,7 +1168,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
 
       const { statutoryDeductions, employerContributions, warnings: statWarnings = [] } = computeStatutoryContributions(
         earningsArr, componentByCode, contributionSchemes,
-        { periodsPerMonth: ppm, isLastCycleInMonth: lastCycle },
+        { periodsPerMonth: ppm, isLastCycleInMonth: lastCycle, currency: payslipCurrency },
       );
       for (const w of statWarnings) {
         warnings.push({ employeeId: employee.id, employeeName: `${employee.firstName} ${employee.lastName}`, message: w });

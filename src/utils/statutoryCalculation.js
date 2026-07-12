@@ -3,9 +3,12 @@
 import { fmtStatutoryPackRow } from './statutoryPackShape.js';
 import { periodRepresentativeDate } from './payrollPeriod.js';
 
-function minorToMajor(amount) {
+// BE-PAY-1: convert a minor-unit config value (e.g. wageCeiling) to major units
+// using the currency's ISO-4217 exponent, not a hardcoded ÷100. KWD/BHD (3dp) and
+// JPY (0dp) ceilings were 10×/100× off. INR (2dp) is unchanged (÷100).
+function minorToMajor(amount, currency = 'INR') {
   if (amount == null) return null;
-  return Number(amount) / 100;
+  return Number(amount) / minorUnitFactor(currency);
 }
 
 // ISO 4217 exponent exceptions — default is 2 (×100 = minor unit factor)
@@ -87,6 +90,7 @@ export function schemeManagedComponentCodes(contributionSchemes = []) {
 export function computeStatutoryContributions(earnings, componentByCode, contributionSchemes = [], {
   periodsPerMonth: ppm = 1,
   isLastCycleInMonth = true,
+  currency = 'INR',
 } = {}) {
   const statutoryDeductions = [];
   const employerContributions = [];
@@ -117,7 +121,7 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
       const monthlyEstimatedBase = rawBase * ppm;
       let monthlyCeiledBase = monthlyEstimatedBase;
       if (scheme.wageCeiling != null) {
-        const ceilingMajor = minorToMajor(scheme.wageCeiling);
+        const ceilingMajor = minorToMajor(scheme.wageCeiling, currency);
         if (ceilingMajor != null) monthlyCeiledBase = Math.min(monthlyEstimatedBase, ceilingMajor);
       }
       const monthlyEmpTotal = Math.round((monthlyCeiledBase * empRate) / 100);
@@ -132,7 +136,7 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
       // Standard per-cycle computation (existing behaviour — unchanged for MONTHLY).
       let base = rawBase;
       if (scheme.wageCeiling != null) {
-        const ceilingMajor = minorToMajor(scheme.wageCeiling);
+        const ceilingMajor = minorToMajor(scheme.wageCeiling, currency);
         if (ceilingMajor != null) base = Math.min(rawBase, ceilingMajor);
       }
       employeeAmt = Math.round((base * empRate) / 100);

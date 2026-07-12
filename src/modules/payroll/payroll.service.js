@@ -8,6 +8,7 @@ import {
 } from '../../utils/payrollUiShapes.js';
 import { flatBodyToPackData } from '../../utils/statutoryPackShape.js';
 import { resolveFiscalYear, moneyMajorToMinor } from '../../utils/statutoryCalculation.js';
+import { currencyDecimals, roundMoney } from '../../utils/money.js';
 import { TAX_FORM_TEMPLATES, DEFAULT_FORM_TYPE_BY_COUNTRY, formatMoney, buildIdentifiers } from './taxForms.js';
 import { formatPeriodLabel, derivePeriodDatesFromString, isValidPeriod } from '../../utils/payrollPeriod.js';
 import { generateCycles } from '../../utils/cycleGenerator.js';
@@ -2036,11 +2037,9 @@ const BANK_FILE_FORMATS = {
   },
 };
 
-// Currencies with 0 minor-unit decimals (match the FE money.utils.currencyDecimals defaults).
-const ZERO_DECIMAL_CURRENCIES = new Set(['JPY', 'KRW', 'VND', 'CLP', 'ISK', 'XAF', 'XOF']);
-function currencyDecimals(currency) {
-  return ZERO_DECIMAL_CURRENCIES.has((currency || '').toUpperCase()) ? 0 : 2;
-}
+// BE-PAY-1: bank-file amount formatting now uses the exponent-aware currencyDecimals
+// from utils/money.js (0/2/3 dp) instead of a local 0/2-only converter, so a KWD net
+// of 123.456 writes "123.456", not "123.46".
 
 // (Former demo `syntheticBank()` removed — §10 now reads real, decrypted payout-method
 // details selected in createPaymentBatch; the bank file no longer fabricates identifiers.)
@@ -2070,7 +2069,7 @@ export async function getBankFile(prisma, runId, tenantId, format) {
     const resolved = {
       employeeCode: l.employeeCode ?? '',
       employeeName: d.accountName ?? l.accountName ?? l.name ?? '',
-      amount: Number(l.netPay ?? 0).toFixed(currencyDecimals(lineCurrency)),
+      amount: roundMoney(l.netPay ?? 0, lineCurrency).toFixed(currencyDecimals(lineCurrency)),
       currency: lineCurrency,
       reference: l.reference ?? l.payoutRef ?? '',
       accountNumber: d.accountNumber ?? '',
