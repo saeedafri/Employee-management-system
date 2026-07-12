@@ -2,7 +2,7 @@ import * as service from './employees.service.js';
 import * as repo from './employees.repository.js';
 import * as validator from './employees.validator.js';
 import { errorResponse } from '../../utils/response.js';
-import { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
+import { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured, getSignedDocumentUrl } from '../../utils/cloudinary.js';
 import { prisma } from '../../plugins/prisma.js';
 import { generateId } from '../../utils/id.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
@@ -19,6 +19,13 @@ function errorStatus(code) {
   if (UNPROCESSABLE_CODES.has(code)) return 422;
   if (RATE_LIMIT_CODES.has(code)) return 429;
   return 400;
+}
+
+// A user may act on an employee's documents only if it is their own record or
+// they are HR/Admin. Shared by upload/list/presign/confirm/download so no
+// document handler can be left unguarded (BE-SEC-5).
+function canAccessEmployeeDocs(user, employeeId) {
+  return user.employeeId === employeeId || ['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType);
 }
 
 export async function listEmployees(request, reply) {
@@ -194,6 +201,7 @@ export async function uploadDocument(request, reply) {
       folder: `ems/${tenantId}/employees/${employeeId}`,
       publicId: fileId,
       resourceType: cloudinaryResourceType,
+      type: 'authenticated', // PII: not publicly deliverable — download via signed URL only (BE-SEC-1)
     });
 
     const doc = await prisma.employeeDocument.create({
@@ -350,9 +358,14 @@ export async function bulkExport(request, reply) {
 }
 
 export async function presignDocument(request, reply) {
+  const { user } = request;
   const tenantId = request.tenant.id;
   const { id: employeeId } = request.params;
   const { filename, contentType, category = 'OTHER' } = request.body;
+
+  if (!canAccessEmployeeDocs(user, employeeId)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot create documents for other employees', request.requestId));
+  }
 
   if (!isCloudinaryConfigured()) {
     return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'Set CLOUDINARY env vars to enable document uploads', request.requestId));
@@ -375,8 +388,12 @@ export async function presignDocument(request, reply) {
 }
 
 export async function confirmDocument(request, reply) {
+  const { user } = request;
   const tenantId = request.tenant.id;
   const { id: employeeId, documentId } = request.params;
+  if (!canAccessEmployeeDocs(user, employeeId)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot confirm documents for other employees', request.requestId));
+  }
   try {
     const doc = await prisma.employeeDocument.findFirst({ where: { id: documentId, tenantId, employeeId } });
     if (!doc) return reply.code(404).send(errorResponse('NOT_FOUND', 'Document not found', request.requestId));
@@ -400,16 +417,39 @@ export async function confirmDocument(request, reply) {
 }
 
 export async function downloadDocument(request, reply) {
+  const { user } = request;
   const tenantId = request.tenant.id;
   const { id: employeeId, documentId } = request.params;
+  if (!canAccessEmployeeDocs(user, employeeId)) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot download documents for other employees', request.requestId));
+  }
   try {
     const doc = await prisma.employeeDocument.findFirst({ where: { id: documentId, tenantId, employeeId } });
     if (!doc) return reply.code(404).send(errorResponse('NOT_FOUND', 'Document not found', request.requestId));
-    if (!doc.fileUrl) return reply.code(404).send(errorResponse('NOT_FOUND', 'File URL not available', request.requestId));
-    reply.redirect(302, doc.fileUrl);
+    // Mint a short-lived signed URL at request time instead of exposing a
+    // permanent public CDN link (BE-SEC-1). storageKey is the Cloudinary
+    // public_id; fall back to parsing it from a legacy fileUrl.
+    const storageKey = doc.storageKey || parseCloudinaryPublicId(doc.fileUrl);
+    if (!storageKey) return reply.code(404).send(errorResponse('NOT_FOUND', 'File not available', request.requestId));
+    if (!isCloudinaryConfigured()) {
+      return reply.code(503).send(errorResponse('STORAGE_NOT_CONFIGURED', 'File storage is not configured', request.requestId));
+    }
+    const signedUrl = getSignedDocumentUrl({ storageKey, mimeType: doc.mimeType });
+    reply.redirect(302, signedUrl);
   } catch (err) {
     reply.code(500).send(errorResponse('DOWNLOAD_ERROR', err.message, request.requestId));
   }
+}
+
+// Extract the Cloudinary public_id from a legacy delivery URL, e.g.
+// https://res.cloudinary.com/<cloud>/image/upload/v123/ems/a/b/c.webp -> ems/a/b/c
+// Only images carry a delivery extension; raw public_ids keep theirs verbatim.
+function parseCloudinaryPublicId(fileUrl) {
+  if (!fileUrl) return null;
+  const m = fileUrl.match(/\/(raw|image|video)\/(?:authenticated|upload)\/(?:v\d+\/)?(.+?)(?:\?.*)?$/);
+  if (!m) return null;
+  const [, kind, publicId] = m;
+  return kind === 'image' ? publicId.replace(/\.[^./]+$/, '') : publicId;
 }
 
 export async function uploadPhoto(request, reply) {
