@@ -5,7 +5,7 @@
 > Local: `http://localhost:3000/api/v1`
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
 >
-> **Cloudinary:** Live on Render (2026-06-09) — cloud `dmljxhmio`. `POST /employees/:id/photo` and `POST /employees/:id/documents` upload to Cloudinary; `GET` returns `fileUrl` on `res.cloudinary.com`. Settings storage integration returns `provider: cloudinary`, `configured: true`.
+> **Cloudinary:** Live on Render (2026-06-09) — cloud `dmljxhmio`. `POST /employees/:id/photo` and `POST /employees/:id/documents` upload to Cloudinary. Employee documents are stored **privately** (Cloudinary `authenticated`, BE-SEC-1): the persisted `fileUrl` is empty and `GET /employees/:id/documents` returns a per-item `downloadUrl` — the FE must use it (it `302`-redirects to a short-lived signed URL). Profile photos remain public. Settings storage integration returns `provider: cloudinary`, `configured: true`.
 >
 > **MSW (Mock Service Worker):** The deployed Vercel frontend has `NEXT_PUBLIC_USE_MOCKS` controlled by the Vercel env var. Default in code is `false`. If set to `true`, Phase 3 API calls are intercepted by MSW in the browser before reaching the backend BFF proxy. Set it to `false` in Vercel dashboard → Settings → Environment Variables to force real backend calls.
 
@@ -954,7 +954,9 @@ Same shape as `/me/holidays`, for a specific employee. Auth: **HR_ADMIN / SUPER_
 
 > **`leaveTypeId` (2026-06-28 fix):** accepts **both** a legacy `LeaveType.id` **and** a policy leave code (`EL` / `SL` / `CL` / `CO`). For **policy-driven tenants** (ledger model) the FE only knows the policy code — the backend now resolves the code via the tenant's leave policies, bridges it to a backing `LeaveType` (`ensureLeaveTypeByCode`), validates available balance against the ledger fold (`granted − used − pending`), and posts a `LEAVE_PENDING_HOLD` ledger txn on submit. Approve → `LEAVE_PENDING_RELEASE` + `LEAVE_TAKEN`; reject/withdraw → `LEAVE_PENDING_RELEASE`. **Legacy tenants** still use `LeaveType`/`LeaveBalance` unchanged. Previously a policy code returned `LEAVE_TYPE_NOT_FOUND` (404).
 
-**Error codes:** `LEAVE_TYPE_NOT_FOUND` (404), `NO_LEAVE_BALANCE` (400), `OVERLAPPING_LEAVE` (400), `INSUFFICIENT_BALANCE` (400)
+> **`totalDays` (BE-PAY-2):** the stored `totalDays` is the **chargeable working-day count** — it excludes weekly-offs and resolved public holidays via the shared holiday engine, so it equals `POST /leave/requests/preview` → `chargeableDays`. Balance is charged on this value (not raw calendar days).
+
+**Error codes:** `LEAVE_TYPE_NOT_FOUND` (404), `NO_CHARGEABLE_DAYS` (400 — whole range is weekend/holiday), `NO_LEAVE_BALANCE` (400), `OVERLAPPING_LEAVE` (400), `INSUFFICIENT_BALANCE` (400)
 
 ---
 
@@ -987,9 +989,14 @@ Holiday-aware chargeable-day breakdown for a date range (HOLIDAY_ENGINE_BACKEND_
 
 **Body:** `{ "comment": "Approved" }` (optional)
 
+> **Authz (BE-SEC-2/3):** a MANAGER may approve **only their own direct reports**; HR_ADMIN/SUPER_ADMIN may approve anyone; nobody may approve their own request.
+
 **Error codes:**
 | Code | Status | When |
 |------|--------|------|
+| `SELF_APPROVAL_FORBIDDEN` | 403 | Actor is the requester |
+| `NOT_TEAM_APPROVER` | 403 | Manager, but requester is not a direct report |
+| `NO_EMPLOYEE_RECORD` | 403 | Actor has no employee record (and not HR/SA) |
 | `LEAVE_REQUEST_NOT_FOUND` | 404 | Not found |
 | `LEAVE_ALREADY_DECIDED` | 409 | Not PENDING (already approved/denied/withdrawn) |
 
@@ -1003,7 +1010,9 @@ Holiday-aware chargeable-day breakdown for a date range (HOLIDAY_ENGINE_BACKEND_
 
 **Response `data`:** updated request (status = `DENIED`)
 
-**Error codes:** `LEAVE_REQUEST_NOT_FOUND` (404), `LEAVE_ALREADY_DECIDED` (409)
+> **Authz (BE-SEC-2/3):** same guard as approve — a MANAGER may reject only their own direct reports; HR/SA any; nobody may reject their own request.
+
+**Error codes:** `SELF_APPROVAL_FORBIDDEN` (403), `NOT_TEAM_APPROVER` (403), `NO_EMPLOYEE_RECORD` (403), `LEAVE_REQUEST_NOT_FOUND` (404), `LEAVE_ALREADY_DECIDED` (409)
 
 ---
 
@@ -1197,27 +1206,27 @@ Upload a document. **Content-Type:** `multipart/form-data`
 | `file` | File | Yes |
 | `documentType` | string | Yes (e.g. `ID_PROOF`, `OFFER_LETTER`, `CONTRACT`) |
 
-**Response `data`:**
+**Response `data`:** the created `EmployeeDocument`. **BE-SEC-1:** stored privately (Cloudinary `authenticated`); `fileUrl` is persisted **empty** — do NOT use it. `storageKey` holds the Cloudinary public_id; downloads are minted on demand as short-lived signed URLs.
 ```json
 {
   "id": "...", "documentType": "ID_PROOF", "fileName": "passport.pdf",
-  "fileUrl": "https://res.cloudinary.com/...", "verificationStatus": "PENDING",
-  "createdAt": "..."
+  "fileUrl": "", "storageKey": "ems/<tenant>/employees/<empId>/<fileId>",
+  "verificationStatus": "PENDING", "createdAt": "..."
 }
 ```
 
-**Error codes:** `STORAGE_NOT_CONFIGURED` (503) if Cloudinary env vars not set.
+**Error codes:** `403 FORBIDDEN` (not self or HR/SA), `503 STORAGE_NOT_CONFIGURED` if Cloudinary env vars not set, `400 NO_FILE` if no file part.
 
 ---
 
 ### `GET /employees/:id/documents`
-**Required roles:** HR_ADMIN, SUPER_ADMIN, or own employee record.  
-**Response `data`:** `{ "documents": [...] }`
+**Required roles:** HR_ADMIN, SUPER_ADMIN, or own employee record (else `403 FORBIDDEN`).  
+**Response `data`:** array of document objects. Each item now includes `downloadUrl` = `/api/v1/employees/:id/documents/:docId/download` — **the FE MUST use this**. `fileUrl` is empty (new uploads, BE-SEC-1) or a dead 404 link (pre-migration) and is **not usable**.
 
 ---
 
 ### `DELETE /employees/:id/documents/:docId`
-**Required roles:** HR_ADMIN, SUPER_ADMIN only. Deletes from DB + Cloudinary.
+**Required roles:** HR_ADMIN, SUPER_ADMIN only (else `403 FORBIDDEN`). Deletes from DB + Cloudinary.
 
 ---
 
@@ -2327,7 +2336,7 @@ Format: `E` + 4-digit zero-padded number. Auto-increments, skips existing codes.
 
 #### `POST /employees/:id/documents/presign`
 
-**Roles:** HR_ADMIN, SUPER_ADMIN, or self.
+**Roles:** HR_ADMIN, SUPER_ADMIN, or self (else `403 FORBIDDEN`).
 
 **Body:**
 ```json
@@ -2353,13 +2362,17 @@ Format: `E` + 4-digit zero-padded number. Auto-increments, skips existing codes.
 
 #### `POST /employees/:id/documents/:documentId/confirm`
 
+**Roles:** HR_ADMIN, SUPER_ADMIN, or self (else `403 FORBIDDEN`).
+
 Call after file upload completes. Returns the confirmed document record.
 
-**Response 201:** document object (same shape as GET /employees/:id/documents items).
+**Response 201:** document object (same shape as GET /employees/:id/documents items). `404 NOT_FOUND` if the document id doesn't exist.
 
 #### `GET /employees/:id/documents/:documentId/download`
 
-**Response 302:** redirect to short-lived signed download URL.
+**Roles:** HR_ADMIN, SUPER_ADMIN, or self (else `403 FORBIDDEN`).
+
+**Response 302:** redirect to a short-lived signed download URL (5-minute TTL) minted from the document's `storageKey` (BE-SEC-1). `404 NOT_FOUND` if the document/file is unavailable; `503 STORAGE_NOT_CONFIGURED` if Cloudinary env vars are unset.
 
 ---
 
@@ -2490,12 +2503,17 @@ Reassigns all active employees to the target department, then soft-deletes the s
 ```
 
 - `succeeded` — flat array of string IDs that were successfully approved
-- `failed[].code` — always `"ERROR"` (not a specific code per item)
+- `failed[].code` — always `"ERROR"` (the per-item guard code is **not** propagated; only the message is)
 - `failed[].message` — human-readable reason
+
+> **Authz (BE-SEC-2/3):** each id runs through the same approver guard as the single-approve route — a MANAGER may only decide their own direct reports; HR/SA any; nobody may decide their own request. Guard-rejected ids appear in `failed[]` (with the guard message) and the endpoint still returns **200**.
 
 **Common failure messages:**
 | Message | Cause |
 |---------|-------|
+| `You cannot approve or reject your own request` | Self-approval (`SELF_APPROVAL_FORBIDDEN`) |
+| `You can only decide requests for your direct reports` | Not the requester's manager (`NOT_TEAM_APPROVER`) |
+| `Approver has no employee record` | Actor has no employee record (`NO_EMPLOYEE_RECORD`) |
 | `Cannot approve leave with status APPROVED` | Already approved |
 | `Cannot approve leave with status DENIED` | Already rejected |
 | `Leave request not found` | ID doesn't exist or belongs to another tenant |
@@ -3197,6 +3215,8 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 |--------|------|-------|-------|
 | GET | `/announcements` | All | `?channelId, ?page, ?limit`. Returns `{ pinned: <ann or null>, feed: [], pagination }`. Author shape: `{ name, role }` |
 | POST | `/announcements` | HR,SA,MGR | 201. Required: `title, body, category`. Optional: `channelId, audience, isPinned, authorName, authorRole`. 403 if EMPLOYEE |
+| PATCH | `/announcements/:id` | HR,SA,MGR | Edit fields. Body (all optional): `{ title?, body?, category?, channelId?, audience? }`. 200 updated. `404 NOT_FOUND` |
+| DELETE | `/announcements/:id` | HR,SA | `200 { deleted: true }`. `404 NOT_FOUND` |
 | GET | `/announcements/channels` | All | `{ channels: [{id, name, postCount, category}] }` |
 | GET | `/announcements/events` | All | `{ events: [{id, date, title, meta}] }` |
 | POST | `/announcements/events` | HR,SA | 201. Required: `date (YYYY-MM-DD), title, meta` |
@@ -4699,8 +4719,8 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 |--------|------|-------|-------|
 | POST | `/timesheets/:id/submit` | ALL | DRAFT/REJECTED → SUBMITTED. 422 if empty |
 | GET | `/timesheets/approvals` | HR,SA,MGR | `?status=SUBMITTED`. Manager/HR approval queue |
-| POST | `/timesheets/:id/approve` | HR,SA,MGR | SUBMITTED → APPROVED. Body: `{comment}` |
-| POST | `/timesheets/:id/reject` | HR,SA,MGR | SUBMITTED → REJECTED. Required: comment |
+| POST | `/timesheets/:id/approve` | HR,SA,MGR | SUBMITTED → APPROVED. Body: `{comment}`. **BE-SEC-2/3:** MGR may approve only own direct reports; nobody may approve own timesheet → `403 SELF_APPROVAL_FORBIDDEN` / `NOT_TEAM_APPROVER` / `NO_EMPLOYEE_RECORD` |
+| POST | `/timesheets/:id/reject` | HR,SA,MGR | SUBMITTED → REJECTED. Required: comment. Same approver guard as approve (`403 SELF_APPROVAL_FORBIDDEN` / `NOT_TEAM_APPROVER` / `NO_EMPLOYEE_RECORD`) |
 
 ### Summary & Settings
 | Method | Path | Roles | Notes |
@@ -4953,8 +4973,8 @@ UI routes: `/settings/integration-email`, `/settings/integration-storage`, `/set
 | GET | `/settings/integrations/storage` | HR,SA | Storage integration page |
 | PATCH | `/settings/integrations/storage` | HR,SA | Folder/mime limits |
 | GET | `/settings/webhooks` | HR,SA | Webhooks list + event catalog |
-| POST | `/settings/webhooks` | HR,SA | Create webhook |
-| PATCH | `/settings/webhooks/:id` | HR,SA | Update webhook |
+| POST | `/settings/webhooks` | HR,SA | Create webhook. **BE-SEC-6:** `url` must be https and must not resolve to a private/loopback/link-local host → `422 INVALID_WEBHOOK_URL` |
+| PATCH | `/settings/webhooks/:id` | HR,SA | Update webhook. When `url` supplied, same https/SSRF guard → `422 INVALID_WEBHOOK_URL` |
 | DELETE | `/settings/webhooks/:id` | HR,SA | Delete webhook |
 | POST | `/settings/webhooks/:id/test` | HR,SA | Test delivery (simulated) |
 
@@ -4986,7 +5006,9 @@ Each `items[]` entry includes **`color`** (hex). UI maps `type` → color; missi
 
 | Method | Path | Roles | UI route |
 |--------|------|-------|----------|
-| GET | `/employees/:id/activity` | HR,SA,MGR,EMP(own) | Profile → Activity tab |
+| GET | `/employees/:id/activity` | HR,SA,MGR(direct report),EMP(own) | Profile → Activity tab |
+
+> **Authz (BE-SEC-4):** visible to self, HR_ADMIN/SUPER_ADMIN, or the subject's **DIRECT** manager only. A MANAGER viewing a non-report gets `403 FORBIDDEN`. (Previously any manager could view any employee.)
 
 **Response:** `{ items: [{ id, type, action, actionLabel, description, color, actorEmail?, createdAt, timestamp, fileUrl? }], total }`
 
@@ -5113,8 +5135,8 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 | Method | Path | Roles | Request | Response | UI |
 |--------|------|-------|---------|----------|-----|
 | GET | `/settings/webhooks` | HR,SA | — | `{ webhooks[], eventCatalog[] }` | `/settings/integration-webhooks` |
-| POST | `/settings/webhooks` | HR,SA | `{ name, url, events[], enabled?, secret? }` | webhook object | Create modal |
-| PATCH | `/settings/webhooks/:id` | HR,SA | partial | webhook | Edit / enable |
+| POST | `/settings/webhooks` | HR,SA | `{ name, url, events[], enabled?, secret? }` | webhook object | Create modal — `422 INVALID_WEBHOOK_URL` if `url` not https / private/loopback/link-local (BE-SEC-6) |
+| PATCH | `/settings/webhooks/:id` | HR,SA | partial | webhook | Edit / enable — same `422 INVALID_WEBHOOK_URL` guard when `url` supplied |
 | POST | `/settings/webhooks/:id/test` | HR,SA | — | `{ delivered, statusCode, testedAt }` | Test button |
 
 **Seed:** `seed:production-api` or `seedPhase3Integrations.js`. **Empty:** `webhooks: []`.
@@ -5123,11 +5145,12 @@ Merges active pay groups + pay calendars. Seed via `node prisma/seedPhase3Integr
 
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
-| GET | `/employees/:id/documents` | HR,SA,EMP(own) | List metadata from Postgres |
-| POST | `/employees/:id/documents` | HR,SA,EMP(own) | multipart; WebP via sharp; Cloudinary required |
+| GET | `/employees/:id/documents` | HR,SA,EMP(own) | List metadata from Postgres. Each item carries `downloadUrl`; `fileUrl` is empty/not-usable (BE-SEC-1) |
+| POST | `/employees/:id/documents` | HR,SA,EMP(own) | multipart; WebP via sharp; Cloudinary required. Stored private (`authenticated`); `fileUrl` persisted empty |
+| GET | `/employees/:id/documents/:docId/download` | HR,SA,EMP(own) | `302` → short-lived (5 min) signed URL from `storageKey` |
 | DELETE | `/employees/:id/documents/:docId` | HR,SA | Removes DB + Cloudinary |
 
-**Audit:** `DOCUMENT_UPLOADED` / `DOCUMENT_DELETED` logged to `audit_logs` (Activity tab). **Download:** client opens `fileUrl` from list response.
+**Audit:** `DOCUMENT_UPLOADED` / `DOCUMENT_DELETED` logged to `audit_logs` (Activity tab). **Download (BE-SEC-1):** client calls `downloadUrl` (the `/:docId/download` endpoint) which `302`-redirects to a 5-minute signed URL — never open `fileUrl` (empty for new uploads, dead 404 pre-migration).
 
 ### Employee Activity (audit-logs)
 
@@ -5165,8 +5188,8 @@ UI Activity tab uses this endpoint (not `/employees/:id/activity` alias). **Seed
 | DELETE | `/timesheets/entries/:id` | EMP | Delete |
 | POST | `/timesheets/:id/submit` | EMP | Submit week |
 | GET | `/timesheets/approvals` | MGR,HR | Approval queue |
-| POST | `/timesheets/:id/approve` | MGR,HR | Approve |
-| POST | `/timesheets/:id/reject` | MGR,HR | `{ comment }` |
+| POST | `/timesheets/:id/approve` | MGR,HR | Approve. MGR only own direct reports; no self-approve → `403 SELF_APPROVAL_FORBIDDEN`/`NOT_TEAM_APPROVER`/`NO_EMPLOYEE_RECORD` |
+| POST | `/timesheets/:id/reject` | MGR,HR | `{ comment }`. Same approver guard (`403 SELF_APPROVAL_FORBIDDEN`/`NOT_TEAM_APPROVER`/`NO_EMPLOYEE_RECORD`) |
 | GET/POST/PATCH | `/timesheets/projects` | HR,MGR | Projects tab |
 | POST | `/timesheets/projects/:id/tasks` | HR,MGR | Tasks |
 

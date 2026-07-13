@@ -288,6 +288,18 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
 
         // ── TIMESHEET WORKFLOW EXTRAS (Phase 5.4/5.5) ─────────────────────────
+        '/timesheets/{id}/approve': {
+          post: op('Timesheets', 'Approve a submitted timesheet. Approver must be the employee’s direct manager (or HR_ADMIN/SUPER_ADMIN); nobody may approve their own timesheet.', true, {
+            parameters: [...idParam, { in: 'body', name: 'body', schema: { type: 'object', properties: { comment: { type: 'string' } } } }],
+            responses: { 200: r200, 401: r401, 403: { description: 'SELF_APPROVAL_FORBIDDEN | NOT_TEAM_APPROVER | NO_EMPLOYEE_RECORD — manager may only decide own direct reports; HR/SA any' }, 404: { description: 'Timesheet not found' } },
+          }),
+        },
+        '/timesheets/{id}/reject': {
+          post: op('Timesheets', 'Reject a submitted timesheet (comment required). Approver must be the employee’s direct manager (or HR_ADMIN/SUPER_ADMIN); nobody may reject their own timesheet.', true, {
+            parameters: [...idParam, { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['comment'], properties: { comment: { type: 'string', minLength: 1 } } } }],
+            responses: { 200: r200, 401: r401, 403: { description: 'SELF_APPROVAL_FORBIDDEN | NOT_TEAM_APPROVER | NO_EMPLOYEE_RECORD — manager may only decide own direct reports; HR/SA any' }, 404: { description: 'Timesheet not found' } },
+          }),
+        },
         '/timesheets/locks': {
           get:  op('Timesheets', 'List timesheet period locks (MANAGER+)'),
           post: op('Timesheets', 'Lock a period (HR_ADMIN, SUPER_ADMIN) — 422 if start>end', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['startDate', 'endDate'], properties: { startDate: { type: 'string' }, endDate: { type: 'string' }, label: { type: 'string' } } } }], responses: { 200: r200, 422: r422 } }),
@@ -396,7 +408,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/leave/requests': {
           get:  op('Leave', 'List my leave requests'),
-          post: op('Leave', 'Create leave request. Body { leaveTypeId, startDate, endDate, reason }. `leaveTypeId` accepts EITHER a legacy LeaveType id OR a policy leave code (EL/SL/CL/CO) — on policy-pack tenants the code from GET /leave/types is resolved via active policies and bridged to a backing LeaveType, validated against the ledger balance (granted − used − pending), and a LEAVE_PENDING_HOLD ledger txn is posted. 404 LEAVE_TYPE_NOT_FOUND only when the code matches no policy/legacy type; 400 INSUFFICIENT_BALANCE when no balance.', true, { responses: { 201: r201, 400: { description: 'INSUFFICIENT_BALANCE | OVERLAPPING_LEAVE' }, 404: { description: 'LEAVE_TYPE_NOT_FOUND' } } }),
+          post: op('Leave', 'Create leave request. Body { leaveTypeId, startDate, endDate, reason }. `leaveTypeId` accepts EITHER a legacy LeaveType id OR a policy leave code (EL/SL/CL/CO) — on policy-pack tenants the code from GET /leave/types is resolved via active policies and bridged to a backing LeaveType, validated against the ledger balance (granted − used − pending), and a LEAVE_PENDING_HOLD ledger txn is posted. `totalDays` is the chargeable working-day count — excludes weekly-offs + public holidays, same value as POST /leave/requests/preview → chargeableDays. 404 LEAVE_TYPE_NOT_FOUND only when the code matches no policy/legacy type; 400 INSUFFICIENT_BALANCE when no balance; 400 NO_CHARGEABLE_DAYS when the whole range is weekend/holiday.', true, { responses: { 201: r201, 400: { description: 'NO_CHARGEABLE_DAYS | INSUFFICIENT_BALANCE | OVERLAPPING_LEAVE | NO_LEAVE_BALANCE' }, 404: { description: 'LEAVE_TYPE_NOT_FOUND' } } }),
         },
         '/leave/requests/preview': {
           post: op('Leave', 'Holiday-aware chargeable-day preview (HOLIDAY_ENGINE_BACKEND_CONTRACT §3). Excludes weekends (employee work-week) + resolved public holidays via the shared holiday engine — same set the calendar shows + payroll counts. Returns { calendarDays, weekendDays, holidayDays, chargeableDays, holidaysExcluded:[{date,name,observed}], workWeekDays }.', true, {
@@ -412,10 +424,16 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
         '/leave/requests/{id}/approve': {
-          patch: op('Leave', 'Approve leave request', true, { parameters: idParam }),
+          patch: op('Leave', 'Approve leave request. Approver must be the requester’s direct manager (or HR_ADMIN/SUPER_ADMIN); nobody may approve their own request.', true, {
+            parameters: idParam,
+            responses: { 200: r200, 401: r401, 403: { description: 'SELF_APPROVAL_FORBIDDEN | NOT_TEAM_APPROVER | NO_EMPLOYEE_RECORD — manager may only decide own direct reports; HR/SA any' }, 404: { description: 'LEAVE_REQUEST_NOT_FOUND' }, 409: { description: 'LEAVE_ALREADY_DECIDED' } },
+          }),
         },
         '/leave/requests/{id}/reject': {
-          patch: op('Leave', 'Reject leave request', true, { parameters: idParam }),
+          patch: op('Leave', 'Reject leave request. Approver must be the requester’s direct manager (or HR_ADMIN/SUPER_ADMIN); nobody may reject their own request.', true, {
+            parameters: idParam,
+            responses: { 200: r200, 401: r401, 403: { description: 'SELF_APPROVAL_FORBIDDEN | NOT_TEAM_APPROVER | NO_EMPLOYEE_RECORD — manager may only decide own direct reports; HR/SA any' }, 404: { description: 'LEAVE_REQUEST_NOT_FOUND' }, 409: { description: 'LEAVE_ALREADY_DECIDED' } },
+          }),
         },
         '/leave/requests/{id}/withdraw': {
           patch: op('Leave', 'Withdraw leave request', true, { parameters: idParam }),
@@ -900,18 +918,19 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/settings/webhooks': {
           get: op('Settings', 'List outbound webhooks', true),
-          post: op('Settings', 'Create webhook', true),
+          post: op('Settings', 'Create webhook. `url` must be https and must not resolve to a private/loopback/link-local host (SSRF guard).', true, { responses: { 201: r201, 401: r401, 403: r403, 422: { description: 'INVALID_WEBHOOK_URL — url not https, or resolves to a private/loopback/link-local address' } } }),
         },
         '/settings/webhooks/{id}': {
-          patch: op('Settings', 'Update webhook', true, { parameters: [{ in: 'path', name: 'id', type: 'string', required: true }] }),
+          patch: op('Settings', 'Update webhook. When `url` is supplied it must be https and must not resolve to a private/loopback/link-local host (SSRF guard).', true, { parameters: [{ in: 'path', name: 'id', type: 'string', required: true }], responses: { 200: r200, 401: r401, 403: r403, 404: r404, 422: { description: 'INVALID_WEBHOOK_URL — url not https, or resolves to a private/loopback/link-local address' } } }),
           delete: op('Settings', 'Delete webhook', true, { parameters: [{ in: 'path', name: 'id', type: 'string', required: true }] }),
         },
         '/employees/{id}/activity': {
-          get: op('Employees', 'Employee activity timeline', true, {
+          get: op('Employees', 'Employee activity timeline (audit, leave, documents). Visible to self, HR_ADMIN/SUPER_ADMIN, or the subject’s DIRECT manager only — a MANAGER may not view a non-report.', true, {
             parameters: [
               { in: 'path', name: 'id', type: 'string', required: true },
               { in: 'query', name: 'limit', type: 'integer' },
             ],
+            responses: { 200: r200, 401: r401, 403: { description: 'FORBIDDEN — not self, HR/SA, or the subject’s direct manager' }, 404: { description: 'NOT_FOUND' } },
           }),
         },
 
@@ -980,21 +999,22 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
         '/employees/{id}/documents': {
-          get:  op('Employees', 'List documents for an employee', true, { parameters: idParam }),
-          post: op('Employees', 'Upload a document (multipart/form-data). Requires Cloudinary env vars.', true, { parameters: idParam, responses: { 201: r201 } }),
+          get:  op('Employees', 'List documents for an employee (self or HR/SA). Each item includes `downloadUrl` (GET .../{documentId}/download) — the FE MUST use it. `fileUrl` is empty for new uploads (or a dead pre-migration link) and is NOT usable.', true, { parameters: idParam, responses: { 200: r200, 401: r401, 403: r403 } }),
+          post: op('Employees', 'Upload a document (multipart/form-data). Requires Cloudinary env vars. Stored privately (Cloudinary "authenticated") — the persisted `fileUrl` is empty; download only via the signed download endpoint. Self or HR/SA.', true, { parameters: idParam, responses: { 201: r201, 401: r401, 403: r403, 503: { description: 'STORAGE_NOT_CONFIGURED' } } }),
         },
         '/employees/{id}/documents/presign': {
-          post: op('Employees', 'Get presign info for document upload — returns uploadUrl + documentId', true, { parameters: idParam }),
+          post: op('Employees', 'Get presign info for document upload — returns uploadUrl + documentId. Self or HR/SA.', true, { parameters: idParam, responses: { 200: r200, 401: r401, 403: r403, 503: { description: 'STORAGE_NOT_CONFIGURED' } } }),
         },
         '/employees/{id}/documents/{documentId}/confirm': {
-          post: op('Employees', 'Confirm document upload after file transfer', true, {
+          post: op('Employees', 'Confirm document upload after file transfer. Self or HR/SA.', true, {
             parameters: [...idParam, { in: 'path', name: 'documentId', type: 'string', required: true }],
-            responses: { 201: r201 },
+            responses: { 201: r201, 401: r401, 403: r403, 404: { description: 'NOT_FOUND' } },
           }),
         },
         '/employees/{id}/documents/{documentId}/download': {
-          get: op('Employees', 'Redirect (302) to signed download URL for a document', true, {
+          get: op('Employees', 'Redirect (302) to a short-lived (5 min) signed download URL minted from the document’s storageKey. Self or HR/SA.', true, {
             parameters: [...idParam, { in: 'path', name: 'documentId', type: 'string', required: true }],
+            responses: { 302: { description: 'Redirect to signed download URL' }, 401: r401, 403: { description: 'FORBIDDEN — not self or HR/SA' }, 404: { description: 'NOT_FOUND — document or file not available' }, 503: { description: 'STORAGE_NOT_CONFIGURED' } },
           }),
         },
         '/employees/{id}/documents/{docId}': {
@@ -1053,12 +1073,12 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           }),
         },
         '/leave/requests/bulk/approve': {
-          post: op('Leave', 'Bulk approve leave requests — returns { succeeded, failed } (MANAGER+)', true, {
+          post: op('Leave', 'Bulk approve leave requests — returns { succeeded, failed } (MANAGER+). Each id passes the same approver guard as the single-approve route (self/direct-report — SELF_APPROVAL_FORBIDDEN, NOT_TEAM_APPROVER, NO_EMPLOYEE_RECORD); guard-rejected ids land in failed[] and the endpoint still returns 200.', true, {
             parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, comment: { type: 'string' } } } }],
           }),
         },
         '/leave/requests/bulk/reject': {
-          post: op('Leave', 'Bulk reject leave requests — returns { succeeded, failed } (MANAGER+)', true, {
+          post: op('Leave', 'Bulk reject leave requests — returns { succeeded, failed } (MANAGER+). Each id passes the same approver guard as the single-reject route (self/direct-report — SELF_APPROVAL_FORBIDDEN, NOT_TEAM_APPROVER, NO_EMPLOYEE_RECORD); guard-rejected ids land in failed[] and the endpoint still returns 200.', true, {
             parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, comment: { type: 'string' } } } }],
           }),
         },
@@ -1230,6 +1250,16 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         '/announcements': {
           get:  op('Announcements', 'List announcements feed — pinned item + feed array, ?channelId filter', true, { parameters: [...pageQuery, queryParam('channelId', 'string', 'Filter by channel')] }),
           post: op('Announcements', 'Post an announcement — 403 if EMPLOYEE role (HR_ADMIN, MANAGER)', true, { responses: { 201: r201, 403: r403 } }),
+        },
+        '/announcements/{id}': {
+          patch:  op('Announcements', 'Edit an announcement (title/body/category/channelId/audience) — HR_ADMIN, SUPER_ADMIN, MANAGER', true, {
+            parameters: [...idParam, { in: 'body', name: 'body', schema: { type: 'object', properties: { title: { type: 'string' }, body: { type: 'string' }, category: { type: 'string' }, channelId: { type: 'string' }, audience: { type: 'string' } } } }],
+            responses: { 200: r200, 401: r401, 403: r403, 404: { description: 'NOT_FOUND' } },
+          }),
+          delete: op('Announcements', 'Delete an announcement — returns { deleted: true } (HR_ADMIN, SUPER_ADMIN)', true, {
+            parameters: idParam,
+            responses: { 200: r200, 401: r401, 403: r403, 404: { description: 'NOT_FOUND' } },
+          }),
         },
         '/announcements/channels': {
           get: op('Announcements', 'List announcement channels'),
