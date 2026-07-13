@@ -4398,6 +4398,13 @@ The payroll engine normalizes all monetary pack fields to major units before com
 **Roles:** HR, SA  
 **Query:** `?groupBy=classification` (default) | `entity` | `currency`
 
+> **BE-PAY-4 (FX):** cross-currency blending uses a tenant Setting
+> `groupKey='payroll', settingKey='fx_rates'` = `{ base?, asOf?, rates }` — no longer a
+> hardcoded table. If any currency in the tenant has **no rate**, the response does NOT
+> blend 1:1; instead `blended:false`, `totalBaseCost:null`, `missingRates:[...]`, `asOf`,
+> plus a per-currency `perCurrency` breakdown. When all rates exist: `blended:true` with
+> the real `totalBaseCost`. Single-currency (all-INR) tenants are unaffected.
+
 **Response 200:**
 ```json
 {
@@ -4798,7 +4805,7 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | POST | `/payroll/runs/:id/approvals/:level` | HR,SA | Body: `{approvedBy, comment}`. Level 1 or 2 |
 | GET | `/payroll/runs/:id/variance` | HR,SA | `{ runId, thresholdPct, comparedToPeriod, items: [{ employeeId, employeeName, currentNet, previousNet, deltaPct, flags[] }] }` |
 | GET | `/payroll/runs/:id/audit` | HR,SA | **`data` is `PayrollRunAuditEntry[]`** (array). UI calls `.map()` on `data` directly. Entry: `{ id, runId, action, actor, at, detail? }` |
-| POST | `/payroll/runs/:id/payslips/:payslipId/recalculate` | HR,SA | Re-run calculation for single payslip |
+| POST | `/payroll/runs/:id/payslips/:payslipId/recalculate` | HR,SA | **Returns `501 RECALC_NOT_SUPPORTED`** — single-payslip recompute is not implemented (BE-PAY-5; it no longer forges a `payslip.recalculated` audit event). `404 NOT_FOUND` if the payslip doesn't exist. |
 | POST | `/payroll/runs/:runId/payslips/:payslipId/hold` | HR,SA | Body: `{reason}`. Sets status=HELD |
 | POST | `/payroll/runs/:runId/payslips/:payslipId/release` | HR,SA | Releases held payslip back to CALCULATED |
 | POST | `/payroll/runs/:id/inputs/from-timesheets` | HR,SA | Pre-fills OT (`otHours`) from APPROVED timesheets in the run period. Approval-gated (DRAFT/REVIEW only → else `422 RUN_NOT_EDITABLE`; `404 NOT_FOUND` if run missing). Idempotent (SET per source). Returns `data: { runId, source:"timesheets", updated, message }`. |
