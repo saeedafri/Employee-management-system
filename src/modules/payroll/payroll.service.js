@@ -1482,7 +1482,7 @@ export async function updateWorkerClassification(prisma, tenantId, employeeId, b
 }
 
 export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classification') {
-  const [employees, tenant] = await Promise.all([
+  const [employees, tenant, fxSetting] = await Promise.all([
     prisma.employee.findMany({
       where: { tenantId, deletedAt: null, employmentStatus: { in: ['ACTIVE', 'ON_LEAVE'] } },
       include: {
@@ -1490,16 +1490,29 @@ export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classifi
       },
     }),
     prisma.tenant.findUnique({ where: { id: tenantId }, select: { defaultCurrency: true } }),
+    // BE-PAY-4: FX rates now come from tenant configuration, not a hardcoded table.
+    // Setting shape: { base?, asOf?, rates: { <CUR>: <rate-vs-pivot> } }. Rates are quoted
+    // the same way the old table was — units of the pivot currency per 1 unit of <CUR>.
+    prisma.setting.findUnique({
+      where: { tenantId_groupKey_settingKey: { tenantId, groupKey: 'payroll', settingKey: 'fx_rates' } },
+    }).catch(() => null),
   ]);
 
-  // NOTE: placeholder INR-relative FX table. Production should source rates from a configurable
-  // rate provider (see 12.4 follow-up). Unknown currencies (e.g. KWD/JPY) fall back to 1:1.
-  const FX_RATES = { INR: 1, USD: 83, EUR: 90, GBP: 105, AED: 22, SGD: 62, KWD: 270, JPY: 0.55 };
-  // Base currency is the tenant's configured currency (config-over-code), not hardcoded INR.
-  const BASE_CURRENCY = tenant?.defaultCurrency || 'INR';
-  const baseRate = FX_RATES[BASE_CURRENCY] ?? 1;
+  const fxConfig = (fxSetting && typeof fxSetting.valueJson === 'object') ? fxSetting.valueJson : null;
+  const rates = (fxConfig && typeof fxConfig.rates === 'object' && fxConfig.rates) ? fxConfig.rates : {};
+  const asOf = fxConfig?.asOf ?? null;
+  // Base currency: tenant config wins, then the FX setting's declared base, else INR.
+  const BASE_CURRENCY = tenant?.defaultCurrency || fxConfig?.base || 'INR';
+  const baseRate = Number(rates[BASE_CURRENCY] ?? 1);
+  // Rate to convert 1 unit of `cur` into the base currency. null when unknown (no silent 1:1).
+  const rateFor = (cur) => {
+    if (cur === BASE_CURRENCY) return 1;
+    const r = rates[cur];
+    return r == null ? null : Number(r) / baseRate;
+  };
 
   const map = new Map();
+  const missingRates = new Set();
   let totalBaseCost = 0;
   let totalWorkers = 0;
 
@@ -1507,8 +1520,9 @@ export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classifi
     const salary = e.salaries?.[0];
     const currency = e.payCurrency || BASE_CURRENCY;
     const monthlyLocal = salary ? Number(salary.annualCtc) / 12 : 0;
-    // Convert local → tenant base via the INR-relative pivot table.
-    const monthlyBase = Math.round((monthlyLocal * (FX_RATES[currency] ?? 1)) / baseRate);
+    const rate = rateFor(currency);
+    if (rate == null) missingRates.add(currency);
+    const monthlyBase = rate == null ? null : Math.round(monthlyLocal * rate);
 
     const classification = toWorkerClassification(e.employmentType);
     const key =
@@ -1516,21 +1530,65 @@ export async function getWorkerCostSummary(prisma, tenantId, groupBy = 'classifi
             groupBy === 'entity' ? (e.location || 'Unknown') :
               classification;
 
-    totalBaseCost += monthlyBase;
     totalWorkers += 1;
-    const g = map.get(key) ?? { key, workerCount: 0, baseAmount: 0 };
+    if (monthlyBase != null) totalBaseCost += monthlyBase;
+    const g = map.get(key) ?? { key, workerCount: 0, baseAmount: 0, localAmount: 0, currencies: new Set() };
     g.workerCount += 1;
-    g.baseAmount += monthlyBase;
+    if (monthlyBase != null) g.baseAmount += monthlyBase;
+    g.localAmount += Math.round(monthlyLocal);
+    g.currencies.add(currency);
     map.set(key, g);
+  }
+
+  // BE-PAY-4: when any currency lacks a configured rate we REFUSE to blend into a single base
+  // total (blending would silently mis-state cost). Return the per-currency breakdown + a
+  // missingRates flag so the caller can surface it. Single-currency / all-rated tenants are
+  // unaffected: missingRates is empty and totalBaseCost is the real blended figure.
+  const missing = [...missingRates];
+  const groups = [...map.values()].map((g) => ({
+    key: g.key,
+    workerCount: g.workerCount,
+    baseAmount: g.baseAmount,
+    localAmount: g.localAmount,
+    currencies: [...g.currencies],
+  }));
+
+  if (missing.length > 0) {
+    // Per-currency breakdown (local, un-converted) so nothing is invented at a 1:1 rate.
+    const byCurrency = new Map();
+    for (const e of employees) {
+      const salary = e.salaries?.[0];
+      const currency = e.payCurrency || BASE_CURRENCY;
+      const monthlyLocal = salary ? Math.round(Number(salary.annualCtc) / 12) : 0;
+      const c = byCurrency.get(currency) ?? { currency, workerCount: 0, localAmount: 0 };
+      c.workerCount += 1;
+      c.localAmount += monthlyLocal;
+      byCurrency.set(currency, c);
+    }
+    return {
+      groupBy,
+      baseCurrency: BASE_CURRENCY,
+      blended: false,
+      missingRates: missing,
+      asOf,
+      totalBaseCost: null,
+      totalWorkers,
+      perCurrency: [...byCurrency.values()].sort((a, b) => b.localAmount - a.localAmount),
+      groups: groups.sort((a, b) => b.localAmount - a.localAmount),
+      fxRates: rates,
+    };
   }
 
   return {
     groupBy,
     baseCurrency: BASE_CURRENCY,
+    blended: true,
+    missingRates: [],
+    asOf,
     totalBaseCost,
     totalWorkers,
-    groups: [...map.values()].sort((a, b) => b.baseAmount - a.baseAmount),
-    fxRates: FX_RATES,
+    groups: groups.sort((a, b) => b.baseAmount - a.baseAmount),
+    fxRates: rates,
   };
 }
 
@@ -1702,17 +1760,17 @@ export async function getRunAudit(prisma, runId, tenantId) {
   return [...fromStored, ...fromEvents].sort((a, b) => String(a.at).localeCompare(String(b.at)));
 }
 
-export async function recalculatePayslip(prisma, runId, payslipId, tenantId, actor) {
+export async function recalculatePayslip(prisma, runId, payslipId, tenantId) {
   const payslip = await prisma.payslip.findFirst({ where: { id: payslipId, payrollRunId: runId, tenantId } });
-  if (!payslip) return null;
-  const updated = await prisma.payslip.update({
-    where: { id: payslipId },
-    data: { updatedAt: new Date() },
-  });
-  await prisma.payrollEvent.create({
-    data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'payslip.recalculated', runId, summary: `Payslip ${payslipId} recalculated by ${actor || 'SYSTEM'}` },
-  });
-  return updated;
+  if (!payslip) return null; // → 404 in the controller
+  // BE-PAY-5: single-payslip recompute is NOT implemented. The old code only bumped updatedAt and
+  // wrote a `payslip.recalculated` audit event while recomputing nothing — a forged audit trail.
+  // Fail honestly instead; re-run the whole run via POST /payroll/runs/:id/calculate to recompute.
+  throw AppError(
+    'Single-payslip recalculation is not supported — recalculate the entire run instead',
+    'RECALC_NOT_SUPPORTED',
+    501,
+  );
 }
 
 export async function holdPayslip(prisma, runId, payslipId, tenantId, body) {

@@ -939,8 +939,8 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
           const baseAnnual = (lastReg && Array.isArray(lastReg.earningsJson))
             ? lastReg.earningsJson.filter((e) => e.taxable !== false).reduce((s, e) => s + Number(e.amount ?? 0), 0) * 12
             : Number(empSal?.annualCtc ?? 0);
-          const taxBase = computeIncomeTaxFromRegime(baseAnnual, bregime, bonusCurrency);
-          const taxWith = computeIncomeTaxFromRegime(baseAnnual + amount, bregime, bonusCurrency);
+          const taxBase = computeIncomeTaxFromRegime(baseAnnual, bregime, bonusCurrency, bpack?.rounding);
+          const taxWith = computeIncomeTaxFromRegime(baseAnnual + amount, bregime, bonusCurrency, bpack?.rounding);
           bonusTax = Math.max(0, Math.round(taxWith - taxBase));
         }
       } catch { bonusTax = 0; }
@@ -1168,7 +1168,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
 
       const { statutoryDeductions, employerContributions, warnings: statWarnings = [] } = computeStatutoryContributions(
         earningsArr, componentByCode, contributionSchemes,
-        { periodsPerMonth: ppm, isLastCycleInMonth: lastCycle, currency: payslipCurrency },
+        { periodsPerMonth: ppm, isLastCycleInMonth: lastCycle, currency: payslipCurrency, rounding: statutoryPack?.rounding },
       );
       for (const w of statWarnings) {
         warnings.push({ employeeId: employee.id, employeeName: `${employee.firstName} ${employee.lastName}`, message: w });
@@ -1231,7 +1231,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
           .reduce((s, it) => s + Number(it.amount ?? 0), 0);
         const annualTaxable = Math.max(0, annualTaxableStructural - exemptions);
         const taxCurrency = sal.currency ?? payGroup.currency ?? 'INR';
-        const annualTax = computeIncomeTaxFromRegime(annualTaxable, activeRegime, taxCurrency);
+        const annualTax = computeIncomeTaxFromRegime(annualTaxable, activeRegime, taxCurrency, statutoryPack?.rounding);
         // H2 — YTD true-up: walk months 1..monthIndex, spreading the remaining tax over the
         // periods that are left (FE withholdingForMonth). monthIndex=1 → round(annualTax/12).
         let ytd = 0, monthlyTax = 0;

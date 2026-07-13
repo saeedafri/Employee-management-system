@@ -11,7 +11,10 @@ export function runYearEndClose(i) {
   const unused = round2(Math.max(0, i.closingBalance));
   if (unused === 0) return [];
   const { rule } = i;
-  const eff = `${i.year}-12-31`;
+  // BE-PAY-7: honour a fiscal leave-year window when the caller supplies it; otherwise default to
+  // the calendar year (Dec 31 close, carry into year+1) — byte-identical to the previous behaviour.
+  const eff = i.leaveYearEnd ?? `${i.year}-12-31`;
+  const nextYear = i.nextYear ?? (i.year + 1);
   const out = [];
 
   if (rule.yearEnd === 'CARRY' && rule.carryForward.allowed) {
@@ -20,7 +23,7 @@ export function runYearEndClose(i) {
     const expired = round2(unused - carried);
     if (carried > 0) {
       out.push(
-        mk(i, 'CARRY_FORWARD_IN', carried, eff, `Carry forward ${carried} into ${i.year + 1}`),
+        mk(i, 'CARRY_FORWARD_IN', carried, eff, `Carry forward ${carried} into ${nextYear}`),
       );
     }
     if (expired > 0) {

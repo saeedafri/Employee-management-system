@@ -2,6 +2,37 @@
 
 import { fmtStatutoryPackRow } from './statutoryPackShape.js';
 import { periodRepresentativeDate } from './payrollPeriod.js';
+import { currencyDecimals } from './money.js';
+
+// BE-PAY-3: apply a statutory pack's rounding policy {mode, precision} to a computed statutory/
+// tax amount. When there is NO config (mode == null) this is the legacy whole-major-unit
+// Math.round, so INR and any pack without a rounding block are byte-identical to before.
+export function roundWith(mode, precision, value) {
+  const n = Number(value) || 0;
+  if (mode == null) return Math.round(n);
+  const p = Number.isFinite(Number(precision)) ? Math.max(0, Math.trunc(Number(precision))) : 0;
+  const factor = 10 ** p;
+  const scaled = n * factor;
+  // The epsilon nudge only matters when the ×factor scaling can introduce a float artefact
+  // (p > 0). At p === 0 (India: precision 0) this stays byte-identical to Math.round(value).
+  const eps = p > 0 ? Number.EPSILON : 0;
+  const m = String(mode).toUpperCase();
+  if (m === 'UP' || m === 'CEIL' || m === 'CEILING') return Math.ceil(scaled - eps) / factor;
+  if (m === 'DOWN' || m === 'FLOOR' || m === 'TRUNC') return Math.floor(scaled + eps) / factor;
+  return Math.round(scaled + eps) / factor; // NEAREST (default)
+}
+
+// Resolve a pack's rounding config, clamping precision to the currency's ISO-4217 minor-unit
+// digits (reuses currencyDecimals) so a pack can never round finer than the currency allows.
+// Returns { mode: null } when there is no config → callers fall through to the legacy round.
+export function resolveRounding(rounding, currency = 'INR') {
+  if (!rounding || rounding.mode == null) return { mode: null, precision: 0 };
+  const maxDp = currencyDecimals(currency);
+  let precision = rounding.precision == null ? 0 : Math.trunc(Number(rounding.precision));
+  if (!Number.isFinite(precision) || precision < 0) precision = 0;
+  if (precision > maxDp) precision = maxDp;
+  return { mode: rounding.mode, precision };
+}
 
 // BE-PAY-1: convert a minor-unit config value (e.g. wageCeiling) to major units
 // using the currency's ISO-4217 exponent, not a hardcoded ÷100. KWD/BHD (3dp) and
@@ -91,10 +122,14 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
   periodsPerMonth: ppm = 1,
   isLastCycleInMonth = true,
   currency = 'INR',
+  rounding = null,
 } = {}) {
   const statutoryDeductions = [];
   const employerContributions = [];
   const warnings = [];
+  // BE-PAY-3: honour the pack's rounding policy (mode + currency-clamped precision). No config
+  // → { mode: null } → roundWith falls back to the legacy Math.round (INR unchanged).
+  const rnd = resolveRounding(rounding, currency);
 
   for (const scheme of contributionSchemes) {
     const wageBaseTag = scheme?.wageBaseTag;
@@ -124,8 +159,8 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
         const ceilingMajor = minorToMajor(scheme.wageCeiling, currency);
         if (ceilingMajor != null) monthlyCeiledBase = Math.min(monthlyEstimatedBase, ceilingMajor);
       }
-      const monthlyEmpTotal = Math.round((monthlyCeiledBase * empRate) / 100);
-      const monthlyErTotal = Math.round((monthlyCeiledBase * erRate) / 100);
+      const monthlyEmpTotal = roundWith(rnd.mode, rnd.precision, (monthlyCeiledBase * empRate) / 100);
+      const monthlyErTotal = roundWith(rnd.mode, rnd.precision, (monthlyCeiledBase * erRate) / 100);
 
       const cycleEmp = Math.floor(monthlyEmpTotal / ppm);
       const cycleEr = Math.floor(monthlyErTotal / ppm);
@@ -139,8 +174,8 @@ export function computeStatutoryContributions(earnings, componentByCode, contrib
         const ceilingMajor = minorToMajor(scheme.wageCeiling, currency);
         if (ceilingMajor != null) base = Math.min(rawBase, ceilingMajor);
       }
-      employeeAmt = Math.round((base * empRate) / 100);
-      employerAmt = Math.round((base * erRate) / 100);
+      employeeAmt = roundWith(rnd.mode, rnd.precision, (base * empRate) / 100);
+      employerAmt = roundWith(rnd.mode, rnd.precision, (base * erRate) / 100);
     }
 
     if (employeeAmt > 0 && scheme.employee?.component) {
@@ -229,7 +264,7 @@ export function computeSlabTax(taxableIncome, slabs = []) {
  *
  * Returns annual tax (number). Caller divides by 12 for monthly withholding.
  */
-export function computeIncomeTaxFromRegime(annualGross, taxRegime, currency = 'INR') {
+export function computeIncomeTaxFromRegime(annualGross, taxRegime, currency = 'INR', rounding = null) {
   if (!taxRegime || !Array.isArray(taxRegime.slabs) || !taxRegime.slabs.length) return 0;
 
   // All pack monetary fields are in minor units — normalize before computation.
@@ -265,7 +300,9 @@ export function computeIncomeTaxFromRegime(annualGross, taxRegime, currency = 'I
   const credits = Array.isArray(regime.taxCredits) ? regime.taxCredits : [];
   const totalCredits = credits.reduce((s, c) => s + Number(c.amount ?? 0), 0);
 
-  return Math.max(0, Math.round(tax - totalCredits));
+  // BE-PAY-3: final withholding round honours the pack's rounding policy; no config → Math.round.
+  const rnd = resolveRounding(rounding, currency);
+  return Math.max(0, roundWith(rnd.mode, rnd.precision, tax - totalCredits));
 }
 
 /**

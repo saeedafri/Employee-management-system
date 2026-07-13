@@ -16,6 +16,65 @@ const TENANT_DEFAULT_COUNTRY = 'IN';
 const today = () => new Date().toISOString().slice(0, 10);
 const round2 = (n) => Math.round(n * 100) / 100;
 
+function policyError(message, code, statusCode = 422) {
+  const e = new Error(message);
+  e.code = code; e.statusCode = statusCode;
+  return e;
+}
+
+// BE-PAY-6 + BE-PAY-8: reject leave-policy config the engine does NOT honour, at the write path,
+// so a dead knob can never be persisted. The accrual engine only materialises MONTHLY accrual
+// (engine/accrual.js), and balance enforcement is an unconditional hard block (leave.service.js),
+// so QUARTERLY/ANNUAL accrual or negativeBalance.allowed/convertsToLop would silently do nothing.
+const SUPPORTED_ACCRUAL_FREQUENCIES = new Set(['MONTHLY']);
+
+export function validatePolicyRules(rules) {
+  if (!Array.isArray(rules)) return;
+  for (const rule of rules) {
+    const freq = rule?.accrual?.frequency;
+    if (freq && !SUPPORTED_ACCRUAL_FREQUENCIES.has(String(freq).toUpperCase())) {
+      throw policyError(
+        `Accrual frequency "${freq}" is not supported — only MONTHLY accrual is implemented`,
+        'ACCRUAL_FREQUENCY_NOT_SUPPORTED',
+      );
+    }
+    const neg = rule?.negativeBalance;
+    if (neg && (neg.allowed === true || neg.convertsToLop === true)) {
+      throw policyError(
+        'negativeBalance.allowed / convertsToLop is not supported — leave is hard-blocked at zero balance',
+        'NEGATIVE_BALANCE_NOT_SUPPORTED',
+      );
+    }
+  }
+}
+
+// BE-PAY-7: resolve the leave-year window from a policy rule's leaveYear config.
+// CALENDAR (default, or a null config) is byte-identical to the previous getFullYear() behaviour
+// (Jan 1 – Dec 31, label = the calendar year). FISCAL honours startMonth (e.g. 4 → Apr 1 – Mar 31,
+// label = the STARTING year), so an Apr–Mar fiscal leave year works end-to-end.
+export function resolveLeaveYear(leaveYearConfig, refDate = new Date()) {
+  const d = refDate instanceof Date ? refDate : new Date(refDate);
+  const y = d.getFullYear();
+  const basis = leaveYearConfig?.basis ? String(leaveYearConfig.basis).toUpperCase() : 'CALENDAR';
+  if (basis !== 'FISCAL') {
+    return { leaveYear: y, start: `${y}-01-01`, end: `${y}-12-31`, nextYear: y + 1 };
+  }
+  const startMonth = Math.min(12, Math.max(1, Math.trunc(Number(leaveYearConfig.startMonth ?? 4)) || 4));
+  const month = d.getMonth() + 1; // 1-12
+  const startYear = month >= startMonth ? y : y - 1;
+  const endYear = startMonth === 1 ? startYear : startYear + 1;
+  const endMonth = startMonth === 1 ? 12 : startMonth - 1;
+  const lastDay = new Date(endYear, endMonth, 0).getDate();
+  const mm = String(startMonth).padStart(2, '0');
+  const em = String(endMonth).padStart(2, '0');
+  return {
+    leaveYear: startYear,
+    start: `${startYear}-${mm}-01`,
+    end: `${endYear}-${em}-${String(lastDay).padStart(2, '0')}`,
+    nextYear: startYear + 1,
+  };
+}
+
 // ── Employee context ─────────────────────────────────────────────────────────
 export function buildEmployeeContext(employee, country) {
   return {
@@ -165,6 +224,8 @@ export async function autoAssign(prisma, tenantId, employee, country) {
   const ledgerNow = await repo.listLedger(prisma, tenantId, { employeeId: employee.id });
   const txns = [];
   for (const { rule } of matched) {
+    // BE-PAY-7: leave-year window honours the rule's leaveYear.basis (CALENDAR default = today's).
+    const ly = resolveLeaveYear(rule.leaveYear);
     if (rule.grantStyle === 'UPFRONT' && probationCleared(ctx, rule)) {
       txns.push({
         id: `og-${employee.id}-${rule.leaveTypeCode}`,
@@ -176,7 +237,7 @@ export async function autoAssign(prisma, tenantId, employee, country) {
         delta: rule.annualQuota,
         effectiveDate: new Date(today()),
         postedAt: new Date(),
-        leaveYear: new Date().getFullYear(),
+        leaveYear: ly.leaveYear,
         reason: 'Opening grant on assignment',
         systemGenerated: true,
       });
@@ -191,7 +252,7 @@ export async function autoAssign(prisma, tenantId, employee, country) {
         joinDate: ctx.joinDate,
         exitDate: ctx.exitDate ?? null,
         prorationBasis: rule.proration.basis,
-        leaveYearStart: `${new Date().getFullYear()}-01-01`,
+        leaveYearStart: ly.start,
         watermark: null,
         asOf: today(),
         balanceBefore: before,
@@ -279,8 +340,11 @@ export async function getLeaveTypesFromPolicies(prisma, tenantId) {
 // is the sourceRef the fold uses to pair a hold with its release. Consumption is signed
 // negative; the fold uses Math.abs for HOLD/RELEASE/TAKEN so the sign is audit-only.
 export async function postLeaveLedger(prisma, tenantId, {
-  type, employeeId, code, days, requestId, reason, policyId, policyVersion,
+  type, employeeId, code, days, requestId, reason, policyId, policyVersion, leaveYearConfig,
 }) {
+  // BE-PAY-7: CALENDAR default (undefined config) is byte-identical to the old getFullYear();
+  // callers that resolve a fiscal policy can pass leaveYearConfig to stamp the fiscal year.
+  const ly = resolveLeaveYear(leaveYearConfig);
   return repo.createLedgerTxn(prisma, tenantId, {
     employeeId,
     leaveTypeId: code,
@@ -290,7 +354,7 @@ export async function postLeaveLedger(prisma, tenantId, {
     delta: -Math.abs(days),
     effectiveDate: new Date(today()),
     postedAt: new Date(),
-    leaveYear: new Date().getFullYear(),
+    leaveYear: ly.leaveYear,
     sourceRef: requestId,
     reason: reason ?? 'Leave lifecycle ledger entry',
     systemGenerated: true,
@@ -300,6 +364,10 @@ export async function postLeaveLedger(prisma, tenantId, {
 export async function postAdjustment(prisma, tenantId, employeeId, leaveTypeCode, delta, reason, country) {
   const employee = await repo.getEmployee(prisma, tenantId, employeeId);
   const ctx = buildEmployeeContext(employee ?? { id: employeeId }, country);
+  // BE-PAY-7: stamp the leave year from the employee's policy (CALENDAR default = today's year).
+  const policies = await getTenantPolicies(prisma, tenantId);
+  const match = rulesForEmployee(policies, ctx).find((r) => r.rule.leaveTypeCode === leaveTypeCode);
+  const ly = resolveLeaveYear(match?.rule?.leaveYear);
   const entry = await repo.createLedgerTxn(prisma, tenantId, {
     employeeId,
     leaveTypeId: leaveTypeCode,
@@ -309,7 +377,7 @@ export async function postAdjustment(prisma, tenantId, employeeId, leaveTypeCode
     delta,
     effectiveDate: new Date(today()),
     postedAt: new Date(),
-    leaveYear: new Date().getFullYear(),
+    leaveYear: ly.leaveYear,
     reason,
     systemGenerated: false,
   });
@@ -399,7 +467,8 @@ export async function approveCompOff(prisma, tenantId, id, approverId, country) 
     delta: round2(units * rate),
     effectiveDate: new Date(req.workDate),
     postedAt: new Date(),
-    leaveYear: new Date(req.workDate).getFullYear(),
+    // BE-PAY-7: fiscal-aware year of the work date (CALENDAR default = workDate's calendar year).
+    leaveYear: resolveLeaveYear(match?.rule?.leaveYear, new Date(req.workDate)).leaveYear,
     reason: `Comp-off earned for work on ${ymd(req.workDate)}`,
     systemGenerated: false,
   });
@@ -450,7 +519,8 @@ export async function encash(prisma, tenantId, employeeId, leaveTypeCode, days, 
     delta: -res.days,
     effectiveDate: new Date(today()),
     postedAt: new Date(),
-    leaveYear: new Date().getFullYear(),
+    // BE-PAY-7: fiscal-aware leave year (CALENDAR default = today's year).
+    leaveYear: resolveLeaveYear(match.rule?.leaveYear).leaveYear,
     reason: `Encashed ${res.days} day(s) — ${res.amount}`,
     systemGenerated: false,
   });
@@ -465,6 +535,7 @@ async function nextVersion(prisma, tenantId, country) {
 }
 
 export async function createPolicyVersion(prisma, tenantId, input) {
+  validatePolicyRules(input.rules); // BE-PAY-6 + BE-PAY-8: block unsupported config at write time
   const row = await repo.createPolicy(prisma, tenantId, {
     country: input.country,
     version: await nextVersion(prisma, tenantId, input.country),
@@ -495,7 +566,7 @@ export async function patchDraftPolicy(prisma, tenantId, id, patch) {
   if (!p) return { notFound: true };
   if (p.status !== 'DRAFT') return { immutable: true };
   const data = {};
-  if (patch.rules) data.rules = patch.rules;
+  if (patch.rules) { validatePolicyRules(patch.rules); data.rules = patch.rules; } // BE-PAY-6 + BE-PAY-8
   if (patch.effectiveFrom) data.effectiveFrom = new Date(patch.effectiveFrom);
   if (patch.applicability) data.applicability = patch.applicability;
   const row = await repo.updatePolicy(prisma, tenantId, id, data);
