@@ -773,3 +773,495 @@ The easiest sentence to remember is:
 ```text
 A chooses the group, and B is added.
 ```
+
+Of course man — let’s make it very easy, step by step.
+
+First, what is the question asking?
+
+The question says:
+
+Implement a rolling mean over groups with window size 3, while ignoring NaN values.
+
+That means we have a DataFrame like this:
+
+df = pd.DataFrame({
+"group": list("aabbabbbabab"),
+"value": [1, 2, 3, np.nan, 2, 3, np.nan, 1, 7, 3, np.nan, 8]
+})
+
+It has two columns:
+
+index group value
+0 a 1
+1 a 2
+2 b 3
+3 b NaN
+4 a 2
+5 b 3
+6 b NaN
+7 b 1
+8 a 7
+9 b 3
+10 a NaN
+11 b 8
+
+⸻
+
+What does “rolling mean with window size 3” mean?
+
+It means:
+
+For every row, look at the current value and previous 2 values in the same group, then take the average.
+
+Window size 3 means maximum 3 values are used.
+
+Example:
+
+For group a, the values are:
+
+1, 2, 2, 7, NaN
+
+Now rolling mean with window size 3:
+
+1 mean = 1
+1, 2 mean = 1.5
+1, 2, 2 mean = 1.6667
+2, 2, 7 mean = 3.6667
+2, 7, NaN mean = 4.5
+
+Notice: NaN is ignored while calculating the mean.
+
+So:
+
+mean(2, 7, NaN) = mean(2, 7) = 4.5
+
+⸻
+
+Final Code
+
+import pandas as pd
+import numpy as np
+df = pd.DataFrame({
+"group": list("aabbabbbabab"),
+"value": [1, 2, 3, np.nan, 2, 3, np.nan, 1, 7, 3, np.nan, 8]
+})
+df["rolling_mean"] = (
+df.groupby("group")["value"]
+.transform(lambda x: x.rolling(window=3, min_periods=1).mean())
+)
+print(df)
+
+⸻
+
+Line-by-line explanation
+
+Line 1
+
+import pandas as pd
+
+This imports pandas.
+
+Pandas is used to work with tables, like DataFrames.
+
+⸻
+
+Line 2
+
+import numpy as np
+
+This imports NumPy.
+
+We need NumPy because we are using:
+
+np.nan
+
+np.nan means missing value.
+
+⸻
+
+Line 4 to 7
+
+df = pd.DataFrame({
+"group": list("aabbabbbabab"),
+"value": [1, 2, 3, np.nan, 2, 3, np.nan, 1, 7, 3, np.nan, 8]
+})
+
+This creates the DataFrame.
+
+The group column is:
+
+list("aabbabbbabab")
+
+That becomes:
+
+a, a, b, b, a, b, b, b, a, b, a, b
+
+The value column is:
+
+1, 2, 3, NaN, 2, 3, NaN, 1, 7, 3, NaN, 8
+
+So now we have groups a and b.
+
+⸻
+
+Main important part
+
+df["rolling_mean"] = (
+df.groupby("group")["value"]
+.transform(lambda x: x.rolling(window=3, min_periods=1).mean())
+)
+
+Let’s break this slowly.
+
+⸻
+
+Step 1
+
+df.groupby("group")
+
+This separates the data into groups.
+
+So pandas makes two separate groups:
+
+Group a
+
+index value
+0 1
+1 2
+4 2
+8 7
+10 NaN
+
+Group b
+
+index value
+2 3
+3 NaN
+5 3
+6 NaN
+7 1
+9 3
+11 8
+
+So rolling mean is calculated separately for a and b.
+
+Very important: group a values do not mix with group b values.
+
+⸻
+
+Step 2
+
+["value"]
+
+This means:
+
+Only work on the value column.
+
+We do not calculate rolling mean on the group column.
+
+⸻
+
+Step 3
+
+.transform(...)
+
+transform means:
+
+Calculate something group-wise, but return the result in the original DataFrame shape.
+
+This is important because we want the rolling mean result to match the original row numbers.
+
+So the answer stays aligned with index:
+
+0, 1, 2, 3, 4, ...
+
+⸻
+
+Step 4
+
+lambda x:
+
+Here, x means one group at a time.
+
+First, x will be group a values:
+
+1, 2, 2, 7, NaN
+
+Then, x will be group b values:
+
+3, NaN, 3, NaN, 1, 3, 8
+
+⸻
+
+Step 5
+
+x.rolling(window=3, min_periods=1)
+
+This creates rolling windows.
+
+window=3
+
+Means take maximum 3 values at a time.
+
+Example for group a:
+
+1
+1, 2
+1, 2, 2
+2, 2, 7
+2, 7, NaN
+
+min_periods=1
+
+Means:
+
+Even if only 1 value is available, calculate the mean.
+
+Without this, pandas may give NaN until 3 values are available.
+
+Example:
+
+For the first row, we only have:
+
+1
+
+Because min_periods=1, pandas gives:
+
+1.0
+
+⸻
+
+Step 6
+
+.mean()
+
+This calculates the average of each rolling window.
+
+Pandas automatically ignores NaN values while taking mean.
+
+Example:
+
+mean(3, NaN, 3)
+
+is:
+
+3
+
+Because NaN is ignored.
+
+Example:
+
+mean(2, 7, NaN)
+
+is:
+
+4.5
+
+Because only 2 and 7 are used.
+
+⸻
+
+Manual calculation for group a
+
+Group a values:
+
+index: 0 1 4 8 10
+value: 1 2 2 7 NaN
+
+Now rolling mean:
+
+Index 0
+
+Window:
+
+1
+
+Mean:
+
+1
+
+⸻
+
+Index 1
+
+Window:
+
+1, 2
+
+Mean:
+
+(1 + 2) / 2 = 1.5
+
+⸻
+
+Index 4
+
+Window:
+
+1, 2, 2
+
+Mean:
+
+(1 + 2 + 2) / 3 = 1.6667
+
+⸻
+
+Index 8
+
+Window:
+
+2, 2, 7
+
+Mean:
+
+(2 + 2 + 7) / 3 = 3.6667
+
+⸻
+
+Index 10
+
+Window:
+
+2, 7, NaN
+
+NaN is ignored.
+
+Mean:
+
+(2 + 7) / 2 = 4.5
+
+⸻
+
+Manual calculation for group b
+
+Group b values:
+
+index: 2 3 5 6 7 9 11
+value: 3 NaN 3 NaN 1 3 8
+
+⸻
+
+Index 2
+
+Window:
+
+3
+
+Mean:
+
+3
+
+⸻
+
+Index 3
+
+Window:
+
+3, NaN
+
+NaN ignored.
+
+Mean:
+
+3
+
+⸻
+
+Index 5
+
+Window:
+
+3, NaN, 3
+
+NaN ignored.
+
+Mean:
+
+(3 + 3) / 2 = 3
+
+⸻
+
+Index 6
+
+Window:
+
+NaN, 3, NaN
+
+Only 3 is valid.
+
+Mean:
+
+3
+
+⸻
+
+Index 7
+
+Window:
+
+3, NaN, 1
+
+NaN ignored.
+
+Mean:
+
+(3 + 1) / 2 = 2
+
+⸻
+
+Index 9
+
+Window:
+
+NaN, 1, 3
+
+NaN ignored.
+
+Mean:
+
+(1 + 3) / 2 = 2
+
+⸻
+
+Index 11
+
+Window:
+
+1, 3, 8
+
+Mean:
+
+(1 + 3 + 8) / 3 = 4
+
+⸻
+
+Final Output
+
+group value rolling_mean
+0 a 1.0 1.000000
+1 a 2.0 1.500000
+2 b 3.0 3.000000
+3 b NaN 3.000000
+4 a 2.0 1.666667
+5 b 3.0 3.000000
+6 b NaN 3.000000
+7 b 1.0 2.000000
+8 a 7.0 3.666667
+9 b 3.0 2.000000
+10 a NaN 4.500000
+11 b 8.0 4.000000
+
+⸻
+
+Super simple meaning
+
+For each row:
+
+1. Check its group: a or b.
+2. Look only at previous values from the same group.
+3. Take current value plus previous 2 values.
+4. Ignore NaN.
+5. Calculate average.
+6. Put answer in rolling_mean.
+
+That is the whole question.
