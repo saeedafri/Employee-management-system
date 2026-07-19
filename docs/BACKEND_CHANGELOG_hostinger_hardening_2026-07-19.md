@@ -1,9 +1,10 @@
 # Backend changelog — Hostinger hardening + Super Admin fix (minute detail)
 
 > **Repo:** EMS backend (`/Users/mohdsaeedafri/All-Code-Base/EMS`)  
-> **Status:** Local / uncommitted unless you ask to commit  
+> **Status:** **DEPLOYED** to Hostinger — git `68d32f4` (2026-07-19)  
 > **Deploy target:** Hostinger Docker (`ems-backend`) only — **not** Render, **not** rentocloud  
-> **Date window:** 2026-07-18 → 2026-07-19
+> **Date window:** 2026-07-18 → 2026-07-19  
+> **UI handoff:** `docs/UI_TEAM_HANDOFF_HOSTINGER_HARDENING_2026-07-19.md`
 
 ---
 
@@ -51,9 +52,9 @@
 
 ---
 
-## B. Earlier hardening already in this working tree (uncommitted)
+## B. Hardening included in deploy `68d32f4`
 
-These were implemented in the same branch of work (2026-07-18) and are **not yet deployed** to Hostinger / Vercel unless you deploy.
+These were implemented 2026-07-18 and **are live on Hostinger** as of Set3 deploy 2026-07-19.
 
 ### B1 — Server-side exports (PDF + Cloudinary)
 
@@ -111,11 +112,12 @@ These were implemented in the same branch of work (2026-07-18) and are **not yet
 
 | Item | Blocker |
 |------|---------|
-| Deploy BE to Hostinger | Needs your deploy approval; Mac→Hostinger SSH was unreachable from this environment earlier |
-| Run `linkSuperAdminEmployee.mjs` on Hostinger DB | Explicit DB write approval required |
-| Full `npm test` against Postgres | Docker Desktop missing locally; safety guard blocks tests against Render URL |
-| Live re-test of Super Admin after fix | Requires Hostinger BE deploy (+ optional employee link script) |
-| Vercel FE: role nav + SSE | UI team / FE deploy of contracts above |
+| Deploy BE to Hostinger | **DONE** — `68d32f4` via Hostinger Terminal Set3 |
+| SA empty-read live proof | **DONE** — VPS curl `summary_http=200` + `noEmployeeRecord=true` |
+| Run `linkSuperAdminEmployee.mjs` on Hostinger DB | Optional; empty-read already works without link |
+| Agent Mac → Hostinger SSH/HTTPS | Still ISP-blocked; use Hostinger Terminal / FE network |
+| Full `npm test` against Postgres | Local Docker/`ems_test` not available in agent env |
+| Vercel FE: role nav + empty states + SSE | **UI team** — see handoff MD |
 | AUDITOR role E2E | No seeded auditor user |
 
 ---

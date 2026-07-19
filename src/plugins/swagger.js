@@ -360,21 +360,22 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Attendance', 'Record check-out'),
         },
         '/attendance/records': {
-          get: op('Attendance', 'Get my attendance records', true, {
+          get: op('Attendance', 'Get my attendance records. Query: month=YYYY-MM OR fromDate&toDate. If no linked employee: 200 { records:[], total:0, noEmployeeRecord:true }.', true, {
             parameters: [
-              { in: 'query', name: 'from',  type: 'string', description: 'Date from (YYYY-MM-DD)' },
-              { in: 'query', name: 'to',    type: 'string', description: 'Date to (YYYY-MM-DD)' },
+              { in: 'query', name: 'month',    type: 'string', description: 'YYYY-MM (optional alternative to fromDate/toDate)' },
+              { in: 'query', name: 'fromDate', type: 'string', description: 'Date from (YYYY-MM-DD)' },
+              { in: 'query', name: 'toDate',   type: 'string', description: 'Date to (YYYY-MM-DD)' },
               { in: 'query', name: 'page',  type: 'number' },
               { in: 'query', name: 'limit', type: 'number' },
             ],
           }),
         },
         '/attendance/summary': {
-          get: op('Attendance', 'Get attendance summary/stats'),
+          get: op('Attendance', 'Get attendance summary/stats. If no linked employee: 200 zeroed counters + noEmployeeRecord:true (not 400).'),
         },
         // ── BE-1 PER-EMPLOYEE MONTHLY CALENDAR (BE1_ATTENDANCE_CALENDAR_CONTRACT) ──
         '/attendance/calendar': {
-          get: op('Attendance', 'Monthly attendance calendar for the logged-in employee. One entry per calendar day with a reconciled bucket (HOLIDAY|WEEKLY_OFF|PAID_LEAVE|UNPAID_LEAVE|HALF_DAY|WFH|LATE|WORKED|ABSENT|UPCOMING), the day’s record, summary, and lopDays. Uses the shared holiday resolver (same off-days as /me/holidays), the employee’s work-week + timezone, and tenant attendance-rules thresholds. 422 VALIDATION_ERROR if month missing/not YYYY-MM.', true, {
+          get: op('Attendance', 'Monthly attendance calendar for the logged-in employee. One entry per calendar day with a reconciled bucket (HOLIDAY|WEEKLY_OFF|PAID_LEAVE|UNPAID_LEAVE|HALF_DAY|WFH|LATE|WORKED|ABSENT|UPCOMING), the day’s record, summary, and lopDays. Uses the shared holiday resolver (same off-days as /me/holidays), the employee’s work-week + timezone, and tenant attendance-rules thresholds. If no linked employee: 200 empty calendar + noEmployeeRecord:true. 422 VALIDATION_ERROR if month missing/not YYYY-MM.', true, {
             parameters: [queryParam('month', 'string', 'Target month YYYY-MM (required)')],
             responses: { 200: r200, 422: r422 },
           }),
@@ -502,19 +503,25 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── EXPORT ───────────────────────────────────────────────────────────
         '/export/employees': {
-          post: op('Export', 'Export employees data (CSV/Excel/JSON/PDF). Cloudinary when configured. Requires employees:export.', true, { responses: { 201: r201 } }),
+          post: op('Export', 'Queue employees export (CSV/Excel/JSON/PDF). Requires HR_ADMIN + employees:export. Returns 202 { job_id, status: QUEUED }.', true, {
+            responses: { 202: { description: 'Export job queued' }, 403: r403 },
+          }),
         },
         '/export/attendance': {
-          post: op('Export', 'Export attendance data', true, { responses: { 201: r201 } }),
+          post: op('Export', 'Queue attendance export. Body requires from_date + to_date. format includes pdf. 202 + employees:export.', true, {
+            responses: { 202: { description: 'Export job queued' }, 403: r403 },
+          }),
         },
         '/export/leave': {
-          post: op('Export', 'Export leave data', true, { responses: { 201: r201 } }),
+          post: op('Export', 'Queue leave export. Body requires from_date + to_date. format includes pdf. 202 + employees:export.', true, {
+            responses: { 202: { description: 'Export job queued' }, 403: r403 },
+          }),
         },
         '/export/list': {
-          get: op('Export', 'List all export jobs'),
+          get: op('Export', 'List tenant export jobs (snake_case fields; tenant-wide today)'),
         },
         '/export/{job_id}/download': {
-          get: op('Export', 'Download export file by job ID', true, {
+          get: op('Export', 'Download export: 200 file stream, 302 Cloudinary signed URL, 200 JSON status if not SUCCESS, or 404 FILE_NOT_FOUND. Never use /files/:jobId.', true, {
             parameters: [{ in: 'path', name: 'job_id', type: 'string', required: true }],
           }),
         },
@@ -957,7 +964,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post:  op('Notifications', 'Mark a single notification as read (POST alias)', true, { parameters: idParam }),
         },
         '/notifications/stream': {
-          get: op('Notifications', 'SSE stream for real-time notifications — pass ?token=<accessToken>', false),
+          get: op('Notifications', 'SSE stream for real-time notifications. Auth: ?token=<accessToken> OR Authorization Bearer OR accessToken cookie. Events: notification, analytics_update; heartbeat comments ~25s. Prefer same-origin FE BFF EventSource.', false),
         },
 
         // ── SEARCH ────────────────────────────────────────────────────────────

@@ -1,8 +1,9 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-06-12** (Employee Invitation & Set-Password flow — all 8 blocking fixes applied)
-> Base URL: `https://employee-management-system-2b9q.onrender.com/api/v1`
-> Local: `http://localhost:3000/api/v1`
+> **Last verified: 2026-07-19** (Hostinger hardening `68d32f4` — exports/PDF, permissions SoT, SSE auth, ops logs, `noEmployeeRecord` empty reads)
+> **Production API (Hostinger):** `https://ems-api.saqibsaeed.cloud/api/v1`
+> Legacy Render (do not use for this product): `https://employee-management-system-2b9q.onrender.com/api/v1`
+> Local: `http://localhost:4000/api/v1` (or compose port)
 > Email: Resend HTTP API (port 443, not SMTP — OTP delivery live and tested)
 >
 > **Cloudinary:** Live on Render (2026-06-09) — cloud `dmljxhmio`. `POST /employees/:id/photo` and `POST /employees/:id/documents` upload to Cloudinary. Employee documents are stored **privately** (Cloudinary `authenticated`, BE-SEC-1): the persisted `fileUrl` is empty and `GET /employees/:id/documents` returns a per-item `downloadUrl` — the FE must use it (it `302`-redirects to a short-lived signed URL). Profile photos remain public. Settings storage integration returns `provider: cloudinary`, `configured: true`.
@@ -264,7 +265,7 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
 
 > `mfaEnabled` (boolean, never null) = the caller's own per-user MFA opt-in (written by `PATCH /auth/me/mfa`). `mfaRequiredByPolicy` (boolean) = the tenant `mfa_policy` applied to the caller's `memberType` (`REQUIRED_ALL`→true for all; `REQUIRED_ADMINS`→true for SUPER_ADMIN/HR_ADMIN; `OPTIONAL`→false) — independent of `mfaEnabled`. Drives the FE self-service toggle's initial + forced state (MFA_BACKEND_REQ).
 
-> **`permissions` (2026-06-28 fix):** `permissions[]` is **never empty** for an authenticated user. Resolution: explicit per-user grants win; otherwise the caller's `memberType` maps to a role-default set from the canonical 14-key catalogue (`employees:{read,write,delete,export}`, `departments:{read,write}`, `attendance:{read,write}`, `leave:{read,request,approve}`, `analytics:read`, `permissions:manage`, `audit:read`). SUPER_ADMIN → all 14; HR_ADMIN → 13 (no `permissions:manage`); MANAGER → 8 (`employees:read`, `departments:read`, `attendance:{read,write}`, `leave:{read,request,approve}`, `analytics:read`); EMPLOYEE/AUDITOR → 6 (`employees:read`, `departments:read`, `attendance:{read,write}`, `leave:{read,request}`). Previously returned `[]` for users without explicit grants, breaking the FE permission-gated UI.
+> **`permissions` (canonical `auth.policy.js` / 2026-07-19):** `permissions[]` is **never empty** for an authenticated user. Explicit grants win; else `DEFAULT_PERMISSIONS_BY_ROLE`. Catalogue (14): `employees:{read,write,delete,export}`, `departments:{read,write}`, `attendance:{read,write}`, `leave:{read,request,approve}`, `analytics:read`, `permissions:manage`, `audit:read`. **SUPER_ADMIN** → all 14. **HR_ADMIN** → 13 (no `permissions:manage`; includes `leave:request` + `employees:export`). **MANAGER** → 8 (`employees:read`, `departments:read`, `attendance:{read,write}`, `leave:{read,request,approve}`, `analytics:read`). **EMPLOYEE** → 6 (`employees:read`, `departments:read`, `attendance:{read,write}`, `leave:{read,request}`). **AUDITOR** → 6 (`employees:read`, `departments:read`, `attendance:read`, `leave:read`, `analytics:read`, `audit:read`) — **not** the same as EMPLOYEE (no write/request).
 
 **Auth behavior:**
 
@@ -1629,9 +1630,9 @@ Query: `?range=30d|90d` (default `30d`).
   "roles": ["EMPLOYEE", "HR_ADMIN", "AUDITOR", "MANAGER", "SUPER_ADMIN"],
   "permissions": ["analytics:read", "attendance:read", "attendance:write", "audit:read", "departments:read", "departments:write", "employees:delete", "employees:export", "employees:read", "employees:write", "leave:approve", "leave:read", "leave:request", "permissions:manage"],
   "matrix": {
-    "EMPLOYEE":    ["attendance:read", "attendance:write", "leave:read", "leave:request", "audit:read"],
-    "HR_ADMIN":    ["employees:read", "employees:write", "employees:delete", "employees:export", "departments:read", "departments:write", "attendance:read", "attendance:write", "leave:read", "leave:approve", "analytics:read", "audit:read"],
-    "MANAGER":     ["attendance:read", "leave:approve", "audit:read"],
+    "EMPLOYEE":    ["employees:read", "departments:read", "attendance:read", "attendance:write", "leave:read", "leave:request"],
+    "HR_ADMIN":    ["employees:read", "employees:write", "employees:delete", "employees:export", "departments:read", "departments:write", "attendance:read", "attendance:write", "leave:read", "leave:request", "leave:approve", "analytics:read", "audit:read"],
+    "MANAGER":     ["employees:read", "departments:read", "attendance:read", "attendance:write", "leave:read", "leave:request", "leave:approve", "analytics:read"],
     "AUDITOR":     ["employees:read", "departments:read", "attendance:read", "leave:read", "analytics:read", "audit:read"],
     "SUPER_ADMIN": ["employees:read", "employees:write", "employees:delete", "employees:export", "departments:read", "departments:write", "attendance:read", "attendance:write", "leave:read", "leave:request", "leave:approve", "analytics:read", "permissions:manage", "audit:read"]
   }
@@ -1858,7 +1859,9 @@ Shows INFO/WARN/ERROR/DEBUG LogEntry rows, process RAM/heap/uptime/load, SSE con
 > `employees:export` permission in addition to HR_ADMIN.
 
 ### `POST /export/employees`
-**Body:** `{ "format": "csv" }` (format: csv | excel | json | pdf)
+**Auth:** `HR_ADMIN` (+ SUPER_ADMIN bypass) **and** permission `employees:export`.  
+**HTTP status:** **202 Accepted** (queued job).  
+**Body:** `{ "format": "csv" }` (format: csv | excel | json | pdf); optional `department_id`, `status`, `include_archived`.
 
 **Response `data`:**
 ```json
@@ -1866,16 +1869,20 @@ Shows INFO/WARN/ERROR/DEBUG LogEntry rows, process RAM/heap/uptime/load, SSE con
 ```
 
 ### `POST /export/attendance`
-**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }` (format includes `pdf`)
+**Auth / status:** same as employees (**202** + `employees:export`).  
+**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }` (`from_date`/`to_date` required; format includes `pdf`)
 
 ### `POST /export/leave`
-**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }` (format includes `pdf`)
+**Auth / status:** same as employees (**202** + `employees:export`).  
+**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }` (format includes `pdf`; optional `leave_type`, `status`)
 
 ### `GET /export/:job_id/download`
 Download completed export using `job_id` from the POST response. Prefer this URL — do not
-use any legacy `/files/:jobId` path. May `302` to Cloudinary signed URL.
+use any legacy `/files/:jobId` path. May **200** stream file, **302** to Cloudinary signed URL,
+**200** JSON status if not yet `SUCCESS`, or **404** `FILE_NOT_FOUND`.
 
 ### `GET /export/list`
+**Auth:** authenticated HR/SA (same export module). Lists **tenant-wide** jobs today (not filtered to requester).  
 **Response `data`:**
 ```json
 {

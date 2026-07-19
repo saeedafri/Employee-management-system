@@ -1,9 +1,11 @@
 # UI Role Matrix E2E — 2026-07-19
 
+> **Update after BE deploy `68d32f4`:** Hostinger API now returns **200 + `noEmployeeRecord`** for Super Admin personal reads (proven on VPS). The **FAIL** rows below for SA Attendance/Payout were **pre-fix BE**. FE must still ship empty-state + role-filtered nav — see `UI_TEAM_HANDOFF_HOSTINGER_HARDENING_2026-07-19.md`. Full browser re-crawl from agent host remains blocked (ISP).
+
 **Target:** Deployed frontend (Vercel) → Hostinger API via BFF  
 **MSW:** off  
 **Password for all seeded Acme users:** `Password123!`  
-**Verdict:** **PARTIAL PASS** — all four seeded role types logged in and click-tested; access control mostly correct; SUPER_ADMIN has two broken personal-data pages; sidebar shows admin links to every role.
+**Verdict (pre-fix UI crawl):** **PARTIAL PASS** — all four seeded role types logged in and click-tested; access control mostly correct; SUPER_ADMIN had two broken personal-data pages (BE fixed); sidebar still shows admin links to every role (FE).
 
 No AUDITOR seed user exists — not tested.
 
