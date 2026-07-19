@@ -1,6 +1,9 @@
 import * as settingsRepository from './settings.repository.js';
+import { prisma } from '../../plugins/prisma.js';
 import { resolveWorkWeekDays, toDayTokens } from '../../utils/workingDays.js';
 import { cacheGet, cacheSet, cacheDel } from '../../lib/redis.js';
+import { ensureTenantRolePermissionDefaults } from '../auth/auth.service.js';
+import { DEFAULT_PERMISSIONS_BY_ROLE } from '../auth/auth.policy.js';
 
 // Tenant config is read on nearly every page and changes rarely — cache it tenant-scoped.
 const TENANTCFG_KEY = (tenantId) => `cache:tenantcfg:${tenantId}`;
@@ -94,7 +97,17 @@ export async function updateEmailTemplate(tenantId, type, data) {
 }
 
 export async function getRolePermissions(tenantId) {
+  // Idempotent: seed system Role + RolePermission rows from defaults when empty.
+  await ensureTenantRolePermissionDefaults(prisma, tenantId);
+
   const { matrix, customRoles } = await settingsRepository.getRolePermissions(tenantId);
+
+  // Defensive fill so FE always sees the full day-1 matrix even before seed races.
+  for (const [roleKey, perms] of Object.entries(DEFAULT_PERMISSIONS_BY_ROLE)) {
+    if (!matrix[roleKey] || matrix[roleKey].length === 0) {
+      matrix[roleKey] = [...perms];
+    }
+  }
 
   const roles = Object.keys(matrix);
   const permissionSet = new Set(Object.values(matrix).flat());

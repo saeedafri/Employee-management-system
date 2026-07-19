@@ -62,7 +62,7 @@ Click any endpoint → Try it out → Execute. Auth is automatic via cookie.
 | \`GET /analytics/summary\` | hr@acme.test (HR_ADMIN) |
 | \`GET /employees\` | any |
 
-⚠️ **SUPER_ADMIN has no employee record** — \`/employee/dashboard\`, \`/attendance/check-in\`, \`/leave/requests\` will return \`400 NO_EMPLOYEE_RECORD\`. Use hr@acme.test, aman@acme.test or priya@acme.test for those endpoints.
+⚠️ **SUPER_ADMIN without a linked Employee** — personal **reads** (\`GET /attendance/summary|records|calendar\`, \`GET /payroll/me/payout-methods\`) return **200 empty** + \`noEmployeeRecord: true\`. Personal **writes** (\`check-in\`, leave create) still return \`400 NO_EMPLOYEE_RECORD\`. Seeded Acme links Super Admin → Employee \`E0000\`.
 
 ---
 
@@ -502,7 +502,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
 
         // ── EXPORT ───────────────────────────────────────────────────────────
         '/export/employees': {
-          post: op('Export', 'Export employees data (CSV/Excel)', true, { responses: { 201: r201 } }),
+          post: op('Export', 'Export employees data (CSV/Excel/JSON/PDF). Cloudinary when configured. Requires employees:export.', true, { responses: { 201: r201 } }),
         },
         '/export/attendance': {
           post: op('Export', 'Export attendance data', true, { responses: { 201: r201 } }),
@@ -676,7 +676,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           delete: op('Payroll · Payout Methods', 'Delete a country schema (reverts to generic fallback). SUPER_ADMIN.', true, { parameters: [pathParam('country', 'ISO-3166 alpha-2')] }),
         },
         '/payroll/me/payout-methods': {
-          get: op('Payroll · Payout Methods', 'Signed-in employee’s payout methods (masked) + instructions[]. 400 NO_EMPLOYEE_RECORD if the account has no employee.', true, { responses: { 200: r200, 400: r400 } }),
+          get: op('Payroll · Payout Methods', 'Signed-in employee payout methods (masked) + instructions[]. If no employee linked: 200 { methods:[], instructions:[], noEmployeeRecord:true }.', true, { responses: { 200: r200 } }),
         },
         '/payroll/employees/{employeeId}/payout-methods': {
           get:  op('Payroll · Payout Methods', 'An employee’s payout methods (masked). Self or HR_ADMIN/SUPER_ADMIN.', true, { parameters: [pathParam('employeeId', 'Employee ID')] }),

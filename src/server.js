@@ -2,8 +2,31 @@ import pino from 'pino';
 import { config } from './config/index.js';
 import { createApp } from './app.js';
 import { startPayrollWorker } from './lib/payrollQueue.js';
+import { installProcessErrorHandlers, recordProcessError } from './utils/processMonitor.js';
+import { prisma } from './plugins/prisma.js';
 
 const logger = pino();
+
+installProcessErrorHandlers(async (entry) => {
+  try {
+    // Best-effort persist crash-class events (no tenant — use first active tenant if any).
+    const tenant = await prisma.tenant.findFirst({ select: { id: true } });
+    if (!tenant) return;
+    await prisma.logEntry.create({
+      data: {
+        tenantId: tenant.id,
+        level: entry.kind === 'warning' ? 'WARN' : 'ERROR',
+        levelLabel: entry.kind === 'warning' ? 'Warning' : 'Error',
+        levelColor: entry.kind === 'warning' ? 'yellow' : 'red',
+        module: 'process',
+        message: `[${entry.kind}] ${entry.message}`,
+        metadataJson: { stack: entry.stack, at: entry.at },
+      },
+    });
+  } catch (err) {
+    recordProcessError('persist_failed', err);
+  }
+});
 
 async function start() {
   try {

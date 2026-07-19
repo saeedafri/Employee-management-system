@@ -77,11 +77,12 @@ export default async function notificationsRoutes(fastify) {
     onRequest: [authenticate],
   }, controller.markAllRead);
 
-  // SSE endpoint
+  // SSE endpoint — EventSource cannot set Authorization headers; accept query token,
+  // Authorization header, or accessToken cookie (browser same-site / BFF-forwarded).
   fastify.get('/notifications/stream', {
     schema: {
       tags: ['Notifications'],
-      description: 'Server-Sent Events stream for real-time notifications. Pass accessToken as query param.',
+      description: 'Server-Sent Events stream for real-time notifications. Auth via ?token=, Bearer header, or accessToken cookie.',
       querystring: {
         type: 'object',
         properties: {
@@ -90,7 +91,10 @@ export default async function notificationsRoutes(fastify) {
       },
     },
   }, async (request, reply) => {
-    const rawToken = request.query.token || request.headers.authorization?.replace(/^Bearer\s+/i, '').trim() || '';
+    const rawToken = request.query.token
+      || request.headers.authorization?.replace(/^Bearer\s+/i, '').trim()
+      || request.cookies?.accessToken
+      || '';
     if (!rawToken) {
       return reply.status(401).send({ error: 'UNAUTHORIZED', message: 'Missing token' });
     }

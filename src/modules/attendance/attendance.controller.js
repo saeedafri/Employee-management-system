@@ -240,6 +240,22 @@ export async function getRegularizationRequests(request, reply) {
 
     const query = attendanceValidator.getAttendanceRecordsSchema.parse(request.query);
 
+    // Account with no employee link (e.g. SUPER_ADMIN) → empty list, not 500/400
+    if (!employeeId) {
+      return reply.send(
+        successResponse({
+          requests: [],
+          pagination: {
+            page: query.page,
+            limit: query.limit,
+            total: 0,
+            pages: 0,
+          },
+          noEmployeeRecord: true,
+        }),
+      );
+    }
+
     const { requests, total } = await attendanceService.getRegularizationRequests(
       tenantId,
       employeeId,

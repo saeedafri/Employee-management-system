@@ -6,6 +6,7 @@ import { config } from '../../config/index.js';
 import * as authRepository from './auth.repository.js';
 import * as otpService from './otp.service.js';
 import { getAuthSettings } from '../settings/settings.repository.js';
+import { DEFAULT_PERMISSIONS_BY_ROLE } from './auth.policy.js';
 
 // MFA admin cohort for the REQUIRED_ADMINS policy (contract §3.2; default SUPER_ADMIN + HR_ADMIN).
 const MFA_ADMIN_MEMBER_TYPES = new Set(['SUPER_ADMIN', 'HR_ADMIN']);
@@ -59,13 +60,14 @@ async function validateLogin(db, tenantId, email, password) {
 
 function extractPermissions(user) {
   const permissions = new Set();
-  for (const userRole of user.userRoles) {
-    for (const rp of userRole.role.permissions) {
+  for (const userRole of user.userRoles ?? []) {
+    for (const rp of userRole.role?.permissions ?? []) {
       permissions.add(rp.permission.key);
     }
   }
   return Array.from(permissions);
 }
+
 
 export async function login(db, tenantId, email, password, ipAddress, userAgent) {
   const user = await validateLogin(db, tenantId, email, password);
@@ -117,7 +119,7 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
   const session = await authRepository.createSession(db, sessionData);
 
   // Create access token
-  const permissions = extractPermissions(user);
+  const permissions = resolvePermissions(user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId,
@@ -216,7 +218,7 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
 
   const session = await authRepository.createSession(db, sessionData);
 
-  const permissions = extractPermissions(user);
+  const permissions = resolvePermissions(user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId,
@@ -296,7 +298,7 @@ export async function completeMfaLogin(db, tenantId, userId, ipAddress, userAgen
   const session = await authRepository.createSession(db, sessionData);
 
   // Create access token
-  const permissions = extractPermissions(user);
+  const permissions = resolvePermissions(user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId,
@@ -447,8 +449,8 @@ export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToke
   // Step 10: Revoke old session
   await authRepository.revokeSession(db, sessionId, 'TOKEN_ROTATED');
 
-  // Step 11: Generate new access token
-  const permissions = extractPermissions(user);
+  // Step 11: Generate new access token (explicit RolePermission grants, else role defaults)
+  const permissions = resolvePermissions(user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId: session.tenantId,
@@ -510,42 +512,111 @@ export async function logoutAll(db, userId, _currentSessionId) {
   });
 }
 
-// Default permission sets per role, keyed on the canonical Permission catalogue.
-// Used as a fallback so a user with no explicit RolePermission grants (the out-of-box
-// state for every non-SUPER_ADMIN role) still reports the permissions their role implies
-// — the FE gates UI on this array, so an empty array locks HR/Auditor out of their jobs.
-// Mirrors the role intent already enforced by authorize() (memberType-based).
-const DEFAULT_PERMISSIONS_BY_ROLE = {
-  SUPER_ADMIN: [
-    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
-    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
-    'permissions:manage',
-  ],
-  HR_ADMIN: [
-    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
-    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
-  ],
-  MANAGER: [
-    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request', 'leave:approve', 'analytics:read',
-  ],
-  EMPLOYEE: [
-    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request',
-  ],
-  AUDITOR: [
-    'employees:read', 'departments:read', 'attendance:read', 'leave:read',
-    'analytics:read', 'audit:read',
-  ],
-};
-
 // Explicit RolePermission grants win; fall back to the role default when none exist.
+// Defaults live in auth.policy.js (single source of truth with requirePermission).
 function resolvePermissions(user) {
   const explicit = extractPermissions(user);
   if (explicit.length > 0) return explicit;
-  return DEFAULT_PERMISSIONS_BY_ROLE[user.memberType] ?? [];
+  return [...(DEFAULT_PERMISSIONS_BY_ROLE[user.memberType] ?? [])];
+}
+
+/**
+ * Upsert Permission catalogue + system Role rows + RolePermission grants for a tenant
+ * from DEFAULT_PERMISSIONS_BY_ROLE. Runs once per tenant (Setting flag), so later
+ * PATCH /settings/roles-permissions changes are never overwritten — including empty sets.
+ */
+export async function ensureTenantRolePermissionDefaults(db, tenantId) {
+  const flag = await db.setting.findUnique({
+    where: {
+      tenantId_groupKey_settingKey: {
+        tenantId,
+        groupKey: 'security',
+        settingKey: 'role_permissions_defaults_seeded',
+      },
+    },
+  });
+  if (flag?.valueJson === true || flag?.valueJson?.seeded === true) {
+    return { seeded: false, skipped: true };
+  }
+
+  const catalogue = [
+    { key: 'employees:read', module: 'employees', description: 'View employees' },
+    { key: 'employees:write', module: 'employees', description: 'Create/update employees' },
+    { key: 'employees:delete', module: 'employees', description: 'Soft-delete employees' },
+    { key: 'employees:export', module: 'employees', description: 'Export employee/attendance/leave data' },
+    { key: 'departments:read', module: 'departments', description: 'View departments' },
+    { key: 'departments:write', module: 'departments', description: 'Manage departments' },
+    { key: 'attendance:read', module: 'attendance', description: 'View attendance' },
+    { key: 'attendance:write', module: 'attendance', description: 'Mutate attendance' },
+    { key: 'leave:read', module: 'leave', description: 'View leave' },
+    { key: 'leave:request', module: 'leave', description: 'Request leave' },
+    { key: 'leave:approve', module: 'leave', description: 'Approve/deny leave' },
+    { key: 'analytics:read', module: 'analytics', description: 'View analytics' },
+    { key: 'audit:read', module: 'audit', description: 'View audit logs' },
+    { key: 'permissions:manage', module: 'settings', description: 'Manage roles and permissions' },
+  ];
+
+  const permissionByKey = {};
+  for (const p of catalogue) {
+    const row = await db.permission.upsert({
+      where: { key: p.key },
+      update: { module: p.module, description: p.description },
+      create: p,
+    });
+    permissionByKey[p.key] = row;
+  }
+
+  const roleMeta = {
+    SUPER_ADMIN: 'Super Admin',
+    HR_ADMIN: 'HR Admin',
+    MANAGER: 'Manager',
+    EMPLOYEE: 'Employee',
+    AUDITOR: 'Auditor',
+  };
+
+  for (const [roleKey, permKeys] of Object.entries(DEFAULT_PERMISSIONS_BY_ROLE)) {
+    const role = await db.role.upsert({
+      where: { tenantId_key: { tenantId, key: roleKey } },
+      update: { name: roleMeta[roleKey] || roleKey, isSystem: true },
+      create: {
+        tenantId,
+        key: roleKey,
+        name: roleMeta[roleKey] || roleKey,
+        isSystem: true,
+      },
+    });
+
+    // Only add defaults when role has no grants yet (do not delete admin customizations).
+    const existingCount = await db.rolePermission.count({ where: { roleId: role.id } });
+    if (existingCount > 0) continue;
+
+    for (const key of permKeys) {
+      const permission = permissionByKey[key];
+      if (!permission) continue;
+      await db.rolePermission.create({
+        data: { roleId: role.id, permissionId: permission.id },
+      });
+    }
+  }
+
+  await db.setting.upsert({
+    where: {
+      tenantId_groupKey_settingKey: {
+        tenantId,
+        groupKey: 'security',
+        settingKey: 'role_permissions_defaults_seeded',
+      },
+    },
+    update: { valueJson: { seeded: true, at: new Date().toISOString() } },
+    create: {
+      tenantId,
+      groupKey: 'security',
+      settingKey: 'role_permissions_defaults_seeded',
+      valueJson: { seeded: true, at: new Date().toISOString() },
+    },
+  });
+
+  return { seeded: true };
 }
 
 export async function getCurrentUser(db, userId) {

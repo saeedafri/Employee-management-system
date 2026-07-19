@@ -142,12 +142,20 @@ function isAdminScope(user) {
   return ['HR_ADMIN', 'SUPER_ADMIN'].includes(user?.memberType);
 }
 
+/**
+ * Resolve which employee the caller may view.
+ * Returns `null` when the caller has no personal employee link and did not pass
+ * `requestedEmployeeId` — read endpoints must return empty personal data (not 400).
+ * Write endpoints (check-in / regularization) still guard explicitly with NO_EMPLOYEE_RECORD.
+ */
 export async function assertCanViewEmployee(tenantId, requester, requestedEmployeeId) {
   const ownEmployeeId = requester?.employeeId;
 
   if (!requestedEmployeeId) {
     if (!ownEmployeeId) {
-      throw new AppError('User has no employee record', 'NO_EMPLOYEE_RECORD', 400);
+      // Personal "me" scope with no linked Employee (common for SUPER_ADMIN).
+      // Do not throw — list/summary/calendar return empty shapes instead of breaking the UI.
+      return null;
     }
     return ownEmployeeId;
   }
@@ -168,6 +176,21 @@ export async function assertCanViewEmployee(tenantId, requester, requestedEmploy
   throw new AppError('Access denied for employee attendance', 'FORBIDDEN', 403);
 }
 
+/** Empty personal attendance summary when caller has no employeeId. */
+export function emptyAttendanceSummary() {
+  return {
+    totalDays: 0,
+    present: 0,
+    absent: 0,
+    leave: 0,
+    wfh: 0,
+    halfDay: 0,
+    holiday: 0,
+    late: 0,
+    noEmployeeRecord: true,
+  };
+}
+
 function resolveDateRange({ month, fromDate, toDate } = {}) {
   if (month) {
     return monthToDateRange(month);
@@ -186,6 +209,9 @@ export async function getAttendanceRecords(tenantId, requester, filters = {}) {
 
   const offset = (page - 1) * limit;
   const employeeId = await assertCanViewEmployee(tenantId, requester, filters.employeeId);
+  if (!employeeId) {
+    return { records: [], total: 0, noEmployeeRecord: true };
+  }
   const { from, to } = resolveDateRange(filters);
 
   return attendanceRepository.getAttendanceRecords(tenantId, employeeId, {
@@ -219,6 +245,9 @@ export async function getTeamAttendanceRecords(tenantId, requester, filters = {}
 
 export async function getAttendanceSummary(tenantId, requester, filters = {}) {
   const employeeId = await assertCanViewEmployee(tenantId, requester, filters.employeeId);
+  if (!employeeId) {
+    return emptyAttendanceSummary();
+  }
   const range = resolveDateRange(filters);
   const now = new Date();
   const startDate = range.from || new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));

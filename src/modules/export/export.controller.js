@@ -2,6 +2,8 @@ import { createReadStream, existsSync } from 'fs';
 import { join } from 'path';
 import { config } from '../../config/index.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
+import { getSignedDocumentUrl, isCloudinaryConfigured } from '../../utils/cloudinary.js';
+import { CLOUDINARY_FILE_PREFIX } from '../../jobs/exportJob.js';
 import * as exportService from './export.service.js';
 import * as exportValidator from './export.validator.js';
 
@@ -84,7 +86,12 @@ const MIME_MAP = {
   csv: 'text/csv',
   xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   json: 'application/json',
+  pdf: 'application/pdf',
 };
+
+function mimeForExt(ext) {
+  return MIME_MAP[ext] || 'application/octet-stream';
+}
 
 export async function downloadExport(request, reply) {
   try {
@@ -98,6 +105,25 @@ export async function downloadExport(request, reply) {
     }
 
     const ext = status.format === 'excel' ? 'xlsx' : status.format;
+    const contentType = mimeForExt(ext);
+    const filename = `export-${job_id}.${ext}`;
+    const stored = status.file_url || '';
+
+    // Prefer Cloudinary signed redirect when the job stored a cloudinary:// key.
+    if (stored.startsWith(CLOUDINARY_FILE_PREFIX) && isCloudinaryConfigured()) {
+      const publicId = stored.slice(CLOUDINARY_FILE_PREFIX.length);
+      try {
+        const signedUrl = getSignedDocumentUrl({
+          storageKey: publicId,
+          mimeType: contentType,
+          expiresInSec: 300,
+        });
+        return reply.redirect(signedUrl);
+      } catch (err) {
+        request.log.warn({ err, job_id }, 'Cloudinary signed URL failed; trying local disk');
+      }
+    }
+
     const exportsDir = config.exportsDir || '/tmp/exports';
     const filepath = join(exportsDir, `${job_id}.${ext}`);
 
@@ -106,9 +132,6 @@ export async function downloadExport(request, reply) {
         errorResponse('FILE_NOT_FOUND', 'Export file not found or has expired', {}, request.id),
       );
     }
-
-    const contentType = MIME_MAP[ext] || 'application/octet-stream';
-    const filename = `export-${job_id}.${ext}`;
 
     reply
       .type(contentType)

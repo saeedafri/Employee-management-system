@@ -1,12 +1,17 @@
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import ExcelJS from 'exceljs';
+import PDFDocument from 'pdfkit';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
+import { uploadToCloudinary, isCloudinaryConfigured } from '../utils/cloudinary.js';
 import * as exportRepository from '../modules/export/export.repository.js';
 
 const EXPORTS_DIR = config.exportsDir || '/tmp/exports';
 mkdirSync(EXPORTS_DIR, { recursive: true });
+
+/** Prefix stored in ExportJob.fileUrl when the artifact lives on Cloudinary. */
+export const CLOUDINARY_FILE_PREFIX = 'cloudinary://';
 
 // Column styles for Excel
 const HEADER_FILL = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
@@ -14,6 +19,48 @@ const HEADER_FONT = { name: 'Calibri', bold: true, color: { argb: 'FFFFFFFF' }, 
 const ALT_ROW_FILL = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0F0FF' } };
 const BORDER_STYLE = { style: 'thin', color: { argb: 'FFDDDDDD' } };
 const BORDER = { top: BORDER_STYLE, left: BORDER_STYLE, bottom: BORDER_STYLE, right: BORDER_STYLE };
+
+function downloadApiUrl(jobId) {
+  const base = (config.apiUrl || '').replace(/\/$/, '');
+  return `${base}/export/${jobId}/download`;
+}
+
+async function persistSuccess(jobId, tenantId, filename, format) {
+  const filepath = join(EXPORTS_DIR, filename);
+  let fileUrl = downloadApiUrl(jobId);
+
+  if (isCloudinaryConfigured()) {
+    try {
+      const buffer = readFileSync(filepath);
+      const uploaded = await uploadToCloudinary(buffer, {
+        folder: `ems/${tenantId}/exports`,
+        publicId: jobId,
+        resourceType: 'raw',
+        type: 'authenticated',
+      });
+      // Durable storage key; download route mints a signed URL / streams from disk fallback.
+      fileUrl = `${CLOUDINARY_FILE_PREFIX}${uploaded.publicId}`;
+      logger.info({
+        type: 'export_uploaded_cloudinary',
+        jobId,
+        publicId: uploaded.publicId,
+        bytes: uploaded.bytes,
+        format,
+      });
+    } catch (err) {
+      logger.warn({
+        type: 'export_cloudinary_upload_failed',
+        jobId,
+        error: err.message,
+        fallback: 'local_disk',
+      });
+      fileUrl = downloadApiUrl(jobId);
+    }
+  }
+
+  await exportRepository.updateExportJobStatus(jobId, 'SUCCESS', fileUrl);
+  return fileUrl;
+}
 
 export async function exportEmployees(jobId, tenantId, filters) {
   try {
@@ -24,8 +71,7 @@ export async function exportEmployees(jobId, tenantId, filters) {
     });
 
     const filename = await generateExportFile(employees, 'employees', filters.format, jobId);
-    const fileUrl = `${config.apiUrl}/files/${jobId}`;
-    await exportRepository.updateExportJobStatus(jobId, 'SUCCESS', fileUrl);
+    await persistSuccess(jobId, tenantId, filename, filters.format);
 
     logger.info({ type: 'export_completed', jobId, exportType: 'EMPLOYEES', recordCount: employees.length });
     return { success: true, filename, recordCount: employees.length };
@@ -45,8 +91,7 @@ export async function exportAttendance(jobId, tenantId, filters) {
     });
 
     const filename = await generateExportFile(records, 'attendance', filters.format, jobId);
-    const fileUrl = `${config.apiUrl}/files/${jobId}`;
-    await exportRepository.updateExportJobStatus(jobId, 'SUCCESS', fileUrl);
+    await persistSuccess(jobId, tenantId, filename, filters.format);
 
     logger.info({ type: 'export_completed', jobId, exportType: 'ATTENDANCE', recordCount: records.length });
     return { success: true, filename, recordCount: records.length };
@@ -67,8 +112,7 @@ export async function exportLeave(jobId, tenantId, filters) {
     });
 
     const filename = await generateExportFile(leaves, 'leave', filters.format, jobId);
-    const fileUrl = `${config.apiUrl}/files/${jobId}`;
-    await exportRepository.updateExportJobStatus(jobId, 'SUCCESS', fileUrl);
+    await persistSuccess(jobId, tenantId, filename, filters.format);
 
     logger.info({ type: 'export_completed', jobId, exportType: 'LEAVE', recordCount: leaves.length });
     return { success: true, filename, recordCount: leaves.length };
@@ -90,6 +134,8 @@ async function generateExportFile(data, type, format, jobId) {
     await generateExcel(data, type, filepath);
   } else if (format === 'json') {
     await generateJSON(data, filepath);
+  } else if (format === 'pdf') {
+    await generatePDF(data, type, filepath);
   } else {
     throw new Error(`Unsupported format: ${format}`);
   }
@@ -133,14 +179,12 @@ async function generateExcel(data, type, filepath) {
 
   const headers = Object.keys(flatData[0]);
 
-  // Set columns with header labels and auto-width estimate
   sheet.columns = headers.map((key) => ({
     key,
     header: formatColumnHeader(key),
     width: Math.max(formatColumnHeader(key).length + 4, 14),
   }));
 
-  // Style header row
   const headerRow = sheet.getRow(1);
   headerRow.eachCell((cell) => {
     cell.fill = HEADER_FILL;
@@ -150,11 +194,9 @@ async function generateExcel(data, type, filepath) {
   });
   headerRow.height = 28;
 
-  // Add data rows with alternating row colors
   flatData.forEach((rowData, idx) => {
     const row = sheet.addRow(headers.map((h) => {
       const val = rowData[h];
-      // Keep dates as date objects for proper Excel formatting
       if (val instanceof Date) return val;
       return val ?? '';
     }));
@@ -173,7 +215,6 @@ async function generateExcel(data, type, filepath) {
     row.height = 20;
   });
 
-  // Auto-fit columns based on data content
   sheet.columns.forEach((col) => {
     let maxLen = col.header ? col.header.length : 10;
     col.eachCell({ includeEmpty: false }, (cell) => {
@@ -183,7 +224,6 @@ async function generateExcel(data, type, filepath) {
     col.width = Math.min(maxLen + 4, 40);
   });
 
-  // Add summary row at the bottom
   const summaryRow = sheet.addRow([]);
   summaryRow.getCell(1).value = `Total: ${flatData.length} records`;
   summaryRow.getCell(1).font = { bold: true, color: { argb: 'FF4F46E5' } };
@@ -195,6 +235,91 @@ async function generateExcel(data, type, filepath) {
 
 async function generateJSON(data, filepath) {
   writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
+}
+
+async function generatePDF(data, type, filepath) {
+  const flatData = data.map(flattenObject);
+  const title = `EMS ${type.charAt(0).toUpperCase() + type.slice(1)} Export`;
+
+  await new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ margin: 40, size: 'A4', layout: 'landscape' });
+    const chunks = [];
+    doc.on('data', (c) => chunks.push(c));
+    doc.on('end', () => {
+      try {
+        writeFileSync(filepath, Buffer.concat(chunks));
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
+    doc.on('error', reject);
+
+    doc.fontSize(16).fillColor('#4F46E5').text(title, { underline: false });
+    doc.moveDown(0.5);
+    doc.fontSize(9).fillColor('#666666').text(`Generated: ${new Date().toLocaleString()}  |  Records: ${flatData.length}`);
+    doc.moveDown(1);
+
+    if (flatData.length === 0) {
+      doc.fontSize(11).fillColor('#000000').text('No data available');
+      doc.end();
+      return;
+    }
+
+    const headers = Object.keys(flatData[0]);
+    const maxCols = Math.min(headers.length, 8);
+    const cols = headers.slice(0, maxCols);
+    const pageWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+    const colWidth = pageWidth / cols.length;
+    const startX = doc.page.margins.left;
+
+    const drawHeader = () => {
+      let x = startX;
+      const y = doc.y;
+      doc.rect(startX, y, pageWidth, 18).fill('#4F46E5');
+      doc.fillColor('#FFFFFF').fontSize(8).font('Helvetica-Bold');
+      cols.forEach((h) => {
+        doc.text(formatColumnHeader(h).slice(0, 24), x + 2, y + 5, {
+          width: colWidth - 4,
+          ellipsis: true,
+        });
+        x += colWidth;
+      });
+      doc.y = y + 22;
+      doc.fillColor('#000000').font('Helvetica');
+    };
+
+    drawHeader();
+
+    flatData.forEach((row, idx) => {
+      if (doc.y > doc.page.height - 50) {
+        doc.addPage();
+        drawHeader();
+      }
+      const y = doc.y;
+      if (idx % 2 === 1) {
+        doc.rect(startX, y - 2, pageWidth, 14).fill('#F0F0FF');
+      }
+      let x = startX;
+      doc.fillColor('#111111').fontSize(7);
+      cols.forEach((h) => {
+        const val = row[h];
+        const text = val instanceof Date ? val.toISOString() : String(val ?? '');
+        doc.text(text.slice(0, 40), x + 2, y, { width: colWidth - 4, ellipsis: true, lineBreak: false });
+        x += colWidth;
+      });
+      doc.y = y + 14;
+    });
+
+    if (headers.length > maxCols) {
+      doc.moveDown(1);
+      doc.fontSize(8).fillColor('#666666').text(
+        `Note: showing first ${maxCols} of ${headers.length} columns. Use Excel/CSV for full columns.`,
+      );
+    }
+
+    doc.end();
+  });
 }
 
 function formatColumnHeader(key) {

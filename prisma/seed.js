@@ -254,17 +254,35 @@ async function main() {
     },
   });
 
+  // SUPER_ADMIN also gets a linked Employee so personal attendance/payout/leave UIs work in demos.
+  // Production tenants may still create SUPER_ADMIN without an employee — read APIs return empty.
+  const superAdminEmployee = await prisma.employee.upsert({
+    where: { tenantId_employeeCode: { tenantId: tenant.id, employeeCode: 'E0000' } },
+    update: { userId: superAdminUser.id },
+    create: {
+      tenantId: tenant.id, userId: superAdminUser.id, employeeCode: 'E0000',
+      firstName: 'Super', lastName: 'Admin', workEmail: 'superadmin@acme.test',
+      personalEmail: 'superadmin@acme.test', phone: '+91 98765 43200',
+      designation: 'System Administrator', departmentId: hrDept.id,
+      joinedOn: new Date('2018-01-01'), employmentType: 'FULL_TIME',
+      employmentStatus: 'ACTIVE', location: 'Delhi', payCurrency: 'INR',
+      createdBy: superAdminUser.id,
+    },
+  });
+
   // Clear any stale employeeId links before re-assigning (makes seed idempotent across user changes)
   await prisma.user.updateMany({ where: { employeeId: managerEmployee.id, NOT: { id: managerUser.id } }, data: { employeeId: null } });
   await prisma.user.updateMany({ where: { employeeId: employeeEmployee.id, NOT: { id: employeeUser.id } }, data: { employeeId: null } });
   await prisma.user.updateMany({ where: { employeeId: hrEmployee.id, NOT: { id: hrAdminUser.id } }, data: { employeeId: null } });
+  await prisma.user.updateMany({ where: { employeeId: superAdminEmployee.id, NOT: { id: superAdminUser.id } }, data: { employeeId: null } });
 
   // Link employeeId back to user
   await prisma.user.update({ where: { id: managerUser.id }, data: { employeeId: managerEmployee.id } });
   await prisma.user.update({ where: { id: employeeUser.id }, data: { employeeId: employeeEmployee.id } });
   await prisma.user.update({ where: { id: hrAdminUser.id }, data: { employeeId: hrEmployee.id } });
+  await prisma.user.update({ where: { id: superAdminUser.id }, data: { employeeId: superAdminEmployee.id } });
 
-  console.log('✅ Core employees: 3');
+  console.log('✅ Core employees: 4 (incl. SUPER_ADMIN E0000)');
 
   // Upsert Leave Types
   const leaveTypeDefs = [
@@ -550,7 +568,7 @@ async function main() {
   console.log('\n🎉 Seeding complete!');
   console.log(`
 Seed Users (password: ${seedPassword}):
-  superadmin@acme.test  → SUPER_ADMIN
+  superadmin@acme.test  → SUPER_ADMIN  (employeeId linked → E0000)
   hr@acme.test          → HR_ADMIN     (employeeId linked)
   aman@acme.test        → MANAGER      (employeeId linked)
   priya@acme.test       → EMPLOYEE     (employeeId linked)

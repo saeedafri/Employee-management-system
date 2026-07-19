@@ -1,15 +1,22 @@
 // In-memory SSE connection registry. Lost on server restart — clients auto-reconnect.
 const clients = new Map(); // userId → Set<reply>
 
+let connects = 0;
+let disconnects = 0;
+let emits = 0;
+let emitFailures = 0;
+
 export function addClient(userId, reply) {
   if (!clients.has(userId)) clients.set(userId, new Set());
   clients.get(userId).add(reply);
+  connects += 1;
 }
 
 export function removeClient(userId, reply) {
   const set = clients.get(userId);
   if (!set) return;
   set.delete(reply);
+  disconnects += 1;
   if (set.size === 0) clients.delete(userId);
 }
 
@@ -28,7 +35,9 @@ export function emitToUser(userId, event, data) {
   for (const reply of set) {
     try {
       sendEvent(reply, event, data);
+      emits += 1;
     } catch {
+      emitFailures += 1;
       dead.push(reply);
     }
   }
@@ -40,4 +49,17 @@ export function emitToUsers(userIds, event, data) {
   for (const uid of userIds) {
     if (uid) emitToUser(uid, event, data);
   }
+}
+
+export function getSseDiagnostics() {
+  let connectionCount = 0;
+  for (const set of clients.values()) connectionCount += set.size;
+  return {
+    uniqueUsers: clients.size,
+    connectionCount,
+    connects,
+    disconnects,
+    emits,
+    emitFailures,
+  };
 }

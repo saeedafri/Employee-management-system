@@ -1,21 +1,21 @@
 import { z } from 'zod';
 
 export const exportEmployeesSchema = z.object({
-  format: z.enum(['csv', 'excel', 'json']).default('csv'),
+  format: z.enum(['csv', 'excel', 'json', 'pdf']).default('csv'),
   department_id: z.string().optional(),
   status: z.enum(['ACTIVE', 'INACTIVE', 'ON_LEAVE']).optional(),
   include_archived: z.boolean().default(false),
 });
 
 export const exportAttendanceSchema = z.object({
-  format: z.enum(['csv', 'excel', 'json']).default('csv'),
+  format: z.enum(['csv', 'excel', 'json', 'pdf']).default('csv'),
   from_date: z.coerce.date(),
   to_date: z.coerce.date(),
   department_id: z.string().optional(),
 });
 
 export const exportLeaveSchema = z.object({
-  format: z.enum(['csv', 'excel', 'json']).default('csv'),
+  format: z.enum(['csv', 'excel', 'json', 'pdf']).default('csv'),
   from_date: z.coerce.date(),
   to_date: z.coerce.date(),
   leave_type: z.string().optional(),

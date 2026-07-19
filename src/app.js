@@ -37,6 +37,7 @@ import announcementsRoutes from './modules/announcements/announcements.routes.js
 import timesheetsRoutes from './modules/timesheets/timesheets.routes.js';
 import timesheetsConfigRoutes from './modules/timesheets/timesheetsConfig.routes.js';
 import billingRoutes from './modules/billing/billing.routes.js';
+import opsRoutes from './modules/ops/ops.routes.js';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -123,6 +124,8 @@ export async function createApp() {
   fastify.get('/health', async () => ({ status: 'ok' }));
   fastify.get('/healthz', async () => ({ status: 'ok' }));
 
+  // Private ops pages (not under /api/v1, not in product nav)
+  await fastify.register(opsRoutes);
 
   // Register swagger AFTER all routes are defined
   await fastify.register(swaggerPlugin);

@@ -1,4 +1,5 @@
 import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import {
   listEmployees,
   getEmployee,
@@ -118,7 +119,7 @@ export async function employeesRoutes(fastify) {
           201: { type: 'object', additionalProperties: true },
         },
       },
-      preValidation: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+      preValidation: [authorize(['HR_ADMIN', 'SUPER_ADMIN']), requirePermission('employees:write')],
     },
     createEmployee,
   );
@@ -180,7 +181,7 @@ export async function employeesRoutes(fastify) {
           200: { type: 'object', additionalProperties: true },
         },
       },
-      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN']), requirePermission('employees:write')],
     },
     updateEmployee,
   );
@@ -202,6 +203,7 @@ export async function employeesRoutes(fastify) {
           200: { type: 'object', additionalProperties: true },
         },
       },
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN']), requirePermission('employees:delete')],
     },
     deleteEmployee,
   );
@@ -296,6 +298,7 @@ export async function employeesRoutes(fastify) {
           200: { type: 'object', additionalProperties: true },
         },
       },
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN']), requirePermission('employees:export')],
     },
     exportEmployees,
   );
@@ -335,7 +338,7 @@ export async function employeesRoutes(fastify) {
         },
         response: { 200: { type: 'object', additionalProperties: true } },
       },
-      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+      onRequest: [authorize(['HR_ADMIN', 'SUPER_ADMIN']), requirePermission('employees:export')],
     },
     bulkExport,
   );

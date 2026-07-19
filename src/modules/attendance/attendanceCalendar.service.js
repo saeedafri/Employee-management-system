@@ -162,6 +162,25 @@ export async function resolveAttendanceCalendar(tenantId, requester, { month, em
   const from = new Date(Date.UTC(year, mon - 1, 1));
   const to = new Date(Date.UTC(year, mon, 0, 23, 59, 59, 999));
 
+  // No linked employee (e.g. SUPER_ADMIN) → empty personal calendar, not 400.
+  // buildCalendar marks date < todayKey as ABSENT — use epoch todayKey so all
+  // working days stay UPCOMING (no ABSENT/LOP spam for org-admin-only accounts).
+  if (!employeeId) {
+    return {
+      ...buildCalendar({
+        month,
+        holidaySet: new Set(),
+        holidayNames: new Map(),
+        workWeekDays: [1, 2, 3, 4, 5],
+        leaveSpans: [],
+        recordsByDate: new Map(),
+        thresholds: { lateAfter: '09:30', halfDayMinutes: 240 },
+        todayKey: '0000-01-01',
+      }),
+      noEmployeeRecord: true,
+    };
+  }
+
   // Shared resolver (§3): same holidays/work-week/timezone as GET /me/holidays + leave + payroll.
   const hol = await resolveHolidayDateSet(prisma, tenantId, { employeeId, from, to });
   const ctx = hol.context;

@@ -74,8 +74,10 @@ export async function deleteCatalog(request, reply) {
 export async function listMine(request, reply) {
   try {
     const employeeId = request.user?.employeeId;
+    // Read path: empty methods for accounts with no employee link (e.g. SUPER_ADMIN).
+    // Mutations that need an employee still 400 via create/set-primary guards.
     if (!employeeId) {
-      reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'Your account is not linked to an employee record'));
+      reply.send(successResponse({ methods: [], instructions: [], noEmployeeRecord: true }));
       return;
     }
     reply.send(successResponse(await service.listForEmployee(prisma, request.tenant.id, employeeId)));

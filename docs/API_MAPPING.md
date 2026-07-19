@@ -221,8 +221,9 @@ Include `x-tenant-key: acme-corp-001` header. Returns token directly — no OTP 
 }
 ```
 
-> SUPER_ADMIN: `user.employee` is `null`, `employeeId` is `null`. Do not call employee-specific endpoints (dashboard, check-in, leave requests) for this role — returns `400 NO_EMPLOYEE_RECORD`.  
-> All other roles: `employeeId` is populated and employee endpoints work normally.
+> SUPER_ADMIN (seeded Acme): now linked to Employee `E0000` after seed/`linkSuperAdminEmployee.mjs`. JWT may still have `employeeId: null` for real-world SUPER_ADMIN accounts without an employee profile.  
+> **Read** personal endpoints (`GET /attendance/summary|records|calendar`, `GET /attendance/regularization`, `GET /payroll/me/payout-methods`) return **200 empty** + `noEmployeeRecord: true` when `employeeId` is null (UI must not show "Something went wrong").  
+> **Write** personal endpoints (`POST /attendance/check-in|check-out`, leave request create, payout create) still return `400 NO_EMPLOYEE_RECORD` until an Employee is linked.
 
 **Error codes:**
 | Code | Status | When |
@@ -1167,6 +1168,8 @@ Each record includes `referenceNo: "REG-XXXX"` alongside `id`.
 }
 ```
 
+When the caller has **no linked employee** and no `?employeeId=`: **200** with zeroed counters and `noEmployeeRecord: true` (not 400). Same rule for `GET /attendance/records` (`records: []`, `total: 0`) and `GET /attendance/calendar` (`days` with no ABSENT/LOP spam + `noEmployeeRecord: true`).
+
 ---
 
 ### `POST /attendance/regularization`
@@ -1617,6 +1620,7 @@ Query: `?range=30d|90d` (default `30d`).
 ---
 
 ### `GET /settings/roles-permissions`
+**Source of truth:** Backend DB (`Role` + `RolePermission`). First call per tenant idempotently seeds system roles from the canonical default matrix (same day-1 grants as before). JWT `permissions` claim is filled from explicit grants, else role defaults. Changes via PATCH require **re-login or token refresh** to take effect on gated routes.
 **Required roles:** SUPER_ADMIN.
 
 **Response `data`:**
@@ -1837,12 +1841,24 @@ Single audit log entry (direct object, not wrapped in `logs`).
 ### `GET /logs/stream`
 **Route:** `/api/v1/logs/stream`. HR_ADMIN / SUPER_ADMIN. Streams logs as **NDJSON** (line-delimited JSON), one log object per line.
 
+### `GET /ops/logs` (private HTML — not in product nav)
+**Route:** `/ops/logs` (NOT under `/api/v1`). **Auth:** SUPER_ADMIN Bearer/cookie **or** `OPS_LOGS_TOKEN` via `?token=` / `X-Ops-Token`.
+Shows INFO/WARN/ERROR/DEBUG LogEntry rows, process RAM/heap/uptime/load, SSE connection diagnostics, recent uncaughtException/unhandledRejection ring buffer. Auto-refresh 15s. JSON twin: `GET /ops/process`.
+
+### Notifications realtime
+**Transport:** Server-Sent Events (not WebSockets). `GET /api/v1/notifications/stream` — auth via `?token=`, `Authorization: Bearer`, or `accessToken` cookie. Events: `notification`, `analytics_update`, plus `: heartbeat` comments every 25s. FE should use EventSource (via streaming BFF `/api/notifications/stream`); polling is fallback only.
+
 ---
 
 ## Export
 
+> Server-side generation only (ExcelJS / CSV / JSON / PDFKit). When Cloudinary is configured,
+> completed files are stored as authenticated `raw` assets; `GET /export/:job_id/download`
+> redirects to a short-lived signed URL (falls back to local disk). Requires
+> `employees:export` permission in addition to HR_ADMIN.
+
 ### `POST /export/employees`
-**Body:** `{ "format": "csv" }` (format: csv | excel | json)
+**Body:** `{ "format": "csv" }` (format: csv | excel | json | pdf)
 
 **Response `data`:**
 ```json
@@ -1850,13 +1866,14 @@ Single audit log entry (direct object, not wrapped in `logs`).
 ```
 
 ### `POST /export/attendance`
-**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }`
+**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }` (format includes `pdf`)
 
 ### `POST /export/leave`
-**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }`
+**Body:** `{ "format": "csv", "from_date": "2026-05-01", "to_date": "2026-05-31" }` (format includes `pdf`)
 
 ### `GET /export/:job_id/download`
-Download completed export using `job_id` from the POST response.
+Download completed export using `job_id` from the POST response. Prefer this URL — do not
+use any legacy `/files/:jobId` path. May `302` to Cloudinary signed URL.
 
 ### `GET /export/list`
 **Response `data`:**
@@ -5628,7 +5645,8 @@ Body `{ currency?, fields? }`. **200** / **404 NOT_FOUND**.
 **Methods**
 
 #### `GET /payroll/me/payout-methods` — any auth (self)
-**200:** `{ methods: PayoutMethod[] (masked, ARCHIVED excluded), instructions: [] }`. **400 NO_EMPLOYEE_RECORD** if the account has no employee.
+**200:** `{ methods: PayoutMethod[] (masked, ARCHIVED excluded), instructions: [] }`.  
+If the account has no employee: **200** `{ methods: [], instructions: [], noEmployeeRecord: true }` (not 400).
 
 #### `GET /payroll/employees/:employeeId/payout-methods` — self or HR/SUPER
 Same `PayoutMethodsResponse`. **403** if an EMPLOYEE targets another employee.

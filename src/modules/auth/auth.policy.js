@@ -17,10 +17,55 @@ export const PERMISSION_KEYS = Object.freeze([
   'permissions:manage',
 ]);
 
+/**
+ * Canonical default grants per memberType. Must stay in sync with
+ * auth.service resolvePermissions / RolePermission seed.
+ * Day-1 behavior matches historical UI gates.
+ */
+export const DEFAULT_PERMISSIONS_BY_ROLE = Object.freeze({
+  SUPER_ADMIN: Object.freeze([
+    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
+    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
+    'permissions:manage',
+  ]),
+  HR_ADMIN: Object.freeze([
+    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
+    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
+  ]),
+  MANAGER: Object.freeze([
+    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request', 'leave:approve', 'analytics:read',
+  ]),
+  EMPLOYEE: Object.freeze([
+    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request',
+  ]),
+  AUDITOR: Object.freeze([
+    'employees:read', 'departments:read', 'attendance:read', 'leave:read',
+    'analytics:read', 'audit:read',
+  ]),
+});
+
+export function roleDefaultPermissions(memberType) {
+  return DEFAULT_PERMISSIONS_BY_ROLE[memberType] ?? [];
+}
+
 export function hasPermission(user, permission) {
   if (!user || !permission) return false;
   if (user.memberType === 'SUPER_ADMIN') return true;
-  return Array.isArray(user.permissions) && user.permissions.includes(permission);
+
+  const fromToken = Array.isArray(user.permissions) ? user.permissions : [];
+  if (fromToken.includes(permission)) return true;
+
+  // Fallback for tokens minted before RolePermission seed / empty grants:
+  // match historical default matrix so we never lock out day-1 roles.
+  if (fromToken.length === 0) {
+    return roleDefaultPermissions(user.memberType).includes(permission);
+  }
+
+  return false;
 }
 
 export function requirePermission(permission) {
