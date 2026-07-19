@@ -25,6 +25,9 @@
 6. [`LIVE_E2E_HOSTINGER_68d32f4_2026-07-19.md`](./LIVE_E2E_HOSTINGER_68d32f4_2026-07-19.md)  
    Post-deploy Hostinger Terminal proof (`68d32f4`, SA empty-read PASS).
 
+6b. [`LIVE_UI_ROLE_MATRIX_VERCEL_2026-07-19.md`](./LIVE_UI_ROLE_MATRIX_VERCEL_2026-07-19.md)  
+   Live Vercel UI 4-role matrix + export/SSE probes (post-deploy).
+
 7. [`UI_ROLE_MATRIX_E2E_2026-07-19.md`](./UI_ROLE_MATRIX_E2E_2026-07-19.md)  
    Pre-fix UI crawl (SA was FAIL — fixed on BE).
 

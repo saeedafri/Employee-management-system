@@ -22,7 +22,8 @@
 | 6 | [`UI_ROLE_MATRIX_E2E_2026-07-19.md`](./UI_ROLE_MATRIX_E2E_2026-07-19.md) | Pre-fix live UI crawl (PARTIAL — SA was failing) |
 | 7 | [`UI_E2E_TEST_REPORT_2026-07-19.md`](./UI_E2E_TEST_REPORT_2026-07-19.md) | Broader UI smoke notes |
 | 8 | [`PROOF_hostinger_hardening_2026-07-18.md`](./PROOF_hostinger_hardening_2026-07-18.md) | Offline proof + network blockers log |
-| 9 | [`LIVE_E2E_HOSTINGER_68d32f4_2026-07-19.md`](./LIVE_E2E_HOSTINGER_68d32f4_2026-07-19.md) | Post-deploy Hostinger proof (this deploy) |
+| 9 | [`LIVE_E2E_HOSTINGER_68d32f4_2026-07-19.md`](./LIVE_E2E_HOSTINGER_68d32f4_2026-07-19.md) | Post-deploy Hostinger Terminal proof |
+| 10 | [`LIVE_UI_ROLE_MATRIX_VERCEL_2026-07-19.md`](./LIVE_UI_ROLE_MATRIX_VERCEL_2026-07-19.md) | **Live Vercel UI** 4-role page matrix + BFF API probes (post-deploy) |
 
 Swagger UI on Hostinger: `https://ems-api.saqibsaeed.cloud/docs` (ops routes intentionally hidden).
 
@@ -98,7 +99,7 @@ Exact summary body observed:
 }
 ```
 
-**Honest gap:** Agent Mac ISP cannot reach Hostinger (`health=000` timeout), so browser E2E from Cursor after deploy was not re-run from the agent host. Hostinger-side Set3 smoke above is the hard deploy proof. Full UI click-through still needs FE team (or a network that can reach the API).
+**Live UI retest (same day, later):** Playwright against Vercel FE confirmed **no FAIL pages** for SA/HR/Manager/Employee; SA attendance/payout **OK**; HR export **202** / EMP export **403**. See `LIVE_UI_ROLE_MATRIX_VERCEL_2026-07-19.md`. Sidebar still not role-filtered; SSE not confirmed OPEN on Vercel.
 
 ---
 

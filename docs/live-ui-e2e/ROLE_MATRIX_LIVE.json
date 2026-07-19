@@ -1,0 +1,452 @@
+{
+  "base": "https://ems-frontend-iota-ten.vercel.app",
+  "startedAt": "2026-07-19T18:04:37.906Z",
+  "roles": {
+    "SUPER_ADMIN": {
+      "login": {
+        "status": 200,
+        "success": true,
+        "memberType": "SUPER_ADMIN",
+        "employeeId": null
+      },
+      "pages": {
+        "/dashboard": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/dashboard"
+        },
+        "/employees": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/employees"
+        },
+        "/departments": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/departments"
+        },
+        "/attendance": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/attendance"
+        },
+        "/timesheets": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/timesheets"
+        },
+        "/leave": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/leave"
+        },
+        "/holidays": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/holidays"
+        },
+        "/payroll": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payroll"
+        },
+        "/payout-methods": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payout-methods"
+        },
+        "/reports": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/reports"
+        },
+        "/analytics": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/analytics"
+        },
+        "/permissions": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/permissions"
+        },
+        "/settings": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/settings/company-profile"
+        },
+        "/announcements": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/announcements"
+        }
+      },
+      "navSample": [
+        "Dashboard",
+        "Employees",
+        "Departments",
+        "Attendance",
+        "Timesheets",
+        "Leave",
+        "Holidays",
+        "Payroll",
+        "Payout methods",
+        "Reports",
+        "Analytics",
+        "Permissions",
+        "Settings",
+        "Recruitment",
+        "Performance",
+        "Assets",
+        "Announcements"
+      ]
+    },
+    "HR_ADMIN": {
+      "login": {
+        "status": 200,
+        "success": true,
+        "memberType": "HR_ADMIN",
+        "employeeId": "cmqjpydsb001mkpjdxlgw74tv"
+      },
+      "pages": {
+        "/dashboard": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/dashboard"
+        },
+        "/employees": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/employees"
+        },
+        "/departments": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/departments"
+        },
+        "/attendance": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/attendance"
+        },
+        "/timesheets": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/timesheets"
+        },
+        "/leave": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/leave"
+        },
+        "/holidays": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/holidays"
+        },
+        "/payroll": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payroll"
+        },
+        "/payout-methods": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payout-methods"
+        },
+        "/reports": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/reports"
+        },
+        "/analytics": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/analytics"
+        },
+        "/permissions": {
+          "ok": false,
+          "status": "DENY",
+          "err": "Access restricted"
+        },
+        "/settings": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/settings/company-profile"
+        },
+        "/announcements": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/announcements"
+        }
+      },
+      "navSample": [
+        "Dashboard",
+        "Employees",
+        "Departments",
+        "Attendance",
+        "Timesheets",
+        "Leave",
+        "Holidays",
+        "Payroll",
+        "Payout methods",
+        "Reports",
+        "Analytics",
+        "Permissions",
+        "Settings",
+        "Recruitment",
+        "Performance",
+        "Assets",
+        "Announcements"
+      ]
+    },
+    "MANAGER": {
+      "login": {
+        "status": 200,
+        "success": true,
+        "memberType": "MANAGER",
+        "employeeId": "cmqjpyds0001ikpjd5br3r2uh"
+      },
+      "pages": {
+        "/dashboard": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/dashboard"
+        },
+        "/employees": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/employees"
+        },
+        "/departments": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/departments"
+        },
+        "/attendance": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/attendance"
+        },
+        "/timesheets": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/timesheets"
+        },
+        "/leave": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/leave"
+        },
+        "/holidays": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/holidays"
+        },
+        "/payroll": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payroll/my-payslips"
+        },
+        "/payout-methods": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payout-methods"
+        },
+        "/reports": {
+          "ok": false,
+          "status": "DENY",
+          "err": "Access restricted"
+        },
+        "/analytics": {
+          "ok": false,
+          "status": "DENY",
+          "err": "Access restricted"
+        },
+        "/permissions": {
+          "ok": false,
+          "status": "DENY",
+          "err": "Access restricted"
+        },
+        "/settings": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/settings/sessions"
+        },
+        "/announcements": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/announcements"
+        }
+      },
+      "navSample": [
+        "Dashboard",
+        "Employees",
+        "Departments",
+        "Attendance",
+        "Timesheets",
+        "Leave",
+        "Holidays",
+        "Payroll",
+        "Payout methods",
+        "Reports",
+        "Analytics",
+        "Permissions",
+        "Settings",
+        "Recruitment",
+        "Performance",
+        "Assets",
+        "Announcements"
+      ]
+    },
+    "EMPLOYEE": {
+      "login": {
+        "status": 200,
+        "success": true,
+        "memberType": "EMPLOYEE",
+        "employeeId": "cmqjpyds7001kkpjdnlhjygrp"
+      },
+      "pages": {
+        "/dashboard": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/dashboard"
+        },
+        "/employees": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/employees"
+        },
+        "/departments": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/departments"
+        },
+        "/attendance": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/attendance"
+        },
+        "/timesheets": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/timesheets"
+        },
+        "/leave": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/leave"
+        },
+        "/holidays": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/holidays"
+        },
+        "/payroll": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payroll/my-payslips"
+        },
+        "/payout-methods": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/payout-methods"
+        },
+        "/reports": {
+          "ok": false,
+          "status": "DENY",
+          "err": "Access restricted"
+        },
+        "/analytics": {
+          "ok": false,
+          "status": "DENY",
+          "err": "Access restricted"
+        },
+        "/permissions": {
+          "ok": false,
+          "status": "DENY",
+          "err": "Access restricted"
+        },
+        "/settings": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/settings/sessions"
+        },
+        "/announcements": {
+          "ok": true,
+          "status": "OK",
+          "err": null,
+          "url": "https://ems-frontend-iota-ten.vercel.app/announcements"
+        }
+      },
+      "navSample": [
+        "Dashboard",
+        "Employees",
+        "Departments",
+        "Attendance",
+        "Timesheets",
+        "Leave",
+        "Holidays",
+        "Payroll",
+        "Payout methods",
+        "Reports",
+        "Analytics",
+        "Permissions",
+        "Settings",
+        "Recruitment",
+        "Performance",
+        "Assets",
+        "Announcements"
+      ]
+    }
+  },
+  "finishedAt": "2026-07-19T18:08:15.155Z"
+}
