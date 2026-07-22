@@ -1,18 +1,31 @@
-flowchart LR
+flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-REQ[Request] --> RL["@fastify/rate-limit global 100/15min"]
-    RL --> OK{Under limit?}
-    OK -->|Yes| NEXT[Continue pipeline]
-    OK -->|No| 429[429 Too Many Requests]
-    NEXT --> ROUTE{Per-route limits?}
-    ROUTE -->|forgot-password| R5["5 per 15 min"]
-    ROUTE -->|verify-otp| R5b["5 per 5 min"]
+P1["① POST /export/* format=csv|excel|json|pdf"] --> P2["② Zod + HR_ADMIN + employees:export"]
+P2 --> P3["③ createExportJob + 202 job_id"]
+P3 --> P4["④ setImmediate worker"]
+P4 --> P5["⑤ Prisma tenant-scoped rows"]
+P5 --> P6{"⑥ format?"}
+P6 -->|csv| C1["escapeCSV writeFile"]
+P6 -->|excel| C2["ExcelJS styled XLSX"]
+P6 -->|json| C3["JSON.stringify"]
+P6 -->|pdf| C4["PDFKit landscape table"]
+C1 --> P7["⑦ /tmp/exports/{jobId}.ext"]
+C2 --> P7
+C3 --> P7
+C4 --> P7
+P7 --> P8{"⑧ Cloudinary?"}
+P8 -->|yes| P9["upload raw → cloudinary://publicId"]
+P8 -->|no| P10["fileUrl = /export/jobId/download"]
+P9 --> P11["⑨ SUCCESS"]
+P10 --> P11
+P11 --> P12["⑩ GET download → 200 stream or 302 signed"]
+P4 -->|Error| F1["FAILED + error message"]
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class REQ client
-    class NEXT,OK,R5,R5b,RL,ROUTE api
-    class 429 warn
+    class C1,P1 client
+    class C2,C3,C4,P10,P11,P12,P2,P3,P4,P5,P6,P7,P8,P9 api
+    class F1 warn

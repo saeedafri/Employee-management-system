@@ -1,20 +1,31 @@
 flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-DEL["DELETE /employees/:id"] --> AUTH{HR_ADMIN or SUPER_ADMIN?}
-    AUTH -->|No| F403[403]
-    AUTH -->|Yes| CHECK{Direct reports or dept head?}
-    CHECK -->|Yes| F409[409 — reassign first]
-    CHECK -->|No| SOFT["Set deletedAt + employmentStatus=TERMINATED"]
-    SOFT --> USER["User.status may remain — login blocked by policy"]
-    SOFT --> HIST["Historical payslips/attendance retained"]
-    SOFT --> AUDIT["recordAuditLog EMPLOYEE_TERMINATED"]
+subgraph Accrual["Accrual (leave engine)"]
+        AC1["① catchUpAccrual MONTHLY"]
+        AC2["② tenure tier → accrual rate"]
+        AC3["③ proration on join/exit"]
+        AC4["④ LeaveLedgerTxn ACCRUAL posted"]
+    end
+    subgraph Request["Leave Request"]
+        R1["⑤ Employee POST /leave/requests"]
+        R2["⑥ Validate balance via ledger"]
+        R3["⑦ Status PENDING"]
+    end
+    subgraph Approval["Approval"]
+        AP1["⑧ Manager PATCH approve/reject"]
+        AP2["⑨ Ledger DEBIT on approve"]
+        AP3["⑩ Notification to employee"]
+    end
+
+    AC1 --> AC2 --> AC3 --> AC4
+    AC4 --> R1 --> R2 --> R3 --> AP1 --> AP2 --> AP3
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class DEL,USER client
-    class AUTH,CHECK,SOFT api
-    class AUDIT,HIST db
-    class F403,F409 warn
+    class R1 client
+    class AC1,AC2,AC3,AP1,Accrual,Approval,R2,R3,Request api
+    class AC4,AP2 db
+    class AP3 external

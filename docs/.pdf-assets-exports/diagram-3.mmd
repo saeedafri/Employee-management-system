@@ -1,0 +1,13 @@
+flowchart TB
+  subgraph OLD["BEFORE — FE authority"]
+    M1["Hardcoded ROLE_PERMISSIONS in FE"] --> G1[Hide/show buttons]
+    T1["JWT permissions often []"] --> G1
+    G1 --> X1["UI looked locked — API still callable"]
+  end
+  subgraph NEW["AFTER — BE authority"]
+    P2["auth.policy.js DEFAULT_PERMISSIONS_BY_ROLE"] --> R2[resolvePermissions on login/refresh]
+    R2 --> J2["JWT + /auth/me permissions[]"]
+    J2 --> UI2[FE gates UI from /auth/me]
+    P2 --> H2["requirePermission on routes"]
+    H2 --> API2["403 if key missing — even if UI buggy"]
+  end

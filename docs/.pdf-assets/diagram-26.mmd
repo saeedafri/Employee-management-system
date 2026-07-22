@@ -1,20 +1,36 @@
-sequenceDiagram
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
-participant E as Employee
-    participant API as Attendance API
-    participant DB as PostgreSQL
-    participant M as Manager
+flowchart LR
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+subgraph Step1["① Earnings"]
+        E1[BASIC + HRA + allowances]
+    end
+    subgraph Step2["② PF (EPF)"]
+        P1["Wage base: components tagged PF_WAGES"]
+        P2["Apply 12% employee + 12% employer"]
+        P3["Ceiling ₹15,000 wage base"]
+    end
+    subgraph Step3["③ ESI"]
+        S1["Wage base: ESI_WAGES tag"]
+        S2["1.75% employee / 4.75% employer if gross ≤ threshold"]
+    end
+    subgraph Step4["④ Professional Tax"]
+        T1["State slab from StatutoryPack"]
+    end
+    subgraph Step5["⑤ TDS"]
+        TD1["Annualize taxable income"]
+        TD2["Old vs New regime from declaration"]
+        TD3["Slab tax + surcharge + cess"]
+    end
+    subgraph Step6["⑥ Net"]
+        N1["Gross - PF - ESI - PT - TDS - other"]
+    end
 
-    E->>API: ① POST /attendance/check-in
-    API->>DB: Upsert AttendanceRecord (workMode, location)
-    API-->>E: 200 checkInAt
+    E1 --> P1 --> P2 --> S1 --> S2 --> T1 --> TD1 --> TD2 --> TD3 --> N1
 
-    E->>API: ② POST /attendance/check-out
-    API->>DB: Set checkOutAt, durationMinutes
-    API-->>E: 200 summary
-
-    Note over E,M: Missed punch path
-    E->>API: ③ POST /attendance/regularization
-    API->>DB: AttendanceRegularizationRequest PENDING
-    M->>API: ④ PATCH .../approve
-    API->>DB: Update record + request APPROVED
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class P1,S1,T1 client
+    class N1,P2,P3,PF,S2,Step1,Step2,Step3,Step4,Step5,Step6,TD1,TD2,TD3 api
+    class E1 external

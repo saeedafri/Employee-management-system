@@ -1,18 +1,39 @@
-flowchart TD
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-ERR[Thrown Error] --> CTP{FST_ERR_CTP<br/>body parse?}
-    CTP -->|Yes| E400A[400 INVALID_REQUEST]
-    CTP -->|No| AJV{FST_ERR_VALIDATION?}
-    AJV -->|Yes| E422A[422 VALIDATION_ERROR<br/>details: field array]
-    AJV -->|No| ZOD{ZodError?}
-    ZOD -->|Yes| E422B[422 VALIDATION_ERROR]
-    ZOD -->|No| APP{error.code set?}
-    APP -->|Yes| ECUSTOM[error.statusCode<br/>default 500]
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant UI as Frontend / curl
+participant R as export.routes
+participant C as export.controller
+participant S as export.service
+participant DB as PostgreSQL ExportJob
+participant W as exportJob.js worker
+participant F as Format writers
+participant CL as Cloudinary
 
-classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
-    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
-    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
-    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
-    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class AJV,APP,CTP,ECUSTOM,ZOD api
-    class E400A,E422A,E422B,ERR warn
+UI->>R: POST /export/employees {format}
+R->>R: authenticate + authorize HR_ADMIN + employees:export
+R->>C: exportEmployees
+C->>C: Zod parse body
+C->>S: queueEmployeeExport
+S->>DB: createExportJob QUEUED/PROCESSING
+S-->>UI: 202 { job_id, status: QUEUED, estimated_completion_time }
+Note over S,W: setImmediate — non-blocking
+S->>W: exportEmployees(jobId, tenantId, filters)
+W->>DB: SELECT rows (tenant scoped)
+W->>F: generateCSV / generateExcel / generateJSON / generatePDF
+F-->>W: /tmp/exports/{jobId}.{ext}
+alt Cloudinary configured
+  W->>CL: upload raw authenticated
+  CL-->>W: publicId
+  W->>DB: SUCCESS fileUrl=cloudinary://publicId
+else Local only
+  W->>DB: SUCCESS fileUrl=/export/{jobId}/download
+end
+UI->>R: GET /export/{job_id}/download
+R->>C: downloadExport
+alt SUCCESS + cloudinary://
+  C-->>UI: 302 signed Cloudinary URL (300s)
+else SUCCESS + disk
+  C-->>UI: 200 file stream
+else Not ready
+  C-->>UI: 200 JSON status
+end

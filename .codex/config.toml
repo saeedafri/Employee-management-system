@@ -1,0 +1,42 @@
+[mcp_servers.github]
+command = "npx"
+args = [
+    "-y",
+    "@modelcontextprotocol/server-github",
+]
+
+[mcp_servers.github.env]
+GITHUB_PERSONAL_ACCESS_TOKEN = "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"
+
+[mcp_servers.gmail]
+command = "npx"
+args = [
+    "-y",
+    "@gongrzhe/server-gmail-autoauth-mcp",
+]
+
+[mcp_servers.hostinger-api]
+command = "hostinger-api-mcp"
+
+[mcp_servers.hostinger-api.env]
+DEBUG = "false"
+API_TOKEN = "KSg8h0jfTwqGvysj7HVsgsDGHsCNjQxFYDXxf65ud29223ce"
+
+[mcp_servers.render]
+url = "https://mcp.render.com/mcp"
+
+[mcp_servers.render.http_headers]
+Authorization = "Bearer rnd_HjKa30DlOa75z7X8yJefXNf90f6o"
+
+[mcp_servers.resend]
+command = "npx"
+args = [
+    "-y",
+    "resend-mcp",
+]
+
+[mcp_servers.resend.env]
+RESEND_API_KEY = "re_iqM2yo3g_HkFRxdRJmuDYjskkZetht4qH"
+
+[mcp_servers.supabase]
+url = "https://mcp.supabase.com/mcp?project_ref=ovqqisdmkwrghchblkom"

@@ -1,19 +1,15 @@
 flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-R1["POST /auth/refresh with ems_session cookie"] --> H1["Hash cookie → lookup Session"]
-    H1 --> M1{Hash matches active session?}
-    M1 -->|Yes| ROT["Rotate refresh token same familyId"]
-    M1 -->|No| M2{familyId seen but hash stale?}
-    M2 -->|Yes| REV["revokeSessionFamily TOKEN_REUSE_DETECTED"]
-    REV --> E401["401 — all sessions in family dead"]
-    M2 -->|No| E401B["401 invalid session"]
-    ROT --> OK["New accessToken + cookies"]
+Q["Query all departments tenantId"] --> MAP["buildDepartmentChildrenMap parentId → children"]
+    MAP --> DESC["getDescendantDepartmentIds BFS"]
+    MAP --> ROLL["buildRollupEmployeeCounts DFS"]
+    DESC --> FILTER["Analytics/reports filter by subtree"]
+    ROLL --> UI["Headcount includes nested depts"]
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class R1 client
-    class H1,M1,M2,OK,ROT api
-    class E401,E401B,REV warn
+    class Q client
+    class DESC,FILTER,MAP,ROLL,UI api

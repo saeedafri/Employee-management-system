@@ -1,0 +1,21 @@
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+Q["GET /search?q=term"] --> PAR["Parse types filter default all 4"]
+    PAR --> E1["Parallel: employees ILIKE"]
+    PAR --> E2["departments ILIKE"]
+    PAR --> E3["leave requests ILIKE"]
+    PAR --> E4["holidays ILIKE"]
+    E1 --> ROLE{Role filter employee scope}
+    ROLE --> MERGE["Merge results slice to limit"]
+    MERGE --> OUT["groupedCounts + results[]"]
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class Q client
+    class E2,E3,MERGE,PAR,ROLE,results api
+    class OUT db
+    class E1 external
+    class E4 warn

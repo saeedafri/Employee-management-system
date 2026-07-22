@@ -1,16 +1,18 @@
-flowchart TD
+flowchart LR
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-USE{Need atomic multi-table write?}
-    USE -->|Yes| TX["prisma transaction async callback"]
-    USE -->|No| SINGLE["Single prisma.model.create/update"]
-    TX --> EX1["Auth: session + audit log"]
-    TX --> EX2["Payroll: payslips + run status"]
-    TX --> EX3["Leave: ledger txn + balance"]
+REQ[Request] --> RL["@fastify/rate-limit global 100/15min"]
+    RL --> OK{Under limit?}
+    OK -->|Yes| NEXT[Continue pipeline]
+    OK -->|No| 429[429 Too Many Requests]
+    NEXT --> ROUTE{Per-route limits?}
+    ROUTE -->|forgot-password| R5["5 per 15 min"]
+    ROUTE -->|verify-otp| R5b["5 per 5 min"]
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class USE client
-    class EX1,EX2,EX3,SINGLE,TX api
+    class REQ client
+    class NEXT,OK,R5,R5b,RL,ROUTE api
+    class 429 warn

@@ -1,0 +1,22 @@
+sequenceDiagram
+  participant UI as Frontend
+  participant R as export.routes
+  participant S as export.service
+  participant DB as PostgreSQL
+  participant W as exportJob.js
+  participant CL as Cloudinary
+
+  UI->>R: POST /export/employees {format:pdf}
+  R->>R: auth + HR_ADMIN + employees:export
+  R->>S: queueEmployeeExport
+  S->>DB: INSERT ExportJob QUEUED
+  S-->>UI: 202 { job_id, status:QUEUED }
+  Note over S,W: setImmediate
+  S->>W: exportEmployees(jobId, tenantId, filters)
+  W->>DB: SELECT employees (tenant scoped)
+  W->>W: generatePDF → /tmp/exports/{jobId}.pdf
+  W->>CL: upload raw authenticated
+  CL-->>W: publicId
+  W->>DB: SUCCESS fileUrl=cloudinary://publicId
+  UI->>R: GET /export/{job_id}/download
+  R-->>UI: 302 signed Cloudinary URL

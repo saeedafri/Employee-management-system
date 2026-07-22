@@ -1,7 +1,7 @@
 ---
 title: "EMS Backend — Technical Documentation"
 subtitle: "Employee Management System REST API"
-version: "July 2026 v3.0"
+version: "July 2026 v3.1"
 author: "EMS Engineering"
 ---
 
@@ -35,6 +35,8 @@ author: "EMS Engineering"
 8. [Database Schema Overview](#8-database-schema-overview)
 9. [Payroll Engine](#9-payroll-engine)
 10. [External Integrations](#10-external-integrations)
+   - [10.4 Server-Side Dynamic Export Generation](#104-server-side-dynamic-export-generation-csv--excel--json--pdf)
+   - [10.5 July 2026 Hostinger Hardening](#105-july-2026-hostinger-hardening--what-changed)
 11. [Error Handling & Logging](#11-error-handling--logging)
 12. [Testing Strategy](#12-testing-strategy)
 13. [Deployment](#13-deployment)
@@ -123,27 +125,6 @@ Open **http://localhost:3000/docs** — authorize with the returned `accessToken
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 1. Executive Summary
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> EMS is a multi-tenant HR API — one codebase serves many companies, each isolated by tenant.<br><em>This section orients architects and new backend engineers on scope, endpoints, and design goals.</em>
@@ -158,7 +139,7 @@ The **EMS (Employee Management System) Backend** is a production-grade, multi-te
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**Architecture**</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Modular monolith — Fastify v4 with layered route → controller → service → repository pattern</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**Data isolation**</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Shared PostgreSQL database with row-level `tenantId` scoping on every table</td></tr>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**Authentication**</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">JWT access tokens (15 min) + opaque refresh token rotation (httpOnly cookie, 30 days)</td></tr>
-<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**Authorization**</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Role-based via `memberType` enum; `SUPER_ADMIN` bypasses all role checks</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**Authorization**</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Role-based via `memberType` + JWT `permissions[]` (`requirePermission`); `SUPER_ADMIN` bypasses role/permission checks</td></tr>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**Deployment**</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Primary: Hostinger VPS (Docker + nginx + PM2). Legacy: Render Web Service</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**API contract**</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">OpenAPI/Swagger at `/docs`; canonical field mapping in `docs/API_MAPPING.md`</td></tr>
 </tbody></table>
@@ -177,27 +158,6 @@ Swagger:              GET /docs
 This document is intended for **backend developers**, **solution architects**, and **DevOps engineers** integrating with or operating the EMS API. It covers request lifecycles, tenant resolution, auth flows, module boundaries, the payroll calculation engine, deployment topology, and operational concerns.
 
 ---
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -369,27 +329,6 @@ All domain routes register under `config.apiPrefix` (`/api/v1`) in `src/app.js`:
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 2.5 Middleware Decision Tree — Which Middleware Runs When?
 
 
@@ -453,27 +392,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 3. Technology Stack
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Node 20, Fastify 4, Prisma 5, and PostgreSQL form the core; integrations handle email, files, and exports.<br><em>Versions and libraries listed here are the supported production stack.</em>
@@ -495,7 +413,9 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Image processing</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">sharp</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">WebP conversion before Cloudinary upload</td></tr>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Email</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Resend HTTP API</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Primary provider for OTP/password reset</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">File storage</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Cloudinary</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Documents, employee photos, tenant logos</td></tr>
-<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Export</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ExcelJS</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Styled XLSX exports</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Export (Excel)</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ExcelJS</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Styled XLSX — frozen header, alternating rows, auto-width</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Export (PDF)</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">PDFKit</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Server-side PDF tables (landscape A4) — no headless browser</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Export storage</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Cloudinary (raw authenticated)</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Durable export artifacts; signed download URLs</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Testing</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Node test runner + Playwright</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Unit, integration, E2E scripts</td></tr>
 </tbody></table>
 
@@ -528,27 +448,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 > **Production guard:** `JWT_SECRET` must be set to a non-default value when `NODE_ENV=production` — the app fails closed on startup otherwise.
 
 ---
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -654,27 +553,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 5. Multi-Tenancy Deep Dive
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Every database row belongs to exactly one tenant — isolation is enforced at query time.<br><em>Tenant resolution runs before protected handlers; never query without `tenantId`.</em>
@@ -751,27 +629,6 @@ When a user logs in with email + password (no tenant header):
 </tbody></table>
 
 ---
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -916,27 +773,6 @@ if (memberType === 'SUPER_ADMIN') return;
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 7. Module Reference
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Each domain (employees, leave, payroll, etc.) is a self-contained Fastify route group.<br><em>Pick the module that matches your feature; follow the layered pattern inside it.</em>
@@ -1019,7 +855,12 @@ Key surfaces: pay groups, salary components, employee salaries, payroll runs, pa
 ### 7.10 Reports & Export
 
 - **Reports:** attendance, leave, payroll reports; scheduled report CRUD
-- **Export:** async job queue (synchronous processing) — CSV/Excel/JSON for employees, attendance, leave
+- **Export (dynamic, server-side):** CSV / Excel / JSON / **PDF** for employees, attendance, leave
+  - Queue via `POST /export/*` → **202** `{ job_id, status: QUEUED }`
+  - Worker: `src/jobs/exportJob.js` (`setImmediate`) — ExcelJS + PDFKit + Cloudinary
+  - Download: `GET /export/:job_id/download` (stream or **302** signed URL)
+  - Auth: `HR_ADMIN` + permission `employees:export`
+  - Full step-by-step + live curls: [§10.4](#104-server-side-dynamic-export-generation-csv--excel--json--pdf)
 
 ### 7.11 Settings (`/settings/*`)
 
@@ -1224,27 +1065,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 8. Database Schema Overview
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Prisma models mirror PostgreSQL tables — 40+ entities scoped by `tenantId`.<br><em>Schema relationships drive how services join data; no raw SQL in this codebase.</em>
@@ -1396,27 +1216,6 @@ All repository queries MUST include `where: { tenantId }` — enforced by conven
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 9. Payroll Engine
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Payroll computes gross → statutory deductions → tax → net per employee per run.<br><em>Highest-risk domain — calculations are data-driven via StatutoryPack JSON, not hardcoded country logic.</em>
@@ -1523,27 +1322,6 @@ After run approval, payslips are generated per employee with:
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 10. External Integrations
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Email (Resend), file storage (Cloudinary), and optional Redis (BullMQ) live outside the monolith.<br><em>Each integration degrades gracefully when env vars are missing.</em>
@@ -1630,7 +1408,290 @@ participant FE as Frontend
 - Unread badge: `GET /notifications/unread-count`
 - Mark read: `PATCH /notifications/:id/read` (POST alias supported)
 
-### 10.4 Render (Legacy Deployment)
+### 10.4 Server-Side Dynamic Export Generation (CSV / Excel / JSON / PDF)
+
+<blockquote style="background:#e8f5e9;border-left:4px solid #2e7d32;padding:12px 16px;margin:16px 0;">
+<strong>In simple terms:</strong> The UI never builds files in the browser. It asks the API to queue a job; the server pulls live DB rows, writes CSV/Excel/JSON/PDF, optionally uploads to Cloudinary, then the UI downloads by <code>job_id</code>.
+</blockquote>
+
+> **What it does:** Dynamically generates employee, attendance, and leave export files from live PostgreSQL data.  
+> **Why it matters:** Correct columns, tenant isolation, permission gates, and durable storage — no client-side Blob spoofing.  
+> **How it works:** `POST /export/*` → `ExportJob` row → `setImmediate` worker in `exportJob.js` → format writers → Cloudinary/disk → `GET /export/:job_id/download`.  
+> **Live since:** Hostinger commit `68d32f4` (2026-07-19).  
+> **Auth:** `HR_ADMIN` (+ `SUPER_ADMIN` bypass) **and** permission `employees:export`.
+
+#### 10.4.1 Libraries — What / Why / How
+
+<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
+<thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Library</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">What</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Why we use it</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">How it is used</th></tr></thead><tbody>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>ExcelJS</strong></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Node XLSX writer</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Styled workbooks (frozen header, indigo header fill, alternating rows, auto column width) without spawning Excel</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>generateExcel()</code> in <code>src/jobs/exportJob.js</code> → <code>workbook.xlsx.writeFile()</code></td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>PDFKit</strong></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Streaming PDF generator</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Server-side PDF without headless Chrome; small dependency; table layout for ops exports</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>generatePDF()</code> — landscape A4, header bar <code>#4F46E5</code>, first 8 columns, paginated rows</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>Node fs</strong></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Filesystem API</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Write CSV/JSON buffers and stage files before Cloudinary upload</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>writeFileSync</code> under <code>EXPORTS_DIR</code> (<code>/tmp/exports</code> or <code>config.exportsDir</code>)</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>Cloudinary SDK</strong></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Object storage CDN</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Durable authenticated <code>raw</code> assets; survives container restarts; signed short-lived download URLs</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>persistSuccess()</code> uploads buffer; stores <code>cloudinary://{publicId}</code> in <code>ExportJob.fileUrl</code></td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>Prisma</strong></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ORM</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Tenant-scoped reads for export datasets + job status rows</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>export.repository.js</code> <code>getEmployeesForExport</code> / attendance / leave + <code>ExportJob</code> CRUD</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>uuid</strong></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ID generator</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Opaque <code>job_id</code> for poll/download URLs</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>uuidv4()</code> in <code>export.service.js</code> queue helpers</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>Zod</strong> (validator)</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Schema validation</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Reject bad <code>format</code> / missing date ranges before queueing</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>export.validator.js</code> — <code>format: csv|excel|json|pdf</code></td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>auth.policy</strong></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Permission middleware</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Fine-grained gate beyond role enum</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>requirePermission('employees:export')</code> on export routes</td></tr>
+</tbody></table>
+
+#### 10.4.2 End-to-End Flow (all formats)
+
+```mermaid
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant UI as Frontend / curl
+participant R as export.routes
+participant C as export.controller
+participant S as export.service
+participant DB as PostgreSQL ExportJob
+participant W as exportJob.js worker
+participant F as Format writers
+participant CL as Cloudinary
+
+UI->>R: POST /export/employees {format}
+R->>R: authenticate + authorize HR_ADMIN + employees:export
+R->>C: exportEmployees
+C->>C: Zod parse body
+C->>S: queueEmployeeExport
+S->>DB: createExportJob QUEUED/PROCESSING
+S-->>UI: 202 { job_id, status: QUEUED, estimated_completion_time }
+Note over S,W: setImmediate — non-blocking
+S->>W: exportEmployees(jobId, tenantId, filters)
+W->>DB: SELECT rows (tenant scoped)
+W->>F: generateCSV / generateExcel / generateJSON / generatePDF
+F-->>W: /tmp/exports/{jobId}.{ext}
+alt Cloudinary configured
+  W->>CL: upload raw authenticated
+  CL-->>W: publicId
+  W->>DB: SUCCESS fileUrl=cloudinary://publicId
+else Local only
+  W->>DB: SUCCESS fileUrl=/export/{jobId}/download
+end
+UI->>R: GET /export/{job_id}/download
+R->>C: downloadExport
+alt SUCCESS + cloudinary://
+  C-->>UI: 302 signed Cloudinary URL (300s)
+else SUCCESS + disk
+  C-->>UI: 200 file stream
+else Not ready
+  C-->>UI: 200 JSON status
+end
+```
+
+#### 10.4.3 Format Decision Tree
+
+```mermaid
+flowchart TD
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+START["generateExportFile(data, type, format, jobId)"] --> F{format?}
+F -->|csv| CSV["generateCSV — flattenObject + escapeCSV + writeFileSync"]
+F -->|excel| XLS["generateExcel — ExcelJS workbook styled header"]
+F -->|json| JSON["generateJSON — JSON.stringify pretty"]
+F -->|pdf| PDF["generatePDF — PDFKit landscape table"]
+F -->|other| ERR["throw Unsupported format"]
+CSV --> OUT["{jobId}.csv"]
+XLS --> OUT2["{jobId}.xlsx"]
+JSON --> OUT3["{jobId}.json"]
+PDF --> OUT4["{jobId}.pdf"]
+OUT --> PERSIST["persistSuccess → Cloudinary or disk URL"]
+OUT2 --> PERSIST
+OUT3 --> PERSIST
+OUT4 --> PERSIST
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class START client
+    class CSV,F,JSON,OUT2,OUT3,OUT4,PDF,PERSIST,XLS api
+    class OUT db
+    class ERR warn
+```
+
+#### 10.4.4 Per-Format Behavior
+
+<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
+<thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">format</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">File</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">MIME</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Generation details</th></tr></thead><tbody>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>csv</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>{jobId}.csv</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>text/csv</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Flatten nested objects; RFC-style quoting for commas/quotes/newlines; empty file if zero rows</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>excel</code></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>{jobId}.xlsx</code></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">OOXML spreadsheet</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Frozen header row; indigo <code>#4F46E5</code> header; alternating <code>#F0F0FF</code> rows; summary footer with record count</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>json</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>{jobId}.json</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>application/json</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Pretty-printed array of original (nested) row objects</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>pdf</code></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>{jobId}.pdf</code></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>application/pdf</code></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Landscape A4; title + timestamp; table up to 8 columns; note if more columns exist (use Excel/CSV for full width)</td></tr>
+</tbody></table>
+
+#### 10.4.5 API Surface
+
+<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
+<thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Method</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Path</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Body highlights</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">HTTP</th></tr></thead><tbody>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">POST</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>/api/v1/export/employees</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>format</code>: <code>csv</code> | <code>excel</code> | <code>json</code> | <code>pdf</code>; optional <code>department_id</code>, <code>status</code>, <code>include_archived</code></td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><strong>202</strong></td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">POST</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/api/v1/export/attendance`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">requires `from_date`, `to_date` + `format`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**202**</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">POST</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/api/v1/export/leave`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">requires `from_date`, `to_date` + `format`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**202**</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">GET</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/api/v1/export/:job_id/download`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">—</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**200** stream / **302** signed URL / **200** status JSON</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">GET</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/api/v1/export/list`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`?page&limit&status`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**200** (tenant-wide list today)</td></tr>
+</tbody></table>
+
+**202 response shape:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "job_id": "01a08046-e986-4a97-bbfe-68c3f042e8a3",
+    "status": "QUEUED",
+    "estimated_completion_time": 2
+  }
+}
+```
+
+#### 10.4.6 Live Examples (Hostinger)
+
+Base: `https://ems-api.saqibsaeed.cloud/api/v1`  
+Tenant: `x-tenant-key: acme-corp-001`  
+Login: `hr@acme.test` / `Password123!`
+
+**Step 1 — Login**
+
+```bash
+TOKEN=$(curl -s -X POST https://ems-api.saqibsaeed.cloud/api/v1/auth/login \
+  -H 'content-type: application/json' \
+  -H 'x-tenant-key: acme-corp-001' \
+  -d '{"email":"hr@acme.test","password":"Password123!"}' \
+  | python3 -c 'import sys,json; print((json.load(sys.stdin).get("data") or {}).get("accessToken") or "")')
+echo "token_len=${#TOKEN}"
+```
+
+**Step 2a — Employees CSV**
+
+```bash
+JOB=$(curl -s -X POST https://ems-api.saqibsaeed.cloud/api/v1/export/employees \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"format":"csv"}')
+echo "$JOB"
+# → 202 { "data": { "job_id": "<uuid>", "status": "QUEUED", ... } }
+```
+
+**Step 2b — Employees Excel**
+
+```bash
+curl -s -X POST https://ems-api.saqibsaeed.cloud/api/v1/export/employees \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"format":"excel","status":"ACTIVE"}'
+```
+
+**Step 2c — Employees PDF**
+
+```bash
+curl -s -X POST https://ems-api.saqibsaeed.cloud/api/v1/export/employees \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"format":"pdf"}'
+```
+
+**Step 2d — Attendance JSON (date range required)**
+
+```bash
+curl -s -X POST https://ems-api.saqibsaeed.cloud/api/v1/export/attendance \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"format":"json","from_date":"2026-07-01","to_date":"2026-07-19"}'
+```
+
+**Step 2e — Leave Excel**
+
+```bash
+curl -s -X POST https://ems-api.saqibsaeed.cloud/api/v1/export/leave \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"format":"excel","from_date":"2026-06-01","to_date":"2026-07-19","status":"APPROVED"}'
+```
+
+**Step 3 — Poll / download**
+
+```bash
+JOB_ID="<paste-job_id>"
+# Follow redirects (-L) for Cloudinary 302
+curl -sL -o /tmp/ems-export.bin -w 'http=%{http_code} type=%{content_type}\n' \
+  -H "Authorization: Bearer $TOKEN" \
+  "https://ems-api.saqibsaeed.cloud/api/v1/export/${JOB_ID}/download"
+file /tmp/ems-export.bin
+```
+
+**Step 4 — Permission deny (EMPLOYEE)**
+
+```bash
+EMP=$(curl -s -X POST https://ems-api.saqibsaeed.cloud/api/v1/auth/login \
+  -H 'content-type: application/json' -H 'x-tenant-key: acme-corp-001' \
+  -d '{"email":"priya@acme.test","password":"Password123!"}' \
+  | python3 -c 'import sys,json; print((json.load(sys.stdin).get("data") or {}).get("accessToken") or "")')
+
+curl -s -o /dev/null -w 'emp_export=%{http_code}\n' -X POST \
+  https://ems-api.saqibsaeed.cloud/api/v1/export/employees \
+  -H "Authorization: Bearer $EMP" -H 'content-type: application/json' \
+  -d '{"format":"csv"}'
+# Expected: emp_export=403
+```
+
+**Live proof (2026-07-19 via Vercel BFF):** HR `POST /api/export/employees` → **202 QUEUED**; Employee same call → **403 FORBIDDEN**.
+
+#### 10.4.7 Source Map
+
+<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
+<thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Layer</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">File</th></tr></thead><tbody>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Routes + auth</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`src/modules/export/export.routes.js`</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Controller + download MIME / 302</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`src/modules/export/export.controller.js`</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Queue + `setImmediate`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`src/modules/export/export.service.js`</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Prisma queries + ExportJob</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`src/modules/export/export.repository.js`</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">CSV / Excel / JSON / PDF writers + Cloudinary persist</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`src/jobs/exportJob.js`</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Zod schemas</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`src/modules/export/export.validator.js`</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Permission defaults</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`src/modules/auth/auth.policy.js`</td></tr>
+</tbody></table>
+
+#### 10.4.8 FE Contract (mandatory)
+
+1. Stop client-side Blob CSV/Excel/PDF for operational exports.  
+2. Call `POST /export/*` → keep `job_id` → open/poll `GET /export/:job_id/download`.  
+3. Never use legacy `/files/:jobId`.  
+4. Hide Export UI without `employees:export` from `/auth/me`.  
+5. Details: `docs/UI_CONTRACT_server_exports_permissions_realtime_logs.md`.
+
+---
+
+### 10.5 July 2026 Hostinger Hardening — What Changed
+
+<blockquote style="background:#fff3e0;border-left:4px solid #ef6c00;padding:12px 16px;margin:16px 0;">
+<strong>Deployed:</strong> Hostinger Docker <code>ems-backend</code> git <code>68d32f4</code> (2026-07-19). Not Render.
+</blockquote>
+
+```mermaid
+flowchart LR
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
+A["① PDFKit + Cloudinary exports"] --> B["② permissions SoT + requirePermission"]
+B --> C["③ SSE cookie/Bearer/token"]
+C --> D["④ /ops/logs private HTML"]
+D --> E["⑤ noEmployeeRecord empty reads"]
+E --> F["⑥ Live Hostinger + Vercel E2E"]
+
+classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
+    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
+    class C client
+    class A,B,D,E,F api
+```
+
+<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
+<thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Change</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Before</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">After</th></tr></thead><tbody>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Export formats</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">csv / excel / json; disk-only URL</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">+ <strong>pdf</strong>; Cloudinary durable store; download may <strong>302</strong></td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Export auth</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Role HR_ADMIN only</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">HR_ADMIN + <code>employees:export</code></td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Permissions</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Empty JWT permissions broke FE gates</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>DEFAULT_PERMISSIONS_BY_ROLE</code> + <code>resolvePermissions</code> on login/refresh</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">SSE</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Primarily <code>?token=</code></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>?token=</code> <strong>or</strong> Bearer <strong>or</strong> <code>accessToken</code> cookie</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Ops</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">—</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>GET /ops/logs</code> HTML + <code>GET /ops/process</code> (SUPER_ADMIN / OPS_LOGS_TOKEN)</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Super Admin personal reads</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">400 <code>NO_EMPLOYEE_RECORD</code> → UI “Something went wrong”</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">200 empty + <code>noEmployeeRecord: true</code></td></tr>
+</tbody></table>
+
+**Handoff docs:** `docs/UI_TEAM_HANDOFF_HOSTINGER_HARDENING_2026-07-19.md`, `docs/BACKEND_CHANGELOG_hostinger_hardening_2026-07-19.md`, `docs/LIVE_UI_ROLE_MATRIX_VERCEL_2026-07-19.md`.
+
+---
+
+### 10.6 Render (Legacy Deployment)
 
 <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
 <thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Field</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Value</th></tr></thead><tbody>
@@ -1640,7 +1701,7 @@ participant FE as Frontend
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Status</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Legacy — superseded by Hostinger for production traffic</td></tr>
 </tbody></table>
 
-### 10.5 Hostinger (Primary Production)
+### 10.7 Hostinger (Primary Production)
 
 <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
 <thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Field</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Value</th></tr></thead><tbody>
@@ -1651,27 +1712,6 @@ participant FE as Frontend
 </tbody></table>
 
 ---
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -1758,27 +1798,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 12. Testing Strategy
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Unit, integration, and E2E tests guard regressions — integration tests use a local test DB only.<br><em>Never run `npm test` against production DATABASE_URL.</em>
@@ -1850,27 +1869,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 ```
 
 ---
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -2169,27 +2167,6 @@ npm run db:seed               # Idempotent seed
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 14. Security Considerations
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Defense in depth: Argon2id passwords, JWT rotation, rate limits, helmet headers, tenant isolation.<br><em>Review this before exposing new endpoints or changing auth flows.</em>
@@ -2240,27 +2217,6 @@ npm run db:seed               # Idempotent seed
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 15. Known Issues (E2E Audits)
 <blockquote style="background:#e3f2fd;border-left:4px solid #1565c0;padding:12px 16px;margin:16px 0;">
 <strong>In simple terms:</strong> Documented gaps found by automated UI/API audits — not blockers but tracked honestly.<br><em>Check here before assuming a wireframe feature is fully implemented.</em>
@@ -2288,27 +2244,6 @@ A comprehensive E2E audit was conducted in July 2026. Full details: `docs/E2E_BA
 4. Continue phase4 E2E scripts on every release (`npm run test:e2e:phase4`)
 
 ---
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -2354,27 +2289,6 @@ curl -X POST https://ems-api.saqibsaeed.cloud/api/v1/auth/login \
 
 ---
 
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -2631,27 +2545,41 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     class DESC,FILTER,MAP,ROLL,UI api
 ```
 
-### 17.9 Export Job Lifecycle (ExcelJS)
+### 17.9 Export Job Lifecycle (CSV / Excel / JSON / PDF)
+
+> Full narrative + live curls: [§10.4](#104-server-side-dynamic-export-generation-csv--excel--json--pdf).
 
 ```mermaid
 flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-P1["① POST /export/employees"] --> P2["② createExportJob status=PROCESSING"]
-    P2 --> P3["③ setImmediate exportEmployees job"]
-    P3 --> P4["④ Prisma fetch rows"]
-    P4 --> P5["⑤ ExcelJS styled XLSX / CSV / JSON"]
-    P5 --> P6["⑥ Write /tmp/exports/{jobId}.xlsx"]
-    P6 --> P7["⑦ updateExportJob SUCCESS + fileUrl"]
-    P7 --> P8["⑧ GET /export/:job_id/download"]
-    P3 -->|Error| F1["status=FAILED"]
+P1["① POST /export/* format=csv|excel|json|pdf"] --> P2["② Zod + HR_ADMIN + employees:export"]
+P2 --> P3["③ createExportJob + 202 job_id"]
+P3 --> P4["④ setImmediate worker"]
+P4 --> P5["⑤ Prisma tenant-scoped rows"]
+P5 --> P6{"⑥ format?"}
+P6 -->|csv| C1["escapeCSV writeFile"]
+P6 -->|excel| C2["ExcelJS styled XLSX"]
+P6 -->|json| C3["JSON.stringify"]
+P6 -->|pdf| C4["PDFKit landscape table"]
+C1 --> P7["⑦ /tmp/exports/{jobId}.ext"]
+C2 --> P7
+C3 --> P7
+C4 --> P7
+P7 --> P8{"⑧ Cloudinary?"}
+P8 -->|yes| P9["upload raw → cloudinary://publicId"]
+P8 -->|no| P10["fileUrl = /export/jobId/download"]
+P9 --> P11["⑨ SUCCESS"]
+P10 --> P11
+P11 --> P12["⑩ GET download → 200 stream or 302 signed"]
+P4 -->|Error| F1["FAILED + error message"]
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class P1 client
-    class P2,P3,P4,P5,P6,P7,P8 api
+    class C1,P1 client
+    class C2,C3,C4,P10,P11,P12,P2,P3,P4,P5,P6,P7,P8,P9 api
     class F1 warn
 ```
 
@@ -2886,27 +2814,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## 18. Utilities Reference (`src/utils/`)
 
 <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
@@ -2937,27 +2844,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`importJobStore.js`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">In-memory import job status</td></tr>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`refNo.js`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Sequential reference numbers</td></tr>
 </tbody></table>
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -2999,31 +2885,10 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
 <thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">File</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Role</th></tr></thead><tbody>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`emailJob.js`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Resend HTTP + SMTP fallback; password reset, OTP, invites</td></tr>
-<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`exportJob.js`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ExcelJS export worker (sync `setImmediate`)</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;"><code>exportJob.js</code></td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ExcelJS + PDFKit export worker (CSV/Excel/JSON/PDF via sync <code>setImmediate</code>)</td></tr>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`lib/payrollQueue.js`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">BullMQ `payroll-calculate` queue + in-process worker</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`lib/redis.js`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ioredis client; cache get/set; no-op without REDIS_URL</td></tr>
 </tbody></table>
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
@@ -3064,27 +2929,6 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
 ## Appendix B — Document Revision History
 
 <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:0.92em;">
@@ -3092,30 +2936,10 @@ classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">July 2026</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">1.0</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Initial comprehensive technical documentation</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">July 2026</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**2.0**</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Expanded workflows, Hostinger deep dive, colored diagrams, Quick Start, full utils/middleware reference, 18+ new flowcharts</td></tr>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">July 2026</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**3.0**</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">PDF blank-page fixes, all diagrams pre-rendered in color, section callouts, appendix reorder, HTML tables</td></tr>
+<tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">2026-07-19</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">**3.1**</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">Dynamic export chapter (CSV/Excel/JSON/PDF + libraries + live curls); Hostinger hardening 68d32f4; PDFKit; Cloudinary export storage; noEmployeeRecord; permissions SoT; ops logs</td></tr>
 </tbody></table>
 
 
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
@@ -3195,7 +3019,7 @@ Full route list registered in `src/app.js` under `/api/v1`. See `docs/API_MAPPIN
 <thead><tr><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Method</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Path</th><th style="background:#1565c0;color:#fff;padding:8px 10px;text-align:left;border:1px solid #0d47a1;">Notes</th></tr></thead><tbody>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">GET</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/analytics/*`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">HR dashboards</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">GET/POST</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/reports/*`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">reports + schedule CRUD</td></tr>
-<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">POST</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/export/employees`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">ExcelJS async job</td></tr>
+<tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">POST</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/export/employees`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">async job csv|excel|json|pdf + Cloudinary</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">GET</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/audit-logs`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">immutable audit</td></tr>
 <tr><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">GET</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/notifications`</td><td style="background:#f5f9ff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">+ SSE `/notifications/stream`</td></tr>
 <tr><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">GET</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">`/search?q=`</td><td style="background:#ffffff;padding:8px 10px;border:1px solid #e0e0e0;vertical-align:top;">multi-entity search</td></tr>
@@ -3217,27 +3041,6 @@ Full route list registered in `src/app.js` under `/api/v1`. See `docs/API_MAPPIN
 \newpage
 
 
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
-
-
-<hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">
 
 
 <hr style="border:none;border-top:3px solid #1976d2;margin:28px 0 16px 0;">

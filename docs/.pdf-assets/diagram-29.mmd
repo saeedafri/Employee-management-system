@@ -1,15 +1,20 @@
-flowchart TD
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-Q["Query all departments tenantId"] --> MAP["buildDepartmentChildrenMap parentId → children"]
-    MAP --> DESC["getDescendantDepartmentIds BFS"]
-    MAP --> ROLL["buildRollupEmployeeCounts DFS"]
-    DESC --> FILTER["Analytics/reports filter by subtree"]
-    ROLL --> UI["Headcount includes nested depts"]
+sequenceDiagram
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2', 'actorBkg': '#e8f5e9', 'actorTextColor': '#1b5e20', 'actorLineColor': '#2e7d32', 'actorBorder': '#2e7d32', 'signalColor': '#1976d2', 'signalTextColor': '#0d47a1', 'noteBkgColor': '#fff3e0', 'noteTextColor': '#e65100'}}}%%
+participant E as Employee
+    participant API as Attendance API
+    participant DB as PostgreSQL
+    participant M as Manager
 
-classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
-    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
-    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
-    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
-    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class Q client
-    class DESC,FILTER,MAP,ROLL,UI api
+    E->>API: ① POST /attendance/check-in
+    API->>DB: Upsert AttendanceRecord (workMode, location)
+    API-->>E: 200 checkInAt
+
+    E->>API: ② POST /attendance/check-out
+    API->>DB: Set checkOutAt, durationMinutes
+    API-->>E: 200 summary
+
+    Note over E,M: Missed punch path
+    E->>API: ③ POST /attendance/regularization
+    API->>DB: AttendanceRegularizationRequest PENDING
+    M->>API: ④ PATCH .../approve
+    API->>DB: Update record + request APPROVED

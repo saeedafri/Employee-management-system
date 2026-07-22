@@ -1,20 +1,21 @@
-flowchart TD
+flowchart TB
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-A[Push to main] --> B[npm ci + lint]
-    B --> C[prisma generate + app load verify]
-    C --> D[SSH to Hostinger]
-    D --> E[pg_dump backup]
-    E --> F[git pull --ff-only]
-    F --> G[docker compose build ems-backend]
-    G --> H[docker compose up -d]
-    H --> I[prisma migrate deploy]
-    I --> J[Health check loop<br/>GET /health → 200]
-    J -->|40 retries × 3s| K[Deploy success]
+subgraph E2E["E2E / Deployed UI Scripts"]
+        P4[phase4E2EAudit.mjs]
+        DEEP[deepE2EAudit.mjs]
+        STRICT[strictButtonE2EAudit.mjs]
+        PW[Playwright specs]
+    end
+    subgraph INT["Integration"]
+        ROUTES[auth.routes.test.js<br/>attendance.routes.test.js<br/>...]
+    end
+    subgraph UNIT["Unit"]
+        SVC[auth.service.test.js<br/>otp.service.test.js<br/>middleware.test.js]
+    end
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class C client
-    class A,B,D,E,F,G,H,I,J,K api
+    class DEEP,E2E,INT,P4,PW,ROUTES,STRICT,SVC,UNIT api

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>EMS Backend — Technical Documentation v3</title>
+  <title>EMS Backend — Technical Documentation v3.1</title>
   <style>
     @page { size: A4; margin: 18mm 14mm 20mm 14mm; }
     * { box-sizing: border-box; }
@@ -42,10 +42,10 @@
     .legend-state { background: #f3e5f5; color: #7b1fa2; }
 
     /* Typography */
-    h1 { font-size: 17pt; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 5pt; margin: 22pt 0 10pt; page-break-after: avoid; }
-    h2 { font-size: 13pt; color: #1e40af; margin: 18pt 0 8pt; page-break-after: avoid; border-left: 4px solid #3b82f6; padding-left: 8pt; }
-    h3 { font-size: 11pt; color: #334155; margin: 14pt 0 6pt; page-break-after: avoid; }
-    h4 { font-size: 10pt; color: #475569; margin: 10pt 0 4pt; page-break-after: avoid; }
+    h1 { font-size: 17pt; color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 5pt; margin: 22pt 0 10pt; page-break-after: avoid; break-after: avoid; }
+    h2 { font-size: 13pt; color: #1e40af; margin: 18pt 0 8pt; page-break-after: avoid; break-after: avoid; border-left: 4px solid #3b82f6; padding-left: 8pt; }
+    h3 { font-size: 11pt; color: #334155; margin: 14pt 0 6pt; page-break-after: avoid; break-after: avoid; }
+    h4 { font-size: 10pt; color: #475569; margin: 10pt 0 4pt; page-break-after: avoid; break-after: avoid; }
 
     /* Page breaks — only when explicitly marked */
     .page-break-before { page-break-before: always; break-before: page; height: 0; margin: 0; padding: 0; }
@@ -71,20 +71,37 @@
     }
 
     /* Tables */
-    table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin: 10pt 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin: 10pt 0; page-break-inside: auto; }
     th { background: #f1f5f9; font-weight: 600; padding: 5pt 7pt; border: 1px solid #cbd5e1; text-align: left; }
     td { padding: 4pt 7pt; border: 1px solid #e2e8f0; vertical-align: top; }
     tbody tr:nth-child(even) td { background: #f8fafc; }
     tbody tr:nth-child(odd) td { background: #ffffff; }
+    tr { page-break-inside: avoid; page-break-after: auto; }
 
-    /* Code */
+    /* Code — allow split across pages (avoids blank preceding pages) */
     code { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 8.5pt; background: #f1f5f9; padding: 1pt 4pt; border-radius: 3pt; }
-    pre { background: #0f172a; color: #e2e8f0; padding: 10pt; border-radius: 6pt; font-size: 7.5pt; overflow-x: auto; page-break-inside: avoid; margin: 10pt 0; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 10pt; border-radius: 6pt; font-size: 7.5pt; overflow-x: auto; page-break-inside: auto; margin: 10pt 0; }
     pre code { background: transparent; color: inherit; padding: 0; }
 
-    /* Diagrams */
-    figure.diagram { margin: 12pt 0; page-break-inside: avoid; text-align: center; }
-    figure.diagram img { max-width: 100%; height: auto; }
+    /* Flowchart block: heading + diagram stay on same page */
+    .flow-block {
+      break-inside: avoid-page;
+      page-break-inside: avoid;
+      margin: 8pt 0 12pt;
+    }
+    .flow-block h3 { margin-top: 6pt; }
+
+    /* Diagrams — cap height so heading+diagram fit one page */
+    figure.diagram { margin: 8pt 0; page-break-inside: auto; text-align: center; }
+    figure.diagram img, img[src*=".pdf-assets/"], .flow-block img {
+      max-width: 100%;
+      max-height: 200mm;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      page-break-before: avoid;
+      break-before: avoid;
+    }
 
     /* Legacy blockquote fallback */
     blockquote { border-left: 3px solid #3b82f6; margin: 10pt 0; padding: 6pt 12pt; background: #eff6ff; color: #1e40af; font-size: 9.5pt; }
@@ -110,12 +127,12 @@
 </head>
 <body>
 <div class="cover">
-  <div class="version-badge">v3.0 · July 2026</div>
+  <div class="version-badge">v3.1 · July 2026</div>
   <h1>EMS Backend</h1>
   <div class="subtitle">Technical Documentation</div>
   <p style="color:#64748b;font-size:11pt;margin:0 0 28pt;">Employee Management System · REST API · Hostinger Production</p>
   <table>
-    <tr><td>Version</td><td>3.0</td></tr>
+    <tr><td>Version</td><td>3.1</td></tr>
     <tr><td>Repository</td><td>Employee-management-system</td></tr>
     <tr><td>Runtime</td><td>Node.js 20+ · Fastify 4 · Prisma 5</td></tr>
     <tr><td>Primary API</td><td>ems-api.saqibsaeed.cloud</td></tr>

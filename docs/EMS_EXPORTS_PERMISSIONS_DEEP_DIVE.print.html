@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>EMS — Backend Exports &amp; Permissions Deep Dive</title>
+  <style>
+    @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-size: 10pt; line-height: 1.5; color: #1e293b;
+      margin: 0; padding: 0 4mm;
+    }
+    .cover {
+      text-align: center; height: 100vh; max-height: 250mm;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      page-break-after: always; break-after: page;
+    }
+    .cover h1 { font-size: 26pt; color: #0f172a; margin: 0 0 8pt; border: none; }
+    .cover .subtitle { font-size: 12pt; color: #475569; margin-bottom: 20pt; max-width: 420pt; }
+    .cover .version-badge {
+      display: inline-block; background: #e0f2fe; color: #0369a1;
+      padding: 4pt 14pt; border-radius: 20pt; font-weight: 600; font-size: 10pt; margin-bottom: 24pt;
+    }
+    .cover table { margin: 0 auto; font-size: 10pt; border-collapse: collapse; }
+    .cover td { padding: 4pt 12pt; text-align: left; border: none; }
+    .cover td:first-child { font-weight: 600; color: #64748b; width: 110pt; }
+
+    h1 { font-size: 16pt; color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 4pt; margin: 18pt 0 8pt; page-break-after: avoid; }
+    h2 { font-size: 12.5pt; color: #0369a1; margin: 14pt 0 6pt; page-break-after: avoid; border-left: 4px solid #0284c7; padding-left: 8pt; }
+    h3 { font-size: 11pt; color: #334155; margin: 12pt 0 5pt; page-break-after: avoid; }
+    h4 { font-size: 10pt; color: #475569; margin: 8pt 0 4pt; page-break-after: avoid; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 8pt 0; }
+    th { background: #0c4a6e; color: #fff; font-weight: 600; padding: 5pt 6pt; border: 1px solid #075985; text-align: left; }
+    td { padding: 4pt 6pt; border: 1px solid #e2e8f0; vertical-align: top; }
+    tbody tr:nth-child(even) td { background: #f8fafc; }
+
+    code { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 8pt; background: #f1f5f9; padding: 1pt 3pt; border-radius: 3pt; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 8pt; border-radius: 6pt; font-size: 7pt; overflow-x: auto; page-break-inside: auto; margin: 8pt 0; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+
+    .flow-block { margin: 6pt 0 10pt; }
+    figure.diagram { margin: 8pt 0; text-align: center; }
+    figure.diagram img, img[src*=".pdf-assets"], img[src*="pdf-assets-exports"] {
+      max-width: 100%; max-height: 150mm; width: auto; height: auto; object-fit: contain;
+      page-break-before: avoid; break-before: avoid;
+    }
+
+    blockquote { border-left: 3px solid #0284c7; margin: 8pt 0; padding: 6pt 10pt; background: #f0f9ff; color: #0c4a6e; font-size: 9pt; }
+    #TOC { page-break-after: always; break-after: page; margin: 0 0 14pt; }
+    #TOC > h2#toc-title { font-size: 16pt; color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 4pt; margin: 0 0 10pt; }
+    #TOC ul { list-style: none; padding-left: 0; margin: 0; }
+    #TOC ul ul { padding-left: 14pt; }
+    #TOC a { text-decoration: none; color: #0369a1; }
+    #TOC li { margin: 3pt 0; font-size: 9.5pt; }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 12pt 0; }
+  </style>
+</head>
+<body>
+<div class="cover">
+  <h1>EMS Backend</h1>
+  <div class="subtitle">Exports &amp; Permissions Deep Dive<br/>How CSV / Excel / JSON / PDF and permissions moved to the server</div>
+  <div class="version-badge">Companion Doc v1.0 · Hostinger 68d32f4</div>
+  <table>
+    <tr><td>Audience</td><td>Backend + UI engineers</td></tr>
+    <tr><td>Live API</td><td>ems-api.saqibsaeed.cloud</td></tr>
+    <tr><td>Date</td><td>2026-07-22</td></tr>
+    <tr><td>Companion to</td><td>EMS_BACKEND_TECHNICAL_DOCUMENTATION.pdf</td></tr>
+  </table>
+</div>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of Contents</h2>
+<ul>
+<li><a href="#ems-backend-exports-permissions-deep-dive"
+id="toc-ems-backend-exports-permissions-deep-dive">EMS — Backend Exports
+&amp; Permissions Deep Dive</a>
+<ul>
+<li><a href="#why-this-document-exists"
+id="toc-why-this-document-exists">1. Why this document exists</a></li>
+<li><a href="#part-a-moving-csv-excel-json-pdf-to-the-backend"
+id="toc-part-a-moving-csv-excel-json-pdf-to-the-backend">2. Part A —
+Moving CSV / Excel / JSON / PDF to the backend</a>
+<ul>
+<li><a href="#before-vs-after-mental-model"
+id="toc-before-vs-after-mental-model">2.1 Before vs after (mental
+model)</a></li>
+<li><a href="#end-to-end-timeline-minute-detail"
+id="toc-end-to-end-timeline-minute-detail">2.2 End-to-end timeline
+(minute detail)</a></li>
+<li><a href="#libraries-what-why-how-every-one"
+id="toc-libraries-what-why-how-every-one">2.3 Libraries — what / why /
+how (every one)</a></li>
+<li><a href="#per-format-file-contract"
+id="toc-per-format-file-contract">2.4 Per-format file contract</a></li>
+<li><a href="#api-surface-only-these"
+id="toc-api-surface-only-these">2.5 API surface (only these)</a></li>
+<li><a href="#source-map-do-not-invent-new-paths"
+id="toc-source-map-do-not-invent-new-paths">2.6 Source map (do not
+invent new paths)</a></li>
+<li><a href="#what-the-frontend-must-delete-change"
+id="toc-what-the-frontend-must-delete-change">2.7 What the frontend must
+delete / change</a></li>
+<li><a href="#live-curl-examples-hostinger"
+id="toc-live-curl-examples-hostinger">2.8 Live curl examples
+(Hostinger)</a></li>
+</ul></li>
+<li><a href="#part-b-moving-permissions-to-the-backend-source-of-truth"
+id="toc-part-b-moving-permissions-to-the-backend-source-of-truth">3.
+Part B — Moving permissions to the backend (source of truth)</a>
+<ul>
+<li><a href="#before-vs-after" id="toc-before-vs-after">3.1 Before vs
+after</a></li>
+<li><a href="#permission-catalogue-exact-keys"
+id="toc-permission-catalogue-exact-keys">3.2 Permission catalogue (exact
+keys)</a></li>
+<li><a href="#default-grants-by-role-day-1"
+id="toc-default-grants-by-role-day-1">3.3 Default grants by role
+(day-1)</a></li>
+<li><a href="#decision-algorithm-haspermission"
+id="toc-decision-algorithm-haspermission">3.4 Decision algorithm
+(<code>hasPermission</code>)</a></li>
+<li><a href="#where-permissions-attach-on-login"
+id="toc-where-permissions-attach-on-login">3.5 Where permissions attach
+on login</a></li>
+<li><a href="#dual-gate-on-exports-role-and-permission"
+id="toc-dual-gate-on-exports-role-and-permission">3.6 Dual gate on
+exports (role AND permission)</a></li>
+<li><a href="#settings-matrix-admin-ui"
+id="toc-settings-matrix-admin-ui">3.7 Settings matrix (admin
+UI)</a></li>
+<li><a href="#source-map-permissions"
+id="toc-source-map-permissions">3.8 Source map — permissions</a></li>
+<li><a href="#frontend-contract-for-permissions"
+id="toc-frontend-contract-for-permissions">3.9 Frontend contract for
+permissions</a></li>
+</ul></li>
+<li><a href="#how-the-two-moves-work-together"
+id="toc-how-the-two-moves-work-together">4. How the two moves work
+together</a></li>
+<li><a href="#verification-checklist" id="toc-verification-checklist">5.
+Verification checklist</a></li>
+<li><a href="#related-docs" id="toc-related-docs">6. Related
+docs</a></li>
+<li><a href="#revision" id="toc-revision">7. Revision</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="ems-backend-exports-permissions-deep-dive">EMS — Backend Exports
+&amp; Permissions Deep Dive</h1>
+<blockquote>
+<p><strong>Separate companion PDF</strong> to the main Technical
+Documentation.<br />
+Focus: how CSV / Excel / JSON / PDF generation moved to the
+<strong>backend</strong>, every library involved, and how
+<strong>permissions</strong> became backend source-of-truth.<br />
+Deployed: Hostinger <code>ems-backend</code> commit
+<strong><code>68d32f4</code></strong> (2026-07-19).<br />
+Live API: <code>https://ems-api.saqibsaeed.cloud/api/v1</code></p>
+</blockquote>
+<hr />
+<h2 id="why-this-document-exists">1. Why this document exists</h2>
+<p>Two UI-side problems were fixed on the backend in the July 2026
+Hostinger hardening pass:</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 40%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Old (frontend)</th>
+<th>New (backend)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operational exports</td>
+<td>Browser built CSV / Excel / PDF with <code>Blob</code>, client
+libraries, or string concat</td>
+<td>Server queues a job, writes the file from live DB rows, stores it,
+returns download</td>
+</tr>
+<tr>
+<td>Permission gates</td>
+<td>FE hard-coded role→permission matrices; empty JWT
+<code>permissions[]</code> broke gates</td>
+<td><code>auth.policy.js</code> is SoT; JWT carries resolved
+permissions; <code>requirePermission</code> enforces on every
+mutating/export route</td>
+</tr>
+</tbody>
+</table>
+<p>This PDF explains <strong>every library</strong>, <strong>every
+step</strong>, and <strong>every file</strong> involved — not a
+summary.</p>
+<hr />
+<h2 id="part-a-moving-csv-excel-json-pdf-to-the-backend">2. Part A —
+Moving CSV / Excel / JSON / PDF to the backend</h2>
+<h3 id="before-vs-after-mental-model">2.1 Before vs after (mental
+model)</h3>
+<figure>
+<img style="max-height:140mm;width:auto;max-width:100%;" src=".pdf-assets-exports/diagram-1.png" alt="Diagram 1" />
+<figcaption aria-hidden="true">Diagram 1</figcaption>
+</figure>
+<p><strong>Why the old way was wrong</strong></p>
+<ol type="1">
+<li><strong>Incomplete / stale data</strong> — UI only exported what was
+already loaded in the grid (pagination truncated rows).</li>
+<li><strong>No tenant enforcement on file content</strong> — anything in
+memory could be dumped.</li>
+<li><strong>No permission enforcement on the bytes</strong> — a crafty
+client could build a file without calling a gated API.</li>
+<li><strong>Inconsistent columns</strong> — each screen invented its own
+CSV headers.</li>
+<li><strong>Container-hostile</strong> — large client PDFs burned
+browser memory; no durable audit of “who exported what”.</li>
+</ol>
+<p><strong>Why the new way is correct</strong></p>
+<ol type="1">
+<li>Prisma reads are <strong>tenant-scoped</strong> in
+<code>export.repository.js</code>.</li>
+<li>Auth is <strong>role + permission</strong> on the route before any
+job is created.</li>
+<li>One writer path (<code>generateExportFile</code>) for all four
+formats.</li>
+<li>Durable storage via Cloudinary (<code>raw</code> +
+<code>authenticated</code>) so Docker restarts do not lose files.</li>
+<li>Audit-friendly: every export creates an <code>ExportJob</code> row
+with <code>job_id</code>, type, format, status.</li>
+</ol>
+<h3 id="end-to-end-timeline-minute-detail">2.2 End-to-end timeline
+(minute detail)</h3>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 16%" />
+<col style="width: 45%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr>
+<th>Step</th>
+<th>Who</th>
+<th>What happens</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>FE</td>
+<td>User clicks Export → chooses format</td>
+<td>Must <strong>not</strong> use <code>Blob</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td>FE → BE</td>
+<td><code>POST /api/v1/export/employees</code> body
+<code>{ "format": "pdf" }</code></td>
+<td><code>export.routes.js</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Middleware</td>
+<td>JWT verify → <code>authorize(['HR_ADMIN'])</code> →
+<code>requirePermission('employees:export')</code></td>
+<td><code>authenticate.js</code> + <code>auth.policy.js</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Controller</td>
+<td>Zod-parse body (<code>csv\|excel\|json\|pdf</code>)</td>
+<td><code>export.controller.js</code> +
+<code>export.validator.js</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Service</td>
+<td><code>uuidv4()</code> → <code>createExportJob</code> status
+<code>QUEUED</code></td>
+<td><code>export.service.js</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Service</td>
+<td>Return <strong>202</strong>
+<code>{ job_id, status: "QUEUED", estimated_completion_time }</code>
+immediately</td>
+<td>same</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Service</td>
+<td><code>setImmediate(() =&gt; exportEmployees(...))</code> —
+non-blocking worker</td>
+<td>same</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Worker</td>
+<td><code>getEmployeesForExport(tenantId, filters)</code> — live
+Postgres</td>
+<td><code>export.repository.js</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Worker</td>
+<td><code>generateExportFile(rows, 'employees', format, jobId)</code></td>
+<td><code>exportJob.js</code></td>
+</tr>
+<tr>
+<td>9a</td>
+<td>CSV path</td>
+<td><code>flattenObject</code> → <code>escapeCSV</code> →
+<code>writeFileSync</code></td>
+<td><code>generateCSV</code></td>
+</tr>
+<tr>
+<td>9b</td>
+<td>Excel path</td>
+<td>ExcelJS workbook, frozen header <code>#4F46E5</code>, alt rows
+<code>#F0F0FF</code></td>
+<td><code>generateExcel</code></td>
+</tr>
+<tr>
+<td>9c</td>
+<td>JSON path</td>
+<td><code>JSON.stringify(data, null, 2)</code></td>
+<td><code>generateJSON</code></td>
+</tr>
+<tr>
+<td>9d</td>
+<td>PDF path</td>
+<td>PDFKit landscape A4, indigo header bar, max 8 columns</td>
+<td><code>generatePDF</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Persist</td>
+<td>Read file buffer → Cloudinary upload
+<code>resourceType:'raw'</code>, <code>type:'authenticated'</code> →
+store <code>cloudinary://{publicId}</code></td>
+<td><code>persistSuccess</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Fallback</td>
+<td>If Cloudinary fails → keep local
+<code>/tmp/exports/{jobId}.{ext}</code> URL</td>
+<td>same</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Status</td>
+<td><code>ExportJob</code> → <code>SUCCESS</code> +
+<code>fileUrl</code></td>
+<td>repository</td>
+</tr>
+<tr>
+<td>13</td>
+<td>FE</td>
+<td><code>GET /export/{job_id}/download</code> with Bearer</td>
+<td>controller</td>
+</tr>
+<tr>
+<td>14a</td>
+<td>Download</td>
+<td>If <code>cloudinary://</code> → <strong>302</strong> to signed URL
+(300s)</td>
+<td><code>getSignedDocumentUrl</code></td>
+</tr>
+<tr>
+<td>14b</td>
+<td>Download</td>
+<td>Else stream file from disk with
+<code>Content-Disposition: attachment</code></td>
+<td><code>createReadStream</code></td>
+</tr>
+<tr>
+<td>15</td>
+<td>Not ready</td>
+<td>If status ≠ SUCCESS → <strong>200</strong> JSON status (poll
+again)</td>
+<td>controller</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img style="max-height:140mm;width:auto;max-width:100%;" src=".pdf-assets-exports/diagram-2.png" alt="Diagram 2" />
+<figcaption aria-hidden="true">Diagram 2</figcaption>
+</figure>
+<h3 id="libraries-what-why-how-every-one">2.3 Libraries — what / why /
+how (every one)</h3>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 8%" />
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th>Library</th>
+<th>npm</th>
+<th>What it is</th>
+<th>Why we use it</th>
+<th>How EMS uses it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ExcelJS</strong></td>
+<td><code>exceljs@^4.4.0</code></td>
+<td>Pure-Node XLSX writer/reader</td>
+<td>Styled workbooks without spawning Microsoft Excel or heavy browser
+SheetJS</td>
+<td><code>generateExcel()</code> — frozen header, indigo fill
+<code>FF4F46E5</code>, white bold font, alternating
+<code>FFF0F0FF</code>, auto column width capped at 40, footer “Total: N
+records”</td>
+</tr>
+<tr>
+<td><strong>PDFKit</strong></td>
+<td><code>pdfkit@^0.19.1</code></td>
+<td>Streaming PDF generator</td>
+<td>Server PDF without Puppeteer/Chrome; tiny footprint for table
+exports</td>
+<td><code>generatePDF()</code> — <code>layout:'landscape'</code>,
+<code>size:'A4'</code>, header bar <code>#4F46E5</code>, first
+<strong>8</strong> columns only (note if more), paginate when
+<code>doc.y</code> near bottom</td>
+</tr>
+<tr>
+<td><strong>Cloudinary SDK</strong></td>
+<td><code>cloudinary@^2.10.0</code></td>
+<td>Object storage + signed delivery</td>
+<td>Durable files across Docker restarts; private
+<code>authenticated</code> assets</td>
+<td><code>uploadToCloudinary(buffer, { resourceType:'raw', type:'authenticated', folder: ems/{tenantId}/exports, publicId: jobId })</code>;
+download via <code>private_download_url</code> (~300s)</td>
+</tr>
+<tr>
+<td><strong>Node <code>fs</code></strong></td>
+<td>built-in</td>
+<td>Filesystem</td>
+<td>Stage bytes before upload; fallback when Cloudinary down</td>
+<td><code>writeFileSync</code> / <code>readFileSync</code> under
+<code>config.exportsDir</code> or <code>/tmp/exports</code></td>
+</tr>
+<tr>
+<td><strong>Prisma</strong></td>
+<td><code>@prisma/client</code></td>
+<td>ORM</td>
+<td>Tenant-safe queries + <code>ExportJob</code> lifecycle</td>
+<td><code>getEmployeesForExport</code> / attendance / leave +
+create/update job status</td>
+</tr>
+<tr>
+<td><strong>uuid</strong></td>
+<td><code>uuid@^14</code></td>
+<td>UUID v4</td>
+<td>Opaque <code>job_id</code> clients poll</td>
+<td><code>uuidv4()</code> in <code>queue*Export</code></td>
+</tr>
+<tr>
+<td><strong>Zod</strong></td>
+<td><code>zod@^3.23</code></td>
+<td>Schema validation</td>
+<td>Reject bad <code>format</code> / missing date ranges before
+queue</td>
+<td><code>export.validator.js</code> enums
+<code>csv\|excel\|json\|pdf</code></td>
+</tr>
+<tr>
+<td><strong>Fastify</strong></td>
+<td><code>fastify@4</code></td>
+<td>HTTP framework</td>
+<td>Route hooks for auth + permission</td>
+<td><code>onRequest: [authenticate, authorize, requirePermission]</code></td>
+</tr>
+<tr>
+<td><strong>Pino</strong></td>
+<td><code>pino</code></td>
+<td>Structured logs</td>
+<td>Trace queue / success / Cloudinary failure</td>
+<td><code>type: 'export_queued' \| 'export_completed' \| 'export_uploaded_cloudinary'</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="exceljs-deeper">ExcelJS — deeper</h4>
+<ul>
+<li>Creates <code>Workbook</code> → worksheet titled from export type
+(<code>Employees</code>, <code>Attendance</code>,
+<code>Leave</code>).</li>
+<li><code>views: [{ state: 'frozen', ySplit: 1 }]</code> keeps header
+visible while scrolling in Excel.</li>
+<li>Nested objects are flattened (<code>department.name</code> →
+<code>department.name</code>) so one flat table is written.</li>
+<li>Empty dataset → single cell <code>No data available</code> (still a
+valid XLSX).</li>
+</ul>
+<h4 id="pdfkit-deeper">PDFKit — deeper</h4>
+<ul>
+<li>Collects PDF chunks via <code>doc.on('data')</code>, concatenates,
+writes once on <code>end</code>.</li>
+<li>Landscape chosen so more columns fit; still capped at 8 for
+readability.</li>
+<li>Doc explicitly tells operators: <em>use Excel/CSV for full
+width</em> when columns &gt; 8.</li>
+<li>Alternating row tint <code>#F0F0FF</code> matches Excel
+branding.</li>
+</ul>
+<h4 id="cloudinary-deeper">Cloudinary — deeper</h4>
+<ul>
+<li>Prefix stored in DB: <code>cloudinary://</code> +
+<code>public_id</code> (not a permanent public HTTP URL).</li>
+<li>Delivery type <strong><code>authenticated</code></strong> means
+anonymous URL fetch returns 401.</li>
+<li>Download route mints a <strong>short-lived signed</strong> URL; FE
+should follow redirects (<code>curl -L</code> / browser).</li>
+<li>If signing fails → fall back to local disk stream if file still on
+container.</li>
+</ul>
+<h3 id="per-format-file-contract">2.4 Per-format file contract</h3>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 39%" />
+<col style="width: 9%" />
+<col style="width: 17%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr>
+<th><code>format</code> body</th>
+<th>On-disk / download name</th>
+<th>MIME</th>
+<th>Generator</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>csv</code></td>
+<td><code>{jobId}.csv</code></td>
+<td><code>text/csv</code></td>
+<td><code>generateCSV</code></td>
+<td>RFC quoting for <code>,</code> <code>"</code> newlines; empty file
+if 0 rows</td>
+</tr>
+<tr>
+<td><code>excel</code></td>
+<td><code>{jobId}.xlsx</code></td>
+<td>OOXML spreadsheet</td>
+<td><code>generateExcel</code></td>
+<td>ExcelJS; not CSV-with-.xls</td>
+</tr>
+<tr>
+<td><code>json</code></td>
+<td><code>{jobId}.json</code></td>
+<td><code>application/json</code></td>
+<td><code>generateJSON</code></td>
+<td>Pretty nested objects (not flattened)</td>
+</tr>
+<tr>
+<td><code>pdf</code></td>
+<td><code>{jobId}.pdf</code></td>
+<td><code>application/pdf</code></td>
+<td><code>generatePDF</code></td>
+<td>Landscape A4 PDFKit</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-surface-only-these">2.5 API surface (only these)</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 15%" />
+<col style="width: 15%" />
+<col style="width: 35%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Body / query</th>
+<th>HTTP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/export/employees</code></td>
+<td>HR_ADMIN + <code>employees:export</code></td>
+<td><code>format</code>, optional <code>department_id</code>,
+<code>status</code>, <code>include_archived</code></td>
+<td><strong>202</strong></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/export/attendance</code></td>
+<td>same</td>
+<td><strong>requires</strong> <code>from_date</code>,
+<code>to_date</code> + <code>format</code></td>
+<td><strong>202</strong></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/v1/export/leave</code></td>
+<td>same</td>
+<td><strong>requires</strong> <code>from_date</code>,
+<code>to_date</code> + <code>format</code></td>
+<td><strong>202</strong></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/export/:job_id/download</code></td>
+<td>same</td>
+<td>—</td>
+<td><strong>200</strong> stream / <strong>302</strong> signed /
+<strong>200</strong> status JSON</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/export/list</code></td>
+<td>authenticated</td>
+<td><code>page</code>, <code>limit</code>, <code>status</code></td>
+<td><strong>200</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>202 body:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;success&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;data&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;job_id&quot;</span><span class="fu">:</span> <span class="st">&quot;01a08046-e986-4a97-bbfe-68c3f042e8a3&quot;</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;QUEUED&quot;</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;estimated_completion_time&quot;</span><span class="fu">:</span> <span class="dv">2</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="source-map-do-not-invent-new-paths">2.6 Source map (do not
+invent new paths)</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Routes + dual auth</td>
+<td><code>src/modules/export/export.routes.js</code></td>
+</tr>
+<tr>
+<td>HTTP + MIME + 302</td>
+<td><code>src/modules/export/export.controller.js</code></td>
+</tr>
+<tr>
+<td>Queue + <code>setImmediate</code></td>
+<td><code>src/modules/export/export.service.js</code></td>
+</tr>
+<tr>
+<td>Prisma + ExportJob</td>
+<td><code>src/modules/export/export.repository.js</code></td>
+</tr>
+<tr>
+<td>Zod</td>
+<td><code>src/modules/export/export.validator.js</code></td>
+</tr>
+<tr>
+<td>CSV/Excel/JSON/PDF + Cloudinary persist</td>
+<td><code>src/jobs/exportJob.js</code></td>
+</tr>
+<tr>
+<td>Cloudinary helpers</td>
+<td><code>src/utils/cloudinary.js</code></td>
+</tr>
+<tr>
+<td>Permission gate</td>
+<td><code>src/modules/auth/auth.policy.js</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-the-frontend-must-delete-change">2.7 What the frontend must
+delete / change</h3>
+<ol type="1">
+<li>Delete <code>new Blob([csvString])</code>, client SheetJS, client
+jsPDF for <strong>employees / attendance / leave</strong> operational
+exports.</li>
+<li>Call <code>POST /export/*</code> → store <code>job_id</code> →
+open/poll <code>GET /export/:job_id/download</code>.</li>
+<li>Never use legacy <code>/files/:jobId</code>.</li>
+<li>Hide Export buttons unless <code>/auth/me</code> includes
+<code>employees:export</code> (and role allows).</li>
+<li>Contract file:
+<code>docs/UI_CONTRACT_server_exports_permissions_realtime_logs.md</code>.</li>
+</ol>
+<h3 id="live-curl-examples-hostinger">2.8 Live curl examples
+(Hostinger)</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">BASE</span><span class="op">=</span>https://ems-api.saqibsaeed.cloud/api/v1</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">TOKEN</span><span class="op">=</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="va">$BASE</span>/auth/login <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="at">-H</span> <span class="st">&#39;x-tenant-key: acme-corp-001&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;email&quot;:&quot;hr@acme.test&quot;,&quot;password&quot;:&quot;Password123!&quot;}&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-c</span> <span class="st">&#39;import sys,json; print(json.load(sys.stdin)[&quot;data&quot;][&quot;accessToken&quot;])&#39;</span><span class="va">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># CSV</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="va">$BASE</span>/export/employees <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$TOKEN</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="at">-d</span> <span class="st">&#39;{&quot;format&quot;:&quot;csv&quot;}&#39;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Excel</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="va">$BASE</span>/export/employees <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$TOKEN</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="at">-d</span> <span class="st">&#39;{&quot;format&quot;:&quot;excel&quot;,&quot;status&quot;:&quot;ACTIVE&quot;}&#39;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="va">$BASE</span>/export/employees <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$TOKEN</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="at">-d</span> <span class="st">&#39;{&quot;format&quot;:&quot;pdf&quot;}&#39;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># JSON attendance (dates required)</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="va">$BASE</span>/export/attendance <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$TOKEN</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;format&quot;:&quot;json&quot;,&quot;from_date&quot;:&quot;2026-07-01&quot;,&quot;to_date&quot;:&quot;2026-07-19&quot;}&#39;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Download (follow 302)</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sL</span> <span class="at">-o</span> /tmp/ems-export.bin <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$TOKEN</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;</span><span class="va">$BASE</span><span class="st">/export/&lt;JOB_ID&gt;/download&quot;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Employee denied</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="va">EMP</span><span class="op">=</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="va">$BASE</span>/auth/login <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;x-tenant-key: acme-corp-001&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;email&quot;:&quot;priya@acme.test&quot;,&quot;password&quot;:&quot;Password123!&quot;}&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-c</span> <span class="st">&#39;import sys,json; print(json.load(sys.stdin)[&quot;data&quot;][&quot;accessToken&quot;])&#39;</span><span class="va">)</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-o</span> /dev/null <span class="at">-w</span> <span class="st">&#39;%{http_code}\n&#39;</span> <span class="at">-X</span> POST <span class="va">$BASE</span>/export/employees <span class="dt">\</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$EMP</span><span class="st">&quot;</span> <span class="at">-H</span> <span class="st">&#39;content-type: application/json&#39;</span> <span class="at">-d</span> <span class="st">&#39;{&quot;format&quot;:&quot;csv&quot;}&#39;</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># → 403</span></span></code></pre></div>
+<p><strong>Proven live (2026-07-19 via Vercel BFF):</strong> HR →
+<strong>202 QUEUED</strong>; Employee → <strong>403
+FORBIDDEN</strong>.</p>
+<hr />
+<h2 id="part-b-moving-permissions-to-the-backend-source-of-truth">3.
+Part B — Moving permissions to the backend (source of truth)</h2>
+<h3 id="before-vs-after">3.1 Before vs after</h3>
+<figure>
+<img style="max-height:140mm;width:auto;max-width:100%;" src=".pdf-assets-exports/diagram-3.png" alt="Diagram 3" />
+<figcaption aria-hidden="true">Diagram 3</figcaption>
+</figure>
+<p><strong>Why FE-as-authority failed</strong></p>
+<ol type="1">
+<li>Empty <code>permissions[]</code> in JWT made FE hide everything or
+fall back to wrong constants.</li>
+<li>Changing the matrix in Settings UI did not change what the API
+allowed until BE enforced keys.</li>
+<li>Security cannot depend on CSS/<code>if (role === 'HR')</code> in
+React — anyone can call <code>curl</code>.</li>
+</ol>
+<p><strong>What “moved to backend” means</strong></p>
+<ol type="1">
+<li><strong>Canonical defaults</strong> live in
+<code>src/modules/auth/auth.policy.js</code> →
+<code>DEFAULT_PERMISSIONS_BY_ROLE</code>.</li>
+<li><strong>Login / refresh / me</strong> call
+<code>resolvePermissions(user)</code>:
+<ul>
+<li>Prefer explicit <code>RolePermission</code> rows from DB.</li>
+<li>Else fall back to the default matrix for
+<code>memberType</code>.</li>
+</ul></li>
+<li><strong>Route enforcement</strong> via
+<code>requirePermission('employees:export')</code> (and write/delete
+keys on employee mutations).</li>
+<li><strong>Settings API</strong> still lets SUPER_ADMIN PATCH the
+matrix; seed runs <strong>once</strong> per tenant so customizations are
+never overwritten.</li>
+<li>FE must <strong>display</strong> from <code>/auth/me</code> and
+<strong>never</strong> treat local constants as authority.</li>
+</ol>
+<h3 id="permission-catalogue-exact-keys">3.2 Permission catalogue (exact
+keys)</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Module</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>employees:read</code></td>
+<td>employees</td>
+<td>View employees</td>
+</tr>
+<tr>
+<td><code>employees:write</code></td>
+<td>employees</td>
+<td>Create / update</td>
+</tr>
+<tr>
+<td><code>employees:delete</code></td>
+<td>employees</td>
+<td>Soft delete</td>
+</tr>
+<tr>
+<td><code>employees:export</code></td>
+<td>employees</td>
+<td>Queue/download exports</td>
+</tr>
+<tr>
+<td><code>departments:read</code></td>
+<td>departments</td>
+<td>View</td>
+</tr>
+<tr>
+<td><code>departments:write</code></td>
+<td>departments</td>
+<td>Manage</td>
+</tr>
+<tr>
+<td><code>attendance:read</code></td>
+<td>attendance</td>
+<td>View</td>
+</tr>
+<tr>
+<td><code>attendance:write</code></td>
+<td>attendance</td>
+<td>Mutate</td>
+</tr>
+<tr>
+<td><code>leave:read</code></td>
+<td>leave</td>
+<td>View</td>
+</tr>
+<tr>
+<td><code>leave:request</code></td>
+<td>leave</td>
+<td>Request</td>
+</tr>
+<tr>
+<td><code>leave:approve</code></td>
+<td>leave</td>
+<td>Approve / deny</td>
+</tr>
+<tr>
+<td><code>analytics:read</code></td>
+<td>analytics</td>
+<td>View analytics</td>
+</tr>
+<tr>
+<td><code>audit:read</code></td>
+<td>audit</td>
+<td>View audit logs</td>
+</tr>
+<tr>
+<td><code>permissions:manage</code></td>
+<td>settings</td>
+<td>Edit role matrix</td>
+</tr>
+</tbody>
+</table>
+<h3 id="default-grants-by-role-day-1">3.3 Default grants by role
+(day-1)</h3>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr>
+<th>Role</th>
+<th>Defaults</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SUPER_ADMIN</strong></td>
+<td>All keys including <code>permissions:manage</code>. Also bypasses
+<code>hasPermission</code> checks.</td>
+</tr>
+<tr>
+<td><strong>HR_ADMIN</strong></td>
+<td>employees CRUD+export, departments r/w, attendance r/w, leave
+r/request/approve, analytics, audit — <strong>not</strong>
+<code>permissions:manage</code></td>
+</tr>
+<tr>
+<td><strong>MANAGER</strong></td>
+<td>employees:read, departments:read, attendance r/w, leave
+r/request/approve, analytics:read — <strong>no export</strong></td>
+</tr>
+<tr>
+<td><strong>EMPLOYEE</strong></td>
+<td>employees:read, departments:read, attendance r/w, leave read/request
+— <strong>no export</strong></td>
+</tr>
+<tr>
+<td><strong>AUDITOR</strong></td>
+<td>read-only employees/departments/attendance/leave + analytics +
+audit</td>
+</tr>
+</tbody>
+</table>
+<h3 id="decision-algorithm-haspermission">3.4 Decision algorithm
+(<code>hasPermission</code>)</h3>
+<figure>
+<img style="max-height:140mm;width:auto;max-width:100%;" src=".pdf-assets-exports/diagram-4.png" alt="Diagram 4" />
+<figcaption aria-hidden="true">Diagram 4</figcaption>
+</figure>
+<p>This empty-token fallback exists so <strong>old JWTs minted before
+seed</strong> do not lock out HR on day-1. After refresh, tokens carry
+the full list.</p>
+<h3 id="where-permissions-attach-on-login">3.5 Where permissions attach
+on login</h3>
+<ol type="1">
+<li>User authenticates → load user + roles/permissions relations.</li>
+<li><code>resolvePermissions(user)</code> → string array.</li>
+<li>Array embedded in access token claims <strong>and</strong> returned
+from <code>GET /auth/me</code>.</li>
+<li>Every protected export/write route re-checks with
+<code>requirePermission</code> using <code>request.user</code> from
+JWT.</li>
+</ol>
+<h3 id="dual-gate-on-exports-role-and-permission">3.6 Dual gate on
+exports (role AND permission)</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// export.routes.js — both required</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>onRequest<span class="op">:</span> [</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  authenticate<span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">authorize</span>([<span class="st">&#39;HR_ADMIN&#39;</span>])<span class="op">,</span>          <span class="co">// role enum</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">requirePermission</span>(<span class="st">&#39;employees:export&#39;</span>)<span class="op">,</span> <span class="co">// fine-grained key</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 45%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr>
+<th>Actor</th>
+<th>Role OK?</th>
+<th><code>employees:export</code>?</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HR_ADMIN with default grants</td>
+<td>yes</td>
+<td>yes</td>
+<td><strong>202</strong></td>
+</tr>
+<tr>
+<td>HR_ADMIN after admin removes export key + refreshed token</td>
+<td>yes</td>
+<td>no</td>
+<td><strong>403</strong></td>
+</tr>
+<tr>
+<td>EMPLOYEE</td>
+<td>no</td>
+<td>no</td>
+<td><strong>403</strong> (authorize or permission)</td>
+</tr>
+<tr>
+<td>SUPER_ADMIN</td>
+<td>bypass</td>
+<td>bypass</td>
+<td>allowed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="settings-matrix-admin-ui">3.7 Settings matrix (admin UI)</h3>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 22%" />
+<col style="width: 18%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Who</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/settings/roles-permissions</code></td>
+<td>SUPER_ADMIN</td>
+<td>Read matrix</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/settings/roles-permissions</code></td>
+<td>SUPER_ADMIN + <code>permissions:manage</code></td>
+<td>Update RolePermission rows</td>
+</tr>
+</tbody>
+</table>
+<p>After PATCH: FE must <strong>refresh token or re-login</strong>.
+Until then UI may look stale; <strong>backend still enforces the new
+grants</strong> on the next request that carries an updated JWT.
+Requests with old JWT keep old grants until expiry/refresh.</p>
+<p>Seed helper: <code>ensureTenantRolePermissionDefaults</code> — runs
+once (<code>setting</code> flag
+<code>role_permissions_defaults_seeded</code>); never wipes admin
+customizations later.</p>
+<h3 id="source-map-permissions">3.8 Source map — permissions</h3>
+<table>
+<colgroup>
+<col style="width: 60%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr>
+<th>Concern</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Defaults + <code>requirePermission</code> +
+<code>hasPermission</code></td>
+<td><code>src/modules/auth/auth.policy.js</code></td>
+</tr>
+<tr>
+<td><code>resolvePermissions</code> + catalogue seed</td>
+<td><code>src/modules/auth/auth.service.js</code></td>
+</tr>
+<tr>
+<td>Role authorize middleware</td>
+<td><code>src/middleware/authenticate.js</code></td>
+</tr>
+<tr>
+<td>Export dual gate</td>
+<td><code>src/modules/export/export.routes.js</code></td>
+</tr>
+<tr>
+<td>Employee write/delete/export gates</td>
+<td><code>src/modules/employees/employees.routes.js</code></td>
+</tr>
+<tr>
+<td>Settings matrix API</td>
+<td><code>src/modules/settings/settings.*.js</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontend-contract-for-permissions">3.9 Frontend contract for
+permissions</h3>
+<ol type="1">
+<li><strong>Do not</strong> hardcode default matrices as authority.</li>
+<li>Gate buttons/menus from <code>/auth/me</code> →
+<code>permissions[]</code> (+ <code>memberType</code>).</li>
+<li>After PATCH roles-permissions → force refresh/login.</li>
+<li>Expect <strong>403</strong> with body
+<code>{ requiredPermission, userRole }</code> when key missing — show a
+clear message, do not retry as Blob export.</li>
+</ol>
+<hr />
+<h2 id="how-the-two-moves-work-together">4. How the two moves work
+together</h2>
+<figure>
+<img style="max-height:140mm;width:auto;max-width:100%;" src=".pdf-assets-exports/diagram-5.png" alt="Diagram 5" />
+<figcaption aria-hidden="true">Diagram 5</figcaption>
+</figure>
+<ul>
+<li>UI gate = UX.</li>
+<li>Backend gate = security.</li>
+<li>File bytes = always generated on server with tenant-scoped Prisma +
+ExcelJS/PDFKit.</li>
+</ul>
+<hr />
+<h2 id="verification-checklist">5. Verification checklist</h2>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 35%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Check</th>
+<th>Expected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>HR <code>POST .../export/employees</code>
+<code>{format:csv\|excel\|json\|pdf}</code></td>
+<td><strong>202</strong> + <code>job_id</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>GET .../export/{job_id}/download</code> after ~1–2s</td>
+<td>file or <strong>302</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>EMP same POST</td>
+<td><strong>403</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Remove <code>employees:export</code> from HR via settings → refresh
+token → export</td>
+<td><strong>403</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Restore permission → export</td>
+<td><strong>202</strong> again</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>/auth/me</code> for HR</td>
+<td><code>permissions</code> includes <code>employees:export</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>No client <code>Blob</code> for operational exports in FE</td>
+<td>code review</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="related-docs">6. Related docs</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Doc</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs/EMS_BACKEND_TECHNICAL_DOCUMENTATION.pdf</code></td>
+<td>Full system tech doc (v3.1) — §10.4 / §10.5</td>
+</tr>
+<tr>
+<td><code>docs/UI_CONTRACT_server_exports_permissions_realtime_logs.md</code></td>
+<td>FE must-do contract</td>
+</tr>
+<tr>
+<td><code>docs/BACKEND_CHANGELOG_hostinger_hardening_2026-07-19.md</code></td>
+<td>Changelog</td>
+</tr>
+<tr>
+<td><code>docs/LIVE_UI_ROLE_MATRIX_VERCEL_2026-07-19.md</code></td>
+<td>Live HR 202 / EMP 403 proof</td>
+</tr>
+<tr>
+<td><code>docs/UI_TEAM_HANDOFF_HOSTINGER_HARDENING_2026-07-19.md</code></td>
+<td>Handoff index</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="revision">7. Revision</h2>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 40%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr>
+<th>Date</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-07-22</td>
+<td>1.0</td>
+<td>Dedicated deep-dive PDF: backend exports (all libraries + steps) +
+permissions SoT migration</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

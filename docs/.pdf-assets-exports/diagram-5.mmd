@@ -1,0 +1,9 @@
+flowchart LR
+  A[User clicks Export PDF] --> B{UI: permissions includes employees:export?}
+  B -->|no| H[Hide / disable button]
+  B -->|yes| C[POST /export/employees format=pdf]
+  C --> D{BE: HR_ADMIN?}
+  D -->|no| E[403]
+  D -->|yes| F{BE: employees:export?}
+  F -->|no| E
+  F -->|yes| G[202 job_id → PDFKit → Cloudinary → download]

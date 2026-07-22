@@ -1,28 +1,18 @@
-flowchart TB
+flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-subgraph Internet
-        USER[Users / Frontend]
-        GH[GitHub Actions]
-    end
-
-    subgraph VPS["Hostinger VPS (31.97.186.223)"]
-        NGINX[nginx<br/>TLS :443<br/>ems-api.saqibsaeed.cloud]
-        subgraph Docker
-            BE[ems-backend container<br/>Node 20 + Fastify<br/>PM2 process manager]
-            PG[(ems-postgres container<br/>PostgreSQL)]
-        end
-        BACKUP[/opt/ems/backups/<br/>pg_dump pre-deploy/]
-    end
-
-    USER --> NGINX --> BE
-    BE --> PG
-    GH -->|SSH deploy| VPS
+ERR[Thrown Error] --> CTP{FST_ERR_CTP<br/>body parse?}
+    CTP -->|Yes| E400A[400 INVALID_REQUEST]
+    CTP -->|No| AJV{FST_ERR_VALIDATION?}
+    AJV -->|Yes| E422A[422 VALIDATION_ERROR<br/>details: field array]
+    AJV -->|No| ZOD{ZodError?}
+    ZOD -->|Yes| E422B[422 VALIDATION_ERROR]
+    ZOD -->|No| APP{error.code set?}
+    APP -->|Yes| ECUSTOM[error.statusCode<br/>default 500]
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class USER client
-    class BE,GH,NGINX,VPS api
-    class BACKUP,PG db
+    class AJV,APP,CTP,ECUSTOM,ZOD api
+    class E400A,E422A,E422B,ERR warn

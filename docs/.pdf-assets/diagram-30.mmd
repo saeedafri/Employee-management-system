@@ -1,19 +1,8 @@
-flowchart TD
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-P1["① POST /export/employees"] --> P2["② createExportJob status=PROCESSING"]
-    P2 --> P3["③ setImmediate exportEmployees job"]
-    P3 --> P4["④ Prisma fetch rows"]
-    P4 --> P5["⑤ ExcelJS styled XLSX / CSV / JSON"]
-    P5 --> P6["⑥ Write /tmp/exports/{jobId}.xlsx"]
-    P6 --> P7["⑦ updateExportJob SUCCESS + fileUrl"]
-    P7 --> P8["⑧ GET /export/:job_id/download"]
-    P3 -->|Error| F1["status=FAILED"]
-
-classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
-    classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
-    classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
-    classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
-    classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class P1 client
-    class P2,P3,P4,P5,P6,P7,P8 api
-    class F1 warn
+stateDiagram-v2
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e8f5e9', 'primaryTextColor': '#1b5e20', 'lineColor': '#1976d2'}}}%%
+[*] --> DRAFT: Week created
+    DRAFT --> SUBMITTED: Employee submit
+    SUBMITTED --> APPROVED: Manager approve
+    SUBMITTED --> REJECTED: Manager reject
+    REJECTED --> DRAFT: Resubmit
+    SUBMITTED --> DRAFT: Employee recall

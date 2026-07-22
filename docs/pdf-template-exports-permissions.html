@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>EMS — Backend Exports &amp; Permissions Deep Dive</title>
+  <style>
+    @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-size: 10pt; line-height: 1.5; color: #1e293b;
+      margin: 0; padding: 0 4mm;
+    }
+    .cover {
+      text-align: center; height: 100vh; max-height: 250mm;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      page-break-after: always; break-after: page;
+    }
+    .cover h1 { font-size: 26pt; color: #0f172a; margin: 0 0 8pt; border: none; }
+    .cover .subtitle { font-size: 12pt; color: #475569; margin-bottom: 20pt; max-width: 420pt; }
+    .cover .version-badge {
+      display: inline-block; background: #e0f2fe; color: #0369a1;
+      padding: 4pt 14pt; border-radius: 20pt; font-weight: 600; font-size: 10pt; margin-bottom: 24pt;
+    }
+    .cover table { margin: 0 auto; font-size: 10pt; border-collapse: collapse; }
+    .cover td { padding: 4pt 12pt; text-align: left; border: none; }
+    .cover td:first-child { font-weight: 600; color: #64748b; width: 110pt; }
+
+    h1 { font-size: 16pt; color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 4pt; margin: 18pt 0 8pt; page-break-after: avoid; }
+    h2 { font-size: 12.5pt; color: #0369a1; margin: 14pt 0 6pt; page-break-after: avoid; border-left: 4px solid #0284c7; padding-left: 8pt; }
+    h3 { font-size: 11pt; color: #334155; margin: 12pt 0 5pt; page-break-after: avoid; }
+    h4 { font-size: 10pt; color: #475569; margin: 8pt 0 4pt; page-break-after: avoid; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 8pt 0; }
+    th { background: #0c4a6e; color: #fff; font-weight: 600; padding: 5pt 6pt; border: 1px solid #075985; text-align: left; }
+    td { padding: 4pt 6pt; border: 1px solid #e2e8f0; vertical-align: top; }
+    tbody tr:nth-child(even) td { background: #f8fafc; }
+
+    code { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 8pt; background: #f1f5f9; padding: 1pt 3pt; border-radius: 3pt; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 8pt; border-radius: 6pt; font-size: 7pt; overflow-x: auto; page-break-inside: auto; margin: 8pt 0; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+
+    .flow-block { margin: 6pt 0 10pt; }
+    figure.diagram { margin: 8pt 0; text-align: center; }
+    figure.diagram img, img[src*=".pdf-assets"], img[src*="pdf-assets-exports"] {
+      max-width: 100%; max-height: 150mm; width: auto; height: auto; object-fit: contain;
+      page-break-before: avoid; break-before: avoid;
+    }
+
+    blockquote { border-left: 3px solid #0284c7; margin: 8pt 0; padding: 6pt 10pt; background: #f0f9ff; color: #0c4a6e; font-size: 9pt; }
+    #TOC { page-break-after: always; break-after: page; margin: 0 0 14pt; }
+    #TOC > h2#toc-title { font-size: 16pt; color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 4pt; margin: 0 0 10pt; }
+    #TOC ul { list-style: none; padding-left: 0; margin: 0; }
+    #TOC ul ul { padding-left: 14pt; }
+    #TOC a { text-decoration: none; color: #0369a1; }
+    #TOC li { margin: 3pt 0; font-size: 9.5pt; }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 12pt 0; }
+  </style>
+</head>
+<body>
+$if(title)$
+<div class="cover">
+  <h1>EMS Backend</h1>
+  <div class="subtitle">Exports &amp; Permissions Deep Dive<br/>How CSV / Excel / JSON / PDF and permissions moved to the server</div>
+  <div class="version-badge">Companion Doc v1.0 · Hostinger 68d32f4</div>
+  <table>
+    <tr><td>Audience</td><td>Backend + UI engineers</td></tr>
+    <tr><td>Live API</td><td>ems-api.saqibsaeed.cloud</td></tr>
+    <tr><td>Date</td><td>2026-07-22</td></tr>
+    <tr><td>Companion to</td><td>EMS_BACKEND_TECHNICAL_DOCUMENTATION.pdf</td></tr>
+  </table>
+</div>
+$endif$
+$if(toc)$
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of Contents</h2>
+$table-of-contents$
+</nav>
+$endif$
+$body$
+</body>
+</html>

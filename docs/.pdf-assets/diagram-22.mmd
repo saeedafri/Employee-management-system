@@ -1,43 +1,20 @@
 flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-subgraph Client["Client (HR Admin)"]
-        C1["① POST /payroll/runs/:id/calculate"]
-    end
-    subgraph API["Application Layer"]
-        A1["② Validate run status = DRAFT"]
-        A2["③ Enqueue BullMQ job OR sync calculate"]
-        A3["④ For each EmployeeSalary in pay group"]
-        A4["⑤ Build earnings: FLAT / % / FORMULA"]
-        A5["⑥ Prorate join/exit partial month"]
-        A6["⑦ computeStatutoryContributions PF/ESI/..."]
-        A7["⑧ computeIncomeTaxFromRegime slabs"]
-        A8["⑨ Apply loans, garnishments, reimbursements"]
-        A9["⑩ netPay = gross - deductions"]
-        A10["⑪ Persist Payslip + update run totals"]
-    end
-    subgraph DB["PostgreSQL"]
-        D1[(PayrollRun)]
-        D2[(Payslip)]
-        D3[(StatutoryPack)]
-    end
-    subgraph Ext["External"]
-        E1["Redis BullMQ optional"]
-    end
-
-    C1 --> A1 --> A2
-    A2 --> E1
-    A2 --> A3
-    A3 --> A4 --> A5 --> A6 --> A7 --> A8 --> A9 --> A10
-    A3 --> D3
-    A10 --> D1
-    A10 --> D2
+A[Push to main] --> B[npm ci + lint]
+    B --> C[prisma generate + app load verify]
+    C --> D[SSH to Hostinger]
+    D --> E[pg_dump backup]
+    E --> F[git pull --ff-only]
+    F --> G[docker compose build ems-backend]
+    G --> H[docker compose up -d]
+    H --> I[prisma migrate deploy]
+    I --> J[Health check loop<br/>GET /health → 200]
+    J -->|40 retries × 3s| K[Deploy success]
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class C1 client
-    class A1,A10,A2,A3,A4,A5,A6,A7,A8,A9,API,Client,Ext api
-    class D1,D2,D3,DB db
-    class E1 external
+    class C client
+    class A,B,D,E,F,G,H,I,J,K api

@@ -1,31 +1,43 @@
 flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-subgraph Accrual["Accrual (leave engine)"]
-        AC1["① catchUpAccrual MONTHLY"]
-        AC2["② tenure tier → accrual rate"]
-        AC3["③ proration on join/exit"]
-        AC4["④ LeaveLedgerTxn ACCRUAL posted"]
+subgraph Client["Client (HR Admin)"]
+        C1["① POST /payroll/runs/:id/calculate"]
     end
-    subgraph Request["Leave Request"]
-        R1["⑤ Employee POST /leave/requests"]
-        R2["⑥ Validate balance via ledger"]
-        R3["⑦ Status PENDING"]
+    subgraph API["Application Layer"]
+        A1["② Validate run status = DRAFT"]
+        A2["③ Enqueue BullMQ job OR sync calculate"]
+        A3["④ For each EmployeeSalary in pay group"]
+        A4["⑤ Build earnings: FLAT / % / FORMULA"]
+        A5["⑥ Prorate join/exit partial month"]
+        A6["⑦ computeStatutoryContributions PF/ESI/..."]
+        A7["⑧ computeIncomeTaxFromRegime slabs"]
+        A8["⑨ Apply loans, garnishments, reimbursements"]
+        A9["⑩ netPay = gross - deductions"]
+        A10["⑪ Persist Payslip + update run totals"]
     end
-    subgraph Approval["Approval"]
-        AP1["⑧ Manager PATCH approve/reject"]
-        AP2["⑨ Ledger DEBIT on approve"]
-        AP3["⑩ Notification to employee"]
+    subgraph DB["PostgreSQL"]
+        D1[(PayrollRun)]
+        D2[(Payslip)]
+        D3[(StatutoryPack)]
+    end
+    subgraph Ext["External"]
+        E1["Redis BullMQ optional"]
     end
 
-    AC1 --> AC2 --> AC3 --> AC4
-    AC4 --> R1 --> R2 --> R3 --> AP1 --> AP2 --> AP3
+    C1 --> A1 --> A2
+    A2 --> E1
+    A2 --> A3
+    A3 --> A4 --> A5 --> A6 --> A7 --> A8 --> A9 --> A10
+    A3 --> D3
+    A10 --> D1
+    A10 --> D2
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class R1 client
-    class AC1,AC2,AC3,AP1,Accrual,Approval,R2,R3,Request api
-    class AC4,AP2 db
-    class AP3 external
+    class C1 client
+    class A1,A10,A2,A3,A4,A5,A6,A7,A8,A9,API,Client,Ext api
+    class D1,D2,D3,DB db
+    class E1 external

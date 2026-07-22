@@ -1,0 +1,12 @@
+flowchart TD
+  A["requirePermission(key)"] --> B{"user present?"}
+  B -->|no| Z["403 FORBIDDEN"]
+  B -->|yes| C{"memberType is SUPER_ADMIN?"}
+  C -->|yes| OK[Allow]
+  C -->|no| D{"JWT permissions includes key?"}
+  D -->|yes| OK
+  D -->|no| E{"permissions list empty?"}
+  E -->|yes| F{"role default matrix has key?"}
+  F -->|yes| OK
+  F -->|no| Z
+  E -->|no| Z

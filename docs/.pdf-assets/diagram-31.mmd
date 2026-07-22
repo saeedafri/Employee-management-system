@@ -1,34 +1,20 @@
 flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-subgraph Triggers
-        T1[Forgot password]
-        T2[MFA OTP]
-        T3[Employee invite]
-    end
-    subgraph API
-        J1[emailJob.sendEmail]
-        J2{RESEND_API_KEY set?}
-        J3[fetch api.resend.com]
-        J4[SMTP nodemailer fallback]
-    end
-    subgraph Audit
-        A1[AuditLog PASSWORD_RESET_REQUESTED etc.]
-    end
-
-    T1 --> J1
-    T2 --> J1
-    T3 --> J1
-    J1 --> J2
-    J2 -->|Yes| J3
-    J2 -->|No| J4
-    T1 --> A1
-    T2 --> A1
+DEL["DELETE /employees/:id"] --> AUTH{HR_ADMIN or SUPER_ADMIN?}
+    AUTH -->|No| F403[403]
+    AUTH -->|Yes| CHECK{Direct reports or dept head?}
+    CHECK -->|Yes| F409[409 — reassign first]
+    CHECK -->|No| SOFT["Set deletedAt + employmentStatus=TERMINATED"]
+    SOFT --> USER["User.status may remain — login blocked by policy"]
+    SOFT --> HIST["Historical payslips/attendance retained"]
+    SOFT --> AUDIT["recordAuditLog EMPLOYEE_TERMINATED"]
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class T1,T2,T3 client
-    class A1,J1,J2 api
-    class J3,J4 external
+    class DEL,USER client
+    class AUTH,CHECK,SOFT api
+    class AUDIT,HIST db
+    class F403,F409 warn

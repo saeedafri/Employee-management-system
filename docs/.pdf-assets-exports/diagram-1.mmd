@@ -1,0 +1,12 @@
+flowchart LR
+  subgraph OLD["BEFORE — client-side"]
+    U1[UI table data] --> B1["new Blob / SheetJS / jsPDF"]
+    B1 --> D1[Browser download]
+  end
+  subgraph NEW["AFTER — server-side"]
+    U2[UI clicks Export] --> P2["POST /export/* {format}"]
+    P2 --> J2[ExportJob QUEUED]
+    J2 --> W2["exportJob.js writers"]
+    W2 --> C2[Cloudinary or /tmp]
+    C2 --> G2["GET /export/:job_id/download"]
+  end

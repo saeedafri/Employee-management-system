@@ -1,21 +1,26 @@
-flowchart TB
+flowchart TD
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#1565c0', 'lineColor': '#1976d2'}}}%%
-subgraph E2E["E2E / Deployed UI Scripts"]
-        P4[phase4E2EAudit.mjs]
-        DEEP[deepE2EAudit.mjs]
-        STRICT[strictButtonE2EAudit.mjs]
-        PW[Playwright specs]
-    end
-    subgraph INT["Integration"]
-        ROUTES[auth.routes.test.js<br/>attendance.routes.test.js<br/>...]
-    end
-    subgraph UNIT["Unit"]
-        SVC[auth.service.test.js<br/>otp.service.test.js<br/>middleware.test.js]
-    end
+START["generateExportFile(data, type, format, jobId)"] --> F{format?}
+F -->|csv| CSV["generateCSV — flattenObject + escapeCSV + writeFileSync"]
+F -->|excel| XLS["generateExcel — ExcelJS workbook styled header"]
+F -->|json| JSON["generateJSON — JSON.stringify pretty"]
+F -->|pdf| PDF["generatePDF — PDFKit landscape table"]
+F -->|other| ERR["throw Unsupported format"]
+CSV --> OUT["{jobId}.csv"]
+XLS --> OUT2["{jobId}.xlsx"]
+JSON --> OUT3["{jobId}.json"]
+PDF --> OUT4["{jobId}.pdf"]
+OUT --> PERSIST["persistSuccess → Cloudinary or disk URL"]
+OUT2 --> PERSIST
+OUT3 --> PERSIST
+OUT4 --> PERSIST
 
 classDef client fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
     classDef api fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
     classDef db fill:#fff3e0,stroke:#ef6c00,color:#e65100
     classDef external fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
     classDef warn fill:#ffebee,stroke:#c62828,color:#b71c1c
-    class DEEP,E2E,INT,P4,PW,ROUTES,STRICT,SVC,UNIT api
+    class START client
+    class CSV,F,JSON,OUT2,OUT3,OUT4,PDF,PERSIST,XLS api
+    class OUT db
+    class ERR warn
