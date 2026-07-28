@@ -1,8 +1,12 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
 import { requirePermission } from '../auth/auth.policy.js';
 import * as settingsController from './settings.controller.js';
 
 export default async function settingsRoutes(fastify) {
+  const canManageSettings = requirePermission('settings:manage');
+  const canWriteTenantSettings = requirePermission('settings:tenant-write');
+  const canManageSecuritySettings = requirePermission('settings:security');
+  const canManageIntegrations = requirePermission('settings:integrations');
   fastify.get('/settings/tenant', {
     schema: {
       tags: ['Settings'],
@@ -10,7 +14,7 @@ export default async function settingsRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, canManageSettings],
   }, (request, reply) => settingsController.getTenantConfig(request, reply));
 
   fastify.patch('/settings/tenant', {
@@ -38,7 +42,7 @@ export default async function settingsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canWriteTenantSettings],
   }, (request, reply) => settingsController.updateTenantConfig(request, reply));
 
   fastify.get('/settings/email-templates', {
@@ -47,7 +51,7 @@ export default async function settingsRoutes(fastify) {
       description: 'Get email templates',
       security: [{ Bearer: [] }],
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canWriteTenantSettings],
   }, (request, reply) => settingsController.getEmailTemplates(request, reply));
 
   fastify.patch('/settings/email-templates/:type', {
@@ -71,7 +75,7 @@ export default async function settingsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canWriteTenantSettings],
   }, (request, reply) => settingsController.updateEmailTemplate(request, reply));
 
   fastify.get('/settings/roles-permissions', {
@@ -116,16 +120,16 @@ export default async function settingsRoutes(fastify) {
       consumes: ['multipart/form-data', 'application/json'],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, canManageSettings],
   }, (req, rep) => settingsController.updateBranding(req, rep));
 
   // ── Attendance rules ──────────────────────────────────────────────────────────
-  fastify.get('/settings/attendance-rules', { schema: { tags: ['Settings'], description: 'Get attendance rules', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.getAttendanceRules(req, rep));
-  fastify.patch('/settings/attendance-rules', { schema: { tags: ['Settings'], description: 'Update attendance rules', security: [{ Bearer: [] }], body: { type: 'object', additionalProperties: true }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.updateAttendanceRules(req, rep));
+  fastify.get('/settings/attendance-rules', { schema: { tags: ['Settings'], description: 'Get attendance rules', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.getAttendanceRules(req, rep));
+  fastify.patch('/settings/attendance-rules', { schema: { tags: ['Settings'], description: 'Update attendance rules', security: [{ Bearer: [] }], body: { type: 'object', additionalProperties: true }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.updateAttendanceRules(req, rep));
 
   // ── Auth / Security settings ─────────────────────────────────────────────────
-  fastify.get('/settings/security/auth', { schema: { tags: ['Settings'], description: 'Get auth/security settings', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['SUPER_ADMIN'])] }, (req, rep) => settingsController.getAuthSettings(req, rep));
-  fastify.patch('/settings/security/auth', { schema: { tags: ['Settings'], description: 'Update auth/security settings', security: [{ Bearer: [] }], body: { type: 'object', additionalProperties: true }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['SUPER_ADMIN'])] }, (req, rep) => settingsController.updateAuthSettings(req, rep));
+  fastify.get('/settings/security/auth', { schema: { tags: ['Settings'], description: 'Get auth/security settings', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSecuritySettings] }, (req, rep) => settingsController.getAuthSettings(req, rep));
+  fastify.patch('/settings/security/auth', { schema: { tags: ['Settings'], description: 'Update auth/security settings', security: [{ Bearer: [] }], body: { type: 'object', additionalProperties: true }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSecuritySettings] }, (req, rep) => settingsController.updateAuthSettings(req, rep));
 
   // ── Notification preferences (per-user) ───────────────────────────────────────
   fastify.get('/settings/notifications/preferences', { schema: { tags: ['Settings'], description: 'Get caller notification preferences', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate] }, (req, rep) => settingsController.getNotificationPreferences(req, rep));
@@ -133,17 +137,17 @@ export default async function settingsRoutes(fastify) {
 
   // ── Leave types (under /settings — aliases for /leave/types) ─────────────────
   fastify.get('/settings/leave-types', { schema: { tags: ['Settings'], description: 'List leave types (alias for GET /leave/types)', security: [{ Bearer: [] }], response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate] }, (req, rep) => settingsController.getLeaveTypes(req, rep));
-  fastify.post('/settings/leave-types', { schema: { tags: ['Settings'], description: 'Create a leave type', security: [{ Bearer: [] }], body: { type: 'object', required: ['name', 'code'], properties: { name: { type: 'string' }, code: { type: 'string' }, annualAllowance: { type: 'integer', default: 0 }, carryForwardAllowed: { type: 'boolean', default: false }, isPaid: { type: 'boolean', default: true }, color: { type: 'string' } } }, response: { 201: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.createLeaveType(req, rep));
-  fastify.patch('/settings/leave-types/:id', { schema: { tags: ['Settings'], description: 'Update a leave type', security: [{ Bearer: [] }], params: { type: 'object', properties: { id: { type: 'string' } } }, body: { type: 'object', additionalProperties: true }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.updateLeaveType(req, rep));
-  fastify.delete('/settings/leave-types/:id', { schema: { tags: ['Settings'], description: 'Delete/deactivate a leave type', security: [{ Bearer: [] }], params: { type: 'object', properties: { id: { type: 'string' } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.deleteLeaveType(req, rep));
+  fastify.post('/settings/leave-types', { schema: { tags: ['Settings'], description: 'Create a leave type', security: [{ Bearer: [] }], body: { type: 'object', required: ['name', 'code'], properties: { name: { type: 'string' }, code: { type: 'string' }, annualAllowance: { type: 'integer', default: 0 }, carryForwardAllowed: { type: 'boolean', default: false }, isPaid: { type: 'boolean', default: true }, color: { type: 'string' } } }, response: { 201: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.createLeaveType(req, rep));
+  fastify.patch('/settings/leave-types/:id', { schema: { tags: ['Settings'], description: 'Update a leave type', security: [{ Bearer: [] }], params: { type: 'object', properties: { id: { type: 'string' } } }, body: { type: 'object', additionalProperties: true }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.updateLeaveType(req, rep));
+  fastify.delete('/settings/leave-types/:id', { schema: { tags: ['Settings'], description: 'Delete/deactivate a leave type', security: [{ Bearer: [] }], params: { type: 'object', properties: { id: { type: 'string' } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.deleteLeaveType(req, rep));
 
   // ── Custom roles ──────────────────────────────────────────────────────────────
-  fastify.post('/settings/roles', { schema: { tags: ['Settings'], description: 'Create a custom tenant role', security: [{ Bearer: [] }], body: { type: 'object', required: ['name', 'key'], properties: { name: { type: 'string' }, key: { type: 'string' }, permissions: { type: 'array', items: { type: 'string' } } } }, response: { 201: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.createRole(req, rep));
-  fastify.delete('/settings/roles/:key', { schema: { tags: ['Settings'], description: 'Delete a custom role', security: [{ Bearer: [] }], params: { type: 'object', properties: { key: { type: 'string' } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.deleteRole(req, rep));
-  fastify.post('/settings/roles/:key/users', { schema: { tags: ['Settings'], description: 'Assign users to a custom role', security: [{ Bearer: [] }], params: { type: 'object', properties: { key: { type: 'string' } } }, body: { type: 'object', required: ['userIds'], properties: { userIds: { type: 'array', items: { type: 'string' } } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])] }, (req, rep) => settingsController.assignUsersToRole(req, rep));
+  fastify.post('/settings/roles', { schema: { tags: ['Settings'], description: 'Create a custom tenant role', security: [{ Bearer: [] }], body: { type: 'object', required: ['name', 'key'], properties: { name: { type: 'string' }, key: { type: 'string' }, permissions: { type: 'array', items: { type: 'string' } } } }, response: { 201: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.createRole(req, rep));
+  fastify.delete('/settings/roles/:key', { schema: { tags: ['Settings'], description: 'Delete a custom role', security: [{ Bearer: [] }], params: { type: 'object', properties: { key: { type: 'string' } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.deleteRole(req, rep));
+  fastify.post('/settings/roles/:key/users', { schema: { tags: ['Settings'], description: 'Assign users to a custom role', security: [{ Bearer: [] }], params: { type: 'object', properties: { key: { type: 'string' } } }, body: { type: 'object', required: ['userIds'], properties: { userIds: { type: 'array', items: { type: 'string' } } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.assignUsersToRole(req, rep));
 
   // ── Integrations (Phase 3 UI) ─────────────────────────────────────────────────
-  const adminOnly = [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])];
+  const adminOnly = [authenticate, canManageIntegrations];
   const obj = { type: 'object', additionalProperties: true };
 
   fastify.get('/settings/integrations/email', { schema: { tags: ['Settings'], description: 'Email integration status (Resend/SMTP)', security: [{ Bearer: [] }], response: { 200: obj } }, onRequest: adminOnly }, (req, rep) => settingsController.getEmailIntegration(req, rep));

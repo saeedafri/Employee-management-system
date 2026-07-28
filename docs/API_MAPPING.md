@@ -5700,3 +5700,61 @@ Copy project/task rows from one week into another (idempotent; hours zeroed).
 
 #### `POST /timesheets/:id/recall` — owner only
 Unsubmit a timesheet (`SUBMITTED → DRAFT`). `404` for non-owner/missing; `422 NOT_RECALLABLE` if not SUBMITTED. Returns the updated timesheet.
+
+---
+
+## Configurable RBAC (BACKEND_CONTRACT_configurable_rbac.md)
+
+Every route is now gated by `requirePermission('<module>:<action>')` reading the
+per-tenant permission data, instead of hardcoded `authorize([...roles])` arrays.
+**0 `authorize()` calls remain** in any route file. `Settings → Roles & Permissions`
+now genuinely governs access across the product.
+
+- **Catalogue:** `src/modules/auth/permissionCatalogue.js` — 55 keys across 20 modules
+  (was 14 hardcoded). Adding a key is a data change; it is seeded into `Permission`
+  and auto-granted per the default matrix.
+- **Boot sync:** `syncPermissionCatalogue()` (`src/modules/auth/permissionSync.js`) runs
+  on server start and tops up every tenant, so a deploy that adds keys never 403s roles
+  that should hold them.
+- **Role-identity-bound exceptions** (deliberately still `memberType`-checked, per §3.2):
+  `ops.routes.js` (SUPER_ADMIN-only platform ops) and `dashboard/manager.controller.js`
+  (the manager's own dashboard, needs their `employeeId`).
+
+### Locked decisions (2026-07-26)
+| Decision | Effect |
+|---|---|
+| AUDITOR gains `payroll:self-read`, `timesheets:read`, `analytics:read` | 20 routes newly reachable by AUDITOR; read-only (no write/approve/admin keys) |
+| SUPER_ADMIN settings/reports carve-outs = drift | No behaviour change — `authorize()` always bypassed for SUPER_ADMIN, so SA was never blocked. FE audit Findings D and F are incorrect. |
+| Custom roles **replace** memberType defaults | `resolvePermissions()` unchanged: non-empty explicit grants mean defaults are never consulted |
+
+### New permission keys beyond the contract's proposal
+`attendance:team-read`, `leave:team-read` (team *reads*, distinct from `:approve`),
+`employees:read-any` (self-or-admin record/document/photo access), `logs:read`,
+`billing:read` / `billing:export`, `performance:export`, `assets:export`.
+
+## Server-side exports (BACKEND_CONTRACT_server_side_exports.md)
+
+| Method | Path | Permission | Notes |
+|---|---|---|---|
+| GET | `/payroll/employees/:employeeId/payslips/:payslipId/download` | `payroll:self-read` | §3.4 — synchronous `application/pdf` |
+| GET | `/payroll/runs/:runId/payslips/:payslipId/download` | `payroll:admin` | §3.4 |
+| GET | `/performance/export?type=reviews\|goals` | `performance:export` | §2.3 — `performance-reviews.csv` / `performance-goals.csv` |
+| GET | `/assets/export` | `assets:export` | §2.4 — `assets-inventory.csv` |
+| GET | `/billing/invoices/export` | `billing:export` | §2.5 — `invoices-{date}.csv` |
+| POST | `/export/employees` | `employees:export` | §2.1 — now accepts `ids[]` for bulk selection |
+| POST | `/export/attendance` | `attendance:export` | key renamed from `employees:export` (§2.2) |
+| POST | `/export/leave` | `leave:export` | key renamed from `employees:export` (§2.2) |
+
+**Payslip PDF** (`src/modules/payroll/payslipPdf.js`) reproduces `PayslipDrawer.tsx` per §3.3:
+company header, employee grid, template-ordered money sections, always-on net-pay box,
+then YTD / attendance / payment-info. Honours the tenant payslip template's section
+enable+order, field enable+order, and locale. Income-tax detection prefers an explicit
+`isIncomeTax` tag and otherwise matches `TDS|WITHHOLDING_TAX|WHT|PAYE|INCOME_TAX|IT`,
+deliberately excluding professional tax.
+
+> **Money formatting caveat:** PDFKit's built-in Helvetica is WinAnsi-encoded, so `₹`
+> (U+20B9) cannot be drawn. Amounts fall back to the ISO code (`INR 50,000.00`) when a
+> currency symbol is outside WinAnsi. Embedding a Unicode font would restore the symbol.
+
+CSV column sets, order, formatting and filenames are pinned by `tests/exports-contract.test.js`
+per §0 ("this is a move, not a redesign").

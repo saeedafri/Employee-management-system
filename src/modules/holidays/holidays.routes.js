@@ -1,4 +1,5 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import {
   listHolidays,
   getUpcomingHolidays,
@@ -161,7 +162,7 @@ export default async function holidaysRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 202: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, requirePermission('holidays:write')],
   }, importHolidays);
 
   fastify.get('/holidays/import/:jobId/preview', {
@@ -172,7 +173,7 @@ export default async function holidaysRoutes(fastify) {
       params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, requirePermission('holidays:write')],
   }, previewImport);
 
   fastify.post('/holidays/import/:jobId/commit', {
@@ -184,7 +185,7 @@ export default async function holidaysRoutes(fastify) {
       body: { type: 'object', properties: { overwriteExisting: { type: 'boolean', default: false } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, requirePermission('holidays:write')],
   }, commitImport);
 
   // ── Holiday Policy (Phase 7.2) — per-country restricted-limit + observed-rule ──
@@ -215,7 +216,7 @@ export default async function holidaysRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, requirePermission('holidays:write')],
   }, patchHolidayPolicy);
 
   // ── Optional (restricted) holiday selections ──

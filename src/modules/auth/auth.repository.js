@@ -2,7 +2,20 @@ export async function findUserByEmail(db, tenantId, email) {
   if (!tenantId) {
     return db.user.findFirst({
       where: { email },
-      include: { employee: true, userRoles: { include: { role: { select: { name: true } } } } },
+      include: {
+        employee: true,
+        userRoles: {
+          include: {
+            role: {
+              include: {
+                permissions: {
+                  include: { permission: true },
+                },
+              },
+            },
+          },
+        },
+      },
     });
   }
   return db.user.findUnique({

@@ -1,18 +1,16 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as logsService from './logs.service.js';
+import { hasPermission } from '../auth/auth.policy.js';
 
 export async function listLogs(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    const { memberType } = request.user || {};
-
-    // Only HR_ADMIN and SUPER_ADMIN can access logs
-    if (!['HR_ADMIN', 'SUPER_ADMIN'].includes(memberType)) {
+    if (!hasPermission(request.user, 'logs:read')) {
       return reply.code(403).send(
         errorResponse(
           'FORBIDDEN',
-          'Only HR administrators can access logs',
-          {},
+          'Insufficient permissions for this action',
+          { requiredPermission: 'logs:read' },
           request.id,
         ),
       );
@@ -54,15 +52,12 @@ export async function listLogs(request, reply) {
 export async function getLog(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    const { memberType } = request.user || {};
-
-    // Only HR_ADMIN and SUPER_ADMIN can access logs
-    if (!['HR_ADMIN', 'SUPER_ADMIN'].includes(memberType)) {
+    if (!hasPermission(request.user, 'logs:read')) {
       return reply.code(403).send(
         errorResponse(
           'FORBIDDEN',
-          'Only HR administrators can access logs',
-          {},
+          'Insufficient permissions for this action',
+          { requiredPermission: 'logs:read' },
           request.id,
         ),
       );
@@ -93,15 +88,12 @@ export async function getLog(request, reply) {
 export async function exportLogs(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    const { memberType } = request.user || {};
-
-    // Only HR_ADMIN and SUPER_ADMIN can access logs
-    if (!['HR_ADMIN', 'SUPER_ADMIN'].includes(memberType)) {
+    if (!hasPermission(request.user, 'logs:read')) {
       return reply.code(403).send(
         errorResponse(
           'FORBIDDEN',
-          'Only HR administrators can access logs',
-          {},
+          'Insufficient permissions for this action',
+          { requiredPermission: 'logs:read' },
           request.id,
         ),
       );
@@ -136,15 +128,12 @@ export async function exportLogs(request, reply) {
 export async function streamLogs(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    const { memberType } = request.user || {};
-
-    // Only HR_ADMIN and SUPER_ADMIN can access logs
-    if (!['HR_ADMIN', 'SUPER_ADMIN'].includes(memberType)) {
+    if (!hasPermission(request.user, 'logs:read')) {
       return reply.code(403).send(
         errorResponse(
           'FORBIDDEN',
-          'Only HR administrators can access logs',
-          {},
+          'Insufficient permissions for this action',
+          { requiredPermission: 'logs:read' },
           request.id,
         ),
       );

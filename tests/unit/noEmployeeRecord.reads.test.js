@@ -1,8 +1,12 @@
 /**
  * Offline unit tests — personal read APIs must not 400 when employeeId is missing.
- * Run with Mocha: npx mocha tests/unit/noEmployeeRecord.reads.test.js
+ * Run: node --test tests/unit/noEmployeeRecord.reads.test.js
+ *
+ * Ported from chai to node:assert — `chai` is not a dependency of this project,
+ * so this file threw ERR_MODULE_NOT_FOUND and had never actually executed.
  */
-import { expect } from 'chai';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
 import {
   assertCanViewEmployee,
   emptyAttendanceSummary,
@@ -16,34 +20,34 @@ describe('NO_EMPLOYEE_RECORD — personal read paths', () => {
 
   it('assertCanViewEmployee returns null (not throw) for me-scope without employee', async () => {
     const id = await assertCanViewEmployee('tenant-x', requester, undefined);
-    expect(id).to.equal(null);
+    assert.equal(id, null);
   });
 
   it('emptyAttendanceSummary has zeroed counters + flag', () => {
     const s = emptyAttendanceSummary();
-    expect(s.present).to.equal(0);
-    expect(s.absent).to.equal(0);
-    expect(s.noEmployeeRecord).to.equal(true);
+    assert.equal(s.present, 0);
+    assert.equal(s.absent, 0);
+    assert.equal(s.noEmployeeRecord, true);
   });
 
   it('getAttendanceSummary returns empty shape without hitting DB', async () => {
     const s = await getAttendanceSummary('tenant-x', requester, {});
-    expect(s.totalDays).to.equal(0);
-    expect(s.noEmployeeRecord).to.equal(true);
+    assert.equal(s.totalDays, 0);
+    assert.equal(s.noEmployeeRecord, true);
   });
 
   it('getAttendanceRecords returns empty list without hitting DB', async () => {
     const r = await getAttendanceRecords('tenant-x', requester, { page: 1, limit: 10 });
-    expect(r.records).to.deep.equal([]);
-    expect(r.total).to.equal(0);
-    expect(r.noEmployeeRecord).to.equal(true);
+    assert.deepEqual(r.records, []);
+    assert.equal(r.total, 0);
+    assert.equal(r.noEmployeeRecord, true);
   });
 
   it('resolveAttendanceCalendar returns empty UPCOMING calendar without DB', async () => {
     const cal = await resolveAttendanceCalendar('tenant-x', requester, { month: '2026-07' });
-    expect(cal.noEmployeeRecord).to.equal(true);
-    expect(cal.summary.absent).to.equal(0);
-    expect(cal.lopDays).to.deep.equal([]);
-    expect(cal.days.every((d) => d.bucket === 'UPCOMING' || d.bucket === 'WEEKLY_OFF')).to.equal(true);
+    assert.equal(cal.noEmployeeRecord, true);
+    assert.equal(cal.summary.absent, 0);
+    assert.deepEqual(cal.lopDays, []);
+    assert.equal(cal.days.every((d) => d.bucket === 'UPCOMING' || d.bucket === 'WEEKLY_OFF'), true);
   });
 });

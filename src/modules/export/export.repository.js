@@ -3,6 +3,9 @@ import { prisma } from '../../plugins/prisma.js';
 export async function getEmployeesForExport(tenantId, filters = {}) {
   const where = { tenantId };
   if (filters.departmentId) where.departmentId = filters.departmentId;
+  // §2.1: bulk-selection export. Replaces POST /employees/bulk/export so there
+  // is one canonical employee-export path.
+  if (Array.isArray(filters.ids) && filters.ids.length > 0) where.id = { in: filters.ids };
   if (filters.status) where.employmentStatus = filters.status;
   if (!filters.include_archived) where.deletedAt = null;
 

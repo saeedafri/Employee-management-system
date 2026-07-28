@@ -1,9 +1,10 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as controller from './announcements.controller.js';
 
 export default async function announcementsRoutes(fastify) {
-  const HR_MANAGER = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER'];
-  const HR_ONLY = ['HR_ADMIN', 'SUPER_ADMIN'];
+  const canWriteAnnouncements = requirePermission('announcements:write');
+  const canAdminAnnouncements = requirePermission('announcements:admin');
 
   fastify.get('/announcements', {
     schema: {
@@ -59,7 +60,7 @@ export default async function announcementsRoutes(fastify) {
       },
       response: { 201: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canAdminAnnouncements],
   }, controller.createEvent);
 
   fastify.post('/announcements', {
@@ -83,7 +84,7 @@ export default async function announcementsRoutes(fastify) {
       },
       response: { 201: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canWriteAnnouncements],
   }, controller.createAnnouncement);
 
   fastify.patch('/announcements/:id', {
@@ -104,7 +105,7 @@ export default async function announcementsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canWriteAnnouncements],
   }, controller.updateAnnouncement);
 
   fastify.delete('/announcements/:id', {
@@ -115,7 +116,7 @@ export default async function announcementsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canAdminAnnouncements],
   }, controller.deleteAnnouncement);
 
   fastify.patch('/announcements/:id/pin', {
@@ -126,7 +127,7 @@ export default async function announcementsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canAdminAnnouncements],
   }, controller.pinAnnouncement);
 
   fastify.patch('/announcements/:id/unpin', {
@@ -137,6 +138,6 @@ export default async function announcementsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canAdminAnnouncements],
   }, controller.unpinAnnouncement);
 }

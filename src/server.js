@@ -2,6 +2,7 @@ import pino from 'pino';
 import { config } from './config/index.js';
 import { createApp } from './app.js';
 import { startPayrollWorker } from './lib/payrollQueue.js';
+import { syncPermissionCatalogue } from './modules/auth/permissionSync.js';
 import { installProcessErrorHandlers, recordProcessError } from './utils/processMonitor.js';
 import { prisma } from './plugins/prisma.js';
 
@@ -31,6 +32,9 @@ installProcessErrorHandlers(async (entry) => {
 async function start() {
   try {
     const app = await createApp();
+    // Top up every tenant's permission catalogue before serving traffic, so a
+    // deploy that adds permission keys never 403s roles that should hold them.
+    await syncPermissionCatalogue(app.log);
     // Start the in-process BullMQ worker for payroll CALCULATING (no-op without Redis).
     startPayrollWorker();
     await app.listen({ port: config.port, host: '0.0.0.0' });

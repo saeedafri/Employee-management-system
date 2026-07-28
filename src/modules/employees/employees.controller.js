@@ -2,6 +2,7 @@ import * as service from './employees.service.js';
 import * as repo from './employees.repository.js';
 import * as validator from './employees.validator.js';
 import { errorResponse } from '../../utils/response.js';
+import { canAccessEmployeeRecord, hasPermission } from '../auth/auth.policy.js';
 import { uploadToCloudinary, deleteFromCloudinary, isCloudinaryConfigured, getSignedDocumentUrl } from '../../utils/cloudinary.js';
 import { prisma } from '../../plugins/prisma.js';
 import { generateId } from '../../utils/id.js';
@@ -26,7 +27,7 @@ function errorStatus(code) {
 // they are HR/Admin. Shared by upload/list/presign/confirm/download so no
 // document handler can be left unguarded (BE-SEC-5).
 function canAccessEmployeeDocs(user, employeeId) {
-  return user.employeeId === employeeId || ['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType);
+  return user.employeeId === employeeId || hasPermission(user, 'employees:read-any');
 }
 
 export async function listEmployees(request, reply) {
@@ -84,11 +85,11 @@ export async function getEmployee(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
 
-    if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    if (!canAccessEmployeeRecord(user, id)) {
       return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee data', {}, request.id));
     }
 
-    const includeTerminated = request.query.includeTerminated === 'true' && ['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType);
+    const includeTerminated = request.query.includeTerminated === 'true' && hasPermission(user, 'employees:read-any');
     const result = await service.getEmployee(id, tenantId, { includeTerminated });
     reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
   } catch (error) {
@@ -103,7 +104,7 @@ export async function getEmployee(request, reply) {
 export async function createEmployee(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!hasPermission(user, 'employees:read-any')) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create employees', request.requestId));
   }
 
@@ -126,7 +127,7 @@ export async function updateEmployee(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
 
-    if (user.employeeId !== id && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+    if (!canAccessEmployeeRecord(user, id)) {
       return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot update other employee data', {}, request.id));
     }
 
@@ -145,7 +146,7 @@ export async function updateEmployee(request, reply) {
 export async function deleteEmployee(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!hasPermission(user, 'employees:read-any')) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete employees', request.requestId));
   }
 
@@ -168,7 +169,7 @@ export async function uploadDocument(request, reply) {
   const { id: employeeId } = request.params;
 
   // HR_ADMIN and SUPER_ADMIN can upload for anyone; employee can upload their own
-  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!canAccessEmployeeRecord(user, employeeId)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot upload documents for other employees', request.requestId));
   }
 
@@ -248,7 +249,7 @@ export async function listDocuments(request, reply) {
   const tenantId = request.tenant.id;
   const { id: employeeId } = request.params;
 
-  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!canAccessEmployeeRecord(user, employeeId)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view documents for other employees', request.requestId));
   }
 
@@ -274,7 +275,7 @@ export async function deleteDocument(request, reply) {
   const tenantId = request.tenant.id;
   const { id: employeeId, docId } = request.params;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!hasPermission(user, 'employees:read-any')) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete documents', request.requestId));
   }
 
@@ -307,7 +308,7 @@ export async function deleteDocument(request, reply) {
 export async function exportEmployees(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!hasPermission(user, 'employees:read-any')) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can export employees', request.requestId));
   }
 
@@ -471,7 +472,7 @@ export async function uploadPhoto(request, reply) {
   const tenantId = request.tenant.id;
   const { id: employeeId } = request.params;
 
-  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!canAccessEmployeeRecord(user, employeeId)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot upload photo for other employees', request.requestId));
   }
 
@@ -529,7 +530,7 @@ export async function deletePhoto(request, reply) {
   const tenantId = request.tenant.id;
   const { id: employeeId } = request.params;
 
-  if (user.employeeId !== employeeId && !['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!canAccessEmployeeRecord(user, employeeId)) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot delete photo for other employees', request.requestId));
   }
 
@@ -551,7 +552,7 @@ export async function deletePhoto(request, reply) {
 export async function sendInvite(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
+  if (!hasPermission(user, 'employees:read-any')) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can send invites', {}, request.id));
   }
 

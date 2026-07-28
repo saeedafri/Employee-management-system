@@ -1,9 +1,10 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as controller from './performance.controller.js';
 
 export default async function performanceRoutes(fastify) {
-  const HR_MANAGER = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER'];
-  const HR_ONLY = ['HR_ADMIN', 'SUPER_ADMIN'];
+  const canReadPerformance = requirePermission('performance:read');
+  const canManagePerformance = requirePermission('performance:manage');
 
   fastify.get('/performance/cycles/active', {
     schema: {
@@ -12,7 +13,7 @@ export default async function performanceRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadPerformance],
   }, controller.getActiveCycle);
 
   fastify.get('/performance/summary', {
@@ -22,7 +23,7 @@ export default async function performanceRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadPerformance],
   }, controller.getSummary);
 
   fastify.get('/performance/reviews', {
@@ -41,7 +42,7 @@ export default async function performanceRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadPerformance],
   }, controller.getReviews);
 
   fastify.get('/performance/goals', {
@@ -59,7 +60,7 @@ export default async function performanceRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadPerformance],
   }, controller.getGoals);
 
   fastify.get('/performance/calibration', {
@@ -69,7 +70,7 @@ export default async function performanceRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManagePerformance],
   }, controller.getCalibration);
 
   fastify.get('/performance/employees', {
@@ -79,7 +80,7 @@ export default async function performanceRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadPerformance],
   }, controller.getEmployees);
 
   fastify.patch('/performance/reviews/:employeeId', {
@@ -96,7 +97,7 @@ export default async function performanceRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadPerformance],
   }, controller.updateReview);
 
   fastify.post('/performance/goals', {
@@ -116,6 +117,24 @@ export default async function performanceRoutes(fastify) {
       },
       response: { 201: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadPerformance],
   }, controller.createGoal);
+
+  // BACKEND_CONTRACT_server_side_exports.md §2.3
+  fastify.get('/performance/export', {
+    schema: {
+      tags: ['Performance'],
+      summary: 'Export performance reviews or goals as CSV',
+      security: [{ Bearer: [] }],
+      querystring: {
+        type: 'object',
+        properties: {
+          type: { type: 'string', enum: ['reviews', 'goals'], default: 'reviews' },
+          status: { type: 'string' },
+          departmentId: { type: 'string' },
+        },
+      },
+    },
+    onRequest: [authenticate, requirePermission('performance:export')],
+  }, controller.exportPerformance);
 }

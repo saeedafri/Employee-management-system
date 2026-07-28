@@ -1,5 +1,5 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
-import { requirePermission } from '../auth/auth.policy.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission, requireAnyPermission } from '../auth/auth.policy.js';
 import * as exportController from './export.controller.js';
 
 export default async function exportRoutes(fastify) {
@@ -15,10 +15,15 @@ export default async function exportRoutes(fastify) {
           department_id: { type: 'string' },
           status: { type: 'string', enum: ['ACTIVE', 'INACTIVE', 'ON_LEAVE'] },
           include_archived: { type: 'boolean', default: false },
+          ids: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Export only these employee ids (bulk selection). Omit for all.',
+          },
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN']), requirePermission('employees:export')],
+    onRequest: [authenticate, requirePermission('employees:export')],
   }, (request, reply) => exportController.exportEmployees(request, reply));
 
   fastify.post('/export/attendance', {
@@ -37,7 +42,7 @@ export default async function exportRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN']), requirePermission('employees:export')],
+    onRequest: [authenticate, requirePermission('attendance:export')],
   }, (request, reply) => exportController.exportAttendance(request, reply));
 
   fastify.post('/export/leave', {
@@ -57,7 +62,7 @@ export default async function exportRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN']), requirePermission('employees:export')],
+    onRequest: [authenticate, requirePermission('leave:export')],
   }, (request, reply) => exportController.exportLeave(request, reply));
 
   fastify.get('/export/:job_id/download', {
@@ -73,7 +78,7 @@ export default async function exportRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN']), requirePermission('employees:export')],
+    onRequest: [authenticate, requireAnyPermission('employees:export', 'attendance:export', 'leave:export')],
   }, (request, reply) => exportController.downloadExport(request, reply));
 
   fastify.get('/export/list', {

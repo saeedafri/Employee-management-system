@@ -1,5 +1,9 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as service from './assets.service.js';
+import { sendCsv } from '../../utils/csv.js';
+import { assetsCsv } from '../export/exportRows.js';
+
+const EXPORT_LIMIT = 10000;
 
 export async function getSummary(request, reply) {
   try {
@@ -111,4 +115,12 @@ export async function getEmployees(request, reply) {
     request.log.error(err);
     return reply.code(err.statusCode || 500).send(errorResponse(err.code || 'INTERNAL_ERROR', err.message, {}, request.id));
   }
+}
+
+// BACKEND_CONTRACT_server_side_exports.md §2.4 — replaces AssetsScreen.tsx handleExport().
+export async function exportAssets(request, reply) {
+  const { assets } = await service.getAssets(request.tenant.id, {
+    ...request.query, limit: EXPORT_LIMIT,
+  });
+  return sendCsv(reply, 'assets-inventory.csv', assetsCsv(assets));
 }

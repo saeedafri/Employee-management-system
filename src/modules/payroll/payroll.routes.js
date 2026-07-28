@@ -1,9 +1,10 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as ctrl from './payroll.controller.js';
 
-const adminRoles = ['HR_ADMIN', 'SUPER_ADMIN'];
-const superOnly = ['SUPER_ADMIN'];
-const allAuth = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER', 'EMPLOYEE'];
+const canAdminPayroll = requirePermission('payroll:admin');
+const canSuperPayroll = requirePermission('payroll:super');
+const canReadOwnPayroll = requirePermission('payroll:self-read');
 const idParam = { type: 'object', required: ['id'], properties: { id: { type: 'string' } } };
 const obj = { type: 'object', additionalProperties: true };
 
@@ -108,7 +109,7 @@ export default async function payrollRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getComponents);
 
   fastify.post('/payroll/components', {
@@ -146,7 +147,7 @@ export default async function payrollRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.createComponent);
 
   fastify.patch('/payroll/components/:id', {
@@ -174,7 +175,7 @@ export default async function payrollRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateComponent);
 
   fastify.delete('/payroll/components/:id', {
@@ -182,13 +183,13 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Delete salary component (SUPER_ADMIN only)', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, canSuperPayroll],
   }, ctrl.deleteComponent);
 
   // ── Pay Groups ──────────────────────────────────────────────────────────────
   fastify.get('/payroll/groups', {
     schema: { tags: ['Payroll'], description: 'List pay groups with components', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayGroups);
 
   fastify.post('/payroll/groups', {
@@ -218,7 +219,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.createPayGroup);
 
   fastify.patch('/payroll/groups/:id', {
@@ -228,7 +229,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updatePayGroup);
 
   fastify.delete('/payroll/groups/:id', {
@@ -236,12 +237,12 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Delete pay group (SUPER_ADMIN only)', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, canSuperPayroll],
   }, ctrl.deletePayGroup);
 
   fastify.get('/payroll/schedules', {
     schema: { tags: ['Payroll'], description: 'List non-monthly pay schedules', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPaySchedules);
 
   // ── Payroll Employees (list) ────────────────────────────────────────────────
@@ -252,7 +253,7 @@ export default async function payrollRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayrollEmployees);
 
   // ── Employee Salary ─────────────────────────────────────────────────────────
@@ -262,7 +263,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['employeeId'], properties: { employeeId: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getEmployeeSalary);
 
   fastify.post('/payroll/employees/:employeeId/salary', {
@@ -284,7 +285,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.setEmployeeSalary);
 
   fastify.patch('/payroll/employees/:employeeId/salary', {
@@ -306,7 +307,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.patchEmployeeSalary);
 
   // ── Employee Payslips ───────────────────────────────────────────────────────
@@ -320,7 +321,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getEmployeePayslips);
 
   fastify.get('/payroll/employees/:employeeId/payslips/:payslipId', {
@@ -329,7 +330,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['employeeId', 'payslipId'], properties: { employeeId: { type: 'string' }, payslipId: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getEmployeePayslip);
 
   // ── Payroll Runs ────────────────────────────────────────────────────────────
@@ -345,7 +346,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayrollRuns);
 
   fastify.post('/payroll/runs', {
@@ -370,7 +371,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.createPayrollRun);
 
   fastify.get('/payroll/runs/:id', {
@@ -378,7 +379,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get payroll run with summary', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayrollRun);
 
   fastify.post('/payroll/runs/:id/calculate', {
@@ -386,7 +387,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Trigger payroll calculation (DRAFT → REVIEW)', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 202: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.calculatePayrollRun);
 
   fastify.post('/payroll/runs/:id/approve', {
@@ -396,7 +397,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { notes: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.approvePayrollRun);
 
   fastify.patch('/payroll/runs/:id/mark-paid', {
@@ -406,7 +407,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { paidAt: { type: 'string' }, paymentReference: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.markRunPaid);
 
   fastify.post('/payroll/runs/:id/cancel', {
@@ -416,7 +417,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { reason: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.cancelPayrollRun);
 
   // ── Run Payslips ────────────────────────────────────────────────────────────
@@ -433,7 +434,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunPayslips);
 
   fastify.get('/payroll/runs/:runId/payslips/:payslipId', {
@@ -442,7 +443,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['runId', 'payslipId'], properties: { runId: { type: 'string' }, payslipId: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunPayslip);
 
   fastify.patch('/payroll/runs/:runId/payslips/:payslipId', {
@@ -459,7 +460,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateRunPayslip);
 
   fastify.get('/payroll/runs/:runId/export', {
@@ -467,7 +468,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Export payroll register as CSV', security: [{ Bearer: [] }],
       params: { type: 'object', required: ['runId'], properties: { runId: { type: 'string' } } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.exportRunPayslips);
 
   // ── Phase 3: Localization ───────────────────────────────────────────────────
@@ -476,7 +477,7 @@ export default async function payrollRoutes(fastify) {
   // authenticated user (self-service Add-Account form needs the country + bank-schema).
   fastify.get('/payroll/countries', {
     schema: { tags: ['Payroll'], description: 'List all ISO-3166 countries (code, name, currency, locale, fiscalYearStartMonth)', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getCountries);
 
   fastify.get('/payroll/countries/:code/bank-schema', {
@@ -485,12 +486,12 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['code'], properties: { code: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getBankSchema);
 
   fastify.get('/payroll/legal-entities', {
     schema: { tags: ['Payroll'], description: 'List legal entities', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getLegalEntities);
 
   fastify.post('/payroll/legal-entities', {
@@ -512,7 +513,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, canSuperPayroll],
   }, ctrl.createLegalEntity);
 
   fastify.patch('/payroll/legal-entities/:id', {
@@ -522,7 +523,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, canSuperPayroll],
   }, ctrl.updateLegalEntity);
 
   // ── Phase 3: Statutory Packs ────────────────────────────────────────────────
@@ -533,7 +534,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { country: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getStatutoryPacks);
 
   fastify.get('/payroll/statutory-packs/:id', {
@@ -541,7 +542,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get statutory pack by id', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getStatutoryPack);
 
   fastify.post('/payroll/statutory-packs', {
@@ -574,7 +575,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, canSuperPayroll],
   }, ctrl.createStatutoryPack);
 
   fastify.patch('/payroll/statutory-packs/:id', {
@@ -584,7 +585,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, canSuperPayroll],
   }, ctrl.updateStatutoryPack);
 
   fastify.delete('/payroll/statutory-packs/:id', {
@@ -593,7 +594,7 @@ export default async function payrollRoutes(fastify) {
       params: idParam,
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(superOnly)],
+    onRequest: [authenticate, canSuperPayroll],
   }, ctrl.deleteStatutoryPack);
 
   // ── Phase 3: Employee Payroll ───────────────────────────────────────────────
@@ -605,7 +606,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { fy: { type: 'string', description: 'YYYY-YY fiscal year' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getEmployeeYtd);
 
   fastify.get('/payroll/employees/:id/tax-declaration', {
@@ -615,7 +616,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { fy: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getTaxDeclaration);
 
   fastify.post('/payroll/employees/:id/tax-declaration', {
@@ -632,7 +633,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.upsertTaxDeclaration);
 
   fastify.patch('/payroll/employees/:id/tax-declaration', {
@@ -642,7 +643,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.upsertTaxDeclaration);
 
   fastify.get('/payroll/employees/:id/loans', {
@@ -651,7 +652,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getEmployeeLoans);
 
   fastify.post('/payroll/employees/:id/loans', {
@@ -679,7 +680,7 @@ export default async function payrollRoutes(fastify) {
     // Self-service: an employee may request their OWN loan/advance (FE "Request"
     // button on My Pay); HR_ADMIN/SUPER_ADMIN may create for anyone. Ownership is
     // enforced in the service (assertLoanAccess). Foreclosure (PATCH) stays admin-only.
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.createEmployeeLoan);
 
   fastify.patch('/payroll/employees/:id/loans/:loanId', {
@@ -689,7 +690,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateEmployeeLoan);
 
   fastify.get('/payroll/employees/:id/opening-balances', {
@@ -698,7 +699,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getOpeningBalance);
 
   fastify.post('/payroll/employees/:id/opening-balances', {
@@ -717,7 +718,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.upsertOpeningBalance);
 
   // ── Phase 3: Run Inputs ─────────────────────────────────────────────────────
@@ -727,7 +728,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Employees eligible for payroll (have salary config)', security: [{ Bearer: [] }],
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayrollRoster);
 
   fastify.get('/payroll/runs/:runId/inputs', {
@@ -736,7 +737,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['runId'], properties: { runId: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunInputs);
 
   fastify.patch('/payroll/runs/:runId/inputs/:employeeId', {
@@ -753,7 +754,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateRunInput);
 
   fastify.post('/payroll/runs/:runId/inputs/import', {
@@ -763,7 +764,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', required: ['csv'], properties: { csv: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.importRunInputs);
 
   fastify.get('/payroll/runs/:id/fnf', {
@@ -771,7 +772,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get full-and-final settlement for a run', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunFnf);
 
   // ── Phase 3: Run Reports ────────────────────────────────────────────────────
@@ -783,7 +784,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { type: { type: 'string', enum: ['ECR', '24Q', 'RTI'] } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getStatutoryReturn);
 
   fastify.get('/payroll/runs/:id/register', {
@@ -803,7 +804,7 @@ export default async function payrollRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunRegister);
 
   fastify.get('/payroll/runs/:id/register/export', {
@@ -812,7 +813,7 @@ export default async function payrollRoutes(fastify) {
       params: idParam,
       querystring: { type: 'object', properties: { type: { type: 'string' } } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.exportRunRegister);
 
   fastify.post('/payroll/runs/:id/parallel-reconcile', {
@@ -829,14 +830,14 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.parallelReconcile);
 
   // ── Phase 3: Pay Calendars ──────────────────────────────────────────────────
 
   fastify.get('/payroll/pay-calendars', {
     schema: { tags: ['Payroll'], description: 'List pay calendars', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayCalendars);
 
   fastify.post('/payroll/pay-calendars', {
@@ -860,7 +861,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.createPayCalendar);
 
   fastify.patch('/payroll/pay-calendars/:id', {
@@ -883,7 +884,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updatePayCalendar);
 
   fastify.get('/payroll/pay-calendars/:id/cycles', {
@@ -899,14 +900,14 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayCalendarCycles);
 
   // ── Phase 3: Migration ──────────────────────────────────────────────────────
 
   fastify.get('/payroll/opening-balances', {
     schema: { tags: ['Payroll'], description: 'List all opening balances', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getAllOpeningBalances);
 
   fastify.get('/payroll/migration', {
@@ -916,12 +917,12 @@ export default async function payrollRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayrollMigration);
 
   fastify.get('/payroll/migration/historical-payslips', {
     schema: { tags: ['Payroll'], description: 'List imported historical payslips', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getHistoricalPayslips);
 
   fastify.post('/payroll/migration/historical-payslips', {
@@ -930,12 +931,12 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', required: ['rows'], properties: { rows: { type: 'array', items: { type: 'object', additionalProperties: true } } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.importHistoricalPayslips);
 
   fastify.get('/payroll/migration/status', {
     schema: { tags: ['Payroll'], description: 'Get migration status', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getMigrationStatus);
 
   fastify.patch('/payroll/migration/status', {
@@ -944,7 +945,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { sandboxMode: { type: 'boolean' }, goLivePeriod: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateMigrationStatus);
 
   fastify.get('/payroll/payment-batches', {
@@ -954,7 +955,7 @@ export default async function payrollRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.listPaymentBatches);
 
   // ── Phase 3: Compliance Reports ─────────────────────────────────────────────
@@ -966,7 +967,7 @@ export default async function payrollRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayrollReportsIndex);
 
   fastify.get('/payroll/reports/pay-equity', {
@@ -975,7 +976,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { groupBy: { type: 'string', enum: ['gender', 'level', 'location'] } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayEquity);
 
   fastify.get('/payroll/reports/audit-pack', {
@@ -983,7 +984,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Download audit assurance pack for a run', security: [{ Bearer: [] }],
       querystring: { type: 'object', properties: { runId: { type: 'string' } } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getAuditPack);
 
   fastify.get('/payroll/settings', {
@@ -993,12 +994,12 @@ export default async function payrollRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPayrollSettings);
 
   fastify.get('/payroll/settings/data-policy', {
     schema: { tags: ['Payroll'], description: 'Get data residency & retention policy', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getDataPolicy);
 
   fastify.patch('/payroll/settings/data-policy', {
@@ -1007,7 +1008,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { defaultRetentionYears: { type: 'integer' }, policies: { type: 'array', items: { type: 'object', additionalProperties: true } } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateDataPolicy);
 
   // ── Global Workforce ────────────────────────────────────────────────────────
@@ -1018,7 +1019,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { classification: { type: 'string', enum: ['EMPLOYEE', 'CONTRACTOR', 'EOR'] } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.listWorkers);
 
   fastify.patch('/payroll/workers/:id', {
@@ -1028,7 +1029,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', required: ['classification'], properties: { classification: { type: 'string', enum: ['EMPLOYEE', 'CONTRACTOR', 'EOR'] }, country: { type: 'string', description: 'ISO 3166-1 alpha-2 country code' }, currency: { type: 'string', description: 'ISO 4217 currency code' }, legalEntityId: { type: 'string', description: 'Legal entity this worker belongs to' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateWorkerClassification);
 
   fastify.get('/payroll/cost-summary', {
@@ -1037,7 +1038,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { groupBy: { type: 'string', enum: ['classification', 'entity', 'currency'] } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getWorkerCostSummary);
 
   fastify.get('/payroll/contractor-invoices', {
@@ -1046,7 +1047,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { workerId: { type: 'string' }, status: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.listContractorInvoices);
 
   fastify.post('/payroll/contractor-invoices', {
@@ -1063,7 +1064,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.createContractorInvoice);
 
   fastify.patch('/payroll/contractor-invoices/:id', {
@@ -1079,7 +1080,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateContractorInvoice);
 
   // ── Phase 3: Missing Run Endpoints ─────────────────────────────────────────
@@ -1091,7 +1092,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { approver: { type: 'string' }, notes: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.approveRunLevel);
 
   fastify.get('/payroll/runs/:id/variance', {
@@ -1099,7 +1100,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get per-employee net-pay variance vs prior run', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunVariance);
 
   fastify.get('/payroll/runs/:id/audit', {
@@ -1107,7 +1108,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get audit log for a payroll run', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunAudit);
 
   fastify.post('/payroll/runs/:id/payslips/:payslipId/recalculate', {
@@ -1117,7 +1118,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { actor: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.recalculatePayslip);
 
   fastify.post('/payroll/runs/:runId/payslips/:payslipId/hold', {
@@ -1127,7 +1128,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', properties: { reason: { type: 'string' }, actor: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.holdPayslip);
 
   fastify.post('/payroll/runs/:runId/payslips/:payslipId/release', {
@@ -1137,7 +1138,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.releasePayslip);
 
   fastify.post('/payroll/runs/:id/inputs/from-timesheets', {
@@ -1145,7 +1146,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Pre-fill OT from approved timesheets in the run period (approval-gated: DRAFT/REVIEW only)', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.importInputsFromTimesheets);
 
   fastify.post('/payroll/runs/:id/inputs/from-leave', {
@@ -1153,7 +1154,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Pre-fill LOP from approved unpaid leave in the run period (approval-gated: DRAFT/REVIEW only; idempotent)', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.importInputsFromLeave);
 
   fastify.post('/payroll/runs/:id/inputs/from-attendance', {
@@ -1161,7 +1162,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Reconcile unexplained-absence LOP from attendance + unpaid leave in the run period (approval-gated: DRAFT/REVIEW only; idempotent)', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.importInputsFromAttendance);
 
   fastify.post('/payroll/runs/:id/publish', {
@@ -1169,7 +1170,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Publish run payslips to employees', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.publishRun);
 
   // ── Phase 3: Events ─────────────────────────────────────────────────────────
@@ -1180,12 +1181,12 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { runId: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.listPayrollEvents);
 
   fastify.get('/payroll/event-catalogue', {
     schema: { tags: ['Payroll'], description: 'List subscribable event types', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getEventCatalogue);
 
   // ── Phase 3: Disbursement ───────────────────────────────────────────────────
@@ -1195,7 +1196,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get payment batch for a run', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPaymentBatch);
 
   fastify.post('/payroll/runs/:id/payment-batch', {
@@ -1203,7 +1204,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Create payment batch for an approved run', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.createPaymentBatch);
 
   fastify.get('/payroll/runs/:id/bank-file', {
@@ -1212,7 +1213,7 @@ export default async function payrollRoutes(fastify) {
       params: idParam,
       querystring: { type: 'object', properties: { format: { type: 'string', enum: ['NACH', 'ACH', 'SEPA', 'BACS', 'CSV'] } } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.downloadBankFile);
 
   fastify.get('/payroll/payment-batches/:id/status', {
@@ -1220,7 +1221,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get payment batch status', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getPaymentBatchStatus);
 
   fastify.post('/payroll/payment-batches/:id/reconcile', {
@@ -1228,14 +1229,14 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Simulate bank reconciliation', security: [{ Bearer: [] }],
       params: idParam, body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.reconcilePaymentBatch);
 
   // ── Phase 3: Payslip Templates ──────────────────────────────────────────────
 
   fastify.get('/payroll/payslip-templates', {
     schema: { tags: ['Payroll'], description: 'Get tenant payslip template. HR_ADMIN configures; MANAGER/EMPLOYEE read-only for own payslip drawer.', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getPayslipTemplate);
 
   fastify.patch('/payroll/payslip-templates', {
@@ -1243,7 +1244,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Update tenant payslip template', security: [{ Bearer: [] }],
       body: { type: 'object', additionalProperties: true }, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updatePayslipTemplate);
 
   // ── Phase 3: Tax Forms ──────────────────────────────────────────────────────
@@ -1255,14 +1256,14 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { fy: { type: 'string' }, type: { type: 'string', enum: ['FORM16', 'W2', 'P60'] } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getTaxForm);
 
   // ── Phase 3: Reimbursement Claims ───────────────────────────────────────────
 
   fastify.get('/payroll/reimbursement-categories', {
     schema: { tags: ['Payroll'], description: 'List reimbursement categories', security: [{ Bearer: [] }], response: { 200: obj } },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.listReimbursementCategories);
 
   fastify.get('/payroll/reimbursement-claims', {
@@ -1271,7 +1272,7 @@ export default async function payrollRoutes(fastify) {
       querystring: { type: 'object', properties: { employeeId: { type: 'string' }, status: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.listReimbursementClaims);
 
   fastify.post('/payroll/reimbursement-claims', {
@@ -1288,7 +1289,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(allAuth)],
+    onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.submitReimbursementClaim);
 
   fastify.patch('/payroll/reimbursement-claims/:id', {
@@ -1298,7 +1299,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', required: ['status'], properties: { status: { type: 'string', enum: ['APPROVED', 'REJECTED'] } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.decideReimbursementClaim);
 
   // ── Phase 3: Garnishments ───────────────────────────────────────────────────
@@ -1309,7 +1310,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.listGarnishments);
 
   fastify.post('/payroll/employees/:id/garnishments', {
@@ -1328,7 +1329,7 @@ export default async function payrollRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.createGarnishment);
 
   fastify.patch('/payroll/employees/:id/garnishments/:garnishmentId', {
@@ -1338,7 +1339,7 @@ export default async function payrollRoutes(fastify) {
       body: { type: 'object', additionalProperties: true },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.updateGarnishment);
 
   fastify.delete('/payroll/employees/:id/garnishments/:garnishmentId', {
@@ -1347,7 +1348,7 @@ export default async function payrollRoutes(fastify) {
       params: { type: 'object', required: ['id', 'garnishmentId'], properties: { id: { type: 'string' }, garnishmentId: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.deleteGarnishment);
 
   // ── Phase 3: Accounting Journal ─────────────────────────────────────────────
@@ -1357,7 +1358,7 @@ export default async function payrollRoutes(fastify) {
       tags: ['Payroll'], description: 'Get double-entry journal for a run', security: [{ Bearer: [] }],
       params: idParam, response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.getRunJournal);
 
   fastify.get('/payroll/runs/:id/journal/export', {
@@ -1366,6 +1367,38 @@ export default async function payrollRoutes(fastify) {
       params: idParam,
       querystring: { type: 'object', properties: { format: { type: 'string', enum: ['TALLY', 'QUICKBOOKS', 'CSV'] } } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canAdminPayroll],
   }, ctrl.exportRunJournal);
+
+  // BACKEND_CONTRACT_server_side_exports.md §3.4 — server-generated payslip PDF,
+  // replacing the frontend's window.print().
+  fastify.get('/payroll/employees/:employeeId/payslips/:payslipId/download', {
+    schema: {
+      tags: ['Payroll'],
+      summary: 'Download a payslip as PDF',
+      security: [{ Bearer: [] }],
+      params: {
+        type: 'object',
+        required: ['employeeId', 'payslipId'],
+        properties: { employeeId: { type: 'string' }, payslipId: { type: 'string' } },
+      },
+      querystring: { type: 'object', properties: { format: { type: 'string', enum: ['pdf'], default: 'pdf' } } },
+    },
+    onRequest: [authenticate, canReadOwnPayroll],
+  }, ctrl.downloadEmployeePayslip);
+
+  fastify.get('/payroll/runs/:runId/payslips/:payslipId/download', {
+    schema: {
+      tags: ['Payroll'],
+      summary: 'Download a run payslip as PDF',
+      security: [{ Bearer: [] }],
+      params: {
+        type: 'object',
+        required: ['runId', 'payslipId'],
+        properties: { runId: { type: 'string' }, payslipId: { type: 'string' } },
+      },
+      querystring: { type: 'object', properties: { format: { type: 'string', enum: ['pdf'], default: 'pdf' } } },
+    },
+    onRequest: [authenticate, canAdminPayroll],
+  }, ctrl.downloadRunPayslip);
 }

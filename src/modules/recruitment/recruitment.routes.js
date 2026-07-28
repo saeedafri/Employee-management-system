@@ -1,9 +1,10 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as controller from './recruitment.controller.js';
 
 export default async function recruitmentRoutes(fastify) {
-  const HR_MANAGER = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER'];
-  const HR_ONLY = ['HR_ADMIN', 'SUPER_ADMIN'];
+  const canReadRecruitment = requirePermission('recruitment:read');
+  const canWriteRecruitment = requirePermission('recruitment:write');
 
   fastify.get('/recruitment/summary', {
     schema: {
@@ -12,7 +13,7 @@ export default async function recruitmentRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadRecruitment],
   }, controller.getSummary);
 
   fastify.get('/recruitment/openings', {
@@ -30,7 +31,7 @@ export default async function recruitmentRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadRecruitment],
   }, controller.getOpenings);
 
   fastify.post('/recruitment/openings', {
@@ -50,7 +51,7 @@ export default async function recruitmentRoutes(fastify) {
       },
       response: { 201: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canWriteRecruitment],
   }, controller.createOpening);
 
   fastify.patch('/recruitment/openings/:id', {
@@ -71,7 +72,7 @@ export default async function recruitmentRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canWriteRecruitment],
   }, controller.updateOpening);
 
   fastify.get('/recruitment/candidates', {
@@ -90,7 +91,7 @@ export default async function recruitmentRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadRecruitment],
   }, controller.getCandidates);
 
   fastify.post('/recruitment/candidates/:id/advance', {
@@ -106,7 +107,7 @@ export default async function recruitmentRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canWriteRecruitment],
   }, controller.advanceCandidate);
 
   fastify.patch('/recruitment/candidates/:id/rating', {
@@ -122,7 +123,7 @@ export default async function recruitmentRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadRecruitment],
   }, controller.updateCandidateRating);
 
   fastify.get('/recruitment/recruiters', {
@@ -132,6 +133,6 @@ export default async function recruitmentRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canReadRecruitment],
   }, controller.getRecruiters);
 }

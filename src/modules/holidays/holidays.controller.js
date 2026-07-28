@@ -3,6 +3,7 @@ import * as service from './holidays.service.js';
 import * as validator from './holidays.validator.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { parseIcs } from '../../utils/icsParser.js';
+import { hasPermission } from '../auth/auth.policy.js';
 import { createJob, getJob, markCommitted } from '../../utils/importJobStore.js';
 import { prisma } from '../../plugins/prisma.js';
 
@@ -36,8 +37,8 @@ export async function listHolidays(request, reply) {
 export async function createHoliday(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create holidays', request.requestId));
+  if (!hasPermission(user, 'holidays:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'holidays:write' }, request.requestId));
   }
 
   try {
@@ -56,8 +57,8 @@ export async function createHoliday(request, reply) {
 export async function updateHoliday(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can update holidays', request.requestId));
+  if (!hasPermission(user, 'holidays:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'holidays:write' }, request.requestId));
   }
 
   try {
@@ -77,8 +78,8 @@ export async function updateHoliday(request, reply) {
 export async function deleteHoliday(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete holidays', request.requestId));
+  if (!hasPermission(user, 'holidays:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'holidays:write' }, request.requestId));
   }
 
   try {

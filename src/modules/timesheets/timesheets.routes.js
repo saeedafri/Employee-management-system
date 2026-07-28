@@ -1,4 +1,5 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as controller from './timesheets.controller.js';
 
 // ─── Shared response schemas ───────────────────────────────────────────────────
@@ -97,9 +98,10 @@ const TimesheetSummary = {
 };
 
 export default async function timesheetsRoutes(fastify) {
-  const HR_ADMIN = ['HR_ADMIN', 'SUPER_ADMIN'];
-  const HR_MANAGER = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER'];
-  const ALL_AUTH = ['HR_ADMIN', 'SUPER_ADMIN', 'MANAGER', 'EMPLOYEE'];
+  const canReadTimesheets = requirePermission('timesheets:read');
+  const canWriteTimesheets = requirePermission('timesheets:write');
+  const canApproveTimesheets = requirePermission('timesheets:approve');
+  const canAdminTimesheets = requirePermission('timesheets:admin');
   const obj = { type: 'object', additionalProperties: true };
 
   // ── Projects ──────────────────────────────────────────────────────────────
@@ -115,7 +117,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canReadTimesheets],
   }, controller.getProjects);
 
   fastify.post('/timesheets/projects', {
@@ -137,7 +139,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(HR_ADMIN)],
+    onRequest: [authenticate, canAdminTimesheets],
   }, controller.createProject);
 
   fastify.patch('/timesheets/projects/:id', {
@@ -158,7 +160,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(HR_ADMIN)],
+    onRequest: [authenticate, canAdminTimesheets],
   }, controller.updateProject);
 
   fastify.delete('/timesheets/projects/:id', {
@@ -169,7 +171,7 @@ export default async function timesheetsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(HR_ADMIN)],
+    onRequest: [authenticate, canAdminTimesheets],
   }, controller.deleteProject);
 
   fastify.get('/timesheets/projects/:id/tasks', {
@@ -180,7 +182,7 @@ export default async function timesheetsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canReadTimesheets],
   }, controller.getProjectTasks);
 
   fastify.post('/timesheets/projects/:id/tasks', {
@@ -199,7 +201,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(HR_ADMIN)],
+    onRequest: [authenticate, canAdminTimesheets],
   }, controller.createTask);
 
   // ── Tasks (standalone update) ─────────────────────────────────────────────
@@ -220,7 +222,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(HR_ADMIN)],
+    onRequest: [authenticate, canAdminTimesheets],
   }, controller.updateTask);
 
   // ── Timesheet (weekly) ────────────────────────────────────────────────────
@@ -247,7 +249,7 @@ export default async function timesheetsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canReadTimesheets],
   }, controller.getTimesheet);
 
   fastify.post('/timesheets/entries', {
@@ -271,7 +273,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.createEntry);
 
   fastify.patch('/timesheets/entries/:id', {
@@ -291,7 +293,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.updateEntry);
 
   fastify.delete('/timesheets/entries/:id', {
@@ -302,7 +304,7 @@ export default async function timesheetsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.deleteEntry);
 
   fastify.post('/timesheets/:id/submit', {
@@ -314,7 +316,7 @@ export default async function timesheetsRoutes(fastify) {
       body: { type: 'object' },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.submitTimesheet);
 
   fastify.post('/timesheets/copy-week', {
@@ -334,7 +336,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 201: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.copyWeek);
 
   fastify.post('/timesheets/:id/recall', {
@@ -347,7 +349,7 @@ export default async function timesheetsRoutes(fastify) {
       body: { type: 'object' },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.recallTimesheet);
 
   // ── Approvals ─────────────────────────────────────────────────────────────
@@ -371,7 +373,7 @@ export default async function timesheetsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canApproveTimesheets],
   }, controller.getApprovals);
 
   fastify.post('/timesheets/:id/approve', {
@@ -386,7 +388,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canApproveTimesheets],
   }, controller.approveTimesheet);
 
   fastify.post('/timesheets/:id/reject', {
@@ -402,7 +404,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canApproveTimesheets],
   }, controller.rejectTimesheet);
 
   // ── Summary & Settings ────────────────────────────────────────────────────
@@ -429,7 +431,7 @@ export default async function timesheetsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(HR_MANAGER)],
+    onRequest: [authenticate, canApproveTimesheets],
   }, controller.getSummary);
 
   fastify.get('/timesheets/settings', {
@@ -439,7 +441,7 @@ export default async function timesheetsRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(HR_ADMIN)],
+    onRequest: [authenticate, canAdminTimesheets],
   }, controller.getSettings);
 
   fastify.patch('/timesheets/settings', {
@@ -468,7 +470,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(HR_ADMIN)],
+    onRequest: [authenticate, canAdminTimesheets],
   }, controller.updateSettings);
 
   // ── Templates (weekly saved rows — UI PR #9) ──────────────────────────────────
@@ -491,7 +493,7 @@ export default async function timesheetsRoutes(fastify) {
         200: { type: 'object', properties: { success: { type: 'boolean' }, data: { type: 'array', items: TimesheetTemplate } } },
       },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canReadTimesheets],
   }, controller.getTemplates);
 
   fastify.post('/timesheets/templates', {
@@ -509,7 +511,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 201: { type: 'object', properties: { success: { type: 'boolean' }, data: TimesheetTemplate } } },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.createTemplate);
 
   fastify.patch('/timesheets/templates/:id', {
@@ -527,7 +529,7 @@ export default async function timesheetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', properties: { success: { type: 'boolean' }, data: TimesheetTemplate } } },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.updateTemplate);
 
   fastify.delete('/timesheets/templates/:id', {
@@ -538,7 +540,7 @@ export default async function timesheetsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: obj },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.deleteTemplate);
 
   fastify.post('/timesheets/templates/:id/apply', {
@@ -566,6 +568,6 @@ export default async function timesheetsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(ALL_AUTH)],
+    onRequest: [authenticate, canWriteTimesheets],
   }, controller.applyTemplate);
 }

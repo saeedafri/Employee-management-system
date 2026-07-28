@@ -2,6 +2,7 @@
 import { prisma } from '../../plugins/prisma.js';
 import { resolveEmployeeHolidays } from './holidayResolver.service.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
+import { hasPermission } from '../auth/auth.policy.js';
 
 function yearOf(request) {
   const y = parseInt(request.query?.year, 10);
@@ -30,7 +31,8 @@ export async function getEmployeeResolvedHolidays(request, reply) {
   const tenantId = request.tenant.id;
   const { id } = request.params;
   const { user } = request;
-  const isAdmin = ['HR_ADMIN', 'SUPER_ADMIN'].includes(user.memberType);
+  // Holiday administrators may view any employee's calendar; everyone else, only their own.
+  const isAdmin = hasPermission(user, 'holidays:write');
   const isSelf = user.employeeId && user.employeeId === id;
   if (!isAdmin && !isSelf) {
     return reply.code(403).send(errorResponse('FORBIDDEN', 'Not allowed to view this employee’s holidays', request.requestId));

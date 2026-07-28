@@ -1,4 +1,5 @@
 import * as repo from './payroll.repository.js';
+import { canAccessEmployeeRecord, hasPermission } from '../auth/auth.policy.js';
 import { detectCircularDep } from '../../utils/formulaEval.js';
 import {
   fmtGarnishmentForUi,
@@ -146,10 +147,10 @@ export async function getPaySchedules(prisma, tenantId) {
 // ── Employee Salary ───────────────────────────────────────────────────────────
 
 export async function getEmployeeSalary(prisma, employeeId, tenantId, requestingUser) {
-  const isHR = ['HR_ADMIN', 'SUPER_ADMIN'].includes(requestingUser.memberType);
-  if (!isHR && requestingUser.employeeId !== employeeId) {
+  if (!canAccessEmployeeRecord(requestingUser, employeeId)) {
     throw AppError('Access denied', 'FORBIDDEN', 403);
   }
+  const isHR = hasPermission(requestingUser, 'employees:read-any');
   const salary = await repo.getEmployeeSalary(prisma, employeeId, tenantId, isHR);
   if (!salary) throw AppError('No salary configuration found for this employee', 'NOT_FOUND', 404);
   return salary;
@@ -213,8 +214,7 @@ export async function patchEmployeeSalary(prisma, employeeId, tenantId, patch) {
 // ── Employee Payslips ─────────────────────────────────────────────────────────
 
 export async function getEmployeePayslips(prisma, employeeId, tenantId, requestingUser, query) {
-  const isHR = ['HR_ADMIN', 'SUPER_ADMIN'].includes(requestingUser.memberType);
-  if (!isHR && requestingUser.employeeId !== employeeId) {
+  if (!canAccessEmployeeRecord(requestingUser, employeeId)) {
     throw AppError('Access denied', 'FORBIDDEN', 403);
   }
   const page = parseInt(query.page) || 1;
@@ -223,8 +223,7 @@ export async function getEmployeePayslips(prisma, employeeId, tenantId, requesti
 }
 
 export async function getEmployeePayslip(prisma, employeeId, payslipId, tenantId, requestingUser) {
-  const isHR = ['HR_ADMIN', 'SUPER_ADMIN'].includes(requestingUser.memberType);
-  if (!isHR && requestingUser.employeeId !== employeeId) {
+  if (!canAccessEmployeeRecord(requestingUser, employeeId)) {
     throw AppError('Access denied', 'FORBIDDEN', 403);
   }
   return repo.getEmployeePayslipById(prisma, employeeId, payslipId, tenantId);
@@ -714,8 +713,7 @@ function deriveLoan(row) {
 // the FE self-service "Request" button on My Pay (mode==='employee'); foreclosure
 // stays admin-only at the route level.
 function assertLoanAccess(requestingUser, employeeId) {
-  const isHR = ['HR_ADMIN', 'SUPER_ADMIN'].includes(requestingUser?.memberType);
-  if (!isHR && requestingUser?.employeeId !== employeeId) {
+  if (!canAccessEmployeeRecord(requestingUser, employeeId)) {
     throw AppError('Access denied', 'FORBIDDEN', 403);
   }
 }

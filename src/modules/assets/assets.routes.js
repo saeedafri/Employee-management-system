@@ -1,8 +1,9 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as controller from './assets.controller.js';
 
 export default async function assetsRoutes(fastify) {
-  const HR_ONLY = ['HR_ADMIN', 'SUPER_ADMIN'];
+  const canManageAssets = requirePermission('assets:manage');
 
   fastify.get('/assets/summary', {
     schema: {
@@ -11,7 +12,7 @@ export default async function assetsRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.getSummary);
 
   // NOTE: /assets/requests and /assets/employees must come BEFORE /assets/:id
@@ -30,7 +31,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.getRequests);
 
   fastify.get('/assets/employees', {
@@ -40,7 +41,7 @@ export default async function assetsRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.getEmployees);
 
   fastify.get('/assets', {
@@ -59,7 +60,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.getAssets);
 
   fastify.post('/assets', {
@@ -86,7 +87,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 201: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.createAsset);
 
   fastify.patch('/assets/requests/:id/approve', {
@@ -97,7 +98,7 @@ export default async function assetsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.approveRequest);
 
   fastify.patch('/assets/requests/:id/decline', {
@@ -112,7 +113,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.declineRequest);
 
   fastify.patch('/assets/:id/status', {
@@ -128,7 +129,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.updateAssetStatus);
 
   fastify.patch('/assets/:id/assign', {
@@ -148,7 +149,7 @@ export default async function assetsRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.assignAsset);
 
   fastify.patch('/assets/:id/recall', {
@@ -159,6 +160,20 @@ export default async function assetsRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(HR_ONLY)],
+    onRequest: [authenticate, canManageAssets],
   }, controller.recallAsset);
+
+  // BACKEND_CONTRACT_server_side_exports.md §2.4
+  fastify.get('/assets/export', {
+    schema: {
+      tags: ['Assets'],
+      summary: 'Export the asset inventory as CSV',
+      security: [{ Bearer: [] }],
+      querystring: {
+        type: 'object',
+        properties: { type: { type: 'string' }, status: { type: 'string' } },
+      },
+    },
+    onRequest: [authenticate, requirePermission('assets:export')],
+  }, controller.exportAssets);
 }

@@ -6,7 +6,12 @@ import { config } from '../../config/index.js';
 import * as authRepository from './auth.repository.js';
 import * as otpService from './otp.service.js';
 import { getAuthSettings } from '../settings/settings.repository.js';
-import { DEFAULT_PERMISSIONS_BY_ROLE } from './auth.policy.js';
+import {
+  DEFAULT_PERMISSIONS_BY_ROLE,
+  PERMISSION_KEYS,
+  permissionModule,
+  permissionDescription,
+} from './auth.policy.js';
 
 // MFA admin cohort for the REQUIRED_ADMINS policy (contract §3.2; default SUPER_ADMIN + HR_ADMIN).
 const MFA_ADMIN_MEMBER_TYPES = new Set(['SUPER_ADMIN', 'HR_ADMIN']);
@@ -526,6 +531,9 @@ function resolvePermissions(user) {
  * PATCH /settings/roles-permissions changes are never overwritten — including empty sets.
  */
 export async function ensureTenantRolePermissionDefaults(db, tenantId) {
+  // Previously seeded key set. Anything in the catalogue but not in here is new
+  // since the last run and still needs its default grants. Older tenants stored
+  // `true`/`{seeded:true}` with no key list — treat those as the original 14.
   const flag = await db.setting.findUnique({
     where: {
       tenantId_groupKey_settingKey: {
@@ -535,26 +543,32 @@ export async function ensureTenantRolePermissionDefaults(db, tenantId) {
       },
     },
   });
-  if (flag?.valueJson === true || flag?.valueJson?.seeded === true) {
-    return { seeded: false, skipped: true };
-  }
 
-  const catalogue = [
-    { key: 'employees:read', module: 'employees', description: 'View employees' },
-    { key: 'employees:write', module: 'employees', description: 'Create/update employees' },
-    { key: 'employees:delete', module: 'employees', description: 'Soft-delete employees' },
-    { key: 'employees:export', module: 'employees', description: 'Export employee/attendance/leave data' },
-    { key: 'departments:read', module: 'departments', description: 'View departments' },
-    { key: 'departments:write', module: 'departments', description: 'Manage departments' },
-    { key: 'attendance:read', module: 'attendance', description: 'View attendance' },
-    { key: 'attendance:write', module: 'attendance', description: 'Mutate attendance' },
-    { key: 'leave:read', module: 'leave', description: 'View leave' },
-    { key: 'leave:request', module: 'leave', description: 'Request leave' },
-    { key: 'leave:approve', module: 'leave', description: 'Approve/deny leave' },
-    { key: 'analytics:read', module: 'analytics', description: 'View analytics' },
-    { key: 'audit:read', module: 'audit', description: 'View audit logs' },
-    { key: 'permissions:manage', module: 'settings', description: 'Manage roles and permissions' },
+  const LEGACY_SEEDED_KEYS = [
+    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
+    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
+    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
+    'permissions:manage',
   ];
+
+  let previouslySeeded = [];
+  if (Array.isArray(flag?.valueJson?.keys)) {
+    previouslySeeded = flag.valueJson.keys;
+  } else if (flag?.valueJson === true || flag?.valueJson?.seeded === true) {
+    previouslySeeded = LEGACY_SEEDED_KEYS;
+  }
+  const previouslySeededSet = new Set(previouslySeeded);
+
+  const catalogue = PERMISSION_KEYS.map((key) => ({
+    key,
+    module: permissionModule(key),
+    description: permissionDescription(key),
+  }));
+
+  const newKeys = catalogue.filter((p) => !previouslySeededSet.has(p.key)).map((p) => p.key);
+  if (previouslySeeded.length > 0 && newKeys.length === 0) {
+    return { seeded: false, skipped: true, newKeys: [] };
+  }
 
   const permissionByKey = {};
   for (const p of catalogue) {
@@ -586,15 +600,22 @@ export async function ensureTenantRolePermissionDefaults(db, tenantId) {
       },
     });
 
-    // Only add defaults when role has no grants yet (do not delete admin customizations).
     const existingCount = await db.rolePermission.count({ where: { roleId: role.id } });
-    if (existingCount > 0) continue;
 
-    for (const key of permKeys) {
+    // First seed for this tenant: grant the full default set. Subsequent runs
+    // grant only keys that are new since the last seed, so an admin's earlier
+    // revocations are never silently reinstated.
+    const keysToGrant = existingCount === 0
+      ? permKeys
+      : permKeys.filter((key) => !previouslySeededSet.has(key));
+
+    for (const key of keysToGrant) {
       const permission = permissionByKey[key];
       if (!permission) continue;
-      await db.rolePermission.create({
-        data: { roleId: role.id, permissionId: permission.id },
+      await db.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId: permission.id } },
+        update: {},
+        create: { roleId: role.id, permissionId: permission.id },
       });
     }
   }
@@ -612,11 +633,11 @@ export async function ensureTenantRolePermissionDefaults(db, tenantId) {
       tenantId,
       groupKey: 'security',
       settingKey: 'role_permissions_defaults_seeded',
-      valueJson: { seeded: true, at: new Date().toISOString() },
+      valueJson: { seeded: true, at: new Date().toISOString(), keys: PERMISSION_KEYS },
     },
   });
 
-  return { seeded: true };
+  return { seeded: true, newKeys };
 }
 
 export async function getCurrentUser(db, userId) {

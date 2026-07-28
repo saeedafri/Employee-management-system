@@ -1,4 +1,5 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as auditLogsController from './auditLogs.controller.js';
 
 export default async function auditLogsRoutes(fastify) {
@@ -54,7 +55,7 @@ export default async function auditLogsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['SUPER_ADMIN', 'AUDITOR'])],
+    onRequest: [authenticate, requirePermission('audit:export')],
   }, (request, reply) => auditLogsController.generateDPIAReport(request, reply));
 
   fastify.get('/audit-logs/export', {
@@ -71,6 +72,6 @@ export default async function auditLogsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['SUPER_ADMIN', 'AUDITOR'])],
+    onRequest: [authenticate, requirePermission('audit:export')],
   }, (request, reply) => auditLogsController.exportAuditLogs(request, reply));
 }

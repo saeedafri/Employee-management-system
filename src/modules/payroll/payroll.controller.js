@@ -1,4 +1,5 @@
 import * as service from './payroll.service.js';
+import { renderPayslipPdf, payslipFilename } from './payslipPdf.js';
 import * as payoutService from './payout/payout.service.js';
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
@@ -124,6 +125,36 @@ export async function getEmployeePayslip(request, reply) {
     );
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
+}
+
+// BACKEND_CONTRACT_server_side_exports.md §3.4 — synchronous PDF download,
+// mirroring the two payslip-detail routes. Access rules are inherited from the
+// detail services, which already enforce self-or-HR/SA.
+async function sendPayslipPdf(reply, payslip, tenantId) {
+  const template = await service.getPayslipTemplate(prisma, tenantId);
+  const pdf = await renderPayslipPdf(payslip, template);
+  return reply
+    .type('application/pdf')
+    .header('Content-Disposition', `attachment; filename="${payslipFilename(payslip)}"`)
+    .send(pdf);
+}
+
+export async function downloadEmployeePayslip(request, reply) {
+  try {
+    const payslip = await service.getEmployeePayslip(
+      prisma, request.params.employeeId, request.params.payslipId, request.tenant.id, request.user,
+    );
+    return await sendPayslipPdf(reply, payslip, request.tenant.id);
+  } catch (err) { return handleError(reply, err); }
+}
+
+export async function downloadRunPayslip(request, reply) {
+  try {
+    const payslip = await service.getRunPayslip(
+      prisma, request.params.runId, request.params.payslipId, request.tenant.id,
+    );
+    return await sendPayslipPdf(reply, payslip, request.tenant.id);
+  } catch (err) { return handleError(reply, err); }
 }
 
 // ── Payroll Runs ──────────────────────────────────────────────────────────────

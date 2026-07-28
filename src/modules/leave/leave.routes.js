@@ -1,4 +1,5 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as leaveController from './leave.controller.js';
 
 export default async function leaveRoutes(fastify) {
@@ -32,7 +33,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 201: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:manage-types')],
   }, (request, reply) => leaveController.createLeaveType(request, reply));
 
   fastify.patch('/leave/types/:id', {
@@ -53,7 +54,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:manage-types')],
   }, (request, reply) => leaveController.updateLeaveType(request, reply));
 
   fastify.delete('/leave/types/:id', {
@@ -64,7 +65,7 @@ export default async function leaveRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN', 'SUPER_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:manage-types')],
   }, (request, reply) => leaveController.deleteLeaveType(request, reply));
 
   // ── Leave Requests ───────────────────────────────────────────────────────────
@@ -140,7 +141,7 @@ export default async function leaveRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:team-read')],
   }, (request, reply) => leaveController.getTeamLeaveRequests(request, reply));
 
   fastify.get('/leave/team/calendar', {
@@ -156,7 +157,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:team-read')],
   }, (request, reply) => leaveController.getTeamCalendar(request, reply));
 
   // ── Team coverage ────────────────────────────────────────────────────────────
@@ -176,7 +177,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:team-read')],
   }, (request, reply) => leaveController.getTeamCoverage(request, reply));
 
   // ── Bulk actions ─────────────────────────────────────────────────────────────
@@ -196,7 +197,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:approve')],
   }, (request, reply) => leaveController.bulkApproveLeave(request, reply));
 
   fastify.post('/leave/requests/bulk-deny', {
@@ -214,7 +215,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:approve')],
   }, (request, reply) => leaveController.bulkDenyLeave(request, reply));
 
   // UI-team canonical paths (slash-separated — same handlers)
@@ -233,7 +234,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:approve')],
   }, (request, reply) => leaveController.bulkApproveLeave(request, reply));
 
   fastify.post('/leave/requests/bulk/reject', {
@@ -251,7 +252,7 @@ export default async function leaveRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:approve')],
   }, (request, reply) => leaveController.bulkDenyLeave(request, reply));
 
   // ── Individual request actions ───────────────────────────────────────────────
@@ -264,7 +265,7 @@ export default async function leaveRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       body: { type: 'object', properties: { approverComment: { type: 'string' } } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:approve')],
   }, (request, reply) => leaveController.approveLeaveRequest(request, reply));
 
   fastify.patch('/leave/requests/:id/reject', {
@@ -275,7 +276,7 @@ export default async function leaveRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       body: { type: 'object', required: ['approverComment'], properties: { approverComment: { type: 'string' } } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('leave:approve')],
   }, (request, reply) => leaveController.rejectLeaveRequest(request, reply));
 
   fastify.patch('/leave/requests/:id/withdraw', {

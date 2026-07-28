@@ -1,8 +1,10 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as reportsController from './reports.controller.js';
 
 export default async function reportsRoutes(fastify) {
-  const adminRoles = ['HR_ADMIN', 'SUPER_ADMIN'];
+  const canReadReports = requirePermission('reports:read');
+  const canScheduleReports = requirePermission('reports:schedule');
 
   fastify.get('/reports/attendance', {
     schema: {
@@ -19,7 +21,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (request, reply) => reportsController.getAttendanceReport(request, reply));
 
   fastify.get('/reports/leaves', {
@@ -38,7 +40,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (request, reply) => reportsController.getLeavesReport(request, reply));
 
   fastify.get('/reports/payroll', {
@@ -55,7 +57,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (request, reply) => reportsController.getPayrollReport(request, reply));
 
   fastify.post('/reports/schedule', {
@@ -75,7 +77,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canScheduleReports],
   }, (request, reply) => reportsController.scheduleReport(request, reply));
 
   fastify.get('/reports/scheduled', {
@@ -91,7 +93,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canScheduleReports],
   }, (request, reply) => reportsController.getScheduledReports(request, reply));
 
   fastify.patch('/reports/scheduled/:id', {
@@ -118,7 +120,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canScheduleReports],
   }, (request, reply) => reportsController.updateScheduledReport(request, reply));
 
   fastify.delete('/reports/scheduled/:id', {
@@ -134,7 +136,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canScheduleReports],
   }, (request, reply) => reportsController.deleteScheduledReport(request, reply));
 
   fastify.get('/reports/export-history', {
@@ -151,7 +153,7 @@ export default async function reportsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['HR_ADMIN'])],
+    onRequest: [authenticate, canScheduleReports],
   }, (request, reply) => reportsController.getExportHistory(request, reply));
 
   // ── Domain 4 — Phase 2 Reports ─────────────────────────────────────────────
@@ -167,12 +169,12 @@ export default async function reportsRoutes(fastify) {
 
   fastify.get('/reports/workforce/headcount', {
     schema: { tags: ['Reports'], description: 'Headcount over time — monthly headcount, hires, exits per dept', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getWorkforceHeadcount(req, rep));
 
   fastify.get('/reports/workforce/turnover', {
     schema: { tags: ['Reports'], description: 'Attrition/turnover — exits over the period', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getWorkforceTurnover(req, rep));
 
   fastify.get('/reports/workforce/demographics', {
@@ -181,7 +183,7 @@ export default async function reportsRoutes(fastify) {
       querystring: { type: 'object', properties: { departmentId: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getWorkforceDemographics(req, rep));
 
   fastify.get('/reports/attendance/summary', {
@@ -190,12 +192,12 @@ export default async function reportsRoutes(fastify) {
       querystring: { type: 'object', properties: { month: { type: 'string', description: 'YYYY-MM' }, departmentId: { type: 'string' }, page: { type: 'integer', default: 1 }, limit: { type: 'integer', default: 20 } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getAttendanceSummaryReport(req, rep));
 
   fastify.get('/reports/attendance/absenteeism', {
     schema: { tags: ['Reports'], description: 'Absenteeism trend — unauthorized absences over time', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getAttendanceAbsenteeism(req, rep));
 
   fastify.get('/reports/leave/utilization', {
@@ -204,7 +206,7 @@ export default async function reportsRoutes(fastify) {
       querystring: { type: 'object', properties: { year: { type: 'string' }, departmentId: { type: 'string' }, leaveTypeId: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getLeaveUtilization(req, rep));
 
   fastify.get('/reports/leave/pending', {
@@ -213,12 +215,12 @@ export default async function reportsRoutes(fastify) {
       querystring: { type: 'object', properties: { departmentId: { type: 'string' }, leaveTypeId: { type: 'string' }, page: { type: 'integer', default: 1 }, limit: { type: 'integer', default: 20 } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getLeavePending(req, rep));
 
   fastify.get('/reports/payroll/summary', {
     schema: { tags: ['Reports'], description: 'Payroll cost by month and department', security: [{ Bearer: [] }], querystring: commonQs, response: { 200: { type: 'object', additionalProperties: true } } },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getPayrollSummaryReport(req, rep));
 
   fastify.get('/reports/payroll/ctc-analysis', {
@@ -227,7 +229,7 @@ export default async function reportsRoutes(fastify) {
       querystring: { type: 'object', properties: { departmentId: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getPayrollCtcAnalysis(req, rep));
 
   fastify.post('/reports/export', {
@@ -244,7 +246,7 @@ export default async function reportsRoutes(fastify) {
       },
       response: { 202: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.exportReport(req, rep));
 
   fastify.get('/reports/export/:jobId', {
@@ -253,7 +255,7 @@ export default async function reportsRoutes(fastify) {
       params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getExportJobStatus(req, rep));
 
   fastify.get('/reports/export/:jobId/status', {
@@ -262,7 +264,7 @@ export default async function reportsRoutes(fastify) {
       params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.getExportJobStatus(req, rep));
 
   fastify.get('/reports/export/:jobId/download', {
@@ -270,6 +272,6 @@ export default async function reportsRoutes(fastify) {
       tags: ['Reports'], description: 'Download export CSV — returns text/csv when SUCCESS, 202 when PENDING', security: [{ Bearer: [] }],
       params: { type: 'object', required: ['jobId'], properties: { jobId: { type: 'string' } } },
     },
-    onRequest: [authenticate, authorize(adminRoles)],
+    onRequest: [authenticate, canReadReports],
   }, (req, rep) => reportsController.downloadExport(req, rep));
 }

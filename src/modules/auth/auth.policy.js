@@ -1,55 +1,41 @@
 import { errorResponse } from '../../utils/response.js';
+import {
+  PERMISSION_CATALOGUE,
+  PERMISSION_KEYS,
+  DEFAULT_PERMISSIONS_BY_ROLE,
+  roleDefaultPermissions,
+  permissionDescription,
+  permissionModule,
+} from './permissionCatalogue.js';
 
-export const PERMISSION_KEYS = Object.freeze([
-  'analytics:read',
-  'attendance:read',
-  'attendance:write',
-  'audit:read',
-  'departments:read',
-  'departments:write',
-  'employees:delete',
-  'employees:export',
-  'employees:read',
-  'employees:write',
-  'leave:approve',
-  'leave:read',
-  'leave:request',
-  'permissions:manage',
-]);
+export {
+  PERMISSION_CATALOGUE,
+  PERMISSION_KEYS,
+  DEFAULT_PERMISSIONS_BY_ROLE,
+  roleDefaultPermissions,
+  permissionDescription,
+  permissionModule,
+};
 
 /**
- * Canonical default grants per memberType. Must stay in sync with
- * auth.service resolvePermissions / RolePermission seed.
- * Day-1 behavior matches historical UI gates.
+ * Keys discovered in the `Permission` table at boot, on top of the static
+ * catalogue. Lets a tenant-authored permission be enforced without a redeploy,
+ * per BACKEND_CONTRACT_configurable_rbac.md 3.1.
  */
-export const DEFAULT_PERMISSIONS_BY_ROLE = Object.freeze({
-  SUPER_ADMIN: Object.freeze([
-    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
-    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
-    'permissions:manage',
-  ]),
-  HR_ADMIN: Object.freeze([
-    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
-    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request', 'leave:approve', 'analytics:read', 'audit:read',
-  ]),
-  MANAGER: Object.freeze([
-    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request', 'leave:approve', 'analytics:read',
-  ]),
-  EMPLOYEE: Object.freeze([
-    'employees:read', 'departments:read', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:request',
-  ]),
-  AUDITOR: Object.freeze([
-    'employees:read', 'departments:read', 'attendance:read', 'leave:read',
-    'analytics:read', 'audit:read',
-  ]),
-});
+const runtimePermissionKeys = new Set();
 
-export function roleDefaultPermissions(memberType) {
-  return DEFAULT_PERMISSIONS_BY_ROLE[memberType] ?? [];
+export function registerPermissionKeys(keys = []) {
+  for (const key of keys) {
+    if (typeof key === 'string' && key.includes(':')) runtimePermissionKeys.add(key);
+  }
+}
+
+export function isKnownPermission(key) {
+  return PERMISSION_KEYS.includes(key) || runtimePermissionKeys.has(key);
+}
+
+export function knownPermissionKeys() {
+  return [...new Set([...PERMISSION_KEYS, ...runtimePermissionKeys])].sort();
 }
 
 export function hasPermission(user, permission) {
@@ -60,7 +46,7 @@ export function hasPermission(user, permission) {
   if (fromToken.includes(permission)) return true;
 
   // Fallback for tokens minted before RolePermission seed / empty grants:
-  // match historical default matrix so we never lock out day-1 roles.
+  // match the default matrix so we never lock out day-1 roles.
   if (fromToken.length === 0) {
     return roleDefaultPermissions(user.memberType).includes(permission);
   }
@@ -69,7 +55,9 @@ export function hasPermission(user, permission) {
 }
 
 export function requirePermission(permission) {
-  if (!PERMISSION_KEYS.includes(permission)) {
+  // Unknown keys are a wiring mistake, but the catalogue is data now, so this
+  // only guards against typos in route files at registration time.
+  if (!isKnownPermission(permission)) {
     throw new Error(`Unknown permission key: ${permission}`);
   }
 
@@ -85,6 +73,43 @@ export function requirePermission(permission) {
       ),
     );
   };
+}
+
+/**
+ * Passes when the user holds ANY of the given keys. Used where one route serves
+ * both a self-service and an admin audience (e.g. a list endpoint that scopes
+ * its own rows by role).
+ */
+export function requireAnyPermission(...permissions) {
+  for (const permission of permissions) {
+    if (!isKnownPermission(permission)) {
+      throw new Error(`Unknown permission key: ${permission}`);
+    }
+  }
+
+  return async function anyPermissionPreHandler(request, reply) {
+    if (permissions.some((permission) => hasPermission(request.user, permission))) return;
+
+    return reply.code(403).send(
+      errorResponse(
+        'FORBIDDEN',
+        'Insufficient permissions for this action',
+        { requiredPermission: permissions, userRole: request.user?.memberType ?? null },
+        request.id,
+      ),
+    );
+  };
+}
+
+/**
+ * Self-or-admin access to an employee's own record, documents and photo.
+ * Everyone may reach their own; `employees:read-any` reaches anyone else's.
+ * Lives here rather than being repeated per controller.
+ */
+export function canAccessEmployeeRecord(user, employeeId) {
+  if (!user) return false;
+  if (user.employeeId && user.employeeId === employeeId) return true;
+  return hasPermission(user, 'employees:read-any');
 }
 
 export function canManageUser(user, targetUserId) {

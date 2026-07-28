@@ -1,4 +1,5 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as attendanceController from './attendance.controller.js';
 
 export default async function attendanceRoutes(fastify) {
@@ -74,7 +75,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('attendance:team-read')],
   }, (request, reply) => attendanceController.getTeamAttendanceRecords(request, reply));
 
   // BE-1 — per-employee monthly attendance calendar (full month, reconciled buckets).
@@ -118,7 +119,7 @@ export default async function attendanceRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('attendance:team-read')],
   }, (request, reply) => attendanceController.getTeamWeekly(request, reply));
 
   fastify.get('/attendance/summary', {
@@ -189,7 +190,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('attendance:team-read')],
   }, (request, reply) => attendanceController.getTeamRegularizationRequests(request, reply));
 
   fastify.patch('/attendance/regularization/:id/approve', {
@@ -211,7 +212,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('attendance:approve')],
   }, (request, reply) => attendanceController.approveRegularization(request, reply));
 
   fastify.patch('/attendance/regularization/:id/deny', {
@@ -234,7 +235,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate, authorize(['MANAGER', 'HR_ADMIN'])],
+    onRequest: [authenticate, requirePermission('attendance:approve')],
   }, (request, reply) => attendanceController.denyRegularization(request, reply));
 
   fastify.post('/attendance/regularization/:id/documents', {

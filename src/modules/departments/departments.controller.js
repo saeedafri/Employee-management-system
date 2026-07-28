@@ -1,6 +1,7 @@
 import * as service from './departments.service.js';
 import * as validator from './departments.validator.js';
 import { errorResponse } from '../../utils/response.js';
+import { hasPermission } from '../auth/auth.policy.js';
 
 export async function getDepartment(request, reply) {
   const tenantId = request.tenant.id;
@@ -41,8 +42,8 @@ export async function listDepartments(request, reply) {
 export async function createDepartment(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can create departments', {}, request.requestId));
+  if (!hasPermission(user, 'departments:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'departments:write' }, request.requestId));
   }
 
   try {
@@ -61,8 +62,8 @@ export async function createDepartment(request, reply) {
 export async function updateDepartment(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can update departments', {}, request.requestId));
+  if (!hasPermission(user, 'departments:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'departments:write' }, request.requestId));
   }
 
   try {
@@ -82,8 +83,8 @@ export async function updateDepartment(request, reply) {
 export async function deleteDepartment(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', {}, request.requestId));
+  if (!hasPermission(user, 'departments:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'departments:write' }, request.requestId));
   }
 
   try {
@@ -101,8 +102,8 @@ export async function deleteDepartment(request, reply) {
 
 export async function reassignAndDelete(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can delete departments', {}, request.requestId));
+  if (!hasPermission(user, 'departments:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'departments:write' }, request.requestId));
   }
   try {
     const { id } = request.params;
@@ -119,8 +120,8 @@ const MEMBER_NOT_FOUND_CODES = new Set(['DEPARTMENT_NOT_FOUND', 'EMPLOYEE_NOT_FO
 
 export async function addDepartmentMembers(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
-  if (!['SUPER_ADMIN', 'HR_ADMIN'].includes(user.memberType)) {
-    return reply.code(403).send(errorResponse('FORBIDDEN', 'Only HR/Admin can add department members', {}, request.requestId));
+  if (!hasPermission(user, 'departments:write')) {
+    return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', { requiredPermission: 'departments:write' }, request.requestId));
   }
   try {
     const { id } = request.params;

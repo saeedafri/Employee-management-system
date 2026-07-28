@@ -68,6 +68,7 @@ export async function exportEmployees(jobId, tenantId, filters) {
       departmentId: filters.department_id,
       status: filters.status,
       include_archived: filters.include_archived,
+      ids: filters.ids,
     });
 
     const filename = await generateExportFile(employees, 'employees', filters.format, jobId);

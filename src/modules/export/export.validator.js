@@ -5,6 +5,9 @@ export const exportEmployeesSchema = z.object({
   department_id: z.string().optional(),
   status: z.enum(['ACTIVE', 'INACTIVE', 'ON_LEAVE']).optional(),
   include_archived: z.boolean().default(false),
+  // §2.1 bulk-selection export. Without this the key is stripped by zod and the
+  // filter silently never reaches the job.
+  ids: z.array(z.string()).optional(),
 });
 
 export const exportAttendanceSchema = z.object({

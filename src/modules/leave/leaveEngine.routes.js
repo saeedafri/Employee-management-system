@@ -1,10 +1,11 @@
-import { authenticate, authorize } from '../../middleware/authenticate.js';
+import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import * as c from './leaveEngine.controller.js';
 
 const ok = { 200: { type: 'object', additionalProperties: true } };
 const created = { 201: { type: 'object', additionalProperties: true } };
-const HR = ['HR_ADMIN', 'SUPER_ADMIN'];
-const MGR = ['MANAGER', 'HR_ADMIN', 'SUPER_ADMIN'];
+const canManageLeavePolicy = requirePermission('leave:policy-manage');
+const canApproveLeave = requirePermission('leave:approve');
 
 // Leave Engine (Phase 4) — versioned policies, append-only ledger, comp-off, encashment.
 // Mirrors ems-frontend/src/mocks/handlers/leave-engine.ts exactly (MSW-off parity).
@@ -14,7 +15,7 @@ export default async function leaveEngineRoutes(fastify) {
   // ── Policy packs ──
   fastify.get('/leave/policy-packs/catalog', {
     schema: { tags: T, description: 'Starter leave policy pack catalog', security: [{ Bearer: [] }], response: ok },
-    onRequest: [authenticate, authorize(MGR)],
+    onRequest: [authenticate, canApproveLeave],
   }, c.getPackCatalog);
 
   fastify.post('/leave/policy-packs/seed', {
@@ -22,7 +23,7 @@ export default async function leaveEngineRoutes(fastify) {
       tags: T, description: 'Seed starter packs as tenant policies (idempotent)', security: [{ Bearer: [] }],
       body: { type: 'object', properties: { country: { type: 'string' } } }, response: ok,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.seedPacks);
 
   // ── Policies ──
@@ -31,7 +32,7 @@ export default async function leaveEngineRoutes(fastify) {
       tags: T, description: 'List leave policies (filter by country/status)', security: [{ Bearer: [] }],
       querystring: { type: 'object', properties: { country: { type: 'string' }, status: { type: 'string' } } }, response: ok,
     },
-    onRequest: [authenticate, authorize(MGR)],
+    onRequest: [authenticate, canApproveLeave],
   }, c.getPolicies);
 
   fastify.post('/leave/policies', {
@@ -46,7 +47,7 @@ export default async function leaveEngineRoutes(fastify) {
         },
       }, response: created,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.createPolicy);
 
   fastify.post('/leave/policies/:id/new-version', {
@@ -54,7 +55,7 @@ export default async function leaveEngineRoutes(fastify) {
       tags: T, description: 'Clone a policy into a new DRAFT version', security: [{ Bearer: [] }],
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } }, response: created,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.newPolicyVersion);
 
   fastify.patch('/leave/policies/:id', {
@@ -63,7 +64,7 @@ export default async function leaveEngineRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       body: { type: 'object', additionalProperties: true }, response: ok,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.patchPolicy);
 
   fastify.post('/leave/policies/:id/publish', {
@@ -71,7 +72,7 @@ export default async function leaveEngineRoutes(fastify) {
       tags: T, description: 'Publish a DRAFT policy (archives prior PUBLISHED for that country)', security: [{ Bearer: [] }],
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } }, response: ok,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.publishPolicy);
 
   // ── Assignments ──
@@ -88,7 +89,7 @@ export default async function leaveEngineRoutes(fastify) {
       tags: T, description: 'Auto-assign country policy + post opening grants/accruals (idempotent)', security: [{ Bearer: [] }],
       body: { type: 'object', properties: { employeeIds: { type: 'array', items: { type: 'string' } }, country: { type: 'string' } } }, response: ok,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.autoAssign);
 
   // ── Ledger ──
@@ -108,7 +109,7 @@ export default async function leaveEngineRoutes(fastify) {
         properties: { employeeId: { type: 'string' }, leaveTypeId: { type: 'string' }, delta: { type: 'number' }, reason: { type: 'string' } },
       }, response: ok,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.adjustLedger);
 
   // ── Comp-off ──
@@ -141,7 +142,7 @@ export default async function leaveEngineRoutes(fastify) {
       tags: T, description: 'Approve comp-off → posts COMP_OFF_EARNED + sets expiry', security: [{ Bearer: [] }],
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } }, response: ok,
     },
-    onRequest: [authenticate, authorize(MGR)],
+    onRequest: [authenticate, canApproveLeave],
   }, c.approveCompOff);
 
   fastify.post('/leave/comp-off/requests/:id/reject', {
@@ -150,7 +151,7 @@ export default async function leaveEngineRoutes(fastify) {
       params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       body: { type: 'object', properties: { approverComment: { type: 'string' } } }, response: ok,
     },
-    onRequest: [authenticate, authorize(MGR)],
+    onRequest: [authenticate, canApproveLeave],
   }, c.rejectCompOff);
 
   // ── Encashment ──
@@ -165,6 +166,6 @@ export default async function leaveEngineRoutes(fastify) {
         },
       }, response: ok,
     },
-    onRequest: [authenticate, authorize(HR)],
+    onRequest: [authenticate, canManageLeavePolicy],
   }, c.encash);
 }
