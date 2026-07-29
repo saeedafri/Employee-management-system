@@ -63,7 +63,7 @@ async function validateLogin(db, tenantId, email, password) {
   return user;
 }
 
-function extractPermissions(user) {
+export function extractPermissions(user) {
   const permissions = new Set();
   for (const userRole of user.userRoles ?? []) {
     for (const rp of userRole.role?.permissions ?? []) {
@@ -519,7 +519,7 @@ export async function logoutAll(db, userId, _currentSessionId) {
 
 // Explicit RolePermission grants win; fall back to the role default when none exist.
 // Defaults live in auth.policy.js (single source of truth with requirePermission).
-function resolvePermissions(user) {
+export function resolvePermissions(user) {
   const explicit = extractPermissions(user);
   if (explicit.length > 0) return explicit;
   return [...(DEFAULT_PERMISSIONS_BY_ROLE[user.memberType] ?? [])];

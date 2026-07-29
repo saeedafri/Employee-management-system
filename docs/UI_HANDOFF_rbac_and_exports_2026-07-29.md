@@ -91,6 +91,27 @@ Resolution order:
 1. If the user has **custom-role grants**, those are their permissions **entirely** (replace).
 2. Otherwise the `memberType` default matrix applies.
 
+### ⚠️ Gotcha: an empty permission set means "use defaults", not "deny everything"
+
+This one will surprise a user, so please handle it in the UI.
+
+`resolvePermissions()` falls back to the `memberType` defaults whenever the resolved grant
+list is **empty**. That fallback exists so a tenant can never accidentally lock a role out
+of the product. But it has a counter-intuitive consequence:
+
+> If an admin unchecks **every** box for MANAGER and saves, MANAGER does **not** lose all
+> access — they silently get the **full default set** back.
+
+Verified in `rbac-customization-offline.test.js`. Partial revocation works exactly as you'd
+expect (uncheck 3 of 21 → those 3 close). It's only the *all-zero* case that inverts.
+
+➡️ **Suggested UI handling:** if the admin deselects the last permission for a role, warn
+that this resets the role to its defaults rather than denying everything — or block saving
+an empty set and offer "reset to defaults" as the explicit action instead.
+
+Tell us if you'd rather the backend treat empty as deny-all; that's a one-line change but a
+deliberate policy call, so we've kept the lock-out-proof behaviour for now.
+
 > **Stale-token behaviour is unchanged and intentional:** after
 > `PATCH /settings/roles-permissions`, existing sessions keep their old `permissions[]`
 > until refresh or re-login.
@@ -361,13 +382,17 @@ correct totals.
 | Exact CSV columns, order, formatting, filenames | `exports-contract.test.js` |
 | Payslip PDF incl. 7 edge cases (unpaid, no YTD, empty sections, zero-decimal currency) | `payslip-pdf.test.js` |
 
-**One test is written but not yet executed:** `rbac-customization-e2e.test.js` — the full
-round trip (revoke a key via `PATCH /settings/roles-permissions` → re-login → confirm the
-route closes → restore → confirm it re-opens, plus custom-role replace semantics and the
-lock-out guardrails). It needs a database and connectivity to the server dropped before it
-could run. The behaviour it asserts is exercised piecemeal by the tests above and was
-confirmed live via the role matrix, but treat that specific round-trip as verified-by-parts
-rather than verified-as-a-whole until we report otherwise.
+| The customization promise: revoke → resolves closed → restore → re-opens; grant a key a role never had; custom-role replace semantics; empty-set fallback | `rbac-customization-offline.test.js` (7 tests, no infrastructure) |
+
+**Total: 310 offline + 92 db.**
+
+`rbac-customization-offline.test.js` proves the §0 promise against the *real*
+`updateRolePermissions` → `resolvePermissions` → `hasPermission` chain with a stateful
+in-memory store, so it runs in CI with no database. A companion
+`rbac-customization-e2e.test.js` drives the same round trip over real HTTP against a
+database; it is written but has not yet been executed (connectivity to the server dropped),
+so the HTTP-layer round trip specifically remains verified-by-parts — via the live 4-role
+matrix and the full route sweep — rather than as one uninterrupted flow.
 
 ---
 
