@@ -11,6 +11,7 @@
     "test": "node scripts/runTests.mjs all",
     "test:offline": "node scripts/runTests.mjs offline",
     "test:db": "node scripts/runTests.mjs db",
+    "test:notifications": "node scripts/notificationsE2E.mjs",
     "postinstall": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:prod": "prisma migrate deploy",
