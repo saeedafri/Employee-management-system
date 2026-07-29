@@ -262,6 +262,12 @@ mark it read.
 ✔ diagnostics expose fan-out state — fanoutEnabled:true, published:7, receivedFromRedis:7
 ```
 
+`payslip_published` is covered separately by `tests/notifier-payslip-published.test.js`
+(5/5, no database needed): one notification per employee in the run, the exact payload the
+bell renders (`payslipId` + `runId` for deep-linking, period in the message, 12h TTL),
+employees with no linked user account skipped rather than throwing, an empty run writing
+nothing, and no id collisions across 25 recipients.
+
 **Live production smoke:** `/notifications/stream` → `HTTP/2 200`, `text/event-stream`,
 `: connected`. `/notifications` and `/notifications/unread-count` → `200`.
 
