@@ -53,8 +53,13 @@ check('GET /notifications/unread-count', count.statusCode === 200,
 // ── 2. SSE stream: subscribe, then trigger an event ─────────────────────────
 // app.inject() cannot hold a stream open, so assert the in-process emitter
 // directly — that is exactly what the route writes to.
-const { addClient, removeClient, getSseDiagnostics } = await import(
+const { addClient, removeClient, getSseDiagnostics, initSseFanout } = await import(
   '../src/utils/sseClients.js');
+
+// Cross-instance fan-out: enabled when REDIS_URL is set, silently local otherwise.
+const fanout = await initSseFanout();
+check('SSE fan-out init (no-ops without REDIS_URL)', typeof fanout?.enabled === 'boolean',
+  `enabled=${fanout?.enabled}`);
 
 const received = [];
 const recvEmp = [];
@@ -96,6 +101,23 @@ if (found) {
   const mark = await call('PATCH', `/api/v1/notifications/${found.id}/read`, sa.token);
   check('PATCH /notifications/:id/read', mark.statusCode === 200, `status ${mark.statusCode}`);
 }
+
+// ── 5. New events emit and reach their recipient ────────────────────────────
+const { notifyDocumentUploaded } = await import('../src/utils/notifier.js');
+recvEmp.length = 0;
+await notifyDocumentUploaded(
+  (await prisma.tenant.findUnique({ where: { tenantKey: TENANT_KEY }, select: { id: true } })).id,
+  emp.employeeId,
+  { id: 'doc-e2e-probe', title: 'Offer Letter' },
+);
+await new Promise((r) => setTimeout(r, 800));
+check('document_uploaded reaches the employee',
+  recvEmp.join('').includes('document_uploaded'),
+  recvEmp.length ? `${recvEmp.length} frame(s)` : 'NO FRAMES');
+
+const diag = getSseDiagnostics();
+check('diagnostics expose fan-out state',
+  'fanoutEnabled' in diag && 'published' in diag, JSON.stringify(diag));
 
 removeClient(sa.userId, fakeReply);
 removeClient(emp.userId, empReply);

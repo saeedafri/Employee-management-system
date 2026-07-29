@@ -238,6 +238,13 @@ export async function uploadDocument(request, reply) {
       { documentId: doc.id, fileName: doc.fileName, documentType },
     ).catch(() => {});
 
+    // Tell the employee a document landed on their profile. Best-effort: never
+    // fail an upload that already succeeded.
+    try {
+      const { notifyDocumentUploaded } = await import('../../utils/notifier.js');
+      await notifyDocumentUploaded(tenantId, employeeId, doc);
+    } catch { /* non-fatal */ }
+
     reply.code(201).send({ success: true, data: doc });
   } catch (err) {
     reply.code(500).send(errorResponse('UPLOAD_ERROR', err.message, request.requestId));

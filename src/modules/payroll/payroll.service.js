@@ -1923,6 +1923,14 @@ export async function publishRun(prisma, runId, tenantId) {
   await prisma.payrollEvent.create({
     data: { id: (await import('../../utils/id.js')).generateId(), tenantId, type: 'payslip.published', runId, summary: 'Payslips published to employees' },
   }).catch(() => null);
+
+  // Tell every employee in the run their payslip is ready. Best-effort: a
+  // notification failure must never roll back a successful publish.
+  try {
+    const { notifyPayslipsPublished } = await import('../../utils/notifier.js');
+    await notifyPayslipsPublished(tenantId, runId, run.period);
+  } catch { /* non-fatal */ }
+
   return updated;
 }
 

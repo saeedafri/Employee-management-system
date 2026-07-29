@@ -3,7 +3,7 @@
 > **Date:** 2026-07-30
 > **Backend status:** ✅ built, tested end to end, live on `https://ems-api.saqibsaeed.cloud`
 > **Frontend status:** ❌ **not consuming it** — two blockers below, both FE-side
-> **Verified:** 9/9 end-to-end checks against a real database + live production smoke
+> **Verified:** 12/12 end-to-end checks against a real database (incl. Redis fan-out) + live production smoke
 
 ---
 
@@ -40,19 +40,27 @@ src/utils/notifier.js  ──▶ prisma.notification.create()   (persisted, 12h 
                          GET /notifications/stream   (text/event-stream)
 ```
 
-### ⚠️ Important: Redis is **not** in this path
+### ✅ Redis fan-out — fixed, scale-safe
 
-There is a healthy `ems-redis` container, but **notifications do not use it**.
-`sseClients.js` is a plain in-process `Map` (`userId → Set<reply>`).
+Originally `sseClients.js` was a plain in-process `Map`, so live push would have **broken
+silently** the moment the backend ran more than one replica (REST would keep working, only
+the push would vanish — the failure mode hardest to notice).
 
-**Consequence:** this is correct for the current single-container deployment, but it will
-**silently break the moment the backend is scaled to 2+ replicas** — a notification created
-on instance A will never reach a client connected to instance B. The REST endpoints keep
-working (they read the DB); only the live push is lost, which is the failure mode hardest
-to notice.
+Every emit now publishes to the Redis channel `ems:sse`; each instance subscribes and
+delivers to the sockets it holds. Publishing is the *only* path when fan-out is on, so no
+client is double-sent.
 
-If horizontal scaling is on the roadmap, this needs a Redis pub/sub fan-out first. Flagging
-now rather than after it breaks. Nothing for FE to do about it.
+- **`REDIS_URL` set** -> cross-instance delivery. Verified against the live Redis:
+  `fanoutEnabled: true, published: 7, receivedFromRedis: 7`, with `emits: 4` matching the
+  four genuine recipient deliveries — round-tripped, no duplicates.
+- **`REDIS_URL` unset** -> silently direct in-process delivery, exactly as before.
+- **Publish fails** -> falls back to local delivery rather than dropping the event.
+- Fan-out failure at boot never blocks startup.
+
+Diagnostics expose `fanoutEnabled`, `published`, `receivedFromRedis` alongside the
+connection counters.
+
+**Nothing for FE to do — this is resolved.**
 
 ---
 
@@ -73,6 +81,13 @@ us during testing, so build the UI against this table rather than assuming.
 | `regularization_approved` | ✅ | — | — | — |
 | `regularization_denied` | ✅ | — | — | — |
 | timesheet submit reminder | ✅ | — | — | — |
+| `payslip_published` NEW | ✅ | — | — | — |
+| `document_uploaded` NEW | ✅ | — | — | — |
+
+**NEW** = added in this pass. `payslip_published` fires for every employee in a payroll run
+the moment HR publishes it — the one event employees actively wait for.
+`document_uploaded` fires when a document lands on someone's profile. Both are best-effort:
+a notification failure can never roll back the publish or the upload.
 
 > Note the two bold cells: **HR_ADMIN does not receive attendance check-in/out
 > notifications.** They receive a separate `analytics_update` event instead (§3.2). This is
@@ -243,13 +258,17 @@ mark it read.
 ✔ real-time SSE push received by the employee
 ✔ notification persisted and listable — attendance_checkin: Check-In Recorded
 ✔ PATCH /notifications/:id/read — status 200
+✔ document_uploaded reaches the employee
+✔ diagnostics expose fan-out state — fanoutEnabled:true, published:7, receivedFromRedis:7
 ```
 
 **Live production smoke:** `/notifications/stream` → `HTTP/2 200`, `text/event-stream`,
 `: connected`. `/notifications` and `/notifications/unread-count` → `200`.
 
-**Not covered:** no browser-level test (blocked by §5), and no multi-replica test — see the
-Redis caveat in §1.
+Re-run any time with the committed script (set `REDIS_URL` to exercise fan-out).
+
+**Not covered:** no browser-level test — blocked by §5, which is FE-side. Fan-out is proven
+through Redis round-trip counters rather than two literally separate processes.
 
 ---
 
@@ -262,8 +281,13 @@ Redis caveat in §1.
 | 3 | **FE** | Treat `analytics_update` as a cache-invalidation hint, not a toast (§3.2) |
 | 4 | **FE** | Build the bell against the recipient matrix in §2 — especially: HR does **not** get check-in/out |
 | 5 | **FE** | Remember the 12-hour TTL — this is a transient bell, not a feed (§4) |
-| 6 | **BE** | Redis pub/sub fan-out **before** scaling past one replica (§1) |
+| ~~6~~ | ~~BE~~ | ~~Redis pub/sub fan-out~~ — DONE, verified against live Redis (§1) |
 
-Questions: is horizontal scaling planned soon (decides the urgency of #6), and do you want
-notifications for any event we don't emit yet — payroll run published, document uploaded,
-resignation submitted are the obvious candidates and none exist today.
+**Everything fixable from the backend is done.** The remaining items (1-5) are all FE-side.
+
+Two notes on what we did *not* add:
+- **Resignations** emit nothing because `src/modules/resignations/` is empty — the Prisma
+  model exists but there are no routes, so there is no event to hook. Tell us if that
+  module is coming and we'll wire the notification with it.
+- Tell us any other event you want surfaced; it is a small change now that the pipeline and
+  the fan-out are both proven.

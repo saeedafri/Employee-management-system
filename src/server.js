@@ -3,6 +3,7 @@ import { config } from './config/index.js';
 import { createApp } from './app.js';
 import { startPayrollWorker } from './lib/payrollQueue.js';
 import { syncPermissionCatalogue } from './modules/auth/permissionSync.js';
+import { initSseFanout } from './utils/sseClients.js';
 import { installProcessErrorHandlers, recordProcessError } from './utils/processMonitor.js';
 import { prisma } from './plugins/prisma.js';
 
@@ -35,6 +36,9 @@ async function start() {
     // Top up every tenant's permission catalogue before serving traffic, so a
     // deploy that adds permission keys never 403s roles that should hold them.
     await syncPermissionCatalogue(app.log);
+    // Cross-instance SSE delivery. No-ops without REDIS_URL, so single-container
+    // deployments are unaffected.
+    await initSseFanout();
     // Start the in-process BullMQ worker for payroll CALCULATING (no-op without Redis).
     startPayrollWorker();
     await app.listen({ port: config.port, host: '0.0.0.0' });

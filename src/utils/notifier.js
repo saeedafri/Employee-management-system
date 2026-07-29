@@ -226,3 +226,55 @@ export async function createTimesheetReminderNotifications(tenantId, rows) {
   }
   return count;
 }
+
+/**
+ * Payroll run published — tell every employee in the run their payslip is ready.
+ * The single highest-value notification in the product: it is the one event an
+ * employee actively waits for.
+ */
+export async function notifyPayslipsPublished(tenantId, runId, periodLabel) {
+  const payslips = await prisma.payslip.findMany({
+    where: { tenantId, payrollRunId: runId },
+    select: { id: true, employee: { select: { userId: true } } },
+  });
+
+  const expiresAt = new Date(Date.now() + TTL_MS);
+  const rows = payslips
+    .filter((p) => p.employee?.userId)
+    .map((p) => ({
+      id: generateId(),
+      tenantId,
+      userId: p.employee.userId,
+      type: 'payslip_published',
+      title: 'Payslip Available',
+      message: `Your payslip for ${periodLabel} is ready to view`,
+      metadataJson: { payslipId: p.id, runId },
+      expiresAt,
+    }));
+
+  if (rows.length === 0) return { notified: 0 };
+
+  await prisma.notification.createMany({ data: rows, skipDuplicates: true });
+  for (const row of rows) {
+    emitToUser(row.userId, 'notification', {
+      id: row.id,
+      type: row.type,
+      title: row.title,
+      message: row.message,
+      createdAt: new Date(),
+      metadata: row.metadataJson,
+    });
+  }
+  return { notified: rows.length };
+}
+
+/** A document was uploaded against an employee's profile — tell that employee. */
+export async function notifyDocumentUploaded(tenantId, employeeId, document) {
+  const ctx = await getEmployeeContext(employeeId, tenantId);
+  await saveAndEmit(tenantId, [ctx.employeeUserId], {
+    type: 'document_uploaded',
+    title: 'Document Added',
+    message: `${document.title || document.fileName || 'A document'} was added to your profile`,
+    metadata: { documentId: document.id, employeeId },
+  });
+}
