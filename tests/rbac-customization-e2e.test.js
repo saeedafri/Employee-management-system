@@ -65,8 +65,9 @@ async function editMatrix(superToken, roleKey, mutate) {
   const matrix = before.json().data.matrix;
   const next = mutate([...(matrix[roleKey] ?? [])]);
 
+  // NB: the API field is `role`, not `roleKey`.
   const patch = await call('PATCH', '/api/v1/settings/roles-permissions', superToken, {
-    roleKey, permissions: next,
+    role: roleKey, permissions: next,
   });
   assert.equal(patch.statusCode, 200, `PATCH failed: ${patch.body}`);
   return matrix[roleKey] ?? [];
@@ -137,10 +138,19 @@ describe('a tenant admin can close a route from Settings alone', () => {
 describe('§4 guardrails hold against a hostile edit', () => {
   it('SUPER_ADMIN cannot be locked out of permissions:manage', async () => {
     const superUser = await login('superadmin@acme.test');
-    const res = await call('PATCH', '/api/v1/settings/roles-permissions', superUser.token, {
-      roleKey: 'SUPER_ADMIN', permissions: [],
+    // The body validator requires permissions.min(1), so an empty array 422s
+    // before the guard is reached. Send a non-empty but crippling set instead,
+    // which is the realistic attack: demote SUPER_ADMIN to a single harmless key.
+    const empty = await call('PATCH', '/api/v1/settings/roles-permissions', superUser.token, {
+      role: 'SUPER_ADMIN', permissions: [],
     });
-    assert.equal(res.statusCode >= 400, true, 'stripping SUPER_ADMIN must be rejected');
+    assert.equal(empty.statusCode, 422, 'an empty permission set must be rejected outright');
+    assert.equal(empty.json().error.code, 'VALIDATION_ERROR');
+
+    const res = await call('PATCH', '/api/v1/settings/roles-permissions', superUser.token, {
+      role: 'SUPER_ADMIN', permissions: ['holidays:read'],
+    });
+    assert.equal(res.statusCode, 403, 'SUPER_ADMIN must not be editable at all');
     assert.equal(res.json().error.code, 'CANNOT_LOCK_OUT_SUPER_ADMIN');
 
     // And it is genuinely still able to reach the screen.
@@ -151,7 +161,7 @@ describe('§4 guardrails hold against a hostile edit', () => {
   it('a non-admin cannot edit the matrix', async () => {
     const employee = await login('priya@acme.test');
     const res = await call('PATCH', '/api/v1/settings/roles-permissions', employee.token, {
-      roleKey: 'EMPLOYEE', permissions: ['payroll:admin'],
+      role: 'EMPLOYEE', permissions: ['payroll:admin'],
     });
     assert.equal(res.statusCode, 403);
     assert.equal(res.json().error.details.requiredPermission, 'permissions:manage');
@@ -194,9 +204,12 @@ describe('custom roles replace memberType defaults', () => {
         'custom role should replace the memberType defaults entirely');
 
       assert.equal((await call('GET', '/api/v1/employees', priya.token)).statusCode, 200);
-      // attendance:read is an EMPLOYEE default, deliberately absent now.
-      const denied = await call('GET', '/api/v1/attendance/records', priya.token);
-      assert.equal(denied.statusCode, 403, 'memberType default leaked through a custom role');
+      // A permission-gated route the EMPLOYEE default set also lacks, to prove the
+      // custom role did not silently widen access. (Personal routes such as
+      // /attendance/records are authenticate-only by design and stay reachable.)
+      const denied = await call('GET', '/api/v1/assets/summary', priya.token);
+      assert.equal(denied.statusCode, 403, 'custom role must not grant assets:manage');
+      assert.equal(denied.json().error.details.requiredPermission, 'assets:manage');
     } finally {
       await prisma.userRole.deleteMany({ where: { userId: user.id } });
       await call('DELETE', `/api/v1/settings/roles/${ROLE_KEY}`, superUser.token);

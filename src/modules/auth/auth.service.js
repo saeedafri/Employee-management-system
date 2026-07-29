@@ -124,7 +124,7 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
   const session = await authRepository.createSession(db, sessionData);
 
   // Create access token
-  const permissions = resolvePermissions(user);
+  const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId,
@@ -223,7 +223,7 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
 
   const session = await authRepository.createSession(db, sessionData);
 
-  const permissions = resolvePermissions(user);
+  const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId,
@@ -303,7 +303,7 @@ export async function completeMfaLogin(db, tenantId, userId, ipAddress, userAgen
   const session = await authRepository.createSession(db, sessionData);
 
   // Create access token
-  const permissions = resolvePermissions(user);
+  const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId,
@@ -455,7 +455,7 @@ export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToke
   await authRepository.revokeSession(db, sessionId, 'TOKEN_ROTATED');
 
   // Step 11: Generate new access token (explicit RolePermission grants, else role defaults)
-  const permissions = resolvePermissions(user);
+  const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
     tenantId: session.tenantId,
@@ -519,6 +519,37 @@ export async function logoutAll(db, userId, _currentSessionId) {
 
 // Explicit RolePermission grants win; fall back to the role default when none exist.
 // Defaults live in auth.policy.js (single source of truth with requirePermission).
+/**
+ * Effective permissions for a user, honouring tenant customization.
+ *
+ * `resolvePermissions()` alone falls back to the hardcoded default matrix when a
+ * user has no UserRole link -- which made those users immune to
+ * `PATCH /settings/roles-permissions`, breaking the core promise of
+ * BACKEND_CONTRACT_configurable_rbac.md §0. Seeded and API-created users often
+ * have no UserRole row, so this was not an edge case.
+ *
+ * Order: explicit UserRole grants -> the tenant's own Role row matching the
+ * user's memberType -> the hardcoded defaults (only if the tenant has no such
+ * role, e.g. before the catalogue is seeded).
+ */
+export async function resolveEffectivePermissions(db, tenantId, user) {
+  const explicit = extractPermissions(user);
+  if (explicit.length > 0) return explicit;
+
+  try {
+    const role = await db.role.findFirst({
+      where: { tenantId, key: user.memberType },
+      select: { permissions: { select: { permission: { select: { key: true } } } } },
+    });
+    const fromTenantRole = (role?.permissions ?? []).map((rp) => rp.permission.key);
+    if (fromTenantRole.length > 0) return fromTenantRole;
+  } catch {
+    // Never block a login on this lookup; fall through to the defaults.
+  }
+
+  return [...(DEFAULT_PERMISSIONS_BY_ROLE[user.memberType] ?? [])];
+}
+
 export function resolvePermissions(user) {
   const explicit = extractPermissions(user);
   if (explicit.length > 0) return explicit;
@@ -646,7 +677,7 @@ export async function getCurrentUser(db, userId) {
     throw new AppError('User not found', 'USER_NOT_FOUND', 404);
   }
 
-  const permissions = resolvePermissions(user);
+  const permissions = await resolveEffectivePermissions(db, user.tenantId, user);
 
   // MFA_BACKEND_REQ: surface the per-user opt-in flag + the policy-only verdict so the
   // FE self-service toggle can render its initial (mfaEnabled) and forced (policy) state.

@@ -87,30 +87,27 @@ Every login/refresh mints `permissions[]`.
 > hardcode counts or assume a role's key set — always read `permissions[]` from the token
 > (or the `matrix` in §6). This is the feature working, not a bug.
 
-Resolution order:
-1. If the user has **custom-role grants**, those are their permissions **entirely** (replace).
-2. Otherwise the `memberType` default matrix applies.
+Resolution order (`resolveEffectivePermissions`):
+1. **Custom-role grants**, if the user is assigned any — those are their permissions
+   **entirely** (replace, never merge).
+2. Otherwise the **tenant's own Role row** matching their `memberType` — i.e. exactly what
+   Settings → Roles & Permissions shows.
+3. Only if that tenant role has no rows at all: the hardcoded default matrix.
 
-### ⚠️ Gotcha: an empty permission set means "use defaults", not "deny everything"
+Step 2 matters: a user with no `UserRole` link used to jump straight to the hardcoded
+defaults, which made them **immune to Settings edits**. Seeded and API-created users often
+have no `UserRole` row, so this was not an edge case — it silently broke the customization
+promise for them. Fixed and covered by `rbac-customization-e2e.test.js`.
 
-This one will surprise a user, so please handle it in the UI.
+### You cannot save an empty permission set
 
-`resolvePermissions()` falls back to the `memberType` defaults whenever the resolved grant
-list is **empty**. That fallback exists so a tenant can never accidentally lock a role out
-of the product. But it has a counter-intuitive consequence:
+The API rejects `permissions: []` with **`422 VALIDATION_ERROR`** (the validator is
+`min(1)`). So "uncheck everything and save" is not a reachable state — please disable Save
+when zero permissions are selected, so the user gets a clear message instead of a 422.
 
-> If an admin unchecks **every** box for MANAGER and saves, MANAGER does **not** lose all
-> access — they silently get the **full default set** back.
-
-Verified in `rbac-customization-offline.test.js`. Partial revocation works exactly as you'd
-expect (uncheck 3 of 21 → those 3 close). It's only the *all-zero* case that inverts.
-
-➡️ **Suggested UI handling:** if the admin deselects the last permission for a role, warn
-that this resets the role to its defaults rather than denying everything — or block saving
-an empty set and offer "reset to defaults" as the explicit action instead.
-
-Tell us if you'd rather the backend treat empty as deny-all; that's a one-line change but a
-deliberate policy call, so we've kept the lock-out-proof behaviour for now.
+(For completeness: the resolution layer *also* falls back to the role defaults if a grant
+set is somehow empty, so a role can never be locked out of the product entirely. Both
+guards verified in `rbac-customization-e2e.test.js`.)
 
 > **Stale-token behaviour is unchanged and intentional:** after
 > `PATCH /settings/roles-permissions`, existing sessions keep their old `permissions[]`
@@ -319,8 +316,23 @@ They still work; please migrate.
 }
 ```
 
-`PATCH /settings/roles-permissions` is unchanged. `permissions:manage` is required, and
-`roleKey: "SUPER_ADMIN"` still rejects with `CANNOT_LOCK_OUT_SUPER_ADMIN`.
+### `PATCH /settings/roles-permissions`
+
+```json
+{ "role": "HR_ADMIN", "permissions": ["employees:read", "employees:write"] }
+```
+
+> ⚠️ **The field is `role`, not `roleKey`.** Sending `roleKey` returns
+> `422 VALIDATION_ERROR` with `details[0].message: "must have required property 'role'"`.
+
+| Rule | Behaviour |
+|---|---|
+| `permissions:manage` required | else `403` with `requiredPermission` |
+| `permissions` must be **non-empty** | empty array → `422 VALIDATION_ERROR` (validator is `min(1)`) |
+| `role: "SUPER_ADMIN"` | always `403 CANNOT_LOCK_OUT_SUPER_ADMIN`, whatever the payload |
+| Everything else | `200`, replaces that role's grant set wholesale |
+
+Send the **complete** desired set — it replaces, it does not merge.
 
 ---
 
@@ -386,13 +398,22 @@ correct totals.
 
 **Total: 310 offline + 92 db.**
 
-`rbac-customization-offline.test.js` proves the §0 promise against the *real*
-`updateRolePermissions` → `resolvePermissions` → `hasPermission` chain with a stateful
-in-memory store, so it runs in CI with no database. A companion
-`rbac-customization-e2e.test.js` drives the same round trip over real HTTP against a
-database; it is written but has not yet been executed (connectivity to the server dropped),
-so the HTTP-layer round trip specifically remains verified-by-parts — via the live 4-role
-matrix and the full route sweep — rather than as one uninterrupted flow.
+**✅ The §0 promise is verified end to end.** `rbac-customization-e2e.test.js` (6/6, against
+a real database over real HTTP) proves the full round trip:
+
+1. HR_ADMIN reaches `/assets/summary` → **200**
+2. `PATCH /settings/roles-permissions` revokes `assets:manage`
+3. Fresh login no longer mints the key; the route now **403s** with
+   `requiredPermission: "assets:manage"`
+4. The *already-issued* token still works — documented stale-session behaviour
+5. Restore → the route **re-opens**
+
+Plus: granting a key a role never had opens the route; a non-admin editing the matrix is
+403'd; `SUPER_ADMIN` cannot be edited at all; and a user on a custom role gets exactly that
+role's grants and nothing inherited.
+
+`rbac-customization-offline.test.js` (7/7) asserts the same chain with a stateful in-memory
+store, so the guarantee stays covered in CI with no infrastructure.
 
 ---
 
