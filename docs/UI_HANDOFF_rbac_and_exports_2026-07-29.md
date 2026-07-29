@@ -68,15 +68,24 @@ bypass in Gap C, then contradicts it in Findings D/F.)
 
 ### 3.1 The JWT carries a real permission list
 
-Every login/refresh mints `permissions[]`. Live counts on the `acme-corp-001` tenant:
+Every login/refresh mints `permissions[]`.
 
-| Role | Keys |
-|---|---|
-| SUPER_ADMIN | 55 (all) |
-| HR_ADMIN | 52 |
-| MANAGER | 22 |
-| EMPLOYEE | 13 |
-| AUDITOR | 12 |
+**Default matrix** (what a tenant gets before any customization):
+
+| Role | Keys | Excluded |
+|---|---|---|
+| SUPER_ADMIN | **55** (all) | — |
+| HR_ADMIN | **52** | `payroll:super`, `permissions:manage`, `settings:security` |
+| MANAGER | **21** | — |
+| EMPLOYEE | **12** | — |
+| AUDITOR | **12** | read-only: no `:write`/`:approve`/`:manage`/`:admin` key |
+
+> ⚠️ **A live tenant's counts may be lower than the defaults, and that's correct.**
+> On `acme-corp-001` today HR_ADMIN mints 51, MANAGER 16, EMPLOYEE 11 — because that
+> tenant has saved customizations. The boot-time sync only *adds* keys that are new since
+> the last sync; it never reinstates a grant an admin deliberately revoked. So do not
+> hardcode counts or assume a role's key set — always read `permissions[]` from the token
+> (or the `matrix` in §6). This is the feature working, not a bug.
 
 Resolution order:
 1. If the user has **custom-role grants**, those are their permissions **entirely** (replace).
@@ -342,7 +351,23 @@ Every 403 carried `requiredPermission`, i.e. the permission layer decided it.
 Payslip PDF verified live on real payroll data: both endpoints `200`, correct filename,
 correct totals.
 
-**Test suite: 395 green** (303 without a database, 92 against Postgres).
+**Test suite: 395 green** (303 without a database, 92 against Postgres), plus:
+
+| What is covered | How |
+|---|---|
+| Catalogue shape, §4 guardrails, locked decisions, no legacy key lost | `rbac-catalogue-contract.test.js` |
+| Per-role 401/403/allow over real HTTP | `rbac-enforcement-e2e.test.js` |
+| Every route's declared key × every role; nothing left ungated | `rbac-full-sweep.test.js` |
+| Exact CSV columns, order, formatting, filenames | `exports-contract.test.js` |
+| Payslip PDF incl. 7 edge cases (unpaid, no YTD, empty sections, zero-decimal currency) | `payslip-pdf.test.js` |
+
+**One test is written but not yet executed:** `rbac-customization-e2e.test.js` — the full
+round trip (revoke a key via `PATCH /settings/roles-permissions` → re-login → confirm the
+route closes → restore → confirm it re-opens, plus custom-role replace semantics and the
+lock-out guardrails). It needs a database and connectivity to the server dropped before it
+could run. The behaviour it asserts is exercised piecemeal by the tests above and was
+confirmed live via the role matrix, but treat that specific round-trip as verified-by-parts
+rather than verified-as-a-whole until we report otherwise.
 
 ---
 
@@ -354,7 +379,46 @@ sync tops up every tenant's permission rows on deploy, so no tenant is left on a
 
 ---
 
-## 10. Questions for you
+## 10. Appendix — exact default key set per role
+
+Use this to reason about nav/affordance gating. Read the live values from the token at
+runtime; this is the un-customized baseline.
+
+**MANAGER (21)**
+```
+analytics:read  announcements:read  announcements:write
+attendance:read  attendance:write  attendance:team-read  attendance:approve
+departments:read  employees:read  holidays:read
+leave:read  leave:request  leave:team-read  leave:approve
+payout:self  payroll:self-read
+performance:read  recruitment:read
+timesheets:read  timesheets:write  timesheets:approve
+```
+
+**EMPLOYEE (12)**
+```
+announcements:read
+attendance:read  attendance:write
+departments:read  employees:read  holidays:read
+leave:read  leave:request
+payout:self  payroll:self-read
+timesheets:read  timesheets:write
+```
+
+**AUDITOR (12)** — read-only by construction
+```
+analytics:read  announcements:read  attendance:read
+audit:read  audit:export
+departments:read  employees:read  holidays:read
+leave:read  payout:self  payroll:self-read  timesheets:read
+```
+
+**HR_ADMIN (52)** = all 55 minus `payroll:super`, `permissions:manage`, `settings:security`.
+**SUPER_ADMIN (55)** = everything, plus an unconditional bypass that a tenant cannot revoke.
+
+---
+
+## 11. Questions for you
 
 1. **Payslip currency symbol** — is `INR 50,000.00` acceptable, or should we embed a font for `₹`?
 2. **AUDITOR analytics** — now that it's enforced, do you want to widen the `/analytics` RoleGate?
