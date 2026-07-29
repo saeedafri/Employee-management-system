@@ -9,16 +9,14 @@
  * Requires: NODE_ENV=test DATABASE_URL pointing to a test DB.
  */
 
-import { describe, it, before, after } from 'mocha';
-import { expect } from 'chai';
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert/strict';
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/plugins/prisma.js';
+import { assertTestDatabase } from './assertTestDatabase.js';
 
 // Guard: never run against production DB
-const dbUrl = process.env.DATABASE_URL || '';
-if (!dbUrl.includes('localhost') && !dbUrl.includes('127.0.0.1') && !dbUrl.includes('ems_test')) {
-  throw new Error('Refusing to run department rollup tests against non-test DB. Set DATABASE_URL to a local test database.');
-}
+assertTestDatabase('department rollup tests');
 
 const TENANT_ID = 'test-rollup-tenant-' + Date.now();
 let app;
@@ -50,7 +48,10 @@ before(async () => {
       id: TENANT_ID,
       name: 'Rollup Test Org',
       tenantKey: TENANT_ID,
-      domain: null,
+      legalName: 'Rollup Test Org',
+      displayName: 'Rollup Test Org',
+      country: 'IN',
+      primaryContactEmail: 'owner@test.local'
     },
   });
 
@@ -159,12 +160,12 @@ describe('Department roll-up counts', () => {
       url: '/api/v1/departments',
       headers: { authorization: `Bearer ${adminToken}`, 'x-tenant-key': TENANT_ID },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const tree = JSON.parse(res.body).data;
     const eng = tree.find(d => d.id === engDeptId);
-    expect(eng, 'Engineering dept in tree').to.exist;
-    expect(eng._count.employees, 'Engineering rollup count').to.equal(5);
-    expect(eng.directEmployeeCount, 'Engineering direct count').to.equal(4);
+    assert.ok(eng, 'Engineering dept in tree');
+    assert.equal(eng._count.employees, 5, 'Engineering rollup count');
+    assert.equal(eng.directEmployeeCount, 4, 'Engineering direct count');
   });
 
   it('GET /departments — Backend Engineering count = 1 (direct only)', async () => {
@@ -176,8 +177,8 @@ describe('Department roll-up counts', () => {
     const tree = JSON.parse(res.body).data;
     const eng = tree.find(d => d.id === engDeptId);
     const be = eng?.children?.find(c => c.id === backendDeptId);
-    expect(be, 'Backend Engineering in children').to.exist;
-    expect(be._count.employees, 'Backend Engineering count').to.equal(1);
+    assert.ok(be, 'Backend Engineering in children');
+    assert.equal(be._count.employees, 1, 'Backend Engineering count');
   });
 
   it('GET /departments — soft-deleted employee is NOT counted in any dept', async () => {
@@ -189,8 +190,8 @@ describe('Department roll-up counts', () => {
     const tree = JSON.parse(res.body).data;
     const eng = tree.find(d => d.id === engDeptId);
     // If soft-deleted employee were counted, direct would be 5 and rollup 6
-    expect(eng.directEmployeeCount).to.equal(4);
-    expect(eng._count.employees).to.equal(5);
+    assert.equal(eng.directEmployeeCount, 4);
+    assert.equal(eng._count.employees, 5);
   });
 
   it('GET /departments/:id — Engineering totalHeadcount = 5', async () => {
@@ -199,9 +200,9 @@ describe('Department roll-up counts', () => {
       url: `/api/v1/departments/${engDeptId}`,
       headers: { authorization: `Bearer ${adminToken}`, 'x-tenant-key': TENANT_ID },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.totalHeadcount, 'Engineering totalHeadcount').to.equal(5);
+    assert.equal(data.totalHeadcount, 5, 'Engineering totalHeadcount');
   });
 
   it('GET /departments/:id/employees — Engineering returns 5 employees (all subtree, no deleted)', async () => {
@@ -210,12 +211,12 @@ describe('Department roll-up counts', () => {
       url: `/api/v1/departments/${engDeptId}/employees`,
       headers: { authorization: `Bearer ${adminToken}`, 'x-tenant-key': TENANT_ID },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.pagination.total, 'Engineering/employees total').to.equal(5);
+    assert.equal(data.pagination.total, 5, 'Engineering/employees total');
     const ids = data.data.map(e => e.id);
-    expect(ids).to.include(backendEmployeeId, 'Backend employee should appear in Engineering employee list');
-    expect(ids).to.not.include(deletedEmployeeId, 'Soft-deleted employee must not appear');
+    assert.ok(ids.includes(backendEmployeeId), 'Backend employee should appear in Engineering employee list');
+    assert.equal(ids.includes(deletedEmployeeId), false, 'Soft-deleted employee must not appear');
   });
 
   it('GET /departments/:id/employees — Backend Engineering returns 1 employee only', async () => {
@@ -224,10 +225,10 @@ describe('Department roll-up counts', () => {
       url: `/api/v1/departments/${backendDeptId}/employees`,
       headers: { authorization: `Bearer ${adminToken}`, 'x-tenant-key': TENANT_ID },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.pagination.total, 'Backend/employees total').to.equal(1);
-    expect(data.data[0].id).to.equal(backendEmployeeId);
+    assert.equal(data.pagination.total, 1, 'Backend/employees total');
+    assert.equal(data.data[0].id, backendEmployeeId);
   });
 
   it('GET /employees?departmentId=Engineering — returns 5, not 6 (excludes deleted)', async () => {
@@ -236,11 +237,11 @@ describe('Department roll-up counts', () => {
       url: `/api/v1/employees?departmentId=${engDeptId}`,
       headers: { authorization: `Bearer ${adminToken}`, 'x-tenant-key': TENANT_ID },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.pagination.total, 'employees list with departmentId filter').to.equal(5);
+    assert.equal(data.pagination.total, 5, 'employees list with departmentId filter');
     const ids = data.data.map(e => e.id);
-    expect(ids).to.not.include(deletedEmployeeId, 'Soft-deleted must not appear in employee list');
+    assert.equal(ids.includes(deletedEmployeeId), false, 'Soft-deleted must not appear in employee list');
   });
 
   it('GET /employees?departmentId=BackendEngineering — returns 1', async () => {
@@ -249,9 +250,9 @@ describe('Department roll-up counts', () => {
       url: `/api/v1/employees?departmentId=${backendDeptId}`,
       headers: { authorization: `Bearer ${adminToken}`, 'x-tenant-key': TENANT_ID },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.pagination.total, 'backend employees list').to.equal(1);
+    assert.equal(data.pagination.total, 1, 'backend employees list');
   });
 
   it('GET /employees list — soft-deleted employee never appears without ?includeTerminated', async () => {
@@ -262,6 +263,6 @@ describe('Department roll-up counts', () => {
     });
     const data = JSON.parse(res.body).data;
     const ids = data.data.map(e => e.id);
-    expect(ids).to.not.include(deletedEmployeeId);
+    assert.equal(ids.includes(deletedEmployeeId), false);
   });
 });

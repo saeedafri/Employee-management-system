@@ -4,15 +4,13 @@
  * Requires: NODE_ENV=test DATABASE_URL pointing to a test DB.
  */
 
-import { describe, it, before, after } from 'mocha';
-import { expect } from 'chai';
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert/strict';
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/plugins/prisma.js';
+import { assertTestDatabase } from './assertTestDatabase.js';
 
-const dbUrl = process.env.DATABASE_URL || '';
-if (!dbUrl.includes('localhost') && !dbUrl.includes('127.0.0.1') && !dbUrl.includes('ems_test')) {
-  throw new Error('Refusing to run department members tests against non-test DB. Set DATABASE_URL to a local test database.');
-}
+assertTestDatabase('department members tests');
 
 const TENANT_ID = 'test-members-tenant-' + Date.now();
 let app;
@@ -44,7 +42,13 @@ before(async () => {
   app = await createApp();
 
   await prisma.tenant.create({
-    data: { id: TENANT_ID, name: 'Members Test Org', tenantKey: TENANT_ID, domain: null },
+    data: {
+      id: TENANT_ID, name: 'Members Test Org', legalName: 'Members Test Org',
+      displayName: 'Members Test Org',
+      country: 'IN',
+      primaryContactEmail: 'owner@test.local',
+      tenantKey: TENANT_ID,
+    },
   });
 
   const { hashPassword } = await import('../src/utils/hash.js');
@@ -127,11 +131,11 @@ describe('POST /departments/:id/members', () => {
       headers: headers(adminToken),
       payload: { employeeIds: sourceEmployeeIds },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.added).to.equal(2);
-    expect(data.skipped).to.equal(0);
-    expect(data._count.employees).to.equal(3); // 2 new + 1 existing Finance employee
+    assert.equal(data.added, 2);
+    assert.equal(data.skipped, 0);
+    assert.equal(data._count.employees, 3); // 2 new + 1 existing Finance employee
   });
 
   it('Repeat same call is idempotent → added: 0, skipped: 2', async () => {
@@ -141,10 +145,10 @@ describe('POST /departments/:id/members', () => {
       headers: headers(adminToken),
       payload: { employeeIds: sourceEmployeeIds },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.added).to.equal(0);
-    expect(data.skipped).to.equal(2);
+    assert.equal(data.added, 0);
+    assert.equal(data.skipped, 2);
   });
 
   it('Already-in-dept employee in list → skipped count includes them', async () => {
@@ -154,10 +158,10 @@ describe('POST /departments/:id/members', () => {
       headers: headers(adminToken),
       payload: { employeeIds: [targetEmployeeId] },
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.added).to.equal(0);
-    expect(data.skipped).to.equal(1);
+    assert.equal(data.added, 0);
+    assert.equal(data.skipped, 1);
   });
 
   it('GET /departments/:id/employees reflects added members', async () => {
@@ -166,13 +170,13 @@ describe('POST /departments/:id/members', () => {
       url: `/api/v1/departments/${targetDeptId}/employees`,
       headers: headers(adminToken),
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.pagination.total).to.equal(3);
+    assert.equal(data.pagination.total, 3);
     const ids = data.data.map(e => e.id);
-    expect(ids).to.include(sourceEmployeeIds[0]);
-    expect(ids).to.include(sourceEmployeeIds[1]);
-    expect(ids).to.include(targetEmployeeId);
+    assert.ok(ids.includes(sourceEmployeeIds[0]));
+    assert.ok(ids.includes(sourceEmployeeIds[1]));
+    assert.ok(ids.includes(targetEmployeeId));
   });
 
   it('GET /employees?departmentId reflects added members', async () => {
@@ -181,9 +185,9 @@ describe('POST /departments/:id/members', () => {
       url: `/api/v1/employees?departmentId=${targetDeptId}`,
       headers: headers(adminToken),
     });
-    expect(res.statusCode).to.equal(200);
+    assert.equal(res.statusCode, 200);
     const data = JSON.parse(res.body).data;
-    expect(data.pagination.total).to.equal(3);
+    assert.equal(data.pagination.total, 3);
   });
 
   it('Add to child department increases parent roll-up count', async () => {
@@ -202,11 +206,11 @@ describe('POST /departments/:id/members', () => {
       headers: headers(adminToken),
       payload: { employeeIds: [hrEmpForChild] },
     });
-    expect(addRes.statusCode).to.equal(200);
-    expect(JSON.parse(addRes.body).data.added).to.equal(1);
+    assert.equal(addRes.statusCode, 200);
+    assert.equal(JSON.parse(addRes.body).data.added, 1);
 
     const parentAfter = await app.inject({ method: 'GET', url: `/api/v1/departments/${targetDeptId}`, headers: headers(adminToken) });
-    expect(JSON.parse(parentAfter.body).data.totalHeadcount).to.equal(parentBefore + 1);
+    assert.equal(JSON.parse(parentAfter.body).data.totalHeadcount, parentBefore + 1);
 
     // Restore: move back to HR
     await prisma.employee.update({ where: { id: hrEmpForChild }, data: { departmentId: targetDeptId } });
@@ -219,8 +223,8 @@ describe('POST /departments/:id/members', () => {
       headers: headers(adminToken),
       payload: { employeeIds: [] },
     });
-    expect(res.statusCode).to.equal(422);
-    expect(JSON.parse(res.body).error.code).to.equal('VALIDATION_ERROR');
+    assert.equal(res.statusCode, 422);
+    assert.equal(JSON.parse(res.body).error.code, 'VALIDATION_ERROR');
   });
 
   it('Non-existent employee → 404 EMPLOYEE_NOT_FOUND, no partial update', async () => {
@@ -233,14 +237,14 @@ describe('POST /departments/:id/members', () => {
       headers: headers(adminToken),
       payload: { employeeIds: ['nonexistent-id-abc'] },
     });
-    expect(res.statusCode).to.equal(404);
+    assert.equal(res.statusCode, 404);
     const err = JSON.parse(res.body).error;
-    expect(err.code).to.equal('EMPLOYEE_NOT_FOUND');
-    expect(err.details.employeeIds).to.include('nonexistent-id-abc');
+    assert.equal(err.code, 'EMPLOYEE_NOT_FOUND');
+    assert.ok(err.details.employeeIds.includes('nonexistent-id-abc'));
 
     // Count unchanged — no partial update
     const finAfter = await app.inject({ method: 'GET', url: `/api/v1/departments/${targetDeptId}`, headers: headers(adminToken) });
-    expect(JSON.parse(finAfter.body).data.totalHeadcount).to.equal(countBefore);
+    assert.equal(JSON.parse(finAfter.body).data.totalHeadcount, countBefore);
   });
 
   it('MANAGER role → 403 FORBIDDEN', async () => {
@@ -250,8 +254,8 @@ describe('POST /departments/:id/members', () => {
       headers: headers(managerToken),
       payload: { employeeIds: [targetEmployeeId] },
     });
-    expect(res.statusCode).to.equal(403);
-    expect(JSON.parse(res.body).error.code).to.equal('FORBIDDEN');
+    assert.equal(res.statusCode, 403);
+    assert.equal(JSON.parse(res.body).error.code, 'FORBIDDEN');
   });
 
   it('Non-existent department → 404 DEPARTMENT_NOT_FOUND', async () => {
@@ -261,7 +265,7 @@ describe('POST /departments/:id/members', () => {
       headers: headers(adminToken),
       payload: { employeeIds: [targetEmployeeId] },
     });
-    expect(res.statusCode).to.equal(404);
-    expect(JSON.parse(res.body).error.code).to.equal('DEPARTMENT_NOT_FOUND');
+    assert.equal(res.statusCode, 404);
+    assert.equal(JSON.parse(res.body).error.code, 'DEPARTMENT_NOT_FOUND');
   });
 });

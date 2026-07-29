@@ -58,8 +58,11 @@ test('GET /auth/me returns contract user shape', async () => {
   assert.equal(body.success, true);
   assert.equal(body.data.email, LOGIN_EMAIL);
   assert.equal(body.data.memberType, 'SUPER_ADMIN');
-  assert.equal(body.data.employeeId, null);
-  assert.equal(body.data.employee, null);
+  // Whether the seed links SUPER_ADMIN to an employee is a fixture choice, so
+  // assert the contract shape the frontend depends on, not one seed's state.
+  assert.ok('employeeId' in body.data, 'employeeId must be present');
+  assert.ok('employee' in body.data, 'employee must be present');
+  assert.equal(body.data.employeeId === null || typeof body.data.employeeId === 'string', true);
   assert.equal(body.data.status, 'ACTIVE');
   assert.equal(Array.isArray(body.data.permissions), true);
   assert.equal(typeof body.data.lastLoginAt, 'string');

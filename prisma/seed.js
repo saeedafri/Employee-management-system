@@ -1,4 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import {
+  PERMISSION_KEYS,
+  DEFAULT_PERMISSIONS_BY_ROLE,
+  permissionModule,
+  permissionDescription,
+} from '../src/modules/auth/permissionCatalogue.js';
 import { hash } from 'argon2';
 
 const prisma = new PrismaClient();
@@ -37,30 +43,18 @@ async function main() {
   });
   console.log(`✅ Tenant: ${tenant.id} (${tenant.tenantKey})`);
 
-  // Upsert Permissions
-  const permissionData = [
-    { key: 'employees:read', module: 'employees', description: 'View employees' },
-    { key: 'employees:write', module: 'employees', description: 'Create/edit employees' },
-    { key: 'employees:delete', module: 'employees', description: 'Delete employees' },
-    { key: 'employees:export', module: 'employees', description: 'Export employees' },
-    { key: 'departments:read', module: 'departments', description: 'View departments' },
-    { key: 'departments:write', module: 'departments', description: 'Create/edit departments' },
-    { key: 'attendance:read', module: 'attendance', description: 'View attendance' },
-    { key: 'attendance:write', module: 'attendance', description: 'Check-in/out and regularize' },
-    { key: 'leave:read', module: 'leave', description: 'View leave' },
-    { key: 'leave:request', module: 'leave', description: 'Request leave' },
-    { key: 'leave:approve', module: 'leave', description: 'Approve/deny leave' },
-    { key: 'analytics:read', module: 'analytics', description: 'View analytics' },
-    { key: 'permissions:manage', module: 'permissions', description: 'Manage roles and permissions' },
-    { key: 'audit:read', module: 'audit', description: 'View audit logs' },
-  ];
-
+  // Permissions + role grants come from the single catalogue in
+  // src/modules/auth/permissionCatalogue.js. This file previously carried its
+  // own 14-key list AND its own per-role matrix, so a seeded tenant ended up
+  // with a non-empty but stale `permissions[]` -- which defeats the
+  // roleDefaultPermissions fallback (it only applies to an EMPTY array) and
+  // 403s every key added since. Derive, never duplicate.
   const permissions = await Promise.all(
-    permissionData.map((p) =>
+    PERMISSION_KEYS.map((key) =>
       prisma.permission.upsert({
-        where: { key: p.key },
-        update: {},
-        create: p,
+        where: { key },
+        update: { module: permissionModule(key), description: permissionDescription(key) },
+        create: { key, module: permissionModule(key), description: permissionDescription(key) },
       }),
     ),
   );
@@ -86,40 +80,27 @@ async function main() {
   );
   console.log(`✅ Roles: ${roles.length}`);
 
-  // Build permission map
+  const roleByKey = Object.fromEntries(roles.map((r) => [r.key, r]));
+  const superAdminRole = roleByKey.SUPER_ADMIN;
+  const hrAdminRole = roleByKey.HR_ADMIN;
+  const managerRole = roleByKey.MANAGER;
+  const employeeRole = roleByKey.EMPLOYEE;
+  const auditorRole = roleByKey.AUDITOR;
+
   const permissionMap = {};
-  for (const p of permissions) {
-    permissionMap[p.key] = p.id;
-  }
+  for (const p of permissions) permissionMap[p.key] = p.id;
 
-  const allPermissions = Object.values(permissionMap);
-  const superAdminRole = roles.find((r) => r.key === 'SUPER_ADMIN');
-  const hrAdminRole = roles.find((r) => r.key === 'HR_ADMIN');
-  const managerRole = roles.find((r) => r.key === 'MANAGER');
-  const employeeRole = roles.find((r) => r.key === 'EMPLOYEE');
-  const auditorRole = roles.find((r) => r.key === 'AUDITOR');
-
-  const assignPermissions = async (roleId, permKeys) => {
-    for (const key of permKeys) {
-      const permId = permissionMap[key];
-      if (!permId) continue;
+  for (const role of roles) {
+    for (const key of DEFAULT_PERMISSIONS_BY_ROLE[role.key] ?? []) {
+      const permissionId = permissionMap[key];
+      if (!permissionId) continue;
       await prisma.rolePermission.upsert({
-        where: { roleId_permissionId: { roleId, permissionId: permId } },
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
         update: {},
-        create: { roleId, permissionId: permId },
+        create: { roleId: role.id, permissionId },
       });
     }
-  };
-
-  await assignPermissions(superAdminRole.id, permissionData.map((p) => p.key));
-  await assignPermissions(hrAdminRole.id, [
-    'employees:read', 'employees:write', 'employees:delete', 'employees:export',
-    'departments:read', 'departments:write', 'attendance:read', 'attendance:write',
-    'leave:read', 'leave:approve', 'analytics:read', 'audit:read',
-  ]);
-  await assignPermissions(managerRole.id, ['attendance:read', 'leave:approve', 'audit:read']);
-  await assignPermissions(employeeRole.id, ['attendance:read', 'attendance:write', 'leave:read', 'leave:request', 'audit:read']);
-  await assignPermissions(auditorRole.id, ['employees:read', 'departments:read', 'attendance:read', 'leave:read', 'analytics:read', 'audit:read']);
+  }
   console.log('✅ Role-Permission mappings done');
 
   // Hash password once

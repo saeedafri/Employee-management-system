@@ -69,7 +69,10 @@ const child = spawn(
   process.execPath,
   // Module mocks are used by the RBAC enforcement E2E test to stub Prisma, so
   // the whole HTTP stack can be exercised without a database.
-  ['--test', '--experimental-test-module-mocks', '--test-concurrency=1', ...files],
+  // --test-force-exit: a test file that leaks a handle (an un-disconnected
+  // client, a keep-alive socket) otherwise hangs the whole suite forever after
+  // its assertions have already passed. Failures still fail; they just cannot hang.
+  ['--test', '--experimental-test-module-mocks', '--test-force-exit', '--test-concurrency=1', ...files],
   { stdio: 'inherit', env: process.env },
 );
 child.on('exit', (code) => process.exit(code ?? 1));

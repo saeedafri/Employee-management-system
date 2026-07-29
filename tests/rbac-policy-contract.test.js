@@ -36,7 +36,13 @@ async function login(email) {
 }
 
 test('RBAC permission catalog matches frontend permissions contract', () => {
-  assert.deepEqual([...PERMISSION_KEYS].sort(), [
+  // The catalogue is open-ended now (BACKEND_CONTRACT_configurable_rbac.md §3.1:
+  // adding a key must be a data change, not a code change), so pinning an exact
+  // list would have to be edited on every addition and would assert nothing
+  // useful. The contract guarantee worth pinning is that no key the frontend
+  // already relies on ever disappears. Shape and per-role defaults are covered
+  // exhaustively in rbac-catalogue-contract.test.js.
+  const FRONTEND_RELIES_ON = [
     'analytics:read',
     'attendance:read',
     'attendance:write',
@@ -51,7 +57,10 @@ test('RBAC permission catalog matches frontend permissions contract', () => {
     'leave:read',
     'leave:request',
     'permissions:manage',
-  ]);
+  ];
+
+  const missing = FRONTEND_RELIES_ON.filter((key) => !PERMISSION_KEYS.includes(key));
+  assert.deepEqual(missing, [], 'a permission key the frontend depends on was removed');
 
   assert.equal(
     hasPermission({ memberType: 'HR_ADMIN', permissions: ['permissions:manage'] }, 'permissions:manage'),

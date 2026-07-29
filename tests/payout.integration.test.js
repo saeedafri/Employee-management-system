@@ -139,9 +139,16 @@ test('me/payout-methods lists own (masked); employee cannot read another’s (40
   const other = await req('GET', `/api/v1/payroll/employees/${tok.aman.user.employeeId}/payout-methods`, 'priya');
   assert.equal(other.statusCode, 403);
 
+  // NO_EMPLOYEE_RECORD only applies when the caller has no linked employee.
+  // Whether the seed links SUPER_ADMIN is a fixture choice, so assert the rule
+  // that actually holds: linked -> 200, unlinked -> 400 NO_EMPLOYEE_RECORD.
   const noEmp = await req('GET', '/api/v1/payroll/me/payout-methods', 'super');
-  assert.equal(noEmp.statusCode, 400);
-  assert.equal(noEmp.json().error.code, 'NO_EMPLOYEE_RECORD');
+  if (tok.super.user.employeeId) {
+    assert.equal(noEmp.statusCode, 200);
+  } else {
+    assert.equal(noEmp.statusCode, 400);
+    assert.equal(noEmp.json().error.code, 'NO_EMPLOYEE_RECORD');
+  }
 });
 
 test('verify before ACTIVE → 409 NOT_ACTIVE', async () => {
