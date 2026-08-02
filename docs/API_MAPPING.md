@@ -4741,7 +4741,7 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/timesheets` | ALL | `?week=YYYY-MM-DD&employeeId=`. Auto-creates DRAFT if absent |
-| POST | `/timesheets/entries` | ALL | Required: weekStart, projectId, date, hours. `taskId` optional (null/omit OK → stored null). Rejects if sheet SUBMITTED/APPROVED. 422 `TASK_REQUIRED` if `requireTaskOnEntry` is on and taskId missing |
+| POST | `/timesheets/entries` | ALL | Required: weekStart, projectId, date, hours. `taskId` optional (null/omit OK → stored null). Rejects if sheet SUBMITTED/APPROVED. 422 `TASK_REQUIRED` if `requireTaskOnEntry` is on and taskId missing. 404 `PROJECT_NOT_FOUND` if `projectId` is not a project in this tenant (was a raw FK 500). 400 `NO_EMPLOYEE` when the caller has no Employee profile — e.g. SUPER_ADMIN (was a 500 from `employeeId: undefined`) |
 | PATCH | `/timesheets/entries/:id` | ALL | Update hours, billable, note, taskId. Body may also echo `weekStart`/`projectId`/`date` (FE inline-grid + dialog) — only updatable columns are persisted; non-columns (e.g. `weekStart`) are stripped, never forwarded to Prisma (was a 500). 422 `TASK_REQUIRED` if `requireTaskOnEntry` on and taskId set to null |
 | DELETE | `/timesheets/entries/:id` | ALL | Recalculates sheet total |
 
@@ -5697,6 +5697,7 @@ Body `{ result:"VERIFIED"|"FAILED", note? }`. Only an **ACTIVE** method → else
 Copy project/task rows from one week into another (idempotent; hours zeroed).
 - **Body:** `{ fromWeekStart, toWeekStart, withNotes? }` (`400 VALIDATION_ERROR` if weeks missing; `422 WEEK_LOCKED` if target already submitted/approved).
 - **200:** `{ sheet: <Timesheet>, copied }`
+- **400 `NO_EMPLOYEE`:** caller has no Employee profile (e.g. SUPER_ADMIN) — was a 500.
 
 #### `POST /timesheets/:id/recall` — owner only
 Unsubmit a timesheet (`SUBMITTED → DRAFT`). `404` for non-owner/missing; `422 NOT_RECALLABLE` if not SUBMITTED. Returns the updated timesheet.

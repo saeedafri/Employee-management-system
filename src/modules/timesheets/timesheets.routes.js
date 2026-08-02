@@ -256,6 +256,7 @@ export default async function timesheetsRoutes(fastify) {
     schema: {
       tags: ['Timesheets'],
       summary: 'Create a time entry (attaches to weekly timesheet)',
+      description: 'Errors: 400 `NO_EMPLOYEE` when the caller has no linked Employee profile (e.g. SUPER_ADMIN) — such accounts cannot log their own time; 404 `PROJECT_NOT_FOUND` when projectId is not a project in this tenant; 422 `TASK_REQUIRED` when requireTaskOnEntry is on and taskId is missing; 422 `WEEK_LOCKED` when the target week is not DRAFT/REJECTED.',
       security: [{ Bearer: [] }],
       body: {
         type: 'object',

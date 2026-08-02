@@ -82,7 +82,12 @@ export async function getTimesheet(request, reply) {
 
 export async function createEntry(request, reply) {
   try {
-    const entry = await service.createEntry(request.tenant.id, request.user.employeeId, request.body);
+    // Accounts with no Employee record (e.g. SUPER_ADMIN) have no personal timesheet.
+    // getTimesheet already returns an empty shell for them; without this guard the
+    // undefined employeeId reached prisma.timesheet.findUnique and threw a 500.
+    const employeeId = ownerId(request, reply);
+    if (!employeeId) return;
+    const entry = await service.createEntry(request.tenant.id, employeeId, request.body);
     return reply.code(201).send(successResponse(entry));
   } catch (err) {
     if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
@@ -151,7 +156,9 @@ export async function rejectTimesheet(request, reply) {
 
 export async function copyWeek(request, reply) {
   try {
-    const result = await service.copyWeek(request.tenant.id, request.user.employeeId, request.body || {});
+    const employeeId = ownerId(request, reply);
+    if (!employeeId) return;
+    const result = await service.copyWeek(request.tenant.id, employeeId, request.body || {});
     return reply.code(201).send(successResponse(result.sheet, { copied: result.copied }));
   } catch (err) {
     if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));

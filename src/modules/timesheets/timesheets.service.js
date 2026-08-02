@@ -162,16 +162,24 @@ export async function createEntry(tenantId, employeeId, body) {
   // empty/absent task never reaches Prisma as a bad FK (was a live 500). Domain G.2 contract.
   normalizeTaskId(entryData);
   await assertTaskAllowed(tenantId, entryData.taskId);
+  // A projectId that doesn't exist in this tenant hit Prisma as a raw FK violation (500).
+  // Answer with the same 404 shape the project routes use.
+  const target = await repo.getProjectById(tenantId, entryData.projectId);
+  if (!target) {
+    const err = new Error('Project not found');
+    err.statusCode = 404;
+    err.code = 'PROJECT_NOT_FOUND';
+    throw err;
+  }
   // Match the FE rollup engine: when billable is omitted, infer it from the task, then the
   // project, then the tenant's billableDefault (src/mocks/handlers/timesheets.ts createEntry).
   // The schema default of true is wrong for non-billable projects/tasks.
   if (entryData.billable === undefined || entryData.billable === null) {
-    const [task, project, settings] = await Promise.all([
+    const [task, settings] = await Promise.all([
       entryData.taskId ? repo.getTaskById(tenantId, entryData.taskId) : null,
-      repo.getProjectById(tenantId, entryData.projectId),
       repo.getSettings(tenantId),
     ]);
-    entryData.billable = task?.billable ?? project?.billable ?? settings?.billableDefault ?? true;
+    entryData.billable = task?.billable ?? target.billable ?? settings?.billableDefault ?? true;
   }
   const sheet = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
   assertWeekEditable(sheet.status);
