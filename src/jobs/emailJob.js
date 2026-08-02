@@ -110,20 +110,11 @@ async function sendViaResend(to, subject, html) {
   }
 }
 
-async function sendEmail(to, subject, template, data) {
-  if (config.isTesting) return { success: true, devMode: true };
+function smtpConfigured() {
+  return Boolean(config.smtpUser && config.smtpPass);
+}
 
-  const html = renderEmailTemplate(template, data);
-
-  if (config.resendApiKey) {
-    return sendViaResend(to, subject, html);
-  }
-
-  if (!config.smtpUser || !config.smtpPass) {
-    logger.warn({ type: 'email_skipped', reason: 'No email provider configured' });
-    return { success: false, reason: 'No email provider configured' };
-  }
-
+async function sendViaSmtp(to, subject, html, template) {
   try {
     const info = await getTransporter().sendMail({
       from: `EMS <${config.smtpFrom}>`,
@@ -137,6 +128,29 @@ async function sendEmail(to, subject, template, data) {
     logger.error({ type: 'email_failed', to, template, error: err.message });
     return { success: false, error: err.message };
   }
+}
+
+async function sendEmail(to, subject, template, data) {
+  if (config.isTesting) return { success: true, devMode: true };
+
+  const html = renderEmailTemplate(template, data);
+
+  // EMAIL_PROVIDER chooses the primary transport ('smtp' by default). This used to
+  // branch on `config.resendApiKey` alone, so merely HAVING a RESEND_API_KEY set —
+  // even an invalid one — routed every email to Resend and made the configured SMTP
+  // transport unreachable. A key that 400s then silently dropped all mail.
+  if (config.emailProvider === 'resend' && config.resendApiKey) {
+    const result = await sendViaResend(to, subject, html);
+    if (result.success || !smtpConfigured()) return result;
+    logger.warn({ type: 'email_fallback_smtp', to, template, reason: result.error });
+    return sendViaSmtp(to, subject, html, template);
+  }
+
+  if (smtpConfigured()) return sendViaSmtp(to, subject, html, template);
+  if (config.resendApiKey) return sendViaResend(to, subject, html);
+
+  logger.warn({ type: 'email_skipped', reason: 'No email provider configured' });
+  return { success: false, reason: 'No email provider configured' };
 }
 
 export async function enqueuePasswordResetEmail(to, resetToken, expiresInMinutes) {
