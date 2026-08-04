@@ -1,0 +1,204 @@
+{
+  "fails": [
+    {
+      "method": "GET",
+      "url": "http://localhost:3001/api/auth/me",
+      "status": 401,
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"1607edd0-fc7d-4eec-84c1-c6aac000006f\"}}",
+      "pageUrl": "http://localhost:3001/login"
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:3001/api/auth/refresh",
+      "status": 401,
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"8f179c76-03bc-4ab5-91fe-f2d795155e2a\"}}",
+      "pageUrl": "http://localhost:3001/login"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:3001/api/attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"32a4cfe8-a038-44af-8c41-3d720e97678c\"}}",
+      "pageUrl": "http://localhost:3001/attendance"
+    }
+  ],
+  "consoleErrors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "url": "http://localhost:3001/login"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "url": "http://localhost:3001/login"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydv6002ykpjdw0kveq0p",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydv2002wkpjdrwzyc9lr",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduy002ukpjdfs4emgvf",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduv002skpjdfiu65jhz",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydur002qkpjdqk63skk3",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydun002okpjdcfk4q73v",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduj002mkpjdgsw4t599",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduf002kkpjdj5cnqitt",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduc002ikpjdo589teh3",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydu9002gkpjdywx910uq",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydu5002ekpjdjxysqafe",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydu2002ckpjd02rpsaho",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydty002akpjdz73z8ozq",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtv0028kpjdz9s1w2kl",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtr0026kpjd0jp8m2qu",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtn0024kpjddj2ztzer",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtj0022kpjd7hbikivl",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydsb001mkpjdxlgw74tv",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyds7001kkpjdnlhjygrp",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyds0001ikpjd5br3r2uh",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydv6002ykpjdw0kveq0p",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydv2002wkpjdrwzyc9lr",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduy002ukpjdfs4emgvf",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduv002skpjdfiu65jhz",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydur002qkpjdqk63skk3",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydun002okpjdcfk4q73v",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduj002mkpjdgsw4t599",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduf002kkpjdj5cnqitt",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyduc002ikpjdo589teh3",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydu9002gkpjdywx910uq",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydu5002ekpjdjxysqafe",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydu2002ckpjd02rpsaho",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydty002akpjdz73z8ozq",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtv0028kpjdz9s1w2kl",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtr0026kpjd0jp8m2qu",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtn0024kpjddj2ztzer",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydtj0022kpjd7hbikivl",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydsb001mkpjdxlgw74tv",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyds7001kkpjdnlhjygrp",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpyds0001ikpjd5br3r2uh",
+      "url": "http://localhost:3001/performance"
+    }
+  ],
+  "uiErrors": []
+}

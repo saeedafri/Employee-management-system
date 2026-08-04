@@ -1,0 +1,2810 @@
+{
+  "meta": {
+    "target": "http://localhost:4000",
+    "api": "http://localhost:4000/api/v1",
+    "tenant": "acme-corp-001",
+    "rounds": 5,
+    "started": "2026-08-03T03:40:42.593Z",
+    "finished": "2026-08-03T03:41:00.298Z",
+    "wallMs": 17704,
+    "hunt": [
+      "wrong employee data (SA leave→Priya SA-10)",
+      "notification bodies belonging to other users",
+      "500s under concurrency",
+      "cookie/session confusion"
+    ]
+  },
+  "loginRounds": [
+    {
+      "round": 1,
+      "wallMs": 979,
+      "logins": [
+        {
+          "role": "SUPER_ADMIN",
+          "email": "superadmin@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 889,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=f12ce8b24d6d40aef26b4bac.ba6389ca895553216dbc3ade49be66d47ec86c15c8e2966b4787ee757276ac30 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiZjEyY2U4YjI0ZDZkNDBhZWYyNmI0YmFjIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NDMsImV4cCI6MTc4NTcyOTM0M30.tkqeYhhVIZC6rzDoTMnDjqM6e2VWiHXSlyWWznS-nic"
+        },
+        {
+          "role": "HR_ADMIN",
+          "email": "hr@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 855,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=4a2ea72876fb05f0e1fcf9f8.5fc8f29bce3b4f422b881f495071e3d2ea3a39e04b34ff7fc959c188dfd409a1 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiI0YTJlYTcyODc2ZmIwNWYwZTFmY2Y5ZjgiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQzLCJleHAiOjE3ODU3MjkzNDN9.sj-5C90xKQq2XkDz4BJ9ZhP8vt5wQITxClSSM64BVss"
+        },
+        {
+          "role": "MANAGER",
+          "email": "aman@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 819,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=2b7c097b85def69605648a02.56ede8556f5c5fe85360ff5b8361f5260b39227c81da2025ff2906b513e93fb5 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6IjJiN2MwOTdiODVkZWY2OTYwNTY0OGEwMiIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQzLCJleHAiOjE3ODU3MjkzNDN9.oyLTHMyR2edemPZSDSvmnaVRQu5atvpn2Fxez0Ykmps"
+        },
+        {
+          "role": "EMPLOYEE",
+          "email": "priya@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 954,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=1900eb961629f16ce6802c4f.d3c4b81e374c942156717c4389d0bffcba978e75aea67b6853c316eb39557998 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiIxOTAwZWI5NjE2MjlmMTZjZTY4MDJjNGYiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ0MywiZXhwIjoxNzg1NzI5MzQzfQ.nwUB-7a7XiVPfCHVCWbaSfJGFdFlicrSb6cZEUQL-Dg"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "wallMs": 966,
+      "logins": [
+        {
+          "role": "SUPER_ADMIN",
+          "email": "superadmin@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 870,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=fb1d85810a4ca54f561c6448.c7afb88ac6b7ccb56fc4aa4f0b0490c7f2a0b3504258d46ecf0c1e5b4a5f86a9 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiZmIxZDg1ODEwYTRjYTU0ZjU2MWM2NDQ4IiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NDcsImV4cCI6MTc4NTcyOTM0N30.L-OpvSiZg_TaDLLoLbgg96-ruWaYYoGWHfqS27ZNqZ4"
+        },
+        {
+          "role": "HR_ADMIN",
+          "email": "hr@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 870,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=a714ac207ed6e86e5c6c9bcd.36592e6ec927060ab6c9d1895d5a72fb14ede27ee5d0e2d9254fc9812f841fd0 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiJhNzE0YWMyMDdlZDZlODZlNWM2YzliY2QiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQ3LCJleHAiOjE3ODU3MjkzNDd9.0VqXb4ImHqCyTDzc3pGdF0AvbxuHbBVxlwSrWKkkyno"
+        },
+        {
+          "role": "MANAGER",
+          "email": "aman@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 860,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=2d475c03884e3c376fcde202.593fd6cda20f9599a3b37e0ad30f8723b01ff0ada24949c4969c8e079567a071 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6IjJkNDc1YzAzODg0ZTNjMzc2ZmNkZTIwMiIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQ3LCJleHAiOjE3ODU3MjkzNDd9.D9O3lb7mJiJ_lwkhVnMjVdj989GIdOZeHmVBU45xif4"
+        },
+        {
+          "role": "EMPLOYEE",
+          "email": "priya@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 965,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=cd173cf2ab2d085eef805c74.aebfd244e6dbd9f4df1f0559b4ba8fcdefbaa63511718fb51901ca76ba0b88b9 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJjZDE3M2NmMmFiMmQwODVlZWY4MDVjNzQiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ0NywiZXhwIjoxNzg1NzI5MzQ3fQ.wZPZSZoePOnSrlMEUOlGB3Klmm-YlL2R8g1M7EPYiqk"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "wallMs": 623,
+      "logins": [
+        {
+          "role": "SUPER_ADMIN",
+          "email": "superadmin@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 621,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=b977ab93737c4ecf4d1c536e.d0f0ba06b824236434e33aeb21ddaeb75207d767a148a0fcf403a8d1fe8c4148 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiYjk3N2FiOTM3MzdjNGVjZjRkMWM1MzZlIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NTAsImV4cCI6MTc4NTcyOTM1MH0.RR5ylUy2CMMYhryBaeSm_4ZelTGCKMWSY3nolKHNV8g"
+        },
+        {
+          "role": "HR_ADMIN",
+          "email": "hr@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 623,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=f090b4b056354fb344528f10.a882a700ccea2c7c1b0934e2a5ed7cd43e90e58e6c99c8d96f73ab4ecbdbed49 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiJmMDkwYjRiMDU2MzU0ZmIzNDQ1MjhmMTAiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDUwLCJleHAiOjE3ODU3MjkzNTB9.dTRa82L9LWxPkIGUt5JkW_t5wW87S7szpT3azu-OCFg"
+        },
+        {
+          "role": "MANAGER",
+          "email": "aman@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 623,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=f00f03ded9844f3b01422c6d.da2f62afec27443196953344d68658f0819712e11191d03245aaa48eee71f92f | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6ImYwMGYwM2RlZDk4NDRmM2IwMTQyMmM2ZCIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDUwLCJleHAiOjE3ODU3MjkzNTB9.jNYhJOCsYYmc6F-bVZTtUPYgQHzzZegxFDnXh3GdHrE"
+        },
+        {
+          "role": "EMPLOYEE",
+          "email": "priya@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 622,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=485ab8f013e9dcad53caab77.8cc1c5d9743958545eab6d360a7a379339e64b115819e209aa0fe9738a460d17 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiI0ODVhYjhmMDEzZTlkY2FkNTNjYWFiNzciLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ1MCwiZXhwIjoxNzg1NzI5MzUwfQ.y-y1-qadMTOS8RTt5L-jE3lIHD-7A8zeiRRMrCytBhg"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "wallMs": 1214,
+      "logins": [
+        {
+          "role": "SUPER_ADMIN",
+          "email": "superadmin@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 608,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=c733f34524879bcdfac72053.078007b70b1c6588a3229c21bc2c5ab1e438664f09ad20b79072662599e4eae3 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiYzczM2YzNDUyNDg3OWJjZGZhYzcyMDUzIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NTMsImV4cCI6MTc4NTcyOTM1M30.s3s_NhrOLkSln9JlRBXcGdjR9rhIEzGXAJvEzYh1oWw"
+        },
+        {
+          "role": "HR_ADMIN",
+          "email": "hr@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 1213,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=61ce5c5af8ccc36f6ef686c5.f0be6b00a61f36f2bda5c959116c1abc122ceb34812630bd92a049e9e90b6db7 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiI2MWNlNWM1YWY4Y2NjMzZmNmVmNjg2YzUiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDU0LCJleHAiOjE3ODU3MjkzNTR9.GA4nvzkKxfXk_sRW8YoLQ4kfDfKTVkRYGnCCCRYtK1c"
+        },
+        {
+          "role": "MANAGER",
+          "email": "aman@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 652,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=4b6de194a3b828ad6a4727ac.56c94317d5fb945dd8547999e98c3dacb8c5fb08f14f6222a9d412a0664653cc | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6IjRiNmRlMTk0YTNiODI4YWQ2YTQ3MjdhYyIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDUzLCJleHAiOjE3ODU3MjkzNTN9.Nfqfo_Y-t4viCetRTN9DxwU80pp7RncYkqA1Yiliomw"
+        },
+        {
+          "role": "EMPLOYEE",
+          "email": "priya@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 902,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=e5b4495eeb665b72244c3a25.664cc80121c1204f893ec980432010f2b8bf6d76db764bc6eafd3885c90db49f | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJlNWI0NDk1ZWViNjY1YjcyMjQ0YzNhMjUiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ1MywiZXhwIjoxNzg1NzI5MzUzfQ.7Vr4hKq2CaX1D8WXPBv9IELgjlIAIFfeEbC_HmoGXR0"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "wallMs": 936,
+      "logins": [
+        {
+          "role": "SUPER_ADMIN",
+          "email": "superadmin@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 936,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=45f1dde33553035a5e55ff6e.0c3b73aedec31693d360df86a15b4bf769801aed7f28f616d93f8deed04b3544 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiNDVmMWRkZTMzNTUzMDM1YTVlNTVmZjZlIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NTcsImV4cCI6MTc4NTcyOTM1N30.giWVvrRl457TL0Y5GDKBQKfmMUH-41SDVBOBJhH41h8"
+        },
+        {
+          "role": "HR_ADMIN",
+          "email": "hr@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 839,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=2523bf80a738d0d9362bc3c1.4a912028714c8409b6be101702a54d85d7ca06cdacb0499b9edb64516b933666 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiIyNTIzYmY4MGE3MzhkMGQ5MzYyYmMzYzEiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDU3LCJleHAiOjE3ODU3MjkzNTd9.VFdEpTelQweqamQHUrhu26CuB3arMXyDd3le2H4qFY4"
+        },
+        {
+          "role": "MANAGER",
+          "email": "aman@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 840,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=aafdc38d3c9536405cddb6f3.309073330e8beb020320f0d8aa24e24f2214feee6ce050bb2f7576fc8375330f | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6ImFhZmRjMzhkM2M5NTM2NDA1Y2RkYjZmMyIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDU3LCJleHAiOjE3ODU3MjkzNTd9.djvHVM7i7JN_7NIT4JV6eYf_TG5JpXYXQHwhmu1gl54"
+        },
+        {
+          "role": "EMPLOYEE",
+          "email": "priya@acme.test",
+          "status": 200,
+          "token": true,
+          "ms": 889,
+          "setCookieCount": 2,
+          "refreshHint": "refreshToken=b76ca7e99ba586cb3ef641f4.ba6de88f251599d90c707a3a748f5c73cc2a6a51ef02d18f3abe2286650bf1e3 | accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJiNzZjYTdlOTliYTU4NmNiM2VmNjQxZjQiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ1NywiZXhwIjoxNzg1NzI5MzU3fQ.5pX0ekAWe1S9loqt3bPuUOz5Ub4Lm3QJp1-rJBJuC7E"
+        }
+      ]
+    }
+  ],
+  "cookieObservations": [
+    {
+      "round": 1,
+      "role": "SUPER_ADMIN",
+      "cookies": [
+        "refreshToken=f12ce8b24d6d40aef26b4bac.ba6389ca895553216dbc3ade49be66d47ec86c15c8e2966b4787ee757276ac30",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiZjEyY2U4YjI0ZDZkNDBhZWYyNmI0YmFjIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NDMsImV4cCI6MTc4NTcyOTM0M30.tkqeYhhVIZC6rzDoTMnDjqM6e2VWiHXSlyWWznS-nic"
+      ]
+    },
+    {
+      "round": 1,
+      "role": "HR_ADMIN",
+      "cookies": [
+        "refreshToken=4a2ea72876fb05f0e1fcf9f8.5fc8f29bce3b4f422b881f495071e3d2ea3a39e04b34ff7fc959c188dfd409a1",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiI0YTJlYTcyODc2ZmIwNWYwZTFmY2Y5ZjgiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQzLCJleHAiOjE3ODU3MjkzNDN9.sj-5C90xKQq2XkDz4BJ9ZhP8vt5wQITxClSSM64BVss"
+      ]
+    },
+    {
+      "round": 1,
+      "role": "MANAGER",
+      "cookies": [
+        "refreshToken=2b7c097b85def69605648a02.56ede8556f5c5fe85360ff5b8361f5260b39227c81da2025ff2906b513e93fb5",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6IjJiN2MwOTdiODVkZWY2OTYwNTY0OGEwMiIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQzLCJleHAiOjE3ODU3MjkzNDN9.oyLTHMyR2edemPZSDSvmnaVRQu5atvpn2Fxez0Ykmps"
+      ]
+    },
+    {
+      "round": 1,
+      "role": "EMPLOYEE",
+      "cookies": [
+        "refreshToken=1900eb961629f16ce6802c4f.d3c4b81e374c942156717c4389d0bffcba978e75aea67b6853c316eb39557998",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiIxOTAwZWI5NjE2MjlmMTZjZTY4MDJjNGYiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ0MywiZXhwIjoxNzg1NzI5MzQzfQ.nwUB-7a7XiVPfCHVCWbaSfJGFdFlicrSb6cZEUQL-Dg"
+      ]
+    },
+    {
+      "round": 2,
+      "role": "SUPER_ADMIN",
+      "cookies": [
+        "refreshToken=fb1d85810a4ca54f561c6448.c7afb88ac6b7ccb56fc4aa4f0b0490c7f2a0b3504258d46ecf0c1e5b4a5f86a9",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiZmIxZDg1ODEwYTRjYTU0ZjU2MWM2NDQ4IiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NDcsImV4cCI6MTc4NTcyOTM0N30.L-OpvSiZg_TaDLLoLbgg96-ruWaYYoGWHfqS27ZNqZ4"
+      ]
+    },
+    {
+      "round": 2,
+      "role": "HR_ADMIN",
+      "cookies": [
+        "refreshToken=a714ac207ed6e86e5c6c9bcd.36592e6ec927060ab6c9d1895d5a72fb14ede27ee5d0e2d9254fc9812f841fd0",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiJhNzE0YWMyMDdlZDZlODZlNWM2YzliY2QiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQ3LCJleHAiOjE3ODU3MjkzNDd9.0VqXb4ImHqCyTDzc3pGdF0AvbxuHbBVxlwSrWKkkyno"
+      ]
+    },
+    {
+      "round": 2,
+      "role": "MANAGER",
+      "cookies": [
+        "refreshToken=2d475c03884e3c376fcde202.593fd6cda20f9599a3b37e0ad30f8723b01ff0ada24949c4969c8e079567a071",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6IjJkNDc1YzAzODg0ZTNjMzc2ZmNkZTIwMiIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDQ3LCJleHAiOjE3ODU3MjkzNDd9.D9O3lb7mJiJ_lwkhVnMjVdj989GIdOZeHmVBU45xif4"
+      ]
+    },
+    {
+      "round": 2,
+      "role": "EMPLOYEE",
+      "cookies": [
+        "refreshToken=cd173cf2ab2d085eef805c74.aebfd244e6dbd9f4df1f0559b4ba8fcdefbaa63511718fb51901ca76ba0b88b9",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJjZDE3M2NmMmFiMmQwODVlZWY4MDVjNzQiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ0NywiZXhwIjoxNzg1NzI5MzQ3fQ.wZPZSZoePOnSrlMEUOlGB3Klmm-YlL2R8g1M7EPYiqk"
+      ]
+    },
+    {
+      "round": 3,
+      "role": "SUPER_ADMIN",
+      "cookies": [
+        "refreshToken=b977ab93737c4ecf4d1c536e.d0f0ba06b824236434e33aeb21ddaeb75207d767a148a0fcf403a8d1fe8c4148",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiYjk3N2FiOTM3MzdjNGVjZjRkMWM1MzZlIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NTAsImV4cCI6MTc4NTcyOTM1MH0.RR5ylUy2CMMYhryBaeSm_4ZelTGCKMWSY3nolKHNV8g"
+      ]
+    },
+    {
+      "round": 3,
+      "role": "HR_ADMIN",
+      "cookies": [
+        "refreshToken=f090b4b056354fb344528f10.a882a700ccea2c7c1b0934e2a5ed7cd43e90e58e6c99c8d96f73ab4ecbdbed49",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiJmMDkwYjRiMDU2MzU0ZmIzNDQ1MjhmMTAiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDUwLCJleHAiOjE3ODU3MjkzNTB9.dTRa82L9LWxPkIGUt5JkW_t5wW87S7szpT3azu-OCFg"
+      ]
+    },
+    {
+      "round": 3,
+      "role": "MANAGER",
+      "cookies": [
+        "refreshToken=f00f03ded9844f3b01422c6d.da2f62afec27443196953344d68658f0819712e11191d03245aaa48eee71f92f",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6ImYwMGYwM2RlZDk4NDRmM2IwMTQyMmM2ZCIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDUwLCJleHAiOjE3ODU3MjkzNTB9.jNYhJOCsYYmc6F-bVZTtUPYgQHzzZegxFDnXh3GdHrE"
+      ]
+    },
+    {
+      "round": 3,
+      "role": "EMPLOYEE",
+      "cookies": [
+        "refreshToken=485ab8f013e9dcad53caab77.8cc1c5d9743958545eab6d360a7a379339e64b115819e209aa0fe9738a460d17",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiI0ODVhYjhmMDEzZTlkY2FkNTNjYWFiNzciLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ1MCwiZXhwIjoxNzg1NzI5MzUwfQ.y-y1-qadMTOS8RTt5L-jE3lIHD-7A8zeiRRMrCytBhg"
+      ]
+    },
+    {
+      "round": 4,
+      "role": "SUPER_ADMIN",
+      "cookies": [
+        "refreshToken=c733f34524879bcdfac72053.078007b70b1c6588a3229c21bc2c5ab1e438664f09ad20b79072662599e4eae3",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiYzczM2YzNDUyNDg3OWJjZGZhYzcyMDUzIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NTMsImV4cCI6MTc4NTcyOTM1M30.s3s_NhrOLkSln9JlRBXcGdjR9rhIEzGXAJvEzYh1oWw"
+      ]
+    },
+    {
+      "round": 4,
+      "role": "HR_ADMIN",
+      "cookies": [
+        "refreshToken=61ce5c5af8ccc36f6ef686c5.f0be6b00a61f36f2bda5c959116c1abc122ceb34812630bd92a049e9e90b6db7",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiI2MWNlNWM1YWY4Y2NjMzZmNmVmNjg2YzUiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDU0LCJleHAiOjE3ODU3MjkzNTR9.GA4nvzkKxfXk_sRW8YoLQ4kfDfKTVkRYGnCCCRYtK1c"
+      ]
+    },
+    {
+      "round": 4,
+      "role": "MANAGER",
+      "cookies": [
+        "refreshToken=4b6de194a3b828ad6a4727ac.56c94317d5fb945dd8547999e98c3dacb8c5fb08f14f6222a9d412a0664653cc",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6IjRiNmRlMTk0YTNiODI4YWQ2YTQ3MjdhYyIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDUzLCJleHAiOjE3ODU3MjkzNTN9.Nfqfo_Y-t4viCetRTN9DxwU80pp7RncYkqA1Yiliomw"
+      ]
+    },
+    {
+      "round": 4,
+      "role": "EMPLOYEE",
+      "cookies": [
+        "refreshToken=e5b4495eeb665b72244c3a25.664cc80121c1204f893ec980432010f2b8bf6d76db764bc6eafd3885c90db49f",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJlNWI0NDk1ZWViNjY1YjcyMjQ0YzNhMjUiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ1MywiZXhwIjoxNzg1NzI5MzUzfQ.7Vr4hKq2CaX1D8WXPBv9IELgjlIAIFfeEbC_HmoGXR0"
+      ]
+    },
+    {
+      "round": 5,
+      "role": "SUPER_ADMIN",
+      "cookies": [
+        "refreshToken=45f1dde33553035a5e55ff6e.0c3b73aedec31693d360df86a15b4bf769801aed7f28f616d93f8deed04b3544",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiNDVmMWRkZTMzNTUzMDM1YTVlNTVmZjZlIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVzdCIsImxlYXZlOmFwcHJvdmUiLCJhbmFseXRpY3M6cmVhZCIsInBlcm1pc3Npb25zOm1hbmFnZSIsImF1ZGl0OnJlYWQiLCJhbm5vdW5jZW1lbnRzOmFkbWluIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImFzc2V0czpleHBvcnQiLCJhc3NldHM6bWFuYWdlIiwiYXR0ZW5kYW5jZTphcHByb3ZlIiwiYXR0ZW5kYW5jZTpleHBvcnQiLCJhdHRlbmRhbmNlOnRlYW0tcmVhZCIsImF1ZGl0OmV4cG9ydCIsImJpbGxpbmc6ZXhwb3J0IiwiYmlsbGluZzpyZWFkIiwiZW1wbG95ZWVzOnJlYWQtYW55IiwiaG9saWRheXM6cmVhZCIsImhvbGlkYXlzOndyaXRlIiwibGVhdmU6ZXhwb3J0IiwibGVhdmU6bWFuYWdlLXR5cGVzIiwibGVhdmU6cG9saWN5LW1hbmFnZSIsImxlYXZlOnRlYW0tcmVhZCIsImxvZ3M6cmVhZCIsInBheW91dDptYW5hZ2UiLCJwYXlvdXQ6c2VsZiIsInBheXJvbGw6YWRtaW4iLCJwYXlyb2xsOmFwcHJvdmUiLCJwYXlyb2xsOmV4cG9ydCIsInBheXJvbGw6c2VsZi1yZWFkIiwicGF5cm9sbDpzdXBlciIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6c2VjdXJpdHkiLCJzZXR0aW5nczp0ZW5hbnQtd3JpdGUiLCJ0aW1lc2hlZXRzOmFkbWluIiwidGltZXNoZWV0czphcHByb3ZlIiwidGltZXNoZWV0czpyZWFkIiwidGltZXNoZWV0czp3cml0ZSJdLCJpYXQiOjE3ODU3Mjg0NTcsImV4cCI6MTc4NTcyOTM1N30.giWVvrRl457TL0Y5GDKBQKfmMUH-41SDVBOBJhH41h8"
+      ]
+    },
+    {
+      "round": 5,
+      "role": "HR_ADMIN",
+      "cookies": [
+        "refreshToken=2523bf80a738d0d9362bc3c1.4a912028714c8409b6be101702a54d85d7ca06cdacb0499b9edb64516b933666",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiIyNTIzYmY4MGE3MzhkMGQ5MzYyYmMzYzEiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5kYW5jZTp3cml0ZSIsImxlYXZlOnJlYWQiLCJsZWF2ZTphcHByb3ZlIiwiYW5hbHl0aWNzOnJlYWQiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czphZG1pbiIsImFubm91bmNlbWVudHM6cmVhZCIsImFubm91bmNlbWVudHM6d3JpdGUiLCJhc3NldHM6ZXhwb3J0IiwiYXNzZXRzOm1hbmFnZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6ZXhwb3J0IiwiYXR0ZW5kYW5jZTp0ZWFtLXJlYWQiLCJhdWRpdDpleHBvcnQiLCJiaWxsaW5nOmV4cG9ydCIsImJpbGxpbmc6cmVhZCIsImVtcGxveWVlczpyZWFkLWFueSIsImhvbGlkYXlzOnJlYWQiLCJob2xpZGF5czp3cml0ZSIsImxlYXZlOmV4cG9ydCIsImxlYXZlOm1hbmFnZS10eXBlcyIsImxlYXZlOnBvbGljeS1tYW5hZ2UiLCJsZWF2ZTp0ZWFtLXJlYWQiLCJsb2dzOnJlYWQiLCJwYXlvdXQ6bWFuYWdlIiwicGF5b3V0OnNlbGYiLCJwYXlyb2xsOmFkbWluIiwicGF5cm9sbDphcHByb3ZlIiwicGF5cm9sbDpleHBvcnQiLCJwYXlyb2xsOnNlbGYtcmVhZCIsInBlcmZvcm1hbmNlOmV4cG9ydCIsInBlcmZvcm1hbmNlOm1hbmFnZSIsInBlcmZvcm1hbmNlOnJlYWQiLCJyZWNydWl0bWVudDpyZWFkIiwicmVjcnVpdG1lbnQ6d3JpdGUiLCJyZXBvcnRzOnJlYWQiLCJyZXBvcnRzOnNjaGVkdWxlIiwic2V0dGluZ3M6aW50ZWdyYXRpb25zIiwic2V0dGluZ3M6bWFuYWdlIiwic2V0dGluZ3M6dGVuYW50LXdyaXRlIiwidGltZXNoZWV0czphZG1pbiIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDU3LCJleHAiOjE3ODU3MjkzNTd9.VFdEpTelQweqamQHUrhu26CuB3arMXyDd3le2H4qFY4"
+      ]
+    },
+    {
+      "round": 5,
+      "role": "MANAGER",
+      "cookies": [
+        "refreshToken=aafdc38d3c9536405cddb6f3.309073330e8beb020320f0d8aa24e24f2214feee6ce050bb2f7576fc8375330f",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6ImFhZmRjMzhkM2M5NTM2NDA1Y2RkYjZmMyIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9saWRheXM6cmVhZCIsImxlYXZlOnRlYW0tcmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJwZXJmb3JtYW5jZTpyZWFkIiwicmVjcnVpdG1lbnQ6cmVhZCIsInRpbWVzaGVldHM6YXBwcm92ZSIsInRpbWVzaGVldHM6cmVhZCIsInRpbWVzaGVldHM6d3JpdGUiXSwiaWF0IjoxNzg1NzI4NDU3LCJleHAiOjE3ODU3MjkzNTd9.djvHVM7i7JN_7NIT4JV6eYf_TG5JpXYXQHwhmu1gl54"
+      ]
+    },
+    {
+      "round": 5,
+      "role": "EMPLOYEE",
+      "cookies": [
+        "refreshToken=b76ca7e99ba586cb3ef641f4.ba6de88f251599d90c707a3a748f5c73cc2a6a51ef02d18f3abe2286650bf1e3",
+        "accessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJiNzZjYTdlOTliYTU4NmNiM2VmNjQxZjQiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyODQ1NywiZXhwIjoxNzg1NzI5MzU3fQ.5pX0ekAWe1S9loqt3bPuUOz5Ub4Lm3QJp1-rJBJuC7E"
+      ]
+    }
+  ],
+  "hammerRounds": [
+    {
+      "round": 1,
+      "roles": {
+        "SUPER_ADMIN": {
+          "email": "superadmin@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2167
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2211
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1092
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2625
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1102
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 487
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 487
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 2165
+            },
+            "/payroll/runs": {
+              "status": 200,
+              "ms": 1201
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1351
+            }
+          },
+          "analysis": {
+            "meEmail": "superadmin@acme.test",
+            "meEmp": null,
+            "meUser": "cmqjpydqe000qkpjd8q8idw1k",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "9ba5b55aac98c2f5b52cfbcc",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "74292cdf57dc9838a627fda9",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "805191382d8194f21e332b0f",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": [
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_LEAK",
+                "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+                "path": "/leave/balance",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+              },
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_REQUESTS_LEAK",
+                "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+                "path": "/leave/requests",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+              }
+            ]
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqe000qkpjd8q8idw1k\",\"email\":\"superadmin@acme.test\",\"memberType\":\"SUPER_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":null,\"status\":\"ACTIVE\",\"employee\":null,\"permissions\":[\"employees:read\",\"employees:write\",\"employees:delete\",\"empl",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"9ba5b55aac98c2f5b52cfbcc\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"5e921f5a-ca84-47e9-b177-d5d3b0704dab\"}}"
+          }
+        },
+        "HR_ADMIN": {
+          "email": "hr@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2257
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2541
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1351
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2660
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1405
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 595
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 597
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 2214
+            },
+            "/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/payslips": {
+              "status": 200,
+              "ms": 1666
+            }
+          },
+          "analysis": {
+            "meEmail": "hr@acme.test",
+            "meEmp": "cmqjpydsb001mkpjdxlgw74tv",
+            "meUser": "cmqjpydqj000skpjdp2l6cvg5",
+            "leavePrefix": "cmqjpydsb001mkpjdxlgw74tv",
+            "leaveRefs": [
+              "LVR-0011"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "f8b5e88acf233340c3b52d9a",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "8def2d5c0d69f95b292e5c20",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "13005b6ab867b126f53066a4",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqj000skpjdp2l6cvg5\",\"email\":\"hr@acme.test\",\"memberType\":\"HR_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpydsb001mkpjdxlgw74tv\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpydsb001mkpjdxlgw74tv\",\"tenantId\":\"cmqjpydkv0000kpjdelzt",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmqjpyfna006fdwadtwp9ooog\",\"referenceNo\":\"LVR-0011\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-04-29T00:00:00.000Z\",\"endDate\":\"2026-05-02T00:00:00.000Z\",\"totalDays\":4,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"f8b5e88acf233340c3b52d9a\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"cbeb9282-9144-49a8-ae82-5288cf8d008b\"}}"
+          }
+        },
+        "MANAGER": {
+          "email": "aman@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2471
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2455
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1864
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2637
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1614
+            },
+            "/manager/dashboard": {
+              "status": 200,
+              "ms": 2951
+            },
+            "/manager/team": {
+              "status": 200,
+              "ms": 1914
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 2857
+            },
+            "/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips": {
+              "status": 200,
+              "ms": 1816
+            }
+          },
+          "analysis": {
+            "meEmail": "aman@acme.test",
+            "meEmp": "cmqjpyds0001ikpjd5br3r2uh",
+            "meUser": "cmqjpydql000ukpjdbhesbmpi",
+            "leavePrefix": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveRefs": [
+              "LVR-0021",
+              "LVR-0017",
+              "LVR-0008",
+              "LVR-0003"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "ebacb30d865cf8d7cadecae9",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "55acb5717d48cccf86da2db8",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "389b8fcea94457f863fbe1e3",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydql000ukpjdbhesbmpi\",\"email\":\"aman@acme.test\",\"memberType\":\"MANAGER\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds0001ikpjd5br3r2uh\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds0001ikpjd5br3r2uh\",\"tenantId\":\"cmqjpydkv0000kpjdelz",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":2,\"pending\":0,\"available\":7},{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"ebacb30d865cf8d7cadecae9\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":true,\"data\":{\"managerName\":\"Aman Kumar\",\"teamSize\":22,\"pendingApprovals\":0,\"approvalBreakdown\":{\"leave\":0,\"regularization\":0},\"presentToday\":0,\"avgAttendancePercent\":0,\"todayAttendance\":{\"p"
+          }
+        },
+        "EMPLOYEE": {
+          "email": "priya@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2588
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2792
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 2064
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2687
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 2020
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 888
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 926
+            },
+            "/manager/approvals": {
+              "status": 403,
+              "ms": 889
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 2119
+            }
+          },
+          "analysis": {
+            "meEmail": "priya@acme.test",
+            "meEmp": "cmqjpyds7001kkpjdnlhjygrp",
+            "meUser": "cmqjpydqn000wkpjd02gyqzd3",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "999e2a8eb1ae97280b27c982",
+                "title": "Leave Approved",
+                "body": "Your leave request for 1 day(s) has been approved"
+              },
+              {
+                "id": "e941f1f1c1448a0c9498e0b3",
+                "title": "Check-Out Recorded",
+                "body": "Priya Sharma checked out after 2 minute(s)"
+              },
+              {
+                "id": "8a9c7a43f908a7da4c6dd979",
+                "title": "Regularization Approved",
+                "body": "Your attendance regularization request has been approved"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqn000wkpjd02gyqzd3\",\"email\":\"priya@acme.test\",\"memberType\":\"EMPLOYEE\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds7001kkpjdnlhjygrp\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds7001kkpjdnlhjygrp\",\"tenantId\":\"cmqjpydkv0000kpjde",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"999e2a8eb1ae97280b27c982\",\"type\":\"leave_approved\",\"title\":\"Leave Approved\",\"body\":\"Your leave request for 1 day(s) has been approved\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02:20:18.",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"c83c100e-2745-4b0f-85cf-0ba7389a4440\"}}"
+          }
+        }
+      }
+    },
+    {
+      "round": 2,
+      "roles": {
+        "SUPER_ADMIN": {
+          "email": "superadmin@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1857
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2106
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 933
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2271
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 932
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 439
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 441
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1813
+            },
+            "/payroll/runs": {
+              "status": 200,
+              "ms": 1024
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1125
+            }
+          },
+          "analysis": {
+            "meEmail": "superadmin@acme.test",
+            "meEmp": null,
+            "meUser": "cmqjpydqe000qkpjd8q8idw1k",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "9ba5b55aac98c2f5b52cfbcc",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "74292cdf57dc9838a627fda9",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "805191382d8194f21e332b0f",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": [
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_LEAK",
+                "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+                "path": "/leave/balance",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+              },
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_REQUESTS_LEAK",
+                "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+                "path": "/leave/requests",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+              }
+            ]
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqe000qkpjd8q8idw1k\",\"email\":\"superadmin@acme.test\",\"memberType\":\"SUPER_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":null,\"status\":\"ACTIVE\",\"employee\":null,\"permissions\":[\"employees:read\",\"employees:write\",\"employees:delete\",\"empl",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"9ba5b55aac98c2f5b52cfbcc\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"99db36a9-bf3f-424b-8fcd-9d5599b6471c\"}}"
+          }
+        },
+        "HR_ADMIN": {
+          "email": "hr@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1907
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2012
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1128
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2259
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1130
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 533
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 535
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1906
+            },
+            "/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/payslips": {
+              "status": 200,
+              "ms": 1275
+            }
+          },
+          "analysis": {
+            "meEmail": "hr@acme.test",
+            "meEmp": "cmqjpydsb001mkpjdxlgw74tv",
+            "meUser": "cmqjpydqj000skpjdp2l6cvg5",
+            "leavePrefix": "cmqjpydsb001mkpjdxlgw74tv",
+            "leaveRefs": [
+              "LVR-0011"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "f8b5e88acf233340c3b52d9a",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "8def2d5c0d69f95b292e5c20",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "13005b6ab867b126f53066a4",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqj000skpjdp2l6cvg5\",\"email\":\"hr@acme.test\",\"memberType\":\"HR_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpydsb001mkpjdxlgw74tv\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpydsb001mkpjdxlgw74tv\",\"tenantId\":\"cmqjpydkv0000kpjdelzt",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmqjpyfna006fdwadtwp9ooog\",\"referenceNo\":\"LVR-0011\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-04-29T00:00:00.000Z\",\"endDate\":\"2026-05-02T00:00:00.000Z\",\"totalDays\":4,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"f8b5e88acf233340c3b52d9a\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"9b75b7e9-e8b0-4277-aaf9-5e1a890a97d5\"}}"
+          }
+        },
+        "MANAGER": {
+          "email": "aman@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1956
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2261
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1409
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2258
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1386
+            },
+            "/manager/dashboard": {
+              "status": 200,
+              "ms": 2557
+            },
+            "/manager/team": {
+              "status": 200,
+              "ms": 1766
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 2409
+            },
+            "/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips": {
+              "status": 200,
+              "ms": 1603
+            }
+          },
+          "analysis": {
+            "meEmail": "aman@acme.test",
+            "meEmp": "cmqjpyds0001ikpjd5br3r2uh",
+            "meUser": "cmqjpydql000ukpjdbhesbmpi",
+            "leavePrefix": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveRefs": [
+              "LVR-0021",
+              "LVR-0017",
+              "LVR-0008",
+              "LVR-0003"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "ebacb30d865cf8d7cadecae9",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "55acb5717d48cccf86da2db8",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "389b8fcea94457f863fbe1e3",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydql000ukpjdbhesbmpi\",\"email\":\"aman@acme.test\",\"memberType\":\"MANAGER\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds0001ikpjd5br3r2uh\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds0001ikpjd5br3r2uh\",\"tenantId\":\"cmqjpydkv0000kpjdelz",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":2,\"pending\":0,\"available\":7},{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"ebacb30d865cf8d7cadecae9\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":true,\"data\":{\"managerName\":\"Aman Kumar\",\"teamSize\":22,\"pendingApprovals\":0,\"approvalBreakdown\":{\"leave\":0,\"regularization\":0},\"presentToday\":0,\"avgAttendancePercent\":0,\"todayAttendance\":{\"p"
+          }
+        },
+        "EMPLOYEE": {
+          "email": "priya@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2206
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2446
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1704
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2308
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1713
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 729
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 729
+            },
+            "/manager/approvals": {
+              "status": 403,
+              "ms": 777
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1823
+            }
+          },
+          "analysis": {
+            "meEmail": "priya@acme.test",
+            "meEmp": "cmqjpyds7001kkpjdnlhjygrp",
+            "meUser": "cmqjpydqn000wkpjd02gyqzd3",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "999e2a8eb1ae97280b27c982",
+                "title": "Leave Approved",
+                "body": "Your leave request for 1 day(s) has been approved"
+              },
+              {
+                "id": "e941f1f1c1448a0c9498e0b3",
+                "title": "Check-Out Recorded",
+                "body": "Priya Sharma checked out after 2 minute(s)"
+              },
+              {
+                "id": "8a9c7a43f908a7da4c6dd979",
+                "title": "Regularization Approved",
+                "body": "Your attendance regularization request has been approved"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqn000wkpjd02gyqzd3\",\"email\":\"priya@acme.test\",\"memberType\":\"EMPLOYEE\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds7001kkpjdnlhjygrp\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds7001kkpjdnlhjygrp\",\"tenantId\":\"cmqjpydkv0000kpjde",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"999e2a8eb1ae97280b27c982\",\"type\":\"leave_approved\",\"title\":\"Leave Approved\",\"body\":\"Your leave request for 1 day(s) has been approved\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02:20:18.",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"71830027-7292-48ee-be47-764731c858c7\"}}"
+          }
+        }
+      }
+    },
+    {
+      "round": 3,
+      "roles": {
+        "SUPER_ADMIN": {
+          "email": "superadmin@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1894
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 1823
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 784
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2251
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 846
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 481
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 434
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1863
+            },
+            "/payroll/runs": {
+              "status": 200,
+              "ms": 944
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1000
+            }
+          },
+          "analysis": {
+            "meEmail": "superadmin@acme.test",
+            "meEmp": null,
+            "meUser": "cmqjpydqe000qkpjd8q8idw1k",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "9ba5b55aac98c2f5b52cfbcc",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "74292cdf57dc9838a627fda9",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "805191382d8194f21e332b0f",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": [
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_LEAK",
+                "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+                "path": "/leave/balance",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+              },
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_REQUESTS_LEAK",
+                "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+                "path": "/leave/requests",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+              }
+            ]
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqe000qkpjd8q8idw1k\",\"email\":\"superadmin@acme.test\",\"memberType\":\"SUPER_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":null,\"status\":\"ACTIVE\",\"employee\":null,\"permissions\":[\"employees:read\",\"employees:write\",\"employees:delete\",\"empl",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"9ba5b55aac98c2f5b52cfbcc\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"5a53d8d0-73a5-4437-b07b-7c7027595a50\"}}"
+          }
+        },
+        "HR_ADMIN": {
+          "email": "hr@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1939
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2011
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1136
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2254
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1099
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 582
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 530
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1977
+            },
+            "/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/payslips": {
+              "status": 200,
+              "ms": 1146
+            }
+          },
+          "analysis": {
+            "meEmail": "hr@acme.test",
+            "meEmp": "cmqjpydsb001mkpjdxlgw74tv",
+            "meUser": "cmqjpydqj000skpjdp2l6cvg5",
+            "leavePrefix": "cmqjpydsb001mkpjdxlgw74tv",
+            "leaveRefs": [
+              "LVR-0011"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "f8b5e88acf233340c3b52d9a",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "8def2d5c0d69f95b292e5c20",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "13005b6ab867b126f53066a4",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqj000skpjdp2l6cvg5\",\"email\":\"hr@acme.test\",\"memberType\":\"HR_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpydsb001mkpjdxlgw74tv\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpydsb001mkpjdxlgw74tv\",\"tenantId\":\"cmqjpydkv0000kpjdelzt",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmqjpyfna006fdwadtwp9ooog\",\"referenceNo\":\"LVR-0011\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-04-29T00:00:00.000Z\",\"endDate\":\"2026-05-02T00:00:00.000Z\",\"totalDays\":4,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"f8b5e88acf233340c3b52d9a\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"4f0a4f5d-22f8-4fcb-8af6-db59aa5bd810\"}}"
+          }
+        },
+        "MANAGER": {
+          "email": "aman@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2201
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2230
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1430
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2255
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1286
+            },
+            "/manager/dashboard": {
+              "status": 200,
+              "ms": 2483
+            },
+            "/manager/team": {
+              "status": 200,
+              "ms": 1430
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 2437
+            },
+            "/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips": {
+              "status": 200,
+              "ms": 1425
+            }
+          },
+          "analysis": {
+            "meEmail": "aman@acme.test",
+            "meEmp": "cmqjpyds0001ikpjd5br3r2uh",
+            "meUser": "cmqjpydql000ukpjdbhesbmpi",
+            "leavePrefix": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveRefs": [
+              "LVR-0021",
+              "LVR-0017",
+              "LVR-0008",
+              "LVR-0003"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "ebacb30d865cf8d7cadecae9",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "55acb5717d48cccf86da2db8",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "389b8fcea94457f863fbe1e3",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydql000ukpjdbhesbmpi\",\"email\":\"aman@acme.test\",\"memberType\":\"MANAGER\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds0001ikpjd5br3r2uh\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds0001ikpjd5br3r2uh\",\"tenantId\":\"cmqjpydkv0000kpjdelz",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":2,\"pending\":0,\"available\":7},{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"ebacb30d865cf8d7cadecae9\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":true,\"data\":{\"managerName\":\"Aman Kumar\",\"teamSize\":22,\"pendingApprovals\":0,\"approvalBreakdown\":{\"leave\":0,\"regularization\":0},\"presentToday\":0,\"avgAttendancePercent\":0,\"todayAttendance\":{\"p"
+          }
+        },
+        "EMPLOYEE": {
+          "email": "priya@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2200
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2456
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1929
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2299
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1533
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 731
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 731
+            },
+            "/manager/approvals": {
+              "status": 403,
+              "ms": 781
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1718
+            }
+          },
+          "analysis": {
+            "meEmail": "priya@acme.test",
+            "meEmp": "cmqjpyds7001kkpjdnlhjygrp",
+            "meUser": "cmqjpydqn000wkpjd02gyqzd3",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "999e2a8eb1ae97280b27c982",
+                "title": "Leave Approved",
+                "body": "Your leave request for 1 day(s) has been approved"
+              },
+              {
+                "id": "e941f1f1c1448a0c9498e0b3",
+                "title": "Check-Out Recorded",
+                "body": "Priya Sharma checked out after 2 minute(s)"
+              },
+              {
+                "id": "8a9c7a43f908a7da4c6dd979",
+                "title": "Regularization Approved",
+                "body": "Your attendance regularization request has been approved"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqn000wkpjd02gyqzd3\",\"email\":\"priya@acme.test\",\"memberType\":\"EMPLOYEE\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds7001kkpjdnlhjygrp\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds7001kkpjdnlhjygrp\",\"tenantId\":\"cmqjpydkv0000kpjde",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"999e2a8eb1ae97280b27c982\",\"type\":\"leave_approved\",\"title\":\"Leave Approved\",\"body\":\"Your leave request for 1 day(s) has been approved\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02:20:18.",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"867915c9-e2da-4218-8ffb-80314aac8454\"}}"
+          }
+        }
+      }
+    },
+    {
+      "round": 4,
+      "roles": {
+        "SUPER_ADMIN": {
+          "email": "superadmin@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1818
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 1956
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 926
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2252
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 933
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 486
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 439
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1726
+            },
+            "/payroll/runs": {
+              "status": 200,
+              "ms": 1024
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1122
+            }
+          },
+          "analysis": {
+            "meEmail": "superadmin@acme.test",
+            "meEmp": null,
+            "meUser": "cmqjpydqe000qkpjd8q8idw1k",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "9ba5b55aac98c2f5b52cfbcc",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "74292cdf57dc9838a627fda9",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "805191382d8194f21e332b0f",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": [
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_LEAK",
+                "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+                "path": "/leave/balance",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+              },
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_REQUESTS_LEAK",
+                "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+                "path": "/leave/requests",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+              }
+            ]
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqe000qkpjd8q8idw1k\",\"email\":\"superadmin@acme.test\",\"memberType\":\"SUPER_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":null,\"status\":\"ACTIVE\",\"employee\":null,\"permissions\":[\"employees:read\",\"employees:write\",\"employees:delete\",\"empl",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"9ba5b55aac98c2f5b52cfbcc\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"90d96c70-a677-4bfb-aeda-8e88e4b35a9e\"}}"
+          }
+        },
+        "HR_ADMIN": {
+          "email": "hr@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1913
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2136
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1220
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2202
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1177
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 586
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 586
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1880
+            },
+            "/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/payslips": {
+              "status": 200,
+              "ms": 1225
+            }
+          },
+          "analysis": {
+            "meEmail": "hr@acme.test",
+            "meEmp": "cmqjpydsb001mkpjdxlgw74tv",
+            "meUser": "cmqjpydqj000skpjdp2l6cvg5",
+            "leavePrefix": "cmqjpydsb001mkpjdxlgw74tv",
+            "leaveRefs": [
+              "LVR-0011"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "f8b5e88acf233340c3b52d9a",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "8def2d5c0d69f95b292e5c20",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "13005b6ab867b126f53066a4",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqj000skpjdp2l6cvg5\",\"email\":\"hr@acme.test\",\"memberType\":\"HR_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpydsb001mkpjdxlgw74tv\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpydsb001mkpjdxlgw74tv\",\"tenantId\":\"cmqjpydkv0000kpjdelzt",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmqjpyfna006fdwadtwp9ooog\",\"referenceNo\":\"LVR-0011\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-04-29T00:00:00.000Z\",\"endDate\":\"2026-05-02T00:00:00.000Z\",\"totalDays\":4,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"f8b5e88acf233340c3b52d9a\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"fd72c720-f493-49d2-9417-436ede8a0cff\"}}"
+          }
+        },
+        "MANAGER": {
+          "email": "aman@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2141
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2232
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1414
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2250
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1421
+            },
+            "/manager/dashboard": {
+              "status": 200,
+              "ms": 2506
+            },
+            "/manager/team": {
+              "status": 200,
+              "ms": 1807
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 2362
+            },
+            "/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips": {
+              "status": 200,
+              "ms": 1528
+            }
+          },
+          "analysis": {
+            "meEmail": "aman@acme.test",
+            "meEmp": "cmqjpyds0001ikpjd5br3r2uh",
+            "meUser": "cmqjpydql000ukpjdbhesbmpi",
+            "leavePrefix": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveRefs": [
+              "LVR-0021",
+              "LVR-0017",
+              "LVR-0008",
+              "LVR-0003"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "ebacb30d865cf8d7cadecae9",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "55acb5717d48cccf86da2db8",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "389b8fcea94457f863fbe1e3",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydql000ukpjdbhesbmpi\",\"email\":\"aman@acme.test\",\"memberType\":\"MANAGER\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds0001ikpjd5br3r2uh\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds0001ikpjd5br3r2uh\",\"tenantId\":\"cmqjpydkv0000kpjdelz",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":2,\"pending\":0,\"available\":7},{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"ebacb30d865cf8d7cadecae9\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":true,\"data\":{\"managerName\":\"Aman Kumar\",\"teamSize\":22,\"pendingApprovals\":0,\"approvalBreakdown\":{\"leave\":0,\"regularization\":0},\"presentToday\":0,\"avgAttendancePercent\":0,\"todayAttendance\":{\"p"
+          }
+        },
+        "EMPLOYEE": {
+          "email": "priya@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2182
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2432
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1802
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2335
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1663
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 731
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 732
+            },
+            "/manager/approvals": {
+              "status": 403,
+              "ms": 732
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1759
+            }
+          },
+          "analysis": {
+            "meEmail": "priya@acme.test",
+            "meEmp": "cmqjpyds7001kkpjdnlhjygrp",
+            "meUser": "cmqjpydqn000wkpjd02gyqzd3",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "999e2a8eb1ae97280b27c982",
+                "title": "Leave Approved",
+                "body": "Your leave request for 1 day(s) has been approved"
+              },
+              {
+                "id": "e941f1f1c1448a0c9498e0b3",
+                "title": "Check-Out Recorded",
+                "body": "Priya Sharma checked out after 2 minute(s)"
+              },
+              {
+                "id": "8a9c7a43f908a7da4c6dd979",
+                "title": "Regularization Approved",
+                "body": "Your attendance regularization request has been approved"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqn000wkpjd02gyqzd3\",\"email\":\"priya@acme.test\",\"memberType\":\"EMPLOYEE\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds7001kkpjdnlhjygrp\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds7001kkpjdnlhjygrp\",\"tenantId\":\"cmqjpydkv0000kpjde",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"999e2a8eb1ae97280b27c982\",\"type\":\"leave_approved\",\"title\":\"Leave Approved\",\"body\":\"Your leave request for 1 day(s) has been approved\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02:20:18.",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"ac496d13-23c0-46e2-814d-e6f4c6c4eea5\"}}"
+          }
+        }
+      }
+    },
+    {
+      "round": 5,
+      "roles": {
+        "SUPER_ADMIN": {
+          "email": "superadmin@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 1883
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 1976
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 937
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2230
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 894
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 446
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 444
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1924
+            },
+            "/payroll/runs": {
+              "status": 200,
+              "ms": 908
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1146
+            }
+          },
+          "analysis": {
+            "meEmail": "superadmin@acme.test",
+            "meEmp": null,
+            "meUser": "cmqjpydqe000qkpjd8q8idw1k",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "9ba5b55aac98c2f5b52cfbcc",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "74292cdf57dc9838a627fda9",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "805191382d8194f21e332b0f",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": [
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_LEAK",
+                "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+                "path": "/leave/balance",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+              },
+              {
+                "severity": "CRITICAL",
+                "kind": "SA10_LEAVE_REQUESTS_LEAK",
+                "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+                "path": "/leave/requests",
+                "status": 200,
+                "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+              }
+            ]
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqe000qkpjd8q8idw1k\",\"email\":\"superadmin@acme.test\",\"memberType\":\"SUPER_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":null,\"status\":\"ACTIVE\",\"employee\":null,\"permissions\":[\"employees:read\",\"employees:write\",\"employees:delete\",\"empl",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"9ba5b55aac98c2f5b52cfbcc\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"5fda9662-b42b-49e7-83fe-0d9a2da52427\"}}"
+          }
+        },
+        "HR_ADMIN": {
+          "email": "hr@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2021
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2082
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1043
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2239
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1154
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 541
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 586
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 1974
+            },
+            "/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/payslips": {
+              "status": 200,
+              "ms": 1293
+            }
+          },
+          "analysis": {
+            "meEmail": "hr@acme.test",
+            "meEmp": "cmqjpydsb001mkpjdxlgw74tv",
+            "meUser": "cmqjpydqj000skpjdp2l6cvg5",
+            "leavePrefix": "cmqjpydsb001mkpjdxlgw74tv",
+            "leaveRefs": [
+              "LVR-0011"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "f8b5e88acf233340c3b52d9a",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "8def2d5c0d69f95b292e5c20",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "13005b6ab867b126f53066a4",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqj000skpjdp2l6cvg5\",\"email\":\"hr@acme.test\",\"memberType\":\"HR_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpydsb001mkpjdxlgw74tv\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpydsb001mkpjdxlgw74tv\",\"tenantId\":\"cmqjpydkv0000kpjdelzt",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmqjpyfna006fdwadtwp9ooog\",\"referenceNo\":\"LVR-0011\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-04-29T00:00:00.000Z\",\"endDate\":\"2026-05-02T00:00:00.000Z\",\"totalDays\":4,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"f8b5e88acf233340c3b52d9a\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"ecfe8c75-2f3f-481c-b964-edb6fa724407\"}}"
+          }
+        },
+        "MANAGER": {
+          "email": "aman@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2068
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2127
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1442
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2266
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1499
+            },
+            "/manager/dashboard": {
+              "status": 200,
+              "ms": 2475
+            },
+            "/manager/team": {
+              "status": 200,
+              "ms": 1681
+            },
+            "/manager/approvals": {
+              "status": 200,
+              "ms": 2426
+            },
+            "/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips": {
+              "status": 200,
+              "ms": 1779
+            }
+          },
+          "analysis": {
+            "meEmail": "aman@acme.test",
+            "meEmp": "cmqjpyds0001ikpjd5br3r2uh",
+            "meUser": "cmqjpydql000ukpjdbhesbmpi",
+            "leavePrefix": "cmqjpyds0001ikpjd5br3r2uh",
+            "leaveRefs": [
+              "LVR-0021",
+              "LVR-0017",
+              "LVR-0008",
+              "LVR-0003"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "ebacb30d865cf8d7cadecae9",
+                "title": "Leave Request Withdrawn",
+                "body": "Priya Sharma has withdrawn their leave request"
+              },
+              {
+                "id": "55acb5717d48cccf86da2db8",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Earned Leave"
+              },
+              {
+                "id": "389b8fcea94457f863fbe1e3",
+                "title": "New Leave Request",
+                "body": "Priya Sharma requested 1 day(s) of Sick Leave"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydql000ukpjdbhesbmpi\",\"email\":\"aman@acme.test\",\"memberType\":\"MANAGER\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds0001ikpjd5br3r2uh\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds0001ikpjd5br3r2uh\",\"tenantId\":\"cmqjpydkv0000kpjdelz",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":2,\"pending\":0,\"available\":7},{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"r",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"ebacb30d865cf8d7cadecae9\",\"type\":\"leave_withdrawn\",\"title\":\"Leave Request Withdrawn\",\"body\":\"Priya Sharma has withdrawn their leave request\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":false,\"createdAt\":\"2026-08-03T0",
+            "managerDash": "{\"success\":true,\"data\":{\"managerName\":\"Aman Kumar\",\"teamSize\":22,\"pendingApprovals\":0,\"approvalBreakdown\":{\"leave\":0,\"regularization\":0},\"presentToday\":0,\"avgAttendancePercent\":0,\"todayAttendance\":{\"p"
+          }
+        },
+        "EMPLOYEE": {
+          "email": "priya@acme.test",
+          "statusSummary": {
+            "/auth/me": {
+              "status": 200,
+              "ms": 2115
+            },
+            "/employees": {
+              "status": 200,
+              "ms": 2266
+            },
+            "/leave/requests": {
+              "status": 200,
+              "ms": 1681
+            },
+            "/leave/balance": {
+              "status": 200,
+              "ms": 2292
+            },
+            "/notifications": {
+              "status": 200,
+              "ms": 1785
+            },
+            "/manager/dashboard": {
+              "status": 403,
+              "ms": 729
+            },
+            "/manager/team": {
+              "status": 403,
+              "ms": 729
+            },
+            "/manager/approvals": {
+              "status": 403,
+              "ms": 782
+            },
+            "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+              "status": 200,
+              "ms": 1879
+            }
+          },
+          "analysis": {
+            "meEmail": "priya@acme.test",
+            "meEmp": "cmqjpyds7001kkpjdnlhjygrp",
+            "meUser": "cmqjpydqn000wkpjd02gyqzd3",
+            "leavePrefix": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRefs": [
+              "LVR-0028",
+              "LVR-0027",
+              "LVR-0026",
+              "LVR-0025",
+              "LVR-0024"
+            ],
+            "notifCount": 20,
+            "notifSample": [
+              {
+                "id": "999e2a8eb1ae97280b27c982",
+                "title": "Leave Approved",
+                "body": "Your leave request for 1 day(s) has been approved"
+              },
+              {
+                "id": "e941f1f1c1448a0c9498e0b3",
+                "title": "Check-Out Recorded",
+                "body": "Priya Sharma checked out after 2 minute(s)"
+              },
+              {
+                "id": "8a9c7a43f908a7da4c6dd979",
+                "title": "Regularization Approved",
+                "body": "Your attendance regularization request has been approved"
+              }
+            ],
+            "findings": []
+          },
+          "peeks": {
+            "me": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqn000wkpjd02gyqzd3\",\"email\":\"priya@acme.test\",\"memberType\":\"EMPLOYEE\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds7001kkpjdnlhjygrp\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds7001kkpjdnlhjygrp\",\"tenantId\":\"cmqjpydkv0000kpjde",
+            "leaveBalance": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leav",
+            "leaveRequests": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"",
+            "notifications": "{\"success\":true,\"data\":{\"notifications\":[{\"id\":\"999e2a8eb1ae97280b27c982\",\"type\":\"leave_approved\",\"title\":\"Leave Approved\",\"body\":\"Your leave request for 1 day(s) has been approved\",\"entityType\":null,\"entityId\":null,\"actionUrl\":null,\"isRead\":true,\"createdAt\":\"2026-08-03T02:20:18.",
+            "managerDash": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Only managers can access this\",\"details\":{},\"requestId\":\"20d7dac9-59a2-4deb-9751-55718c0d31d2\"}}"
+          }
+        }
+      }
+    }
+  ],
+  "allFindings": [
+    {
+      "round": 1,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_LEAK",
+      "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+      "path": "/leave/balance",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+    },
+    {
+      "round": 1,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_REQUESTS_LEAK",
+      "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+      "path": "/leave/requests",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+    },
+    {
+      "round": 2,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_LEAK",
+      "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+      "path": "/leave/balance",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+    },
+    {
+      "round": 2,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_REQUESTS_LEAK",
+      "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+      "path": "/leave/requests",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+    },
+    {
+      "round": 3,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_LEAK",
+      "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+      "path": "/leave/balance",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+    },
+    {
+      "round": 3,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_REQUESTS_LEAK",
+      "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+      "path": "/leave/requests",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+    },
+    {
+      "round": 4,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_LEAK",
+      "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+      "path": "/leave/balance",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+    },
+    {
+      "round": 4,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_REQUESTS_LEAK",
+      "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+      "path": "/leave/requests",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+    },
+    {
+      "round": 5,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_LEAK",
+      "detail": "leave/balance resolves to Priya employeeId prefix cmqjpyds7001kkpjdnlhjygrp while auth/me.employeeId=null",
+      "path": "/leave/balance",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001k"
+    },
+    {
+      "round": 5,
+      "role": "SUPER_ADMIN",
+      "severity": "CRITICAL",
+      "kind": "SA10_LEAVE_REQUESTS_LEAK",
+      "detail": "leave/requests for SA (employeeId=null) returned refs=[LVR-0028,LVR-0027,LVR-0026,LVR-0025,LVR-0024] matching Priya-scoped personal list",
+      "path": "/leave/requests",
+      "status": 200,
+      "sample": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"20"
+    }
+  ],
+  "matrix": {
+    "SUPER_ADMIN": {
+      "/auth/me": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2167,
+          1857,
+          1894,
+          1818,
+          1883
+        ]
+      },
+      "/employees": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2211,
+          2106,
+          1823,
+          1956,
+          1976
+        ]
+      },
+      "/leave/requests": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1092,
+          933,
+          784,
+          926,
+          937
+        ]
+      },
+      "/leave/balance": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2625,
+          2271,
+          2251,
+          2252,
+          2230
+        ]
+      },
+      "/notifications": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1102,
+          932,
+          846,
+          933,
+          894
+        ]
+      },
+      "/manager/dashboard": {
+        "statuses": [
+          403,
+          403,
+          403,
+          403,
+          403
+        ],
+        "ms": [
+          487,
+          439,
+          481,
+          486,
+          446
+        ]
+      },
+      "/manager/team": {
+        "statuses": [
+          403,
+          403,
+          403,
+          403,
+          403
+        ],
+        "ms": [
+          487,
+          441,
+          434,
+          439,
+          444
+        ]
+      },
+      "/manager/approvals": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2165,
+          1813,
+          1863,
+          1726,
+          1924
+        ]
+      },
+      "/payroll/runs": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1201,
+          1024,
+          944,
+          1024,
+          908
+        ]
+      },
+      "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1351,
+          1125,
+          1000,
+          1122,
+          1146
+        ]
+      }
+    },
+    "HR_ADMIN": {
+      "/auth/me": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2257,
+          1907,
+          1939,
+          1913,
+          2021
+        ]
+      },
+      "/employees": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2541,
+          2012,
+          2011,
+          2136,
+          2082
+        ]
+      },
+      "/leave/requests": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1351,
+          1128,
+          1136,
+          1220,
+          1043
+        ]
+      },
+      "/leave/balance": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2660,
+          2259,
+          2254,
+          2202,
+          2239
+        ]
+      },
+      "/notifications": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1405,
+          1130,
+          1099,
+          1177,
+          1154
+        ]
+      },
+      "/manager/dashboard": {
+        "statuses": [
+          403,
+          403,
+          403,
+          403,
+          403
+        ],
+        "ms": [
+          595,
+          533,
+          582,
+          586,
+          541
+        ]
+      },
+      "/manager/team": {
+        "statuses": [
+          403,
+          403,
+          403,
+          403,
+          403
+        ],
+        "ms": [
+          597,
+          535,
+          530,
+          586,
+          586
+        ]
+      },
+      "/manager/approvals": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2214,
+          1906,
+          1977,
+          1880,
+          1974
+        ]
+      },
+      "/payroll/employees/cmqjpydsb001mkpjdxlgw74tv/payslips": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1666,
+          1275,
+          1146,
+          1225,
+          1293
+        ]
+      }
+    },
+    "MANAGER": {
+      "/auth/me": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2471,
+          1956,
+          2201,
+          2141,
+          2068
+        ]
+      },
+      "/employees": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2455,
+          2261,
+          2230,
+          2232,
+          2127
+        ]
+      },
+      "/leave/requests": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1864,
+          1409,
+          1430,
+          1414,
+          1442
+        ]
+      },
+      "/leave/balance": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2637,
+          2258,
+          2255,
+          2250,
+          2266
+        ]
+      },
+      "/notifications": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1614,
+          1386,
+          1286,
+          1421,
+          1499
+        ]
+      },
+      "/manager/dashboard": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2951,
+          2557,
+          2483,
+          2506,
+          2475
+        ]
+      },
+      "/manager/team": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1914,
+          1766,
+          1430,
+          1807,
+          1681
+        ]
+      },
+      "/manager/approvals": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2857,
+          2409,
+          2437,
+          2362,
+          2426
+        ]
+      },
+      "/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          1816,
+          1603,
+          1425,
+          1528,
+          1779
+        ]
+      }
+    },
+    "EMPLOYEE": {
+      "/auth/me": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2588,
+          2206,
+          2200,
+          2182,
+          2115
+        ]
+      },
+      "/employees": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2792,
+          2446,
+          2456,
+          2432,
+          2266
+        ]
+      },
+      "/leave/requests": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2064,
+          1704,
+          1929,
+          1802,
+          1681
+        ]
+      },
+      "/leave/balance": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2687,
+          2308,
+          2299,
+          2335,
+          2292
+        ]
+      },
+      "/notifications": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2020,
+          1713,
+          1533,
+          1663,
+          1785
+        ]
+      },
+      "/manager/dashboard": {
+        "statuses": [
+          403,
+          403,
+          403,
+          403,
+          403
+        ],
+        "ms": [
+          888,
+          729,
+          731,
+          731,
+          729
+        ]
+      },
+      "/manager/team": {
+        "statuses": [
+          403,
+          403,
+          403,
+          403,
+          403
+        ],
+        "ms": [
+          926,
+          729,
+          731,
+          732,
+          729
+        ]
+      },
+      "/manager/approvals": {
+        "statuses": [
+          403,
+          403,
+          403,
+          403,
+          403
+        ],
+        "ms": [
+          889,
+          777,
+          781,
+          732,
+          782
+        ]
+      },
+      "/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "ms": [
+          2119,
+          1823,
+          1718,
+          1759,
+          1879
+        ]
+      }
+    }
+  },
+  "counts": {
+    "findings": 10,
+    "sa10": 10,
+    "fivexx": 0,
+    "sessionIssues": 0,
+    "notifLeaks": 0,
+    "authz": 0
+  }
+}

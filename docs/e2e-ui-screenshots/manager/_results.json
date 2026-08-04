@@ -1,0 +1,536 @@
+{
+  "summary": {
+    "role": "MANAGER",
+    "email": "aman@acme.test",
+    "screenshots": 61,
+    "findingsCount": 24,
+    "bySeverity": {
+      "INFO": 17,
+      "HIGH": 1,
+      "MEDIUM": 6
+    },
+    "byLayer": {
+      "OK": 17,
+      "FRONTEND": 7
+    },
+    "mutations": [
+      {
+        "action": "DENY",
+        "from": "dashboard",
+        "api": [],
+        "screenshot": "15-dashboard-deny-result.png"
+      },
+      {
+        "action": "APPROVE",
+        "from": "dashboard",
+        "api": [],
+        "screenshot": "17-dashboard-approve-result.png"
+      },
+      {
+        "action": "Check in",
+        "from": "attendance",
+        "api": [],
+        "screenshot": "23-attendance-check-in-result.png"
+      }
+    ],
+    "badApi": {
+      "GET 401 /api/auth/me": 1,
+      "POST 401 /api/auth/refresh": 1,
+      "POST 403 /api/timesheets/cmr4fpp2m006ggrlntoghkxu0/approve": 1
+    },
+    "consoleErrors": 3,
+    "sidebar": [
+      {
+        "href": "/dashboard",
+        "label": "Dashboard"
+      },
+      {
+        "href": "/employees",
+        "label": "Employees"
+      },
+      {
+        "href": "/departments",
+        "label": "Departments"
+      },
+      {
+        "href": "/attendance",
+        "label": "Attendance"
+      },
+      {
+        "href": "/timesheets",
+        "label": "Timesheets"
+      },
+      {
+        "href": "/leave",
+        "label": "Leave"
+      },
+      {
+        "href": "/holidays",
+        "label": "Holidays"
+      },
+      {
+        "href": "/payroll",
+        "label": "Payroll"
+      },
+      {
+        "href": "/payout-methods",
+        "label": "Payout methods"
+      },
+      {
+        "href": "/reports",
+        "label": "Reports"
+      },
+      {
+        "href": "/analytics",
+        "label": "Analytics"
+      },
+      {
+        "href": "/permissions",
+        "label": "Permissions"
+      },
+      {
+        "href": "/settings",
+        "label": "Settings"
+      },
+      {
+        "href": "/recruitment",
+        "label": "Recruitment"
+      },
+      {
+        "href": "/performance",
+        "label": "Performance"
+      },
+      {
+        "href": "/assets",
+        "label": "Assets"
+      },
+      {
+        "href": "/announcements",
+        "label": "Announcements"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "ts": "2026-08-02T18:49:12.045Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Login OK as MANAGER → http://localhost:3001/dashboard",
+      "evidence": {
+        "screenshot": "03-login-result-dashboard.png",
+        "api": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:49:12.113Z",
+      "severity": "HIGH",
+      "layer": "FRONTEND",
+      "title": "Sidebar not role-filtered for MANAGER — sensitive menus visible",
+      "evidence": {
+        "visible": [
+          {
+            "href": "/payroll",
+            "label": "Payroll"
+          },
+          {
+            "href": "/reports",
+            "label": "Reports"
+          },
+          {
+            "href": "/analytics",
+            "label": "Analytics"
+          },
+          {
+            "href": "/permissions",
+            "label": "Permissions"
+          }
+        ],
+        "note": "Deep-links may DENY, but nav shows Reports/Analytics/Permissions/Payroll to MANAGER",
+        "screenshot": "02-sidebar-full.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:49:17.134Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "dashboard: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/dashboard",
+        "screenshot": "05-dashboard-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:49:41.108Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Dashboard Deny attempted (mutation)",
+      "evidence": {
+        "api": [],
+        "screenshot": "15-dashboard-deny-result.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:50:13.464Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Dashboard Approve attempted (mutation)",
+      "evidence": {
+        "api": [],
+        "screenshot": "17-dashboard-approve-result.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:50:17.177Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "employees: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/employees",
+        "screenshot": "18-employees-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:50:21.916Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "departments: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/departments",
+        "screenshot": "20-departments-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:50:25.552Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "attendance: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/attendance",
+        "screenshot": "21-attendance-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:50:32.331Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "timesheets: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/timesheets",
+        "screenshot": "24-timesheets-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:50:45.212Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "leave: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/leave",
+        "screenshot": "31-leave-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:01.422Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "holidays: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/holidays",
+        "screenshot": "41-holidays-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:05.952Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "payroll: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/payroll/my-payslips",
+        "screenshot": "42-payroll-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:18.787Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "payout-methods: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/payout-methods",
+        "screenshot": "45-payout-methods-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:23.070Z",
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "title": "reports: DENY — Access restricted UI",
+      "evidence": {
+        "url": "http://localhost:3001/reports",
+        "route": "/reports",
+        "api": [],
+        "screenshot": "46-reports-land.png",
+        "console": [
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          }
+        ]
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:23.192Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "reports: correctly DENY for MANAGER (but sidebar still shows link — FE nav issue)",
+      "evidence": {
+        "url": "http://localhost:3001/reports"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:27.376Z",
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "title": "analytics: DENY — Access restricted UI",
+      "evidence": {
+        "url": "http://localhost:3001/analytics",
+        "route": "/analytics",
+        "api": [],
+        "screenshot": "47-analytics-land.png",
+        "console": [
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          }
+        ]
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:27.447Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "analytics: correctly DENY for MANAGER (but sidebar still shows link — FE nav issue)",
+      "evidence": {
+        "url": "http://localhost:3001/analytics"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:30.953Z",
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "title": "permissions: DENY — Access restricted UI",
+      "evidence": {
+        "url": "http://localhost:3001/permissions",
+        "route": "/permissions",
+        "api": [],
+        "screenshot": "48-permissions-land.png",
+        "console": [
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          }
+        ]
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:30.971Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "permissions: correctly DENY for MANAGER (but sidebar still shows link — FE nav issue)",
+      "evidence": {
+        "url": "http://localhost:3001/permissions"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:35.331Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "settings: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/settings/sessions",
+        "screenshot": "49-settings-land.png",
+        "api4xx": []
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:47.524Z",
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "title": "recruitment: DENY — Access restricted UI",
+      "evidence": {
+        "url": "http://localhost:3001/recruitment",
+        "route": "/recruitment",
+        "api": [],
+        "screenshot": "55-recruitment-land.png",
+        "console": [
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          }
+        ]
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:51.106Z",
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "title": "performance: DENY — Access restricted UI",
+      "evidence": {
+        "url": "http://localhost:3001/performance",
+        "route": "/performance",
+        "api": [],
+        "screenshot": "56-performance-land.png",
+        "console": [
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          }
+        ]
+      }
+    },
+    {
+      "ts": "2026-08-02T18:51:56.265Z",
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "title": "assets: DENY — Access restricted UI",
+      "evidence": {
+        "url": "http://localhost:3001/assets",
+        "route": "/assets",
+        "api": [],
+        "screenshot": "57-assets-land.png",
+        "console": [
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          },
+          {
+            "type": "error",
+            "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          }
+        ]
+      }
+    },
+    {
+      "ts": "2026-08-02T18:52:00.501Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "announcements: page OK",
+      "evidence": {
+        "url": "http://localhost:3001/announcements",
+        "screenshot": "58-announcements-land.png",
+        "api4xx": []
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "action": "DENY",
+      "from": "dashboard",
+      "api": [],
+      "screenshot": "15-dashboard-deny-result.png"
+    },
+    {
+      "action": "APPROVE",
+      "from": "dashboard",
+      "api": [],
+      "screenshot": "17-dashboard-approve-result.png"
+    },
+    {
+      "action": "Check in",
+      "from": "attendance",
+      "api": [],
+      "screenshot": "23-attendance-check-in-result.png"
+    }
+  ],
+  "badApi": {
+    "GET 401 /api/auth/me": 1,
+    "POST 401 /api/auth/refresh": 1,
+    "POST 403 /api/timesheets/cmr4fpp2m006ggrlntoghkxu0/approve": 1
+  },
+  "consoleLog": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    }
+  ],
+  "apiLog": [
+    {
+      "status": 401,
+      "url": "http://localhost:3001/api/auth/me",
+      "path": "/api/auth/me",
+      "method": "GET"
+    },
+    {
+      "status": 401,
+      "url": "http://localhost:3001/api/auth/refresh",
+      "path": "/api/auth/refresh",
+      "method": "POST"
+    },
+    {
+      "status": 403,
+      "url": "http://localhost:3001/api/timesheets/cmr4fpp2m006ggrlntoghkxu0/approve",
+      "path": "/api/timesheets/cmr4fpp2m006ggrlntoghkxu0/approve",
+      "method": "POST"
+    }
+  ]
+}

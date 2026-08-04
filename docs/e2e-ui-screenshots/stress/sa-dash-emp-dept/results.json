@@ -1,0 +1,820 @@
+{
+  "shard": "SA-DASH-EMP-DEPT",
+  "role": "SUPER_ADMIN",
+  "generatedAt": "2026-08-03T02:23:36.508Z",
+  "counters": {
+    "menus": 3,
+    "controlsClicked": 27,
+    "screenshots": 44,
+    "layersExplored": 6,
+    "stressBursts": 7,
+    "stressErrors": 1,
+    "be": 0,
+    "fe": 2,
+    "both": 0,
+    "pngDisk": 44,
+    "maxDepthReached": 1
+  },
+  "issues": [
+    {
+      "id": "ISSUE-STRESS-SA-DED-01",
+      "role": "SUPER_ADMIN",
+      "shard": "SA-DASH-EMP-DEPT",
+      "title": "Login bootstrap 401s (me/refresh)",
+      "where": "Login /login",
+      "why": "Anonymous GET http://localhost:3001/api/auth/me, POST http://localhost:3001/api/auth/refresh \u2192 401",
+      "classification": "FRONTEND",
+      "how": "Skip me/refresh probes on public auth routes (cosmetic)",
+      "screenshot": "002-login-success.png",
+      "network": "GET http://localhost:3001/api/auth/me 401"
+    },
+    {
+      "id": "ISSUE-STRESS-SA-DED-02",
+      "role": "SUPER_ADMIN",
+      "shard": "SA-DASH-EMP-DEPT",
+      "title": "Employees Add Employee not resilient to 5\u00d7 rapid click",
+      "where": "Employees / Add Employee stress x5",
+      "why": "Click1 ok; clicks2-5 failed (detached). No network/console errors.",
+      "classification": "FRONTEND",
+      "how": "Disable/debounce Add Employee while create flow in-flight",
+      "screenshot": "035-employees-stress-add-employee.png",
+      "network": "n/a (click race; 0 failed API)"
+    }
+  ],
+  "findings": [
+    {
+      "menu": "Login",
+      "action": "login",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:10.500Z",
+      "screenshot": "002-login-success.png",
+      "url": "http://localhost:3001/dashboard",
+      "ready": true
+    },
+    {
+      "menu": "Dashboard",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:11.916Z",
+      "screenshot": "003-dashboard-land.png"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Reject",
+      "status": "MISS",
+      "at": "2026-08-03T02:20:22.121Z"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "stress:7d",
+      "status": "OK",
+      "at": "2026-08-03T02:20:24.569Z",
+      "label": "7d",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 82
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 60
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 96
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 72
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "015-dashboard-stress-7d.png"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "stress:30d",
+      "status": "OK",
+      "at": "2026-08-03T02:20:25.818Z",
+      "label": "30d",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 90
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 63
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 67
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "016-dashboard-stress-30d.png"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "stress:Refresh",
+      "status": "MISS",
+      "at": "2026-08-03T02:20:25.977Z"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "stress:Add Employee",
+      "status": "OK",
+      "at": "2026-08-03T02:20:34.951Z",
+      "label": "Add Employee",
+      "clicks": 5,
+      "networkFails": [],
+      "screenshot": "017-dashboard-stress-add-employee.png"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "d0/Add Employee",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:35.586Z",
+      "screenshot": "018-dashboard-d0-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "d1/Save draft",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:36.183Z",
+      "screenshot": "019-dashboard-d1-save-draft.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "d1/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:38.704Z",
+      "screenshot": "020-dashboard-d1-cancel.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "d1/Next",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:41.216Z",
+      "screenshot": "021-dashboard-d1-next.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "d0/7d",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:43.199Z",
+      "screenshot": "022-dashboard-d0-7d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "d0/30d",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:43.752Z",
+      "screenshot": "023-dashboard-d0-30d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "d0/90d",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:44.300Z",
+      "screenshot": "024-dashboard-d0-90d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Employees",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:45.549Z",
+      "screenshot": "025-employees-land.png"
+    },
+    {
+      "menu": "Employees",
+      "action": "d0/Add employee",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:46.149Z",
+      "screenshot": "026-employees-d0-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "d0/Columns",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:46.734Z",
+      "screenshot": "027-employees-d0-columns.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "d0/All departments",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:47.305Z",
+      "screenshot": "028-employees-d0-all-departments.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "d0/All statuses",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:47.858Z",
+      "screenshot": "029-employees-d0-all-statuses.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "d0/Comfortable",
+      "status": "PASS",
+      "at": "2026-08-03T02:20:50.390Z",
+      "screenshot": "030-employees-d0-comfortable.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "stress:Filter",
+      "status": "MISS",
+      "at": "2026-08-03T02:20:53.449Z"
+    },
+    {
+      "menu": "Employees",
+      "action": "stress:Columns",
+      "status": "OK",
+      "at": "2026-08-03T02:20:54.737Z",
+      "label": "Columns",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 63
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 65
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 68
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "033-employees-stress-columns.png"
+    },
+    {
+      "menu": "Employees",
+      "action": "stress:Refresh",
+      "status": "MISS",
+      "at": "2026-08-03T02:20:55.060Z"
+    },
+    {
+      "menu": "Employees",
+      "action": "stress:Export",
+      "status": "OK",
+      "at": "2026-08-03T02:20:58.261Z",
+      "label": "Export",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 117
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 448
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 449
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 979
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 470
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "034-employees-stress-export.png"
+    },
+    {
+      "menu": "Employees",
+      "action": "stress:Add Employee",
+      "status": "RACE_OR_ERROR",
+      "at": "2026-08-03T02:21:15.849Z",
+      "label": "Add Employee",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 59
+        },
+        {
+          "i": 2,
+          "ok": false,
+          "ms": 3537
+        },
+        {
+          "i": 3,
+          "ok": false,
+          "ms": 4304
+        },
+        {
+          "i": 4,
+          "ok": false,
+          "ms": 4301
+        },
+        {
+          "i": 5,
+          "ok": false,
+          "ms": 4304
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "035-employees-stress-add-employee.png"
+    },
+    {
+      "menu": "Departments",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T02:21:17.864Z",
+      "screenshot": "036-departments-land.png"
+    },
+    {
+      "menu": "Departments",
+      "action": "d0/Add department",
+      "status": "PASS",
+      "at": "2026-08-03T02:21:18.590Z",
+      "screenshot": "037-departments-d0-add-department.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "d1/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T02:21:19.547Z",
+      "screenshot": "039-departments-d1-cancel.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "d0/Actions for Customer Success",
+      "status": "PASS",
+      "at": "2026-08-03T02:21:20.291Z",
+      "screenshot": "040-departments-d0-actions-for-customer-success.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "stress:Add",
+      "status": "OK",
+      "at": "2026-08-03T02:23:36.018Z",
+      "label": "Add",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 79
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 2056
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 133
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 2044
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 185
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "044-departments-stress-add.png"
+    },
+    {
+      "menu": "Departments",
+      "action": "stress:Refresh",
+      "status": "MISS",
+      "at": "2026-08-03T02:23:36.351Z"
+    },
+    {
+      "menu": "Departments",
+      "action": "stress:Filter",
+      "status": "MISS",
+      "at": "2026-08-03T02:23:36.352Z"
+    }
+  ],
+  "mutations": [
+    {
+      "menu": "Dashboard",
+      "action": "Add Employee opened (no create)",
+      "confirmed": false
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Approve clicked",
+      "confirmed": false
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Deny clicked",
+      "confirmed": false
+    }
+  ],
+  "stressNotes": [
+    {
+      "menu": "Dashboard",
+      "label": "7d",
+      "status": "OK",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 82
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 60
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 96
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 72
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "015-dashboard-stress-7d.png"
+    },
+    {
+      "menu": "Dashboard",
+      "label": "30d",
+      "status": "OK",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 90
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 63
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 67
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "016-dashboard-stress-30d.png"
+    },
+    {
+      "menu": "Dashboard",
+      "label": "Refresh",
+      "status": "MISS",
+      "clicks": 0
+    },
+    {
+      "menu": "Dashboard",
+      "label": "Add Employee",
+      "status": "OK",
+      "clicks": 5,
+      "networkFails": [],
+      "screenshot": "017-dashboard-stress-add-employee.png"
+    },
+    {
+      "menu": "Employees",
+      "label": "Filter",
+      "status": "MISS",
+      "clicks": 0
+    },
+    {
+      "menu": "Employees",
+      "label": "Columns",
+      "status": "OK",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 63
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 67
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 65
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 68
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "033-employees-stress-columns.png"
+    },
+    {
+      "menu": "Employees",
+      "label": "Refresh",
+      "status": "MISS",
+      "clicks": 0
+    },
+    {
+      "menu": "Employees",
+      "label": "Export",
+      "status": "OK",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 117
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 448
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 449
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 979
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 470
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "034-employees-stress-export.png"
+    },
+    {
+      "menu": "Employees",
+      "label": "Add Employee",
+      "status": "RACE_OR_ERROR",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 59
+        },
+        {
+          "i": 2,
+          "ok": false,
+          "ms": 3537
+        },
+        {
+          "i": 3,
+          "ok": false,
+          "ms": 4304
+        },
+        {
+          "i": 4,
+          "ok": false,
+          "ms": 4301
+        },
+        {
+          "i": 5,
+          "ok": false,
+          "ms": 4304
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "035-employees-stress-add-employee.png"
+    },
+    {
+      "menu": "Departments",
+      "label": "Add",
+      "status": "OK",
+      "clicks": 5,
+      "clickResults": [
+        {
+          "i": 1,
+          "ok": true,
+          "ms": 79
+        },
+        {
+          "i": 2,
+          "ok": true,
+          "ms": 2056
+        },
+        {
+          "i": 3,
+          "ok": true,
+          "ms": 133
+        },
+        {
+          "i": 4,
+          "ok": true,
+          "ms": 2044
+        },
+        {
+          "i": 5,
+          "ok": true,
+          "ms": 185
+        }
+      ],
+      "networkFails": [],
+      "console": [],
+      "screenshot": "044-departments-stress-add.png"
+    },
+    {
+      "menu": "Departments",
+      "label": "Refresh",
+      "status": "MISS",
+      "clicks": 0
+    },
+    {
+      "menu": "Departments",
+      "label": "Filter",
+      "status": "MISS",
+      "clicks": 0
+    }
+  ],
+  "clickLog": [
+    {
+      "menu": "Dashboard",
+      "depth": 0,
+      "action": "Add Employee"
+    },
+    {
+      "menu": "Dashboard",
+      "depth": 1,
+      "action": "Save draft"
+    },
+    {
+      "menu": "Dashboard",
+      "depth": 1,
+      "action": "Cancel"
+    },
+    {
+      "menu": "Dashboard",
+      "depth": 1,
+      "action": "Next"
+    },
+    {
+      "menu": "Dashboard",
+      "depth": 0,
+      "action": "7d"
+    },
+    {
+      "menu": "Dashboard",
+      "depth": 0,
+      "action": "30d"
+    },
+    {
+      "menu": "Dashboard",
+      "depth": 0,
+      "action": "90d"
+    },
+    {
+      "menu": "Employees",
+      "depth": 0,
+      "action": "Add employee"
+    },
+    {
+      "menu": "Employees",
+      "depth": 0,
+      "action": "Columns"
+    },
+    {
+      "menu": "Employees",
+      "depth": 0,
+      "action": "All departments"
+    },
+    {
+      "menu": "Employees",
+      "depth": 0,
+      "action": "All statuses"
+    },
+    {
+      "menu": "Employees",
+      "depth": 0,
+      "action": "Comfortable"
+    },
+    {
+      "menu": "Departments",
+      "depth": 0,
+      "action": "Add department"
+    },
+    {
+      "menu": "Departments",
+      "depth": 1,
+      "action": "Cancel"
+    },
+    {
+      "menu": "Departments",
+      "depth": 0,
+      "action": "Actions for Customer Success"
+    }
+  ]
+}

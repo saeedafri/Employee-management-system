@@ -1,0 +1,2199 @@
+{
+  "pngs": 228,
+  "issues": [
+    {
+      "id": "GAP-MGR-01",
+      "role": "MANAGER",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets → Approvals → Approve",
+      "why": "Approve exposed for row \"HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return\" → 403 NOT_TEAM_APPROVER",
+      "screenshot": "167-mgr-approve-0.png",
+      "network": "403 POST /api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "code": "NOT_TEAM_APPROVER",
+      "crossRef": "ISSUE-MGR-09",
+      "novelty": "RECONFIRM:ISSUE-MGR-09"
+    },
+    {
+      "id": "GAP-MGR-02",
+      "role": "MANAGER",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets → Approvals → Return",
+      "why": "Return exposed for row \"HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return\" → 403 NOT_TEAM_APPROVER",
+      "screenshot": "191-mgr-return-result-0.png",
+      "network": "403 POST /api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+      "code": "NOT_TEAM_APPROVER",
+      "crossRef": "ISSUE-MGR-09",
+      "novelty": "RECONFIRM:ISSUE-MGR-09"
+    },
+    {
+      "id": "GAP-MGR-03",
+      "role": "MANAGER",
+      "severity": "HIGH",
+      "classification": "FRONTEND",
+      "where": "Sidebar → Reports",
+      "why": "Reports visible in MANAGER sidebar but page Access restricted (dead-end nav)",
+      "screenshot": "228-mgr-reports-land.png",
+      "network": "n/a",
+      "crossRef": "ISSUE-MGR-03",
+      "expected": "hidden nav",
+      "actual": "visible + deny",
+      "novelty": "RECONFIRM:ISSUE-MGR-03"
+    }
+  ],
+  "findings": [
+    {
+      "role": "HR_ADMIN",
+      "menu": "Login",
+      "action": "login",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:13.766Z",
+      "screenshot": "001-hr-login-ok.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Nav",
+      "action": "sidebar",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:13.930Z",
+      "items": [
+        {
+          "t": "Dashboard",
+          "href": "/dashboard"
+        },
+        {
+          "t": "Employees",
+          "href": "/employees"
+        },
+        {
+          "t": "Departments",
+          "href": "/departments"
+        },
+        {
+          "t": "Attendance",
+          "href": "/attendance"
+        },
+        {
+          "t": "Timesheets",
+          "href": "/timesheets"
+        },
+        {
+          "t": "Leave",
+          "href": "/leave"
+        },
+        {
+          "t": "Holidays",
+          "href": "/holidays"
+        },
+        {
+          "t": "Payroll",
+          "href": "/payroll"
+        },
+        {
+          "t": "Payout methods",
+          "href": "/payout-methods"
+        },
+        {
+          "t": "Reports",
+          "href": "/reports"
+        },
+        {
+          "t": "Analytics",
+          "href": "/analytics"
+        },
+        {
+          "t": "Permissions",
+          "href": "/permissions"
+        },
+        {
+          "t": "Settings",
+          "href": "/settings"
+        },
+        {
+          "t": "Recruitment",
+          "href": "/recruitment"
+        },
+        {
+          "t": "Performance",
+          "href": "/performance"
+        },
+        {
+          "t": "Assets",
+          "href": "/assets"
+        },
+        {
+          "t": "Announcements",
+          "href": "/announcements"
+        }
+      ]
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Permissions",
+      "action": "open",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:14.895Z",
+      "screenshot": "003-hr-permissions-land.png",
+      "deny": true,
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "land",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:16.300Z",
+      "screenshot": "005-hr-settings-land.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "nav-items",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:16.302Z",
+      "items": [
+        {
+          "t": "Settings",
+          "href": "/settings"
+        },
+        {
+          "t": "Company Profile",
+          "href": "/settings/company-profile"
+        },
+        {
+          "t": "Locale & Timezone",
+          "href": "/settings/locale"
+        },
+        {
+          "t": "Working Hours",
+          "href": "/settings/working-hours"
+        },
+        {
+          "t": "Leave Types",
+          "href": "/settings/leave-types"
+        },
+        {
+          "t": "Attendance Rules",
+          "href": "/settings/attendance-rules"
+        },
+        {
+          "t": "Timesheets",
+          "href": "/settings/timesheets"
+        },
+        {
+          "t": "Leave Policies",
+          "href": "/settings/leave-policies"
+        },
+        {
+          "t": "Policy Packs",
+          "href": "/settings/leave-packs"
+        },
+        {
+          "t": "Assignments",
+          "href": "/settings/leave-assignments"
+        },
+        {
+          "t": "Legal Entities",
+          "href": "/settings/pay/legal-entities"
+        },
+        {
+          "t": "Statutory Packs",
+          "href": "/settings/pay/statutory-packs"
+        },
+        {
+          "t": "Salary Components",
+          "href": "/settings/pay/components"
+        },
+        {
+          "t": "Pay Groups",
+          "href": "/settings/pay/groups"
+        },
+        {
+          "t": "Pay Schedules",
+          "href": "/settings/pay/schedules"
+        },
+        {
+          "t": "Payslip Template",
+          "href": "/settings/pay/payslip-template"
+        },
+        {
+          "t": "Data Policy",
+          "href": "/settings/pay/data-policy"
+        },
+        {
+          "t": "Sessions & Devices",
+          "href": "/settings/sessions"
+        },
+        {
+          "t": "Audit Log",
+          "href": "/settings/audit-log"
+        },
+        {
+          "t": "Email Templates",
+          "href": "/settings/email-templates"
+        },
+        {
+          "t": "In-app Preferences",
+          "href": "/settings/notifications"
+        }
+      ]
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:company-profile",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:17.040Z",
+      "screenshot": "006-hr-settings-open-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:locale",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:17.869Z",
+      "screenshot": "007-hr-settings-open-locale.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-locale",
+      "action": "btn:Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:18.417Z",
+      "screenshot": "008-hr-admin-settings-locale-btn-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:working-hours",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:19.239Z",
+      "screenshot": "009-hr-settings-open-working-hours.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:leave-types",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:20.018Z",
+      "screenshot": "010-hr-settings-open-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-leave-types",
+      "action": "btn:Leave Types",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:20.568Z",
+      "screenshot": "011-hr-admin-settings-leave-types-btn-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-leave-types",
+      "action": "btn:Add Type",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:21.269Z",
+      "screenshot": "012-hr-admin-settings-leave-types-btn-add-type.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-leave-types",
+      "action": "dialog:Add Type",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:21.334Z",
+      "screenshot": "013-hr-admin-settings-leave-types-dialog-add-type.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:attendance-rules",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:22.400Z",
+      "screenshot": "014-hr-settings-open-attendance-rules.png",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-attendance-rules",
+      "action": "btn:Attendance Rules",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:22.959Z",
+      "screenshot": "015-hr-admin-settings-attendance-rules-btn-attendance-rules.png",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:timesheets",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:23.800Z",
+      "screenshot": "016-hr-settings-open-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-timesheets",
+      "action": "btn:Timesheets",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:24.371Z",
+      "screenshot": "017-hr-admin-settings-timesheets-btn-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:leave-policies",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:25.217Z",
+      "screenshot": "018-hr-settings-open-leave-policies.png",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-leave-policies",
+      "action": "btn:Leave Policies",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:25.771Z",
+      "screenshot": "019-hr-admin-settings-leave-policies-btn-leave-policies.png",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:leave-packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:26.600Z",
+      "screenshot": "020-hr-settings-open-leave-packs.png",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-leave-packs",
+      "action": "btn:Policy Packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:27.150Z",
+      "screenshot": "021-hr-admin-settings-leave-packs-btn-policy-packs.png",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:leave-assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:27.982Z",
+      "screenshot": "022-hr-settings-open-leave-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-leave-assignments",
+      "action": "btn:Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:28.548Z",
+      "screenshot": "023-hr-admin-settings-leave-assignments-btn-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:pay/legal-entities",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:29.471Z",
+      "screenshot": "024-hr-settings-open-pay-legal-entities.png",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:pay/statutory-packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:30.317Z",
+      "screenshot": "025-hr-settings-open-pay-statutory-packs.png",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-statutory-packs",
+      "action": "btn:Statutory Packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:30.899Z",
+      "screenshot": "026-hr-admin-settings-pay-statutory-packs-btn-statutory-pac.png",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-statutory-packs",
+      "action": "btn:New pack",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:31.544Z",
+      "screenshot": "027-hr-admin-settings-pay-statutory-packs-btn-new-pack.png",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-statutory-packs",
+      "action": "dialog:New pack",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:31.608Z",
+      "screenshot": "028-hr-admin-settings-pay-statutory-packs-dialog-new-pack.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:pay/components",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:35.434Z",
+      "screenshot": "035-hr-settings-open-pay-components.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-components",
+      "action": "btn:Salary Components",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:36.069Z",
+      "screenshot": "036-hr-admin-settings-pay-components-btn-salary-components.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-components",
+      "action": "btn:All Types",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:36.704Z",
+      "screenshot": "037-hr-admin-settings-pay-components-btn-all-types.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-components",
+      "action": "btn:All Status",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:39.186Z",
+      "screenshot": "038-hr-admin-settings-pay-components-btn-all-status.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-components",
+      "action": "btn:Add Component",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:39.812Z",
+      "screenshot": "039-hr-admin-settings-pay-components-btn-add-component.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-components",
+      "action": "dialog:Add Component",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:39.894Z",
+      "screenshot": "040-hr-admin-settings-pay-components-dialog-add-component.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:pay/groups",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:42.397Z",
+      "screenshot": "044-hr-settings-open-pay-groups.png",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-groups",
+      "action": "btn:Pay Groups",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:42.987Z",
+      "screenshot": "045-hr-admin-settings-pay-groups-btn-pay-groups.png",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:pay/schedules",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:43.782Z",
+      "screenshot": "046-hr-settings-open-pay-schedules.png",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-schedules",
+      "action": "btn:Pay Schedules",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:44.383Z",
+      "screenshot": "047-hr-admin-settings-pay-schedules-btn-pay-schedules.png",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:pay/payslip-template",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:45.188Z",
+      "screenshot": "048-hr-settings-open-pay-payslip-template.png",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:pay/data-policy",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:45.982Z",
+      "screenshot": "049-hr-settings-open-pay-data-policy.png",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-pay-data-policy",
+      "action": "btn:Data Policy",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:46.634Z",
+      "screenshot": "050-hr-admin-settings-pay-data-policy-btn-data-policy.png",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:sessions",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:47.459Z",
+      "screenshot": "051-hr-settings-open-sessions.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-sessions",
+      "action": "btn:Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:48.070Z",
+      "screenshot": "052-hr-admin-settings-sessions-btn-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:audit-log",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:48.904Z",
+      "screenshot": "053-hr-settings-open-audit-log.png",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:email-templates",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:49.686Z",
+      "screenshot": "054-hr-settings-open-email-templates.png",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "open:notifications",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:50.466Z",
+      "screenshot": "055-hr-settings-open-notifications.png",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "settings-notifications",
+      "action": "btn:In-app Preferences",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:51.102Z",
+      "screenshot": "056-hr-admin-settings-notifications-btn-in-app-preferences.png",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:branding",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:51.818Z",
+      "screenshot": "057-hr-settings-deny-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:authentication",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:52.568Z",
+      "screenshot": "058-hr-settings-deny-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:integration-email",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:53.216Z",
+      "screenshot": "059-hr-settings-deny-integration-email.png",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:integration-storage",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:53.884Z",
+      "screenshot": "060-hr-settings-deny-integration-storage.png",
+      "url": "http://localhost:3001/settings/integration-storage"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:integration-webhooks",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:54.566Z",
+      "screenshot": "061-hr-settings-deny-integration-webhooks.png",
+      "url": "http://localhost:3001/settings/integration-webhooks"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:billing-plan",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:55.360Z",
+      "screenshot": "062-hr-settings-deny-billing-plan.png",
+      "url": "http://localhost:3001/settings/billing-plan"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:billing-invoices",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:56.052Z",
+      "screenshot": "063-hr-settings-deny-billing-invoices.png",
+      "url": "http://localhost:3001/settings/billing-invoices"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Settings",
+      "action": "deny:pay/country-bank-schemas",
+      "status": "DENY_OK",
+      "at": "2026-08-03T03:33:56.750Z",
+      "screenshot": "064-hr-settings-deny-pay-country-bank-schemas.png",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Recruitment",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:57.634Z",
+      "screenshot": "065-hr-recruitment-land.png",
+      "navVisible": true,
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "tab:Pipeline",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:58.471Z",
+      "screenshot": "066-hr-admin-recruitment-tab-pipeline.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "btn:Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:58.989Z",
+      "screenshot": "067-hr-admin-recruitment-pipeline-btn-export.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "btn:Post a Job",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:59.615Z",
+      "screenshot": "068-hr-admin-recruitment-pipeline-btn-post-a-job.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "dialog:Post a Job",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:59.706Z",
+      "screenshot": "069-hr-admin-recruitment-pipeline-dialog-post-a-job.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "btn:Pipeline",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:01.554Z",
+      "screenshot": "072-hr-admin-recruitment-pipeline-btn-pipeline.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "btn:Openings",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:02.119Z",
+      "screenshot": "073-hr-admin-recruitment-pipeline-btn-openings.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "btn:Candidates",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:02.688Z",
+      "screenshot": "074-hr-admin-recruitment-pipeline-btn-candidates.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "btn:Filter",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:03.243Z",
+      "screenshot": "075-hr-admin-recruitment-pipeline-btn-filter.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Pipeline",
+      "action": "dialog:Filter",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:03.272Z",
+      "screenshot": "076-hr-admin-recruitment-pipeline-dialog-filter.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "tab:Openings",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:06.652Z",
+      "screenshot": "082-hr-admin-recruitment-tab-openings.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "btn:Sort",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:07.203Z",
+      "screenshot": "083-hr-admin-recruitment-openings-btn-sort.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "btn:Actions for Operations Manager",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:09.719Z",
+      "screenshot": "084-hr-admin-recruitment-openings-btn-actions-for-operation.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "btn:Actions for Product Manager",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:10.223Z",
+      "screenshot": "085-hr-admin-recruitment-openings-btn-actions-for-product-m.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "btn:Actions for ML Engineer",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:12.800Z",
+      "screenshot": "086-hr-admin-recruitment-openings-btn-actions-for-ml-engine.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "dialog:Actions for ML Engineer",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:12.878Z",
+      "screenshot": "087-hr-admin-recruitment-openings-dialog-actions-for-ml-eng.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "btn:Actions for Frontend Engineer (React)",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:17.104Z",
+      "screenshot": "091-hr-admin-recruitment-openings-btn-actions-for-frontend-.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "btn:Actions for Senior Backend Engineer",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:19.688Z",
+      "screenshot": "092-hr-admin-recruitment-openings-btn-actions-for-senior-ba.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Openings",
+      "action": "dialog:Actions for Senior Backend Engineer",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:19.766Z",
+      "screenshot": "093-hr-admin-recruitment-openings-dialog-actions-for-senior.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "tab:Candidates",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:24.445Z",
+      "screenshot": "097-hr-admin-recruitment-tab-candidates.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Candidates",
+      "action": "btn:Set rating 1",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:25.020Z",
+      "screenshot": "098-hr-admin-recruitment-candidates-btn-set-rating-1.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Candidates",
+      "action": "btn:Set rating 2",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:25.536Z",
+      "screenshot": "099-hr-admin-recruitment-candidates-btn-set-rating-2.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Candidates",
+      "action": "btn:Set rating 3",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:26.087Z",
+      "screenshot": "100-hr-admin-recruitment-candidates-btn-set-rating-3.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Candidates",
+      "action": "btn:Set rating 4",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:26.623Z",
+      "screenshot": "101-hr-admin-recruitment-candidates-btn-set-rating-4.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Candidates",
+      "action": "btn:Set rating 5",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:27.156Z",
+      "screenshot": "102-hr-admin-recruitment-candidates-btn-set-rating-5.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment/Candidates",
+      "action": "btn:Email Aditi Sinha",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:27.788Z",
+      "screenshot": "103-hr-admin-recruitment-candidates-btn-email-aditi-sinha.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Email Imran Khan",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:28.469Z",
+      "screenshot": "104-hr-admin-recruitment-btn-email-imran-khan.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Advance",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:29.003Z",
+      "screenshot": "105-hr-admin-recruitment-btn-advance.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Email Shruti Mehta",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:29.642Z",
+      "screenshot": "106-hr-admin-recruitment-btn-email-shruti-mehta.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Email Pooja Iyer",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:30.220Z",
+      "screenshot": "107-hr-admin-recruitment-btn-email-pooja-iyer.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Email Rahul Tiwari",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:30.788Z",
+      "screenshot": "108-hr-admin-recruitment-btn-email-rahul-tiwari.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Email Vikram Bose",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:31.357Z",
+      "screenshot": "109-hr-admin-recruitment-btn-email-vikram-bose.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Email Nandini Rao",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:31.987Z",
+      "screenshot": "110-hr-admin-recruitment-btn-email-nandini-rao.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "recruitment",
+      "action": "btn:Email Neha Gupta",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:32.602Z",
+      "screenshot": "111-hr-admin-recruitment-btn-email-neha-gupta.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Performance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:33.486Z",
+      "screenshot": "112-hr-performance-land.png",
+      "navVisible": true,
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance",
+      "action": "tab:Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:34.404Z",
+      "screenshot": "113-hr-admin-performance-tab-reviews.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Reviews",
+      "action": "btn:Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:34.920Z",
+      "screenshot": "114-hr-admin-performance-reviews-btn-export.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Reviews",
+      "action": "btn:Start a Review",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:35.581Z",
+      "screenshot": "115-hr-admin-performance-reviews-btn-start-a-review.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Reviews",
+      "action": "btn:Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:38.154Z",
+      "screenshot": "116-hr-admin-performance-reviews-btn-reviews.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Reviews",
+      "action": "btn:Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:38.789Z",
+      "screenshot": "117-hr-admin-performance-reviews-btn-goals.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Reviews",
+      "action": "btn:Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:39.317Z",
+      "screenshot": "118-hr-admin-performance-reviews-btn-calibration.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Reviews",
+      "action": "btn:Open calibration sheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:39.880Z",
+      "screenshot": "119-hr-admin-performance-reviews-btn-open-calibration-sheet.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance",
+      "action": "tab:Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:40.740Z",
+      "screenshot": "120-hr-admin-performance-tab-goals.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Goals",
+      "action": "btn:All statuses",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:41.271Z",
+      "screenshot": "121-hr-admin-performance-goals-btn-all-statuses.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance/Goals",
+      "action": "btn:Add goal",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:43.854Z",
+      "screenshot": "122-hr-admin-performance-goals-btn-add-goal.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "performance",
+      "action": "tab:Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:44.733Z",
+      "screenshot": "123-hr-admin-performance-tab-calibration.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Assets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:45.999Z",
+      "screenshot": "124-hr-assets-land.png",
+      "navVisible": true,
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets",
+      "action": "tab:Inventory",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:46.884Z",
+      "screenshot": "125-hr-admin-assets-tab-inventory.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Inventory",
+      "action": "btn:Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:47.388Z",
+      "screenshot": "126-hr-admin-assets-inventory-btn-export.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Inventory",
+      "action": "btn:Add Asset",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:48.005Z",
+      "screenshot": "127-hr-admin-assets-inventory-btn-add-asset.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Inventory",
+      "action": "dialog:Add Asset",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:48.077Z",
+      "screenshot": "128-hr-admin-assets-inventory-dialog-add-asset.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Inventory",
+      "action": "btn:Inventory",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:50.357Z",
+      "screenshot": "132-hr-admin-assets-inventory-btn-inventory.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Inventory",
+      "action": "btn:Assigned",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:50.887Z",
+      "screenshot": "133-hr-admin-assets-inventory-btn-assigned.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Inventory",
+      "action": "btn:Requests",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:51.389Z",
+      "screenshot": "134-hr-admin-assets-inventory-btn-requests.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Inventory",
+      "action": "btn:All statuses",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:51.921Z",
+      "screenshot": "135-hr-admin-assets-inventory-btn-all-statuses.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets",
+      "action": "tab:Assigned",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:52.767Z",
+      "screenshot": "136-hr-admin-assets-tab-assigned.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Assigned",
+      "action": "btn:Recall",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:53.290Z",
+      "screenshot": "137-hr-admin-assets-assigned-btn-recall.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets",
+      "action": "tab:Requests",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:54.136Z",
+      "screenshot": "138-hr-admin-assets-tab-requests.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Requests",
+      "action": "btn:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:54.711Z",
+      "screenshot": "139-hr-admin-assets-requests-btn-view.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Requests",
+      "action": "dialog:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:54.800Z",
+      "screenshot": "140-hr-admin-assets-requests-dialog-view.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Requests",
+      "action": "btn:Decline",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:55.572Z",
+      "screenshot": "141-hr-admin-assets-requests-btn-decline.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Requests",
+      "action": "btn:Approve",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:56.230Z",
+      "screenshot": "142-hr-admin-assets-requests-btn-approve.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "assets/Requests",
+      "action": "dialog:Approve",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:56.324Z",
+      "screenshot": "143-hr-admin-assets-requests-dialog-approve.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "Announcements",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:57.601Z",
+      "screenshot": "144-hr-announcements-land.png",
+      "navVisible": true,
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "announcements",
+      "action": "btn:New Announcement",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:58.205Z",
+      "screenshot": "145-hr-admin-announcements-btn-new-announcement.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "announcements",
+      "action": "dialog:New Announcement",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:58.287Z",
+      "screenshot": "146-hr-admin-announcements-dialog-new-announcement.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "announcements",
+      "action": "btn:Share an update with the company…",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:02.669Z",
+      "screenshot": "150-hr-admin-announcements-btn-share-an-update-with-the-com.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "announcements",
+      "action": "dialog:Share an update with the company…",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:02.761Z",
+      "screenshot": "151-hr-admin-announcements-dialog-share-an-update-with-the-.png"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "announcements",
+      "action": "btn:Post",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:07.173Z",
+      "screenshot": "155-hr-admin-announcements-btn-post.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "role": "HR_ADMIN",
+      "menu": "announcements",
+      "action": "dialog:Post",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:07.266Z",
+      "screenshot": "156-hr-admin-announcements-dialog-post.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Login",
+      "action": "login",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:13.898Z",
+      "screenshot": "160-mgr-login-ok.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Nav",
+      "action": "sidebar",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:13.945Z",
+      "items": [
+        {
+          "t": "Dashboard",
+          "href": "/dashboard"
+        },
+        {
+          "t": "Employees",
+          "href": "/employees"
+        },
+        {
+          "t": "Departments",
+          "href": "/departments"
+        },
+        {
+          "t": "Attendance",
+          "href": "/attendance"
+        },
+        {
+          "t": "Timesheets",
+          "href": "/timesheets"
+        },
+        {
+          "t": "Leave",
+          "href": "/leave"
+        },
+        {
+          "t": "Holidays",
+          "href": "/holidays"
+        },
+        {
+          "t": "Payroll",
+          "href": "/payroll"
+        },
+        {
+          "t": "Payout methods",
+          "href": "/payout-methods"
+        },
+        {
+          "t": "Reports",
+          "href": "/reports"
+        },
+        {
+          "t": "Analytics",
+          "href": "/analytics"
+        },
+        {
+          "t": "Permissions",
+          "href": "/permissions"
+        },
+        {
+          "t": "Settings",
+          "href": "/settings"
+        },
+        {
+          "t": "Recruitment",
+          "href": "/recruitment"
+        },
+        {
+          "t": "Performance",
+          "href": "/performance"
+        },
+        {
+          "t": "Assets",
+          "href": "/assets"
+        },
+        {
+          "t": "Announcements",
+          "href": "/announcements"
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "loaded",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:18.161Z",
+      "screenshot": "164-mgr-timesheets-approvals-loaded.png",
+      "approveCount": 11,
+      "returnCount": 11
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "approve:0",
+      "status": "FAIL",
+      "at": "2026-08-03T03:35:21.423Z",
+      "screenshot": "167-mgr-approve-0.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"415c9089-860c-4680-92f6-5edf06254ec5\"}}",
+          "t": 1785728121229
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "approve:1",
+      "status": "FAIL",
+      "at": "2026-08-03T03:35:24.986Z",
+      "screenshot": "170-mgr-approve-1.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"bd308d83-108d-4c5a-9656-edf183eb2d86\"}}",
+          "t": 1785728124591
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "approve:2",
+      "status": "FAIL",
+      "at": "2026-08-03T03:35:28.574Z",
+      "screenshot": "173-mgr-approve-2.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"5582d6af-0978-4bfe-9453-5735bae98445\"}}",
+          "t": 1785728128371
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "approve:3",
+      "status": "FAIL",
+      "at": "2026-08-03T03:35:32.159Z",
+      "screenshot": "176-mgr-approve-3.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"c376a281-d6fb-4bb0-b3dd-308fb0a45eba\"}}",
+          "t": 1785728131925
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "approve:4",
+      "status": "FAIL",
+      "at": "2026-08-03T03:35:35.731Z",
+      "screenshot": "179-mgr-approve-4.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"6b237ee8-7a3c-4a4e-a095-8806bff09ccf\"}}",
+          "t": 1785728135348
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "approve:5",
+      "status": "FAIL",
+      "at": "2026-08-03T03:35:39.308Z",
+      "screenshot": "182-mgr-approve-5.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"181d4743-e0cc-4d73-840c-27c7edb918ce\"}}",
+          "t": 1785728138957
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "approve:6",
+      "status": "FAIL",
+      "at": "2026-08-03T03:35:42.865Z",
+      "screenshot": "185-mgr-approve-6.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"3f832dfb-9d48-465b-a18d-ccb8cae6da86\"}}",
+          "t": 1785728142864
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "return:0",
+      "status": "FAIL",
+      "at": "2026-08-03T03:36:18.803Z",
+      "screenshot": "191-mgr-return-result-0.png",
+      "modal": "190-mgr-return-modal-0.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"54757fa9-2a57-4015-bdce-1a3ba1c7ba4f\"}}",
+          "t": 1785728178566
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets/Approvals",
+      "action": "return:1",
+      "status": "FAIL",
+      "at": "2026-08-03T03:36:23.161Z",
+      "screenshot": "195-mgr-return-result-1.png",
+      "modal": "194-mgr-return-modal-1.png",
+      "rowInfo": "HA HR Admin Jun 8 – Jun 14, 2026 39.5h 34h billable Jun 8, 2026 History Approve Return",
+      "fails": [
+        {
+          "role": "MGR",
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"4a215892-d18e-4f0f-b242-9907a5b33523\"}}",
+          "t": 1785728183004
+        }
+      ]
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i",
+      "action": "tab:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:56.483Z",
+      "screenshot": "199-manager-timesheets-my-i-tab-my-timesheet.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/My Timesheet",
+      "action": "btn:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:56.983Z",
+      "screenshot": "200-manager-timesheets-my-i-my-timesheet-btn-my-timesheet.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/My Timesheet",
+      "action": "btn:Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:57.517Z",
+      "screenshot": "201-manager-timesheets-my-i-my-timesheet-btn-approvals.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/My Timesheet",
+      "action": "btn:Delegations",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:58.101Z",
+      "screenshot": "202-manager-timesheets-my-i-my-timesheet-btn-delegations.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:58.989Z",
+      "screenshot": "203-manager-timesheets-my-i-tab-approvals.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/Approvals",
+      "action": "btn:History",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:59.599Z",
+      "screenshot": "204-manager-timesheets-my-i-approvals-btn-history.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/Approvals",
+      "action": "dialog:History",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:59.679Z",
+      "screenshot": "205-manager-timesheets-my-i-approvals-dialog-history.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/Approvals",
+      "action": "btn:Approve",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:00.492Z",
+      "screenshot": "206-manager-timesheets-my-i-approvals-btn-approve.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/Approvals",
+      "action": "btn:Return",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:01.102Z",
+      "screenshot": "207-manager-timesheets-my-i-approvals-btn-return.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/Approvals",
+      "action": "dialog:Return",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:01.200Z",
+      "screenshot": "208-manager-timesheets-my-i-approvals-dialog-return.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i",
+      "action": "tab:Delegations",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:02.860Z",
+      "screenshot": "210-manager-timesheets-my-i-tab-delegations.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/Delegations",
+      "action": "btn:Choose a person",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:03.370Z",
+      "screenshot": "211-manager-timesheets-my-i-delegations-btn-choose-a-person.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-my-i/Delegations",
+      "action": "btn:Create delegation",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:05.867Z",
+      "screenshot": "212-manager-timesheets-my-i-delegations-btn-create-delegati.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets",
+      "action": "retab:/my/i",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:05.887Z",
+      "screenshot": "198-mgr-timesheets-retab-my-i.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i",
+      "action": "tab:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:07.333Z",
+      "screenshot": "214-manager-timesheets-delegat-i-tab-my-timesheet.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/My Timesheet",
+      "action": "btn:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:07.861Z",
+      "screenshot": "215-manager-timesheets-delegat-i-my-timesheet-btn-my-timesh.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/My Timesheet",
+      "action": "btn:Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:08.473Z",
+      "screenshot": "216-manager-timesheets-delegat-i-my-timesheet-btn-approvals.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/My Timesheet",
+      "action": "btn:Delegations",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:09.034Z",
+      "screenshot": "217-manager-timesheets-delegat-i-my-timesheet-btn-delegatio.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:09.940Z",
+      "screenshot": "218-manager-timesheets-delegat-i-tab-approvals.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/Approvals",
+      "action": "btn:History",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:10.547Z",
+      "screenshot": "219-manager-timesheets-delegat-i-approvals-btn-history.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/Approvals",
+      "action": "dialog:History",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:10.630Z",
+      "screenshot": "220-manager-timesheets-delegat-i-approvals-dialog-history.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/Approvals",
+      "action": "btn:Approve",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:11.443Z",
+      "screenshot": "221-manager-timesheets-delegat-i-approvals-btn-approve.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/Approvals",
+      "action": "btn:Return",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:12.050Z",
+      "screenshot": "222-manager-timesheets-delegat-i-approvals-btn-return.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/Approvals",
+      "action": "dialog:Return",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:12.138Z",
+      "screenshot": "223-manager-timesheets-delegat-i-approvals-dialog-return.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i",
+      "action": "tab:Delegations",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:13.767Z",
+      "screenshot": "225-manager-timesheets-delegat-i-tab-delegations.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/Delegations",
+      "action": "btn:Choose a person",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:14.286Z",
+      "screenshot": "226-manager-timesheets-delegat-i-delegations-btn-choose-a-p.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "timesheets-delegat-i/Delegations",
+      "action": "btn:Create delegation",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:16.820Z",
+      "screenshot": "227-manager-timesheets-delegat-i-delegations-btn-create-del.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Timesheets",
+      "action": "retab:/delegat/i",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:16.861Z",
+      "screenshot": "213-mgr-timesheets-retab-delegat-i.png"
+    },
+    {
+      "role": "MANAGER",
+      "menu": "Reports",
+      "action": "open",
+      "status": "DENY",
+      "at": "2026-08-03T03:37:17.849Z",
+      "screenshot": "228-mgr-reports-land.png",
+      "url": "http://localhost:3001/reports"
+    }
+  ],
+  "apiFails": [
+    {
+      "role": "HR",
+      "status": 401,
+      "method": "GET",
+      "path": "/api/auth/me",
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"e32ba580-1ce7-47fe-981b-ef4f5c287b71\"}}",
+      "t": 1785727991503
+    },
+    {
+      "role": "HR",
+      "status": 401,
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"4fd3cb63-c624-4b36-8b77-b99fc3819a48\"}}",
+      "t": 1785727991538
+    },
+    {
+      "role": "MGR",
+      "status": 401,
+      "method": "GET",
+      "path": "/api/auth/me",
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"581a1b1c-afda-4335-bf61-dfcc2459a7b0\"}}",
+      "t": 1785728111455
+    },
+    {
+      "role": "MGR",
+      "status": 401,
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"4da6ada9-6e0f-4277-b85f-a2db919006e5\"}}",
+      "t": 1785728111467
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"415c9089-860c-4680-92f6-5edf06254ec5\"}}",
+      "t": 1785728121229
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"bd308d83-108d-4c5a-9656-edf183eb2d86\"}}",
+      "t": 1785728124591
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"5582d6af-0978-4bfe-9453-5735bae98445\"}}",
+      "t": 1785728128371
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"c376a281-d6fb-4bb0-b3dd-308fb0a45eba\"}}",
+      "t": 1785728131925
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"6b237ee8-7a3c-4a4e-a095-8806bff09ccf\"}}",
+      "t": 1785728135348
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"181d4743-e0cc-4d73-840c-27c7edb918ce\"}}",
+      "t": 1785728138957
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"3f832dfb-9d48-465b-a18d-ccb8cae6da86\"}}",
+      "t": 1785728142864
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"54757fa9-2a57-4015-bdce-1a3ba1c7ba4f\"}}",
+      "t": 1785728178566
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"4a215892-d18e-4f0f-b242-9907a5b33523\"}}",
+      "t": 1785728183004
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"d8e92dd5-8cb3-4e84-aad8-3146c0342cdc\"}}",
+      "t": 1785728220435
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"ff8a4f8d-efe9-4900-be06-0a20a7c5cbdb\"}}",
+      "t": 1785728231361
+    }
+  ],
+  "mutations": [
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"415c9089-860c-4680-92f6-5edf06254ec5\"}}",
+      "t": 1785728121229
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"bd308d83-108d-4c5a-9656-edf183eb2d86\"}}",
+      "t": 1785728124591
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"5582d6af-0978-4bfe-9453-5735bae98445\"}}",
+      "t": 1785728128371
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"c376a281-d6fb-4bb0-b3dd-308fb0a45eba\"}}",
+      "t": 1785728131925
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"6b237ee8-7a3c-4a4e-a095-8806bff09ccf\"}}",
+      "t": 1785728135348
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"181d4743-e0cc-4d73-840c-27c7edb918ce\"}}",
+      "t": 1785728138957
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"3f832dfb-9d48-465b-a18d-ccb8cae6da86\"}}",
+      "t": 1785728142864
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"54757fa9-2a57-4015-bdce-1a3ba1c7ba4f\"}}",
+      "t": 1785728178566
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"4a215892-d18e-4f0f-b242-9907a5b33523\"}}",
+      "t": 1785728183004
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"d8e92dd5-8cb3-4e84-aad8-3146c0342cdc\"}}",
+      "t": 1785728220435
+    },
+    {
+      "role": "MGR",
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "body": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"ff8a4f8d-efe9-4900-be06-0a20a7c5cbdb\"}}",
+      "t": 1785728231361
+    }
+  ],
+  "consoleErrors": [
+    {
+      "role": "HR",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "role": "HR",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    },
+    {
+      "role": "HR",
+      "text": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could ch"
+    }
+  ]
+}

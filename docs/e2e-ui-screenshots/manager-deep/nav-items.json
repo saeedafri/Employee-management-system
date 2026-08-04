@@ -1,0 +1,70 @@
+[
+  {
+    "label": "Dashboard",
+    "href": "/dashboard"
+  },
+  {
+    "label": "Employees",
+    "href": "/employees"
+  },
+  {
+    "label": "Departments",
+    "href": "/departments"
+  },
+  {
+    "label": "Attendance",
+    "href": "/attendance"
+  },
+  {
+    "label": "Timesheets",
+    "href": "/timesheets"
+  },
+  {
+    "label": "Leave",
+    "href": "/leave"
+  },
+  {
+    "label": "Holidays",
+    "href": "/holidays"
+  },
+  {
+    "label": "Payroll",
+    "href": "/payroll"
+  },
+  {
+    "label": "Payout methods",
+    "href": "/payout-methods"
+  },
+  {
+    "label": "Reports",
+    "href": "/reports"
+  },
+  {
+    "label": "Analytics",
+    "href": "/analytics"
+  },
+  {
+    "label": "Permissions",
+    "href": "/permissions"
+  },
+  {
+    "label": "Settings",
+    "href": "/settings"
+  },
+  {
+    "label": "Recruitment",
+    "href": "/recruitment"
+  },
+  {
+    "label": "Performance",
+    "href": "/performance"
+  },
+  {
+    "label": "Assets",
+    "href": "/assets"
+  },
+  {
+    "label": "Announcements",
+    "href": "/announcements"
+  }
+]

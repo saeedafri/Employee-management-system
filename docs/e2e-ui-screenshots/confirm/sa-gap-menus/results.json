@@ -1,0 +1,4186 @@
+{
+  "role": "SUPER_ADMIN",
+  "section": "SA-GAP-MENUS",
+  "generatedAt": "2026-08-03T03:40:45.664Z",
+  "counters": {
+    "menus": 6,
+    "settingsSubs": 29,
+    "controlsClicked": 397,
+    "layersExplored": 135,
+    "screenshots": 392,
+    "be": 0,
+    "fe": 4,
+    "both": 0
+  },
+  "maxDepthReached": 3,
+  "issues": [
+    {
+      "id": "ISSUE-SA-GAP-01",
+      "role": "SUPER_ADMIN",
+      "section": "SA-GAP-MENUS",
+      "title": "Performance: console error",
+      "where": "Performance / http://localhost:3001/performance",
+      "why": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. cmqjpydv6002yk",
+      "classification": "FRONTEND",
+      "how": "Fix React/runtime error in FE",
+      "screenshot": "045-performance-d0-tab-goals.png",
+      "network": "n/a (console)",
+      "expected": "clean console",
+      "actual": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause chi"
+    },
+    {
+      "id": "ISSUE-SA-GAP-02",
+      "role": "SUPER_ADMIN",
+      "section": "SA-GAP-MENUS",
+      "title": "Menu exploration crashed: Settings",
+      "where": "Settings / /settings",
+      "why": "TimeoutError: locator.getAttribute: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[role=\"dialog\"], [role=\"alertdialog\"]').last().locator('input:visible:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"file\"]):not([type=\"hidden\"]), textarea:visible').nth(1)\n",
+      "classification": "FRONTEND",
+      "how": "Stabilize page; re-run confirm gap shard",
+      "screenshot": "368-settings-crash.png",
+      "network": "n/a"
+    },
+    {
+      "id": "ISSUE-SA-GAP-03",
+      "role": "SUPER_ADMIN",
+      "section": "SA-GAP-MENUS",
+      "title": "Download failed: assets-inventory.csv",
+      "where": "http://localhost:3001/assets",
+      "why": "Download event failure: {}",
+      "classification": "FRONTEND",
+      "how": "Ensure export triggers a real file download with Content-Disposition",
+      "screenshot": "n/a",
+      "network": "download event"
+    },
+    {
+      "id": "ISSUE-SA-GAP-04",
+      "role": "SUPER_ADMIN",
+      "section": "SA-GAP-MENUS",
+      "title": "Settings/roles-permissions: 404 GET …/settings/roles-permissions",
+      "where": "Settings/roles-permissions / http://localhost:3001/settings/roles-permissions",
+      "why": "GET http://localhost:3001/settings/roles-permissions → 404; <!DOCTYPE html><html lang=\"en\" class=\"inter_8db6fa51-module__MMaAbG__variable jetbrains_mono_9a2f2d6c-module__wsyXyG__variable h-full antialiased\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" co",
+      "classification": "FRONTEND",
+      "how": "Fix FE/BFF",
+      "screenshot": "391-settings-roles-permissions-land.png",
+      "network": "GET http://localhost:3001/settings/roles-permissions 404"
+    }
+  ],
+  "clickLog": [
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "tab:Pipeline",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "tab:Openings",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "tab:Candidates",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Export",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Openings",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Filter",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 1,
+      "action": "Open",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Open",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 3,
+      "action": "Open",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 3,
+      "action": "Closing",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 3,
+      "action": "On hold",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 3,
+      "action": "Closed",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Clear filter",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Closing",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 3,
+      "action": "Clear filter",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "On hold",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Closed",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 1,
+      "action": "Closing",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 1,
+      "action": "On hold",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 1,
+      "action": "Closed",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Post a Job",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 1,
+      "action": "Cancel",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Set rating 1",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Set rating 2",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Set rating 3",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "Set rating 4",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 1,
+      "action": "Save changes",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "tab:Pipeline",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "tab:Openings",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "tab:Candidates",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Export",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Openings",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Filter",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Post a Job",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 3,
+      "action": "Cancel",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Set rating 1",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 2,
+      "action": "Set rating 2",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "rowact:Openings",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "depth": 0,
+      "action": "rowact:Actions for Solutions Architect",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "tab:Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "tab:Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "tab:Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "Export",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "Start a Review",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "tab:Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "tab:Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "tab:Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "Export",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "Start a Review",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "tab:Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "tab:Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "tab:Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "Export",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "Start a Review",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "tab:Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "tab:Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "tab:Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "Export",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "Start a Review",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "Open calibration sheet",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 3,
+      "action": "Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "Open calibration sheet",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 2,
+      "action": "Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "Open calibration sheet",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 1,
+      "action": "Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "Open calibration sheet",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "Goals",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "Calibration",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "rowact:Start a Review",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "rowact:Reviews",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "depth": 0,
+      "action": "rowact:View",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance/Goals",
+      "depth": 0,
+      "action": "Add goal",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance/Goals",
+      "depth": 1,
+      "action": "Add goal",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance/Goals",
+      "depth": 2,
+      "action": "Add goal",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance/Goals",
+      "depth": 3,
+      "action": "Add goal",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance/Goals",
+      "depth": 0,
+      "action": "All statuses",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance/Calibration",
+      "depth": 0,
+      "action": "rowact:Open calibration sheet",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "tab:Inventory",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "tab:Assigned",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "tab:Requests",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "Export",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "Add Asset",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 1,
+      "action": "Add asset",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 2,
+      "action": "Add asset",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 3,
+      "action": "Add asset",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "Assigned",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "All statuses",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "Decline",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "Approve",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "Inventory",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "Requests",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "rowact:View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "rowact:View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "rowact:View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "rowact:View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "rowact:View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "depth": 0,
+      "action": "rowact:View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "Filter",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Available only",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 2,
+      "action": "Clear all filters",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 3,
+      "action": "Available only",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "All types",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for E2E Laptop 1783046720209",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "tab:Inventory",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "tab:Assigned",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "tab:Requests",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Export",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Add Asset",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 2,
+      "action": "Laptop",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 3,
+      "action": "Laptop",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Assigned",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "View",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "All statuses",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Decline",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Approve",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Inventory",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Requests",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for Audit Laptop",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for iPad Pro 12.9\"",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 1,
+      "action": "Close",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for Philips 32\" 4K",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for HP ZBook Studio",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for OnePlus 12",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for Jabra Evolve2 Headset",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for ASUS ROG Zephyrus",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "depth": 0,
+      "action": "More options for Dell UltraSharp 24\"",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets/Assigned",
+      "depth": 0,
+      "action": "Recall",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "New Announcement",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "Company",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Company",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Company",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "Add",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "Add event",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "Share an update with the company…",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "All employees",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "All employees",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "All employees",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "Post",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "Cancel",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "New Announcement",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Cancel",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "Add",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Add event",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "Share an update with the company…",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Post announcement",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "Post",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Close",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "New Announcement",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Cancel",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Add",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Add event",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Share an update with the company…",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Post announcement",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Post",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Close",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 2,
+      "action": "Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "New Announcement",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Add",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Share an update with the company…",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Post",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 3,
+      "action": "Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "rowact:Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "menuitem:Unpin",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "rowact:Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "menuitem:Pin to top",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "rowact:Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "menuitem:Pin to top",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "rowact:Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "menuitem:Pin to top",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "rowact:Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "menuitem:Pin to top",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 0,
+      "action": "rowact:Announcement actions",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "depth": 1,
+      "action": "menuitem:Pin to top",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Permissions",
+      "depth": 0,
+      "action": "Add Role",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "depth": 1,
+      "action": "Create Role",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "depth": 2,
+      "action": "Create Role",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "depth": 3,
+      "action": "Create Role",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Settings",
+      "depth": 0,
+      "action": "Assignments",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "depth": 1,
+      "action": "Assignments",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 1,
+      "action": "Auto-assign all",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 1,
+      "action": "Company Profile",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 2,
+      "action": "Assignments",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Assignments",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Auto-assign all",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Company Profile",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Branding",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Locale & Timezone",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Working Hours",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Leave Types",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Attendance Rules",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Timesheets",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Leave Policies",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Policy Packs",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Legal Entities",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Statutory Packs",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Salary Components",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Pay Groups",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Pay Schedules",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Payslip Template",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Data Policy",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Country Bank Schemas",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Authentication",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Sessions & Devices",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Audit Log",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings",
+      "depth": 2,
+      "action": "Company Profile",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Assignments",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Company Profile",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Branding",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Locale & Timezone",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Working Hours",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Leave Types",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Attendance Rules",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Timesheets",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Leave Policies",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Policy Packs",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Legal Entities",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Statutory Packs",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Salary Components",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Pay Groups",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Pay Schedules",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Payslip Template",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Data Policy",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Country Bank Schemas",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Authentication",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Sessions & Devices",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Audit Log",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Email Templates",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "menu": "Settings",
+      "depth": 2,
+      "action": "Branding",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Assignments",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Upload",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Company Profile",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "depth": 3,
+      "action": "Branding",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/locale",
+      "depth": 0,
+      "action": "Locale & Timezone",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "depth": 0,
+      "action": "Working Hours",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 0,
+      "action": "Add Type",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 1,
+      "action": "Create",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 2,
+      "action": "Create",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 3,
+      "action": "Create",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 1,
+      "action": "Save Changes",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 2,
+      "action": "Save Changes",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 3,
+      "action": "Save Changes",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 0,
+      "action": "Leave Types",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 0,
+      "action": "Deactivate",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "depth": 1,
+      "action": "Cancel",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/attendance-rules",
+      "depth": 0,
+      "action": "Attendance Rules",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "depth": 0,
+      "action": "Flag in review (default)",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "depth": 0,
+      "action": "Timesheets",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "depth": 0,
+      "action": "15 minutes",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "depth": 0,
+      "action": "Off — no reminder",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "depth": 0,
+      "action": "Leave Policies",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "depth": 0,
+      "action": "Policy Packs",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "depth": 0,
+      "action": "Seed for tenant",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "depth": 0,
+      "action": "Seed & localize",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "depth": 0,
+      "action": "Assignments",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "depth": 0,
+      "action": "Auto-assign all",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 0,
+      "action": "Add Entity",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 1,
+      "action": "Create Entity",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 2,
+      "action": "Create Entity",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 3,
+      "action": "Create Entity",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 0,
+      "action": "Edit Acme India Pvt Ltd",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 1,
+      "action": "Save Changes",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 2,
+      "action": "Save Changes",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 3,
+      "action": "Save Changes",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 0,
+      "action": "Edit Acme Kuwait WLL (litmus)",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 1,
+      "action": "Kuwait",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 2,
+      "action": "Kuwait",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 3,
+      "action": "Kuwait",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 0,
+      "action": "Edit Acme USA Inc (litmus)",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 1,
+      "action": "United States",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "depth": 2,
+      "action": "United States",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 0,
+      "action": "New pack",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 1,
+      "action": "tab:General",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 1,
+      "action": "tab:Tax Regimes",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 1,
+      "action": "tab:Contributions",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 1,
+      "action": "tab:Local Taxes",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 1,
+      "action": "tab:Min Wages",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 1,
+      "action": "tab:Components",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 1,
+      "action": "Add",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 2,
+      "action": "tab:General",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 2,
+      "action": "tab:Tax Regimes",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 2,
+      "action": "tab:Contributions",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 2,
+      "action": "tab:Local Taxes",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 2,
+      "action": "tab:Min Wages",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 2,
+      "action": "tab:Components",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 2,
+      "action": "Add",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 3,
+      "action": "tab:General",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 3,
+      "action": "tab:Tax Regimes",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "depth": 3,
+      "action": "tab:Contributions",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 0,
+      "action": "Add Component",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 1,
+      "action": "Create Component",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 2,
+      "action": "Create Component",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 3,
+      "action": "Create Component",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 3,
+      "action": "Earning",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 3,
+      "action": "Allocate by department",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 3,
+      "action": "Cancel",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 3,
+      "action": "Close",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 0,
+      "action": "Salary Components",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 0,
+      "action": "All Types",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 0,
+      "action": "All Status",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 0,
+      "action": "Actions for E2E Component",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 1,
+      "action": "Add Component",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "depth": 1,
+      "action": "Salary Components",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "depth": 0,
+      "action": "Pay Groups",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "depth": 0,
+      "action": "Pay Schedules",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Payslip Template",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "en-IN",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Earnings down",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Deductions up",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Deductions down",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Employer Contributions up",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Employer Contributions down",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move One-Time Items up",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move One-Time Items down",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Year to Date up",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Year to Date down",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Attendance up",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Attendance down",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "depth": 0,
+      "action": "Move Payment Info up",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "depth": 0,
+      "action": "Save changes",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "depth": 0,
+      "action": "Data Policy",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "depth": 0,
+      "action": "Add country",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "depth": 1,
+      "action": "Add field",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "depth": 2,
+      "action": "Add field",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "depth": 3,
+      "action": "Add field",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "depth": 0,
+      "action": "Edit Australia",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "depth": 1,
+      "action": "Save changes",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/authentication",
+      "depth": 0,
+      "action": "OPTIONAL",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "depth": 0,
+      "action": "All entities",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "depth": 0,
+      "action": "All actions",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "depth": 0,
+      "action": "Edit",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "depth": 0,
+      "action": "Add webhook",
+      "url": "http://localhost:3001/settings/integration-webhooks"
+    }
+  ],
+  "findings": [
+    {
+      "menu": "Login",
+      "action": "submit",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:41.221Z",
+      "screenshot": "002-login-success.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:42.347Z",
+      "screenshot": "003-recruitment-land.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/tab:Pipeline",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:42.818Z",
+      "screenshot": "004-recruitment-d0-tab-pipeline.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/tab:Openings",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:43.302Z",
+      "screenshot": "005-recruitment-d0-tab-openings.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/tab:Candidates",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:43.784Z",
+      "screenshot": "006-recruitment-d0-tab-candidates.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:45.638Z",
+      "screenshot": "007-recruitment-d0-export.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/Openings",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:46.187Z",
+      "screenshot": "008-recruitment-d0-openings.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d1/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T03:32:59.499Z",
+      "screenshot": "025-recruitment-d1-cancel.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/Set rating 1",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:00.171Z",
+      "screenshot": "026-recruitment-d0-set-rating-1.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/Set rating 2",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:02.849Z",
+      "screenshot": "027-recruitment-d0-set-rating-2.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d0/Set rating 3",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:03.352Z",
+      "screenshot": "028-recruitment-d0-set-rating-3.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d2/tab:Pipeline",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:07.344Z",
+      "screenshot": "031-recruitment-d2-tab-pipeline.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d2/tab:Openings",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:07.845Z",
+      "screenshot": "032-recruitment-d2-tab-openings.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d2/tab:Candidates",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:08.376Z",
+      "screenshot": "033-recruitment-d2-tab-candidates.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d2/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:10.153Z",
+      "screenshot": "034-recruitment-d2-export.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d2/Openings",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:10.687Z",
+      "screenshot": "035-recruitment-d2-openings.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d3/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:12.631Z",
+      "screenshot": "038-recruitment-d3-cancel.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d2/Set rating 1",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:13.298Z",
+      "screenshot": "039-recruitment-d2-set-rating-1.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "d2/Set rating 2",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:15.981Z",
+      "screenshot": "040-recruitment-d2-set-rating-2.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "rowact:Openings",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:16.864Z",
+      "screenshot": "041-recruitment-row-openings-0.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "rowact:Actions for Solutions Architect",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:17.597Z",
+      "screenshot": "042-recruitment-row-actions-for-solutions-architect-1.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:18.964Z",
+      "screenshot": "043-performance-land.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/tab:Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:19.433Z",
+      "screenshot": "044-performance-d0-tab-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/tab:Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:20.055Z",
+      "screenshot": "045-performance-d0-tab-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/tab:Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:20.567Z",
+      "screenshot": "046-performance-d0-tab-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:21.118Z",
+      "screenshot": "047-performance-d0-export.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/tab:Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:24.386Z",
+      "screenshot": "049-performance-d1-tab-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/tab:Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:24.892Z",
+      "screenshot": "050-performance-d1-tab-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/tab:Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:25.366Z",
+      "screenshot": "051-performance-d1-tab-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:25.917Z",
+      "screenshot": "052-performance-d1-export.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/tab:Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:29.171Z",
+      "screenshot": "054-performance-d2-tab-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/tab:Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:29.658Z",
+      "screenshot": "055-performance-d2-tab-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/tab:Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:30.154Z",
+      "screenshot": "056-performance-d2-tab-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:30.700Z",
+      "screenshot": "057-performance-d2-export.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/tab:Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:33.965Z",
+      "screenshot": "059-performance-d3-tab-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/tab:Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:34.456Z",
+      "screenshot": "060-performance-d3-tab-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/tab:Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:34.934Z",
+      "screenshot": "061-performance-d3-tab-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:35.501Z",
+      "screenshot": "062-performance-d3-export.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:36.919Z",
+      "screenshot": "064-performance-d3-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/Open calibration sheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:37.420Z",
+      "screenshot": "065-performance-d3-open-calibration-sheet.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:40.107Z",
+      "screenshot": "066-performance-d3-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d3/Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:40.697Z",
+      "screenshot": "067-performance-d3-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:41.435Z",
+      "screenshot": "068-performance-d2-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/Open calibration sheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:41.934Z",
+      "screenshot": "069-performance-d2-open-calibration-sheet.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:44.622Z",
+      "screenshot": "070-performance-d2-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d2/Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:45.217Z",
+      "screenshot": "071-performance-d2-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:45.952Z",
+      "screenshot": "072-performance-d1-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/Open calibration sheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:46.469Z",
+      "screenshot": "073-performance-d1-open-calibration-sheet.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:49.154Z",
+      "screenshot": "074-performance-d1-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d1/Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:49.751Z",
+      "screenshot": "075-performance-d1-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:50.521Z",
+      "screenshot": "076-performance-d0-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/Open calibration sheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:51.026Z",
+      "screenshot": "077-performance-d0-open-calibration-sheet.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:53.719Z",
+      "screenshot": "078-performance-d0-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "d0/Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:54.317Z",
+      "screenshot": "079-performance-d0-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "rowact:Start a Review",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:54.956Z",
+      "screenshot": "080-performance-row-start-a-review-0.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "rowact:Reviews",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:55.754Z",
+      "screenshot": "081-performance-row-reviews-1.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "rowact:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:56.584Z",
+      "screenshot": "082-performance-row-view-2.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "tabdeep:Goals",
+      "status": "PASS",
+      "at": "2026-08-03T03:33:59.944Z",
+      "screenshot": "083-performance-tabdeep-goals.png"
+    },
+    {
+      "menu": "Performance/Goals",
+      "action": "d0/All statuses",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:03.856Z",
+      "screenshot": "088-performance-goals-d0-all-statuses.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "tabdeep:Calibration",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:05.616Z",
+      "screenshot": "089-performance-tabdeep-calibration.png"
+    },
+    {
+      "menu": "Performance/Calibration",
+      "action": "rowact:Open calibration sheet",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:06.270Z",
+      "screenshot": "090-performance-calibration-row-open-calibration-sheet-2.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:07.572Z",
+      "screenshot": "091-assets-land.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/tab:Inventory",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:08.081Z",
+      "screenshot": "092-assets-d0-tab-inventory.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/tab:Assigned",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:08.570Z",
+      "screenshot": "093-assets-d0-tab-assigned.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/tab:Requests",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:09.036Z",
+      "screenshot": "094-assets-d0-tab-requests.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:09.665Z",
+      "screenshot": "095-assets-d0-export.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/Assigned",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:13.820Z",
+      "screenshot": "100-assets-d0-assigned.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:14.339Z",
+      "screenshot": "101-assets-d0-view.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/All statuses",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:14.854Z",
+      "screenshot": "102-assets-d0-all-statuses.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/Decline",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:15.357Z",
+      "screenshot": "103-assets-d0-decline.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/Approve",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:15.869Z",
+      "screenshot": "104-assets-d0-approve.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/Inventory",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:16.423Z",
+      "screenshot": "105-assets-d0-inventory.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "d0/Requests",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:16.945Z",
+      "screenshot": "106-assets-d0-requests.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "rowact:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:17.595Z",
+      "screenshot": "107-assets-row-view-0.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "rowact:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:18.381Z",
+      "screenshot": "108-assets-row-view-1.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "rowact:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:19.267Z",
+      "screenshot": "109-assets-row-view-2.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "rowact:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:20.075Z",
+      "screenshot": "110-assets-row-view-3.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "rowact:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:20.860Z",
+      "screenshot": "111-assets-row-view-4.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "rowact:View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:21.657Z",
+      "screenshot": "112-assets-row-view-5.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "tabdeep:Inventory",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:23.714Z",
+      "screenshot": "113-assets-tabdeep-inventory.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d0/All types",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:27.502Z",
+      "screenshot": "118-assets-inventory-d0-all-types.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d0/More options for E2E Laptop 1783046720209",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:30.190Z",
+      "screenshot": "119-assets-inventory-d0-more-options-for-e2e-laptop-1783.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/tab:Inventory",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:30.651Z",
+      "screenshot": "120-assets-inventory-d1-tab-inventory.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/tab:Assigned",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:31.132Z",
+      "screenshot": "121-assets-inventory-d1-tab-assigned.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/tab:Requests",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:31.589Z",
+      "screenshot": "122-assets-inventory-d1-tab-requests.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/Export",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:32.223Z",
+      "screenshot": "123-assets-inventory-d1-export.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/Assigned",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:35.323Z",
+      "screenshot": "127-assets-inventory-d1-assigned.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/View",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:35.840Z",
+      "screenshot": "128-assets-inventory-d1-view.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/All statuses",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:36.356Z",
+      "screenshot": "129-assets-inventory-d1-all-statuses.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/Decline",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:36.865Z",
+      "screenshot": "130-assets-inventory-d1-decline.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/Approve",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:37.378Z",
+      "screenshot": "131-assets-inventory-d1-approve.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/Inventory",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:37.937Z",
+      "screenshot": "132-assets-inventory-d1-inventory.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/Requests",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:38.455Z",
+      "screenshot": "133-assets-inventory-d1-requests.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d0/More options for Audit Laptop",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:39.133Z",
+      "screenshot": "134-assets-inventory-d0-more-options-for-audit-laptop.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d1/Close",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:40.544Z",
+      "screenshot": "136-assets-inventory-d1-close.png"
+    },
+    {
+      "menu": "Assets/Inventory",
+      "action": "d0/More options for Philips 32\" 4K",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:41.205Z",
+      "screenshot": "137-assets-inventory-d0-more-options-for-philips-32-4k.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "tabdeep:Assigned",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:47.751Z",
+      "screenshot": "143-assets-tabdeep-assigned.png"
+    },
+    {
+      "menu": "Assets/Assigned",
+      "action": "d0/Recall",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:48.393Z",
+      "screenshot": "144-assets-assigned-d0-recall.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "tabdeep:Requests",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:50.156Z",
+      "screenshot": "145-assets-tabdeep-requests.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:51.492Z",
+      "screenshot": "146-announcements-land.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d1/Add event",
+      "status": "PASS",
+      "at": "2026-08-03T03:34:56.443Z",
+      "screenshot": "152-announcements-d1-add-event.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d1/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:01.254Z",
+      "screenshot": "158-announcements-d1-cancel.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d0/Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:01.962Z",
+      "screenshot": "159-announcements-d0-announcement-actions.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d2/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:03.510Z",
+      "screenshot": "161-announcements-d2-cancel.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d2/Add event",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:04.826Z",
+      "screenshot": "163-announcements-d2-add-event.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d2/Post announcement",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:06.216Z",
+      "screenshot": "165-announcements-d2-post-announcement.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d2/Close",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:07.625Z",
+      "screenshot": "167-announcements-d2-close.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d1/Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:08.291Z",
+      "screenshot": "168-announcements-d1-announcement-actions.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d3/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:09.786Z",
+      "screenshot": "170-announcements-d3-cancel.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d3/Add event",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:11.168Z",
+      "screenshot": "172-announcements-d3-add-event.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d3/Post announcement",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:12.610Z",
+      "screenshot": "174-announcements-d3-post-announcement.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d3/Close",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:14.028Z",
+      "screenshot": "176-announcements-d3-close.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d2/Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:14.708Z",
+      "screenshot": "177-announcements-d2-announcement-actions.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "d3/Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:19.293Z",
+      "screenshot": "182-announcements-d3-announcement-actions.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "rowact:Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:20.487Z",
+      "screenshot": "183-announcements-row-announcement-actions-0.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "menuitem:Unpin",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:21.076Z",
+      "screenshot": "184-announcements-menu-unpin.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "rowact:Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:21.939Z",
+      "screenshot": "185-announcements-row-announcement-actions-1.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "menuitem:Pin to top",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:22.528Z",
+      "screenshot": "186-announcements-menu-pin-to-top.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "rowact:Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:23.408Z",
+      "screenshot": "187-announcements-row-announcement-actions-2.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "menuitem:Pin to top",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:24.001Z",
+      "screenshot": "188-announcements-menu-pin-to-top.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "rowact:Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:25.004Z",
+      "screenshot": "189-announcements-row-announcement-actions-3.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "menuitem:Pin to top",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:25.610Z",
+      "screenshot": "190-announcements-menu-pin-to-top.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "rowact:Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:26.528Z",
+      "screenshot": "191-announcements-row-announcement-actions-4.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "menuitem:Pin to top",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:27.109Z",
+      "screenshot": "192-announcements-menu-pin-to-top.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "rowact:Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:28.041Z",
+      "screenshot": "193-announcements-row-announcement-actions-5.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "menuitem:Pin to top",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:28.629Z",
+      "screenshot": "194-announcements-menu-pin-to-top.png"
+    },
+    {
+      "menu": "Permissions",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:30.031Z",
+      "screenshot": "195-permissions-land.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Settings",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:34.371Z",
+      "screenshot": "200-settings-land.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "d0/Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:35.129Z",
+      "screenshot": "201-settings-d0-assignments.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d1/Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:36.009Z",
+      "screenshot": "202-settings-d1-assignments.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d1/Auto-assign all",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:36.533Z",
+      "screenshot": "203-settings-d1-auto-assign-all.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d1/Company Profile",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:37.036Z",
+      "screenshot": "204-settings-d1-company-profile.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d2/Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:37.769Z",
+      "screenshot": "205-settings-d2-assignments.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:38.632Z",
+      "screenshot": "206-settings-d3-assignments.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Auto-assign all",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:39.146Z",
+      "screenshot": "207-settings-d3-auto-assign-all.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Company Profile",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:39.652Z",
+      "screenshot": "208-settings-d3-company-profile.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Branding",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:40.155Z",
+      "screenshot": "209-settings-d3-branding.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:40.653Z",
+      "screenshot": "210-settings-d3-locale-timezone.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Working Hours",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:41.153Z",
+      "screenshot": "211-settings-d3-working-hours.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Leave Types",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:41.653Z",
+      "screenshot": "212-settings-d3-leave-types.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Attendance Rules",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:42.153Z",
+      "screenshot": "213-settings-d3-attendance-rules.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Timesheets",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:42.659Z",
+      "screenshot": "214-settings-d3-timesheets.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Leave Policies",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:43.179Z",
+      "screenshot": "215-settings-d3-leave-policies.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Policy Packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:43.691Z",
+      "screenshot": "216-settings-d3-policy-packs.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Legal Entities",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:44.185Z",
+      "screenshot": "217-settings-d3-legal-entities.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Statutory Packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:44.687Z",
+      "screenshot": "218-settings-d3-statutory-packs.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Salary Components",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:45.187Z",
+      "screenshot": "219-settings-d3-salary-components.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Pay Groups",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:45.684Z",
+      "screenshot": "220-settings-d3-pay-groups.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Pay Schedules",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:46.190Z",
+      "screenshot": "221-settings-d3-pay-schedules.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Payslip Template",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:46.687Z",
+      "screenshot": "222-settings-d3-payslip-template.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Data Policy",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:47.186Z",
+      "screenshot": "223-settings-d3-data-policy.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Country Bank Schemas",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:47.687Z",
+      "screenshot": "224-settings-d3-country-bank-schemas.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Authentication",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:48.187Z",
+      "screenshot": "225-settings-d3-authentication.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:48.723Z",
+      "screenshot": "226-settings-d3-sessions-devices.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Audit Log",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:49.237Z",
+      "screenshot": "227-settings-d3-audit-log.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d2/Company Profile",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:49.748Z",
+      "screenshot": "228-settings-d2-company-profile.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:50.522Z",
+      "screenshot": "229-settings-d3-assignments.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Company Profile",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:51.043Z",
+      "screenshot": "230-settings-d3-company-profile.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Branding",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:51.574Z",
+      "screenshot": "231-settings-d3-branding.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:52.082Z",
+      "screenshot": "232-settings-d3-locale-timezone.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Working Hours",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:52.611Z",
+      "screenshot": "233-settings-d3-working-hours.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Leave Types",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:53.129Z",
+      "screenshot": "234-settings-d3-leave-types.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Attendance Rules",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:53.651Z",
+      "screenshot": "235-settings-d3-attendance-rules.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Timesheets",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:54.169Z",
+      "screenshot": "236-settings-d3-timesheets.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Leave Policies",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:54.683Z",
+      "screenshot": "237-settings-d3-leave-policies.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Policy Packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:55.186Z",
+      "screenshot": "238-settings-d3-policy-packs.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Legal Entities",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:55.697Z",
+      "screenshot": "239-settings-d3-legal-entities.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Statutory Packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:56.200Z",
+      "screenshot": "240-settings-d3-statutory-packs.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Salary Components",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:56.720Z",
+      "screenshot": "241-settings-d3-salary-components.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Pay Groups",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:57.233Z",
+      "screenshot": "242-settings-d3-pay-groups.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Pay Schedules",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:57.750Z",
+      "screenshot": "243-settings-d3-pay-schedules.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Payslip Template",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:58.266Z",
+      "screenshot": "244-settings-d3-payslip-template.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Data Policy",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:58.795Z",
+      "screenshot": "245-settings-d3-data-policy.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Country Bank Schemas",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:59.315Z",
+      "screenshot": "246-settings-d3-country-bank-schemas.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Authentication",
+      "status": "PASS",
+      "at": "2026-08-03T03:35:59.830Z",
+      "screenshot": "247-settings-d3-authentication.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:00.359Z",
+      "screenshot": "248-settings-d3-sessions-devices.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Audit Log",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:00.884Z",
+      "screenshot": "249-settings-d3-audit-log.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Email Templates",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:01.392Z",
+      "screenshot": "250-settings-d3-email-templates.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d2/Branding",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:01.916Z",
+      "screenshot": "251-settings-d2-branding.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:02.682Z",
+      "screenshot": "252-settings-d3-assignments.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Upload",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:03.196Z",
+      "screenshot": "253-settings-d3-upload.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Company Profile",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:03.730Z",
+      "screenshot": "254-settings-d3-company-profile.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "d3/Branding",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:04.262Z",
+      "screenshot": "255-settings-d3-branding.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:company-profile",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:05.394Z",
+      "screenshot": "256-settings-company-profile-land.png",
+      "ms": 1128,
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:branding",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:06.478Z",
+      "screenshot": "257-settings-branding-land.png",
+      "ms": 1079,
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:locale",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:07.616Z",
+      "screenshot": "258-settings-locale-land.png",
+      "ms": 1134,
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "d0/Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:08.480Z",
+      "screenshot": "259-settings-locale-d0-locale-timezone.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:working-hours",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:09.629Z",
+      "screenshot": "260-settings-working-hours-land.png",
+      "ms": 1148,
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "d0/Working Hours",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:10.377Z",
+      "screenshot": "261-settings-working-hours-d0-working-hours.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-types",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:11.520Z",
+      "screenshot": "262-settings-leave-types-land.png",
+      "ms": 1142,
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "d0/Leave Types",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:18.751Z",
+      "screenshot": "271-settings-leave-types-d0-leave-types.png"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "d1/Cancel",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:19.835Z",
+      "screenshot": "273-settings-leave-types-d1-cancel.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:attendance-rules",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:21.171Z",
+      "screenshot": "274-settings-attendance-rules-land.png",
+      "ms": 1169,
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "menu": "Settings/attendance-rules",
+      "action": "d0/Attendance Rules",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:21.886Z",
+      "screenshot": "275-settings-attendance-rules-d0-attendance-rules.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:timesheets",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:23.062Z",
+      "screenshot": "276-settings-timesheets-land.png",
+      "ms": 1175,
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "d0/Flag in review (default)",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:23.987Z",
+      "screenshot": "277-settings-timesheets-d0-flag-in-review-default.png"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "d0/Timesheets",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:26.672Z",
+      "screenshot": "278-settings-timesheets-d0-timesheets.png"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "d0/15 minutes",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:27.179Z",
+      "screenshot": "279-settings-timesheets-d0-15-minutes.png"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "d0/Off — no reminder",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:29.879Z",
+      "screenshot": "280-settings-timesheets-d0-off-no-reminder.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-policies",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:31.117Z",
+      "screenshot": "281-settings-leave-policies-land.png",
+      "ms": 1237,
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "d0/Leave Policies",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:31.901Z",
+      "screenshot": "282-settings-leave-policies-d0-leave-policies.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:33.055Z",
+      "screenshot": "283-settings-leave-packs-land.png",
+      "ms": 1153,
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "d0/Policy Packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:33.762Z",
+      "screenshot": "284-settings-leave-packs-d0-policy-packs.png"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "d0/Seed for tenant",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:34.268Z",
+      "screenshot": "285-settings-leave-packs-d0-seed-for-tenant.png"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "d0/Seed & localize",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:34.771Z",
+      "screenshot": "286-settings-leave-packs-d0-seed-localize.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:35.868Z",
+      "screenshot": "287-settings-leave-assignments-land.png",
+      "ms": 1096,
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "d0/Assignments",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:36.704Z",
+      "screenshot": "288-settings-leave-assignments-d0-assignments.png"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "d0/Auto-assign all",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:37.212Z",
+      "screenshot": "289-settings-leave-assignments-d0-auto-assign-all.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/legal-entities",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:38.317Z",
+      "screenshot": "290-settings-pay-legal-entities-land.png",
+      "ms": 1104,
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/statutory-packs",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:53.303Z",
+      "screenshot": "306-settings-pay-statutory-packs-land.png",
+      "ms": 1155,
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d1/tab:General",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:54.630Z",
+      "screenshot": "308-settings-pay-statutory-packs-d1-tab-general.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d1/tab:Tax Regimes",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:55.171Z",
+      "screenshot": "309-settings-pay-statutory-packs-d1-tab-tax-regimes.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d1/tab:Contributions",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:55.702Z",
+      "screenshot": "310-settings-pay-statutory-packs-d1-tab-contributions.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d1/tab:Local Taxes",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:56.236Z",
+      "screenshot": "311-settings-pay-statutory-packs-d1-tab-local-taxes.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d1/tab:Min Wages",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:56.767Z",
+      "screenshot": "312-settings-pay-statutory-packs-d1-tab-min-wages.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d1/tab:Components",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:57.301Z",
+      "screenshot": "313-settings-pay-statutory-packs-d1-tab-components.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d2/tab:General",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:58.424Z",
+      "screenshot": "315-settings-pay-statutory-packs-d2-tab-general.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d2/tab:Tax Regimes",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:58.957Z",
+      "screenshot": "316-settings-pay-statutory-packs-d2-tab-tax-regimes.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d2/tab:Contributions",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:59.449Z",
+      "screenshot": "317-settings-pay-statutory-packs-d2-tab-contributions.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d2/tab:Local Taxes",
+      "status": "PASS",
+      "at": "2026-08-03T03:36:59.964Z",
+      "screenshot": "318-settings-pay-statutory-packs-d2-tab-local-taxes.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d2/tab:Min Wages",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:00.485Z",
+      "screenshot": "319-settings-pay-statutory-packs-d2-tab-min-wages.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d2/tab:Components",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:00.985Z",
+      "screenshot": "320-settings-pay-statutory-packs-d2-tab-components.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d3/tab:General",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:02.126Z",
+      "screenshot": "322-settings-pay-statutory-packs-d3-tab-general.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d3/tab:Tax Regimes",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:02.651Z",
+      "screenshot": "323-settings-pay-statutory-packs-d3-tab-tax-regimes.png"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "d3/tab:Contributions",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:03.185Z",
+      "screenshot": "324-settings-pay-statutory-packs-d3-tab-contributions.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/components",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:05.019Z",
+      "screenshot": "325-settings-pay-components-land.png",
+      "ms": 1184,
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "d3/Close",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:17.979Z",
+      "screenshot": "333-settings-pay-components-d3-close.png"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "d0/Salary Components",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:18.976Z",
+      "screenshot": "334-settings-pay-components-d0-salary-components.png"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "d0/All Types",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:19.490Z",
+      "screenshot": "335-settings-pay-components-d0-all-types.png"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "d0/All Status",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:22.214Z",
+      "screenshot": "336-settings-pay-components-d0-all-status.png"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "d0/Actions for E2E Component",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:22.729Z",
+      "screenshot": "337-settings-pay-components-d0-actions-for-e2e-component.png"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "d1/Add Component",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:25.726Z",
+      "screenshot": "338-settings-pay-components-d1-add-component.png"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "d1/Salary Components",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:26.239Z",
+      "screenshot": "339-settings-pay-components-d1-salary-components.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/groups",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:27.500Z",
+      "screenshot": "340-settings-pay-groups-land.png",
+      "ms": 1103,
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "d0/Pay Groups",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:28.225Z",
+      "screenshot": "341-settings-pay-groups-d0-pay-groups.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/schedules",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:29.351Z",
+      "screenshot": "342-settings-pay-schedules-land.png",
+      "ms": 1126,
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "d0/Pay Schedules",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:30.096Z",
+      "screenshot": "343-settings-pay-schedules-d0-pay-schedules.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/payslip-template",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:31.270Z",
+      "screenshot": "344-settings-pay-payslip-template-land.png",
+      "ms": 1172,
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Payslip Template",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:32.180Z",
+      "screenshot": "345-settings-pay-payslip-template-d0-payslip-template.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/en-IN",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:32.707Z",
+      "screenshot": "346-settings-pay-payslip-template-d0-en-in.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Earnings down",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:35.402Z",
+      "screenshot": "347-settings-pay-payslip-template-d0-move-earnings-down.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Deductions up",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:38.107Z",
+      "screenshot": "348-settings-pay-payslip-template-d0-move-deductions-up.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Deductions down",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:38.692Z",
+      "screenshot": "349-settings-pay-payslip-template-d0-move-deductions-dow.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Employer Contributions up",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:39.230Z",
+      "screenshot": "350-settings-pay-payslip-template-d0-move-employer-contr.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Employer Contributions down",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:39.839Z",
+      "screenshot": "351-settings-pay-payslip-template-d0-move-employer-contr.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move One-Time Items up",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:40.356Z",
+      "screenshot": "352-settings-pay-payslip-template-d0-move-one-time-items.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move One-Time Items down",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:40.879Z",
+      "screenshot": "353-settings-pay-payslip-template-d0-move-one-time-items.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Year to Date up",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:41.429Z",
+      "screenshot": "354-settings-pay-payslip-template-d0-move-year-to-date-u.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Year to Date down",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:41.957Z",
+      "screenshot": "355-settings-pay-payslip-template-d0-move-year-to-date-d.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Attendance up",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:42.476Z",
+      "screenshot": "356-settings-pay-payslip-template-d0-move-attendance-up.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Attendance down",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:43.008Z",
+      "screenshot": "357-settings-pay-payslip-template-d0-move-attendance-dow.png"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "d0/Move Payment Info up",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:43.535Z",
+      "screenshot": "358-settings-pay-payslip-template-d0-move-payment-info-u.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/data-policy",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:44.637Z",
+      "screenshot": "359-settings-pay-data-policy-land.png",
+      "ms": 1101,
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "d0/Save changes",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:45.319Z",
+      "screenshot": "360-settings-pay-data-policy-d0-save-changes.png"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "d0/Data Policy",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:45.825Z",
+      "screenshot": "361-settings-pay-data-policy-d0-data-policy.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/country-bank-schemas",
+      "status": "PASS",
+      "at": "2026-08-03T03:37:46.954Z",
+      "screenshot": "362-settings-pay-country-bank-schemas-land.png",
+      "ms": 1129,
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings",
+      "action": "explore",
+      "status": "FAIL",
+      "at": "2026-08-03T03:38:38.209Z",
+      "error": "TimeoutError: locator.getAttribute: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[role=\"dialog\"], [role=\"alertdialog\"]').last().locator('input:visible:not([type=\"checkbox\"]):not([type=",
+      "screenshot": "368-settings-crash.png"
+    },
+    {
+      "menu": "Login",
+      "action": "resume",
+      "status": "PASS",
+      "screenshot": "369-resume-login-ok.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:authentication",
+      "status": "PASS",
+      "screenshot": "370-settings-authentication-land.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "OPTIONAL",
+      "status": "PASS",
+      "screenshot": "371-settings-authentication-optional.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:sessions",
+      "status": "PASS",
+      "screenshot": "372-settings-sessions-land.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:audit-log",
+      "status": "PASS",
+      "screenshot": "373-settings-audit-log-land.png",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "All entities",
+      "status": "PASS",
+      "screenshot": "374-settings-audit-log-all-entities.png"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "All actions",
+      "status": "PASS",
+      "screenshot": "375-settings-audit-log-all-actions.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:email-templates",
+      "status": "PASS",
+      "screenshot": "376-settings-email-templates-land.png",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "dlg:Edit",
+      "status": "PASS",
+      "screenshot": "377-settings-email-templates-dlg-edit.png"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "dlg:Edit",
+      "status": "PASS",
+      "screenshot": "378-settings-email-templates-dlg-edit.png"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "dlg:Edit",
+      "status": "PASS",
+      "screenshot": "379-settings-email-templates-dlg-edit.png"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "dlg:Edit",
+      "status": "PASS",
+      "screenshot": "380-settings-email-templates-dlg-edit.png"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "dlg:Edit",
+      "status": "PASS",
+      "screenshot": "381-settings-email-templates-dlg-edit.png"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "dlg:Edit",
+      "status": "PASS",
+      "screenshot": "382-settings-email-templates-dlg-edit.png"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "dlg:Edit",
+      "status": "PASS",
+      "screenshot": "383-settings-email-templates-dlg-edit.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:notifications",
+      "status": "PASS",
+      "screenshot": "384-settings-notifications-land.png",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:integration-email",
+      "status": "PASS",
+      "screenshot": "385-settings-integration-email-land.png",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:integration-storage",
+      "status": "PASS",
+      "screenshot": "386-settings-integration-storage-land.png",
+      "url": "http://localhost:3001/settings/integration-storage"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:integration-webhooks",
+      "status": "PASS",
+      "screenshot": "387-settings-integration-webhooks-land.png",
+      "url": "http://localhost:3001/settings/integration-webhooks"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "dlg:Add webhook",
+      "status": "PASS",
+      "screenshot": "388-settings-integration-webhooks-dlg-add-webhook.png"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:billing-plan",
+      "status": "PASS",
+      "screenshot": "389-settings-billing-plan-land.png",
+      "url": "http://localhost:3001/settings/billing-plan"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:billing-invoices",
+      "status": "PASS",
+      "screenshot": "390-settings-billing-invoices-land.png",
+      "url": "http://localhost:3001/settings/billing-invoices"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:roles-permissions",
+      "status": "PASS",
+      "screenshot": "391-settings-roles-permissions-land.png",
+      "url": "http://localhost:3001/settings/roles-permissions"
+    },
+    {
+      "menu": "Permissions",
+      "action": "deep-reopen",
+      "status": "PASS",
+      "screenshot": "392-permissions-deep-land.png"
+    }
+  ],
+  "downloads": [
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/assets"
+    },
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/assets"
+    }
+  ],
+  "resumedSettings": [
+    "authentication",
+    "sessions",
+    "audit-log",
+    "email-templates",
+    "notifications",
+    "integration-email",
+    "integration-storage",
+    "integration-webhooks",
+    "billing-plan",
+    "billing-invoices",
+    "roles-permissions"
+  ]
+}

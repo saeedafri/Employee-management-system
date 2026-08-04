@@ -1,0 +1,2415 @@
+{
+  "stats": {
+    "surfaces": 10,
+    "controlsFound": 40,
+    "controlsClicked": 41,
+    "bursts": 4,
+    "screenshots": 72
+  },
+  "matrix": [
+    {
+      "surface": "Attendance",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "004-attendance-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Leave",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "005-leave-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Payout",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "006-payout-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "PayoutApprovals",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "007-payoutapprovals-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Analytics",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "008-analytics-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Assets",
+      "control": "Export",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "assets-inventory.csv ok:true",
+      "network": "",
+      "screenshot": "011-assets-x-export.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Settings",
+      "control": "Policy Packs",
+      "format": "json",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /api/leave/policy-packs/catalog",
+      "screenshot": "013-settings-x-policy-packs.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Settings",
+      "control": "Statutory Packs",
+      "format": "json",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /api/payroll/statutory-packs",
+      "screenshot": "014-settings-x-statutory-packs.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Settings",
+      "control": "Invoices",
+      "format": "unknown",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /settings/billing-invoices?_rsc=cPAReCwAV1Ux5N-B · 200 GET /_next/static/chunks/src_app_(dashboard)_settings_billing-invoices_page_tsx_08qi4vs._.js · 200 GET /_next/static/chunks/src_modules_settings_components_B",
+      "screenshot": "015-settings-x-invoices.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "AuditLogs",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "016-auditlogs-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "OpsLogs",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "017-opslogs-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Performance",
+      "control": "Export",
+      "format": "unknown",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "",
+      "screenshot": "020-performance-x-export.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Employees",
+      "control": "Export",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "employees-2026-08-03.csv ok:true",
+      "network": "200 GET /api/employees/export/csv",
+      "screenshot": "021-employees-x-export.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Employees[STRESS×3]",
+      "control": "Export",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "employees-2026-08-03.csv ok:true",
+      "network": "200 GET /api/employees/export/csv",
+      "screenshot": "022-employees-stress-export.png",
+      "stress": true,
+      "note": "ok=1 fail=0"
+    },
+    {
+      "surface": "PayrollRun",
+      "control": "Export Register",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "payroll-2026-12-H2.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmqtilef5001xodfgq1bxxcjv/export",
+      "screenshot": "025-payrollrun-x-export-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "PayrollRun",
+      "control": "Export pack",
+      "format": "json",
+      "status": "PASS",
+      "ok": true,
+      "download": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json ok:true",
+      "network": "200 GET /api/payroll/reports/audit-pack?runId=cmqtilef5001xodfgq1bxxcjv",
+      "screenshot": "026-payrollrun-x-export-pack.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "PayrollRun[STRESS×3]",
+      "control": "Export Register",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "payroll-2026-12-H2.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmqtilef5001xodfgq1bxxcjv/export",
+      "screenshot": "027-payrollrun-stress-export-register.png",
+      "stress": true,
+      "note": "ok=1 fail=0"
+    },
+    {
+      "surface": "PayrollRun[STRESS×3]",
+      "control": "Export pack",
+      "format": "json",
+      "status": "PASS",
+      "ok": true,
+      "download": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json ok:true",
+      "network": "",
+      "screenshot": "028-payrollrun-stress-export-pack.png",
+      "stress": true,
+      "note": "ok=1 fail=0"
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "031-reports-workforce-headcount-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "032-reports-workforce-headcount-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "033-reports-workforce-headcount-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "034-reports-workforce-headcount-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "036-reports-workforce-turnover-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "037-reports-workforce-turnover-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "038-reports-workforce-turnover-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "039-reports-workforce-turnover-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/demographics",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "041-reports-workforce-demographics-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/demographics",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "042-reports-workforce-demographics-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/demographics",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "043-reports-workforce-demographics-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "045-reports-attendance-summary-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "046-reports-attendance-summary-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "047-reports-attendance-summary-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "048-reports-attendance-summary-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "050-reports-attendance-absenteeism-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "051-reports-attendance-absenteeism-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "052-reports-attendance-absenteeism-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "053-reports-attendance-absenteeism-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "055-reports-leave-utilization-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "056-reports-leave-utilization-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "057-reports-leave-utilization-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "058-reports-leave-utilization-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/pending",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "060-reports-leave-pending-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/pending",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "061-reports-leave-pending-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/pending",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "062-reports-leave-pending-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "064-reports-payroll-summary-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "065-reports-payroll-summary-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "066-reports-payroll-summary-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "067-reports-payroll-summary-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/ctc-analysis",
+      "control": "Salary Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "069-reports-payroll-ctc-analysis-x-salary-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/ctc-analysis",
+      "control": "Statutory Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "070-reports-payroll-ctc-analysis-x-statutory-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/ctc-analysis",
+      "control": "Variance Register",
+      "format": "csv",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "071-reports-payroll-ctc-analysis-x-variance-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/headcount[STRESS×3]",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "workforce-headcount-report.csv ok:true; workforce-headcount-report.csv ok:true; workforce-headcount-report.csv ok:true",
+      "network": "202 POST /api/reports/export · 202 POST /api/reports/export · 202 POST /api/reports/export · 200 GET /api/reports/export/cmscof2e500uzb9xj1mpnztc9/download · 200 GET /api/reports/export/cmscof2ed00v2b9xjswv3x3sp/download",
+      "screenshot": "072-reports-headcount-stress-export-csv.png",
+      "stress": true,
+      "note": "ok=3 fail=0"
+    }
+  ],
+  "downloads": [
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/f7c6cdbc-5667-462c-baf0-541ab43d6c11",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-assets-inventory-csv-1785727882434",
+      "pageUrl": "http://localhost:3001/assets",
+      "format": "csv",
+      "t": 1785727882434
+    },
+    {
+      "suggested": "employees-2026-08-03.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/c798e9c5-2d35-414e-a46b-59bb18e5a0c3",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-employees-2026-08-03-csv-1785727964593",
+      "pageUrl": "http://localhost:3001/employees",
+      "format": "csv",
+      "t": 1785727964594
+    },
+    {
+      "suggested": "employees-2026-08-03.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/328a574c-29bb-45d8-99dd-6126121315c3",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-employees-2026-08-03-csv-1785727968045",
+      "pageUrl": "http://localhost:3001/employees",
+      "format": "csv",
+      "t": 1785727968046
+    },
+    {
+      "suggested": "payroll-2026-12-H2.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/747d06ed-a806-4e85-87f2-7e63c11f8bc5",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-payroll-2026-12-h2-csv-1785727975569",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "format": "csv",
+      "t": 1785727975569
+    },
+    {
+      "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/147a255a-15db-4c94-b452-8fc2c7a72a08",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785727978786",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "format": "json",
+      "t": 1785727978786
+    },
+    {
+      "suggested": "payroll-2026-12-H2.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/8d9cbc13-6a5b-4d7f-80c8-568eb881061f",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-payroll-2026-12-h2-csv-1785727982151",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "format": "csv",
+      "t": 1785727982152
+    },
+    {
+      "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/dd5d27d7-c9f3-4b24-8eef-3a290e35a986",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785727986226",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "format": "json",
+      "t": 1785727986226
+    },
+    {
+      "suggested": "register-2026-08-VARIANCE.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/7ded0ae7-1418-4f78-bab2-c765a660124c",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-register-2026-08-variance-csv-1785728004156",
+      "pageUrl": "http://localhost:3001/reports?report=payroll/variance-register",
+      "format": "csv",
+      "t": 1785728004156
+    },
+    {
+      "suggested": "register-2026-08-VARIANCE.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/5c5eab7b-77fe-4772-8845-2d3bfc7d922e",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-register-2026-08-variance-csv-1785728019454",
+      "pageUrl": "http://localhost:3001/reports?report=payroll/variance-register",
+      "format": "csv",
+      "t": 1785728019454
+    },
+    {
+      "suggested": "register-2026-08-VARIANCE.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/ae3f007b-9527-4778-97dd-f84014168bea",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-register-2026-08-variance-csv-1785728047253",
+      "pageUrl": "http://localhost:3001/reports?report=payroll/variance-register",
+      "format": "csv",
+      "t": 1785728047253
+    },
+    {
+      "suggested": "register-2026-08-VARIANCE.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/b72243d7-c225-4f0a-bfff-7b8bbebccdc4",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-register-2026-08-variance-csv-1785728062833",
+      "pageUrl": "http://localhost:3001/reports?report=payroll/variance-register",
+      "format": "csv",
+      "t": 1785728062833
+    },
+    {
+      "suggested": "register-2026-08-VARIANCE.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/ea616b00-030c-46a0-83cf-ccfb178696bd",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-register-2026-08-variance-csv-1785728078402",
+      "pageUrl": "http://localhost:3001/reports?report=payroll/variance-register",
+      "format": "csv",
+      "t": 1785728078403
+    },
+    {
+      "suggested": "register-2026-08-VARIANCE.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/d9568f41-58c7-443e-a71b-7efc7cc6bc27",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-register-2026-08-variance-csv-1785728106398",
+      "pageUrl": "http://localhost:3001/reports?report=payroll/variance-register",
+      "format": "csv",
+      "t": 1785728106398
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/05599b82-b60d-4476-aa08-8178259f690d",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-workforce-headcount-report-csv-1785728123760",
+      "pageUrl": "http://localhost:3001/reports",
+      "format": "csv",
+      "t": 1785728123761
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/add5785d-32c1-4315-8eb4-3239adc40192",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-workforce-headcount-report-csv-1785728123767",
+      "pageUrl": "http://localhost:3001/reports",
+      "format": "csv",
+      "t": 1785728123767
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/df71da30-5734-449f-ae8b-ecf451e92e6d",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-workforce-headcount-report-csv-1785728123769",
+      "pageUrl": "http://localhost:3001/reports",
+      "format": "csv",
+      "t": 1785728123769
+    }
+  ],
+  "stressBursts": [
+    {
+      "surface": "Employees",
+      "label": "Export",
+      "clicks": 3,
+      "downloads": [
+        {
+          "suggested": "employees-2026-08-03.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/328a574c-29bb-45d8-99dd-6126121315c3",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-employees-2026-08-03-csv-1785727968045",
+          "pageUrl": "http://localhost:3001/employees",
+          "format": "csv",
+          "t": 1785727968046
+        }
+      ],
+      "network": [
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/employees/export/csv",
+          "pageUrl": "/employees",
+          "t": 1785727968043
+        }
+      ],
+      "screenshot": "022-employees-stress-export.png",
+      "elapsedMs": 4131,
+      "okCount": 1,
+      "failCount": 0
+    },
+    {
+      "surface": "PayrollRun",
+      "label": "Export Register",
+      "clicks": 3,
+      "downloads": [
+        {
+          "suggested": "payroll-2026-12-H2.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/8d9cbc13-6a5b-4d7f-80c8-568eb881061f",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-payroll-2026-12-h2-csv-1785727982151",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "format": "csv",
+          "t": 1785727982152
+        }
+      ],
+      "network": [
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/payroll/runs/cmqtilef5001xodfgq1bxxcjv/export",
+          "pageUrl": "/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785727982144
+        }
+      ],
+      "screenshot": "027-payrollrun-stress-export-register.png",
+      "elapsedMs": 4079,
+      "okCount": 1,
+      "failCount": 0
+    },
+    {
+      "surface": "PayrollRun",
+      "label": "Export pack",
+      "clicks": 3,
+      "downloads": [
+        {
+          "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/dd5d27d7-c9f3-4b24-8eef-3a290e35a986",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785727986226",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "format": "json",
+          "t": 1785727986226
+        }
+      ],
+      "network": [],
+      "screenshot": "028-payrollrun-stress-export-pack.png",
+      "elapsedMs": 4048,
+      "okCount": 1,
+      "failCount": 0
+    },
+    {
+      "surface": "Reports/headcount",
+      "label": "Export CSV",
+      "clicks": 3,
+      "downloads": [
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/05599b82-b60d-4476-aa08-8178259f690d",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-workforce-headcount-report-csv-1785728123760",
+          "pageUrl": "http://localhost:3001/reports",
+          "format": "csv",
+          "t": 1785728123761
+        },
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/add5785d-32c1-4315-8eb4-3239adc40192",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-workforce-headcount-report-csv-1785728123767",
+          "pageUrl": "http://localhost:3001/reports",
+          "format": "csv",
+          "t": 1785728123767
+        },
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-U7euo5/df71da30-5734-449f-ae8b-ecf451e92e6d",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/confirm/sa-exports/_dl-workforce-headcount-report-csv-1785728123769",
+          "pageUrl": "http://localhost:3001/reports",
+          "format": "csv",
+          "t": 1785728123769
+        }
+      ],
+      "network": [
+        {
+          "method": "POST",
+          "status": 202,
+          "url": "/api/reports/export",
+          "pageUrl": "/reports",
+          "t": 1785728123454
+        },
+        {
+          "method": "POST",
+          "status": 202,
+          "url": "/api/reports/export",
+          "pageUrl": "/reports",
+          "t": 1785728123464
+        },
+        {
+          "method": "POST",
+          "status": 202,
+          "url": "/api/reports/export",
+          "pageUrl": "/reports",
+          "t": 1785728123465
+        },
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/reports/export/cmscof2e500uzb9xj1mpnztc9/download",
+          "pageUrl": "/reports",
+          "t": 1785728123758
+        },
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/reports/export/cmscof2ed00v2b9xjswv3x3sp/download",
+          "pageUrl": "/reports",
+          "t": 1785728123761
+        },
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/reports/export/cmscof2ed00v3b9xjal25q1bi/download",
+          "pageUrl": "/reports",
+          "t": 1785728123762
+        }
+      ],
+      "screenshot": "072-reports-headcount-stress-export-csv.png",
+      "elapsedMs": 4054,
+      "okCount": 3,
+      "failCount": 0
+    }
+  ],
+  "issues": [
+    {
+      "id": "SA-EXP-settings-policy-packs",
+      "title": "Export control failed: Policy Packs",
+      "where": "Settings → Policy Packs",
+      "why": "no usable download; net=200 /api/leave/policy-packs/catalog",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "013-settings-x-policy-packs.png",
+      "network": "200 GET /api/leave/policy-packs/catalog"
+    },
+    {
+      "id": "SA-EXP-settings-statutory-packs",
+      "title": "Export control failed: Statutory Packs",
+      "where": "Settings → Statutory Packs",
+      "why": "no usable download; net=200 /api/payroll/statutory-packs",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "014-settings-x-statutory-packs.png",
+      "network": "200 GET /api/payroll/statutory-packs"
+    },
+    {
+      "id": "SA-EXP-settings-invoices",
+      "title": "Export control failed: Invoices",
+      "where": "Settings → Invoices",
+      "why": "no usable download; net=200 /settings/billing-invoices?_rsc=cPAReCwAV1Ux5N-B · 200 /_next/static/chunks/src_app_(dashboard)_settings_billing-invoices_page_tsx_08qi4vs._.js · 200 /_next/static/chunks/src_modules_settings_components_BillingInvoicesPanel_tsx_11ewchb._.js · 304 /_next/static/chunks/src_modules_settings_components_BillingInvoicesPanel_tsx_11ewchb._.js · 304 /_next/static/chunks/src_app_(dashboard)_settings_billing-invoices_page_tsx_08qi4vs._.js · 200 /api/billing/invoices?page=1&limit=20",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "015-settings-x-invoices.png",
+      "network": "200 GET /settings/billing-invoices?_rsc=cPAReCwAV1Ux5N-B · 200 GET /_next/static/chunks/src_app_(dashboard)_settings_billing-invoices_page_tsx_08qi4vs._.js · 200 GET /_next/static/chunks/src_modules_settings_components_BillingInvoicesPanel_tsx_11ewchb._.js · 304 GET /_next/static/chunks/src_modules_settings_components_BillingInvoicesPanel_tsx_11ewchb._.js · 304 GET /_next/static/chunks/src_app_(dashboard)_settings_billing-invoices_page_tsx_08qi4vs._.js · 200 GET /api/billing/invoices?page=1&limit=20"
+    },
+    {
+      "id": "SA-EXP-performance-export",
+      "title": "Export control failed: Export",
+      "where": "Performance → Export",
+      "why": "no usable download; net=none",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "020-performance-x-export.png",
+      "network": "n/a"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-headcount-salary-regist",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/workforce/headcount → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "031-reports-workforce-headcount-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-headcount-statutory-reg",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/workforce/headcount → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "032-reports-workforce-headcount-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-headcount-variance-regi",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/workforce/headcount → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "033-reports-workforce-headcount-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-turnover-salary-registe",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/workforce/turnover → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "036-reports-workforce-turnover-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-turnover-statutory-regi",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/workforce/turnover → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "037-reports-workforce-turnover-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-turnover-variance-regis",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/workforce/turnover → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "038-reports-workforce-turnover-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-demographics-salary-reg",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/workforce/demographics → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "041-reports-workforce-demographics-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-demographics-statutory-",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/workforce/demographics → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "042-reports-workforce-demographics-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-workforce-demographics-variance-r",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/workforce/demographics → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "043-reports-workforce-demographics-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-attendance-summary-salary-registe",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/attendance/summary → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "045-reports-attendance-summary-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-attendance-summary-statutory-regi",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/attendance/summary → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "046-reports-attendance-summary-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-attendance-summary-variance-regis",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/attendance/summary → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "047-reports-attendance-summary-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-attendance-absenteeism-salary-reg",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/attendance/absenteeism → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "050-reports-attendance-absenteeism-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-attendance-absenteeism-statutory-",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/attendance/absenteeism → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "051-reports-attendance-absenteeism-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-attendance-absenteeism-variance-r",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/attendance/absenteeism → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "052-reports-attendance-absenteeism-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-leave-utilization-salary-register",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/leave/utilization → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "055-reports-leave-utilization-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-leave-utilization-statutory-regis",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/leave/utilization → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "056-reports-leave-utilization-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-leave-utilization-variance-regist",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/leave/utilization → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "057-reports-leave-utilization-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-leave-pending-salary-register",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/leave/pending → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "060-reports-leave-pending-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-leave-pending-statutory-register",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/leave/pending → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "061-reports-leave-pending-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-leave-pending-variance-register",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/leave/pending → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "062-reports-leave-pending-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-payroll-summary-salary-register",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/payroll/summary → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "064-reports-payroll-summary-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-payroll-summary-statutory-registe",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/payroll/summary → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "065-reports-payroll-summary-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-payroll-summary-variance-register",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/payroll/summary → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "066-reports-payroll-summary-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    },
+    {
+      "id": "SA-EXP-reports-payroll-ctc-analysis-salary-regis",
+      "title": "Export control failed: Salary Register",
+      "where": "Reports/payroll/ctc-analysis → Salary Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "069-reports-payroll-ctc-analysis-x-salary-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY"
+    },
+    {
+      "id": "SA-EXP-reports-payroll-ctc-analysis-statutory-re",
+      "title": "Export control failed: Statutory Register",
+      "where": "Reports/payroll/ctc-analysis → Statutory Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "070-reports-payroll-ctc-analysis-x-statutory-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY"
+    },
+    {
+      "id": "SA-EXP-reports-payroll-ctc-analysis-variance-reg",
+      "title": "Export control failed: Variance Register",
+      "where": "Reports/payroll/ctc-analysis → Variance Register",
+      "why": "no usable download; net=200 /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "071-reports-payroll-ctc-analysis-x-variance-register.png",
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE"
+    }
+  ],
+  "findings": [
+    {
+      "menu": "Auth",
+      "action": "login",
+      "status": "PASS",
+      "url": "http://localhost:3001/dashboard",
+      "ts": "2026-08-03T03:31:17.301Z"
+    },
+    {
+      "menu": "Attendance",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "004-attendance-land.png",
+      "ts": "2026-08-03T03:31:18.261Z"
+    },
+    {
+      "menu": "Leave",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "005-leave-land.png",
+      "ts": "2026-08-03T03:31:19.050Z"
+    },
+    {
+      "menu": "Payout",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "006-payout-land.png",
+      "ts": "2026-08-03T03:31:19.749Z"
+    },
+    {
+      "menu": "PayoutApprovals",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "007-payoutapprovals-land.png",
+      "ts": "2026-08-03T03:31:20.451Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "008-analytics-land.png",
+      "ts": "2026-08-03T03:31:21.166Z"
+    },
+    {
+      "menu": "Assets",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "009-assets-land.png",
+      "ts": "2026-08-03T03:31:21.966Z"
+    },
+    {
+      "menu": "Assets",
+      "action": "export:Export",
+      "status": "PASS",
+      "screenshot": "011-assets-x-export.png",
+      "note": "assets-inventory.csv ok:true",
+      "ts": "2026-08-03T03:31:25.844Z"
+    },
+    {
+      "menu": "Settings",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "012-settings-land.png",
+      "ts": "2026-08-03T03:31:26.535Z"
+    },
+    {
+      "menu": "Settings",
+      "action": "export:Policy Packs",
+      "status": "FAIL",
+      "screenshot": "013-settings-x-policy-packs.png",
+      "note": "/api/leave/policy-packs/catalog",
+      "ts": "2026-08-03T03:31:30.047Z"
+    },
+    {
+      "menu": "Settings",
+      "action": "export:Statutory Packs",
+      "status": "FAIL",
+      "screenshot": "014-settings-x-statutory-packs.png",
+      "note": "/api/payroll/statutory-packs",
+      "ts": "2026-08-03T03:31:33.458Z"
+    },
+    {
+      "menu": "Settings",
+      "action": "export:Invoices",
+      "status": "FAIL",
+      "screenshot": "015-settings-x-invoices.png",
+      "note": "/settings/billing-invoices?_rsc=cPAReCwAV1Ux5N-B",
+      "ts": "2026-08-03T03:31:36.883Z"
+    },
+    {
+      "menu": "AuditLogs",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "016-auditlogs-land.png",
+      "ts": "2026-08-03T03:32:07.560Z"
+    },
+    {
+      "menu": "OpsLogs",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "017-opslogs-land.png",
+      "ts": "2026-08-03T03:32:38.267Z"
+    },
+    {
+      "menu": "Performance",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "018-performance-land.png",
+      "ts": "2026-08-03T03:32:39.120Z"
+    },
+    {
+      "menu": "Performance",
+      "action": "export:Export",
+      "status": "FAIL",
+      "screenshot": "020-performance-x-export.png",
+      "note": "NO_EVENT",
+      "ts": "2026-08-03T03:32:42.922Z"
+    },
+    {
+      "menu": "Employees",
+      "action": "export:Export",
+      "status": "PASS",
+      "screenshot": "021-employees-x-export.png",
+      "note": "employees-2026-08-03.csv ok:true",
+      "ts": "2026-08-03T03:32:47.734Z"
+    },
+    {
+      "menu": "Employees",
+      "action": "STRESS×3:Export",
+      "status": "PASS",
+      "screenshot": "022-employees-stress-export.png",
+      "note": "dl=1 ok=1",
+      "ts": "2026-08-03T03:32:51.867Z"
+    },
+    {
+      "menu": "PayrollRun",
+      "action": "export:Export Register",
+      "status": "PASS",
+      "screenshot": "025-payrollrun-x-export-register.png",
+      "note": "payroll-2026-12-H2.csv ok:true",
+      "ts": "2026-08-03T03:32:58.436Z"
+    },
+    {
+      "menu": "PayrollRun",
+      "action": "export:Export pack",
+      "status": "PASS",
+      "screenshot": "026-payrollrun-x-export-pack.png",
+      "note": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json ok:true",
+      "ts": "2026-08-03T03:33:01.834Z"
+    },
+    {
+      "menu": "PayrollRun",
+      "action": "STRESS×3:Export Register",
+      "status": "PASS",
+      "screenshot": "027-payrollrun-stress-export-register.png",
+      "note": "dl=1 ok=1",
+      "ts": "2026-08-03T03:33:05.914Z"
+    },
+    {
+      "menu": "PayrollRun",
+      "action": "STRESS×3:Export pack",
+      "status": "PASS",
+      "screenshot": "028-payrollrun-stress-export-pack.png",
+      "note": "dl=1 ok=1",
+      "ts": "2026-08-03T03:33:09.965Z"
+    },
+    {
+      "menu": "Reports/workforce/headcount",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "031-reports-workforce-headcount-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:16.738Z"
+    },
+    {
+      "menu": "Reports/workforce/headcount",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "032-reports-workforce-headcount-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:20.155Z"
+    },
+    {
+      "menu": "Reports/workforce/headcount",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "033-reports-workforce-headcount-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:23.571Z"
+    },
+    {
+      "menu": "Reports/workforce/headcount",
+      "action": "export:Export CSV",
+      "status": "PASS",
+      "screenshot": "034-reports-workforce-headcount-x-export-csv.png",
+      "note": "register-2026-08-VARIANCE.csv ok:true",
+      "ts": "2026-08-03T03:33:26.986Z"
+    },
+    {
+      "menu": "Reports/workforce/turnover",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "036-reports-workforce-turnover-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:32.271Z"
+    },
+    {
+      "menu": "Reports/workforce/turnover",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "037-reports-workforce-turnover-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:35.695Z"
+    },
+    {
+      "menu": "Reports/workforce/turnover",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "038-reports-workforce-turnover-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:39.104Z"
+    },
+    {
+      "menu": "Reports/workforce/turnover",
+      "action": "export:Export CSV",
+      "status": "PASS",
+      "screenshot": "039-reports-workforce-turnover-x-export-csv.png",
+      "note": "register-2026-08-VARIANCE.csv ok:true",
+      "ts": "2026-08-03T03:33:42.518Z"
+    },
+    {
+      "menu": "Reports/workforce/demographics",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "041-reports-workforce-demographics-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:47.759Z"
+    },
+    {
+      "menu": "Reports/workforce/demographics",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "042-reports-workforce-demographics-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:51.190Z"
+    },
+    {
+      "menu": "Reports/workforce/demographics",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "043-reports-workforce-demographics-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:33:54.607Z"
+    },
+    {
+      "menu": "Reports/attendance/summary",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "045-reports-attendance-summary-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:00.012Z"
+    },
+    {
+      "menu": "Reports/attendance/summary",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "046-reports-attendance-summary-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:03.423Z"
+    },
+    {
+      "menu": "Reports/attendance/summary",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "047-reports-attendance-summary-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:06.842Z"
+    },
+    {
+      "menu": "Reports/attendance/summary",
+      "action": "export:Export CSV",
+      "status": "PASS",
+      "screenshot": "048-reports-attendance-summary-x-export-csv.png",
+      "note": "register-2026-08-VARIANCE.csv ok:true",
+      "ts": "2026-08-03T03:34:10.271Z"
+    },
+    {
+      "menu": "Reports/attendance/absenteeism",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "050-reports-attendance-absenteeism-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:15.624Z"
+    },
+    {
+      "menu": "Reports/attendance/absenteeism",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "051-reports-attendance-absenteeism-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:19.040Z"
+    },
+    {
+      "menu": "Reports/attendance/absenteeism",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "052-reports-attendance-absenteeism-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:22.457Z"
+    },
+    {
+      "menu": "Reports/attendance/absenteeism",
+      "action": "export:Export CSV",
+      "status": "PASS",
+      "screenshot": "053-reports-attendance-absenteeism-x-export-csv.png",
+      "note": "register-2026-08-VARIANCE.csv ok:true",
+      "ts": "2026-08-03T03:34:25.884Z"
+    },
+    {
+      "menu": "Reports/leave/utilization",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "055-reports-leave-utilization-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:31.191Z"
+    },
+    {
+      "menu": "Reports/leave/utilization",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "056-reports-leave-utilization-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:34.626Z"
+    },
+    {
+      "menu": "Reports/leave/utilization",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "057-reports-leave-utilization-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:38.040Z"
+    },
+    {
+      "menu": "Reports/leave/utilization",
+      "action": "export:Export CSV",
+      "status": "PASS",
+      "screenshot": "058-reports-leave-utilization-x-export-csv.png",
+      "note": "register-2026-08-VARIANCE.csv ok:true",
+      "ts": "2026-08-03T03:34:41.454Z"
+    },
+    {
+      "menu": "Reports/leave/pending",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "060-reports-leave-pending-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:46.707Z"
+    },
+    {
+      "menu": "Reports/leave/pending",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "061-reports-leave-pending-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:50.126Z"
+    },
+    {
+      "menu": "Reports/leave/pending",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "062-reports-leave-pending-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:53.555Z"
+    },
+    {
+      "menu": "Reports/payroll/summary",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "064-reports-payroll-summary-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:34:58.925Z"
+    },
+    {
+      "menu": "Reports/payroll/summary",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "065-reports-payroll-summary-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:35:02.374Z"
+    },
+    {
+      "menu": "Reports/payroll/summary",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "066-reports-payroll-summary-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:35:05.840Z"
+    },
+    {
+      "menu": "Reports/payroll/summary",
+      "action": "export:Export CSV",
+      "status": "PASS",
+      "screenshot": "067-reports-payroll-summary-x-export-csv.png",
+      "note": "register-2026-08-VARIANCE.csv ok:true",
+      "ts": "2026-08-03T03:35:09.290Z"
+    },
+    {
+      "menu": "Reports/payroll/ctc-analysis",
+      "action": "export:Salary Register",
+      "status": "FAIL",
+      "screenshot": "069-reports-payroll-ctc-analysis-x-salary-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:35:14.658Z"
+    },
+    {
+      "menu": "Reports/payroll/ctc-analysis",
+      "action": "export:Statutory Register",
+      "status": "FAIL",
+      "screenshot": "070-reports-payroll-ctc-analysis-x-statutory-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:35:18.076Z"
+    },
+    {
+      "menu": "Reports/payroll/ctc-analysis",
+      "action": "export:Variance Register",
+      "status": "FAIL",
+      "screenshot": "071-reports-payroll-ctc-analysis-x-variance-register.png",
+      "note": "/_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js",
+      "ts": "2026-08-03T03:35:21.503Z"
+    },
+    {
+      "menu": "Reports/headcount",
+      "action": "STRESS×3:Export CSV",
+      "status": "PASS",
+      "screenshot": "072-reports-headcount-stress-export-csv.png",
+      "note": "dl=3 ok=3",
+      "ts": "2026-08-03T03:35:27.302Z"
+    }
+  ],
+  "failedRequests": [
+    {
+      "method": "GET",
+      "url": "http://localhost:3001/api/auth/me",
+      "status": 401,
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"3fcc9c45-b508-4367-a393-738c47459d90\"}}",
+      "pageUrl": "http://localhost:3001/login"
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:3001/api/auth/refresh",
+      "status": 401,
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"65409c2f-d3be-49aa-b7e1-c8245f42a3a4\"}}",
+      "pageUrl": "http://localhost:3001/login"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:3001/settings/audit-logs",
+      "status": 404,
+      "body": "<!DOCTYPE html><html lang=\"en\" class=\"inter_8db6fa51-module__MMaAbG__variable jetbrains_mono_9a2f2d6c-module__wsyXyG__variable h-full antialiased\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/%5Bro",
+      "pageUrl": "http://localhost:3001/settings/audit-logs"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:3001/ops/logs",
+      "status": 404,
+      "body": "<!DOCTYPE html><html lang=\"en\" class=\"inter_8db6fa51-module__MMaAbG__variable jetbrains_mono_9a2f2d6c-module__wsyXyG__variable h-full antialiased\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/chunks/%5Bro",
+      "pageUrl": "http://localhost:3001/ops/logs"
+    }
+  ],
+  "matrixCleaned": [
+    {
+      "surface": "Attendance",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "004-attendance-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Leave",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "005-leave-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Payout",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "006-payout-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "PayoutApprovals",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "007-payoutapprovals-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Analytics",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "008-analytics-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Assets",
+      "control": "Export",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "assets-inventory.csv ok:true",
+      "network": "",
+      "screenshot": "011-assets-x-export.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Settings",
+      "control": "Policy Packs",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /api/leave/policy-packs/catalog",
+      "screenshot": "013-settings-x-policy-packs.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Settings",
+      "control": "Statutory Packs",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /api/payroll/statutory-packs",
+      "screenshot": "014-settings-x-statutory-packs.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Settings",
+      "control": "Invoices",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /settings/billing-invoices?_rsc=cPAReCwAV1Ux5N-B · 200 GET /_next/static/chunks/src_app_(dashboard)_settings_billing-invoices_page_tsx_08qi4vs._.js · 200 GET /_next/static/chunks/src_modules_settings_components_B",
+      "screenshot": "015-settings-x-invoices.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "AuditLogs",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "016-auditlogs-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "OpsLogs",
+      "control": "(none found)",
+      "format": "n/a",
+      "status": "ABSENT",
+      "ok": null,
+      "download": null,
+      "network": "",
+      "screenshot": "017-opslogs-land.png",
+      "stress": false,
+      "note": "no Export/Download/PDF/Excel/CSV/Register/Pack/Print visible"
+    },
+    {
+      "surface": "Performance",
+      "control": "Export",
+      "format": "unknown",
+      "status": "NO_EVENT",
+      "ok": false,
+      "download": null,
+      "network": "",
+      "screenshot": "020-performance-x-export.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Employees",
+      "control": "Export",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "employees-2026-08-03.csv ok:true",
+      "network": "200 GET /api/employees/export/csv",
+      "screenshot": "021-employees-x-export.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Employees[STRESS×3]",
+      "control": "Export",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "employees-2026-08-03.csv ok:true",
+      "network": "200 GET /api/employees/export/csv",
+      "screenshot": "022-employees-stress-export.png",
+      "stress": true,
+      "note": "ok=1 fail=0"
+    },
+    {
+      "surface": "PayrollRun",
+      "control": "Export Register",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "payroll-2026-12-H2.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmqtilef5001xodfgq1bxxcjv/export",
+      "screenshot": "025-payrollrun-x-export-register.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "PayrollRun",
+      "control": "Export pack",
+      "format": "json",
+      "status": "PASS",
+      "ok": true,
+      "download": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json ok:true",
+      "network": "200 GET /api/payroll/reports/audit-pack?runId=cmqtilef5001xodfgq1bxxcjv",
+      "screenshot": "026-payrollrun-x-export-pack.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "PayrollRun[STRESS×3]",
+      "control": "Export Register",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "payroll-2026-12-H2.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmqtilef5001xodfgq1bxxcjv/export",
+      "screenshot": "027-payrollrun-stress-export-register.png",
+      "stress": true,
+      "note": "ok=1 fail=0"
+    },
+    {
+      "surface": "PayrollRun[STRESS×3]",
+      "control": "Export pack",
+      "format": "json",
+      "status": "PASS",
+      "ok": true,
+      "download": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json ok:true",
+      "network": "",
+      "screenshot": "028-payrollrun-stress-export-pack.png",
+      "stress": true,
+      "note": "ok=1 fail=0"
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "031-reports-workforce-headcount-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "032-reports-workforce-headcount-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "033-reports-workforce-headcount-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/headcount",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "034-reports-workforce-headcount-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "036-reports-workforce-turnover-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "037-reports-workforce-turnover-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "038-reports-workforce-turnover-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/turnover",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "039-reports-workforce-turnover-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/workforce/demographics",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "041-reports-workforce-demographics-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/demographics",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "042-reports-workforce-demographics-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/workforce/demographics",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "043-reports-workforce-demographics-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "045-reports-attendance-summary-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "046-reports-attendance-summary-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "047-reports-attendance-summary-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/attendance/summary",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "048-reports-attendance-summary-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "050-reports-attendance-absenteeism-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "051-reports-attendance-absenteeism-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "052-reports-attendance-absenteeism-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/attendance/absenteeism",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "053-reports-attendance-absenteeism-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "055-reports-leave-utilization-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "056-reports-leave-utilization-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "057-reports-leave-utilization-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/leave/utilization",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "058-reports-leave-utilization-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/leave/pending",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "060-reports-leave-pending-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/leave/pending",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "061-reports-leave-pending-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/leave/pending",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "062-reports-leave-pending-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "064-reports-payroll-summary-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "065-reports-payroll-summary-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "066-reports-payroll-summary-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/payroll/summary",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "register-2026-08-VARIANCE.csv ok:true",
+      "network": "200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register/export?type=VARIANCE",
+      "screenshot": "067-reports-payroll-summary-x-export-csv.png",
+      "stress": false,
+      "note": ""
+    },
+    {
+      "surface": "Reports/payroll/ctc-analysis",
+      "control": "Salary Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_SalaryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=SALARY",
+      "screenshot": "069-reports-payroll-ctc-analysis-x-salary-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/payroll/ctc-analysis",
+      "control": "Statutory Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_StatutoryRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=STATUTORY",
+      "screenshot": "070-reports-payroll-ctc-analysis-x-statutory-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/payroll/ctc-analysis",
+      "control": "Variance Register",
+      "format": "n/a",
+      "status": "NAV_ONLY",
+      "ok": null,
+      "download": null,
+      "network": "200 GET /_next/static/chunks/src_modules_reports_components_VarianceRegisterReport_tsx_0jllcul._.js · 200 GET /api/payroll/runs/cmsbwp4gy002112xqipqgzuf1/register?type=VARIANCE",
+      "screenshot": "071-reports-payroll-ctc-analysis-x-variance-register.png",
+      "stress": false,
+      "note": "nav/sidebar label matched Register|Pack|Invoice pattern — not an export control",
+      "classification_note": "false-positive matcher"
+    },
+    {
+      "surface": "Reports/headcount[STRESS×3]",
+      "control": "Export CSV",
+      "format": "csv",
+      "status": "PASS",
+      "ok": true,
+      "download": "workforce-headcount-report.csv ok:true; workforce-headcount-report.csv ok:true; workforce-headcount-report.csv ok:true",
+      "network": "202 POST /api/reports/export · 202 POST /api/reports/export · 202 POST /api/reports/export · 200 GET /api/reports/export/cmscof2e500uzb9xj1mpnztc9/download · 200 GET /api/reports/export/cmscof2ed00v2b9xjswv3x3sp/download",
+      "screenshot": "072-reports-headcount-stress-export-csv.png",
+      "stress": true,
+      "note": "ok=3 fail=0"
+    }
+  ],
+  "realIssues": [
+    {
+      "id": "SA-EXP-performance-export",
+      "title": "Export control failed: Export",
+      "where": "Performance → Export",
+      "why": "no usable download; net=none",
+      "classification": "FRONTEND",
+      "how": "Ensure export returns downloadable file and FE completes blob download",
+      "screenshot": "020-performance-x-export.png",
+      "network": "n/a"
+    }
+  ]
+}

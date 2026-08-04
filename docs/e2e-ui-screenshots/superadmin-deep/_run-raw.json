@@ -1,0 +1,1724 @@
+{
+  "counters": {
+    "menus": 12,
+    "buttons": 198,
+    "screenshots": 229,
+    "be": 1,
+    "fe": 0,
+    "both": 0,
+    "layers": 8,
+    "exportsTried": 0
+  },
+  "maxDepthReached": 1,
+  "findings": [
+    {
+      "menu": "Login",
+      "action": "login",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:21.429Z",
+      "screenshot": "002-login-success.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:22.846Z",
+      "screenshot": "003-dashboard.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Add Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:23.564Z",
+      "screenshot": "004-dashboard-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Add Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:26.679Z",
+      "screenshot": "005-dashboard-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "7d",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:29.215Z",
+      "screenshot": "006-dashboard-7d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "30d",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:30.364Z",
+      "screenshot": "007-dashboard-30d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "90d",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:31.489Z",
+      "screenshot": "008-dashboard-90d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Employees",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:33.480Z",
+      "screenshot": "009-employees.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "search",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:33.979Z",
+      "screenshot": "010-employees-search.png"
+    },
+    {
+      "menu": "Employees",
+      "action": "Add employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:34.947Z",
+      "screenshot": "011-employees-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees>detail",
+      "action": "Save draft",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:35.817Z",
+      "screenshot": "012-employees-detail-save-draft.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees>detail",
+      "action": "Cancel",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:38.882Z",
+      "screenshot": "013-employees-detail-cancel.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees>detail",
+      "action": "Not specified",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:39.978Z",
+      "screenshot": "014-employees-detail-not-specified.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees>detail",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:41.107Z",
+      "screenshot": "015-employees-detail-next.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "Columns",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:43.857Z",
+      "screenshot": "016-employees-columns.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:45.027Z",
+      "screenshot": "017-employees-export.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:46.161Z",
+      "screenshot": "018-employees-all-departments.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "All statuses",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:47.292Z",
+      "screenshot": "019-employees-all-statuses.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "Comfortable",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:48.426Z",
+      "screenshot": "020-employees-comfortable.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "extra:/employees/new",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:50.044Z",
+      "screenshot": "021-employees-new.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees/employees/new",
+      "action": "Save draft",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:50.927Z",
+      "screenshot": "022-employees-employees-new-save-draft.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees/employees/new",
+      "action": "Cancel",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:54.011Z",
+      "screenshot": "023-employees-employees-new-cancel.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees/employees/new",
+      "action": "Not specified",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:55.116Z",
+      "screenshot": "024-employees-employees-new-not-specified.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees/employees/new",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:56.228Z",
+      "screenshot": "025-employees-employees-new-next.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Departments",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:58.176Z",
+      "screenshot": "026-departments.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Add department",
+      "status": "PASS",
+      "at": "2026-08-02T19:48:59.158Z",
+      "screenshot": "027-departments-add-department.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:02.813Z",
+      "screenshot": "030-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:05.899Z",
+      "screenshot": "031-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:07.045Z",
+      "screenshot": "032-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:10.161Z",
+      "screenshot": "033-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:13.277Z",
+      "screenshot": "034-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:16.409Z",
+      "screenshot": "035-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:19.532Z",
+      "screenshot": "036-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:22.667Z",
+      "screenshot": "037-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:25.764Z",
+      "screenshot": "038-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Customer Success",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:26.889Z",
+      "screenshot": "039-departments-actions-for-customer-success.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "menu:Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:49:27.963Z",
+      "screenshot": "040-departments-menu-edit.png",
+      "downloads": []
+    },
+    {
+      "menu": "Departments",
+      "action": "menu:control",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:01.183Z",
+      "screenshot": "042-departments-menu-control.png",
+      "downloads": []
+    },
+    {
+      "menu": "Departments",
+      "action": "menu:control",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:33.901Z",
+      "screenshot": "043-departments-menu-control.png",
+      "downloads": []
+    },
+    {
+      "menu": "Attendance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:36.078Z",
+      "screenshot": "044-attendance.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "All employees",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:36.997Z",
+      "screenshot": "045-attendance-all-employees.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Previous month",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:38.141Z",
+      "screenshot": "046-attendance-previous-month.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Next month",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:39.342Z",
+      "screenshot": "047-attendance-next-month.png",
+      "url": "http://localhost:3001/attendance?month=2026-07"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:40.471Z",
+      "screenshot": "048-attendance-calendar.png",
+      "url": "http://localhost:3001/attendance?month=2026-07"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Table",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:41.659Z",
+      "screenshot": "049-attendance-table.png",
+      "url": "http://localhost:3001/attendance?month=2026-07&view=table"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Request Regularization",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:42.857Z",
+      "screenshot": "050-attendance-request-regularization.png",
+      "url": "http://localhost:3001/attendance?month=2026-07&view=table"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:45.411Z",
+      "screenshot": "053-timesheets.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:46.154Z",
+      "screenshot": "054-timesheets-tab-my-timesheet.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:46.877Z",
+      "screenshot": "055-timesheets-tab-approvals.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Projects",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:47.613Z",
+      "screenshot": "056-timesheets-tab-projects.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Rates",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:48.366Z",
+      "screenshot": "057-timesheets-tab-rates.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approval Flow",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:49.110Z",
+      "screenshot": "058-timesheets-tab-approval-flow.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Locks",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:49.812Z",
+      "screenshot": "059-timesheets-tab-locks.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Delegations",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:50.566Z",
+      "screenshot": "060-timesheets-tab-delegations.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:51.574Z",
+      "screenshot": "061-timesheets-approvals.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Approval Flow",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:52.766Z",
+      "screenshot": "062-timesheets-approval-flow.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Create delegation",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:55.885Z",
+      "screenshot": "063-timesheets-create-delegation.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Projects",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:57.064Z",
+      "screenshot": "064-timesheets-projects.png",
+      "url": "http://localhost:3001/timesheets?tab=projects"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Rates",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:58.255Z",
+      "screenshot": "065-timesheets-rates.png",
+      "url": "http://localhost:3001/timesheets?tab=rates"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Locks",
+      "status": "PASS",
+      "at": "2026-08-02T19:50:59.430Z",
+      "screenshot": "066-timesheets-locks.png",
+      "url": "http://localhost:3001/timesheets?tab=locks"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Delegations",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:00.599Z",
+      "screenshot": "067-timesheets-delegations.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Yourself (default)",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:01.736Z",
+      "screenshot": "068-timesheets-yourself-default.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Loading employees…",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:02.890Z",
+      "screenshot": "069-timesheets-loading-employees.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:04.064Z",
+      "screenshot": "070-timesheets-my-timesheet.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Leave",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:06.065Z",
+      "screenshot": "071-leave.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:My Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:06.808Z",
+      "screenshot": "072-leave-tab-my-requests.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Team Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:07.611Z",
+      "screenshot": "073-leave-tab-team-calendar.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Comp-off",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:08.390Z",
+      "screenshot": "074-leave-tab-comp-off.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:09.112Z",
+      "screenshot": "075-leave-tab-approvals.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:10.056Z",
+      "screenshot": "076-leave-new-request.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:12.140Z",
+      "screenshot": "080-leave-approvals.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "Comp-off",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:13.263Z",
+      "screenshot": "081-leave-comp-off.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Leave",
+      "action": "Pending",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:14.444Z",
+      "screenshot": "082-leave-pending.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Leave",
+      "action": "My Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:20.382Z",
+      "screenshot": "083-leave-my-requests.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Holidays",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:22.331Z",
+      "screenshot": "084-holidays.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Import .ics",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:23.401Z",
+      "screenshot": "085-holidays-import-ics.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Add Holiday",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:24.670Z",
+      "screenshot": "086-holidays-add-holiday.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Holiday policy",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:26.524Z",
+      "screenshot": "089-holidays-holiday-policy.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Previous year",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:27.683Z",
+      "screenshot": "090-holidays-previous-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Next year",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:28.881Z",
+      "screenshot": "091-holidays-next-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for New Year's Day",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:30.011Z",
+      "screenshot": "092-holidays-actions-for-new-year-s-day.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "menu:Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:51:31.076Z",
+      "screenshot": "093-holidays-menu-edit.png",
+      "downloads": []
+    },
+    {
+      "menu": "Holidays",
+      "action": "menu:control",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:04.308Z",
+      "screenshot": "095-holidays-menu-control.png",
+      "downloads": []
+    },
+    {
+      "menu": "Payroll",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:06.534Z",
+      "screenshot": "096-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Run Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:07.558Z",
+      "screenshot": "097-payroll-run-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:08.716Z",
+      "screenshot": "098-payroll-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "tab:Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:09.430Z",
+      "screenshot": "099-payroll-detail-tab-pay-calendar.png"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "tab:Opening Balances",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:10.148Z",
+      "screenshot": "100-payroll-detail-tab-opening-balances.png"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "tab:Historical Payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:10.859Z",
+      "screenshot": "101-payroll-detail-tab-historical-payslips.png"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "tab:Parallel Run",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:11.562Z",
+      "screenshot": "102-payroll-detail-tab-parallel-run.png"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "tab:Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:12.297Z",
+      "screenshot": "103-payroll-detail-tab-go-live.png"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:13.205Z",
+      "screenshot": "104-payroll-detail-go-live.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:14.312Z",
+      "screenshot": "105-payroll-detail-save.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll>detail",
+      "action": "Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:15.470Z",
+      "screenshot": "106-payroll-detail-pay-calendar.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Prev",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:20.151Z",
+      "screenshot": "107-payroll-prev.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:21.266Z",
+      "screenshot": "108-payroll-next.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Global Workforce",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:22.362Z",
+      "screenshot": "109-payroll-global-workforce.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/my-payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:24.042Z",
+      "screenshot": "110-payroll-my-payslips.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Run Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:25.036Z",
+      "screenshot": "111-payroll-payroll-my-payslips-run-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:27.499Z",
+      "screenshot": "112-payroll-payroll-my-payslips-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Global Workforce",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:29.945Z",
+      "screenshot": "113-payroll-payroll-my-payslips-global-workforce.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:32.864Z",
+      "screenshot": "114-payroll-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:33.608Z",
+      "screenshot": "115-payroll-payroll-migration-tab-pay-calendar.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Opening Balances",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:34.328Z",
+      "screenshot": "116-payroll-payroll-migration-tab-opening-balances.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Historical Payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:35.029Z",
+      "screenshot": "117-payroll-payroll-migration-tab-historical-payslips.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Parallel Run",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:35.728Z",
+      "screenshot": "118-payroll-payroll-migration-tab-parallel-run.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:36.411Z",
+      "screenshot": "119-payroll-payroll-migration-tab-go-live.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:37.306Z",
+      "screenshot": "120-payroll-payroll-migration-go-live.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:38.447Z",
+      "screenshot": "121-payroll-payroll-migration-pay-calendar.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/global",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:40.062Z",
+      "screenshot": "122-payroll-global.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "New Invoice",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:41.069Z",
+      "screenshot": "123-payroll-payroll-global-new-invoice.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Worker type",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:42.719Z",
+      "screenshot": "126-payroll-payroll-global-worker-type.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:44.663Z",
+      "screenshot": "127-payout-methods.png",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "Review approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:45.508Z",
+      "screenshot": "128-payout-methods-review-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods>detail",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:46.229Z",
+      "screenshot": "129-payout-methods-detail-tab-approvals.png"
+    },
+    {
+      "menu": "Payout methods>detail",
+      "action": "tab:Verification",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:46.925Z",
+      "screenshot": "130-payout-methods-detail-tab-verification.png"
+    },
+    {
+      "menu": "Payout methods>detail",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:47.780Z",
+      "screenshot": "131-payout-methods-detail-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods>detail",
+      "action": "Verification",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:48.913Z",
+      "screenshot": "132-payout-methods-detail-verification.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "Add account",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:53.560Z",
+      "screenshot": "133-payout-methods-add-account.png",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "extra:/payout-methods/approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:55.159Z",
+      "screenshot": "134-payout-methods-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:55.879Z",
+      "screenshot": "135-payout-methods-payout-methods-approvals-tab-approvals.png"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "tab:Verification",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:56.560Z",
+      "screenshot": "136-payout-methods-payout-methods-approvals-tab-verificatio.png"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:57.445Z",
+      "screenshot": "137-payout-methods-payout-methods-approvals-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "Verification",
+      "status": "PASS",
+      "at": "2026-08-02T19:52:58.569Z",
+      "screenshot": "138-payout-methods-payout-methods-approvals-verification.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Reports",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:00.616Z",
+      "screenshot": "139-reports.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports",
+      "action": "Export CSV",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:01.581Z",
+      "screenshot": "140-reports-export-csv.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:02.709Z",
+      "screenshot": "141-reports-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:03.883Z",
+      "screenshot": "142-reports-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:05.008Z",
+      "screenshot": "143-reports-demographics.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:06.167Z",
+      "screenshot": "144-reports-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:07.279Z",
+      "screenshot": "145-reports-ctc-analysis.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:08.481Z",
+      "screenshot": "146-reports-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:09.616Z",
+      "screenshot": "147-reports-all-departments.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:10.762Z",
+      "screenshot": "148-reports-monthly-summary.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "Export CSV",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:13.416Z",
+      "screenshot": "150-reports-reports-report-workforce-headcount-export-csv.png",
+      "url": "http://localhost:3001/reports?report=workforce/headcount"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:14.553Z",
+      "screenshot": "151-reports-reports-report-workforce-headcount-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:15.714Z",
+      "screenshot": "152-reports-reports-report-workforce-headcount-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:16.831Z",
+      "screenshot": "153-reports-reports-report-workforce-headcount-demographics.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:17.989Z",
+      "screenshot": "154-reports-reports-report-workforce-headcount-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:19.163Z",
+      "screenshot": "155-reports-reports-report-workforce-headcount-ctc-analysis.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:20.396Z",
+      "screenshot": "156-reports-reports-report-workforce-headcount-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:21.520Z",
+      "screenshot": "157-reports-reports-report-workforce-headcount-all-departme.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/headcount",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:22.613Z",
+      "screenshot": "158-reports-reports-report-workforce-headcount-monthly-summ.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "Export CSV",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:25.249Z",
+      "screenshot": "160-reports-reports-report-workforce-turnover-export-csv.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:26.483Z",
+      "screenshot": "161-reports-reports-report-workforce-turnover-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:27.633Z",
+      "screenshot": "162-reports-reports-report-workforce-turnover-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:28.747Z",
+      "screenshot": "163-reports-reports-report-workforce-turnover-demographics.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:29.923Z",
+      "screenshot": "164-reports-reports-report-workforce-turnover-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:31.064Z",
+      "screenshot": "165-reports-reports-report-workforce-turnover-ctc-analysis.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:32.297Z",
+      "screenshot": "166-reports-reports-report-workforce-turnover-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:33.442Z",
+      "screenshot": "167-reports-reports-report-workforce-turnover-all-departmen.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/turnover",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:34.569Z",
+      "screenshot": "168-reports-reports-report-workforce-turnover-monthly-summa.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:37.262Z",
+      "screenshot": "170-reports-reports-report-workforce-demographics-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:38.418Z",
+      "screenshot": "171-reports-reports-report-workforce-demographics-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:39.614Z",
+      "screenshot": "172-reports-reports-report-workforce-demographics-demograph.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:40.784Z",
+      "screenshot": "173-reports-reports-report-workforce-demographics-utilizati.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:41.910Z",
+      "screenshot": "174-reports-reports-report-workforce-demographics-ctc-analy.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:43.147Z",
+      "screenshot": "175-reports-reports-report-workforce-demographics-utilizati.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:44.268Z",
+      "screenshot": "176-reports-reports-report-workforce-demographics-all-depar.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=workforce/demographics",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:45.362Z",
+      "screenshot": "177-reports-reports-report-workforce-demographics-monthly-s.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "Export CSV",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:47.948Z",
+      "screenshot": "179-reports-reports-report-attendance-summary-export-csv.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:49.135Z",
+      "screenshot": "180-reports-reports-report-attendance-summary-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:50.283Z",
+      "screenshot": "181-reports-reports-report-attendance-summary-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:51.400Z",
+      "screenshot": "182-reports-reports-report-attendance-summary-demographics.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:52.548Z",
+      "screenshot": "183-reports-reports-report-attendance-summary-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:53.682Z",
+      "screenshot": "184-reports-reports-report-attendance-summary-ctc-analysis.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:54.896Z",
+      "screenshot": "185-reports-reports-report-attendance-summary-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:56.035Z",
+      "screenshot": "186-reports-reports-report-attendance-summary-all-departmen.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=attendance/summary",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:57.218Z",
+      "screenshot": "187-reports-reports-report-attendance-summary-monthly-summa.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "Export CSV",
+      "status": "PASS",
+      "at": "2026-08-02T19:53:59.920Z",
+      "screenshot": "189-reports-reports-report-leave-utilization-export-csv.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:01.101Z",
+      "screenshot": "190-reports-reports-report-leave-utilization-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:02.254Z",
+      "screenshot": "191-reports-reports-report-leave-utilization-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:03.364Z",
+      "screenshot": "192-reports-reports-report-leave-utilization-demographics.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:04.582Z",
+      "screenshot": "193-reports-reports-report-leave-utilization-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:05.679Z",
+      "screenshot": "194-reports-reports-report-leave-utilization-ctc-analysis.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:06.931Z",
+      "screenshot": "195-reports-reports-report-leave-utilization-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:08.077Z",
+      "screenshot": "196-reports-reports-report-leave-utilization-2026.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=leave/utilization",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:09.179Z",
+      "screenshot": "197-reports-reports-report-leave-utilization-monthly-summar.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:11.747Z",
+      "screenshot": "199-reports-reports-report-payroll-ctc-analysis-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:12.899Z",
+      "screenshot": "200-reports-reports-report-payroll-ctc-analysis-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:14.019Z",
+      "screenshot": "201-reports-reports-report-payroll-ctc-analysis-demographic.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:15.165Z",
+      "screenshot": "202-reports-reports-report-payroll-ctc-analysis-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:16.290Z",
+      "screenshot": "203-reports-reports-report-payroll-ctc-analysis-ctc-analysi.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:17.531Z",
+      "screenshot": "204-reports-reports-report-payroll-ctc-analysis-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:18.669Z",
+      "screenshot": "205-reports-reports-report-payroll-ctc-analysis-all-departm.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports/reports?report=payroll/ctc-analysis",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:19.790Z",
+      "screenshot": "206-reports-reports-report-payroll-ctc-analysis-monthly-sum.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Analytics",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:21.946Z",
+      "screenshot": "207-analytics.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "Analytics",
+      "action": "7d",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:22.995Z",
+      "screenshot": "208-analytics-7d.png",
+      "url": "http://localhost:3001/analytics?range=7d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "30d",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:24.229Z",
+      "screenshot": "209-analytics-30d.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "Analytics",
+      "action": "90d",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:25.428Z",
+      "screenshot": "210-analytics-90d.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "Custom",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:26.584Z",
+      "screenshot": "211-analytics-custom.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:27.998Z",
+      "screenshot": "212-analytics-all-departments.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "Load more",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:29.201Z",
+      "screenshot": "213-analytics-load-more.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "6m",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:30.331Z",
+      "screenshot": "214-analytics-6m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "12m",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:31.463Z",
+      "screenshot": "215-analytics-12m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "2y",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:32.597Z",
+      "screenshot": "216-analytics-2y.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "6m",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:33.729Z",
+      "screenshot": "217-analytics-6m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "12m",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:34.868Z",
+      "screenshot": "218-analytics-12m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "2y",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:35.994Z",
+      "screenshot": "219-analytics-2y.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "6m",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:37.135Z",
+      "screenshot": "220-analytics-6m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "12m",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:38.298Z",
+      "screenshot": "221-analytics-12m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "30d",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:39.564Z",
+      "screenshot": "222-analytics-30d.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "Analytics",
+      "action": "90d",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:40.796Z",
+      "screenshot": "223-analytics-90d.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Permissions",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:42.730Z",
+      "screenshot": "224-permissions.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "action": "Add Role",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:43.705Z",
+      "screenshot": "225-permissions-add-role.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "action": "Save changes",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:47.362Z",
+      "screenshot": "228-permissions-save-changes.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "action": "Reset to defaults",
+      "status": "PASS",
+      "at": "2026-08-02T19:54:50.461Z",
+      "screenshot": "229-permissions-reset-to-defaults.png",
+      "url": "http://localhost:3001/permissions"
+    }
+  ],
+  "issues": [
+    {
+      "id": "ISSUE-SA-01",
+      "role": "SUPER_ADMIN",
+      "title": "Holidays: 400 api/holidays/cmqjpygi900vvdwadj9lxotpj",
+      "where": "Holidays / http://localhost:3001/holidays / Actions for New Year's Day",
+      "why": "PATCH http://localhost:3001/api/holidays/cmqjpygi900vvdwadj9lxotpj → 400; {\"success\":false,\"error\":{\"code\":\"INVALID_DATE\",\"message\":\"Holiday date cannot be in the past\",\"details\":{}}}",
+      "classification": "BACKEND",
+      "how": "Fix failing API or FE client/BFF path",
+      "screenshot": "092-holidays-actions-for-new-year-s-day.png",
+      "network": "PATCH http://localhost:3001/api/holidays/cmqjpygi900vvdwadj9lxotpj 400",
+      "expected": "2xx or graceful empty",
+      "actual": "400 {\"success\":false,\"error\":{\"code\":\"INVALID_DATE\",\"message\":\"Holiday date cannot be in the past\",\"details\":{}}}"
+    }
+  ],
+  "downloads": [
+    {
+      "suggested": "employees-2026-08-02.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/employees"
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports"
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports?report=workforce/headcount"
+    },
+    {
+      "suggested": "workforce-turnover-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "suggested": "leave-utilization-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "suggested": "attendance-summary-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "suggested": "leave-utilization-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "suggested": "leave-utilization-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports?report=leave/utilization"
+    }
+  ],
+  "doneMenus": [
+    "Dashboard",
+    "Employees",
+    "Departments",
+    "Attendance",
+    "Timesheets",
+    "Leave",
+    "Holidays",
+    "Payroll",
+    "Payout methods",
+    "Reports",
+    "Analytics",
+    "Permissions"
+  ]
+}

@@ -1,0 +1,2617 @@
+{
+  "role": "SUPER_ADMIN",
+  "email": "superadmin@acme.test",
+  "depthStats": {
+    "menus": 4,
+    "tabs": 0,
+    "buttons": 38,
+    "modals": 2,
+    "exports": 6,
+    "nestDepth": 1,
+    "screenshots": 48,
+    "concurrentExportBursts": 6
+  },
+  "findings": [
+    {
+      "menu": "Auth",
+      "action": "login",
+      "status": "PASS",
+      "screenshot": "003-login-success.png",
+      "url": "http://localhost:3001/dashboard",
+      "ts": "2026-08-03T02:29:07.839Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "004-payroll-land.png",
+      "ts": "2026-08-03T02:29:08.597Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal:Run Payroll",
+      "status": "PASS",
+      "screenshot": "005-payroll-modal-run-payroll.png",
+      "ts": "2026-08-03T02:29:10.404Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "actions-found:10",
+      "status": "PASS",
+      "ts": "2026-08-03T02:29:12.209Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "run-detail-via-actions",
+      "status": "PASS",
+      "screenshot": "007-payroll-run-detail.png",
+      "url": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "ts": "2026-08-03T02:29:13.757Z"
+    },
+    {
+      "menu": "PayrollRun",
+      "action": "btn:Export",
+      "status": "PASS",
+      "screenshot": "008-payrollrun-btn-export.png",
+      "downloads": [
+        {
+          "suggested": "payroll-2026-12-H2.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/1d46eeff-1764-4b2a-a6d4-f2bbb029d50d",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-payroll-2026-12-h2-csv-1785724154195",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785724154195
+        }
+      ],
+      "url": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "ts": "2026-08-03T02:29:14.258Z"
+    },
+    {
+      "menu": "PayrollRun",
+      "action": "btn:Export pack",
+      "status": "PASS",
+      "screenshot": "009-payrollrun-btn-export-pack.png",
+      "downloads": [
+        {
+          "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/4863d63a-fb83-41b4-9742-805f2a748af9",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785724154616",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785724154616
+        }
+      ],
+      "url": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "ts": "2026-08-03T02:29:14.758Z"
+    },
+    {
+      "menu": "PayrollRun",
+      "action": "STRESS:detail-export",
+      "status": "PASS",
+      "screenshot": "010-payrollrun-stress-detail-export.png",
+      "note": "concurrent=2 dlOk=2 dlFail=0",
+      "downloads": [
+        {
+          "suggested": "payroll-2026-12-H2.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/4fe3f761-dd43-44ca-9c68-9933e6fe4a78",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-payroll-2026-12-h2-csv-1785724155172",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785724155172
+        },
+        {
+          "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/b5bfb382-556c-4e99-9afe-14785a6273c1",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785724155198",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785724155198
+        }
+      ],
+      "ts": "2026-08-03T02:29:18.145Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/migration",
+      "status": "PASS",
+      "screenshot": "011-payroll-extra-payroll-migration.png",
+      "ts": "2026-08-03T02:29:18.747Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/global",
+      "status": "PASS",
+      "screenshot": "012-payroll-extra-payroll-global.png",
+      "ts": "2026-08-03T02:29:19.398Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/my-payslips",
+      "status": "PASS",
+      "screenshot": "013-payroll-extra-payroll-my-payslips.png",
+      "ts": "2026-08-03T02:29:19.947Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "btn:Migration",
+      "status": "PASS",
+      "screenshot": "014-payroll-btn-migration.png",
+      "downloads": [],
+      "url": "http://localhost:3001/payroll/migration",
+      "ts": "2026-08-03T02:29:22.014Z"
+    },
+    {
+      "menu": "Payroll",
+      "action": "STRESS:list-export",
+      "status": "WARN",
+      "screenshot": "015-payroll-stress-list-export.png",
+      "note": "concurrent=0 dlOk=0 dlFail=0",
+      "downloads": [],
+      "ts": "2026-08-03T02:29:26.740Z"
+    },
+    {
+      "menu": "Payout",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "016-payout-land.png",
+      "ts": "2026-08-03T02:29:27.330Z"
+    },
+    {
+      "menu": "Payout",
+      "action": "btn:Review approvals",
+      "status": "PASS",
+      "screenshot": "017-payout-btn-review-approvals.png",
+      "downloads": [],
+      "url": "http://localhost:3001/payout-methods/approvals",
+      "ts": "2026-08-03T02:29:28.019Z"
+    },
+    {
+      "menu": "Payout",
+      "action": "approvals",
+      "status": "PASS",
+      "screenshot": "018-payout-approvals.png",
+      "ts": "2026-08-03T02:29:28.581Z"
+    },
+    {
+      "menu": "Payout",
+      "action": "STRESS:approvals-export",
+      "status": "WARN",
+      "screenshot": "019-payout-stress-approvals-export.png",
+      "note": "concurrent=0 dlOk=0 dlFail=0",
+      "downloads": [],
+      "ts": "2026-08-03T02:29:31.939Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "020-reports-land.png",
+      "ts": "2026-08-03T02:29:32.563Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:workforce/headcount",
+      "status": "PASS",
+      "screenshot": "021-reports-workforce-headcount.png",
+      "url": "http://localhost:3001/reports",
+      "ts": "2026-08-03T02:29:33.058Z"
+    },
+    {
+      "menu": "Reports/workforce/headcount",
+      "action": "btn:Export CSV",
+      "status": "PASS",
+      "screenshot": "022-reports-workforce-headcount-btn-export-csv.png",
+      "downloads": [],
+      "url": "http://localhost:3001/reports",
+      "ts": "2026-08-03T02:29:33.588Z"
+    },
+    {
+      "menu": "Reports/workforce/headcount",
+      "action": "btn:Export",
+      "status": "PASS",
+      "screenshot": "023-reports-workforce-headcount-btn-export.png",
+      "downloads": [
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/8d66a373-15c5-4485-8c95-54f975b0dd80",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724174009",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724174009
+        }
+      ],
+      "url": "http://localhost:3001/reports",
+      "ts": "2026-08-03T02:29:34.128Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:workforce/turnover",
+      "status": "PASS",
+      "screenshot": "024-reports-workforce-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover",
+      "ts": "2026-08-03T02:29:34.645Z"
+    },
+    {
+      "menu": "Reports/workforce/turnover",
+      "action": "btn:Export CSV",
+      "status": "PASS",
+      "screenshot": "025-reports-workforce-turnover-btn-export-csv.png",
+      "downloads": [],
+      "url": "http://localhost:3001/reports?report=workforce/turnover",
+      "ts": "2026-08-03T02:29:35.163Z"
+    },
+    {
+      "menu": "Reports/workforce/turnover",
+      "action": "btn:Export",
+      "status": "PASS",
+      "screenshot": "026-reports-workforce-turnover-btn-export.png",
+      "downloads": [],
+      "url": "http://localhost:3001/reports?report=workforce/turnover",
+      "ts": "2026-08-03T02:29:35.690Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:attendance/summary",
+      "status": "PASS",
+      "screenshot": "027-reports-attendance-summary.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary",
+      "ts": "2026-08-03T02:29:36.211Z"
+    },
+    {
+      "menu": "Reports/attendance/summary",
+      "action": "btn:Export CSV",
+      "status": "PASS",
+      "screenshot": "028-reports-attendance-summary-btn-export-csv.png",
+      "downloads": [],
+      "url": "http://localhost:3001/reports?report=attendance/summary",
+      "ts": "2026-08-03T02:29:36.712Z"
+    },
+    {
+      "menu": "Reports/attendance/summary",
+      "action": "btn:Export",
+      "status": "PASS",
+      "screenshot": "029-reports-attendance-summary-btn-export.png",
+      "downloads": [
+        {
+          "suggested": "workforce-turnover-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/c7432953-3de7-4b41-9729-732a22db9986",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-turnover-report-csv-1785724176726",
+          "pageUrl": "http://localhost:3001/reports?report=attendance/summary",
+          "t": 1785724176726
+        }
+      ],
+      "url": "http://localhost:3001/reports?report=attendance/summary",
+      "ts": "2026-08-03T02:29:37.232Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:leave/utilization",
+      "status": "PASS",
+      "screenshot": "030-reports-leave-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization",
+      "ts": "2026-08-03T02:29:37.729Z"
+    },
+    {
+      "menu": "Reports/leave/utilization",
+      "action": "btn:Export CSV",
+      "status": "PASS",
+      "screenshot": "031-reports-leave-utilization-btn-export-csv.png",
+      "downloads": [],
+      "url": "http://localhost:3001/reports?report=leave/utilization",
+      "ts": "2026-08-03T02:29:38.225Z"
+    },
+    {
+      "menu": "Reports/leave/utilization",
+      "action": "btn:Export",
+      "status": "PASS",
+      "screenshot": "032-reports-leave-utilization-btn-export.png",
+      "downloads": [
+        {
+          "suggested": "attendance-summary-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/6d36b700-c37c-4d68-bfeb-28dcef5b7071",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-attendance-summary-report-csv-1785724178252",
+          "pageUrl": "http://localhost:3001/reports?report=leave/utilization",
+          "t": 1785724178253
+        }
+      ],
+      "url": "http://localhost:3001/reports?report=leave/utilization",
+      "ts": "2026-08-03T02:29:38.736Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/summary",
+      "status": "PASS",
+      "screenshot": "033-reports-payroll-summary.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary",
+      "ts": "2026-08-03T02:29:39.296Z"
+    },
+    {
+      "menu": "Reports/payroll/summary",
+      "action": "btn:Export CSV",
+      "status": "PASS",
+      "screenshot": "034-reports-payroll-summary-btn-export-csv.png",
+      "downloads": [],
+      "url": "http://localhost:3001/reports?report=attendance/summary",
+      "ts": "2026-08-03T02:29:39.813Z"
+    },
+    {
+      "menu": "Reports/payroll/summary",
+      "action": "btn:Export",
+      "status": "PASS",
+      "screenshot": "035-reports-payroll-summary-btn-export.png",
+      "downloads": [],
+      "url": "http://localhost:3001/reports?report=attendance/summary",
+      "ts": "2026-08-03T02:29:40.329Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/ctc-analysis",
+      "status": "PASS",
+      "screenshot": "036-reports-payroll-ctc-analysis.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis",
+      "ts": "2026-08-03T02:29:40.842Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "STRESS:headcount-formats",
+      "status": "PASS",
+      "screenshot": "037-reports-stress-headcount-formats.png",
+      "note": "concurrent=3 dlOk=3 dlFail=0",
+      "downloads": [
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/f96ce752-39e5-42cf-8806-26eb2bcb1ff4",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724183148",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724183148
+        },
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/9a2f8a2b-5be1-4fce-b2b3-82d4a84125e5",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724183162",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724183162
+        },
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/8128f58a-0fc1-468c-b702-33ab69332e8d",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724184846",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724184846
+        }
+      ],
+      "ts": "2026-08-03T02:29:46.122Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "STRESS:ctc-formats",
+      "status": "WARN",
+      "screenshot": "038-reports-stress-ctc-formats.png",
+      "note": "concurrent=0 dlOk=0 dlFail=0",
+      "downloads": [],
+      "ts": "2026-08-03T02:29:51.963Z"
+    },
+    {
+      "menu": "Reports",
+      "action": "export-csv-explicit",
+      "status": "PASS",
+      "screenshot": "039-reports-export-csv-explicit.png",
+      "downloads": [
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/c8adf039-4738-4dd6-91b0-ad192be17ffa",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724194368",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724194369
+        }
+      ],
+      "note": "202 POST /api/reports/export \u00b7 200 GET /api/reports/export/cmscm2ukq00s0b9xj1wqxswem/download",
+      "ts": "2026-08-03T02:29:56.527Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "open",
+      "status": "PASS",
+      "screenshot": "040-analytics-land.png",
+      "ts": "2026-08-03T02:29:57.167Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "range:7d",
+      "status": "PASS",
+      "screenshot": "041-analytics-7d.png",
+      "url": "http://localhost:3001/analytics?range=7d",
+      "ts": "2026-08-03T02:29:57.676Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "range:30d",
+      "status": "PASS",
+      "screenshot": "042-analytics-30d.png",
+      "url": "http://localhost:3001/analytics",
+      "ts": "2026-08-03T02:29:58.208Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "range:90d",
+      "status": "PASS",
+      "screenshot": "043-analytics-90d.png",
+      "url": "http://localhost:3001/analytics?range=90d",
+      "ts": "2026-08-03T02:29:58.790Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "modal:Custom",
+      "status": "PASS",
+      "screenshot": "044-analytics-modal-custom.png",
+      "ts": "2026-08-03T02:29:59.297Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "btn:6m",
+      "status": "PASS",
+      "screenshot": "045-analytics-btn-6m.png",
+      "downloads": [],
+      "url": "http://localhost:3001/analytics?range=90d",
+      "ts": "2026-08-03T02:29:59.810Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "btn:12m",
+      "status": "PASS",
+      "screenshot": "046-analytics-btn-12m.png",
+      "downloads": [],
+      "url": "http://localhost:3001/analytics?range=90d",
+      "ts": "2026-08-03T02:30:00.326Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "btn:2y",
+      "status": "PASS",
+      "screenshot": "047-analytics-btn-2y.png",
+      "downloads": [],
+      "url": "http://localhost:3001/analytics?range=90d",
+      "ts": "2026-08-03T02:30:00.825Z"
+    },
+    {
+      "menu": "Analytics",
+      "action": "STRESS:export-burst",
+      "status": "WARN",
+      "screenshot": "048-analytics-stress-export-burst.png",
+      "note": "concurrent=0 dlOk=0 dlFail=0",
+      "downloads": [],
+      "ts": "2026-08-03T02:30:04.206Z"
+    }
+  ],
+  "issues": [
+    {
+      "id": "SA-PAY-LOGIN-401",
+      "title": "Login bootstrap 401s (me/refresh)",
+      "where": "/login",
+      "why": "GET http://localhost:3001/api/auth/me \u2192 401; POST http://localhost:3001/api/auth/refresh \u2192 401",
+      "classification": "FRONTEND",
+      "how": "Skip me/refresh on public auth routes",
+      "screenshot": "001-login-form.png",
+      "network": "401 GET http://localhost:3001/api/auth/me \u00b7 401 POST http://localhost:3001/api/auth/refresh"
+    },
+    {
+      "id": "SA-PAYOUT-EMPTY",
+      "title": "Payout methods empty/self-service for SUPER_ADMIN",
+      "where": "/payout-methods",
+      "why": "SA employeeId:null; page shows empty/self-service instead of admin approvals-first",
+      "classification": "FRONTEND",
+      "how": "Default SUPER_ADMIN to /payout-methods/approvals when no employee record",
+      "screenshot": "016-payout-land.png",
+      "network": "n/a",
+      "expected": "admin approvals queue",
+      "actual": "Payout methods  Manage the accounts where you receive your pay.  Review approvals Payout methods Add account"
+    },
+    {
+      "id": "SA-REPORTS-CTC-NO-EXPORT",
+      "title": "CTC Analysis hides Export CSV",
+      "where": "/reports?report=payroll/ctc-analysis",
+      "why": "Export CSV button absent for CTC Analysis (count=0); headcount exposes it",
+      "classification": "FRONTEND",
+      "how": "Show Export CSV for all report types supporting POST /reports/export",
+      "screenshot": "038-reports-stress-ctc-formats.png",
+      "network": "n/a (no export control)",
+      "expected": "Export CSV visible",
+      "actual": "button absent"
+    }
+  ],
+  "downloads": [
+    {
+      "suggested": "payroll-2026-12-H2.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/1d46eeff-1764-4b2a-a6d4-f2bbb029d50d",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-payroll-2026-12-h2-csv-1785724154195",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "t": 1785724154195
+    },
+    {
+      "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/4863d63a-fb83-41b4-9742-805f2a748af9",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785724154616",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "t": 1785724154616
+    },
+    {
+      "suggested": "payroll-2026-12-H2.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/4fe3f761-dd43-44ca-9c68-9933e6fe4a78",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-payroll-2026-12-h2-csv-1785724155172",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "t": 1785724155172
+    },
+    {
+      "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/b5bfb382-556c-4e99-9afe-14785a6273c1",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785724155198",
+      "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+      "t": 1785724155198
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/8d66a373-15c5-4485-8c95-54f975b0dd80",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724174009",
+      "pageUrl": "http://localhost:3001/reports",
+      "t": 1785724174009
+    },
+    {
+      "suggested": "workforce-turnover-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/c7432953-3de7-4b41-9729-732a22db9986",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-turnover-report-csv-1785724176726",
+      "pageUrl": "http://localhost:3001/reports?report=attendance/summary",
+      "t": 1785724176726
+    },
+    {
+      "suggested": "attendance-summary-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/6d36b700-c37c-4d68-bfeb-28dcef5b7071",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-attendance-summary-report-csv-1785724178252",
+      "pageUrl": "http://localhost:3001/reports?report=leave/utilization",
+      "t": 1785724178253
+    },
+    {
+      "suggested": "leave-utilization-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/64350984-7404-404b-b285-0496c138e330",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-leave-utilization-report-csv-1785724180456",
+      "pageUrl": "http://localhost:3001/reports?report=payroll/ctc-analysis",
+      "t": 1785724180456
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/f96ce752-39e5-42cf-8806-26eb2bcb1ff4",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724183148",
+      "pageUrl": "http://localhost:3001/reports",
+      "t": 1785724183148
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/9a2f8a2b-5be1-4fce-b2b3-82d4a84125e5",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724183162",
+      "pageUrl": "http://localhost:3001/reports",
+      "t": 1785724183162
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/8128f58a-0fc1-468c-b702-33ab69332e8d",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724184846",
+      "pageUrl": "http://localhost:3001/reports",
+      "t": 1785724184846
+    },
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": true,
+      "failure": null,
+      "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/c8adf039-4738-4dd6-91b0-ad192be17ffa",
+      "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724194368",
+      "pageUrl": "http://localhost:3001/reports",
+      "t": 1785724194369
+    }
+  ],
+  "stressExports": [
+    {
+      "menu": "PayrollRun",
+      "label": "detail-export",
+      "clicked": [
+        {
+          "lab": "Export Register",
+          "clicked": true,
+          "ms": 21
+        },
+        {
+          "lab": "Export pack",
+          "clicked": true,
+          "ms": 21
+        }
+      ],
+      "downloads": [
+        {
+          "suggested": "payroll-2026-12-H2.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/4fe3f761-dd43-44ca-9c68-9933e6fe4a78",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-payroll-2026-12-h2-csv-1785724155172",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785724155172
+        },
+        {
+          "suggested": "audit-pack-cmqtilef5001xodfgq1bxxcjv.json",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/b5bfb382-556c-4e99-9afe-14785a6273c1",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-audit-pack-cmqtilef5001xodfgq1bxxcjv-json-1785724155198",
+          "pageUrl": "http://localhost:3001/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785724155198
+        }
+      ],
+      "network": [
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/payroll/runs/cmqtilef5001xodfgq1bxxcjv/export",
+          "pageUrl": "/payroll/cmqtilef5001xodfgq1bxxcjv",
+          "t": 1785724155169
+        }
+      ],
+      "failedApi": [],
+      "elapsedMs": 3379,
+      "screenshot": "010-payrollrun-stress-detail-export.png",
+      "anyDownloadOk": true,
+      "anyDownloadFail": false
+    },
+    {
+      "menu": "Payroll",
+      "label": "list-export",
+      "clicked": [],
+      "downloads": [],
+      "network": [],
+      "failedApi": [],
+      "elapsedMs": 3381,
+      "screenshot": "015-payroll-stress-list-export.png",
+      "anyDownloadOk": false,
+      "anyDownloadFail": false
+    },
+    {
+      "menu": "Payout",
+      "label": "approvals-export",
+      "clicked": [],
+      "downloads": [],
+      "network": [],
+      "failedApi": [],
+      "elapsedMs": 3351,
+      "screenshot": "019-payout-stress-approvals-export.png",
+      "anyDownloadOk": false,
+      "anyDownloadFail": false
+    },
+    {
+      "menu": "Reports",
+      "label": "headcount-formats",
+      "clicked": [
+        {
+          "lab": "Export CSV",
+          "clicked": true,
+          "ms": 23
+        },
+        {
+          "lab": "Export CSV#2",
+          "clicked": true,
+          "ms": 23
+        },
+        {
+          "lab": "Export CSV#3",
+          "clicked": true,
+          "ms": 23
+        }
+      ],
+      "downloads": [
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/f96ce752-39e5-42cf-8806-26eb2bcb1ff4",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724183148",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724183148
+        },
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/9a2f8a2b-5be1-4fce-b2b3-82d4a84125e5",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724183162",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724183162
+        },
+        {
+          "suggested": "workforce-headcount-report.csv",
+          "ok": true,
+          "failure": null,
+          "path": "/var/folders/9p/sq_mymws4s99z7k9fcc6_hdc0000gn/T/playwright-artifacts-7FTvVn/8128f58a-0fc1-468c-b702-33ab69332e8d",
+          "saved": "/Users/mohdsaeedafri/All-Code-Base/EMS/docs/e2e-ui-screenshots/stress/sa-payroll-reports/_dl-workforce-headcount-report-csv-1785724184846",
+          "pageUrl": "http://localhost:3001/reports",
+          "t": 1785724184846
+        }
+      ],
+      "network": [
+        {
+          "method": "POST",
+          "status": 202,
+          "url": "/api/reports/export",
+          "pageUrl": "/reports",
+          "t": 1785724182912
+        },
+        {
+          "method": "POST",
+          "status": 202,
+          "url": "/api/reports/export",
+          "pageUrl": "/reports",
+          "t": 1785724182952
+        },
+        {
+          "method": "POST",
+          "status": 202,
+          "url": "/api/reports/export",
+          "pageUrl": "/reports",
+          "t": 1785724182956
+        },
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/reports/export/cmscm2lvw00ryb9xjdrm5j7e2/download",
+          "pageUrl": "/reports",
+          "t": 1785724183145
+        },
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/reports/export/cmscm2lvt00rwb9xjqow2afiu/download",
+          "pageUrl": "/reports",
+          "t": 1785724183158
+        },
+        {
+          "method": "GET",
+          "status": 202,
+          "url": "/api/reports/export/cmscm2lvt00rub9xjpy0mqef9/download",
+          "pageUrl": "/reports",
+          "t": 1785724183160
+        },
+        {
+          "method": "GET",
+          "status": 200,
+          "url": "/api/reports/export/cmscm2lvt00rub9xjpy0mqef9/download",
+          "pageUrl": "/reports",
+          "t": 1785724184844
+        }
+      ],
+      "failedApi": [],
+      "elapsedMs": 3375,
+      "screenshot": "037-reports-stress-headcount-formats.png",
+      "anyDownloadOk": true,
+      "anyDownloadFail": false
+    },
+    {
+      "menu": "Reports",
+      "label": "ctc-formats",
+      "clicked": [],
+      "downloads": [],
+      "network": [],
+      "failedApi": [],
+      "elapsedMs": 3370,
+      "screenshot": "038-reports-stress-ctc-formats.png",
+      "anyDownloadOk": false,
+      "anyDownloadFail": false
+    },
+    {
+      "menu": "Analytics",
+      "label": "export-burst",
+      "clicked": [],
+      "downloads": [],
+      "network": [],
+      "failedApi": [],
+      "elapsedMs": 3375,
+      "screenshot": "048-analytics-stress-export-burst.png",
+      "anyDownloadOk": false,
+      "anyDownloadFail": false
+    }
+  ],
+  "networkLog": [
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/payroll/global",
+      "t": 1785724158915
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/payroll/global",
+      "t": 1785724158917
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payroll_global_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payroll/global",
+      "t": 1785724158945
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/payroll/global",
+      "t": 1785724159431
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/payroll/my-payslips",
+      "pageUrl": "/payroll/global",
+      "t": 1785724159432
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159507
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159507
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159508
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159510
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159510
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159511
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159511
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159511
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payroll_my-payslips_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159536
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/payroll",
+      "pageUrl": "/payroll/my-payslips",
+      "t": 1785724159974
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160009
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160009
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160011
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160012
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160012
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160012
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160013
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160016
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payroll_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724160036
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/payroll",
+      "t": 1785724160544
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/tenant",
+      "pageUrl": "/payroll",
+      "t": 1785724160745
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/payroll",
+      "t": 1785724160749
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/runs?year=2026&page=1&limit=10",
+      "pageUrl": "/payroll",
+      "t": 1785724160976
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/legal-entities",
+      "pageUrl": "/payroll",
+      "t": 1785724161042
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/attendance-rules",
+      "pageUrl": "/payroll",
+      "t": 1785724161100
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/payroll",
+      "t": 1785724161160
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/pay-calendars",
+      "pageUrl": "/payroll",
+      "t": 1785724161220
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/roster",
+      "pageUrl": "/payroll",
+      "t": 1785724161348
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/payroll/migration?_rsc=rDwCdVpcjDtsA3ST",
+      "pageUrl": "/payroll",
+      "t": 1785724161498
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payroll_migration_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724161504
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/runs?limit=50",
+      "pageUrl": "/payroll/migration",
+      "t": 1785724161525
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payroll_migration_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payroll/migration",
+      "t": 1785724161526
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/payroll",
+      "pageUrl": "/payroll/migration",
+      "t": 1785724162051
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162085
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162085
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162085
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162086
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162086
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162088
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162088
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162090
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payroll_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payroll",
+      "t": 1785724162110
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/payroll",
+      "t": 1785724163179
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/payroll",
+      "t": 1785724163475
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/tenant",
+      "pageUrl": "/payroll",
+      "t": 1785724163517
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/legal-entities",
+      "pageUrl": "/payroll",
+      "t": 1785724163578
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/payroll",
+      "t": 1785724163644
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/runs?year=2026&page=1&limit=10",
+      "pageUrl": "/payroll",
+      "t": 1785724163649
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/pay-calendars",
+      "pageUrl": "/payroll",
+      "t": 1785724163795
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/attendance-rules",
+      "pageUrl": "/payroll",
+      "t": 1785724163845
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/roster",
+      "pageUrl": "/payroll",
+      "t": 1785724163931
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/runs?limit=50",
+      "pageUrl": "/payroll",
+      "t": 1785724164058
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/payout-methods",
+      "pageUrl": "/payroll",
+      "t": 1785724166772
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166814
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166814
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166815
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166816
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166817
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166818
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166818
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166819
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payout-methods_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724166850
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/payout-methods",
+      "t": 1785724167504
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/payout-methods/approvals?_rsc=_ZJoAJrwelR5Dnyi",
+      "pageUrl": "/payout-methods",
+      "t": 1785724167550
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payout-methods_approvals_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payout-methods",
+      "t": 1785724167559
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payout-methods_approvals_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724167577
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/me/payout-methods",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724167649
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724167717
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724167787
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/payout-methods/approvals?status=PENDING",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724167856
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/payout-methods/approvals",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168044
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168076
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168076
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168076
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168078
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168079
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168081
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168081
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168081
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_app_(dashboard)_payout-methods_approvals_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168104
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168723
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168897
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168922
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/payout-methods/approvals?status=PENDING",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724168968
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/reports",
+      "pageUrl": "/payout-methods/approvals",
+      "t": 1785724171994
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172037
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172039
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172039
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172040
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172040
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172043
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172043
+    },
+    {
+      "method": "GET",
+      "status": 304,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172043
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_reports_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172071
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_0h5mpmw._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172071
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_09nx7_0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172072
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/reports",
+      "t": 1785724172538
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payout-methods_0awlkg3._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172566
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_HeadcountReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports",
+      "t": 1785724172620
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/reports",
+      "t": 1785724172729
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/reports",
+      "t": 1785724172782
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/tenant",
+      "pageUrl": "/reports",
+      "t": 1785724173006
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/legal-entities",
+      "pageUrl": "/reports",
+      "t": 1785724173014
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/departments",
+      "pageUrl": "/reports",
+      "t": 1785724173072
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/attendance-rules",
+      "pageUrl": "/reports",
+      "t": 1785724173072
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/workforce/headcount?startDate=2026-01-01&endDate=2026-08-28",
+      "pageUrl": "/reports",
+      "t": 1785724173116
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports",
+      "t": 1785724173798
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2eti00rkb9xjo6dbijdb/download",
+      "pageUrl": "/reports",
+      "t": 1785724174006
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_TurnoverReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports?report=workforce/turnover",
+      "t": 1785724174164
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/workforce/turnover?startDate=2026-04-01&endDate=2026-08-28",
+      "pageUrl": "/reports?report=workforce/turnover",
+      "t": 1785724174397
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports?report=workforce/turnover",
+      "t": 1785724174848
+    },
+    {
+      "method": "GET",
+      "status": 202,
+      "url": "/api/reports/export/cmscm2fmm00rmb9xjmgpae6c9/download",
+      "pageUrl": "/reports?report=workforce/turnover",
+      "t": 1785724175050
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_AttendanceSummaryReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports?report=attendance/summary",
+      "t": 1785724175713
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/attendance/summary?month=2026-08",
+      "pageUrl": "/reports?report=attendance/summary",
+      "t": 1785724176026
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports?report=attendance/summary",
+      "t": 1785724176386
+    },
+    {
+      "method": "GET",
+      "status": 202,
+      "url": "/api/reports/export/cmscm2guf00rob9xj2t7vmitp/download",
+      "pageUrl": "/reports?report=attendance/summary",
+      "t": 1785724176588
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2fmm00rmb9xjmgpae6c9/download",
+      "pageUrl": "/reports?report=attendance/summary",
+      "t": 1785724176723
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_LeaveUtilizationReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports?report=leave/utilization",
+      "t": 1785724177263
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/leave/utilization?year=2026",
+      "pageUrl": "/reports?report=leave/utilization",
+      "t": 1785724177832
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/leave/types",
+      "pageUrl": "/reports?report=leave/utilization",
+      "t": 1785724177881
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2guf00rob9xj2t7vmitp/download",
+      "pageUrl": "/reports?report=leave/utilization",
+      "t": 1785724178250
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports?report=leave/utilization",
+      "t": 1785724178451
+    },
+    {
+      "method": "GET",
+      "status": 202,
+      "url": "/api/reports/export/cmscm2ig200rqb9xjxtqhnm0d/download",
+      "pageUrl": "/reports?report=leave/utilization",
+      "t": 1785724178661
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports?report=attendance/summary",
+      "t": 1785724179499
+    },
+    {
+      "method": "GET",
+      "status": 202,
+      "url": "/api/reports/export/cmscm2j7t00rsb9xjrhb5gjkj/download",
+      "pageUrl": "/reports?report=attendance/summary",
+      "t": 1785724179657
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_CtcAnalysisReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports?report=payroll/ctc-analysis",
+      "t": 1785724180349
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2ig200rqb9xjxtqhnm0d/download",
+      "pageUrl": "/reports?report=payroll/ctc-analysis",
+      "t": 1785724180454
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/payroll/ctc-analysis?asOf=2026-08-03",
+      "pageUrl": "/reports?report=payroll/ctc-analysis",
+      "t": 1785724180844
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/reports",
+      "pageUrl": "/reports?report=payroll/ctc-analysis",
+      "t": 1785724180897
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180946
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180946
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180948
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180948
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180950
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180952
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180954
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180959
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_0h5mpmw._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180983
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_09nx7_0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180983
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_reports_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724180989
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/reports",
+      "t": 1785724181752
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payout-methods_0awlkg3._.js",
+      "pageUrl": "/reports",
+      "t": 1785724181811
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_HeadcountReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports",
+      "t": 1785724181830
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/reports",
+      "t": 1785724181975
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/reports",
+      "t": 1785724182030
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/tenant",
+      "pageUrl": "/reports",
+      "t": 1785724182250
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/departments",
+      "pageUrl": "/reports",
+      "t": 1785724182255
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/legal-entities",
+      "pageUrl": "/reports",
+      "t": 1785724182302
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/attendance-rules",
+      "pageUrl": "/reports",
+      "t": 1785724182357
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/workforce/headcount?startDate=2026-01-01&endDate=2026-08-28",
+      "pageUrl": "/reports",
+      "t": 1785724182361
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports",
+      "t": 1785724182912
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports",
+      "t": 1785724182952
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports",
+      "t": 1785724182956
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2lvw00ryb9xjdrm5j7e2/download",
+      "pageUrl": "/reports",
+      "t": 1785724183145
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2lvt00rwb9xjqow2afiu/download",
+      "pageUrl": "/reports",
+      "t": 1785724183158
+    },
+    {
+      "method": "GET",
+      "status": 202,
+      "url": "/api/reports/export/cmscm2lvt00rub9xjpy0mqef9/download",
+      "pageUrl": "/reports",
+      "t": 1785724183160
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2lvt00rub9xjpy0mqef9/download",
+      "pageUrl": "/reports",
+      "t": 1785724184844
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/reports",
+      "pageUrl": "/reports",
+      "t": 1785724186181
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186239
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186240
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186244
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186246
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186246
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186246
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186252
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186255
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_0h5mpmw._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186289
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_09nx7_0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186289
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_reports_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186289
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/reports",
+      "t": 1785724186739
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payout-methods_0awlkg3._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186765
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_HeadcountReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports",
+      "t": 1785724186780
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/reports",
+      "t": 1785724186921
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/reports",
+      "t": 1785724186932
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/tenant",
+      "pageUrl": "/reports",
+      "t": 1785724187212
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/legal-entities",
+      "pageUrl": "/reports",
+      "t": 1785724187216
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/departments",
+      "pageUrl": "/reports",
+      "t": 1785724187222
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/attendance-rules",
+      "pageUrl": "/reports",
+      "t": 1785724187261
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/workforce/headcount?startDate=2026-01-01&endDate=2026-08-28",
+      "pageUrl": "/reports",
+      "t": 1785724187264
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_CtcAnalysisReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports?report=payroll/ctc-analysis",
+      "t": 1785724187396
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/payroll/ctc-analysis?asOf=2026-08-03",
+      "pageUrl": "/reports?report=payroll/ctc-analysis",
+      "t": 1785724187606
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/reports",
+      "pageUrl": "/reports?report=payroll/ctc-analysis",
+      "t": 1785724192017
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192107
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192107
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192110
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192111
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192111
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192117
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192121
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192122
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_0h5mpmw._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192198
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_reports_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192198
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_09nx7_0._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192198
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/reports",
+      "t": 1785724192640
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payout-methods_0awlkg3._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192668
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_reports_components_HeadcountReport_tsx_0jllcul._.js",
+      "pageUrl": "/reports",
+      "t": 1785724192693
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/reports",
+      "t": 1785724192848
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/reports",
+      "t": 1785724192850
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/legal-entities",
+      "pageUrl": "/reports",
+      "t": 1785724193123
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/tenant",
+      "pageUrl": "/reports",
+      "t": 1785724193126
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/attendance-rules",
+      "pageUrl": "/reports",
+      "t": 1785724193173
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/departments",
+      "pageUrl": "/reports",
+      "t": 1785724193176
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/workforce/headcount?startDate=2026-01-01&endDate=2026-08-28",
+      "pageUrl": "/reports",
+      "t": 1785724193176
+    },
+    {
+      "method": "POST",
+      "status": 202,
+      "url": "/api/reports/export",
+      "pageUrl": "/reports",
+      "t": 1785724194172
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/reports/export/cmscm2ukq00s0b9xj1wqxswem/download",
+      "pageUrl": "/reports",
+      "t": 1785724194365
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/analytics",
+      "pageUrl": "/reports",
+      "t": 1785724196556
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_hooks_0mj_l9h._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196615
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_SalaryComponentDrawer_tsx_0na78r0._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196616
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_GlobalWorkforceScreen_tsx_0osra~v._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196619
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_migration_0ypp_7m._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196619
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_PayrollRunDetail_tsx_0v84qjv._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196619
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_StatutoryPackEditor_tsx_0niqk95._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196619
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_0ulfbjg._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196629
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payroll_components_0xgmvxb._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196634
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_payout-methods_0awlkg3._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196671
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_modules_analytics_0q7j.0n._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196684
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/_next/static/chunks/src_app_(dashboard)_analytics_page_tsx_0_yq5zb._.js",
+      "pageUrl": "/analytics",
+      "t": 1785724196707
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/auth/me",
+      "pageUrl": "/analytics",
+      "t": 1785724197131
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/notifications/preferences",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197317
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/tenant",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197408
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/workforce-trend?range=6m",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197409
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/notifications?limit=20",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197496
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/settings/attendance-rules",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197496
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/attrition?range=6m",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197496
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/legal-entities",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197576
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/payroll-cost?range=6m",
+      "pageUrl": "/analytics?range=7d",
+      "t": 1785724197625
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/departments",
+      "pageUrl": "/analytics",
+      "t": 1785724197761
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/summary?range=30d",
+      "pageUrl": "/analytics",
+      "t": 1785724197908
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/attendance?range=30d",
+      "pageUrl": "/analytics",
+      "t": 1785724197957
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/department-performance?range=30d",
+      "pageUrl": "/analytics",
+      "t": 1785724198000
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/headcount-by-department",
+      "pageUrl": "/analytics",
+      "t": 1785724198060
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/leave-summary?range=30d",
+      "pageUrl": "/analytics",
+      "t": 1785724198110
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/attendance?range=7d",
+      "pageUrl": "/analytics",
+      "t": 1785724198159
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/recent-activity?limit=10",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198261
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/summary?range=7d",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198317
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/leave-summary?range=7d",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198357
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/headcount-by-department",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198404
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/attendance?range=90d",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198570
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/summary?range=90d",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198658
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/leave-summary?range=90d",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198658
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/headcount-by-department",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198731
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/recent-activity?limit=10",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724198886
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/recent-activity?limit=10",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724199142
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/workforce-trend?range=12m",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724200044
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/analytics/workforce-trend?range=2y",
+      "pageUrl": "/analytics?range=90d",
+      "t": 1785724200502
+    }
+  ],
+  "consoleErrors": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "pageUrl": "http://localhost:3001/login"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "pageUrl": "http://localhost:3001/login"
+    }
+  ]
+}

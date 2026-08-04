@@ -1,0 +1,6 @@
+employeeCode,employeeName,department,grossEarnings,totalDeductions,netPay,employerCost
+E0003,HR Admin,HR,71600,10342,61258,73400
+E0001,Aman Kumar,Engineering,71600,12342,59258,73400
+LITMUS-US-1,UsLitmus LitmusZZ,Customer Success,0,0,0,0
+LITMUS-KW-1,KwLitmus LitmusZZ,Customer Success,0,0,0,0
+E0002,Priya Sharma,Engineering,71600,7352,64248,73400

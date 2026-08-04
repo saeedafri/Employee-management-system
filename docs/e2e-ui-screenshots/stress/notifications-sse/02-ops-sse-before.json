@@ -1,0 +1,45 @@
+{
+  "status": 200,
+  "json": {
+    "success": true,
+    "data": {
+      "process": {
+        "pid": 98982,
+        "nodeVersion": "v25.9.0",
+        "platform": "darwin",
+        "uptimeSec": 34115,
+        "memory": {
+          "rssBytes": 137723904,
+          "heapTotalBytes": 87638016,
+          "heapUsedBytes": 73510392,
+          "externalBytes": 5832385,
+          "rssMb": 131.3,
+          "heapUsedMb": 70.1,
+          "heapTotalMb": 83.6
+        },
+        "loadavg": {
+          "1m": 4.361328125,
+          "5m": 5.54443359375,
+          "15m": 4.2587890625
+        },
+        "cpus": 10,
+        "freememMb": 164,
+        "totalmemMb": 16384,
+        "recentErrors": []
+      },
+      "sse": {
+        "uniqueUsers": 0,
+        "connectionCount": 0,
+        "connects": 0,
+        "disconnects": 0,
+        "emits": 0,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 98,
+        "receivedFromRedis": 98
+      },
+      "env": "development"
+    }
+  },
+  "text": "{\"success\":true,\"data\":{\"process\":{\"pid\":98982,\"nodeVersion\":\"v25.9.0\",\"platform\":\"darwin\",\"uptimeSec\":34115,\"memory\":{\"rssBytes\":137723904,\"heapTotalBytes\":87638016,\"heapUsedBytes\":73510392,\"externalBytes\":5832385,\"rssMb\":131.3,\"heapUsedMb\":70.1,\"heapTotalMb\":83.6},\"loadavg\":{\"1m\":4.361328125,\"5m\":5.54443359375,\"15m\":4.2587890625},\"cpus\":10,\"freememMb\":164,\"totalmemMb\":16384,\"recentErrors\":[]},\"sse\":{\"uniqueUsers\":0,\"connectionCount\":0,\"connects\":0,\"disconnects\":0,\"emits\":0,\"emitFailures\":0,\"fanoutEnabled\":true,\"published\":98,\"receivedFromRedis\":98},\"env\":\"development\"}}"
+}

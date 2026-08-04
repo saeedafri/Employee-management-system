@@ -25,7 +25,7 @@
       "command": "hostinger-api-mcp",
       "env": {
         "DEBUG": "false",
-        "API_TOKEN": "KSg8h0jfTwqGvysj7HVsgsDGHsCNjQxFYDXxf65ud29223ce"
+        "API_TOKEN": "${API_NEW_HOSTINGER}"
       }
     }
   }

@@ -1,0 +1,156 @@
+{
+  "idx": 74,
+  "follow": {
+    "mutations": [
+      {
+        "action": "check-out",
+        "apis": [
+          {
+            "url": "/api/auth/me",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/settings/notifications/preferences",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/notifications?limit=20",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/attendance/today",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/timesheets?week=2026-08-03&employeeId=cmqjpyds7001kkpjdnlhjygrp",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/employee/documents",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/leave/types",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/me/holidays?year=2026",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/employee/team",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/employee/dashboard",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/attendance/check-out",
+            "status": 200,
+            "method": "POST"
+          },
+          {
+            "url": "/api/attendance/today",
+            "status": 200,
+            "method": "GET"
+          },
+          {
+            "url": "/api/attendance/check-out",
+            "status": 400,
+            "method": "POST"
+          }
+        ],
+        "shot": "59-followup-dashboard-check-out-result.png"
+      },
+      {
+        "action": "leave-submit",
+        "apis": [
+          {
+            "url": "/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-12-29&endDate=2026-12-29",
+            "status": 404,
+            "method": "GET"
+          },
+          {
+            "url": "/api/leave/requests",
+            "status": 400,
+            "method": "POST"
+          },
+          {
+            "url": "/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-12-29&endDate=2026-12-29",
+            "status": 404,
+            "method": "GET"
+          }
+        ],
+        "shot": "64-followup-leave-submit-result.png",
+        "body": "Skip to main content\nEMS\nDashboard\nEmployees\nDepartments\nAttendance\nTimesheets\nLeave\nHolidays\nPayroll\nPayout methods\nReports\nAnalytics\nPermissions\nSettings\nRecruitment\nPerformance\nAssets\nAnnouncements\nCollapse\n/\n2\nPS\nLeave\nLeave\n\nRequests, approvals, and your available balance.\n\nNew Request\nMy Reque"
+      }
+    ],
+    "findings": [
+      {
+        "menu": "Employees",
+        "action": "controls-visible",
+        "labels": []
+      },
+      {
+        "menu": "Leave",
+        "action": "team-calendar-tab-visible",
+        "layer": "FRONTEND",
+        "ok": false,
+        "securityIssue": false,
+        "errText": "Team Calendar tab visible to EMPLOYEE then shows Access restricted — should hide tab"
+      },
+      {
+        "menu": "Nav",
+        "action": "unfiltered-sidebar",
+        "layer": "FRONTEND",
+        "ok": false,
+        "securityIssue": true,
+        "errText": "EMPLOYEE sidebar shows Reports/Analytics/Permissions/Recruitment/Performance/Assets; deep links Access restricted"
+      }
+    ],
+    "screens": []
+  },
+  "lastApi": [
+    {
+      "url": "/api/auth/me",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "/api/settings/notifications/preferences",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "/api/notifications?limit=20",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "/api/leave/types",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "/api/leave/balance",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "/api/leave/requests?page=1&limit=10",
+      "status": 200,
+      "method": "GET"
+    }
+  ]
+}

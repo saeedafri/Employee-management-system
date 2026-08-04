@@ -1,0 +1,6 @@
+Employee Code,Name,Department,Designation,Gross Earnings,Total Deductions,Net Pay,Working Days,Present Days,LOP Days,Status
+E0003,HR Admin,HR,HR Manager,35800,6400,29400,12,12,0,PENDING
+E0001,Aman Kumar,Engineering,Senior Engineer 2026-07-02,35800,8400,27400,12,12,0,PENDING
+LITMUS-US-1,UsLitmus LitmusZZ,Customer Success,,0,0,0,12,12,0,PENDING
+LITMUS-KW-1,KwLitmus LitmusZZ,Customer Success,,0,0,0,12,12,0,PENDING
+E0002,Priya Sharma,Engineering,Senior Engineer,35800,3410,32390,12,12,0,PENDING

@@ -1,0 +1,877 @@
+{
+  "meta": {
+    "base": "http://localhost:4000",
+    "api": "http://localhost:4000/api/v1",
+    "tenant": "acme-corp-001",
+    "parallel": 20,
+    "startedAt": "2026-08-03T02:14:19.645Z",
+    "finishedAt": "2026-08-03T02:15:23.941Z",
+    "elapsedMs": 64295,
+    "dbNote": "local API :4000 against Hostinger DB via 127.0.0.1:15432",
+    "endpoints": [
+      "health",
+      "auth/me",
+      "employees",
+      "leave/balance",
+      "leave/requests",
+      "attendance/today",
+      "attendance/summary",
+      "notifications"
+    ],
+    "roles": [
+      "SUPER_ADMIN",
+      "HR_ADMIN",
+      "MANAGER",
+      "EMPLOYEE"
+    ]
+  },
+  "login": {
+    "SUPER_ADMIN": {
+      "email": "superadmin@acme.test",
+      "status": 200,
+      "ms": 2176,
+      "tokenOk": true,
+      "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiNjk0ZTgwY2UzZjAzZGFhMTNmY2Q2YzkxIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVz"
+    },
+    "HR_ADMIN": {
+      "email": "hr@acme.test",
+      "status": 200,
+      "ms": 1451,
+      "tokenOk": true,
+      "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiJhNmNlZjQ2ZTM0NWFmYWZiMDkzMzRmZGMiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5k"
+    },
+    "MANAGER": {
+      "email": "aman@acme.test",
+      "status": 200,
+      "ms": 2215,
+      "tokenOk": true,
+      "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6ImI0OTZjMzg0YzBhYjk3ZDIwZDcxMjRjNSIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9s"
+    },
+    "EMPLOYEE": {
+      "email": "priya@acme.test",
+      "status": 200,
+      "ms": 2307,
+      "tokenOk": true,
+      "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJkYTU3YTg3NTM2ZGY5YWQwNDkyZWQ4MzMiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9s"
+    }
+  },
+  "results": {
+    "SUPER_ADMIN": {
+      "login": {
+        "email": "superadmin@acme.test",
+        "status": 200,
+        "ms": 2176,
+        "tokenOk": true,
+        "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWUwMDBxa3BqZDhxOGlkdzFrIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IlNVUEVSX0FETUlOIiwic2Vzc2lvbklkIjoiNjk0ZTgwY2UzZjAzZGFhMTNmY2Q2YzkxIiwicGVybWlzc2lvbnMiOlsiZW1wbG95ZWVzOnJlYWQiLCJlbXBsb3llZXM6d3JpdGUiLCJlbXBsb3llZXM6ZGVsZXRlIiwiZW1wbG95ZWVzOmV4cG9ydCIsImRlcGFydG1lbnRzOnJlYWQiLCJkZXBhcnRtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6cmVhZCIsImF0dGVuZGFuY2U6d3JpdGUiLCJsZWF2ZTpyZWFkIiwibGVhdmU6cmVxdWVz"
+      },
+      "endpoints": {
+        "health": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 4,
+          "p95": 4,
+          "min": 3,
+          "max": 4,
+          "errors": [],
+          "wallMs": 6,
+          "url": "http://localhost:4000/health"
+        },
+        "auth/me": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2419,
+          "p95": 2624,
+          "min": 2271,
+          "max": 2624,
+          "errors": [],
+          "wallMs": 2626,
+          "url": "http://localhost:4000/api/v1/auth/me"
+        },
+        "employees": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2174,
+          "p95": 2640,
+          "min": 1647,
+          "max": 2640,
+          "errors": [],
+          "wallMs": 2644,
+          "url": "http://localhost:4000/api/v1/employees"
+        },
+        "leave/balance": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2119,
+          "p95": 2272,
+          "min": 1886,
+          "max": 2293,
+          "errors": [],
+          "wallMs": 2293,
+          "url": "http://localhost:4000/api/v1/leave/balance"
+        },
+        "leave/requests": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1625,
+          "p95": 2100,
+          "min": 1138,
+          "max": 2163,
+          "errors": [],
+          "wallMs": 2165,
+          "url": "http://localhost:4000/api/v1/leave/requests"
+        },
+        "attendance/today": {
+          "n": 20,
+          "statuses": {
+            "400": 20
+          },
+          "p50": 789,
+          "p95": 926,
+          "min": 515,
+          "max": 926,
+          "errors": [
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"a5f93bf9-519a-4a78-a350-67af7d50802a\"}}",
+              "latencyMs": 515
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"0caf21eb-c5b7-4169-aba9-8445d117230e\"}}",
+              "latencyMs": 516
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"17f8d111-486d-4cfb-8b6c-8a75a6c4e803\"}}",
+              "latencyMs": 583
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"990510d7-afab-4ccb-9e01-71231f883de5\"}}",
+              "latencyMs": 583
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"006fa8da-067a-4696-b7ec-5607769ae862\"}}",
+              "latencyMs": 583
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"3cafb5f2-16a0-4d90-ba3b-fda29c586c17\"}}",
+              "latencyMs": 653
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"aeca0fe6-404e-459d-b336-6e4696b7709e\"}}",
+              "latencyMs": 653
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"72d6f3c4-2bc1-4da6-8954-05dbb3604e06\"}}",
+              "latencyMs": 724
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"0bed41f6-29e7-415f-8385-6d84b2f6bdc1\"}}",
+              "latencyMs": 789
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"f75b6d91-2476-4fb9-a559-3893f5ac0786\"}}",
+              "latencyMs": 724
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"138dbba8-585c-4444-b7ec-5a09fc2f0eec\"}}",
+              "latencyMs": 790
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"5ce3aad1-88da-4841-84a1-25178223297e\"}}",
+              "latencyMs": 790
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"6d403575-3e8e-44c7-ac7b-049d4f16629b\"}}",
+              "latencyMs": 790
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"35257b31-0754-406e-b7a2-2ee9a9eba66d\"}}",
+              "latencyMs": 857
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"f4c7e31f-39b7-4866-904b-9c3050815c80\"}}",
+              "latencyMs": 857
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"77adfa6d-6fc8-499a-ac46-379a9ac8d911\"}}",
+              "latencyMs": 857
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"6e3369d4-6668-4a62-8eef-89aa4c888d61\"}}",
+              "latencyMs": 857
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"8087979f-4167-4b77-b7f2-e9d22560f15f\"}}",
+              "latencyMs": 926
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"97b8e54b-15e8-46ca-969a-1ff089788251\"}}",
+              "latencyMs": 926
+            },
+            {
+              "status": 400,
+              "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"fce01b40-96e4-4213-9b15-0bad4a0816d9\"}}",
+              "latencyMs": 926
+            }
+          ],
+          "wallMs": 927,
+          "url": "http://localhost:4000/api/v1/attendance/today"
+        },
+        "attendance/summary": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 647,
+          "p95": 782,
+          "min": 430,
+          "max": 783,
+          "errors": [],
+          "wallMs": 784,
+          "url": "http://localhost:4000/api/v1/attendance/summary"
+        },
+        "notifications": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1360,
+          "p95": 1788,
+          "min": 890,
+          "max": 1855,
+          "errors": [],
+          "wallMs": 1858,
+          "url": "http://localhost:4000/api/v1/notifications"
+        }
+      }
+    },
+    "HR_ADMIN": {
+      "login": {
+        "email": "hr@acme.test",
+        "status": 200,
+        "ms": 1451,
+        "tokenOk": true,
+        "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWowMDBza3BqZHAybDZjdmc1IiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkhSX0FETUlOIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzYjAwMW1rcGpkeGxndzc0dHYiLCJzZXNzaW9uSWQiOiJhNmNlZjQ2ZTM0NWFmYWZiMDkzMzRmZGMiLCJwZXJtaXNzaW9ucyI6WyJlbXBsb3llZXM6cmVhZCIsImVtcGxveWVlczp3cml0ZSIsImVtcGxveWVlczpkZWxldGUiLCJlbXBsb3llZXM6ZXhwb3J0IiwiZGVwYXJ0bWVudHM6cmVhZCIsImRlcGFydG1lbnRzOndyaXRlIiwiYXR0ZW5kYW5jZTpyZWFkIiwiYXR0ZW5k"
+      },
+      "endpoints": {
+        "health": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 3,
+          "p95": 3,
+          "min": 2,
+          "max": 3,
+          "errors": [],
+          "wallMs": 4,
+          "url": "http://localhost:4000/health"
+        },
+        "auth/me": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 3016,
+          "p95": 3289,
+          "min": 2752,
+          "max": 3289,
+          "errors": [],
+          "wallMs": 3291,
+          "url": "http://localhost:4000/api/v1/auth/me"
+        },
+        "employees": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2307,
+          "p95": 2898,
+          "min": 1823,
+          "max": 2989,
+          "errors": [],
+          "wallMs": 2991,
+          "url": "http://localhost:4000/api/v1/employees"
+        },
+        "leave/balance": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2236,
+          "p95": 2466,
+          "min": 1901,
+          "max": 2534,
+          "errors": [],
+          "wallMs": 2537,
+          "url": "http://localhost:4000/api/v1/leave/balance"
+        },
+        "leave/requests": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1638,
+          "p95": 2027,
+          "min": 1251,
+          "max": 2077,
+          "errors": [],
+          "wallMs": 2079,
+          "url": "http://localhost:4000/api/v1/leave/requests"
+        },
+        "attendance/today": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1016,
+          "p95": 1116,
+          "min": 823,
+          "max": 1161,
+          "errors": [],
+          "wallMs": 1163,
+          "url": "http://localhost:4000/api/v1/attendance/today"
+        },
+        "attendance/summary": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 944,
+          "p95": 1061,
+          "min": 751,
+          "max": 1063,
+          "errors": [],
+          "wallMs": 1063,
+          "url": "http://localhost:4000/api/v1/attendance/summary"
+        },
+        "notifications": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1209,
+          "p95": 1547,
+          "min": 884,
+          "max": 1657,
+          "errors": [],
+          "wallMs": 1658,
+          "url": "http://localhost:4000/api/v1/notifications"
+        }
+      }
+    },
+    "MANAGER": {
+      "login": {
+        "email": "aman@acme.test",
+        "status": 200,
+        "ms": 2215,
+        "tokenOk": true,
+        "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcWwwMDB1a3BqZGJoZXNibXBpIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6Ik1BTkFHRVIiLCJlbXBsb3llZUlkIjoiY21xanB5ZHMwMDAxaWtwamQ1YnIzcjJ1aCIsInNlc3Npb25JZCI6ImI0OTZjMzg0YzBhYjk3ZDIwZDcxMjRjNSIsInBlcm1pc3Npb25zIjpbImF0dGVuZGFuY2U6cmVhZCIsImxlYXZlOmFwcHJvdmUiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiYW5ub3VuY2VtZW50czp3cml0ZSIsImF0dGVuZGFuY2U6YXBwcm92ZSIsImF0dGVuZGFuY2U6dGVhbS1yZWFkIiwiaG9s"
+      },
+      "endpoints": {
+        "health": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1,
+          "p95": 1,
+          "min": 1,
+          "max": 1,
+          "errors": [],
+          "wallMs": 2,
+          "url": "http://localhost:4000/health"
+        },
+        "auth/me": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2387,
+          "p95": 2482,
+          "min": 2284,
+          "max": 2482,
+          "errors": [],
+          "wallMs": 2483,
+          "url": "http://localhost:4000/api/v1/auth/me"
+        },
+        "employees": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2068,
+          "p95": 2854,
+          "min": 1370,
+          "max": 2854,
+          "errors": [],
+          "wallMs": 2855,
+          "url": "http://localhost:4000/api/v1/employees"
+        },
+        "leave/balance": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 2141,
+          "p95": 2300,
+          "min": 2037,
+          "max": 2354,
+          "errors": [],
+          "wallMs": 2356,
+          "url": "http://localhost:4000/api/v1/leave/balance"
+        },
+        "leave/requests": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1840,
+          "p95": 2436,
+          "min": 1226,
+          "max": 2436,
+          "errors": [],
+          "wallMs": 2437,
+          "url": "http://localhost:4000/api/v1/leave/requests"
+        },
+        "attendance/today": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 810,
+          "p95": 925,
+          "min": 707,
+          "max": 925,
+          "errors": [],
+          "wallMs": 926,
+          "url": "http://localhost:4000/api/v1/attendance/today"
+        },
+        "attendance/summary": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 713,
+          "p95": 813,
+          "min": 611,
+          "max": 813,
+          "errors": [],
+          "wallMs": 814,
+          "url": "http://localhost:4000/api/v1/attendance/summary"
+        },
+        "notifications": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1025,
+          "p95": 1334,
+          "min": 643,
+          "max": 1371,
+          "errors": [],
+          "wallMs": 1372,
+          "url": "http://localhost:4000/api/v1/notifications"
+        }
+      }
+    },
+    "EMPLOYEE": {
+      "login": {
+        "email": "priya@acme.test",
+        "status": 200,
+        "ms": 2307,
+        "tokenOk": true,
+        "snippet": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiJkYTU3YTg3NTM2ZGY5YWQwNDkyZWQ4MzMiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9s"
+      },
+      "endpoints": {
+        "health": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1,
+          "p95": 2,
+          "min": 1,
+          "max": 2,
+          "errors": [],
+          "wallMs": 3,
+          "url": "http://localhost:4000/health"
+        },
+        "auth/me": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1942,
+          "p95": 2046,
+          "min": 1798,
+          "max": 2046,
+          "errors": [],
+          "wallMs": 2047,
+          "url": "http://localhost:4000/api/v1/auth/me"
+        },
+        "employees": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1531,
+          "p95": 2063,
+          "min": 1030,
+          "max": 2064,
+          "errors": [],
+          "wallMs": 2066,
+          "url": "http://localhost:4000/api/v1/employees"
+        },
+        "leave/balance": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1526,
+          "p95": 1630,
+          "min": 1422,
+          "max": 1630,
+          "errors": [],
+          "wallMs": 1631,
+          "url": "http://localhost:4000/api/v1/leave/balance"
+        },
+        "leave/requests": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 1174,
+          "p95": 1522,
+          "min": 827,
+          "max": 1574,
+          "errors": [],
+          "wallMs": 1575,
+          "url": "http://localhost:4000/api/v1/leave/requests"
+        },
+        "attendance/today": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 765,
+          "p95": 878,
+          "min": 664,
+          "max": 928,
+          "errors": [],
+          "wallMs": 929,
+          "url": "http://localhost:4000/api/v1/attendance/today"
+        },
+        "attendance/summary": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 718,
+          "p95": 820,
+          "min": 564,
+          "max": 870,
+          "errors": [],
+          "wallMs": 870,
+          "url": "http://localhost:4000/api/v1/attendance/summary"
+        },
+        "notifications": {
+          "n": 20,
+          "statuses": {
+            "200": 20
+          },
+          "p50": 797,
+          "p95": 1092,
+          "min": 479,
+          "max": 1152,
+          "errors": [],
+          "wallMs": 1153,
+          "url": "http://localhost:4000/api/v1/notifications"
+        }
+      }
+    }
+  },
+  "identityPeeks": [
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "auth/me",
+      "status": 200,
+      "ms": 442,
+      "body": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqe000qkpjd8q8idw1k\",\"email\":\"superadmin@acme.test\",\"memberType\":\"SUPER_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":null,\"status\":\"ACTIVE\",\"employee\":null,\"permissions\":[\"employees:read\",\"employees:write\",\"employees:delete\",\"employees:export\",\"departments:read\",\"departments:write\",\"attendance:read\",\"attendance:write\",\"leave:read\",\"leave:request\",\"leave:approve\",\"analytics:read\",\"permissions:manage\",\"audit:read\",\"announcements:admin\",\"announcemen"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "leave/balance",
+      "status": 200,
+      "ms": 246,
+      "body": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leaveTypeCode\":\"SL\",\"total\":900,\"used\":0,\"pending\":0,\"available\":900},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-CL\",\"leaveTypeId\":\"CL\",\"leaveTypeName\":\"Casual Leave\",\"leaveTypeCode\":\"CL\",\"total\":900,\"used\":0,\"pending\":0,\"av"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "leave/requests",
+      "status": 200,
+      "ms": 252,
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"reason\":\"E2E deep leave type=Sick Leave date=2026-11-12\",\"submittedAt\":\"2026-08-02T19:27:37.593Z\",\"decidedAt\":null,\"approverComment\":null},{\"id\":\"cmsc6bfpf0040b9xj9i0ftkmm\",\"referenceNo\":\"LVR-0025\",\"leaveTypeId\":\"cmqx9cnfd"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "ms": 150,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"e96a5c8b-d1d6-41b5-a21f-bfa5d64a0a53\"}}"
+    },
+    {
+      "role": "HR_ADMIN",
+      "endpoint": "auth/me",
+      "status": 200,
+      "ms": 471,
+      "body": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqj000skpjdp2l6cvg5\",\"email\":\"hr@acme.test\",\"memberType\":\"HR_ADMIN\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpydsb001mkpjdxlgw74tv\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpydsb001mkpjdxlgw74tv\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"userId\":\"cmqjpydqj000skpjdp2l6cvg5\",\"employeeCode\":\"E0003\",\"firstName\":\"HR\",\"lastName\":\"Admin\",\"workEmail\":\"hr@acme.test\",\"personalEmail\":\"hr@acme.test\",\"phone\":\"+91 98765 43212\",\"dateOfBirth\":null,\"gender\":null,\""
+    },
+    {
+      "role": "HR_ADMIN",
+      "endpoint": "leave/balance",
+      "status": 200,
+      "ms": 250,
+      "body": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leaveTypeCode\":\"SL\",\"total\":12,\"used\":0,\"pending\":0,\"available\":12},{\"id\":\"cmqjpydsb001mkpjdxlgw74tv-CL\",\"leaveTypeId\":\"CL\",\"leaveTypeName\":\"Casual Leave\",\"leaveTypeCode\":\"CL\",\"total\":12,\"used\":0,\"pending\":0,\"available\":12},"
+    },
+    {
+      "role": "HR_ADMIN",
+      "endpoint": "leave/requests",
+      "status": 200,
+      "ms": 240,
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmqjpyfna006fdwadtwp9ooog\",\"referenceNo\":\"LVR-0011\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-04-29T00:00:00.000Z\",\"endDate\":\"2026-05-02T00:00:00.000Z\",\"totalDays\":4,\"status\":\"APPROVED\",\"reason\":\"Travel\",\"submittedAt\":\"2026-04-27T00:00:00.000Z\",\"decidedAt\":\"2026-04-28T00:00:00.000Z\",\"approverComment\":\"Approved\"}],\"pagination\":{\"page\":1,\"limit\":10,\"total\":1,\"pages\":1}},\"meta\":{}}"
+    },
+    {
+      "role": "HR_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 200,
+      "ms": 144,
+      "body": "{\"success\":true,\"data\":{\"date\":\"2026-08-03T00:00:00.000Z\",\"status\":\"PRESENT\",\"checkInAt\":\"2026-08-02T19:05:47.312Z\",\"checkOutAt\":\"2026-08-02T19:05:49.663Z\",\"duration\":0},\"meta\":{\"cached\":false}}"
+    },
+    {
+      "role": "MANAGER",
+      "endpoint": "auth/me",
+      "status": 200,
+      "ms": 545,
+      "body": "{\"success\":true,\"data\":{\"id\":\"cmqjpydql000ukpjdbhesbmpi\",\"email\":\"aman@acme.test\",\"memberType\":\"MANAGER\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds0001ikpjd5br3r2uh\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds0001ikpjd5br3r2uh\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"userId\":\"cmqjpydql000ukpjdbhesbmpi\",\"employeeCode\":\"E0001\",\"firstName\":\"Aman\",\"lastName\":\"Kumar\",\"workEmail\":\"aman@acme.test\",\"personalEmail\":\"aman.kumar@gmail.com\",\"phone\":\"+91 98765 43210\",\"dateOfBirth\":\"1990-0"
+    },
+    {
+      "role": "MANAGER",
+      "endpoint": "leave/balance",
+      "status": 200,
+      "ms": 257,
+      "body": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":2,\"pending\":0,\"available\":7},{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leaveTypeCode\":\"SL\",\"total\":12,\"used\":0,\"pending\":0,\"available\":12},{\"id\":\"cmqjpyds0001ikpjd5br3r2uh-CL\",\"leaveTypeId\":\"CL\",\"leaveTypeName\":\"Casual Leave\",\"leaveTypeCode\":\"CL\",\"total\":12,\"used\":0,\"pending\":0,\"available\":12},"
+    },
+    {
+      "role": "MANAGER",
+      "endpoint": "leave/requests",
+      "status": 200,
+      "ms": 253,
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"reason\":\"Family function\",\"submittedAt\":\"2026-07-11T20:30:58.796Z\",\"decidedAt\":\"2026-08-02T18:49:30.714Z\",\"approverComment\":null},{\"id\":\"cmqjpyfo0006rdwad4slculsi\",\"referenceNo\":\"LVR-0017\",\"leaveTypeId\":\"cmqjpydt6001skpjd"
+    },
+    {
+      "role": "MANAGER",
+      "endpoint": "attendance/today",
+      "status": 200,
+      "ms": 154,
+      "body": "{\"success\":true,\"data\":{\"date\":\"2026-08-03T00:00:00.000Z\",\"status\":\"PRESENT\",\"checkInAt\":\"2026-08-02T18:50:25.917Z\",\"checkOutAt\":\"2026-08-02T19:27:48.859Z\",\"duration\":37},\"meta\":{\"cached\":false}}"
+    },
+    {
+      "role": "EMPLOYEE",
+      "endpoint": "auth/me",
+      "status": 200,
+      "ms": 451,
+      "body": "{\"success\":true,\"data\":{\"id\":\"cmqjpydqn000wkpjd02gyqzd3\",\"email\":\"priya@acme.test\",\"memberType\":\"EMPLOYEE\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"employeeId\":\"cmqjpyds7001kkpjdnlhjygrp\",\"status\":\"ACTIVE\",\"employee\":{\"id\":\"cmqjpyds7001kkpjdnlhjygrp\",\"tenantId\":\"cmqjpydkv0000kpjdelztyg88\",\"userId\":\"cmqjpydqn000wkpjd02gyqzd3\",\"employeeCode\":\"E0002\",\"firstName\":\"Priya\",\"lastName\":\"Sharma\",\"workEmail\":\"priya@acme.test\",\"personalEmail\":\"priya.sharma@gmail.com\",\"phone\":\"+91 98765 43211\",\"dateOfBirth\":"
+    },
+    {
+      "role": "EMPLOYEE",
+      "endpoint": "leave/balance",
+      "status": 200,
+      "ms": 261,
+      "body": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":9,\"used\":0,\"pending\":0,\"available\":9},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leaveTypeCode\":\"SL\",\"total\":12,\"used\":0,\"pending\":0,\"available\":12},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-CL\",\"leaveTypeId\":\"CL\",\"leaveTypeName\":\"Casual Leave\",\"leaveTypeCode\":\"CL\",\"total\":12,\"used\":0,\"pending\":0,\"available\":12},"
+    },
+    {
+      "role": "EMPLOYEE",
+      "endpoint": "leave/requests",
+      "status": 200,
+      "ms": 255,
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"reason\":\"E2E deep leave type=Sick Leave date=2026-11-12\",\"submittedAt\":\"2026-08-02T19:27:37.593Z\",\"decidedAt\":null,\"approverComment\":null},{\"id\":\"cmsc6bfpf0040b9xj9i0ftkmm\",\"referenceNo\":\"LVR-0025\",\"leaveTypeId\":\"cmqx9cnfd"
+    },
+    {
+      "role": "EMPLOYEE",
+      "endpoint": "attendance/today",
+      "status": 200,
+      "ms": 159,
+      "body": "{\"success\":true,\"data\":{\"date\":\"2026-08-03T00:00:00.000Z\",\"status\":\"PRESENT\",\"checkInAt\":\"2026-08-02T19:04:47.372Z\",\"checkOutAt\":\"2026-08-02T19:06:56.506Z\",\"duration\":2},\"meta\":{\"cached\":false}}"
+    }
+  ],
+  "notableErrors": [
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"a5f93bf9-519a-4a78-a350-67af7d50802a\"}}",
+      "latencyMs": 515
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"0caf21eb-c5b7-4169-aba9-8445d117230e\"}}",
+      "latencyMs": 516
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"17f8d111-486d-4cfb-8b6c-8a75a6c4e803\"}}",
+      "latencyMs": 583
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"990510d7-afab-4ccb-9e01-71231f883de5\"}}",
+      "latencyMs": 583
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"006fa8da-067a-4696-b7ec-5607769ae862\"}}",
+      "latencyMs": 583
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"3cafb5f2-16a0-4d90-ba3b-fda29c586c17\"}}",
+      "latencyMs": 653
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"aeca0fe6-404e-459d-b336-6e4696b7709e\"}}",
+      "latencyMs": 653
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"72d6f3c4-2bc1-4da6-8954-05dbb3604e06\"}}",
+      "latencyMs": 724
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"0bed41f6-29e7-415f-8385-6d84b2f6bdc1\"}}",
+      "latencyMs": 789
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"f75b6d91-2476-4fb9-a559-3893f5ac0786\"}}",
+      "latencyMs": 724
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"138dbba8-585c-4444-b7ec-5a09fc2f0eec\"}}",
+      "latencyMs": 790
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"5ce3aad1-88da-4841-84a1-25178223297e\"}}",
+      "latencyMs": 790
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"6d403575-3e8e-44c7-ac7b-049d4f16629b\"}}",
+      "latencyMs": 790
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"35257b31-0754-406e-b7a2-2ee9a9eba66d\"}}",
+      "latencyMs": 857
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"f4c7e31f-39b7-4866-904b-9c3050815c80\"}}",
+      "latencyMs": 857
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"77adfa6d-6fc8-499a-ac46-379a9ac8d911\"}}",
+      "latencyMs": 857
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"6e3369d4-6668-4a62-8eef-89aa4c888d61\"}}",
+      "latencyMs": 857
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"8087979f-4167-4b77-b7f2-e9d22560f15f\"}}",
+      "latencyMs": 926
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"97b8e54b-15e8-46ca-969a-1ff089788251\"}}",
+      "latencyMs": 926
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "endpoint": "attendance/today",
+      "status": 400,
+      "body": "{\"success\":false,\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\",\"message\":\"User has no employee record\",\"details\":{},\"requestId\":\"fce01b40-96e4-4213-9b15-0bad4a0816d9\"}}",
+      "latencyMs": 926
+    }
+  ]
+}

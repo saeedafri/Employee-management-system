@@ -1,0 +1,839 @@
+{
+  "role": "HR_ADMIN",
+  "email": "hr@acme.test",
+  "shard": "HR-CORE",
+  "menus": [
+    "Dashboard",
+    "Employees",
+    "Attendance",
+    "Leave",
+    "Payroll",
+    "Reports"
+  ],
+  "screenshotCount": 84,
+  "issueCount": 2,
+  "beCount": 1,
+  "feCount": 1,
+  "zerosEvidence": {
+    "summaryStatus": 200,
+    "present": 1,
+    "pct": 100,
+    "endDate": "2026-08-03T02:15:07.815Z",
+    "recordsStatus": 200,
+    "recordCount": 1,
+    "hasPresentRow": true,
+    "todayStatus": 200,
+    "todayBodyStatus": "PRESENT",
+    "todayDuration": 0,
+    "uiZeroCards": true,
+    "bugReproduced": true,
+    "uiPresentCard": 0,
+    "uiPctCard": 50,
+    "uiHalfDayLabel": true,
+    "bePresent": 1,
+    "bePct": 100,
+    "uiZerosReproduced": true,
+    "classicBeTimezoneExclusion": false,
+    "rootCausePrimary": "FRONTEND_CLIENT_REAGGREGATION"
+  },
+  "menuStats": [
+    {
+      "menu": "Dashboard",
+      "tabs": 0,
+      "deepClicks": 6,
+      "tabStress": {
+        "ok": true,
+        "n": 0
+      },
+      "exportStress": {
+        "menu": "Dashboard",
+        "kind": "export-clicks",
+        "buttons": 1,
+        "ms": 1623,
+        "downloads": [
+          "employees-2026-08-03.csv"
+        ],
+        "failCount": 0,
+        "fails": []
+      }
+    },
+    {
+      "menu": "Employees",
+      "tabs": 0,
+      "deepClicks": 8,
+      "tabStress": {
+        "menu": "Employees",
+        "kind": "concurrent-tabs",
+        "tabs": 6,
+        "ms": 912,
+        "failCount": 0,
+        "fails": [],
+        "url": "http://localhost:3001/employees/cmqjpyds0001ikpjd5br3r2uh"
+      },
+      "exportStress": {
+        "ok": true,
+        "n": 0
+      }
+    },
+    {
+      "menu": "Attendance",
+      "tabs": 0,
+      "deepClicks": 7,
+      "tabStress": {
+        "ok": true,
+        "n": 0
+      },
+      "exportStress": {
+        "ok": true,
+        "n": 0
+      }
+    },
+    {
+      "menu": "Leave",
+      "tabs": 4,
+      "deepClicks": 7,
+      "tabStress": {
+        "menu": "Leave",
+        "kind": "concurrent-tabs",
+        "tabs": 4,
+        "ms": 897,
+        "failCount": 0,
+        "fails": [],
+        "url": "http://localhost:3001/leave?tab=approvals"
+      },
+      "exportStress": {
+        "ok": true,
+        "n": 0
+      }
+    },
+    {
+      "menu": "Payroll",
+      "tabs": 0,
+      "deepClicks": 8,
+      "tabStress": {
+        "ok": true,
+        "n": 0
+      },
+      "exportStress": {
+        "ok": true,
+        "n": 0
+      }
+    },
+    {
+      "menu": "Reports",
+      "tabs": 0,
+      "deepClicks": 14,
+      "tabStress": {
+        "ok": true,
+        "n": 0
+      },
+      "exportStress": {
+        "ok": true,
+        "n": 0
+      }
+    }
+  ],
+  "stressNotes": [
+    "Dashboard: <2 tabs \u2014 skipped concurrent tab stress",
+    {
+      "menu": "Dashboard",
+      "kind": "export-clicks",
+      "buttons": 1,
+      "ms": 1623,
+      "downloads": [
+        "employees-2026-08-03.csv"
+      ],
+      "failCount": 0,
+      "fails": []
+    },
+    {
+      "menu": "Employees",
+      "kind": "concurrent-tabs",
+      "tabs": 6,
+      "ms": 912,
+      "failCount": 0,
+      "fails": [],
+      "url": "http://localhost:3001/employees/cmqjpyds0001ikpjd5br3r2uh"
+    },
+    "Employees: no export controls found",
+    "Attendance: <2 tabs \u2014 skipped concurrent tab stress",
+    "Attendance: no export controls found",
+    {
+      "menu": "Leave",
+      "kind": "concurrent-tabs",
+      "tabs": 4,
+      "ms": 897,
+      "failCount": 0,
+      "fails": [],
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    "Leave: no export controls found",
+    "Payroll: <2 tabs \u2014 skipped concurrent tab stress",
+    "Payroll: no export controls found",
+    "Reports: <2 tabs \u2014 skipped concurrent tab stress",
+    "Reports: no export controls found",
+    "Reports:Dashboard: no export controls found",
+    {
+      "menu": "Reports:Employees",
+      "kind": "export-clicks",
+      "buttons": 1,
+      "ms": 1636,
+      "downloads": [
+        "employees-2026-08-03.csv"
+      ],
+      "failCount": 0,
+      "fails": []
+    },
+    "Reports:Departments: no export controls found",
+    "Reports:Attendance: no export controls found",
+    "Reports:Timesheets: no export controls found",
+    "Reports:Leave: no export controls found",
+    "Reports:Holidays: no export controls found",
+    "Reports:Payroll: no export controls found",
+    "Reports:Payout methods: no export controls found",
+    {
+      "menu": "Reports:Reports",
+      "kind": "export-clicks",
+      "buttons": 1,
+      "ms": 1592,
+      "downloads": [
+        "workforce-headcount-report.csv"
+      ],
+      "failCount": 0,
+      "fails": []
+    },
+    {
+      "kind": "rapid-menu-hop",
+      "ms": 5613,
+      "failCount": 0,
+      "fails": []
+    }
+  ],
+  "issues": [
+    {
+      "id": "ISSUE-HR-STRESS-BE-01",
+      "where": "GET /attendance/today",
+      "why": "PRESENT with duration=0 / totalMinutes=0",
+      "classification": "BACKEND",
+      "how": "Reject early check-out or mark incomplete/half-day",
+      "screenshot": "003-attendance-zeros-probe-land-view.png",
+      "network": "200 GET /attendance/today PRESENT duration=0",
+      "aliases": [
+        "ISSUE-HR-09"
+      ]
+    },
+    {
+      "id": "ISSUE-HR-STRESS-FE-01",
+      "where": "/attendance KPI cards vs GET /attendance/summary",
+      "why": "UI Present=0 pct=50 while BE present=1 pct=100",
+      "classification": "FRONTEND",
+      "how": "Prefer server summary for KPI cards; align Half Day classifier",
+      "screenshot": "003-attendance-zeros-probe-land-view.png",
+      "network": "summary present=1 pct=100 vs UI Present=0 pct=50",
+      "aliases": [
+        "ISSUE-HR-06"
+      ]
+    }
+  ],
+  "findings": [
+    "Attendance zeros probe: {\"summaryStatus\":200,\"present\":1,\"pct\":100,\"endDate\":\"2026-08-03T02:15:07.815Z\",\"recordsStatus\":200,\"recordCount\":1,\"hasPresentRow\":true,\"todayStatus\":200,\"todayBodyStatus\":\"PRESENT\",\"todayDuration\":0,\"uiZeroCards\":true,\"bugReproduced\":false}",
+    "Attendance zeros bug NOT reproduced in this stress shard (summary aligned or no today row).",
+    "Stress export on Dashboard: btns=1 downloads=1 fails=0",
+    "Stress concurrent tabs on Employees: n=6 fails=0 913ms",
+    "Stress concurrent tabs on Leave: n=4 fails=0 897ms",
+    "Stress export on Reports:Employees: btns=1 downloads=1 fails=0",
+    "Stress export on Reports:Reports: btns=1 downloads=1 fails=0",
+    "Rapid menu hop: fails=0 5614ms"
+  ],
+  "screenshots": [
+    {
+      "name": "001-login-form-view.png",
+      "menu": "login",
+      "action": "form",
+      "result": "view",
+      "url": "http://localhost:3001/login"
+    },
+    {
+      "name": "002-login-submit-ok.png",
+      "menu": "login",
+      "action": "submit",
+      "result": "ok",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "003-attendance-zeros-probe-land-view.png",
+      "menu": "Attendance",
+      "action": "zeros-probe-land",
+      "result": "view",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "004-attendance-zeros-probe-settled-view.png",
+      "menu": "Attendance",
+      "action": "zeros-probe-settled",
+      "result": "view",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "005-attendance-zeros-probe-table-view.png",
+      "menu": "Attendance",
+      "action": "zeros-probe-table",
+      "result": "view",
+      "url": "http://localhost:3001/attendance?view=table"
+    },
+    {
+      "name": "006-dashboard-land-view.png",
+      "menu": "Dashboard",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "007-dashboard-deep-add-employee-clicked.png",
+      "menu": "Dashboard",
+      "action": "deep-Add Employee",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "name": "008-dashboard-deep-not-specified-clicked.png",
+      "menu": "Dashboard",
+      "action": "deep-Not specified",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "009-dashboard-deep-all-statuses-clicked.png",
+      "menu": "Dashboard",
+      "action": "deep-All statuses",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "010-dashboard-deep-comfortable-clicked.png",
+      "menu": "Dashboard",
+      "action": "deep-Comfortable",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "011-dashboard-deep-columns-clicked.png",
+      "menu": "Dashboard",
+      "action": "deep-Columns",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "012-dashboard-deep-export-clicked.png",
+      "menu": "Dashboard",
+      "action": "deep-Export",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "013-dashboard-stress-export-clicks-settled.png",
+      "menu": "Dashboard",
+      "action": "stress-export-clicks",
+      "result": "settled",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "014-employees-land-view.png",
+      "menu": "Employees",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "015-employees-deep-add-employee-clicked.png",
+      "menu": "Employees",
+      "action": "deep-Add employee",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "name": "016-employees-deep-not-specified-clicked.png",
+      "menu": "Employees",
+      "action": "deep-Not specified",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "017-employees-deep-all-statuses-clicked.png",
+      "menu": "Employees",
+      "action": "deep-All statuses",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "018-employees-deep-comfortable-clicked.png",
+      "menu": "Employees",
+      "action": "deep-Comfortable",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "019-employees-deep-columns-clicked.png",
+      "menu": "Employees",
+      "action": "deep-Columns",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "020-employees-deep-export-clicked.png",
+      "menu": "Employees",
+      "action": "deep-Export",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "021-employees-deep-aman-kumar-clicked.png",
+      "menu": "Employees",
+      "action": "deep-Aman Kumar",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees/cmqjpyds0001ikpjd5br3r2uh"
+    },
+    {
+      "name": "022-employees-deep-documents-clicked.png",
+      "menu": "Employees",
+      "action": "deep-Documents",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees/cmqjpyds0001ikpjd5br3r2uh"
+    },
+    {
+      "name": "023-employees-stress-concurrent-tabs-settled.png",
+      "menu": "Employees",
+      "action": "stress-concurrent-tabs",
+      "result": "settled",
+      "url": "http://localhost:3001/employees/cmqjpyds0001ikpjd5br3r2uh"
+    },
+    {
+      "name": "024-attendance-land-view.png",
+      "menu": "Attendance",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "025-attendance-deep-request-regularization-clicked.png",
+      "menu": "Attendance",
+      "action": "deep-Request Regularization",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "026-attendance-deep-request-regularization-modal-open.png",
+      "menu": "Attendance",
+      "action": "deep-Request Regularization-modal",
+      "result": "open",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "027-attendance-deep-all-departments-clicked.png",
+      "menu": "Attendance",
+      "action": "deep-All departments",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "028-attendance-deep-all-employees-clicked.png",
+      "menu": "Attendance",
+      "action": "deep-All employees",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "029-attendance-deep-ctrl-3-clicked.png",
+      "menu": "Attendance",
+      "action": "deep-ctrl-3",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance?month=2026-07"
+    },
+    {
+      "name": "030-attendance-deep-ctrl-4-clicked.png",
+      "menu": "Attendance",
+      "action": "deep-ctrl-4",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "031-attendance-deep-calendar-clicked.png",
+      "menu": "Attendance",
+      "action": "deep-Calendar",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "032-attendance-deep-table-clicked.png",
+      "menu": "Attendance",
+      "action": "deep-Table",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance?view=table"
+    },
+    {
+      "name": "033-leave-land-view.png",
+      "menu": "Leave",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "034-leave-tab-my-requests-view.png",
+      "menu": "Leave",
+      "action": "tab-My Requests",
+      "result": "view",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "035-leave-tab-team-calendar-view.png",
+      "menu": "Leave",
+      "action": "tab-Team Calendar",
+      "result": "view",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "name": "036-leave-tab-comp-off-view.png",
+      "menu": "Leave",
+      "action": "tab-Comp-off",
+      "result": "view",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "name": "037-leave-tab-approvals-view.png",
+      "menu": "Leave",
+      "action": "tab-Approvals",
+      "result": "view",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "038-leave-deep-new-request-clicked.png",
+      "menu": "Leave",
+      "action": "deep-New Request",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "039-leave-deep-new-request-modal-open.png",
+      "menu": "Leave",
+      "action": "deep-New Request-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "040-leave-deep-my-requests-clicked.png",
+      "menu": "Leave",
+      "action": "deep-My Requests",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "041-leave-deep-team-calendar-clicked.png",
+      "menu": "Leave",
+      "action": "deep-Team Calendar",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "name": "042-leave-deep-comp-off-clicked.png",
+      "menu": "Leave",
+      "action": "deep-Comp-off",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "name": "043-leave-deep-approvals-clicked.png",
+      "menu": "Leave",
+      "action": "deep-Approvals",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "044-leave-deep-pending-clicked.png",
+      "menu": "Leave",
+      "action": "deep-Pending",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "045-leave-deep-recent-clicked.png",
+      "menu": "Leave",
+      "action": "deep-Recent",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "046-leave-stress-concurrent-tabs-settled.png",
+      "menu": "Leave",
+      "action": "stress-concurrent-tabs",
+      "result": "settled",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "047-payroll-land-view.png",
+      "menu": "Payroll",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "048-payroll-deep-migration-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-Migration",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "name": "049-payroll-deep-back-to-payroll-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-Back to Payroll",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "050-payroll-deep-run-payroll-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-Run Payroll",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "051-payroll-deep-run-payroll-modal-open.png",
+      "menu": "Payroll",
+      "action": "deep-Run Payroll-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "052-payroll-deep-ctrl-3-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-ctrl-3",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "053-payroll-deep-ctrl-4-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-ctrl-4",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "054-payroll-deep-ctrl-5-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-ctrl-5",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "055-payroll-deep-ctrl-6-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-ctrl-6",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "056-payroll-deep-ctrl-7-clicked.png",
+      "menu": "Payroll",
+      "action": "deep-ctrl-7",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "057-reports-land-view.png",
+      "menu": "Reports",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "058-reports-deep-headcount-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Headcount",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "059-reports-deep-turnover-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Turnover",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "name": "060-reports-deep-demographics-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Demographics",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "name": "061-reports-deep-monthly-summary-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Monthly Summary",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "name": "062-reports-deep-absenteeism-trend-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Absenteeism Trend",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=attendance/absenteeism"
+    },
+    {
+      "name": "063-reports-deep-utilization-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Utilization",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "name": "064-reports-deep-pending-requests-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Pending Requests",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=leave/pending"
+    },
+    {
+      "name": "065-reports-deep-payroll-summary-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Payroll Summary",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=payroll/summary"
+    },
+    {
+      "name": "066-reports-deep-ctc-analysis-clicked.png",
+      "menu": "Reports",
+      "action": "deep-CTC Analysis",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "name": "067-reports-deep-salary-register-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Salary Register",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=payroll/salary-register"
+    },
+    {
+      "name": "068-reports-deep-statutory-register-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Statutory Register",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=payroll/statutory-register"
+    },
+    {
+      "name": "069-reports-deep-bank-advice-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Bank Advice",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=payroll/bank-advice"
+    },
+    {
+      "name": "070-reports-deep-variance-register-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Variance Register",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=payroll/variance-register"
+    },
+    {
+      "name": "071-reports-deep-pay-equity-clicked.png",
+      "menu": "Reports",
+      "action": "deep-Pay Equity",
+      "result": "clicked",
+      "url": "http://localhost:3001/reports?report=payroll/pay-equity"
+    },
+    {
+      "name": "072-reports-deep-report-dashboard-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Dashboard",
+      "result": "view",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "073-reports-deep-report-employees-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Employees",
+      "result": "view",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "074-reports-employees-stress-export-clicks-settled.png",
+      "menu": "Reports:Employees",
+      "action": "stress-export-clicks",
+      "result": "settled",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "075-reports-deep-report-departments-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Departments",
+      "result": "view",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "name": "076-reports-deep-report-attendance-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Attendance",
+      "result": "view",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "077-reports-deep-report-timesheets-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Timesheets",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "name": "078-reports-deep-report-leave-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Leave",
+      "result": "view",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "079-reports-deep-report-holidays-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Holidays",
+      "result": "view",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "080-reports-deep-report-payroll-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Payroll",
+      "result": "view",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "081-reports-deep-report-payout-methods-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Payout methods",
+      "result": "view",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "082-reports-deep-report-reports-view.png",
+      "menu": "Reports",
+      "action": "deep-report-Reports",
+      "result": "view",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "083-reports-reports-stress-export-clicks-settled.png",
+      "menu": "Reports:Reports",
+      "action": "stress-export-clicks",
+      "result": "settled",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "084-stress-rapid-menu-hop-settled.png",
+      "menu": "stress",
+      "action": "rapid-menu-hop",
+      "result": "settled",
+      "url": "http://localhost:3001/employees"
+    }
+  ],
+  "generatedAt": "2026-08-03T02:16:43.940Z"
+}

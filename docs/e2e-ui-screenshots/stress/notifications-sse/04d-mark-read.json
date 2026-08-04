@@ -1,0 +1,20 @@
+{
+  "markRead": {
+    "status": 200,
+    "ms": 196,
+    "json": {
+      "success": true,
+      "data": {
+        "id": "1b9e3302a1ff735a0ff8e553",
+        "isRead": true
+      },
+      "meta": {}
+    },
+    "text": "{\"success\":true,\"data\":{\"id\":\"1b9e3302a1ff735a0ff8e553\",\"isRead\":true},\"meta\":{}}"
+  },
+  "markReadSse": {
+    "status": 200,
+    "newEvents": [],
+    "emitted": false
+  }
+}

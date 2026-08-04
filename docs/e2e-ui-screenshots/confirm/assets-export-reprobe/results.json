@@ -1,0 +1,176 @@
+{
+  "startedAt": "2026-08-03T03:42:08.606Z",
+  "attempts": [
+    {
+      "n": 1,
+      "startedAt": "2026-08-03T03:42:15.294Z",
+      "buttonVisible": true,
+      "downloadEvent": {
+        "suggested": "assets-inventory.csv",
+        "failure": {}
+      },
+      "newDownloads": [
+        {
+          "suggested": "assets-inventory.csv",
+          "ok": false,
+          "failure": {},
+          "savedPath": null,
+          "size": null,
+          "pageUrl": "http://localhost:3001/assets",
+          "at": "2026-08-03T03:42:15.305Z"
+        }
+      ],
+      "newNetworkExportish": [],
+      "allNewNetwork": [],
+      "ok": false,
+      "endedAt": "2026-08-03T03:42:16.104Z"
+    },
+    {
+      "n": 2,
+      "startedAt": "2026-08-03T03:42:16.653Z",
+      "buttonVisible": true,
+      "downloadEvent": {
+        "suggested": "assets-inventory.csv",
+        "failure": {}
+      },
+      "newDownloads": [
+        {
+          "suggested": "assets-inventory.csv",
+          "ok": false,
+          "failure": {},
+          "savedPath": null,
+          "size": null,
+          "pageUrl": "http://localhost:3001/assets",
+          "at": "2026-08-03T03:42:16.661Z"
+        }
+      ],
+      "newNetworkExportish": [],
+      "allNewNetwork": [],
+      "ok": false,
+      "endedAt": "2026-08-03T03:42:17.462Z"
+    },
+    {
+      "n": 3,
+      "startedAt": "2026-08-03T03:42:18.016Z",
+      "buttonVisible": true,
+      "downloadEvent": {
+        "suggested": "assets-inventory.csv",
+        "failure": {}
+      },
+      "newDownloads": [
+        {
+          "suggested": "assets-inventory.csv",
+          "ok": false,
+          "failure": {},
+          "savedPath": null,
+          "size": null,
+          "pageUrl": "http://localhost:3001/assets",
+          "at": "2026-08-03T03:42:18.028Z"
+        }
+      ],
+      "newNetworkExportish": [],
+      "allNewNetwork": [],
+      "ok": false,
+      "endedAt": "2026-08-03T03:42:18.830Z"
+    }
+  ],
+  "downloads": [
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": false,
+      "failure": {},
+      "savedPath": null,
+      "size": null,
+      "pageUrl": "http://localhost:3001/assets",
+      "at": "2026-08-03T03:42:15.305Z"
+    },
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": false,
+      "failure": {},
+      "savedPath": null,
+      "size": null,
+      "pageUrl": "http://localhost:3001/assets",
+      "at": "2026-08-03T03:42:16.661Z"
+    },
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": false,
+      "failure": {},
+      "savedPath": null,
+      "size": null,
+      "pageUrl": "http://localhost:3001/assets",
+      "at": "2026-08-03T03:42:18.028Z"
+    }
+  ],
+  "network": [
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "http://localhost:3001/assets",
+      "contentType": "text/html; charset=utf-8",
+      "contentDisposition": "",
+      "at": "2026-08-03T03:42:12.087Z"
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "http://localhost:3001/api/assets/employees",
+      "contentType": "application/json; charset=utf-8",
+      "contentDisposition": "",
+      "at": "2026-08-03T03:42:13.071Z"
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "http://localhost:3001/api/assets",
+      "contentType": "application/json; charset=utf-8",
+      "contentDisposition": "",
+      "at": "2026-08-03T03:42:13.084Z"
+    },
+    {
+      "status": 200,
+      "method": "GET",
+      "url": "http://localhost:3001/api/assets/summary",
+      "contentType": "application/json; charset=utf-8",
+      "contentDisposition": "",
+      "at": "2026-08-03T03:42:13.179Z"
+    }
+  ],
+  "verdict": "solid fail",
+  "endedAt": "2026-08-03T03:42:19.372Z",
+  "summary": {
+    "oks": 0,
+    "fails": 3,
+    "downloads": [
+      {
+        "suggested": "assets-inventory.csv",
+        "ok": false,
+        "failure": {},
+        "savedPath": null,
+        "size": null,
+        "pageUrl": "http://localhost:3001/assets",
+        "at": "2026-08-03T03:42:15.305Z"
+      },
+      {
+        "suggested": "assets-inventory.csv",
+        "ok": false,
+        "failure": {},
+        "savedPath": null,
+        "size": null,
+        "pageUrl": "http://localhost:3001/assets",
+        "at": "2026-08-03T03:42:16.661Z"
+      },
+      {
+        "suggested": "assets-inventory.csv",
+        "ok": false,
+        "failure": {},
+        "savedPath": null,
+        "size": null,
+        "pageUrl": "http://localhost:3001/assets",
+        "at": "2026-08-03T03:42:18.028Z"
+      }
+    ],
+    "verdict": "solid fail"
+  }
+}

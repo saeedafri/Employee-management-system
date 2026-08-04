@@ -1,0 +1,6 @@
+employeeCode,employeeName,bankName,accountNumber,netPay
+E0003,HR Admin,SBI,0001234567890,61258
+E0001,Aman Kumar,HDFC,0001234567890,59258
+LITMUS-US-1,UsLitmus LitmusZZ,—,—,0
+LITMUS-KW-1,KwLitmus LitmusZZ,—,—,0
+E0002,Priya Sharma,ICICI,0001234567890,64248

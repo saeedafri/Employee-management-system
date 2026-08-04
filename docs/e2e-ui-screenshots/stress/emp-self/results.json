@@ -1,0 +1,800 @@
+{
+  "user": "priya@acme.test",
+  "role": "EMPLOYEE",
+  "tenant": "acme-corp-001",
+  "fe": "http://localhost:3001",
+  "mode": "STRESS+DEEP-SHORT",
+  "shotCount": 55,
+  "findings": [
+    {
+      "severity": "HIGH",
+      "layer": "FRONTEND",
+      "where": "Leave → Team Calendar",
+      "why": "Tab visible to EMPLOYEE but Access restricted",
+      "screenshot": "013-leave-tab-team-calendar.png",
+      "network": "n/a",
+      "id": "STRESS-EMP-FE-TEAM-CAL",
+      "ts": "2026-08-03T02:18:29.355Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave preview stress #1",
+      "why": "GET /leave/requests/preview → 404 Route not found (UI depends on preview)",
+      "screenshot": "017-stress-leave-preview-1.png",
+      "network": "404 GET http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:18:40.838Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave preview stress #2",
+      "why": "GET /leave/requests/preview → 404 Route not found (UI depends on preview)",
+      "screenshot": "018-stress-leave-preview-2.png",
+      "network": "404 GET http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-18&endDate=2026-11-18",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:18:46.843Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave preview stress #3",
+      "why": "GET /leave/requests/preview → 404 Route not found (UI depends on preview)",
+      "screenshot": "019-stress-leave-preview-3.png",
+      "network": "404 GET http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-19&endDate=2026-11-19",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:18:53.287Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave preview stress #4",
+      "why": "GET /leave/requests/preview → 404 Route not found (UI depends on preview)",
+      "screenshot": "020-stress-leave-preview-4.png",
+      "network": "404 GET http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-20&endDate=2026-11-20",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:18:59.820Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave preview stress #5",
+      "why": "GET /leave/requests/preview → 404 Route not found (UI depends on preview)",
+      "screenshot": "021-stress-leave-preview-5.png",
+      "network": "404 GET http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-21&endDate=2026-11-21",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:19:06.200Z"
+    },
+    {
+      "severity": "CRITICAL",
+      "layer": "BACKEND",
+      "where": "Leave → submit Annual Leave",
+      "why": "NO_LEAVE_BALANCE for \"Annual Leave\" (types↔balance invariant)",
+      "screenshot": "023-leave-submit-annual-leave.png",
+      "network": "400 http://localhost:3001/api/leave/requests {\"success\":false,\"error\":{\"code\":\"NO_LEAVE_BALANCE\",\"message\":\"No leave balance found for this leave type\",\"details\":{},\"requestId\":\"250e0bc2-53fa-486a-bb81-208",
+      "id": "STRESS-EMP-BE-AL",
+      "ts": "2026-08-03T02:19:13.021Z"
+    },
+    {
+      "severity": "CRITICAL",
+      "layer": "FRONTEND",
+      "where": "Leave picker → Annual Leave",
+      "why": "UI offers/submits Annual Leave with no balance",
+      "screenshot": "023-leave-submit-annual-leave.png",
+      "network": "400 http://localhost:3001/api/leave/requests",
+      "id": "STRESS-EMP-FE-AL",
+      "ts": "2026-08-03T02:19:13.021Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave submit path preview (Annual Leave)",
+      "why": "404 on GET /leave/requests/preview during submit flow",
+      "screenshot": "023-leave-submit-annual-leave.png",
+      "network": "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17; 404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:19:13.021Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave submit path preview (Sick Leave)",
+      "why": "404 on GET /leave/requests/preview during submit flow",
+      "screenshot": "025-leave-submit-sick-leave.png",
+      "network": "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=SL&startDate=2026-11-18&endDate=2026-11-18; 404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=SL&startDate=2026-11-18&endDate=2026-11-18",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:19:20.138Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave submit path preview (Comp Off)",
+      "why": "404 on GET /leave/requests/preview during submit flow",
+      "screenshot": "027-leave-submit-comp-off.png",
+      "network": "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=CO&startDate=2026-11-19&endDate=2026-11-19; 404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=CO&startDate=2026-11-19&endDate=2026-11-19",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:19:26.875Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave submit path preview (Earned Leave)",
+      "why": "404 on GET /leave/requests/preview during submit flow",
+      "screenshot": "029-leave-submit-earned-leave.png",
+      "network": "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=EL&startDate=2026-11-20&endDate=2026-11-20; 404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=EL&startDate=2026-11-20&endDate=2026-11-20",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:19:33.994Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "Leave submit path preview (Casual Leave)",
+      "why": "404 on GET /leave/requests/preview during submit flow",
+      "screenshot": "031-leave-submit-casual-leave.png",
+      "network": "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=CL&startDate=2026-11-21&endDate=2026-11-21; 404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=CL&startDate=2026-11-21&endDate=2026-11-21",
+      "id": "STRESS-EMP-BE-PREVIEW",
+      "ts": "2026-08-03T02:19:40.885Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "Timesheets → Log time submit",
+      "why": "Click Save/Submit but no POST observed (validation / project required)",
+      "screenshot": "039-timesheets-log-time-submit-result.png",
+      "network": "n/a",
+      "id": "STRESS-EMP-FE-TS-POST",
+      "ts": "2026-08-03T02:22:25.651Z"
+    }
+  ],
+  "mutations": [
+    {
+      "action": "login",
+      "apis": [
+        {
+          "method": "POST",
+          "status": 200,
+          "url": "http://localhost:3001/api/auth/login",
+          "body": "{\"success\":true,\"data\":{\"accessToken\":\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbXFqcHlkcW4wMDB3a3BqZDAyZ3lxemQzIiwidGVuYW50SWQiOiJjbXFqcHlka3YwMDAwa3BqZGVsenR5Zzg4IiwibWVtYmVyVHlwZSI6IkVNUExPWUVFIiwiZW1wbG95ZWVJZCI6ImNtcWpweWRzNzAwMWtrcGpkbmxoanlncnAiLCJzZXNzaW9uSWQiOiIwMGI0YTBhNzZjNzcyZGRmNmFkYzJhYzgiLCJwZXJtaXNzaW9ucyI6WyJhdHRlbmRhbmNlOnJlYWQiLCJhdHRlbmRhbmNlOndyaXRlIiwibGVhdmU6cmVhZCIsImxlYXZlOnJlcXVlc3QiLCJhdWRpdDpyZWFkIiwiYW5ub3VuY2VtZW50czpyZWFkIiwiaG9saWRheXM6cmVhZCIsInBheW91dDpzZWxmIiwicGF5cm9sbDpzZWxmLXJlYWQiLCJ0aW1lc2hlZXRzOnJlYWQiLCJ0aW1lc2hlZXRzOndyaXRlIl0sImlhdCI6MTc4NTcyMzQ5NCwiZXhwIjoxNzg1NzI0Mzk0fQ.vNmbUhGC1rxEncBCk7r3DK1tOhh1TVMVn_-ce5Ja1TA\",\"sessionId\":\"00b4a0a76c772ddf6adc2ac8\",\"user\":{\"id\":\"cmqjpydqn000wkpjd02gyqzd3\",\"email\":\"priya@acme.test\",\"memberType\":\"EMPLOYEE\",\"employeeI",
+          "t": 1785723494760
+        }
+      ],
+      "shot": "003-login-success-dashboard.png",
+      "ok": true
+    },
+    {
+      "action": "leave-submit:Annual Leave",
+      "date": "2026-11-17",
+      "apis": [
+        {
+          "method": "POST",
+          "status": 400,
+          "url": "http://localhost:3001/api/leave/requests",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NO_LEAVE_BALANCE\",\"message\":\"No leave balance found for this leave type\",\"details\":{},\"requestId\":\"250e0bc2-53fa-486a-bb81-2081844b637b\"}}",
+          "t": 1785723552054
+        }
+      ],
+      "previewApis": [
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723551248
+        },
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723552258
+        }
+      ],
+      "shot": "023-leave-submit-annual-leave.png"
+    },
+    {
+      "action": "leave-submit:Sick Leave",
+      "date": "2026-11-18",
+      "apis": [
+        {
+          "method": "POST",
+          "status": 201,
+          "url": "http://localhost:3001/api/leave/requests",
+          "body": "{\"success\":true,\"data\":{\"id\":\"cmsclp8sf00q6b9xj33aels47\",\"referenceNo\":\"LVR-0027\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-18T00:00:00.000Z\",\"endDate\":\"2026-11-18T00:00:00.000Z\",\"totalDays\":1,\"status\":\"PENDING\",\"reason\":\"STRESS emp-self leave type=Sick Leave date=2026-11-18\",\"submittedAt\":\"2026-08-03T02:19:19.360Z\"},\"meta\":{}}",
+          "t": 1785723559991
+        }
+      ],
+      "previewApis": [
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=SL&startDate=2026-11-18&endDate=2026-11-18",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=SL&startDate=2026-11-18&endDate=2026-11-18 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723558399
+        },
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=SL&startDate=2026-11-18&endDate=2026-11-18",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=SL&startDate=2026-11-18&endDate=2026-11-18 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723559418
+        }
+      ],
+      "shot": "025-leave-submit-sick-leave.png"
+    },
+    {
+      "action": "leave-submit:Comp Off",
+      "date": "2026-11-19",
+      "apis": [
+        {
+          "method": "POST",
+          "status": 400,
+          "url": "http://localhost:3001/api/leave/requests",
+          "body": "{\"success\":false,\"error\":{\"code\":\"INSUFFICIENT_BALANCE\",\"message\":\"Insufficient leave balance. Available: 0, Requested: 1\",\"details\":{\"available\":0,\"requested\":1},\"requestId\":\"0c1f34f1-5d98-42ff-b4bd-d7e74eaaeb32\"}}",
+          "t": 1785723565835
+        }
+      ],
+      "previewApis": [
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=CO&startDate=2026-11-19&endDate=2026-11-19",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=CO&startDate=2026-11-19&endDate=2026-11-19 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723565076
+        },
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=CO&startDate=2026-11-19&endDate=2026-11-19",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=CO&startDate=2026-11-19&endDate=2026-11-19 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723566093
+        }
+      ],
+      "shot": "027-leave-submit-comp-off.png"
+    },
+    {
+      "action": "leave-submit:Earned Leave",
+      "date": "2026-11-20",
+      "apis": [
+        {
+          "method": "POST",
+          "status": 201,
+          "url": "http://localhost:3001/api/leave/requests",
+          "body": "{\"success\":true,\"data\":{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"referenceNo\":\"LVR-0028\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-11-20T00:00:00.000Z\",\"endDate\":\"2026-11-20T00:00:00.000Z\",\"totalDays\":1,\"status\":\"PENDING\",\"reason\":\"STRESS emp-self leave type=Earned Leave date=2026-11-20\",\"submittedAt\":\"2026-08-03T02:19:32.816Z\"},\"meta\":{}}",
+          "t": 1785723573418
+        }
+      ],
+      "previewApis": [
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=EL&startDate=2026-11-20&endDate=2026-11-20",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=EL&startDate=2026-11-20&endDate=2026-11-20 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723572268
+        },
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=EL&startDate=2026-11-20&endDate=2026-11-20",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=EL&startDate=2026-11-20&endDate=2026-11-20 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723573279
+        }
+      ],
+      "shot": "029-leave-submit-earned-leave.png"
+    },
+    {
+      "action": "leave-submit:Casual Leave",
+      "date": "2026-11-21",
+      "apis": [
+        {
+          "method": "POST",
+          "status": 400,
+          "url": "http://localhost:3001/api/leave/requests",
+          "body": "{\"success\":false,\"error\":{\"code\":\"NO_CHARGEABLE_DAYS\",\"message\":\"Selected dates contain no chargeable working days (all weekly-offs/holidays)\",\"details\":{},\"requestId\":\"f3d517dd-4ec3-422f-b2ef-ca20d96e1f8b\"}}",
+          "t": 1785723579350
+        }
+      ],
+      "previewApis": [
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=CL&startDate=2026-11-21&endDate=2026-11-21",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=CL&startDate=2026-11-21&endDate=2026-11-21 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723579102
+        },
+        {
+          "method": "GET",
+          "status": 404,
+          "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=CL&startDate=2026-11-21&endDate=2026-11-21",
+          "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=CL&startDate=2026-11-21&endDate=2026-11-21 not found\",\"error\":\"Not Found\",\"statusCode\":404}",
+          "t": 1785723580113
+        }
+      ],
+      "shot": "031-leave-submit-casual-leave.png"
+    },
+    {
+      "action": "leave-withdraw",
+      "apis": [
+        {
+          "method": "PATCH",
+          "status": 200,
+          "url": "http://localhost:3001/api/leave/requests/cmsclpj6700qab9xj6rbziuwr/withdraw",
+          "body": "{\"success\":true,\"data\":{\"id\":\"cmsclpj6700qab9xj6rbziuwr\",\"status\":\"WITHDRAWN\"},\"meta\":{}}",
+          "t": 1785723586459
+        }
+      ],
+      "shot": "032-leave-withdraw-result.png"
+    },
+    {
+      "action": "timesheet-log-time",
+      "apis": [],
+      "shot": "039-timesheets-log-time-submit-result.png"
+    },
+    {
+      "action": "notifications-mark-all-read-1",
+      "apis": [
+        {
+          "method": "PATCH",
+          "status": 200,
+          "url": "http://localhost:3001/api/notifications/read-all",
+          "body": "{\"success\":true,\"data\":{\"markedRead\":1},\"meta\":{}}",
+          "t": 1785723774291
+        }
+      ],
+      "shot": "053-stress-notifications-mark-all-1.png"
+    },
+    {
+      "action": "notifications-mark-all-read-2",
+      "apis": [],
+      "shot": "054-stress-notifications-mark-all-2.png"
+    }
+  ],
+  "stress": {
+    "leavePreviewCalls": [
+      {
+        "i": 1,
+        "shot": "017-stress-leave-preview-1.png",
+        "previewApis": [
+          {
+            "status": 404,
+            "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17",
+            "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17 not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+          }
+        ],
+        "leaveGets": [
+          "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-17&endDate=2026-11-17"
+        ]
+      },
+      {
+        "i": 2,
+        "shot": "018-stress-leave-preview-2.png",
+        "previewApis": [
+          {
+            "status": 404,
+            "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-18&endDate=2026-11-18",
+            "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-18&endDate=2026-11-18 not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+          }
+        ],
+        "leaveGets": [
+          "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-18&endDate=2026-11-18"
+        ]
+      },
+      {
+        "i": 3,
+        "shot": "019-stress-leave-preview-3.png",
+        "previewApis": [
+          {
+            "status": 404,
+            "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-19&endDate=2026-11-19",
+            "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-19&endDate=2026-11-19 not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+          }
+        ],
+        "leaveGets": [
+          "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-19&endDate=2026-11-19"
+        ]
+      },
+      {
+        "i": 4,
+        "shot": "020-stress-leave-preview-4.png",
+        "previewApis": [
+          {
+            "status": 404,
+            "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-20&endDate=2026-11-20",
+            "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-20&endDate=2026-11-20 not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+          }
+        ],
+        "leaveGets": [
+          "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-20&endDate=2026-11-20"
+        ]
+      },
+      {
+        "i": 5,
+        "shot": "021-stress-leave-preview-5.png",
+        "previewApis": [
+          {
+            "status": 404,
+            "url": "http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-21&endDate=2026-11-21",
+            "body": "{\"message\":\"Route GET:/api/v1/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-21&endDate=2026-11-21 not found\",\"error\":\"Not Found\",\"statusCode\":404}"
+          }
+        ],
+        "leaveGets": [
+          "404 http://localhost:3001/api/leave/requests/preview?leaveTypeId=AL&startDate=2026-11-21&endDate=2026-11-21"
+        ]
+      }
+    ],
+    "payslipOpens": [
+      {
+        "i": 1,
+        "opened": true,
+        "drawerVisible": true,
+        "skeletonStuck": false,
+        "shot": "047-stress-payslip-open-1.png",
+        "apis": [
+          "200 GET http://localhost:3001/api/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips/cmqtilewi0027odfg7ivifzvm"
+        ],
+        "bodySnippet": "Skip to main content EMS Dashboard Employees Departments Attendance Timesheets Leave Holidays Payroll Payout methods Reports Analytics Permissions Settings Recruitment Performance Assets Announcements Collapse / 1 PS Pay"
+      },
+      {
+        "i": 2,
+        "opened": true,
+        "drawerVisible": true,
+        "skeletonStuck": false,
+        "shot": "048-stress-payslip-open-2.png",
+        "apis": [],
+        "bodySnippet": "Skip to main content EMS Dashboard Employees Departments Attendance Timesheets Leave Holidays Payroll Payout methods Reports Analytics Permissions Settings Recruitment Performance Assets Announcements Collapse / 1 PS Pay"
+      },
+      {
+        "i": 3,
+        "opened": true,
+        "drawerVisible": true,
+        "skeletonStuck": false,
+        "shot": "049-stress-payslip-open-3.png",
+        "apis": [],
+        "bodySnippet": "Skip to main content EMS Dashboard Employees Departments Attendance Timesheets Leave Holidays Payroll Payout methods Reports Analytics Permissions Settings Recruitment Performance Assets Announcements Collapse / 1 PS Pay"
+      },
+      {
+        "i": 4,
+        "opened": true,
+        "drawerVisible": true,
+        "skeletonStuck": false,
+        "shot": "050-stress-payslip-open-4.png",
+        "apis": [],
+        "bodySnippet": "Skip to main content EMS Dashboard Employees Departments Attendance Timesheets Leave Holidays Payroll Payout methods Reports Analytics Permissions Settings Recruitment Performance Assets Announcements Collapse / 1 PS Pay"
+      },
+      {
+        "i": 5,
+        "opened": true,
+        "drawerVisible": true,
+        "skeletonStuck": false,
+        "shot": "051-stress-payslip-open-5.png",
+        "apis": [],
+        "bodySnippet": "Skip to main content EMS Dashboard Employees Departments Attendance Timesheets Leave Holidays Payroll Payout methods Reports Analytics Permissions Settings Recruitment Performance Assets Announcements Collapse / 1 PS Pay"
+      }
+    ],
+    "markAllRead": [
+      {
+        "i": 1,
+        "hit": true,
+        "shot": "053-stress-notifications-mark-all-1.png",
+        "apis": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "url": "http://localhost:3001/api/notifications/read-all",
+            "body": "{\"success\":true,\"data\":{\"markedRead\":1},\"meta\":{}}"
+          }
+        ]
+      },
+      {
+        "i": 2,
+        "hit": false,
+        "shot": "054-stress-notifications-mark-all-2.png",
+        "apis": []
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "file": "001-login-form.png",
+      "url": "http://localhost:3001/login",
+      "name": "login-form"
+    },
+    {
+      "file": "002-login-filled.png",
+      "url": "http://localhost:3001/login",
+      "name": "login-filled"
+    },
+    {
+      "file": "003-login-success-dashboard.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "login-success-dashboard"
+    },
+    {
+      "file": "004-attendance-landing.png",
+      "url": "http://localhost:3001/attendance",
+      "name": "attendance-landing"
+    },
+    {
+      "file": "005-attendance-view-calendar.png",
+      "url": "http://localhost:3001/attendance",
+      "name": "attendance-view-calendar"
+    },
+    {
+      "file": "006-attendance-view-table.png",
+      "url": "http://localhost:3001/attendance?view=table",
+      "name": "attendance-view-table"
+    },
+    {
+      "file": "007-attendance-view-regularization.png",
+      "url": "http://localhost:3001/attendance?view=table",
+      "name": "attendance-view-regularization"
+    },
+    {
+      "file": "008-attendance-check-in-button-state.png",
+      "url": "http://localhost:3001/attendance?view=table",
+      "name": "attendance-check-in-button-state"
+    },
+    {
+      "file": "009-attendance-check-out-button-state.png",
+      "url": "http://localhost:3001/attendance?view=table",
+      "name": "attendance-check-out-button-state"
+    },
+    {
+      "file": "010-dashboard-attendance-widget.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "dashboard-attendance-widget"
+    },
+    {
+      "file": "011-leave-landing.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-landing"
+    },
+    {
+      "file": "012-leave-tab-my-requests.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-tab-my-requests"
+    },
+    {
+      "file": "013-leave-tab-team-calendar.png",
+      "url": "http://localhost:3001/leave?tab=team-calendar",
+      "name": "leave-tab-team-calendar"
+    },
+    {
+      "file": "014-leave-tab-comp-off.png",
+      "url": "http://localhost:3001/leave?tab=comp-off",
+      "name": "leave-tab-comp-off"
+    },
+    {
+      "file": "015-leave-tab-calendar.png",
+      "url": "http://localhost:3001/leave?tab=team-calendar",
+      "name": "leave-tab-calendar"
+    },
+    {
+      "file": "016-leave-request-dialog-open.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-request-dialog-open"
+    },
+    {
+      "file": "017-stress-leave-preview-1.png",
+      "url": "http://localhost:3001/leave",
+      "name": "stress-leave-preview-1"
+    },
+    {
+      "file": "018-stress-leave-preview-2.png",
+      "url": "http://localhost:3001/leave",
+      "name": "stress-leave-preview-2"
+    },
+    {
+      "file": "019-stress-leave-preview-3.png",
+      "url": "http://localhost:3001/leave",
+      "name": "stress-leave-preview-3"
+    },
+    {
+      "file": "020-stress-leave-preview-4.png",
+      "url": "http://localhost:3001/leave",
+      "name": "stress-leave-preview-4"
+    },
+    {
+      "file": "021-stress-leave-preview-5.png",
+      "url": "http://localhost:3001/leave",
+      "name": "stress-leave-preview-5"
+    },
+    {
+      "file": "022-leave-filled-annual-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-filled-annual-leave"
+    },
+    {
+      "file": "023-leave-submit-annual-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-submit-annual-leave"
+    },
+    {
+      "file": "024-leave-filled-sick-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-filled-sick-leave"
+    },
+    {
+      "file": "025-leave-submit-sick-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-submit-sick-leave"
+    },
+    {
+      "file": "026-leave-filled-comp-off.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-filled-comp-off"
+    },
+    {
+      "file": "027-leave-submit-comp-off.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-submit-comp-off"
+    },
+    {
+      "file": "028-leave-filled-earned-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-filled-earned-leave"
+    },
+    {
+      "file": "029-leave-submit-earned-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-submit-earned-leave"
+    },
+    {
+      "file": "030-leave-filled-casual-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-filled-casual-leave"
+    },
+    {
+      "file": "031-leave-submit-casual-leave.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-submit-casual-leave"
+    },
+    {
+      "file": "032-leave-withdraw-result.png",
+      "url": "http://localhost:3001/leave",
+      "name": "leave-withdraw-result"
+    },
+    {
+      "file": "033-timesheets-landing.png",
+      "url": "http://localhost:3001/timesheets",
+      "name": "timesheets-landing"
+    },
+    {
+      "file": "034-timesheets-tab-my-timesheet.png",
+      "url": "http://localhost:3001/timesheets",
+      "name": "timesheets-tab-my-timesheet"
+    },
+    {
+      "file": "035-timesheets-tab-templates.png",
+      "url": "http://localhost:3001/timesheets",
+      "name": "timesheets-tab-templates"
+    },
+    {
+      "file": "036-timesheets-tab-history.png",
+      "url": "http://localhost:3001/timesheets",
+      "name": "timesheets-tab-history"
+    },
+    {
+      "file": "037-timesheets-log-time-open.png",
+      "url": "http://localhost:3001/timesheets",
+      "name": "timesheets-log-time-open"
+    },
+    {
+      "file": "038-timesheets-log-time-filled.png",
+      "url": "http://localhost:3001/timesheets",
+      "name": "timesheets-log-time-filled"
+    },
+    {
+      "file": "039-timesheets-log-time-submit-result.png",
+      "url": "http://localhost:3001/timesheets",
+      "name": "timesheets-log-time-submit-result"
+    },
+    {
+      "file": "040-payroll-my-payslips-landing.png",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "name": "payroll-my-payslips-landing"
+    },
+    {
+      "file": "041-payroll-tab-payslips.png",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "name": "payroll-tab-payslips"
+    },
+    {
+      "file": "042-payroll-tab-comp-statement.png",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp",
+      "name": "payroll-tab-comp-statement"
+    },
+    {
+      "file": "043-payroll-tab-tax-declaration.png",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax",
+      "name": "payroll-tab-tax-declaration"
+    },
+    {
+      "file": "044-payroll-tab-claims.png",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims",
+      "name": "payroll-tab-claims"
+    },
+    {
+      "file": "045-payroll-tab-loans.png",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans",
+      "name": "payroll-tab-loans"
+    },
+    {
+      "file": "046-payroll-tab-tax-forms.png",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms",
+      "name": "payroll-tab-tax-forms"
+    },
+    {
+      "file": "047-stress-payslip-open-1.png",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "name": "stress-payslip-open-1"
+    },
+    {
+      "file": "048-stress-payslip-open-2.png",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "name": "stress-payslip-open-2"
+    },
+    {
+      "file": "049-stress-payslip-open-3.png",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "name": "stress-payslip-open-3"
+    },
+    {
+      "file": "050-stress-payslip-open-4.png",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "name": "stress-payslip-open-4"
+    },
+    {
+      "file": "051-stress-payslip-open-5.png",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "name": "stress-payslip-open-5"
+    },
+    {
+      "file": "052-notifications-panel-open.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "notifications-panel-open"
+    },
+    {
+      "file": "053-stress-notifications-mark-all-1.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "stress-notifications-mark-all-1"
+    },
+    {
+      "file": "054-stress-notifications-mark-all-2.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "stress-notifications-mark-all-2"
+    },
+    {
+      "file": "055-final-state.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "final-state"
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

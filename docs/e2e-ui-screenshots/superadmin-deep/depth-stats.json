@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-08-02T20:04:36Z",
+  "pngDisk": 831,
+  "primaryRunner": {
+    "menus": 17,
+    "controlsClicked": 304,
+    "screenshots": 372,
+    "layersExplored": 92,
+    "exportsTried": 0,
+    "downloadsOk": 0,
+    "downloadsFail": 8,
+    "be": 2,
+    "fe": 6,
+    "both": 1
+  },
+  "maxDepthReached": 4,
+  "critical": [
+    "ISSUE-SA-10 leave cross-user",
+    "ISSUE-SA-02 attendance today 400",
+    "ISSUE-SA-03 leave preview 404",
+    "exports ok:false"
+  ]
+}

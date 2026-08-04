@@ -1,0 +1,77 @@
+{
+  "corsSseGet": {
+    "status": 200,
+    "acao": null,
+    "acac": null,
+    "headerKeys": [
+      "content-type",
+      "cache-control",
+      "connection",
+      "x-accel-buffering",
+      "date",
+      "transfer-encoding"
+    ],
+    "bodyHead": ": connected\n\n"
+  },
+  "bearerSse": {
+    "status": 200,
+    "acao": null,
+    "bodyHead": ": connected\n\n"
+  },
+  "ghostSse": {
+    "status": 401,
+    "body": "{\"error\":\"INVALID_TOKEN\",\"message\":\"Token invalid or expired\"}",
+    "connected": false
+  },
+  "afterLogoutAllSse": {
+    "status": 200,
+    "body": ": connected\n\n",
+    "connected": true
+  },
+  "dupDelivery": {
+    "marker": "dup-check-1785728682462",
+    "count": 1,
+    "events": [
+      "event: probe\ndata: {\"marker\":\"dup-check-1785728682462\"}"
+    ]
+  },
+  "evilOrigin": {
+    "status": 200,
+    "acao": null
+  },
+  "shapeMismatch": {
+    "restKeys": [
+      "id",
+      "type",
+      "title",
+      "body",
+      "entityType",
+      "entityId",
+      "actionUrl",
+      "isRead",
+      "createdAt"
+    ],
+    "sseKeys": [
+      "id",
+      "type",
+      "title",
+      "message",
+      "createdAt",
+      "metadata"
+    ],
+    "note": "REST uses body; SSE uses message. REST has isRead/entity*; SSE has metadata bag."
+  },
+  "authEnvelopeMismatch": {
+    "rest401": {
+      "success": false,
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "Missing access token"
+      }
+    },
+    "sse401": {
+      "error": "UNAUTHORIZED",
+      "message": "Missing token"
+    }
+  }
+}

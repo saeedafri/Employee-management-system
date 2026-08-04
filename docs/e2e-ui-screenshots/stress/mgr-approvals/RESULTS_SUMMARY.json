@@ -1,0 +1,156 @@
+{
+  "role": "MANAGER",
+  "user": "aman@acme.test",
+  "screenshots": 58,
+  "stressApprove403": 4,
+  "stressReturn403": 2,
+  "selfApprovalApi": true,
+  "notTeamUi": true,
+  "findingsPath": "docs/e2e-ui-screenshots/stress/mgr-approvals/FINDINGS.md",
+  "contracts": [
+    "docs/E2E_STRESS_FRONTEND_CONTRACT.md##MGR-APPROVALS",
+    "docs/E2E_STRESS_BACKEND_CONTRACT.md##MGR-APPROVALS"
+  ],
+  "gapIssues": [
+    {
+      "id": "ISSUE-MGR-STRESS-10",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 STRESS Approve",
+      "why": "UI Approve on pending row \u2192 403 NOT_TEAM_APPROVER",
+      "screenshot": "047-gap-stress-approve.png",
+      "network": "403 POST http://localhost:3001/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"a81fc1ab-b112-4a6a-aec1-df5dc10c71c0\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-11",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 STRESS Approve",
+      "why": "UI Approve on pending row \u2192 403 NOT_TEAM_APPROVER",
+      "screenshot": "047-gap-stress-approve.png",
+      "network": "403 POST http://localhost:3001/api/timesheets/cmqjpyi4800mv12onxd63wav0/approve | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"c0bf5251-b616-4998-b0e9-83e4054fcd3c\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-12",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 STRESS Approve",
+      "why": "UI Approve on pending row \u2192 403 NOT_TEAM_APPROVER",
+      "screenshot": "047-gap-stress-approve.png",
+      "network": "403 POST http://localhost:3001/api/timesheets/cmqjpyi1600if12onc8cpavvh/approve | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"ae79fe6e-62cf-4ddc-a9c2-338dbd98b79e\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-13",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 STRESS Approve",
+      "why": "UI Approve on pending row \u2192 403 NOT_TEAM_APPROVER",
+      "screenshot": "047-gap-stress-approve.png",
+      "network": "403 POST http://localhost:3001/api/timesheets/cmqjpyiaq00vr12onlie5r8xa/approve | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"f9495b9f-cf82-4430-abea-0d987df009ca\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-14",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 STRESS Return",
+      "why": "UI Return modal submit \u2192 403 NOT_TEAM_APPROVER",
+      "screenshot": "054-gap-stress-return.png",
+      "network": "403 POST http://localhost:3001/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"d00496be-d84e-46ba-806c-8e9e2625462d\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-15",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 STRESS Return",
+      "why": "UI Return modal submit \u2192 403 NOT_TEAM_APPROVER",
+      "screenshot": "054-gap-stress-return.png",
+      "network": "403 POST http://localhost:3001/api/timesheets/cmqjpyi4800mv12onxd63wav0/reject | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"e8ce1ea0-f462-49ed-a23d-e86d45a52407\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-16",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 HR Admin Approve",
+      "why": "Approve shown for non-direct report; API 403 NOT_TEAM_APPROVER",
+      "screenshot": "056-gap-hr-approve-result.png",
+      "network": "403 POST http://localhost:3001/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"89ce8254-ac50-4124-aea4-0585ea70a5dd\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-17",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 non-team (API corroboration)",
+      "why": "BE correctly returns NOT_TEAM_APPROVER; FE still lists Approve/Return for HR Admin",
+      "screenshot": "gap-hr-row / gap-hr-approve-result",
+      "network": "403 POST /timesheets/cmqjpyhsz009j12oncxrxe5gz/approve | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"59883393-be84-4a3e-aab7-e2e3de6a5dd2\"}}",
+      "code": "NOT_TEAM_APPROVER"
+    },
+    {
+      "id": "ISSUE-MGR-STRESS-18",
+      "severity": "CRITICAL",
+      "classification": "FRONTEND",
+      "where": "Timesheets Approvals \u2192 own row (API + shallow UI cross-ref)",
+      "why": "BE returns SELF_APPROVAL_FORBIDDEN; current Approvals queue has no Aman SUBMITTED row (UI still showed Approve/Return historically)",
+      "screenshot": "cross-ref docs/e2e-ui-screenshots/manager/70-timesheet-return-result.png",
+      "network": "403 POST /timesheets/cmr4fpp2m006ggrlntoghkxu0/reject | {\"success\":false,\"error\":{\"code\":\"SELF_APPROVAL_FORBIDDEN\",\"message\":\"You cannot approve or reject your own request\",\"details\":{},\"requestId\":\"8775f1d0-44ed-4a19-a8d3-ec6754a94961\"}}",
+      "code": "SELF_APPROVAL_FORBIDDEN"
+    }
+  ],
+  "mainFindings": [
+    {
+      "title": "Login",
+      "detail": "aman@acme.test \u2192 http://localhost:3001/dashboard (003-login-dashboard.png)"
+    },
+    {
+      "title": "Dashboard",
+      "detail": "approvals section + bulk + links explored; text has pending=true"
+    },
+    {
+      "title": "Approvals queue",
+      "detail": "visible names: see screenshot (014-timesheets-approvals-view.png)"
+    },
+    {
+      "title": "Approvals rows",
+      "detail": "[]"
+    },
+    {
+      "title": "Stress rapid Approve",
+      "detail": "0 clicks in 927ms \u2192 0 4xx; codes="
+    },
+    {
+      "title": "Stress rapid Return",
+      "detail": "5 returns in 4418ms \u2192 0 4xx; codes="
+    },
+    {
+      "title": "Target self-aman",
+      "detail": "row not visible in current Approvals queue"
+    },
+    {
+      "title": "Target Approve nonteam-hr",
+      "detail": "expect=NOT_TEAM_APPROVER got=none fails=0"
+    },
+    {
+      "title": "Target Return nonteam-hr",
+      "detail": "expect=NOT_TEAM_APPROVER got=none fails=0"
+    },
+    {
+      "title": "Target team-priya",
+      "detail": "row not visible in current Approvals queue"
+    },
+    {
+      "title": "Leave",
+      "detail": "4 tabs nested + action buttons"
+    },
+    {
+      "title": "Team attendance",
+      "detail": "0 tabs + team view + reg actions"
+    }
+  ]
+}

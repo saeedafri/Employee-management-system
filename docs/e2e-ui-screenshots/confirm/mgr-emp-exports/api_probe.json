@@ -1,0 +1,86 @@
+{
+  "MANAGER": [
+    {
+      "label": "POST /export/attendance",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"attendance:export\",\"userRole\":\"MANAGER\"},\"requestId\":\"8bf3a7ef-e0a1-4f5c-bc07-4f8832fc1476\"}}"
+    },
+    {
+      "label": "POST /export/leave",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"leave:export\",\"userRole\":\"MANAGER\"},\"requestId\":\"2ea5a0ae-2c14-4cd5-918a-a82b4c556e8c\"}}"
+    },
+    {
+      "label": "POST /export/employees",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"employees:export\",\"userRole\":\"MANAGER\"},\"requestId\":\"a45b5136-a1d6-4be8-ab23-b15095f6ad6e\"}}"
+    },
+    {
+      "label": "GET /employees/export/csv",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"employees:export\",\"userRole\":\"MANAGER\"},\"requestId\":\"8dc1f582-16ea-4bdc-b021-4c328309af8a\"}}"
+    },
+    {
+      "label": "POST /reports/export",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"reports:read\",\"userRole\":\"MANAGER\"},\"requestId\":\"e1da1fcb-023b-45bb-a907-62dfefecd6fd\"}}"
+    },
+    {
+      "label": "GET /auth/me empId",
+      "status": 200,
+      "body": "cmqjpyds0001ikpjd5br3r2uh"
+    },
+    {
+      "label": "GET payslips list",
+      "status": 200,
+      "body": "payslipId=cmqtuyml8001l5teqmi88d7mo"
+    },
+    {
+      "label": "GET payslip PDF",
+      "status": 200,
+      "body": "[application/pdf] bytes=2201 magic=%PDF"
+    }
+  ],
+  "EMPLOYEE": [
+    {
+      "label": "POST /export/attendance",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"attendance:export\",\"userRole\":\"EMPLOYEE\"},\"requestId\":\"aa71ae4a-ec7f-406c-9b4d-e09bf0f42b27\"}}"
+    },
+    {
+      "label": "POST /export/leave",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"leave:export\",\"userRole\":\"EMPLOYEE\"},\"requestId\":\"0520c2f0-1a9b-4086-9a78-5a86e0d66e97\"}}"
+    },
+    {
+      "label": "POST /export/employees",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"employees:export\",\"userRole\":\"EMPLOYEE\"},\"requestId\":\"26b26544-22d9-4f9c-aaea-25dd7dec8896\"}}"
+    },
+    {
+      "label": "GET /employees/export/csv",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"employees:export\",\"userRole\":\"EMPLOYEE\"},\"requestId\":\"1f89a65a-3b2d-48e5-b00f-b9593903f1b8\"}}"
+    },
+    {
+      "label": "POST /reports/export",
+      "status": 403,
+      "body": "{\"success\":false,\"error\":{\"code\":\"FORBIDDEN\",\"message\":\"Insufficient permissions for this action\",\"details\":{\"requiredPermission\":\"reports:read\",\"userRole\":\"EMPLOYEE\"},\"requestId\":\"2f4f0c04-31cc-484c-afe0-cc1541f7e0c0\"}}"
+    },
+    {
+      "label": "GET /auth/me empId",
+      "status": 200,
+      "body": "cmqjpyds7001kkpjdnlhjygrp"
+    },
+    {
+      "label": "GET payslips list",
+      "status": 200,
+      "body": "payslipId=cmqtuymn9001r5teqel8zj1hg"
+    },
+    {
+      "label": "GET payslip PDF",
+      "status": 200,
+      "body": "[application/pdf] bytes=2158 magic=%PDF"
+    }
+  ]
+}

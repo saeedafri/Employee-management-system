@@ -1,0 +1,327 @@
+{
+  "shotIdx": 27,
+  "findings": [
+    {
+      "id": "CONF-MGR-FE-01",
+      "layer": "FRONTEND",
+      "severity": "HIGH",
+      "title": "Payslip Download PDF uses window.print() instead of server PDF endpoint",
+      "detail": "BE exposes GET /payroll/employees/:id/payslips/:id/download?format=pdf; FE PayslipDrawer onClick=window.print()",
+      "shot": "013-mgr-payslip-download-pdf-click.png"
+    },
+    {
+      "id": "CONF-EMP-FE-01",
+      "layer": "FRONTEND",
+      "severity": "HIGH",
+      "title": "Payslip Download PDF uses window.print() instead of server PDF endpoint",
+      "detail": "BE exposes GET /payroll/employees/:id/payslips/:id/download?format=pdf; FE PayslipDrawer onClick=window.print()",
+      "shot": "027-emp-payslip-download-pdf-click.png"
+    }
+  ],
+  "matrixRows": {
+    "MANAGER": [
+      {
+        "role": "MANAGER",
+        "area": "Auth",
+        "control": "Login",
+        "result": "OK",
+        "detail": "aman@acme.test",
+        "shot": "003-mgr-login-dashboard.png",
+        "api": null
+      },
+      {
+        "role": "MANAGER",
+        "area": "Nav",
+        "control": "Sidebar export-related menus",
+        "result": "VISIBLE_MENU",
+        "detail": "Dashboard Employees Departments Attendance Timesheets Leave Holidays Payroll Payout methods Reports Analytics Permissions Settings Recruitment Performance Assets Announcements Collapse",
+        "shot": "004-mgr-sidebar.png",
+        "api": null
+      },
+      {
+        "role": "MANAGER",
+        "area": "Employees",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "005-man-employees-land.png",
+        "api": {
+          "route": "/employees",
+          "controls": []
+        }
+      },
+      {
+        "role": "MANAGER",
+        "area": "Timesheets",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "006-man-timesheets-land.png",
+        "api": {
+          "route": "/timesheets",
+          "controls": []
+        }
+      },
+      {
+        "role": "MANAGER",
+        "area": "Leave",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "007-man-leave-land.png",
+        "api": {
+          "route": "/leave",
+          "controls": []
+        }
+      },
+      {
+        "role": "MANAGER",
+        "area": "Attendance",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "008-man-attendance-land.png",
+        "api": {
+          "route": "/attendance",
+          "controls": []
+        }
+      },
+      {
+        "role": "MANAGER",
+        "area": "Reports",
+        "control": "Page / Export CSV",
+        "result": "DENY/HIDDEN",
+        "detail": "RoleGate Access restricted — Export CSV not reachable",
+        "shot": "009-mgr-reports-land.png",
+        "api": null
+      },
+      {
+        "role": "MANAGER",
+        "area": "Reports",
+        "control": "Deep-link attendance-summary",
+        "result": "DENY/HIDDEN",
+        "detail": "http://localhost:3001/reports?report=attendance-summary",
+        "shot": "010-mgr-reports-deeplink.png",
+        "api": null
+      },
+      {
+        "role": "MANAGER",
+        "area": "Payroll/Payslips",
+        "control": "Download PDF control",
+        "result": "VISIBLE",
+        "detail": "opened row: Payslips; controls: Download PDF",
+        "shot": "012-mgr-payslip-drawer.png",
+        "api": {
+          "controls": [
+            {
+              "text": "Download PDF",
+              "tag": "BUTTON",
+              "disabled": false,
+              "hidden": false
+            }
+          ]
+        }
+      },
+      {
+        "role": "MANAGER",
+        "area": "Payroll/Payslips",
+        "control": "Download PDF click",
+        "result": "CLIENT_PRINT_ONLY",
+        "detail": "Button calls window.print(); no GET .../payslips/.../download PDF request",
+        "shot": "013-mgr-payslip-download-pdf-click.png",
+        "api": {
+          "serverPdf": []
+        }
+      },
+      {
+        "role": "MANAGER",
+        "area": "API probe",
+        "control": "Bearer token",
+        "result": "HIDDEN",
+        "detail": "Could not read access token from storage",
+        "shot": null,
+        "api": null
+      }
+    ],
+    "EMPLOYEE": [
+      {
+        "role": "EMPLOYEE",
+        "area": "Auth",
+        "control": "Login",
+        "result": "OK",
+        "detail": "priya@acme.test",
+        "shot": "017-emp-login-dashboard.png",
+        "api": null
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Leave",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "019-emp-leave-land.png",
+        "api": {
+          "route": "/leave",
+          "controls": []
+        }
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Attendance",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "020-emp-attendance-land.png",
+        "api": {
+          "route": "/attendance",
+          "controls": []
+        }
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Timesheets",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "021-emp-timesheets-land.png",
+        "api": {
+          "route": "/timesheets",
+          "controls": []
+        }
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Employees",
+        "control": "Export controls visible",
+        "result": "HIDDEN",
+        "detail": "No Export/Download/CSV/PDF controls on page",
+        "shot": "022-emp-employees-land.png",
+        "api": {
+          "route": "/employees",
+          "controls": []
+        }
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Reports",
+        "control": "Page / Export CSV",
+        "result": "DENY/HIDDEN",
+        "detail": "RoleGate Access restricted — Export CSV not reachable",
+        "shot": "023-emp-reports-land.png",
+        "api": null
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Reports",
+        "control": "Deep-link attendance-summary",
+        "result": "DENY/HIDDEN",
+        "detail": "http://localhost:3001/reports?report=attendance-summary",
+        "shot": "024-emp-reports-deeplink.png",
+        "api": null
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Payroll/Payslips",
+        "control": "Download PDF control",
+        "result": "VISIBLE",
+        "detail": "opened row: Payslips; controls: Download PDF",
+        "shot": "026-emp-payslip-drawer.png",
+        "api": {
+          "controls": [
+            {
+              "text": "Download PDF",
+              "tag": "BUTTON",
+              "disabled": false,
+              "hidden": false
+            }
+          ]
+        }
+      },
+      {
+        "role": "EMPLOYEE",
+        "area": "Payroll/Payslips",
+        "control": "Download PDF click",
+        "result": "CLIENT_PRINT_ONLY",
+        "detail": "Button calls window.print(); no GET .../payslips/.../download PDF request",
+        "shot": "027-emp-payslip-download-pdf-click.png",
+        "api": {
+          "serverPdf": []
+        }
+      }
+    ]
+  },
+  "apiLog": [
+    {
+      "method": "GET",
+      "status": 401,
+      "url": "/api/auth/me",
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"05c6301c-d1e9-43df-bfe1-e5228d80c608\"}}"
+    },
+    {
+      "method": "POST",
+      "status": 401,
+      "url": "/api/auth/refresh",
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"e04eca96-7ac6-424e-a8e0-bd6c52e492a7\"}}"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/payslip-templates",
+      "body": "{\"success\":true,\"data\":{\"id\":\"1ade56a5-2675-41d2-9617-0a4b7b9728f2\",\"name\":\"Acme Standard Payslip\",\"locale\":\"en-IN\",\"logoUrl\":null,\"sections\":[{\"key\":\"earnings\",\"label\":\"Earnings\",\"enabled\":false,\"order\":1,\"color\":\"#16a34a\"},{\"key\":\"deductions\",\"label\":\"Deductions\",\"enabled\":true,\"order\":2,\"color\":\"#dc2626\"},{\"key\":\"employerContributions\",\"label\":\"Employer Contributions\",\"enabled\":true,\"order\":3,\""
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips?year=2026",
+      "body": "{\"success\":true,\"data\":{\"items\":[{\"id\":\"cmqtilemb0021odfguxdwocdw\",\"period\":\"2026-12-H2\",\"periodLabel\":\"16–31 Dec 2026\",\"currency\":\"INR\",\"grossEarnings\":35800,\"totalDeductions\":8400,\"netPay\":27400,\"status\":\"PENDING\",\"paymentDate\":null,\"payrollRunId\":\"cmqtilef5001xodfgq1bxxcjv\"},{\"id\":\"cmqtilcu1001podfgqcg07h40\",\"period\":\"2026-12-H1\",\"periodLabel\":\"1–15 Dec 2026\",\"currency\":\"INR\",\"grossEarnings\":35"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips/cmqtilemb0021odfguxdwocdw",
+      "body": "{\"success\":true,\"data\":{\"id\":\"cmqtilemb0021odfguxdwocdw\",\"period\":\"2026-12-H2\",\"periodLabel\":\"16–31 Dec 2026\",\"currency\":\"INR\",\"employee\":{\"id\":\"cmqjpyds0001ikpjd5br3r2uh\",\"firstName\":\"Aman\",\"lastName\":\"Kumar\",\"employeeCode\":\"E0001\",\"designation\":\"Senior Engineer 2026-07-02\",\"departmentName\":\"Engineering\",\"panNumber\":null},\"company\":{\"name\":\"Acme Corp\",\"address\":null,\"logoUrl\":null},\"earnings\":[{\""
+    },
+    {
+      "method": "GET",
+      "status": 401,
+      "url": "/api/auth/me",
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"2d7aba5f-3a26-451e-86f5-f8b57e35334b\"}}"
+    },
+    {
+      "method": "POST",
+      "status": 401,
+      "url": "/api/auth/refresh",
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"b9247e14-099a-422e-a1bf-058c84870c56\"}}"
+    },
+    {
+      "method": "GET",
+      "status": 401,
+      "url": "/api/auth/me",
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"991eb19e-e2fb-4037-833d-18c4190d0306\"}}"
+    },
+    {
+      "method": "POST",
+      "status": 401,
+      "url": "/api/auth/refresh",
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"57688f61-c1d8-4f17-a769-2b7f32869f8a\"}}"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/payslip-templates",
+      "body": "{\"success\":true,\"data\":{\"id\":\"1ade56a5-2675-41d2-9617-0a4b7b9728f2\",\"name\":\"Acme Standard Payslip\",\"locale\":\"en-IN\",\"logoUrl\":null,\"sections\":[{\"key\":\"earnings\",\"label\":\"Earnings\",\"enabled\":false,\"order\":1,\"color\":\"#16a34a\"},{\"key\":\"deductions\",\"label\":\"Deductions\",\"enabled\":true,\"order\":2,\"color\":\"#dc2626\"},{\"key\":\"employerContributions\",\"label\":\"Employer Contributions\",\"enabled\":true,\"order\":3,\""
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips?year=2026",
+      "body": "{\"success\":true,\"data\":{\"items\":[{\"id\":\"cmqtilewi0027odfg7ivifzvm\",\"period\":\"2026-12-H2\",\"periodLabel\":\"16–31 Dec 2026\",\"currency\":\"INR\",\"grossEarnings\":35800,\"totalDeductions\":3410,\"netPay\":32390,\"status\":\"PENDING\",\"paymentDate\":null,\"payrollRunId\":\"cmqtilef5001xodfgq1bxxcjv\"},{\"id\":\"cmqtilcx2001vodfgqe70jddv\",\"period\":\"2026-12-H1\",\"periodLabel\":\"1–15 Dec 2026\",\"currency\":\"INR\",\"grossEarnings\":35"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/api/payroll/employees/cmqjpyds7001kkpjdnlhjygrp/payslips/cmqtilewi0027odfg7ivifzvm",
+      "body": "{\"success\":true,\"data\":{\"id\":\"cmqtilewi0027odfg7ivifzvm\",\"period\":\"2026-12-H2\",\"periodLabel\":\"16–31 Dec 2026\",\"currency\":\"INR\",\"employee\":{\"id\":\"cmqjpyds7001kkpjdnlhjygrp\",\"firstName\":\"Priya\",\"lastName\":\"Sharma\",\"employeeCode\":\"E0002\",\"designation\":\"Senior Engineer\",\"departmentName\":\"Engineering\",\"panNumber\":null},\"company\":{\"name\":\"Acme Corp\",\"address\":null,\"logoUrl\":null},\"earnings\":[{\"code\":\"BA"
+    }
+  ]
+}

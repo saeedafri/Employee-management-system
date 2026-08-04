@@ -1,0 +1,27 @@
+{
+  "noToken": {
+    "status": 401,
+    "hung": false,
+    "body": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Missing token\"}",
+    "contentType": "application/json; charset=utf-8"
+  },
+  "badToken": {
+    "status": 401,
+    "hung": false,
+    "errors": [],
+    "comments": []
+  },
+  "expiredToken": {
+    "meta": {
+      "created": true
+    },
+    "status": 401,
+    "hung": false,
+    "errors": []
+  },
+  "emptyToken": {
+    "status": 401,
+    "hung": false,
+    "body": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Missing token\"}"
+  }
+}

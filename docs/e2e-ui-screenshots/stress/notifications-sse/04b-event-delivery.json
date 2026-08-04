@@ -1,0 +1,235 @@
+{
+  "leaveCreateStatus": 201,
+  "aman": {
+    "waitedMs": 356,
+    "hit": {
+      "at": "2026-08-03T03:41:26.769Z",
+      "event": "notification",
+      "data": {
+        "id": "1b9e3302a1ff735a0ff8e553",
+        "type": "leave_requested",
+        "title": "New Leave Request",
+        "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+        "createdAt": "2026-08-03T03:41:26.625Z",
+        "metadata": {
+          "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+          "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+        }
+      }
+    }
+  },
+  "hr": {
+    "waitedMs": 52,
+    "hit": {
+      "at": "2026-08-03T03:41:26.817Z",
+      "event": "notification",
+      "data": {
+        "id": "b7f5a760f212a499973fc2c3",
+        "type": "leave_requested",
+        "title": "New Leave Request",
+        "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+        "createdAt": "2026-08-03T03:41:26.625Z",
+        "metadata": {
+          "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+          "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+        }
+      }
+    }
+  },
+  "sa": {
+    "waitedMs": 0,
+    "hit": {
+      "at": "2026-08-03T03:41:26.806Z",
+      "event": "notification",
+      "data": {
+        "id": "e8d998a86327592aa2573792",
+        "type": "leave_requested",
+        "title": "New Leave Request",
+        "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+        "createdAt": "2026-08-03T03:41:26.625Z",
+        "metadata": {
+          "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+          "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+        }
+      }
+    }
+  },
+  "priyaGotLeaveRequested": false,
+  "priyaAEvents": [],
+  "priyaBEvents": [],
+  "amanEvents": [
+    {
+      "at": "2026-08-03T03:41:26.769Z",
+      "event": "notification",
+      "data": {
+        "id": "1b9e3302a1ff735a0ff8e553",
+        "type": "leave_requested",
+        "title": "New Leave Request",
+        "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+        "createdAt": "2026-08-03T03:41:26.625Z",
+        "metadata": {
+          "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+          "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+        }
+      }
+    }
+  ],
+  "hrEvents": [
+    {
+      "at": "2026-08-03T03:41:26.817Z",
+      "event": "notification",
+      "data": {
+        "id": "b7f5a760f212a499973fc2c3",
+        "type": "leave_requested",
+        "title": "New Leave Request",
+        "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+        "createdAt": "2026-08-03T03:41:26.625Z",
+        "metadata": {
+          "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+          "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.821Z",
+      "event": "analytics_update",
+      "data": {
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "ts": 1785728486772
+      }
+    }
+  ],
+  "saEvents": [
+    {
+      "at": "2026-08-03T03:41:26.806Z",
+      "event": "notification",
+      "data": {
+        "id": "e8d998a86327592aa2573792",
+        "type": "leave_requested",
+        "title": "New Leave Request",
+        "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+        "createdAt": "2026-08-03T03:41:26.625Z",
+        "metadata": {
+          "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+          "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.822Z",
+      "event": "analytics_update",
+      "data": {
+        "tenantId": "cmqjpydkv0000kpjdelztyg88",
+        "ts": 1785728486772
+      }
+    }
+  ],
+  "redisTapCount": 7,
+  "redisTapSample": [
+    {
+      "at": "2026-08-03T03:41:26.769Z",
+      "parsed": {
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "event": "notification",
+        "data": {
+          "id": "1b9e3302a1ff735a0ff8e553",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+          "createdAt": "2026-08-03T03:41:26.625Z",
+          "metadata": {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.806Z",
+      "parsed": {
+        "userId": "cmqjpydqe000qkpjd8q8idw1k",
+        "event": "notification",
+        "data": {
+          "id": "e8d998a86327592aa2573792",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+          "createdAt": "2026-08-03T03:41:26.625Z",
+          "metadata": {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.817Z",
+      "parsed": {
+        "userId": "cmqjpydqj000skpjdp2l6cvg5",
+        "event": "notification",
+        "data": {
+          "id": "b7f5a760f212a499973fc2c3",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+          "createdAt": "2026-08-03T03:41:26.625Z",
+          "metadata": {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.821Z",
+      "parsed": {
+        "userId": "cmqjpydqp000ykpjdzsb6zb8v",
+        "event": "notification",
+        "data": {
+          "id": "381de931308f1dfd54c34681",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+          "createdAt": "2026-08-03T03:41:26.625Z",
+          "metadata": {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.821Z",
+      "parsed": {
+        "userId": "cmqjpydqp000ykpjdzsb6zb8v",
+        "event": "analytics_update",
+        "data": {
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "ts": 1785728486772
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.821Z",
+      "parsed": {
+        "userId": "cmqjpydqj000skpjdp2l6cvg5",
+        "event": "analytics_update",
+        "data": {
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "ts": 1785728486772
+        }
+      }
+    },
+    {
+      "at": "2026-08-03T03:41:26.821Z",
+      "parsed": {
+        "userId": "cmqjpydqe000qkpjd8q8idw1k",
+        "event": "analytics_update",
+        "data": {
+          "tenantId": "cmqjpydkv0000kpjdelztyg88",
+          "ts": 1785728486772
+        }
+      }
+    }
+  ]
+}

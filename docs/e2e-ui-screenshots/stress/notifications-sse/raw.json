@@ -1,0 +1,765 @@
+{
+  "startedAt": "2026-08-03T03:41:20.416Z",
+  "target": "http://localhost:4000",
+  "redisUrl": "redis://127.0.0.1:16379",
+  "sections": {
+    "redis": {
+      "cliPing": {
+        "ok": true,
+        "stdout": "PONG",
+        "stderr": "",
+        "code": 0
+      },
+      "ioPing": {
+        "ok": true,
+        "pong": "PONG",
+        "channels": [
+          "ems:sse"
+        ],
+        "numsub": [
+          "ems:sse",
+          2
+        ]
+      }
+    },
+    "fanoutBootLog": {
+      "found": true,
+      "line": "{\"level\":30,\"time\":1785694396956,\"pid\":98982,\"hostname\":\"Mohds-MacBook-Air-2.local\",\"channel\":\"ems:sse\",\"msg\":\"[sse] cross-instance fan-out enabled\"}"
+    },
+    "login": {
+      "priya": {
+        "status": 200,
+        "userId": "cmqjpydqn000wkpjd02gyqzd3",
+        "ms": 941
+      },
+      "aman": {
+        "status": 200,
+        "userId": "cmqjpydql000ukpjdbhesbmpi",
+        "ms": 644
+      },
+      "sa": {
+        "status": 200,
+        "userId": "cmqjpydqe000qkpjd8q8idw1k",
+        "ms": 658
+      },
+      "hr": {
+        "status": 200,
+        "userId": "cmqjpydqj000skpjdp2l6cvg5",
+        "ms": 625
+      }
+    },
+    "opsBefore": {
+      "status": 200,
+      "sse": {
+        "uniqueUsers": 0,
+        "connectionCount": 0,
+        "connects": 0,
+        "disconnects": 0,
+        "emits": 0,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 98,
+        "receivedFromRedis": 98
+      },
+      "snippet": "{\"success\":true,\"data\":{\"process\":{\"pid\":98982,\"nodeVersion\":\"v25.9.0\",\"platform\":\"darwin\",\"uptimeSec\":34115,\"memory\":{\"rssBytes\":137723904,\"heapTotalBytes\":87638016,\"heapUsedBytes\":73510392,\"externalBytes\":5832385,\"rssMb\":131.3,\"heapUsedMb\":70.1,\"heapTotalMb\":83.6},\"loadavg\":{\"1m\":4.361328125,\"5m\":5.54443359375,\"15m\":4.2587890625},\"cpus\":10,\"freememMb\":164,\"totalmemMb\":16384,\"recentErrors\":[]},\"sse\":{\"uniqueUsers\":0,\"connectionCount\":0,\"connects\":0,\"disconnects\":0,\"emits\":0,\"emitFailures\":0,\"fa"
+    },
+    "concurrentOpen": [
+      {
+        "label": "priya-A",
+        "status": 200,
+        "contentType": "text/event-stream",
+        "comments": [
+          "connected"
+        ],
+        "ok": true,
+        "errors": [
+          "Error: aborted"
+        ]
+      },
+      {
+        "label": "priya-B",
+        "status": 200,
+        "contentType": "text/event-stream",
+        "comments": [
+          "connected"
+        ],
+        "ok": true,
+        "errors": [
+          "Error: aborted"
+        ]
+      },
+      {
+        "label": "aman",
+        "status": 200,
+        "contentType": "text/event-stream",
+        "comments": [
+          "connected"
+        ],
+        "ok": true,
+        "errors": [
+          "Error: aborted"
+        ]
+      },
+      {
+        "label": "sa",
+        "status": 200,
+        "contentType": "text/event-stream",
+        "comments": [
+          "connected"
+        ],
+        "ok": true,
+        "errors": [
+          "Error: aborted"
+        ]
+      },
+      {
+        "label": "hr",
+        "status": 200,
+        "contentType": "text/event-stream",
+        "comments": [
+          "connected"
+        ],
+        "ok": true,
+        "errors": [
+          "Error: aborted"
+        ]
+      }
+    ],
+    "opsDuring": {
+      "status": 200,
+      "sse": {
+        "uniqueUsers": 4,
+        "connectionCount": 5,
+        "connects": 5,
+        "disconnects": 0,
+        "emits": 0,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 98,
+        "receivedFromRedis": 98
+      }
+    },
+    "leaveCreate": {
+      "status": 201,
+      "ms": 1900,
+      "id": "cmscomu3g00zgb9xjvmg12knu",
+      "snippet": "{\"success\":true,\"data\":{\"id\":\"cmscomu3g00zgb9xjvmg12knu\",\"referenceNo\":\"LVR-0029\",\"leaveTypeId\":\"cmsc708qo0092b9xjtv3xz4y4\",\"leaveTypeName\":\"Casual Leave\",\"startDate\":\"2026-12-14T00:00:00.000Z\",\"endDate\":\"2026-12-14T00:00:00.000Z\",\"totalDays\":1,\"status\":\"PENDING\",\"reason\":\"SSE stress probe 1785728484535\",\"submittedAt\":\"2026-08-03T03:41:25.852Z\"},\"meta\":{}}"
+    },
+    "eventDelivery": {
+      "leaveCreateStatus": 201,
+      "aman": {
+        "waitedMs": 356,
+        "hit": {
+          "at": "2026-08-03T03:41:26.769Z",
+          "event": "notification",
+          "data": {
+            "id": "1b9e3302a1ff735a0ff8e553",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+            "createdAt": "2026-08-03T03:41:26.625Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        }
+      },
+      "hr": {
+        "waitedMs": 52,
+        "hit": {
+          "at": "2026-08-03T03:41:26.817Z",
+          "event": "notification",
+          "data": {
+            "id": "b7f5a760f212a499973fc2c3",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+            "createdAt": "2026-08-03T03:41:26.625Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        }
+      },
+      "sa": {
+        "waitedMs": 0,
+        "hit": {
+          "at": "2026-08-03T03:41:26.806Z",
+          "event": "notification",
+          "data": {
+            "id": "e8d998a86327592aa2573792",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+            "createdAt": "2026-08-03T03:41:26.625Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        }
+      },
+      "priyaGotLeaveRequested": false,
+      "priyaAEvents": [
+        {
+          "at": "2026-08-03T03:41:30.151Z",
+          "event": "notification",
+          "data": {
+            "id": "ea9815f2139bca32d8fd35ac",
+            "type": "leave_approved",
+            "title": "Leave Approved",
+            "message": "Your leave request for 1 day(s) has been approved",
+            "createdAt": "2026-08-03T03:41:30.052Z",
+            "metadata": {
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        }
+      ],
+      "priyaBEvents": [
+        {
+          "at": "2026-08-03T03:41:30.151Z",
+          "event": "notification",
+          "data": {
+            "id": "ea9815f2139bca32d8fd35ac",
+            "type": "leave_approved",
+            "title": "Leave Approved",
+            "message": "Your leave request for 1 day(s) has been approved",
+            "createdAt": "2026-08-03T03:41:30.052Z",
+            "metadata": {
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        }
+      ],
+      "amanEvents": [
+        {
+          "at": "2026-08-03T03:41:26.769Z",
+          "event": "notification",
+          "data": {
+            "id": "1b9e3302a1ff735a0ff8e553",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+            "createdAt": "2026-08-03T03:41:26.625Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        }
+      ],
+      "hrEvents": [
+        {
+          "at": "2026-08-03T03:41:26.817Z",
+          "event": "notification",
+          "data": {
+            "id": "b7f5a760f212a499973fc2c3",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+            "createdAt": "2026-08-03T03:41:26.625Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.821Z",
+          "event": "analytics_update",
+          "data": {
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "ts": 1785728486772
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:30.151Z",
+          "event": "analytics_update",
+          "data": {
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "ts": 1785728490102
+          }
+        }
+      ],
+      "saEvents": [
+        {
+          "at": "2026-08-03T03:41:26.806Z",
+          "event": "notification",
+          "data": {
+            "id": "e8d998a86327592aa2573792",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+            "createdAt": "2026-08-03T03:41:26.625Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.822Z",
+          "event": "analytics_update",
+          "data": {
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "ts": 1785728486772
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:30.151Z",
+          "event": "analytics_update",
+          "data": {
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "ts": 1785728490102
+          }
+        }
+      ],
+      "redisTapCount": 7,
+      "redisTapSample": [
+        {
+          "at": "2026-08-03T03:41:26.769Z",
+          "parsed": {
+            "userId": "cmqjpydql000ukpjdbhesbmpi",
+            "event": "notification",
+            "data": {
+              "id": "1b9e3302a1ff735a0ff8e553",
+              "type": "leave_requested",
+              "title": "New Leave Request",
+              "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+              "createdAt": "2026-08-03T03:41:26.625Z",
+              "metadata": {
+                "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+                "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+              }
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.806Z",
+          "parsed": {
+            "userId": "cmqjpydqe000qkpjd8q8idw1k",
+            "event": "notification",
+            "data": {
+              "id": "e8d998a86327592aa2573792",
+              "type": "leave_requested",
+              "title": "New Leave Request",
+              "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+              "createdAt": "2026-08-03T03:41:26.625Z",
+              "metadata": {
+                "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+                "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+              }
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.817Z",
+          "parsed": {
+            "userId": "cmqjpydqj000skpjdp2l6cvg5",
+            "event": "notification",
+            "data": {
+              "id": "b7f5a760f212a499973fc2c3",
+              "type": "leave_requested",
+              "title": "New Leave Request",
+              "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+              "createdAt": "2026-08-03T03:41:26.625Z",
+              "metadata": {
+                "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+                "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+              }
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.821Z",
+          "parsed": {
+            "userId": "cmqjpydqp000ykpjdzsb6zb8v",
+            "event": "notification",
+            "data": {
+              "id": "381de931308f1dfd54c34681",
+              "type": "leave_requested",
+              "title": "New Leave Request",
+              "message": "Priya Sharma requested 1 day(s) of Casual Leave",
+              "createdAt": "2026-08-03T03:41:26.625Z",
+              "metadata": {
+                "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+                "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+              }
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.821Z",
+          "parsed": {
+            "userId": "cmqjpydqp000ykpjdzsb6zb8v",
+            "event": "analytics_update",
+            "data": {
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "ts": 1785728486772
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.821Z",
+          "parsed": {
+            "userId": "cmqjpydqj000skpjdp2l6cvg5",
+            "event": "analytics_update",
+            "data": {
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "ts": 1785728486772
+            }
+          }
+        },
+        {
+          "at": "2026-08-03T03:41:26.821Z",
+          "parsed": {
+            "userId": "cmqjpydqe000qkpjd8q8idw1k",
+            "event": "analytics_update",
+            "data": {
+              "tenantId": "cmqjpydkv0000kpjdelztyg88",
+              "ts": 1785728486772
+            }
+          }
+        }
+      ]
+    },
+    "leaveDecision": {
+      "status": 200,
+      "via": "leave-approve",
+      "snippet": "{\"success\":true,\"data\":{\"id\":\"cmscomu3g00zgb9xjvmg12knu\",\"referenceNo\":\"LVR-0029\",\"status\":\"APPROVED\",\"decidedAt\":\"2026-08-03T03:41:29.280Z\",\"approverComment\":null},\"meta\":{}}"
+    },
+    "approveDelivery": {
+      "priyaA": {
+        "hit": {
+          "at": "2026-08-03T03:41:30.151Z",
+          "event": "notification",
+          "data": {
+            "id": "ea9815f2139bca32d8fd35ac",
+            "type": "leave_approved",
+            "title": "Leave Approved",
+            "message": "Your leave request for 1 day(s) has been approved",
+            "createdAt": "2026-08-03T03:41:30.052Z",
+            "metadata": {
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        },
+        "waitedMs": 304
+      },
+      "priyaB": {
+        "hit": {
+          "at": "2026-08-03T03:41:30.151Z",
+          "event": "notification",
+          "data": {
+            "id": "ea9815f2139bca32d8fd35ac",
+            "type": "leave_approved",
+            "title": "Leave Approved",
+            "message": "Your leave request for 1 day(s) has been approved",
+            "createdAt": "2026-08-03T03:41:30.052Z",
+            "metadata": {
+              "leaveRequestId": "cmscomu3g00zgb9xjvmg12knu"
+            }
+          }
+        },
+        "waitedMs": 0
+      },
+      "redisTapAfter": 11
+    },
+    "markRead": {
+      "status": 200,
+      "newEvents": [],
+      "emitted": false
+    },
+    "reconnectBurst": {
+      "sseMid": {
+        "uniqueUsers": 4,
+        "connectionCount": 5,
+        "connects": 5,
+        "disconnects": 0,
+        "emits": 9,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 109,
+        "receivedFromRedis": 109
+      },
+      "sseAfterKill": {
+        "uniqueUsers": 0,
+        "connectionCount": 0,
+        "connects": 5,
+        "disconnects": 5,
+        "emits": 9,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 109,
+        "receivedFromRedis": 109
+      },
+      "burst": [
+        {
+          "i": 0,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 1,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 2,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 3,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 4,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 5,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 6,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 7,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 8,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        },
+        {
+          "i": 9,
+          "status": 200,
+          "ok": true,
+          "comments": [
+            "connected"
+          ],
+          "errors": [
+            "Error: aborted"
+          ],
+          "hung": false,
+          "bytes": 13
+        }
+      ],
+      "burstFailCount": 0,
+      "burst401": 0,
+      "burstHung": 0,
+      "reOpen": [
+        {
+          "label": "priya-reconnect",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "label": "aman-reconnect",
+          "status": 200,
+          "ok": true
+        }
+      ],
+      "sseAfterBurst": {
+        "uniqueUsers": 0,
+        "connectionCount": 0,
+        "connects": 15,
+        "disconnects": 15,
+        "emits": 9,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 109,
+        "receivedFromRedis": 109
+      },
+      "sseAfterReconnect": {
+        "uniqueUsers": 2,
+        "connectionCount": 2,
+        "connects": 17,
+        "disconnects": 15,
+        "emits": 9,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 109,
+        "receivedFromRedis": 109
+      }
+    },
+    "postReconnectDelivery": {
+      "leave2Status": 201,
+      "leave2Snippet": "{\"success\":true,\"data\":{\"id\":\"cmscon3gv00zub9xjj9our6gc\",\"referenceNo\":\"LVR-0030\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-12-15T00:00:00.000Z\",\"endDate\":\"2026-12-15T00:00:00.000Z\",\"totalDays\":1,\"status\":\"PENDING\",\"reason\":\"SSE reconnect smoke 17857284",
+      "amanHit": {
+        "at": "2026-08-03T03:41:38.862Z",
+        "event": "notification",
+        "data": {
+          "id": "f55ade03a4b07d0f224965cd",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "message": "Priya Sharma requested 1 day(s) of Sick Leave",
+          "createdAt": "2026-08-03T03:41:38.764Z",
+          "metadata": {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRequestId": "cmscon3gv00zub9xjj9our6gc"
+          }
+        }
+      },
+      "waitedMs": 306
+    },
+    "authEdge": {
+      "noToken": {
+        "status": 401,
+        "hung": false,
+        "body": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Missing token\"}",
+        "contentType": "application/json; charset=utf-8"
+      },
+      "badToken": {
+        "status": 401,
+        "hung": false,
+        "errors": [],
+        "comments": []
+      },
+      "expiredToken": {
+        "meta": {
+          "created": true
+        },
+        "status": 401,
+        "hung": false,
+        "errors": []
+      },
+      "emptyToken": {
+        "status": 401,
+        "hung": false,
+        "body": "{\"error\":\"UNAUTHORIZED\",\"message\":\"Missing token\"}"
+      }
+    },
+    "opsFinal": {
+      "status": 200,
+      "sse": {
+        "uniqueUsers": 0,
+        "connectionCount": 0,
+        "connects": 17,
+        "disconnects": 17,
+        "emits": 11,
+        "emitFailures": 0,
+        "fanoutEnabled": true,
+        "published": 123,
+        "receivedFromRedis": 123
+      }
+    }
+  },
+  "defects": [
+    {
+      "id": "ISSUE-SSE-19",
+      "severity": "LOW",
+      "title": "Mark-read succeeds but emits no SSE event (clients must poll for read-state sync)",
+      "evidence": {
+        "status": 200,
+        "newEvents": [],
+        "emitted": false
+      }
+    },
+    {
+      "id": "ISSUE-SSE-29",
+      "severity": "MEDIUM",
+      "title": "SSE auth accepts access token in query string (?token=) — risk of leak via access logs, proxies, Referer",
+      "evidence": {
+        "route": "GET /api/v1/notifications/stream?token=",
+        "mitigationsPresent": [
+          "also accepts Authorization Bearer",
+          "also accepts accessToken cookie"
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Boot log confirms SSE fan-out enabled",
+    "SSE diag during: connections=5 users=4 fanout=true",
+    "Redis tap saw 7 pub/sub message(s) — cross-instance path exercised",
+    "Multi-tab same-user delivery OK (priya A+B both got leave_approved)",
+    "SSE counters after burst: connects=15 disconnects=15 live=0 published=109 receivedFromRedis=109",
+    "SSE stream does not call resolveTenant / authenticate middleware — only verifyToken(sub)"
+  ],
+  "finishedAt": "2026-08-03T03:41:41.313Z",
+  "defectCount": 2
+}

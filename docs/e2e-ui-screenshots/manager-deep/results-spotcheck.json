@@ -1,0 +1,145 @@
+{
+  "role": "MANAGER",
+  "phase": "spotcheck-gaps",
+  "user": "aman@acme.test",
+  "generatedAt": "2026-08-02T19:41:45.122Z",
+  "screenshotFrom": 395,
+  "screenshotTo": 411,
+  "results": [
+    {
+      "step": "login",
+      "url": "http://localhost:3001/dashboard",
+      "shot": "395-spot-login-ok.png"
+    },
+    {
+      "href": "/payout-methods",
+      "url": "http://localhost:3001/payout-methods",
+      "access": "OK",
+      "shot": "396-spot-payout-ok.png",
+      "api4xx": []
+    },
+    {
+      "href": "/payout-methods/approvals",
+      "url": "http://localhost:3001/payout-methods/approvals",
+      "access": "OK",
+      "shot": "397-spot-payout-approvals-ok.png",
+      "api4xx": []
+    },
+    {
+      "href": "/reports",
+      "url": "http://localhost:3001/reports",
+      "access": "DENY",
+      "shot": "398-spot-reports-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/analytics",
+      "url": "http://localhost:3001/analytics",
+      "access": "DENY",
+      "shot": "399-spot-analytics-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/permissions",
+      "url": "http://localhost:3001/permissions",
+      "access": "DENY",
+      "shot": "400-spot-permissions-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/recruitment",
+      "url": "http://localhost:3001/recruitment",
+      "access": "DENY",
+      "shot": "401-spot-recruitment-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/performance",
+      "url": "http://localhost:3001/performance",
+      "access": "DENY",
+      "shot": "402-spot-performance-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/assets",
+      "url": "http://localhost:3001/assets",
+      "access": "DENY",
+      "shot": "403-spot-assets-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/settings",
+      "url": "http://localhost:3001/settings/sessions",
+      "access": "OK",
+      "shot": "404-spot-settings-land-ok.png",
+      "api4xx": []
+    },
+    {
+      "href": "/settings/roles-permissions",
+      "url": "http://localhost:3001/settings/roles-permissions",
+      "access": "404",
+      "shot": "405-spot-settings-roles-permissions-404.png",
+      "api4xx": []
+    },
+    {
+      "href": "/settings/company-profile",
+      "url": "http://localhost:3001/settings/company-profile",
+      "access": "DENY",
+      "shot": "406-spot-settings-company-profile-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/settings/pay/components",
+      "url": "http://localhost:3001/settings/pay/components",
+      "access": "DENY",
+      "shot": "407-spot-settings-pay-components-deny.png",
+      "api4xx": []
+    },
+    {
+      "href": "/announcements",
+      "url": "http://localhost:3001/announcements",
+      "access": "OK",
+      "shot": "408-spot-announcements-ok.png",
+      "api4xx": []
+    },
+    {
+      "href": "/payroll",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "access": "OK",
+      "shot": "409-spot-payroll-reopen-ok.png",
+      "api4xx": []
+    },
+    {
+      "step": "payslip-drawer",
+      "shot": "410-spot-payslip-drawer.png",
+      "api4xx": []
+    },
+    {
+      "step": "timesheets-approvals",
+      "shot": "411-spot-timesheets-approvals.png",
+      "approveButtons": 13,
+      "hasProgressEmpty": true,
+      "api4xx": []
+    }
+  ],
+  "issues": [
+    {
+      "id": "ISSUE-MGR-SPOT-01",
+      "severity": "HIGH",
+      "classification": "FRONTEND",
+      "where": "/settings/roles-permissions",
+      "why": "404 Page not found instead of RoleGate DENY",
+      "screenshot": "405-spot-settings-roles-permissions-404.png",
+      "network": "http://localhost:3001/settings/roles-permissions"
+    },
+    {
+      "id": "ISSUE-MGR-SPOT-02",
+      "severity": "MEDIUM",
+      "classification": "FRONTEND",
+      "where": "Payroll payslip / employee header",
+      "why": "Designation concatenated with date (e.g. Senior Engineer 2026-07-02)",
+      "screenshot": "410-spot-payslip-drawer.png",
+      "network": "n/a"
+    }
+  ]
+}

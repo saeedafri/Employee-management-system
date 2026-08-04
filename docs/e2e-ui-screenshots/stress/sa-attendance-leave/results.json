@@ -1,0 +1,704 @@
+{
+  "role": "SUPER_ADMIN",
+  "shard": "SA-ATT-LEAVE",
+  "counters": {
+    "menus": 4,
+    "buttons": 52,
+    "screenshots": 64,
+    "layers": 4,
+    "stressRefresh": 0,
+    "stressFilter": 0,
+    "stressPagination": 10,
+    "leaveBalanceHits": 12,
+    "leaveRequestHits": 14,
+    "be": 1,
+    "fe": 0,
+    "both": 0
+  },
+  "maxDepth": 1,
+  "issues": [
+    {
+      "id": "ISSUE-SA-10",
+      "role": "SUPER_ADMIN",
+      "shard": "SA-ATT-LEAVE",
+      "title": "ISSUE-SA-10: Leave APIs return Priya Sharma data for SUPER_ADMIN (STRESS REPRO)",
+      "where": "Leave \u2192 balances / My Requests (stress \u00d710)",
+      "why": "employeeId=null; 10/10 API hits show Priya prefix/name (cmqjpyds7001kkpjdnlhjygrp). UI name absent but balances EL 578.57/580.57 match Priya-prefixed API ids. Sample balance: {\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,",
+      "classification": "BACKEND",
+      "severity": "CRITICAL",
+      "how": "Never fall back to another employee when employeeId is null \u2014 return empty or NO_EMPLOYEE_RECORD",
+      "screenshot": "064-leave-landing-post-stress.png",
+      "network": "GET /leave/balance 200; GET /leave/requests 200; GET /auth/me",
+      "expected": "empty leave data / NO_EMPLOYEE_RECORD for SUPER_ADMIN with null employeeId",
+      "actual": "Priya leak on 10/10 hits; UI shows her balances (EL 578.57/580.57) without name"
+    }
+  ],
+  "findings": [
+    {
+      "menu": "Login",
+      "action": "login",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:26.952Z",
+      "screenshot": "002-login-success.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Attendance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:27.517Z",
+      "screenshot": "003-attendance.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Request Regularization",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:28.247Z",
+      "screenshot": "004-attendance-request-regularization.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Calendar",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:29.488Z",
+      "screenshot": "007-attendance-calendar.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Table",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:30.263Z",
+      "screenshot": "008-attendance-table.png",
+      "url": "http://localhost:3001/attendance?view=table"
+    },
+    {
+      "menu": "Attendance",
+      "action": "All employees",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:31.000Z",
+      "screenshot": "009-attendance-all-employees.png",
+      "url": "http://localhost:3001/attendance?view=table"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Previous month",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:31.750Z",
+      "screenshot": "010-attendance-previous-month.png",
+      "url": "http://localhost:3001/attendance?view=table"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Next month",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:32.583Z",
+      "screenshot": "011-attendance-next-month.png",
+      "url": "http://localhost:3001/attendance?view=table&month=2026-07"
+    },
+    {
+      "menu": "Attendance",
+      "action": "stress:pagination\u00d75",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:33.865Z",
+      "screenshot": "012-attendance-stress-pagination-x5.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:34.449Z",
+      "screenshot": "013-timesheets.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:34.985Z",
+      "screenshot": "014-timesheets-tab-my-timesheet.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:35.552Z",
+      "screenshot": "015-timesheets-tab-approvals.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Projects",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:36.150Z",
+      "screenshot": "016-timesheets-tab-projects.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Rates",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:36.700Z",
+      "screenshot": "017-timesheets-tab-rates.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approval Flow",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:37.281Z",
+      "screenshot": "018-timesheets-tab-approval-flow.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Locks",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:37.837Z",
+      "screenshot": "019-timesheets-tab-locks.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Delegations",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:38.402Z",
+      "screenshot": "020-timesheets-tab-delegations.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:39.150Z",
+      "screenshot": "021-timesheets-my-timesheet.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:39.958Z",
+      "screenshot": "022-timesheets-approvals.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Approval Flow",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:40.747Z",
+      "screenshot": "023-timesheets-approval-flow.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Create delegation",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:43.275Z",
+      "screenshot": "024-timesheets-create-delegation.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Projects",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:44.082Z",
+      "screenshot": "025-timesheets-projects.png",
+      "url": "http://localhost:3001/timesheets?tab=projects"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Rates",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:44.922Z",
+      "screenshot": "026-timesheets-rates.png",
+      "url": "http://localhost:3001/timesheets?tab=rates"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Locks",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:45.738Z",
+      "screenshot": "027-timesheets-locks.png",
+      "url": "http://localhost:3001/timesheets?tab=locks"
+    },
+    {
+      "menu": "Leave",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:46.366Z",
+      "screenshot": "028-leave.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:My Requests",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:46.909Z",
+      "screenshot": "029-leave-tab-my-requests.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Team Calendar",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:47.469Z",
+      "screenshot": "030-leave-tab-team-calendar.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Comp-off",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:48.099Z",
+      "screenshot": "031-leave-tab-comp-off.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:48.630Z",
+      "screenshot": "032-leave-tab-approvals.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:49.337Z",
+      "screenshot": "033-leave-new-request.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "My Requests",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:50.999Z",
+      "screenshot": "037-leave-my-requests.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Leave",
+      "action": "Team Calendar",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:52.127Z",
+      "screenshot": "038-leave-team-calendar.png",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "menu": "Leave",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:53.002Z",
+      "screenshot": "039-leave-approvals.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "Comp-off",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:53.764Z",
+      "screenshot": "040-leave-comp-off.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Leave",
+      "action": "Pending",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:54.551Z",
+      "screenshot": "041-leave-pending.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Holidays",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-03T02:16:59.156Z",
+      "screenshot": "042-holidays.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Import .ics",
+      "status": "PASS",
+      "at": "2026-08-03T02:17:00.073Z",
+      "screenshot": "043-holidays-import-ics.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Add Holiday",
+      "status": "PASS",
+      "at": "2026-08-03T02:17:01.002Z",
+      "screenshot": "044-holidays-add-holiday.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Holiday policy",
+      "status": "PASS",
+      "at": "2026-08-03T02:17:02.438Z",
+      "screenshot": "047-holidays-holiday-policy.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Previous year",
+      "status": "PASS",
+      "at": "2026-08-03T02:17:03.251Z",
+      "screenshot": "048-holidays-previous-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Next year",
+      "status": "PASS",
+      "at": "2026-08-03T02:17:04.073Z",
+      "screenshot": "049-holidays-next-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Republic Day",
+      "status": "PASS",
+      "at": "2026-08-03T02:17:04.852Z",
+      "screenshot": "050-holidays-actions-for-republic-day.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "stress:pagination\u00d75",
+      "status": "PASS",
+      "at": "2026-08-03T02:18:38.885Z",
+      "screenshot": "053-holidays-stress-pagination-x5.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "SA-10 stress \u00d710",
+      "status": "FAIL",
+      "at": "2026-08-03T02:18:50.961Z",
+      "screenshot": "064-leave-landing-post-stress.png",
+      "employeeId": null,
+      "leakCount": 10,
+      "uiShowsPriya": false,
+      "sample": {
+        "n": 1,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      }
+    }
+  ],
+  "leaveStressHits": [
+    {
+      "kind": "requests",
+      "status": 200,
+      "url": "http://localhost:3001/api/leave/requests?status=APPROVED&limit=100",
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"reason\":\"Family function\",\"submittedAt\":\"2026-07-11T20:30:58.796Z\",\"decidedAt\":\"2026-08-02T18:49:30.714Z\",\"approverComment\":null},{\"id\":\"cmqmj7ax10072817ur3q0obgc\",\"referenceNo\":\"LVR-0018\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-08-10T00:00:00.000Z\",\"endDate\":\"2026-08-11T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"reason\":\"ZZZ E2E regression test\",\"submittedAt\":\"2026-06-20T15:47:40.165Z\",\"decidedAt\":\"2026-06-20T15:48:06.107Z\",\"approverComment\":null},{\"id\":\"cmq",
+      "hasPriyaPrefix": false,
+      "hasPriyaName": false,
+      "at": "2026-08-03T02:16:27.667Z",
+      "pageUrl": "http://localhost:3001/attendance"
+    },
+    {
+      "kind": "requests",
+      "status": 200,
+      "url": "http://localhost:3001/api/leave/requests?status=APPROVED",
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmrgtkj5a00105ij38spgd230\",\"referenceNo\":\"LVR-0021\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-07-20T00:00:00.000Z\",\"endDate\":\"2026-07-21T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"reason\":\"Family function\",\"submittedAt\":\"2026-07-11T20:30:58.796Z\",\"decidedAt\":\"2026-08-02T18:49:30.714Z\",\"approverComment\":null},{\"id\":\"cmqmj7ax10072817ur3q0obgc\",\"referenceNo\":\"LVR-0018\",\"leaveTypeId\":\"cmqjpydsy001okpjdqd9sxmu5\",\"leaveTypeName\":\"Annual Leave\",\"startDate\":\"2026-08-10T00:00:00.000Z\",\"endDate\":\"2026-08-11T00:00:00.000Z\",\"totalDays\":2,\"status\":\"APPROVED\",\"reason\":\"ZZZ E2E regression test\",\"submittedAt\":\"2026-06-20T15:47:40.165Z\",\"decidedAt\":\"2026-06-20T15:48:06.107Z\",\"approverComment\":null},{\"id\":\"cmq",
+      "hasPriyaPrefix": false,
+      "hasPriyaName": false,
+      "at": "2026-08-03T02:16:34.807Z",
+      "pageUrl": "http://localhost:3001/timesheets"
+    },
+    {
+      "kind": "requests",
+      "status": 200,
+      "url": "http://localhost:3001/api/leave/requests?page=1&limit=10",
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"reason\":\"E2E deep leave type=Sick Leave date=2026-11-12\",\"submittedAt\":\"2026-08-02T19:27:37.593Z\",\"decidedAt\":null,\"approverComment\":null},{\"id\":\"cmsc6bfpf0040b9xj9i0ftkmm\",\"referenceNo\":\"LVR-0025\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-12-29T00:00:00.000Z\",\"endDate\":\"2026-12-29T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"reason\":\"e2e probe EL\",\"submittedAt\":\"2026-08-02T19:08:40.900Z\",\"decidedAt\":null,\"approverComment\":null},{\"id\":\"cmri1n4n60003u9jeb84p148v\",",
+      "hasPriyaPrefix": false,
+      "hasPriyaName": false,
+      "at": "2026-08-03T02:16:46.487Z",
+      "pageUrl": "http://localhost:3001/leave"
+    },
+    {
+      "kind": "balance",
+      "status": 200,
+      "url": "http://localhost:3001/api/leave/balance",
+      "body": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leaveTypeCode\":\"SL\",\"total\":900,\"used\":0,\"pending\":0,\"available\":900},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-CL\",\"leaveTypeId\":\"CL\",\"leaveTypeName\":\"Casual Leave\",\"leaveTypeCode\":\"CL\",\"total\":900,\"used\":0,\"pending\":0,\"available\":900},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-CO\",\"leaveTypeId\":\"CO\",\"leaveTypeName\":\"Comp Off\",\"leaveTypeCode\":\"CO\",\"total\":0,\"used\":0,\"pending\":0,\"available\":0}]},\"meta\":{}}",
+      "hasPriyaPrefix": true,
+      "hasPriyaName": false,
+      "at": "2026-08-03T02:16:46.688Z",
+      "pageUrl": "http://localhost:3001/leave"
+    },
+    {
+      "kind": "requests",
+      "status": 200,
+      "url": "http://localhost:3001/api/leave/requests?page=1&limit=10",
+      "body": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"reason\":\"E2E deep leave type=Sick Leave date=2026-11-12\",\"submittedAt\":\"2026-08-02T19:27:37.593Z\",\"decidedAt\":null,\"approverComment\":null},{\"id\":\"cmsc6bfpf0040b9xj9i0ftkmm\",\"referenceNo\":\"LVR-0025\",\"leaveTypeId\":\"cmqx9cnfd001b3782zzr4haer\",\"leaveTypeName\":\"Earned Leave\",\"startDate\":\"2026-12-29T00:00:00.000Z\",\"endDate\":\"2026-12-29T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"reason\":\"e2e probe EL\",\"submittedAt\":\"2026-08-02T19:08:40.900Z\",\"decidedAt\":null,\"approverComment\":null},{\"id\":\"cmri1n4n60003u9jeb84p148v\",",
+      "hasPriyaPrefix": false,
+      "hasPriyaName": false,
+      "at": "2026-08-03T02:18:40.199Z",
+      "pageUrl": "http://localhost:3001/leave"
+    },
+    {
+      "kind": "balance",
+      "status": 200,
+      "url": "http://localhost:3001/api/leave/balance",
+      "body": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Leave\",\"leaveTypeCode\":\"SL\",\"total\":900,\"used\":0,\"pending\":0,\"available\":900},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-CL\",\"leaveTypeId\":\"CL\",\"leaveTypeName\":\"Casual Leave\",\"leaveTypeCode\":\"CL\",\"total\":900,\"used\":0,\"pending\":0,\"available\":900},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-CO\",\"leaveTypeId\":\"CO\",\"leaveTypeName\":\"Comp Off\",\"leaveTypeCode\":\"CO\",\"total\":0,\"used\":0,\"pending\":0,\"available\":0}]},\"meta\":{}}",
+      "hasPriyaPrefix": true,
+      "hasPriyaName": false,
+      "at": "2026-08-03T02:18:40.404Z",
+      "pageUrl": "http://localhost:3001/leave"
+    },
+    {
+      "kind": "api-stress",
+      "n": 1,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:41.877Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 2,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:42.311Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 3,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:43.097Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 4,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:43.516Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 5,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:44.291Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 6,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:44.551Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 7,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:45.533Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 8,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:45.894Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 9,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:46.746Z"
+    },
+    {
+      "kind": "api-stress",
+      "n": 10,
+      "balanceStatus": 200,
+      "requestsStatus": 200,
+      "balanceHasPriyaPrefix": true,
+      "balanceHasPriyaName": false,
+      "requestsHasPriyaPrefix": false,
+      "requestsHasPriyaName": false,
+      "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+      "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re",
+      "at": "2026-08-03T02:18:47.102Z"
+    }
+  ],
+  "sa10": {
+    "leakReproduced": true,
+    "leakCount": 10,
+    "employeeId": null,
+    "apiHits": [
+      {
+        "n": 1,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 2,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 3,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 4,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 5,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 6,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 7,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 8,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 9,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      },
+      {
+        "n": 10,
+        "balanceStatus": 200,
+        "requestsStatus": 200,
+        "balanceHasPriyaPrefix": true,
+        "balanceHasPriyaName": false,
+        "requestsHasPriyaPrefix": false,
+        "requestsHasPriyaName": false,
+        "balanceSnippet": "{\"success\":true,\"data\":{\"balances\":[{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-EL\",\"leaveTypeId\":\"EL\",\"leaveTypeName\":\"Earned Leave\",\"leaveTypeCode\":\"EL\",\"total\":580.57,\"used\":2,\"pending\":0,\"available\":578.57},{\"id\":\"cmqjpyds7001kkpjdnlhjygrp-SL\",\"leaveTypeId\":\"SL\",\"leaveTypeName\":\"Sick Le",
+        "requestsSnippet": "{\"success\":true,\"data\":{\"requests\":[{\"id\":\"cmsc6zss8007bb9xjpslcrb5n\",\"referenceNo\":\"LVR-0026\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-11-12T00:00:00.000Z\",\"endDate\":\"2026-11-12T00:00:00.000Z\",\"totalDays\":1,\"status\":\"WITHDRAWN\",\"re"
+      }
+    ],
+    "uiShowsPriya": false,
+    "uiShowsPriyaBalances": true,
+    "uiBalanceEvidence": "EL 578.57/580.57, SL 900/900, CL 900/900 on leave My Requests"
+  },
+  "beIssueCount": 1,
+  "feIssueCount": 0
+}

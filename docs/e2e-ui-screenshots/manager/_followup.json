@@ -1,0 +1,302 @@
+{
+  "findings": [
+    {
+      "ts": "2026-08-02T18:53:32.817Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Regularization Deny succeeded (PATCH 200 /api/attendance/regularization/cmqjpymsz002879i53gbsagh9/deny)",
+      "evidence": {
+        "api": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "path": "/api/attendance/regularization/cmqjpymsz002879i53gbsagh9/deny",
+            "body": null
+          }
+        ],
+        "screenshot": "64-reg-deny-confirmed-result.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:53:39.448Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Regularization Approve OK (200 /api/attendance/regularization/cmqjpymsx002679i5f3hvm249/approve)",
+      "evidence": {
+        "api": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "path": "/api/attendance/regularization/cmqjpymsx002679i5f3hvm249/approve",
+            "body": null
+          }
+        ],
+        "screenshot": "65-reg-approve-result.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:53:43.696Z",
+      "severity": "HIGH",
+      "layer": "FRONTEND",
+      "title": "Bulk approve only covers Leave — ignores pending Regularization queue (4 reg shown)",
+      "evidence": {
+        "screenshot": "66-bulk-approve-leave-empty-while-reg-pending.png",
+        "note": "Modal title: Bulk Approve Leave Requests; Pending Approvals card shows regularization items"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:53:52.325Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Timesheet Approve succeeded",
+      "evidence": {
+        "api": [
+          {
+            "status": 200,
+            "method": "POST",
+            "path": "/api/timesheets/cmr3se2rg0078u7x1qkh8j1wy/approve",
+            "body": null
+          },
+          {
+            "status": 200,
+            "method": "GET",
+            "path": "/api/timesheets/approvals?status=SUBMITTED",
+            "body": null
+          }
+        ],
+        "screenshot": "68-timesheet-approve-api-result.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:53:55.241Z",
+      "severity": "CRITICAL",
+      "layer": "BACKEND",
+      "title": "Timesheet Return API failed",
+      "evidence": {
+        "api": [
+          {
+            "status": 403,
+            "method": "POST",
+            "path": "/api/timesheets/cmr4fpp2m006ggrlntoghkxu0/reject",
+            "body": "{\"success\":false,\"error\":{\"code\":\"SELF_APPROVAL_FORBIDDEN\",\"message\":\"You cannot approve or reject your own request\",\"details\":{},\"requestId\":\"30dc4cbd-2282-46b8-bb4b-057f1d0d624c\"}}"
+          }
+        ],
+        "screenshot": "70-timesheet-return-result.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:53:59.891Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Leave Approvals tab empty (matches dashboard 0 leave pending)",
+      "evidence": {
+        "screenshot": "71-leave-approvals-tab.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:09.399Z",
+      "severity": "MEDIUM",
+      "layer": "BACKEND",
+      "title": "Manager dashboard shows Present Today=0 and Avg Attendance=0% with entire team marked Absent",
+      "evidence": {
+        "screenshot": "74-dashboard-zero-attendance-anomaly.png",
+        "note": "May be timezone/date seed gap for 2026-08-03 vs attendance seeded earlier"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:12.495Z",
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "title": "MANAGER can access Payroll page — verify scoped to my payslips only",
+      "evidence": {
+        "screenshot": "75-payroll-manager-view.png",
+        "snippet": "Skip to main content\nEMS\nDashboard\nEmployees\nDepartments\nAttendance\nTimesheets\nLeave\nHolidays\nPayroll\nPayout methods\nReports\nAnalytics\nPermissions\nSettings\nRecruitment\nPerformance\nAssets\nAnnouncements\nCollapse\n/\n2\nAK\nPayroll\nMy Pay\nMy Pay\n\nYour payslips, compensation statement, tax declaration, claims, loans, and annual tax forms.\n\nPayslips\nComp Statement\nTax Declaration\nClaims\nLoans\nTax Forms\nYea",
+        "api": [
+          {
+            "status": 200,
+            "method": "GET",
+            "path": "/api/payroll/payslip-templates",
+            "body": null
+          },
+          {
+            "status": 200,
+            "method": "GET",
+            "path": "/api/payroll/employees/cmqjpyds0001ikpjd5br3r2uh/payslips?year=2026",
+            "body": null
+          }
+        ]
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:20.161Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Settings /settings/company-profile DENY",
+      "evidence": {
+        "screenshot": "78-settings-route-settings-company-profile.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:23.376Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Settings /settings/locale DENY",
+      "evidence": {
+        "screenshot": "79-settings-route-settings-locale.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:26.242Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Settings /settings/working-hours DENY",
+      "evidence": {
+        "screenshot": "80-settings-route-settings-working-hours.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:29.044Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Settings /settings/pay/components DENY",
+      "evidence": {
+        "screenshot": "81-settings-route-settings-pay-components.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:32.128Z",
+      "severity": "INFO",
+      "layer": "OK",
+      "title": "Settings /settings/email-templates DENY",
+      "evidence": {
+        "screenshot": "82-settings-route-settings-email-templates.png"
+      }
+    },
+    {
+      "ts": "2026-08-02T18:54:35.485Z",
+      "severity": "HIGH",
+      "layer": "FRONTEND",
+      "title": "MANAGER can open privileged settings route /settings/roles-permissions",
+      "evidence": {
+        "screenshot": "83-settings-route-settings-roles-permissions.png",
+        "snippet": "404\n\nPage not found\n\nThe page you are looking for does not exist or has been moved.\n\nGo to dashboard"
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "action": "REG_DENY",
+      "api": [
+        {
+          "status": 200,
+          "method": "PATCH",
+          "path": "/api/attendance/regularization/cmqjpymsz002879i53gbsagh9/deny",
+          "body": null
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "path": "/api/manager/approvals",
+          "body": null
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "path": "/api/attendance/team/weekly?weekStart=2026-08-03",
+          "body": null
+        }
+      ],
+      "screenshot": "64-reg-deny-confirmed-result.png"
+    },
+    {
+      "action": "REG_APPROVE",
+      "api": [
+        {
+          "status": 200,
+          "method": "PATCH",
+          "path": "/api/attendance/regularization/cmqjpymsx002679i5f3hvm249/approve",
+          "body": null
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "path": "/api/manager/approvals",
+          "body": null
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "path": "/api/attendance/team/weekly?weekStart=2026-08-03",
+          "body": null
+        }
+      ],
+      "screenshot": "65-reg-approve-result.png"
+    },
+    {
+      "action": "TIMESHEET_APPROVE",
+      "row": "\t\nAN\nArjun Nair\n\tJun 29 – Jul 5, 2026\t\n\n3h\n\n0h billable\n\n\tJul 3, 2026\t\t\nHistory\n",
+      "api": [
+        {
+          "status": 200,
+          "method": "POST",
+          "path": "/api/timesheets/cmr3se2rg0078u7x1qkh8j1wy/approve",
+          "body": null
+        },
+        {
+          "status": 200,
+          "method": "GET",
+          "path": "/api/timesheets/approvals?status=SUBMITTED",
+          "body": null
+        }
+      ],
+      "screenshot": "68-timesheet-approve-api-result.png"
+    },
+    {
+      "action": "TIMESHEET_RETURN",
+      "api": [
+        {
+          "status": 403,
+          "method": "POST",
+          "path": "/api/timesheets/cmr4fpp2m006ggrlntoghkxu0/reject",
+          "body": "{\"success\":false,\"error\":{\"code\":\"SELF_APPROVAL_FORBIDDEN\",\"message\":\"You cannot approve or reject your own request\",\"details\":{},\"requestId\":\"30dc4cbd-2282-46b8-bb4b-057f1d0d624c\"}}"
+        }
+      ],
+      "screenshot": "70-timesheet-return-result.png"
+    }
+  ],
+  "badApi": {
+    "GET 401 /api/auth/me": {
+      "count": 1,
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"21b89177-ee37-448d-a758-e716a8e5e06b\"}}"
+    },
+    "POST 401 /api/auth/refresh": {
+      "count": 1,
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"9f163eac-e13c-4669-9eed-6778fc6ec21a\"}}"
+    },
+    "POST 403 /api/timesheets/cmr4fpp2m006ggrlntoghkxu0/reject": {
+      "count": 1,
+      "body": "{\"success\":false,\"error\":{\"code\":\"SELF_APPROVAL_FORBIDDEN\",\"message\":\"You cannot approve or reject your own request\",\"details\":{},\"requestId\":\"30dc4cbd-2282-46b8-bb4b-057f1d0d624c\"}}"
+    }
+  },
+  "apiErrors": [
+    {
+      "status": 401,
+      "method": "GET",
+      "path": "/api/auth/me",
+      "body": "{\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"21b89177-ee37-448d-a758-e716a8e5e06b\"}}"
+    },
+    {
+      "status": 401,
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "body": "{\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"9f163eac-e13c-4669-9eed-6778fc6ec21a\"}}"
+    },
+    {
+      "status": 403,
+      "method": "POST",
+      "path": "/api/timesheets/cmr4fpp2m006ggrlntoghkxu0/reject",
+      "body": "{\"success\":false,\"error\":{\"code\":\"SELF_APPROVAL_FORBIDDEN\",\"message\":\"You cannot approve or reject your own request\",\"details\":{},\"requestId\":\"30dc4cbd-2282-46b8-bb4b-057f1d0d624c\"}}"
+    }
+  ],
+  "shotN": 84
+}

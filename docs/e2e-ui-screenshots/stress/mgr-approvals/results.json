@@ -1,0 +1,109 @@
+{
+  "role": "MANAGER",
+  "user": "aman@acme.test",
+  "shotCount": 44,
+  "issueCount": 1,
+  "issues": [
+    {
+      "id": "ISSUE-MGR-STRESS-01",
+      "severity": "HIGH",
+      "classification": "FRONTEND",
+      "where": "Dashboard → Bulk approve",
+      "why": "Bulk approve opens leave-only modal (regs may still be pending)",
+      "screenshot": "006-dashboard-bulk-approve-open.png",
+      "network": "n/a"
+    }
+  ],
+  "findings": [
+    {
+      "title": "Login",
+      "detail": "aman@acme.test → http://localhost:3001/dashboard (003-login-dashboard.png)"
+    },
+    {
+      "title": "Dashboard",
+      "detail": "approvals section + bulk + links explored; text has pending=true"
+    },
+    {
+      "title": "Approvals queue",
+      "detail": "visible names: see screenshot (014-timesheets-approvals-view.png)"
+    },
+    {
+      "title": "Approvals rows",
+      "detail": "[]"
+    },
+    {
+      "title": "Stress rapid Approve",
+      "detail": "0 clicks in 927ms → 0 4xx; codes="
+    },
+    {
+      "title": "Stress rapid Return",
+      "detail": "5 returns in 4418ms → 0 4xx; codes="
+    },
+    {
+      "title": "Target self-aman",
+      "detail": "row not visible in current Approvals queue"
+    },
+    {
+      "title": "Target Approve nonteam-hr",
+      "detail": "expect=NOT_TEAM_APPROVER got=none fails=0"
+    },
+    {
+      "title": "Target Return nonteam-hr",
+      "detail": "expect=NOT_TEAM_APPROVER got=none fails=0"
+    },
+    {
+      "title": "Target team-priya",
+      "detail": "row not visible in current Approvals queue"
+    },
+    {
+      "title": "Leave",
+      "detail": "4 tabs nested + action buttons"
+    },
+    {
+      "title": "Team attendance",
+      "detail": "0 tabs + team view + reg actions"
+    }
+  ],
+  "mutations": [
+    {
+      "action": "target-approve-nonteam-hr",
+      "confirmed": false,
+      "screenshots": [
+        "019-target-approve-nonteam-hr-clicked.png",
+        "020-target-approve-nonteam-hr-result.png"
+      ],
+      "fails": [],
+      "codes": []
+    },
+    {
+      "action": "target-return-nonteam-hr",
+      "confirmed": "dialog-open",
+      "screenshots": [
+        "021-target-return-nonteam-hr-clicked.png",
+        "022-target-return-nonteam-hr-result.png"
+      ],
+      "fails": [],
+      "codes": []
+    }
+  ],
+  "stressEvents": [
+    {
+      "kind": "rapid-approve",
+      "count": 0,
+      "ms": 927,
+      "fails": [],
+      "screenshot": "015-stress-rapid-approve-burst.png"
+    },
+    {
+      "kind": "rapid-return",
+      "count": 5,
+      "ms": 4418,
+      "fails": [],
+      "screenshot": "016-stress-rapid-return-burst.png"
+    }
+  ],
+  "selfApprovalHits": 0,
+  "notTeamApproverHits": 0,
+  "total403": 0,
+  "finishedAt": "2026-08-03T02:15:40.977Z"
+}

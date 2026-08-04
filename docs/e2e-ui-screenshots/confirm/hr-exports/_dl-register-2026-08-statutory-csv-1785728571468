@@ -1,0 +1,6 @@
+employeeCode,employeeName,grossEarnings,pfEmployee,pfEmployer,totalDeductions,netPay
+E0003,HR Admin,71600,1800,1800,10342,61258
+E0001,Aman Kumar,71600,1800,1800,12342,59258
+LITMUS-US-1,UsLitmus LitmusZZ,0,0,0,0,0
+LITMUS-KW-1,KwLitmus LitmusZZ,0,0,0,0,0
+E0002,Priya Sharma,71600,1800,1800,7352,64248

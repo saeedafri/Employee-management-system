@@ -1,0 +1,1405 @@
+{
+  "role": "MANAGER",
+  "phase": "resume",
+  "user": "aman@acme.test",
+  "fe": "http://localhost:3001",
+  "totalClicks": 67,
+  "depthStats": {
+    "menusLanded": 3,
+    "tabsClicked": 78,
+    "buttonsClicked": 67,
+    "linksClicked": 0,
+    "dialogsOpened": 32,
+    "nestedLevelsReached": 3,
+    "maxNestSeen": 3,
+    "adminDeny": 0,
+    "adminLeak": 0,
+    "exportsClicked": 0,
+    "detailViews": 13,
+    "approvalsAttempted": 0,
+    "resumeFromShot": 211
+  },
+  "menusTested": [
+    "Leave",
+    "Holidays",
+    "Payroll"
+  ],
+  "menuCount": 3,
+  "screenshotCountNew": 192,
+  "screenshotCountTotal": 403,
+  "issueCount": 0,
+  "backendIssues": 0,
+  "frontendIssues": 0,
+  "criticalIssues": 0,
+  "highIssues": 0,
+  "mutations": [],
+  "deepLinkResults": [],
+  "issues": [],
+  "menuResults": [
+    {
+      "menu": "Leave",
+      "href": "/leave",
+      "url": "http://localhost:3001/leave",
+      "access": "OPEN"
+    },
+    {
+      "menu": "Holidays",
+      "href": "/holidays",
+      "url": "http://localhost:3001/holidays",
+      "access": "OPEN"
+    },
+    {
+      "menu": "Payroll",
+      "href": "/payroll",
+      "url": "http://localhost:3001/payroll/my-payslips",
+      "access": "OPEN"
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "212-resume-login-ok.png",
+      "menu": "resume",
+      "action": "login",
+      "result": "ok",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "213-leave-land-view.png",
+      "menu": "Leave",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "214-leave-approvals-focus-view.png",
+      "menu": "Leave",
+      "action": "approvals-focus",
+      "result": "view",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "215-leave-leave-detail-view.png",
+      "menu": "Leave",
+      "action": "leave-detail",
+      "result": "view",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "216-leave-detail-n2-new-request-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-New Request",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "217-leave-detail-n2-new-request-modal-open.png",
+      "menu": "leave-detail",
+      "action": "n2-New Request-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "218-leave-detail-n2-team-calendar-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-Team Calendar",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "name": "219-leave-detail-n2-comp-off-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-Comp-off",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "name": "220-leave-detail-n2-view-ledger-for-earned-leave-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Earned Leave",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "221-leave-detail-n2-view-ledger-for-earned-leave-modal-open.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Earned Leave-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "222-leave-detail-n2-view-ledger-for-sick-leave-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Sick Leave",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "223-leave-detail-n2-view-ledger-for-sick-leave-modal-open.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Sick Leave-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "224-leave-detail-n2-view-ledger-for-casual-leave-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Casual Leave",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "225-leave-detail-n2-view-ledger-for-casual-leave-modal-open.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Casual Leave-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "226-leave-detail-n2-view-ledger-for-comp-off-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Comp Off",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "227-leave-detail-n2-view-ledger-for-comp-off-modal-open.png",
+      "menu": "leave-detail",
+      "action": "n2-View ledger for Comp Off-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "228-leave-detail-n2-my-requests-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-My Requests",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "229-leave-detail-n2-approvals-clicked.png",
+      "menu": "leave-detail",
+      "action": "n2-Approvals",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "230-leave-n1-new-request-clicked.png",
+      "menu": "Leave",
+      "action": "n1-New Request",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "231-leave-n1-new-request-modal-open.png",
+      "menu": "Leave",
+      "action": "n1-New Request-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "232-leave-n1-team-calendar-clicked.png",
+      "menu": "Leave",
+      "action": "n1-Team Calendar",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "name": "233-leave-n1-comp-off-clicked.png",
+      "menu": "Leave",
+      "action": "n1-Comp-off",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "name": "234-leave-n1-view-ledger-for-earned-leave-clicked.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Earned Leave",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "235-leave-n1-view-ledger-for-earned-leave-modal-open.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Earned Leave-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "236-leave-n1-view-ledger-for-sick-leave-clicked.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Sick Leave",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "237-leave-n1-view-ledger-for-sick-leave-modal-open.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Sick Leave-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "238-leave-n1-view-ledger-for-casual-leave-clicked.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Casual Leave",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "239-leave-n1-view-ledger-for-casual-leave-modal-open.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Casual Leave-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "240-leave-n1-view-ledger-for-comp-off-clicked.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Comp Off",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "241-leave-n1-view-ledger-for-comp-off-modal-open.png",
+      "menu": "Leave",
+      "action": "n1-View ledger for Comp Off-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "242-leave-n1-my-requests-clicked.png",
+      "menu": "Leave",
+      "action": "n1-My Requests",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "243-leave-n1-approvals-clicked.png",
+      "menu": "Leave",
+      "action": "n1-Approvals",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "244-holidays-land-view.png",
+      "menu": "Holidays",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "245-holidays-n1-previous-year-clicked.png",
+      "menu": "Holidays",
+      "action": "n1-Previous year",
+      "result": "clicked",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "246-holidays-n1-next-year-clicked.png",
+      "menu": "Holidays",
+      "action": "n1-Next year",
+      "result": "clicked",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "247-payroll-land-view.png",
+      "menu": "Payroll",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "248-payroll-tab-payslips-view.png",
+      "menu": "Payroll",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "249-payroll-n2-payslips-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Payslips",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "250-payroll-n2-view-payslip-for-16-31-dec-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 16–31 Dec 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "251-payroll-n2-view-payslip-for-16-31-dec-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 16–31 Dec 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "252-payroll-n2-view-payslip-for-1-15-dec-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 1–15 Dec 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "253-payroll-n2-view-payslip-for-1-15-dec-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 1–15 Dec 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "254-payroll-n2-view-payslip-for-december-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for December 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "255-payroll-n2-view-payslip-for-december-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for December 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "256-payroll-n2-view-payslip-for-16-30-nov-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 16–30 Nov 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "257-payroll-n2-view-payslip-for-16-30-nov-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 16–30 Nov 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "258-payroll-n2-view-payslip-for-1-15-nov-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 1–15 Nov 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "259-payroll-n2-view-payslip-for-1-15-nov-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 1–15 Nov 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "260-payroll-n2-view-payslip-for-november-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for November 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "261-payroll-n2-view-payslip-for-november-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for November 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "262-payroll-n2-view-payslip-for-16-31-oct-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 16–31 Oct 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "263-payroll-n2-view-payslip-for-16-31-oct-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 16–31 Oct 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "264-payroll-n2-view-payslip-for-1-15-oct-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 1–15 Oct 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "265-payroll-n2-view-payslip-for-1-15-oct-2026-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-View payslip for 1–15 Oct 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "266-payroll-n2-payroll-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Payroll",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "267-payroll-n2-comp-statement-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Comp Statement",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "268-payroll-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "269-payroll-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "270-payroll-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "271-payroll-detail-tab-claims-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "272-payroll-detail-tab-loans-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "273-payroll-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "274-payroll-detail-n3-payslips-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Payslips",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "275-payroll-detail-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "276-payroll-detail-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "277-payroll-detail-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "278-payroll-detail-detail-tab-claims-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "279-payroll-detail-detail-tab-loans-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "280-payroll-detail-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "281-payroll-detail-n3-payroll-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Payroll",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "282-payroll-detail-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "283-payroll-detail-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "284-payroll-detail-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "285-payroll-detail-detail-tab-claims-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "286-payroll-detail-detail-tab-loans-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "287-payroll-detail-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "288-payroll-detail-n3-comp-statement-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Comp Statement",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "289-payroll-detail-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "290-payroll-detail-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "291-payroll-detail-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "292-payroll-detail-detail-tab-claims-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "293-payroll-detail-detail-tab-loans-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "294-payroll-detail-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "295-payroll-detail-n3-tax-declaration-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Tax Declaration",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "296-payroll-detail-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "297-payroll-detail-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "298-payroll-detail-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "299-payroll-detail-detail-tab-claims-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "300-payroll-detail-detail-tab-loans-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "301-payroll-detail-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "302-payroll-detail-n3-claims-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Claims",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "303-payroll-detail-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "304-payroll-detail-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "305-payroll-detail-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "306-payroll-detail-detail-tab-claims-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "307-payroll-detail-detail-tab-loans-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "308-payroll-detail-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "309-payroll-detail-n3-loans-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Loans",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "310-payroll-detail-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "311-payroll-detail-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "312-payroll-detail-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "313-payroll-detail-detail-tab-claims-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "314-payroll-detail-detail-tab-loans-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "315-payroll-detail-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "316-payroll-detail-n3-tax-forms-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Tax Forms",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "317-payroll-detail-n3-form16-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-FORM16▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "318-payroll-detail-n3-2026-27-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-2026-27▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "319-payroll-detail-n3-generate-form-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Generate form",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "320-payroll-detail-n3-generate-form-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Generate form-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "321-payroll-n2-tax-declaration-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Tax Declaration",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "322-payroll-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "323-payroll-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "324-payroll-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "325-payroll-detail-tab-claims-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "326-payroll-detail-tab-loans-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "327-payroll-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "328-payroll-n2-claims-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Claims",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "329-payroll-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "330-payroll-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "331-payroll-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "332-payroll-detail-tab-claims-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "333-payroll-detail-tab-loans-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "334-payroll-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "335-payroll-n2-loans-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Loans",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "336-payroll-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "337-payroll-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "338-payroll-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "339-payroll-detail-tab-claims-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "340-payroll-detail-tab-loans-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "341-payroll-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "342-payroll-n2-tax-forms-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Tax Forms",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "343-payroll-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "344-payroll-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "345-payroll-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "346-payroll-detail-tab-claims-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "347-payroll-detail-tab-loans-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "348-payroll-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "349-payroll-n2-2026-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-2026▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "350-payroll-tab-comp-statement-view.png",
+      "menu": "Payroll",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "351-payroll-tab-tax-declaration-view.png",
+      "menu": "Payroll",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "352-payroll-n2-in-new-regime-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-IN_NEW_REGIME▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "353-payroll-n2-save-declaration-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Save declaration",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "354-payroll-tab-claims-view.png",
+      "menu": "Payroll",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "355-payroll-n2-new-claim-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-New claim",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "356-payroll-n2-new-claim-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-New claim-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "357-payroll-tab-loans-view.png",
+      "menu": "Payroll",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "358-payroll-n2-request-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Request",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "359-payroll-n2-request-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-Request-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "360-payroll-tab-tax-forms-view.png",
+      "menu": "Payroll",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "361-payroll-n2-form16-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-FORM16▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "362-payroll-n2-2026-27-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-2026-27▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "363-payroll-n2-generate-form-clicked.png",
+      "menu": "Payroll",
+      "action": "n2-Generate form",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "364-payroll-n2-generate-form-modal-open.png",
+      "menu": "Payroll",
+      "action": "n2-Generate form-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "365-payroll-n1-payslips-clicked.png",
+      "menu": "Payroll",
+      "action": "n1-Payslips",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "366-payroll-detail-tab-payslips-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Payslips",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "367-payroll-detail-n3-view-payslip-for-16-31-dec-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 16–31 Dec 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "368-payroll-detail-n3-view-payslip-for-16-31-dec-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 16–31 Dec 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "369-payroll-detail-n3-view-payslip-for-1-15-dec-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 1–15 Dec 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "370-payroll-detail-n3-view-payslip-for-1-15-dec-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 1–15 Dec 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "371-payroll-detail-n3-view-payslip-for-december-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for December 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "372-payroll-detail-n3-view-payslip-for-december-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for December 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "373-payroll-detail-n3-view-payslip-for-16-30-nov-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 16–30 Nov 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "374-payroll-detail-n3-view-payslip-for-16-30-nov-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 16–30 Nov 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "375-payroll-detail-n3-view-payslip-for-1-15-nov-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 1–15 Nov 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "376-payroll-detail-n3-view-payslip-for-1-15-nov-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 1–15 Nov 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "377-payroll-detail-n3-view-payslip-for-november-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for November 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "378-payroll-detail-n3-view-payslip-for-november-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for November 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "379-payroll-detail-n3-view-payslip-for-16-31-oct-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 16–31 Oct 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "380-payroll-detail-n3-view-payslip-for-16-31-oct-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 16–31 Oct 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "381-payroll-detail-n3-view-payslip-for-1-15-oct-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 1–15 Oct 2026",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "382-payroll-detail-n3-view-payslip-for-1-15-oct-2026-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-View payslip for 1–15 Oct 2026-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "383-payroll-detail-n3-2026-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-2026▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips"
+    },
+    {
+      "name": "384-payroll-detail-tab-comp-statement-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Comp Statement",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=comp"
+    },
+    {
+      "name": "385-payroll-detail-tab-tax-declaration-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Declaration",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "386-payroll-detail-n3-in-new-regime-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-IN_NEW_REGIME▼",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "387-payroll-detail-n3-save-declaration-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Save declaration",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=tax"
+    },
+    {
+      "name": "388-payroll-detail-tab-claims-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Claims",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "389-payroll-detail-n3-new-claim-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-New claim",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "390-payroll-detail-n3-new-claim-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-New claim-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=claims"
+    },
+    {
+      "name": "391-payroll-detail-tab-loans-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Loans",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "392-payroll-detail-n3-request-clicked.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Request",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "393-payroll-detail-n3-request-modal-open.png",
+      "menu": "Payroll-detail",
+      "action": "n3-Request-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=loans"
+    },
+    {
+      "name": "394-payroll-detail-tab-tax-forms-view.png",
+      "menu": "Payroll-detail",
+      "action": "tab-Tax Forms",
+      "result": "view",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "395-payout-methods-error-crash.png",
+      "menu": "Payout methods",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "396-reports-error-crash.png",
+      "menu": "Reports",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "397-analytics-error-crash.png",
+      "menu": "Analytics",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "398-permissions-error-crash.png",
+      "menu": "Permissions",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "399-settings-error-crash.png",
+      "menu": "Settings",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "400-recruitment-error-crash.png",
+      "menu": "Recruitment",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "401-performance-error-crash.png",
+      "menu": "Performance",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "402-assets-error-crash.png",
+      "menu": "Assets",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    },
+    {
+      "name": "403-announcements-error-crash.png",
+      "menu": "Announcements",
+      "action": "error",
+      "result": "crash",
+      "url": "http://localhost:3001/payroll/my-payslips?tab=forms"
+    }
+  ],
+  "generatedAt": "2026-08-02T19:40:03.253Z"
+}

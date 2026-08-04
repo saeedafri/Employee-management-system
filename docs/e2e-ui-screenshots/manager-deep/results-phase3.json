@@ -1,0 +1,778 @@
+{
+  "role": "MANAGER",
+  "phase": 3,
+  "user": "aman@acme.test",
+  "depthStats": {
+    "menusLanded": 9,
+    "tabsClicked": 0,
+    "buttonsClicked": 7,
+    "dialogsOpened": 7,
+    "nestedLevelsReached": 1,
+    "maxNestSeen": 2,
+    "adminDeny": 42,
+    "adminLeak": 0,
+    "exportsClicked": 0,
+    "detailViews": 1,
+    "approvalsAttempted": 3,
+    "phase": 3,
+    "resumeFromShot": 394
+  },
+  "menusTested": [
+    {
+      "menu": "Payout methods",
+      "href": "/payout-methods",
+      "access": "OPEN"
+    },
+    {
+      "menu": "Announcements",
+      "href": "/announcements",
+      "access": "OPEN"
+    },
+    {
+      "menu": "Reports",
+      "href": "/reports",
+      "url": "http://localhost:3001/reports",
+      "access": "DENY"
+    },
+    {
+      "menu": "Analytics",
+      "href": "/analytics",
+      "url": "http://localhost:3001/analytics",
+      "access": "DENY"
+    },
+    {
+      "menu": "Permissions",
+      "href": "/permissions",
+      "url": "http://localhost:3001/permissions",
+      "access": "DENY"
+    },
+    {
+      "menu": "Recruitment",
+      "href": "/recruitment",
+      "url": "http://localhost:3001/recruitment",
+      "access": "DENY"
+    },
+    {
+      "menu": "Performance",
+      "href": "/performance",
+      "url": "http://localhost:3001/performance",
+      "access": "DENY"
+    },
+    {
+      "menu": "Assets",
+      "href": "/assets",
+      "url": "http://localhost:3001/assets",
+      "access": "DENY"
+    }
+  ],
+  "screenshotCountNew": 75,
+  "screenshotCountTotal": 469,
+  "issueCount": 6,
+  "backendIssues": 0,
+  "frontendIssues": 6,
+  "criticalIssues": 1,
+  "highIssues": 5,
+  "mutations": [
+    {
+      "menu": "timesheets",
+      "action": "return-self-probe",
+      "apis": [
+        {
+          "url": "/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject",
+          "status": 403,
+          "method": "POST",
+          "bodySnippet": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"0c80fa7f-7f1b-4585-aebc-7d9220db406a\"}}"
+        }
+      ],
+      "screenshot": "464-timesheets-return-result-done.png"
+    }
+  ],
+  "deepLinkResults": [
+    {
+      "href": "/reports",
+      "url": "http://localhost:3001/reports",
+      "access": "DENY",
+      "screenshot": "443-admin-deeplink-reports-deny.png"
+    },
+    {
+      "href": "/reports/headcount",
+      "url": "http://localhost:3001/reports/headcount",
+      "access": "404",
+      "screenshot": "444-admin-deeplink-reports-headcount-404.png"
+    },
+    {
+      "href": "/reports/absenteeism",
+      "url": "http://localhost:3001/reports/absenteeism",
+      "access": "404",
+      "screenshot": "445-admin-deeplink-reports-absenteeism-404.png"
+    },
+    {
+      "href": "/reports/pay-equity",
+      "url": "http://localhost:3001/reports/pay-equity",
+      "access": "404",
+      "screenshot": "446-admin-deeplink-reports-pay-equity-404.png"
+    },
+    {
+      "href": "/analytics",
+      "url": "http://localhost:3001/analytics",
+      "access": "DENY",
+      "screenshot": "447-admin-deeplink-analytics-deny.png"
+    },
+    {
+      "href": "/permissions",
+      "url": "http://localhost:3001/permissions",
+      "access": "DENY",
+      "screenshot": "448-admin-deeplink-permissions-deny.png"
+    },
+    {
+      "href": "/recruitment",
+      "url": "http://localhost:3001/recruitment",
+      "access": "DENY",
+      "screenshot": "449-admin-deeplink-recruitment-deny.png"
+    },
+    {
+      "href": "/performance",
+      "url": "http://localhost:3001/performance",
+      "access": "DENY",
+      "screenshot": "450-admin-deeplink-performance-deny.png"
+    },
+    {
+      "href": "/assets",
+      "url": "http://localhost:3001/assets",
+      "access": "DENY",
+      "screenshot": "451-admin-deeplink-assets-deny.png"
+    },
+    {
+      "href": "/payroll/runs",
+      "url": "http://localhost:3001/payroll/runs",
+      "access": "OPEN",
+      "screenshot": "452-admin-deeplink-payroll-runs-open.png"
+    },
+    {
+      "href": "/employees/new",
+      "url": "http://localhost:3001/employees/new",
+      "access": "DENY",
+      "screenshot": "453-admin-deeplink-employees-new-deny.png"
+    },
+    {
+      "href": "/settings/company-profile",
+      "url": "http://localhost:3001/settings/company-profile",
+      "access": "DENY",
+      "screenshot": "454-admin-deeplink-settings-company-profile-deny.png"
+    },
+    {
+      "href": "/settings/pay/components",
+      "url": "http://localhost:3001/settings/pay/components",
+      "access": "DENY",
+      "screenshot": "455-admin-deeplink-settings-pay-components-deny.png"
+    },
+    {
+      "href": "/settings/authentication",
+      "url": "http://localhost:3001/settings/authentication",
+      "access": "DENY",
+      "screenshot": "456-admin-deeplink-settings-authentication-deny.png"
+    },
+    {
+      "href": "/settings/billing-plan",
+      "url": "http://localhost:3001/settings/billing-plan",
+      "access": "DENY",
+      "screenshot": "457-admin-deeplink-settings-billing-plan-deny.png"
+    },
+    {
+      "href": "/settings/roles-permissions",
+      "url": "http://localhost:3001/settings/roles-permissions",
+      "access": "404",
+      "screenshot": "458-admin-deeplink-settings-roles-permissions-404.png"
+    }
+  ],
+  "issues": [
+    {
+      "id": "ISSUE-MGR-DEEP-P3-01",
+      "severity": "HIGH",
+      "where": "settings → /settings/roles-permissions",
+      "why": "404 Page not found (not RoleGate DENY)",
+      "classification": "FRONTEND",
+      "how": "Wire route or redirect to first allowed settings panel.",
+      "screenshot": "435-settings-settings-roles-permissions-404.png",
+      "network": "http://localhost:3001/settings/roles-permissions"
+    },
+    {
+      "id": "ISSUE-MGR-DEEP-P3-02",
+      "severity": "HIGH",
+      "where": "Deep-link /reports/headcount",
+      "why": "404 instead of RoleGate DENY",
+      "classification": "FRONTEND",
+      "how": "Wire route or RoleGate page.",
+      "screenshot": "444-admin-deeplink-reports-headcount-404.png",
+      "network": "http://localhost:3001/reports/headcount"
+    },
+    {
+      "id": "ISSUE-MGR-DEEP-P3-03",
+      "severity": "HIGH",
+      "where": "Deep-link /reports/absenteeism",
+      "why": "404 instead of RoleGate DENY",
+      "classification": "FRONTEND",
+      "how": "Wire route or RoleGate page.",
+      "screenshot": "445-admin-deeplink-reports-absenteeism-404.png",
+      "network": "http://localhost:3001/reports/absenteeism"
+    },
+    {
+      "id": "ISSUE-MGR-DEEP-P3-04",
+      "severity": "HIGH",
+      "where": "Deep-link /reports/pay-equity",
+      "why": "404 instead of RoleGate DENY",
+      "classification": "FRONTEND",
+      "how": "Wire route or RoleGate page.",
+      "screenshot": "446-admin-deeplink-reports-pay-equity-404.png",
+      "network": "http://localhost:3001/reports/pay-equity"
+    },
+    {
+      "id": "ISSUE-MGR-DEEP-P3-05",
+      "severity": "HIGH",
+      "where": "Deep-link /settings/roles-permissions",
+      "why": "404 instead of RoleGate DENY",
+      "classification": "FRONTEND",
+      "how": "Wire route or RoleGate page.",
+      "screenshot": "458-admin-deeplink-settings-roles-permissions-404.png",
+      "network": "http://localhost:3001/settings/roles-permissions"
+    },
+    {
+      "id": "ISSUE-MGR-DEEP-P3-06",
+      "severity": "CRITICAL",
+      "where": "Timesheets → Approvals → Return (own row)",
+      "why": "Approve/Return shown on manager own rows; API 403 {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"0c80fa7f-7f1b-4585-aebc-7d9220db406a\"}}",
+      "classification": "FRONTEND",
+      "how": "Hide Approve/Return when employeeId === current user.",
+      "screenshot": "464-timesheets-return-result-done.png",
+      "network": "403 POST /api/timesheets/cmqjpyhsz009j12oncxrxe5gz/reject | {\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"0c80fa7f-7f1b-4585-aebc-7d9220db406a\"}}"
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "395-phase3-login-ok.png",
+      "menu": "phase3",
+      "action": "login",
+      "result": "ok",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "396-payout-land-view.png",
+      "menu": "payout",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "397-payout-add-clicked.png",
+      "menu": "payout",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "398-payout-add-modal-open.png",
+      "menu": "payout",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "399-payout-add-account-clicked.png",
+      "menu": "payout",
+      "action": "Add account",
+      "result": "clicked",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "400-payout-add-account-modal-open.png",
+      "menu": "payout",
+      "action": "Add account-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "401-payout-approvals-view.png",
+      "menu": "payout",
+      "action": "approvals",
+      "result": "view",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "name": "402-announcements-land-view.png",
+      "menu": "announcements",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "403-announcements-add-clicked.png",
+      "menu": "announcements",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "404-announcements-add-modal-open.png",
+      "menu": "announcements",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "405-announcements-new-clicked.png",
+      "menu": "announcements",
+      "action": "New",
+      "result": "clicked",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "406-announcements-new-modal-open.png",
+      "menu": "announcements",
+      "action": "New-modal",
+      "result": "open",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "407-reports-access-state-deny.png",
+      "menu": "Reports",
+      "action": "access-state",
+      "result": "deny",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "408-analytics-access-state-deny.png",
+      "menu": "Analytics",
+      "action": "access-state",
+      "result": "deny",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "name": "409-permissions-access-state-deny.png",
+      "menu": "Permissions",
+      "action": "access-state",
+      "result": "deny",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "name": "410-recruitment-access-state-deny.png",
+      "menu": "Recruitment",
+      "action": "access-state",
+      "result": "deny",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "name": "411-performance-access-state-deny.png",
+      "menu": "Performance",
+      "action": "access-state",
+      "result": "deny",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "name": "412-assets-access-state-deny.png",
+      "menu": "Assets",
+      "action": "access-state",
+      "result": "deny",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "413-settings-landing-view.png",
+      "menu": "settings",
+      "action": "landing",
+      "result": "view",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "name": "414-settings-settings-open.png",
+      "menu": "settings",
+      "action": "settings",
+      "result": "open",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "name": "415-settings-settings-company-profile-deny.png",
+      "menu": "settings",
+      "action": "settings-company-profile",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "name": "416-settings-settings-locale-deny.png",
+      "menu": "settings",
+      "action": "settings-locale",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "name": "417-settings-settings-working-hours-deny.png",
+      "menu": "settings",
+      "action": "settings-working-hours",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "name": "418-settings-settings-attendance-rules-deny.png",
+      "menu": "settings",
+      "action": "settings-attendance-rules",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "name": "419-settings-settings-notifications-open.png",
+      "menu": "settings",
+      "action": "settings-notifications",
+      "result": "open",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "name": "420-settings-settings-authentication-deny.png",
+      "menu": "settings",
+      "action": "settings-authentication",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "name": "421-settings-settings-sessions-open.png",
+      "menu": "settings",
+      "action": "settings-sessions",
+      "result": "open",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "name": "422-settings-settings-audit-log-deny.png",
+      "menu": "settings",
+      "action": "settings-audit-log",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "name": "423-settings-settings-email-templates-deny.png",
+      "menu": "settings",
+      "action": "settings-email-templates",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "name": "424-settings-settings-integration-email-deny.png",
+      "menu": "settings",
+      "action": "settings-integration-email",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "name": "425-settings-settings-integration-storage-deny.png",
+      "menu": "settings",
+      "action": "settings-integration-storage",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/integration-storage"
+    },
+    {
+      "name": "426-settings-settings-integration-webhooks-deny.png",
+      "menu": "settings",
+      "action": "settings-integration-webhooks",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/integration-webhooks"
+    },
+    {
+      "name": "427-settings-settings-billing-plan-deny.png",
+      "menu": "settings",
+      "action": "settings-billing-plan",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/billing-plan"
+    },
+    {
+      "name": "428-settings-settings-billing-invoices-deny.png",
+      "menu": "settings",
+      "action": "settings-billing-invoices",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/billing-invoices"
+    },
+    {
+      "name": "429-settings-settings-branding-deny.png",
+      "menu": "settings",
+      "action": "settings-branding",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "name": "430-settings-settings-leave-types-deny.png",
+      "menu": "settings",
+      "action": "settings-leave-types",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "name": "431-settings-settings-leave-policies-deny.png",
+      "menu": "settings",
+      "action": "settings-leave-policies",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "name": "432-settings-settings-leave-packs-deny.png",
+      "menu": "settings",
+      "action": "settings-leave-packs",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "name": "433-settings-settings-leave-assignments-deny.png",
+      "menu": "settings",
+      "action": "settings-leave-assignments",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "name": "434-settings-settings-timesheets-deny.png",
+      "menu": "settings",
+      "action": "settings-timesheets",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "name": "435-settings-settings-roles-permissions-404.png",
+      "menu": "settings",
+      "action": "settings-roles-permissions",
+      "result": "404",
+      "url": "http://localhost:3001/settings/roles-permissions"
+    },
+    {
+      "name": "436-settings-settings-pay-components-deny.png",
+      "menu": "settings",
+      "action": "settings-pay-components",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "name": "437-settings-settings-pay-groups-deny.png",
+      "menu": "settings",
+      "action": "settings-pay-groups",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "name": "438-settings-settings-pay-schedules-deny.png",
+      "menu": "settings",
+      "action": "settings-pay-schedules",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "name": "439-settings-settings-pay-legal-entities-deny.png",
+      "menu": "settings",
+      "action": "settings-pay-legal-entities",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "name": "440-settings-settings-pay-statutory-packs-deny.png",
+      "menu": "settings",
+      "action": "settings-pay-statutory-packs",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "name": "441-settings-settings-pay-payslip-template-deny.png",
+      "menu": "settings",
+      "action": "settings-pay-payslip-template",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "name": "442-settings-settings-pay-data-policy-deny.png",
+      "menu": "settings",
+      "action": "settings-pay-data-policy",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "name": "443-admin-deeplink-reports-deny.png",
+      "menu": "admin-deeplink",
+      "action": "reports",
+      "result": "deny",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "444-admin-deeplink-reports-headcount-404.png",
+      "menu": "admin-deeplink",
+      "action": "reports-headcount",
+      "result": "404",
+      "url": "http://localhost:3001/reports/headcount"
+    },
+    {
+      "name": "445-admin-deeplink-reports-absenteeism-404.png",
+      "menu": "admin-deeplink",
+      "action": "reports-absenteeism",
+      "result": "404",
+      "url": "http://localhost:3001/reports/absenteeism"
+    },
+    {
+      "name": "446-admin-deeplink-reports-pay-equity-404.png",
+      "menu": "admin-deeplink",
+      "action": "reports-pay-equity",
+      "result": "404",
+      "url": "http://localhost:3001/reports/pay-equity"
+    },
+    {
+      "name": "447-admin-deeplink-analytics-deny.png",
+      "menu": "admin-deeplink",
+      "action": "analytics",
+      "result": "deny",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "name": "448-admin-deeplink-permissions-deny.png",
+      "menu": "admin-deeplink",
+      "action": "permissions",
+      "result": "deny",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "name": "449-admin-deeplink-recruitment-deny.png",
+      "menu": "admin-deeplink",
+      "action": "recruitment",
+      "result": "deny",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "name": "450-admin-deeplink-performance-deny.png",
+      "menu": "admin-deeplink",
+      "action": "performance",
+      "result": "deny",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "name": "451-admin-deeplink-assets-deny.png",
+      "menu": "admin-deeplink",
+      "action": "assets",
+      "result": "deny",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "452-admin-deeplink-payroll-runs-open.png",
+      "menu": "admin-deeplink",
+      "action": "payroll-runs",
+      "result": "open",
+      "url": "http://localhost:3001/payroll/runs"
+    },
+    {
+      "name": "453-admin-deeplink-employees-new-deny.png",
+      "menu": "admin-deeplink",
+      "action": "employees-new",
+      "result": "deny",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "name": "454-admin-deeplink-settings-company-profile-deny.png",
+      "menu": "admin-deeplink",
+      "action": "settings-company-profile",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "name": "455-admin-deeplink-settings-pay-components-deny.png",
+      "menu": "admin-deeplink",
+      "action": "settings-pay-components",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "name": "456-admin-deeplink-settings-authentication-deny.png",
+      "menu": "admin-deeplink",
+      "action": "settings-authentication",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "name": "457-admin-deeplink-settings-billing-plan-deny.png",
+      "menu": "admin-deeplink",
+      "action": "settings-billing-plan",
+      "result": "deny",
+      "url": "http://localhost:3001/settings/billing-plan"
+    },
+    {
+      "name": "458-admin-deeplink-settings-roles-permissions-404.png",
+      "menu": "admin-deeplink",
+      "action": "settings-roles-permissions",
+      "result": "404",
+      "url": "http://localhost:3001/settings/roles-permissions"
+    },
+    {
+      "name": "459-shell-notifications-open.png",
+      "menu": "shell",
+      "action": "notifications",
+      "result": "open",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "460-shell-mark-all-as-read-clicked.png",
+      "menu": "shell",
+      "action": "Mark all as read",
+      "result": "clicked",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "461-shell-mark-all-as-read-modal-open.png",
+      "menu": "shell",
+      "action": "Mark all as read-modal",
+      "result": "open",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "462-timesheets-approvals-probe-view.png",
+      "menu": "timesheets",
+      "action": "approvals-probe",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "name": "463-timesheets-return-modal-open.png",
+      "menu": "timesheets",
+      "action": "return-modal",
+      "result": "open",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "name": "464-timesheets-return-result-done.png",
+      "menu": "timesheets",
+      "action": "return-result",
+      "result": "done",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "name": "465-dashboard-phase3-land-view.png",
+      "menu": "dashboard",
+      "action": "phase3-land",
+      "result": "view",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "466-dashboard-bulk-approve-clicked.png",
+      "menu": "dashboard",
+      "action": "Bulk approve",
+      "result": "clicked",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "467-dashboard-bulk-approve-modal-open.png",
+      "menu": "dashboard",
+      "action": "Bulk approve-modal",
+      "result": "open",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "468-dashboard-approve-clicked.png",
+      "menu": "dashboard",
+      "action": "Approve",
+      "result": "clicked",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "469-dashboard-approve-modal-open.png",
+      "menu": "dashboard",
+      "action": "Approve-modal",
+      "result": "open",
+      "url": "http://localhost:3001/dashboard"
+    }
+  ],
+  "generatedAt": "2026-08-02T19:42:54.000Z"
+}

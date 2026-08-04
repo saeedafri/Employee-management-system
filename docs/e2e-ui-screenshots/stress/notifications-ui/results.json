@@ -1,0 +1,722 @@
+{
+  "mode": "NOTIF-UI-STRESS",
+  "fe": "http://localhost:3001",
+  "be": "http://localhost:4000",
+  "tenant": "acme-corp-001",
+  "shotCount": 32,
+  "findings": [
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "SUPER_ADMIN notifications pagination",
+      "why": "List returns 20 (limit 20) but drawer has no pagination/load-more",
+      "screenshot": "003-sa-drawer-open.png",
+      "network": "GET /notifications?limit=20 count=20",
+      "ts": "2026-08-03T03:40:36.435Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "SUPER_ADMIN console",
+      "why": "Failed to load resource: the server responded with a status of 401 (Unauthorized) | Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "screenshot": "008-sa-final-badge.png",
+      "network": "n/a",
+      "ts": "2026-08-03T03:41:00.191Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "HR_ADMIN notifications pagination",
+      "why": "List returns 20 (limit 20) but drawer has no pagination/load-more",
+      "screenshot": "011-hr-drawer-open.png",
+      "network": "GET /notifications?limit=20 count=20",
+      "ts": "2026-08-03T03:41:08.636Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "HR_ADMIN console",
+      "why": "Failed to load resource: the server responded with a status of 401 (Unauthorized) | Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "screenshot": "016-hr-final-badge.png",
+      "network": "n/a",
+      "ts": "2026-08-03T03:41:29.082Z"
+    },
+    {
+      "severity": "HIGH",
+      "layer": "FRONTEND",
+      "where": "MANAGER unread badge vs API",
+      "why": "badge=3 vs GET unread-count=4",
+      "screenshot": "018-mgr-badge-closed.png",
+      "network": "GET /notifications/unread-count 200 count=4; badge aria=\"Notifications — 3 unread\" text=3",
+      "ts": "2026-08-03T03:41:36.916Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "MANAGER notifications pagination",
+      "why": "List returns 20 (limit 20) but drawer has no pagination/load-more",
+      "screenshot": "019-mgr-drawer-open.png",
+      "network": "GET /notifications?limit=20 count=20",
+      "ts": "2026-08-03T03:41:38.352Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "MANAGER console",
+      "why": "Failed to load resource: the server responded with a status of 401 (Unauthorized) | Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "screenshot": "024-mgr-final-badge.png",
+      "network": "n/a",
+      "ts": "2026-08-03T03:42:00.115Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "EMPLOYEE notifications pagination",
+      "why": "List returns 20 (limit 20) but drawer has no pagination/load-more",
+      "screenshot": "027-emp-drawer-open.png",
+      "network": "GET /notifications?limit=20 count=20",
+      "ts": "2026-08-03T03:42:08.940Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "layer": "FRONTEND",
+      "where": "EMPLOYEE console",
+      "why": "Failed to load resource: the server responded with a status of 401 (Unauthorized) | Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "screenshot": "032-emp-final-badge.png",
+      "network": "n/a",
+      "ts": "2026-08-03T03:42:34.530Z"
+    }
+  ],
+  "roleResults": [
+    {
+      "key": "sa",
+      "role": "SUPER_ADMIN",
+      "email": "superadmin@acme.test",
+      "badge": {
+        "found": true,
+        "aria": "Notifications — 14 unread",
+        "ariaUnread": 14,
+        "badgeText": "9+",
+        "badgeVisible": true
+      },
+      "apiUnread": {
+        "status": 200,
+        "count": 14,
+        "body": {
+          "success": true,
+          "data": {
+            "count": 14
+          },
+          "meta": {}
+        }
+      },
+      "listApi": {
+        "status": 200,
+        "count": 20,
+        "unreadInPage": 14,
+        "meta": {}
+      },
+      "mismatch": false,
+      "drawer": {
+        "open": true,
+        "empty": false,
+        "itemCount": 20,
+        "hasMarkAll": true,
+        "hasUnreadFilter": false,
+        "hasPagination": false,
+        "skeleton": false,
+        "text": "Notifications Mark all as read Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 1 hour ago New Leave Request Priya Sharma requested 1 day(s) of Earned Leave about 1 hour ago New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 1 hour ago Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 8 hours ago Check-Out Recorded Aman Kumar checked out after 37 minute(s) about 8 hours ago New Leave Request Priya Sharma requested 1 day(s)",
+        "itemTitles": [
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 1 h",
+          "New Leave Request Priya Sharma requested 1 day(s) of Earned Leave about 1 hour a",
+          "New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 1 hour ago",
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 8 h",
+          "Check-Out Recorded Aman Kumar checked out after 37 minute(s) about 8 hours ago",
+          "New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 8 hours ag",
+          "Attendance Regularization Request HR Admin submitted an attendance regularizatio",
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 9 h"
+        ]
+      },
+      "markOne": {
+        "apis": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "url": "/api/notifications/9ba5b55aac98c2f5b52cfbcc/read"
+          }
+        ],
+        "navigated": "http://localhost:3001/dashboard",
+        "beforeApi": 14,
+        "afterApi": 13
+      },
+      "markAll": {
+        "hit": true,
+        "apis": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "url": "/api/notifications/read-all",
+            "body": "{\"success\":true,\"data\":{\"markedRead\":13},\"meta\":{}}"
+          }
+        ],
+        "apiUnreadAfter": 0,
+        "badgeAfter": {
+          "found": true,
+          "aria": "Notifications",
+          "ariaUnread": 0,
+          "badgeText": null,
+          "badgeVisible": false
+        }
+      },
+      "rapid": {
+        "iterations": 10,
+        "newConsoleErrors": 0,
+        "notifApiFails": [],
+        "consoleSample": []
+      },
+      "filterUnread": {
+        "apiStatus": 200,
+        "count": 14,
+        "unreadInPage": 14,
+        "uiPresent": false,
+        "note": "No unread filter control in drawer (API supports ?unreadOnly=)"
+      },
+      "pagination": {
+        "uiPresent": false
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "apiFails": [],
+      "shots": [
+        "001-sa-login-dashboard.png",
+        "002-sa-badge-closed.png",
+        "003-sa-drawer-open.png",
+        "004-sa-item-click.png",
+        "005-sa-after-item-click-reopen.png",
+        "006-sa-mark-all-read.png",
+        "007-sa-rapid-open-close-end.png",
+        "008-sa-final-badge.png"
+      ],
+      "final": {
+        "badge": {
+          "found": true,
+          "aria": "Notifications",
+          "ariaUnread": 0,
+          "badgeText": null,
+          "badgeVisible": false
+        },
+        "apiUnread": 0
+      }
+    },
+    {
+      "key": "hr",
+      "role": "HR_ADMIN",
+      "email": "hr@acme.test",
+      "badge": {
+        "found": true,
+        "aria": "Notifications — 3 unread",
+        "ariaUnread": 3,
+        "badgeText": "3",
+        "badgeVisible": true
+      },
+      "apiUnread": {
+        "status": 200,
+        "count": 3,
+        "body": {
+          "success": true,
+          "data": {
+            "count": 3
+          },
+          "meta": {}
+        }
+      },
+      "listApi": {
+        "status": 200,
+        "count": 20,
+        "unreadInPage": 3,
+        "meta": {}
+      },
+      "mismatch": false,
+      "drawer": {
+        "open": true,
+        "empty": false,
+        "itemCount": 20,
+        "hasMarkAll": true,
+        "hasUnreadFilter": false,
+        "hasPagination": false,
+        "skeleton": false,
+        "text": "Notifications Mark all as read Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 1 hour ago New Leave Request Priya Sharma requested 1 day(s) of Earned Leave about 1 hour ago New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 1 hour ago Regularization Approved Your attendance regularization request has been approved about 8 hours ago Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 8 hours ago New Leave Request Priya Sharm",
+        "itemTitles": [
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 1 h",
+          "New Leave Request Priya Sharma requested 1 day(s) of Earned Leave about 1 hour a",
+          "New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 1 hour ago",
+          "Regularization Approved Your attendance regularization request has been approved",
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 8 h",
+          "New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 8 hours ag",
+          "Attendance Regularization Request HR Admin submitted an attendance regularizatio",
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 9 h"
+        ]
+      },
+      "markOne": {
+        "apis": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "url": "/api/notifications/f8b5e88acf233340c3b52d9a/read"
+          }
+        ],
+        "navigated": "http://localhost:3001/dashboard",
+        "beforeApi": 3,
+        "afterApi": 2
+      },
+      "markAll": {
+        "hit": true,
+        "apis": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "url": "/api/notifications/read-all",
+            "body": "{\"success\":true,\"data\":{\"markedRead\":2},\"meta\":{}}"
+          }
+        ],
+        "apiUnreadAfter": 0,
+        "badgeAfter": {
+          "found": true,
+          "aria": "Notifications",
+          "ariaUnread": 0,
+          "badgeText": null,
+          "badgeVisible": false
+        }
+      },
+      "rapid": {
+        "iterations": 10,
+        "newConsoleErrors": 0,
+        "notifApiFails": [],
+        "consoleSample": []
+      },
+      "filterUnread": {
+        "apiStatus": 200,
+        "count": 3,
+        "unreadInPage": 3,
+        "uiPresent": false,
+        "note": "No unread filter control in drawer (API supports ?unreadOnly=)"
+      },
+      "pagination": {
+        "uiPresent": false
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "apiFails": [],
+      "shots": [
+        "009-hr-login-dashboard.png",
+        "010-hr-badge-closed.png",
+        "011-hr-drawer-open.png",
+        "012-hr-item-click.png",
+        "013-hr-after-item-click-reopen.png",
+        "014-hr-mark-all-read.png",
+        "015-hr-rapid-open-close-end.png",
+        "016-hr-final-badge.png"
+      ],
+      "final": {
+        "badge": {
+          "found": true,
+          "aria": "Notifications",
+          "ariaUnread": 0,
+          "badgeText": null,
+          "badgeVisible": false
+        },
+        "apiUnread": 1
+      }
+    },
+    {
+      "key": "mgr",
+      "role": "MANAGER",
+      "email": "aman@acme.test",
+      "badge": {
+        "found": true,
+        "aria": "Notifications — 3 unread",
+        "ariaUnread": 3,
+        "badgeText": "3",
+        "badgeVisible": true
+      },
+      "apiUnread": {
+        "status": 200,
+        "count": 4,
+        "body": {
+          "success": true,
+          "data": {
+            "count": 4
+          },
+          "meta": {}
+        }
+      },
+      "listApi": {
+        "status": 200,
+        "count": 20,
+        "unreadInPage": 4,
+        "meta": {}
+      },
+      "mismatch": true,
+      "drawer": {
+        "open": true,
+        "empty": false,
+        "itemCount": 20,
+        "hasMarkAll": true,
+        "hasUnreadFilter": false,
+        "hasPagination": false,
+        "skeleton": false,
+        "text": "Notifications Mark all as read New Leave Request Priya Sharma requested 1 day(s) of Casual Leave less than a minute ago Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 1 hour ago New Leave Request Priya Sharma requested 1 day(s) of Earned Leave about 1 hour ago New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 1 hour ago Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 8 hours ago Check-Out Recorded Aman Kumar checked o",
+        "itemTitles": [
+          "New Leave Request Priya Sharma requested 1 day(s) of Casual Leave less than a mi",
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 1 h",
+          "New Leave Request Priya Sharma requested 1 day(s) of Earned Leave about 1 hour a",
+          "New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 1 hour ago",
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 8 h",
+          "Check-Out Recorded Aman Kumar checked out after 37 minute(s) about 8 hours ago",
+          "New Leave Request Priya Sharma requested 1 day(s) of Sick Leave about 8 hours ag",
+          "Leave Request Withdrawn Priya Sharma has withdrawn their leave request about 9 h"
+        ]
+      },
+      "markOne": {
+        "apis": [],
+        "navigated": "http://localhost:3001/dashboard",
+        "beforeApi": 3,
+        "afterApi": 5
+      },
+      "markAll": {
+        "hit": true,
+        "apis": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "url": "/api/notifications/read-all",
+            "body": "{\"success\":true,\"data\":{\"markedRead\":5},\"meta\":{}}"
+          }
+        ],
+        "apiUnreadAfter": 0,
+        "badgeAfter": {
+          "found": true,
+          "aria": "Notifications",
+          "ariaUnread": 0,
+          "badgeText": null,
+          "badgeVisible": false
+        }
+      },
+      "rapid": {
+        "iterations": 10,
+        "newConsoleErrors": 0,
+        "notifApiFails": [],
+        "consoleSample": []
+      },
+      "filterUnread": {
+        "apiStatus": 200,
+        "count": 4,
+        "unreadInPage": 4,
+        "uiPresent": false,
+        "note": "No unread filter control in drawer (API supports ?unreadOnly=)"
+      },
+      "pagination": {
+        "uiPresent": false
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "apiFails": [],
+      "shots": [
+        "017-mgr-login-dashboard.png",
+        "018-mgr-badge-closed.png",
+        "019-mgr-drawer-open.png",
+        "020-mgr-item-click.png",
+        "021-mgr-after-item-click-reopen.png",
+        "022-mgr-mark-all-read.png",
+        "023-mgr-rapid-open-close-end.png",
+        "024-mgr-final-badge.png"
+      ],
+      "final": {
+        "badge": {
+          "found": true,
+          "aria": "Notifications",
+          "ariaUnread": 0,
+          "badgeText": null,
+          "badgeVisible": false
+        },
+        "apiUnread": 0
+      }
+    },
+    {
+      "key": "emp",
+      "role": "EMPLOYEE",
+      "email": "priya@acme.test",
+      "badge": {
+        "found": true,
+        "aria": "Notifications — 1 unread",
+        "ariaUnread": 1,
+        "badgeText": "1",
+        "badgeVisible": true
+      },
+      "apiUnread": {
+        "status": 200,
+        "count": 1,
+        "body": {
+          "success": true,
+          "data": {
+            "count": 1
+          },
+          "meta": {}
+        }
+      },
+      "listApi": {
+        "status": 200,
+        "count": 20,
+        "unreadInPage": 1,
+        "meta": {}
+      },
+      "mismatch": false,
+      "drawer": {
+        "open": true,
+        "empty": false,
+        "itemCount": 20,
+        "hasMarkAll": true,
+        "hasUnreadFilter": false,
+        "hasPagination": false,
+        "skeleton": false,
+        "text": "Notifications Mark all as read Leave Approved Your leave request for 1 day(s) has been approved 1 minute ago Leave Approved Your leave request for 1 day(s) has been approved about 1 hour ago Check-Out Recorded Priya Sharma checked out after 2 minute(s) about 9 hours ago Regularization Approved Your attendance regularization request has been approved about 9 hours ago Check-In Recorded Priya Sharma checked in about 9 hours ago Bulk 1 Message body 1 about 1 month ago Bulk 2 Message body 2 about 1 ",
+        "itemTitles": [
+          "Leave Approved Your leave request for 1 day(s) has been approved 1 minute ago",
+          "Leave Approved Your leave request for 1 day(s) has been approved about 1 hour ag",
+          "Check-Out Recorded Priya Sharma checked out after 2 minute(s) about 9 hours ago",
+          "Regularization Approved Your attendance regularization request has been approved",
+          "Check-In Recorded Priya Sharma checked in about 9 hours ago",
+          "Bulk 1 Message body 1 about 1 month ago",
+          "Bulk 2 Message body 2 about 1 month ago",
+          "Bulk 3 Message body 3 about 1 month ago"
+        ]
+      },
+      "markOne": {
+        "apis": [
+          {
+            "status": 200,
+            "method": "PATCH",
+            "url": "/api/notifications/ea9815f2139bca32d8fd35ac/read"
+          }
+        ],
+        "navigated": "http://localhost:3001/dashboard",
+        "beforeApi": 1,
+        "afterApi": 0
+      },
+      "markAll": {
+        "hit": false,
+        "reason": "Mark all control absent (likely 0 unread)"
+      },
+      "rapid": {
+        "iterations": 10,
+        "newConsoleErrors": 0,
+        "notifApiFails": [],
+        "consoleSample": []
+      },
+      "filterUnread": {
+        "apiStatus": 200,
+        "count": 1,
+        "unreadInPage": 1,
+        "uiPresent": false,
+        "note": "No unread filter control in drawer (API supports ?unreadOnly=)"
+      },
+      "pagination": {
+        "uiPresent": false
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ],
+      "apiFails": [],
+      "shots": [
+        "025-emp-login-dashboard.png",
+        "026-emp-badge-closed.png",
+        "027-emp-drawer-open.png",
+        "028-emp-item-click.png",
+        "029-emp-after-item-click-reopen.png",
+        "030-emp-mark-all-absent.png",
+        "031-emp-rapid-open-close-end.png",
+        "032-emp-final-badge.png"
+      ],
+      "final": {
+        "badge": {
+          "found": true,
+          "aria": "Notifications",
+          "ariaUnread": 0,
+          "badgeText": null,
+          "badgeVisible": false
+        },
+        "apiUnread": 0
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "001-sa-login-dashboard.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-login-dashboard"
+    },
+    {
+      "file": "002-sa-badge-closed.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-badge-closed"
+    },
+    {
+      "file": "003-sa-drawer-open.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-drawer-open"
+    },
+    {
+      "file": "004-sa-item-click.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-item-click"
+    },
+    {
+      "file": "005-sa-after-item-click-reopen.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-after-item-click-reopen"
+    },
+    {
+      "file": "006-sa-mark-all-read.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-mark-all-read"
+    },
+    {
+      "file": "007-sa-rapid-open-close-end.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-rapid-open-close-end"
+    },
+    {
+      "file": "008-sa-final-badge.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "sa-final-badge"
+    },
+    {
+      "file": "009-hr-login-dashboard.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-login-dashboard"
+    },
+    {
+      "file": "010-hr-badge-closed.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-badge-closed"
+    },
+    {
+      "file": "011-hr-drawer-open.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-drawer-open"
+    },
+    {
+      "file": "012-hr-item-click.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-item-click"
+    },
+    {
+      "file": "013-hr-after-item-click-reopen.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-after-item-click-reopen"
+    },
+    {
+      "file": "014-hr-mark-all-read.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-mark-all-read"
+    },
+    {
+      "file": "015-hr-rapid-open-close-end.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-rapid-open-close-end"
+    },
+    {
+      "file": "016-hr-final-badge.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "hr-final-badge"
+    },
+    {
+      "file": "017-mgr-login-dashboard.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-login-dashboard"
+    },
+    {
+      "file": "018-mgr-badge-closed.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-badge-closed"
+    },
+    {
+      "file": "019-mgr-drawer-open.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-drawer-open"
+    },
+    {
+      "file": "020-mgr-item-click.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-item-click"
+    },
+    {
+      "file": "021-mgr-after-item-click-reopen.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-after-item-click-reopen"
+    },
+    {
+      "file": "022-mgr-mark-all-read.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-mark-all-read"
+    },
+    {
+      "file": "023-mgr-rapid-open-close-end.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-rapid-open-close-end"
+    },
+    {
+      "file": "024-mgr-final-badge.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "mgr-final-badge"
+    },
+    {
+      "file": "025-emp-login-dashboard.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-login-dashboard"
+    },
+    {
+      "file": "026-emp-badge-closed.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-badge-closed"
+    },
+    {
+      "file": "027-emp-drawer-open.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-drawer-open"
+    },
+    {
+      "file": "028-emp-item-click.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-item-click"
+    },
+    {
+      "file": "029-emp-after-item-click-reopen.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-after-item-click-reopen"
+    },
+    {
+      "file": "030-emp-mark-all-absent.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-mark-all-absent"
+    },
+    {
+      "file": "031-emp-rapid-open-close-end.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-rapid-open-close-end"
+    },
+    {
+      "file": "032-emp-final-badge.png",
+      "url": "http://localhost:3001/dashboard",
+      "name": "emp-final-badge"
+    }
+  ],
+  "ts": "2026-08-03T03:42:34.554Z"
+}

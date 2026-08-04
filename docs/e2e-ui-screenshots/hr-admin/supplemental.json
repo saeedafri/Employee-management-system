@@ -1,0 +1,30 @@
+{
+  "issues": [],
+  "shots": [
+    "165-reports-reports-view.png",
+    "166-reports-reports-headcount-view.png",
+    "167-reports-reports-turnover-view.png",
+    "168-reports-reports-demographics-view.png",
+    "169-reports-reports-attendance-view.png",
+    "170-reports-reports-absenteeism-view.png",
+    "171-reports-reports-leave-view.png",
+    "172-reports-reports-leave-pending-view.png",
+    "173-reports-reports-payroll-view.png",
+    "174-reports-reports-ctc-view.png",
+    "175-reports-reports-salary-register-view.png",
+    "176-reports-reports-statutory-view.png",
+    "177-reports-reports-bank-advice-view.png",
+    "178-reports-reports-variance-view.png",
+    "179-reports-reports-pay-equity-view.png",
+    "180-reports-reports-timesheets-view.png",
+    "181-leave-approvals-tab-view.png",
+    "182-attendance-table-view-view.png",
+    "183-attendance-after-settle-view.png",
+    "184-analytics-settle-view.png",
+    "185-payroll-row-open-view.png"
+  ],
+  "fails": [],
+  "discovered": [
+    "/reports"
+  ]
+}

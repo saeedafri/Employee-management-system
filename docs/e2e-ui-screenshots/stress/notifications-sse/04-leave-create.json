@@ -1,0 +1,21 @@
+{
+  "status": 201,
+  "ms": 1900,
+  "json": {
+    "success": true,
+    "data": {
+      "id": "cmscomu3g00zgb9xjvmg12knu",
+      "referenceNo": "LVR-0029",
+      "leaveTypeId": "cmsc708qo0092b9xjtv3xz4y4",
+      "leaveTypeName": "Casual Leave",
+      "startDate": "2026-12-14T00:00:00.000Z",
+      "endDate": "2026-12-14T00:00:00.000Z",
+      "totalDays": 1,
+      "status": "PENDING",
+      "reason": "SSE stress probe 1785728484535",
+      "submittedAt": "2026-08-03T03:41:25.852Z"
+    },
+    "meta": {}
+  },
+  "text": "{\"success\":true,\"data\":{\"id\":\"cmscomu3g00zgb9xjvmg12knu\",\"referenceNo\":\"LVR-0029\",\"leaveTypeId\":\"cmsc708qo0092b9xjtv3xz4y4\",\"leaveTypeName\":\"Casual Leave\",\"startDate\":\"2026-12-14T00:00:00.000Z\",\"endDate\":\"2026-12-14T00:00:00.000Z\",\"totalDays\":1,\"status\":\"PENDING\",\"reason\":\"SSE stress probe 1785728484535\",\"submittedAt\":\"2026-08-03T03:41:25.852Z\"},\"meta\":{}}"
+}

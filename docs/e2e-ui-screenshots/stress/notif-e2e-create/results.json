@@ -1,0 +1,614 @@
+{
+  "mode": "NOTIF-E2E-CREATE",
+  "fe": "http://localhost:3001",
+  "be": "http://localhost:4000",
+  "tenant": "acme-corp-001",
+  "redisUrl": "redis://127.0.0.1:16379",
+  "ts": "2026-08-03T03:43:46.944Z",
+  "before": {
+    "aman": {
+      "unread": 0,
+      "status": 200,
+      "listCount": 20,
+      "top": [
+        {
+          "id": "e8d82849d49b7a8cd286efb3",
+          "type": "leave_withdrawn",
+          "title": "Leave Request Withdrawn",
+          "body": "Priya Sharma has withdrawn their leave request",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:39.984Z"
+        },
+        {
+          "id": "f55ade03a4b07d0f224965cd",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Sick Leave",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:38.764Z"
+        },
+        {
+          "id": "1b9e3302a1ff735a0ff8e553",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Casual Leave",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:26.625Z"
+        },
+        {
+          "id": "ebacb30d865cf8d7cadecae9",
+          "type": "leave_withdrawn",
+          "title": "Leave Request Withdrawn",
+          "body": "Priya Sharma has withdrawn their leave request",
+          "isRead": true,
+          "createdAt": "2026-08-03T02:19:46.640Z"
+        },
+        {
+          "id": "55acb5717d48cccf86da2db8",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Earned Leave",
+          "isRead": true,
+          "createdAt": "2026-08-03T02:19:33.626Z"
+        }
+      ],
+      "ids": [
+        "e8d82849d49b7a8cd286efb3",
+        "f55ade03a4b07d0f224965cd",
+        "1b9e3302a1ff735a0ff8e553",
+        "ebacb30d865cf8d7cadecae9",
+        "55acb5717d48cccf86da2db8",
+        "389b8fcea94457f863fbe1e3",
+        "94327c8144b770a03c9585b3",
+        "fe3aca21a3264c2b656fb2c1",
+        "e426eb433b9d8f326f812ee8",
+        "d0ea996c4630d0ccc48b9a6d",
+        "1b92b539dc54b643e8dbea83",
+        "12b70d812f742cb288260d84",
+        "8b9343bc3b94f7ea7170115b",
+        "1c47f1283625277c1b072c16",
+        "fc4613e480e6b62895ad9239",
+        "notifbulk_cmqjpydql000ukpjdbhesbmpi_1",
+        "notifbulk_cmqjpydql000ukpjdbhesbmpi_2",
+        "notifbulk_cmqjpydql000ukpjdbhesbmpi_3",
+        "notifbulk_cmqjpydql000ukpjdbhesbmpi_4",
+        "notifbulk_cmqjpydql000ukpjdbhesbmpi_5"
+      ]
+    },
+    "priya": {
+      "unread": 0,
+      "status": 200,
+      "listCount": 20,
+      "top": [
+        {
+          "id": "ea9815f2139bca32d8fd35ac",
+          "type": "leave_approved",
+          "title": "Leave Approved",
+          "body": "Your leave request for 1 day(s) has been approved",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:30.052Z"
+        },
+        {
+          "id": "999e2a8eb1ae97280b27c982",
+          "type": "leave_approved",
+          "title": "Leave Approved",
+          "body": "Your leave request for 1 day(s) has been approved",
+          "isRead": true,
+          "createdAt": "2026-08-03T02:20:18.654Z"
+        },
+        {
+          "id": "e941f1f1c1448a0c9498e0b3",
+          "type": "attendance_checkout",
+          "title": "Check-Out Recorded",
+          "body": "Priya Sharma checked out after 2 minute(s)",
+          "isRead": true,
+          "createdAt": "2026-08-02T19:06:56.811Z"
+        },
+        {
+          "id": "8a9c7a43f908a7da4c6dd979",
+          "type": "regularization_approved",
+          "title": "Regularization Approved",
+          "body": "Your attendance regularization request has been approved",
+          "isRead": true,
+          "createdAt": "2026-08-02T19:06:09.702Z"
+        },
+        {
+          "id": "426f5fb881cb1b77750d6083",
+          "type": "attendance_checkin",
+          "title": "Check-In Recorded",
+          "body": "Priya Sharma checked in",
+          "isRead": true,
+          "createdAt": "2026-08-02T19:04:47.912Z"
+        }
+      ],
+      "ids": [
+        "ea9815f2139bca32d8fd35ac",
+        "999e2a8eb1ae97280b27c982",
+        "e941f1f1c1448a0c9498e0b3",
+        "8a9c7a43f908a7da4c6dd979",
+        "426f5fb881cb1b77750d6083",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_1",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_2",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_3",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_4",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_5",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_6",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_7",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_8",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_9",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_10",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_11",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_12",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_13",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_14",
+        "notifbulk_cmqjpydqn000wkpjd02gyqzd3_15"
+      ]
+    }
+  },
+  "mutation": {
+    "status": 201,
+    "startDate": "2026-12-16",
+    "endDate": "2026-12-16",
+    "leaveTypeId": "SL",
+    "leaveRequestId": "cmscopykg0114b9xjppnmaoo0",
+    "referenceNo": "LVR-0031",
+    "leaveStatus": "PENDING",
+    "bodySnippet": "{\"success\":true,\"data\":{\"id\":\"cmscopykg0114b9xjppnmaoo0\",\"referenceNo\":\"LVR-0031\",\"leaveTypeId\":\"cmsc6zsbh0079b9xjds8qibrf\",\"leaveTypeName\":\"Sick Leave\",\"startDate\":\"2026-12-16T00:00:00.000Z\",\"endDate\":\"2026-12-16T00:00:00.000Z\",\"totalDays\":1,\"status\":\"PENDING\",\"reason\":\"NOTIF-E2E-CREATE probe — sick leave (auto withdraw)\",\"submittedAt\":\"2026-08-03T03:43:51.616Z\"},\"meta\":{}}"
+  },
+  "after": {
+    "aman": {
+      "unread": 1,
+      "listCount": 30,
+      "top": [
+        {
+          "id": "5733c09635b6e32d7e5487b3",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Sick Leave",
+          "isRead": false,
+          "createdAt": "2026-08-03T03:43:52.153Z"
+        },
+        {
+          "id": "e8d82849d49b7a8cd286efb3",
+          "type": "leave_withdrawn",
+          "title": "Leave Request Withdrawn",
+          "body": "Priya Sharma has withdrawn their leave request",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:39.984Z"
+        },
+        {
+          "id": "f55ade03a4b07d0f224965cd",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Sick Leave",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:38.764Z"
+        },
+        {
+          "id": "1b9e3302a1ff735a0ff8e553",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Casual Leave",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:26.625Z"
+        },
+        {
+          "id": "ebacb30d865cf8d7cadecae9",
+          "type": "leave_withdrawn",
+          "title": "Leave Request Withdrawn",
+          "body": "Priya Sharma has withdrawn their leave request",
+          "isRead": true,
+          "createdAt": "2026-08-03T02:19:46.640Z"
+        }
+      ],
+      "topTypes": [
+        "leave_requested",
+        "leave_withdrawn",
+        "leave_requested",
+        "leave_requested",
+        "leave_withdrawn",
+        "leave_requested",
+        "leave_requested",
+        "leave_withdrawn"
+      ],
+      "newItems": [
+        {
+          "id": "5733c09635b6e32d7e5487b3",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Sick Leave",
+          "isRead": false,
+          "createdAt": "2026-08-03T03:43:52.153Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_6",
+          "type": "info",
+          "title": "Bulk 6",
+          "body": "Message body 6",
+          "isRead": true,
+          "createdAt": "2026-06-19T03:29:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_7",
+          "type": "info",
+          "title": "Bulk 7",
+          "body": "Message body 7",
+          "isRead": true,
+          "createdAt": "2026-06-19T03:22:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_8",
+          "type": "info",
+          "title": "Bulk 8",
+          "body": "Message body 8",
+          "isRead": true,
+          "createdAt": "2026-06-19T03:15:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_9",
+          "type": "info",
+          "title": "Bulk 9",
+          "body": "Message body 9",
+          "isRead": true,
+          "createdAt": "2026-06-19T03:08:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_10",
+          "type": "info",
+          "title": "Bulk 10",
+          "body": "Message body 10",
+          "isRead": true,
+          "createdAt": "2026-06-19T03:01:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_11",
+          "type": "info",
+          "title": "Bulk 11",
+          "body": "Message body 11",
+          "isRead": true,
+          "createdAt": "2026-06-19T02:54:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_12",
+          "type": "info",
+          "title": "Bulk 12",
+          "body": "Message body 12",
+          "isRead": true,
+          "createdAt": "2026-06-19T02:47:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_13",
+          "type": "info",
+          "title": "Bulk 13",
+          "body": "Message body 13",
+          "isRead": true,
+          "createdAt": "2026-06-19T02:40:09.305Z"
+        },
+        {
+          "id": "notifbulk_cmqjpydql000ukpjdbhesbmpi_14",
+          "type": "info",
+          "title": "Bulk 14",
+          "body": "Message body 14",
+          "isRead": true,
+          "createdAt": "2026-06-19T02:33:09.305Z"
+        }
+      ],
+      "newLeaveRequested": [
+        {
+          "id": "5733c09635b6e32d7e5487b3",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "body": "Priya Sharma requested 1 day(s) of Sick Leave",
+          "isRead": false,
+          "createdAt": "2026-08-03T03:43:52.153Z"
+        }
+      ]
+    },
+    "priya": {
+      "unread": 0,
+      "listCount": 30,
+      "top": [
+        {
+          "id": "ea9815f2139bca32d8fd35ac",
+          "type": "leave_approved",
+          "title": "Leave Approved",
+          "body": "Your leave request for 1 day(s) has been approved",
+          "isRead": true,
+          "createdAt": "2026-08-03T03:41:30.052Z"
+        },
+        {
+          "id": "999e2a8eb1ae97280b27c982",
+          "type": "leave_approved",
+          "title": "Leave Approved",
+          "body": "Your leave request for 1 day(s) has been approved",
+          "isRead": true,
+          "createdAt": "2026-08-03T02:20:18.654Z"
+        },
+        {
+          "id": "e941f1f1c1448a0c9498e0b3",
+          "type": "attendance_checkout",
+          "title": "Check-Out Recorded",
+          "body": "Priya Sharma checked out after 2 minute(s)",
+          "isRead": true,
+          "createdAt": "2026-08-02T19:06:56.811Z"
+        },
+        {
+          "id": "8a9c7a43f908a7da4c6dd979",
+          "type": "regularization_approved",
+          "title": "Regularization Approved",
+          "body": "Your attendance regularization request has been approved",
+          "isRead": true,
+          "createdAt": "2026-08-02T19:06:09.702Z"
+        },
+        {
+          "id": "426f5fb881cb1b77750d6083",
+          "type": "attendance_checkin",
+          "title": "Check-In Recorded",
+          "body": "Priya Sharma checked in",
+          "isRead": true,
+          "createdAt": "2026-08-02T19:04:47.912Z"
+        }
+      ],
+      "topTypes": [
+        "leave_approved",
+        "leave_approved",
+        "attendance_checkout",
+        "regularization_approved",
+        "attendance_checkin",
+        "info",
+        "info",
+        "info"
+      ]
+    }
+  },
+  "withdraw": {
+    "status": 200,
+    "bodySnippet": "{\"success\":false,\"error\":{\"code\":\"INVALID_TOKEN\",\"message\":\"Session revoked or expired\",\"details\":{},\"requestId\":\"e01c4dcc-5fc0-4d8e-89c7-3ae5ae80c450\"}}",
+    "amanUnread": 2,
+    "statusField": "WITHDRAWN",
+    "initialHarnessStatus": 401,
+    "verifiedAt": "2026-08-03T03:50:32.823Z"
+  },
+  "redis": {
+    "before": {
+      "ping": "PONG",
+      "channels": [
+        "ems:sse"
+      ],
+      "numsub": [
+        "ems:sse",
+        2
+      ],
+      "cacheSample": [
+        "cache:tenantcfg:cmqjpydkv0000kpjdelztyg88"
+      ],
+      "error": null
+    },
+    "duringNumsub": [
+      "ems:sse",
+      3
+    ],
+    "pubsubEvents": [
+      {
+        "ts": "2026-08-03T03:43:52.251Z",
+        "parsed": {
+          "userId": "cmqjpydql000ukpjdbhesbmpi",
+          "event": "notification",
+          "data": {
+            "id": "5733c09635b6e32d7e5487b3",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Sick Leave",
+            "createdAt": "2026-08-03T03:43:52.153Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscopykg0114b9xjppnmaoo0"
+            }
+          }
+        }
+      },
+      {
+        "ts": "2026-08-03T03:43:52.251Z",
+        "parsed": {
+          "userId": "cmqjpydqp000ykpjdzsb6zb8v",
+          "event": "notification",
+          "data": {
+            "id": "4eaaa15da34bc8aa4d83ff27",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Sick Leave",
+            "createdAt": "2026-08-03T03:43:52.153Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscopykg0114b9xjppnmaoo0"
+            }
+          }
+        }
+      },
+      {
+        "ts": "2026-08-03T03:43:52.252Z",
+        "parsed": {
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "event": "notification",
+          "data": {
+            "id": "cdcf8cbefb7d308067a178aa",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Sick Leave",
+            "createdAt": "2026-08-03T03:43:52.153Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscopykg0114b9xjppnmaoo0"
+            }
+          }
+        }
+      },
+      {
+        "ts": "2026-08-03T03:43:52.295Z",
+        "parsed": {
+          "userId": "cmqjpydqe000qkpjd8q8idw1k",
+          "event": "notification",
+          "data": {
+            "id": "b62a3039a8029022b8795e32",
+            "type": "leave_requested",
+            "title": "New Leave Request",
+            "message": "Priya Sharma requested 1 day(s) of Sick Leave",
+            "createdAt": "2026-08-03T03:43:52.153Z",
+            "metadata": {
+              "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+              "leaveRequestId": "cmscopykg0114b9xjppnmaoo0"
+            }
+          }
+        }
+      },
+      {
+        "ts": "2026-08-03T03:43:52.295Z",
+        "parsed": {
+          "userId": "cmqjpydqp000ykpjdzsb6zb8v",
+          "event": "analytics_update",
+          "data": {
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "ts": 1785728632248
+          }
+        }
+      },
+      {
+        "ts": "2026-08-03T03:43:52.295Z",
+        "parsed": {
+          "userId": "cmqjpydqj000skpjdp2l6cvg5",
+          "event": "analytics_update",
+          "data": {
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "ts": 1785728632248
+          }
+        }
+      },
+      {
+        "ts": "2026-08-03T03:43:52.295Z",
+        "parsed": {
+          "userId": "cmqjpydqe000qkpjd8q8idw1k",
+          "event": "analytics_update",
+          "data": {
+            "tenantId": "cmqjpydkv0000kpjdelztyg88",
+            "ts": 1785728632248
+          }
+        }
+      },
+      {
+        "ts": "2026-08-03T03:44:42.511Z",
+        "parsed": {
+          "userId": "cmqjpydqn000wkpjd02gyqzd3",
+          "event": "probe",
+          "data": {
+            "marker": "dup-check-1785728682462"
+          }
+        }
+      }
+    ]
+  },
+  "sse": {
+    "opened": true,
+    "amanEvents": [
+      {
+        "ts": "2026-08-03T03:43:52.255Z",
+        "event": "notification",
+        "data": {
+          "id": "5733c09635b6e32d7e5487b3",
+          "type": "leave_requested",
+          "title": "New Leave Request",
+          "message": "Priya Sharma requested 1 day(s) of Sick Leave",
+          "createdAt": "2026-08-03T03:43:52.153Z",
+          "metadata": {
+            "employeeId": "cmqjpyds7001kkpjdnlhjygrp",
+            "leaveRequestId": "cmscopykg0114b9xjppnmaoo0"
+          }
+        },
+        "elapsedMs": 2899
+      }
+    ]
+  },
+  "isolation": {
+    "amanHasNewLeaveRequested": true,
+    "priyaHasLeaveRequestedAboutSelf": false,
+    "priyaNewLeaveRequestedCount": 0,
+    "priyaUnreadDelta": 0,
+    "amanUnreadDelta": 1
+  },
+  "screenshots": [
+    {
+      "file": "001-aman-dashboard-after-leave.png",
+      "url": "http://localhost:3001/login",
+      "name": "aman-dashboard-after-leave"
+    },
+    {
+      "file": "002-aman-bell-missing.png",
+      "url": "http://localhost:3001/login",
+      "name": "aman-bell-missing"
+    },
+    {
+      "file": "003-priya-dashboard-after-own-leave.png",
+      "url": "http://localhost:3001/login",
+      "name": "priya-dashboard-after-own-leave"
+    },
+    {
+      "file": "004-priya-bell-missing.png",
+      "url": "http://localhost:3001/login",
+      "name": "priya-bell-missing"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "HIGH",
+      "layer": "BACKEND",
+      "where": "withdraw",
+      "why": "Withdraw failed HTTP 401",
+      "evidence": {
+        "body": {
+          "success": false,
+          "error": {
+            "code": "INVALID_TOKEN",
+            "message": "Session revoked or expired",
+            "details": {},
+            "requestId": "e01c4dcc-5fc0-4d8e-89c7-3ae5ae80c450"
+          }
+        }
+      },
+      "ts": "2026-08-03T03:45:28.576Z"
+    }
+  ],
+  "log": [
+    "[2026-08-03T03:43:46.945Z] === NOTIF-E2E-CREATE START ===",
+    "[2026-08-03T03:43:48.248Z] Actors priya=cmqjpydqn000wkpjd02gyqzd3 aman=cmqjpydql000ukpjdbhesbmpi",
+    "[2026-08-03T03:43:48.675Z] Redis ping=PONG channels=[\"ems:sse\"] numsub=[\"ems:sse\",2]",
+    "[2026-08-03T03:43:49.349Z] BEFORE unread aman=0 priya=0",
+    "[2026-08-03T03:43:50.895Z] SSE open; Redis NUMSUB during=[\"ems:sse\",3]",
+    "[2026-08-03T03:43:50.895Z] POST leave SL 2026-12-16",
+    "[2026-08-03T03:43:51.961Z] CREATE status=201 id=cmscopykg0114b9xjppnmaoo0 ref=LVR-0031",
+    "[2026-08-03T03:43:55.084Z] AFTER unread aman=1(Δ1) priya=0(Δ0) sseEvents=1 redisPub=7",
+    "[2026-08-03T03:45:28.273Z] WITHDRAW cmscopykg0114b9xjppnmaoo0",
+    "[2026-08-03T03:45:28.576Z] WITHDRAW status=401 leaveStatus=undefined amanUnread=1",
+    "[2026-08-03T03:45:29.581Z] Appended ## NOTIF-E2E-CREATE → contracts"
+  ],
+  "actors": {
+    "priya": {
+      "userId": "cmqjpydqn000wkpjd02gyqzd3",
+      "employeeId": "cmqjpyds7001kkpjdnlhjygrp"
+    },
+    "aman": {
+      "userId": "cmqjpydql000ukpjdbhesbmpi",
+      "employeeId": "cmqjpyds0001ikpjd5br3r2uh"
+    }
+  },
+  "verdict": "PASS",
+  "cleanupVerify": {
+    "ts": "2026-08-03T03:50:32.823Z",
+    "leave": {
+      "id": "cmscopykg0114b9xjppnmaoo0",
+      "referenceNo": "LVR-0031",
+      "status": "WITHDRAWN"
+    },
+    "amanUnreadCount": 2,
+    "withdrawHttpNote": "Initial harness withdraw 401 (stale JWT); subsequent fresh-login withdraw 200 — verified leave status WITHDRAWN via GET /leave/requests",
+    "log": "cleanup-verify.log"
+  }
+}

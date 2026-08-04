@@ -1,0 +1,68 @@
+{
+  "summary": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "period": {
+          "startDate": "2026-08-01T00:00:00.000Z",
+          "endDate": "2026-08-02T19:44:26.343Z"
+        },
+        "totalDays": 0,
+        "present": 0,
+        "absent": 0,
+        "leave": 0,
+        "wfh": 0,
+        "halfDay": 0,
+        "holiday": 0,
+        "late": 0,
+        "attendancePercentage": 0
+      },
+      "meta": {}
+    }
+  },
+  "records": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "records": [
+          {
+            "id": "cmsc67ptz003kb9xjomfxaves",
+            "referenceNo": "ATT-1121087",
+            "attendanceDate": "2026-08-03T00:00:00.000Z",
+            "checkInAt": "2026-08-02T19:05:47.312Z",
+            "checkOutAt": "2026-08-02T19:05:49.663Z",
+            "status": "PRESENT",
+            "workMode": "OFFICE",
+            "totalMinutes": 0,
+            "notes": null
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "pages": 1
+        }
+      },
+      "meta": {}
+    }
+  },
+  "today": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "data": {
+        "date": "2026-08-03T00:00:00.000Z",
+        "status": "PRESENT",
+        "checkInAt": "2026-08-02T19:05:47.312Z",
+        "checkOutAt": "2026-08-02T19:05:49.663Z",
+        "duration": 0
+      },
+      "meta": {
+        "cached": false
+      }
+    }
+  }
+}

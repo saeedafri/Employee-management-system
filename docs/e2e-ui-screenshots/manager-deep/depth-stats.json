@@ -1,0 +1,22 @@
+{
+  "role": "MANAGER",
+  "user": "aman@acme.test",
+  "fe": "http://localhost:3001",
+  "be": "http://localhost:4000",
+  "generatedAt": "2026-08-03T00:53:00+05:30",
+  "screenshots": 491,
+  "nestCounts": { "1": 41, "2": 139, "3": 62, "4": 16 },
+  "nestedActionShots": 258,
+  "tabs": 98,
+  "modals": 78,
+  "adminOrSettingsShots": 51,
+  "maxNestDepth": 4,
+  "adminDeny": 42,
+  "adminHardLeak": 0,
+  "softOpen": ["/payroll/runs"],
+  "parentMenus": 17,
+  "criticalBugs": 1,
+  "highBugs": 6,
+  "mediumBugs": 5,
+  "phases": ["_deep_e2e_mgr.mjs", "_deep_e2e_mgr_resume.mjs", "_deep_e2e_mgr_phase3.mjs"]
+}

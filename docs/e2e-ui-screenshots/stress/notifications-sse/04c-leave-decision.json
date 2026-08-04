@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "ms": 1012,
+  "json": {
+    "success": true,
+    "data": {
+      "id": "cmscomu3g00zgb9xjvmg12knu",
+      "referenceNo": "LVR-0029",
+      "status": "APPROVED",
+      "decidedAt": "2026-08-03T03:41:29.280Z",
+      "approverComment": null
+    },
+    "meta": {}
+  },
+  "text": "{\"success\":true,\"data\":{\"id\":\"cmscomu3g00zgb9xjvmg12knu\",\"referenceNo\":\"LVR-0029\",\"status\":\"APPROVED\",\"decidedAt\":\"2026-08-03T03:41:29.280Z\",\"approverComment\":null},\"meta\":{}}",
+  "via": "leave-approve"
+}

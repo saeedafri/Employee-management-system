@@ -1,0 +1,19 @@
+{
+  "cliPing": {
+    "ok": true,
+    "stdout": "PONG",
+    "stderr": "",
+    "code": 0
+  },
+  "ioPing": {
+    "ok": true,
+    "pong": "PONG",
+    "channels": [
+      "ems:sse"
+    ],
+    "numsub": [
+      "ems:sse",
+      2
+    ]
+  }
+}

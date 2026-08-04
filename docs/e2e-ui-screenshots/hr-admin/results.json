@@ -1,0 +1,1504 @@
+{
+  "role": "HR_ADMIN",
+  "user": "hr@acme.test",
+  "fe": "http://localhost:3001",
+  "menusTested": [
+    "Dashboard",
+    "Employees",
+    "Departments",
+    "Attendance",
+    "Timesheets",
+    "Leave",
+    "Holidays",
+    "Payroll",
+    "Payout methods",
+    "Reports",
+    "Analytics",
+    "Permissions",
+    "Settings",
+    "Recruitment",
+    "Performance",
+    "Assets",
+    "Announcements"
+  ],
+  "menuCount": 17,
+  "screenshotCount": 164,
+  "issueCount": 13,
+  "backendIssues": 0,
+  "frontendIssues": 13,
+  "mutationsNoted": [],
+  "issues": [
+    {
+      "id": "ISSUE-HR-01",
+      "where": "login \u2192 bootstrap",
+      "why": "Pre-auth 401 GET /api/auth/me during login page load",
+      "classification": "FRONTEND",
+      "how": "Avoid calling /auth/me and /auth/refresh on anonymous login page, or suppress expected 401 console noise.",
+      "screenshot": "01-login-submit-ok.png",
+      "network": "401 GET /api/auth/me | {\"success\":false,\"error\":{\"code\":\"UNAUTHORIZED\",\"message\":\"Missing access token\",\"details\":{},\"requestId\":\"f6843385-68da-45cc-98ce-a3e2057b06cf\"}}",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-02",
+      "where": "login \u2192 bootstrap",
+      "why": "Pre-auth 401 POST /api/auth/refresh during login page load",
+      "classification": "FRONTEND",
+      "how": "Avoid calling /auth/me and /auth/refresh on anonymous login page, or suppress expected 401 console noise.",
+      "screenshot": "01-login-submit-ok.png",
+      "network": "401 POST /api/auth/refresh | {\"success\":false,\"error\":{\"code\":\"REFRESH_TOKEN_MISSING\",\"message\":\"Refresh token not found in cookies\",\"details\":{},\"requestId\":\"9a220bd2-f9c2-4a7a-8827-f80a4c06ef2a\"}}",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-03",
+      "where": "Permissions \u2192 land",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "79-permissions-land-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-04",
+      "where": "Permissions",
+      "why": "Permissions page visible in HR_ADMIN sidebar but content is restricted (or should be hidden per role-nav contract)",
+      "classification": "FRONTEND",
+      "how": "Hide Permissions nav for HR_ADMIN (SUPER_ADMIN only) per UI_CONTRACT_role_nav; keep deep-link Access Restricted page.",
+      "screenshot": "80-permissions-access-state-restricted.png",
+      "network": "n/a",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-05",
+      "where": "Settings \u2192 /settings/authentication",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "98-settings-settings-authentication-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-06",
+      "where": "Settings \u2192 /settings/integration-email",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "104-settings-settings-integration-email-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-07",
+      "where": "Settings \u2192 /settings/integration-storage",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "105-settings-settings-integration-storage-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-08",
+      "where": "Settings \u2192 /settings/integration-webhooks",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "106-settings-settings-integration-webhooks-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-09",
+      "where": "Settings \u2192 /settings/billing-plan",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "107-settings-settings-billing-plan-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-10",
+      "where": "Settings \u2192 /settings/billing-invoices",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "108-settings-settings-billing-invoices-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-11",
+      "where": "Settings \u2192 /settings/branding",
+      "why": "Visible error pattern: /access restricted/",
+      "classification": "FRONTEND",
+      "how": "Resolve underlying failure; show role-aware empty/error state instead of broken UI.",
+      "screenshot": "109-settings-settings-branding-view.png",
+      "network": "",
+      "console": []
+    },
+    {
+      "id": "ISSUE-HR-12",
+      "where": "Performance \u2192 land",
+      "why": "React duplicate key console warnings (40)",
+      "classification": "FRONTEND",
+      "how": "Use unique React keys in list renders.",
+      "screenshot": "145-performance-land-view.png",
+      "network": "n/a",
+      "console": [
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu"
+      ]
+    },
+    {
+      "id": "ISSUE-HR-13",
+      "where": "Performance \u2192 tab Goals",
+      "why": "React duplicate key console warnings (20)",
+      "classification": "FRONTEND",
+      "how": "Use unique React keys in list renders.",
+      "screenshot": "147-performance-tab-goals-view.png",
+      "network": "n/a",
+      "console": [
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu"
+      ]
+    }
+  ],
+  "menuResults": [
+    {
+      "menu": "Dashboard",
+      "href": "/dashboard",
+      "url": "http://localhost:3001/dashboard",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Employees",
+      "href": "/employees",
+      "url": "http://localhost:3001/employees",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Departments",
+      "href": "/departments",
+      "url": "http://localhost:3001/departments",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Attendance",
+      "href": "/attendance",
+      "url": "http://localhost:3001/attendance",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Timesheets",
+      "href": "/timesheets",
+      "url": "http://localhost:3001/timesheets",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Leave",
+      "href": "/leave",
+      "url": "http://localhost:3001/leave",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Holidays",
+      "href": "/holidays",
+      "url": "http://localhost:3001/holidays",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Payroll",
+      "href": "/payroll",
+      "url": "http://localhost:3001/payroll",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Payout methods",
+      "href": "/payout-methods",
+      "url": "http://localhost:3001/payout-methods",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Reports",
+      "href": "/reports",
+      "url": "http://localhost:3001/reports",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Analytics",
+      "href": "/analytics",
+      "url": "http://localhost:3001/analytics",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Permissions",
+      "href": "/permissions",
+      "url": "http://localhost:3001/permissions",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Settings",
+      "href": "/settings",
+      "url": "http://localhost:3001/settings/company-profile",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Recruitment",
+      "href": "/recruitment",
+      "url": "http://localhost:3001/recruitment",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Performance",
+      "href": "/performance",
+      "url": "http://localhost:3001/performance",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": [
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu",
+        "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted \u2014 the behavior is unsu"
+      ]
+    },
+    {
+      "menu": "Assets",
+      "href": "/assets",
+      "url": "http://localhost:3001/assets",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    },
+    {
+      "menu": "Announcements",
+      "href": "/announcements",
+      "url": "http://localhost:3001/announcements",
+      "titleOk": true,
+      "api4xx": [],
+      "api5xx": [],
+      "consoleErrors": []
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "01-login-submit-ok.png",
+      "menu": "login",
+      "action": "submit",
+      "result": "ok",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "02-shell-sidebar-visible.png",
+      "menu": "shell",
+      "action": "sidebar",
+      "result": "visible",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "03-dashboard-land-view.png",
+      "menu": "Dashboard",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "04-dashboard-7d-clicked.png",
+      "menu": "Dashboard",
+      "action": "7d",
+      "result": "clicked",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "05-dashboard-30d-clicked.png",
+      "menu": "Dashboard",
+      "action": "30d",
+      "result": "clicked",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "06-dashboard-90d-clicked.png",
+      "menu": "Dashboard",
+      "action": "90d",
+      "result": "clicked",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "name": "07-dashboard-add-employee-clicked.png",
+      "menu": "Dashboard",
+      "action": "Add-Employee",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "name": "08-dashboard-filter-open-open.png",
+      "menu": "Dashboard",
+      "action": "filter-open",
+      "result": "open",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "09-dashboard-filter-applied-applied.png",
+      "menu": "Dashboard",
+      "action": "filter-applied",
+      "result": "applied",
+      "url": "http://localhost:3001/employees?dept=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "10-dashboard-search-results.png",
+      "menu": "Dashboard",
+      "action": "search",
+      "result": "results",
+      "url": "http://localhost:3001/employees?dept=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "11-employees-land-view.png",
+      "menu": "Employees",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "12-employees-add-employee-clicked.png",
+      "menu": "Employees",
+      "action": "Add-Employee",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "name": "13-employees-export-clicked.png",
+      "menu": "Employees",
+      "action": "Export",
+      "result": "clicked",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "14-employees-filter-open-open.png",
+      "menu": "Employees",
+      "action": "filter-open",
+      "result": "open",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "name": "15-employees-filter-applied-applied.png",
+      "menu": "Employees",
+      "action": "filter-applied",
+      "result": "applied",
+      "url": "http://localhost:3001/employees?dept=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "16-employees-search-results.png",
+      "menu": "Employees",
+      "action": "search",
+      "result": "results",
+      "url": "http://localhost:3001/employees?dept=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "17-employees-employee-detail-view.png",
+      "menu": "Employees",
+      "action": "employee-detail",
+      "result": "view",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "name": "18-departments-land-view.png",
+      "menu": "Departments",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "name": "19-departments-add-department-clicked.png",
+      "menu": "Departments",
+      "action": "Add-department",
+      "result": "clicked",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "name": "20-departments-add-department-modal-open.png",
+      "menu": "Departments",
+      "action": "Add department-modal",
+      "result": "open",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "name": "21-departments-add-department-clicked.png",
+      "menu": "Departments",
+      "action": "Add-Department",
+      "result": "clicked",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "name": "22-departments-add-department-modal-open.png",
+      "menu": "Departments",
+      "action": "Add Department-modal",
+      "result": "open",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "name": "23-departments-select-department-view.png",
+      "menu": "Departments",
+      "action": "select-department",
+      "result": "view",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "name": "24-attendance-land-view.png",
+      "menu": "Attendance",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "25-attendance-filter-open-open.png",
+      "menu": "Attendance",
+      "action": "filter-open",
+      "result": "open",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "name": "26-attendance-filter-applied-applied.png",
+      "menu": "Attendance",
+      "action": "filter-applied",
+      "result": "applied",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "27-attendance-check-in-clicked.png",
+      "menu": "Attendance",
+      "action": "Check-In",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "28-attendance-check-out-clicked.png",
+      "menu": "Attendance",
+      "action": "Check-Out",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "29-attendance-request-regularization-clicked.png",
+      "menu": "Attendance",
+      "action": "Request-Regularization",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "30-attendance-request-regularization-modal-open.png",
+      "menu": "Attendance",
+      "action": "Request Regularization-modal",
+      "result": "open",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "31-attendance-regularization-clicked.png",
+      "menu": "Attendance",
+      "action": "Regularization",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "32-attendance-regularization-modal-open.png",
+      "menu": "Attendance",
+      "action": "Regularization-modal",
+      "result": "open",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "33-attendance-calendar-clicked.png",
+      "menu": "Attendance",
+      "action": "Calendar",
+      "result": "clicked",
+      "url": "http://localhost:3001/attendance?deptId=cmqjpydrw001gkpjdh8uedxjx"
+    },
+    {
+      "name": "34-timesheets-land-view.png",
+      "menu": "Timesheets",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "name": "35-timesheets-tab-my-timesheet-view.png",
+      "menu": "Timesheets",
+      "action": "tab-My Timesheet",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "name": "36-timesheets-tab-approvals-view.png",
+      "menu": "Timesheets",
+      "action": "tab-Approvals",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "name": "37-timesheets-tab-projects-view.png",
+      "menu": "Timesheets",
+      "action": "tab-Projects",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets?tab=projects"
+    },
+    {
+      "name": "38-timesheets-tab-rates-view.png",
+      "menu": "Timesheets",
+      "action": "tab-Rates",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets?tab=rates"
+    },
+    {
+      "name": "39-timesheets-tab-approval-flow-view.png",
+      "menu": "Timesheets",
+      "action": "tab-Approval Flow",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "name": "40-timesheets-tab-locks-view.png",
+      "menu": "Timesheets",
+      "action": "tab-Locks",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets?tab=locks"
+    },
+    {
+      "name": "41-timesheets-tab-delegations-view.png",
+      "menu": "Timesheets",
+      "action": "tab-Delegations",
+      "result": "view",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "name": "42-timesheets-filter-open-open.png",
+      "menu": "Timesheets",
+      "action": "filter-open",
+      "result": "open",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "name": "43-timesheets-filter-applied-applied.png",
+      "menu": "Timesheets",
+      "action": "filter-applied",
+      "result": "applied",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "name": "44-leave-land-view.png",
+      "menu": "Leave",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "45-leave-tab-my-requests-view.png",
+      "menu": "Leave",
+      "action": "tab-My Requests",
+      "result": "view",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "name": "46-leave-tab-team-calendar-view.png",
+      "menu": "Leave",
+      "action": "tab-Team Calendar",
+      "result": "view",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "name": "47-leave-tab-comp-off-view.png",
+      "menu": "Leave",
+      "action": "tab-Comp-off",
+      "result": "view",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "name": "48-leave-tab-approvals-view.png",
+      "menu": "Leave",
+      "action": "tab-Approvals",
+      "result": "view",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "49-leave-new-request-clicked.png",
+      "menu": "Leave",
+      "action": "New-Request",
+      "result": "clicked",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "50-leave-new-request-modal-open.png",
+      "menu": "Leave",
+      "action": "New Request-modal",
+      "result": "open",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "name": "51-holidays-land-view.png",
+      "menu": "Holidays",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "52-holidays-add-holiday-clicked.png",
+      "menu": "Holidays",
+      "action": "Add-Holiday",
+      "result": "clicked",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "53-holidays-add-holiday-modal-open.png",
+      "menu": "Holidays",
+      "action": "Add Holiday-modal",
+      "result": "open",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "54-holidays-add-holiday-clicked.png",
+      "menu": "Holidays",
+      "action": "Add-holiday",
+      "result": "clicked",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "55-holidays-add-holiday-modal-open.png",
+      "menu": "Holidays",
+      "action": "Add holiday-modal",
+      "result": "open",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "56-holidays-import-clicked.png",
+      "menu": "Holidays",
+      "action": "Import",
+      "result": "clicked",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "57-holidays-import-modal-open.png",
+      "menu": "Holidays",
+      "action": "Import-modal",
+      "result": "open",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "58-holidays-policy-clicked.png",
+      "menu": "Holidays",
+      "action": "Policy",
+      "result": "clicked",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "59-holidays-policy-modal-open.png",
+      "menu": "Holidays",
+      "action": "Policy-modal",
+      "result": "open",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "name": "60-payroll-land-view.png",
+      "menu": "Payroll",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "61-payroll-run-payroll-clicked.png",
+      "menu": "Payroll",
+      "action": "Run-Payroll",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "62-payroll-run-payroll-modal-open.png",
+      "menu": "Payroll",
+      "action": "Run Payroll-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "name": "63-payroll-global-clicked.png",
+      "menu": "Payroll",
+      "action": "Global",
+      "result": "clicked",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "name": "64-payout-methods-land-view.png",
+      "menu": "Payout methods",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "65-payout-methods-add-clicked.png",
+      "menu": "Payout methods",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "66-payout-methods-add-modal-open.png",
+      "menu": "Payout methods",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "67-payout-methods-add-account-clicked.png",
+      "menu": "Payout methods",
+      "action": "Add-account",
+      "result": "clicked",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "68-payout-methods-add-account-modal-open.png",
+      "menu": "Payout methods",
+      "action": "Add account-modal",
+      "result": "open",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "name": "69-payout-methods-approvals-view.png",
+      "menu": "Payout methods",
+      "action": "approvals",
+      "result": "view",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "name": "70-reports-land-view.png",
+      "menu": "Reports",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "71-reports-filter-open-open.png",
+      "menu": "Reports",
+      "action": "filter-open",
+      "result": "open",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "72-reports-filter-applied-applied.png",
+      "menu": "Reports",
+      "action": "filter-applied",
+      "result": "applied",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "name": "73-analytics-land-view.png",
+      "menu": "Analytics",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "name": "74-analytics-filter-open-open.png",
+      "menu": "Analytics",
+      "action": "filter-open",
+      "result": "open",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "name": "75-analytics-filter-applied-applied.png",
+      "menu": "Analytics",
+      "action": "filter-applied",
+      "result": "applied",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "name": "76-analytics-7d-clicked.png",
+      "menu": "Analytics",
+      "action": "7d",
+      "result": "clicked",
+      "url": "http://localhost:3001/analytics?range=7d"
+    },
+    {
+      "name": "77-analytics-30d-clicked.png",
+      "menu": "Analytics",
+      "action": "30d",
+      "result": "clicked",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "name": "78-analytics-90d-clicked.png",
+      "menu": "Analytics",
+      "action": "90d",
+      "result": "clicked",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "name": "79-permissions-land-view.png",
+      "menu": "Permissions",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "name": "80-permissions-access-state-restricted.png",
+      "menu": "Permissions",
+      "action": "access-state",
+      "result": "restricted",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "name": "81-settings-land-view.png",
+      "menu": "Settings",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "name": "82-settings-landing-view.png",
+      "menu": "Settings",
+      "action": "landing",
+      "result": "view",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "name": "83-settings-settings-company-profile-view.png",
+      "menu": "Settings",
+      "action": "settings-company-profile",
+      "result": "view",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "name": "84-settings-company-profile-save-clicked.png",
+      "menu": "settings-company-profile",
+      "action": "Save",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "name": "85-settings-settings-locale-view.png",
+      "menu": "Settings",
+      "action": "settings-locale",
+      "result": "view",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "name": "86-settings-locale-save-clicked.png",
+      "menu": "settings-locale",
+      "action": "Save",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "name": "87-settings-locale-edit-clicked.png",
+      "menu": "settings-locale",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "name": "88-settings-locale-add-clicked.png",
+      "menu": "settings-locale",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/legal-entities?entity=le_cmqjpydkv0000kpjdelztyg88_in"
+    },
+    {
+      "name": "89-settings-locale-add-modal-open.png",
+      "menu": "settings-locale",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/legal-entities?entity=le_cmqjpydkv0000kpjdelztyg88_in"
+    },
+    {
+      "name": "90-settings-settings-working-hours-view.png",
+      "menu": "Settings",
+      "action": "settings-working-hours",
+      "result": "view",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "name": "91-settings-working-hours-save-clicked.png",
+      "menu": "settings-working-hours",
+      "action": "Save",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "name": "92-settings-working-hours-edit-clicked.png",
+      "menu": "settings-working-hours",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/legal-entities?entity=cmqqyw66n0009uojodughf6zb"
+    },
+    {
+      "name": "93-settings-working-hours-edit-modal-open.png",
+      "menu": "settings-working-hours",
+      "action": "Edit-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/legal-entities?entity=cmqqyw66n0009uojodughf6zb"
+    },
+    {
+      "name": "94-settings-working-hours-add-clicked.png",
+      "menu": "settings-working-hours",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/legal-entities?entity=cmqqyw66n0009uojodughf6zb"
+    },
+    {
+      "name": "95-settings-working-hours-add-modal-open.png",
+      "menu": "settings-working-hours",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/legal-entities?entity=cmqqyw66n0009uojodughf6zb"
+    },
+    {
+      "name": "96-settings-settings-attendance-rules-view.png",
+      "menu": "Settings",
+      "action": "settings-attendance-rules",
+      "result": "view",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "name": "97-settings-settings-notifications-view.png",
+      "menu": "Settings",
+      "action": "settings-notifications",
+      "result": "view",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "name": "98-settings-settings-authentication-view.png",
+      "menu": "Settings",
+      "action": "settings-authentication",
+      "result": "view",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "name": "99-settings-settings-sessions-view.png",
+      "menu": "Settings",
+      "action": "settings-sessions",
+      "result": "view",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "name": "100-settings-settings-audit-log-view.png",
+      "menu": "Settings",
+      "action": "settings-audit-log",
+      "result": "view",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "name": "101-settings-settings-email-templates-view.png",
+      "menu": "Settings",
+      "action": "settings-email-templates",
+      "result": "view",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "name": "102-settings-email-templates-edit-clicked.png",
+      "menu": "settings-email-templates",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "name": "103-settings-email-templates-edit-modal-open.png",
+      "menu": "settings-email-templates",
+      "action": "Edit-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "name": "104-settings-settings-integration-email-view.png",
+      "menu": "Settings",
+      "action": "settings-integration-email",
+      "result": "view",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "name": "105-settings-settings-integration-storage-view.png",
+      "menu": "Settings",
+      "action": "settings-integration-storage",
+      "result": "view",
+      "url": "http://localhost:3001/settings/integration-storage"
+    },
+    {
+      "name": "106-settings-settings-integration-webhooks-view.png",
+      "menu": "Settings",
+      "action": "settings-integration-webhooks",
+      "result": "view",
+      "url": "http://localhost:3001/settings/integration-webhooks"
+    },
+    {
+      "name": "107-settings-settings-billing-plan-view.png",
+      "menu": "Settings",
+      "action": "settings-billing-plan",
+      "result": "view",
+      "url": "http://localhost:3001/settings/billing-plan"
+    },
+    {
+      "name": "108-settings-settings-billing-invoices-view.png",
+      "menu": "Settings",
+      "action": "settings-billing-invoices",
+      "result": "view",
+      "url": "http://localhost:3001/settings/billing-invoices"
+    },
+    {
+      "name": "109-settings-settings-branding-view.png",
+      "menu": "Settings",
+      "action": "settings-branding",
+      "result": "view",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "name": "110-settings-settings-leave-types-view.png",
+      "menu": "Settings",
+      "action": "settings-leave-types",
+      "result": "view",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "name": "111-settings-leave-types-edit-clicked.png",
+      "menu": "settings-leave-types",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "name": "112-settings-leave-types-edit-modal-open.png",
+      "menu": "settings-leave-types",
+      "action": "Edit-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "name": "113-settings-leave-types-add-clicked.png",
+      "menu": "settings-leave-types",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "name": "114-settings-leave-types-add-modal-open.png",
+      "menu": "settings-leave-types",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "name": "115-settings-settings-leave-policies-view.png",
+      "menu": "Settings",
+      "action": "settings-leave-policies",
+      "result": "view",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "name": "116-settings-leave-policies-edit-clicked.png",
+      "menu": "settings-leave-policies",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "name": "117-settings-leave-policies-edit-modal-open.png",
+      "menu": "settings-leave-policies",
+      "action": "Edit-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "name": "118-settings-settings-leave-packs-view.png",
+      "menu": "Settings",
+      "action": "settings-leave-packs",
+      "result": "view",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "name": "119-settings-settings-leave-assignments-view.png",
+      "menu": "Settings",
+      "action": "settings-leave-assignments",
+      "result": "view",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "name": "120-settings-settings-timesheets-view.png",
+      "menu": "Settings",
+      "action": "settings-timesheets",
+      "result": "view",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "name": "121-settings-settings-pay-components-view.png",
+      "menu": "Settings",
+      "action": "settings-pay-components",
+      "result": "view",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "name": "122-settings-pay-components-add-clicked.png",
+      "menu": "settings-pay-components",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "name": "123-settings-pay-components-add-modal-open.png",
+      "menu": "settings-pay-components",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "name": "124-settings-settings-pay-groups-view.png",
+      "menu": "Settings",
+      "action": "settings-pay-groups",
+      "result": "view",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "name": "125-settings-pay-groups-edit-clicked.png",
+      "menu": "settings-pay-groups",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "name": "126-settings-pay-groups-edit-modal-open.png",
+      "menu": "settings-pay-groups",
+      "action": "Edit-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "name": "127-settings-settings-pay-schedules-view.png",
+      "menu": "Settings",
+      "action": "settings-pay-schedules",
+      "result": "view",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "name": "128-settings-settings-pay-legal-entities-view.png",
+      "menu": "Settings",
+      "action": "settings-pay-legal-entities",
+      "result": "view",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "name": "129-settings-pay-legal-entities-edit-clicked.png",
+      "menu": "settings-pay-legal-entities",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "name": "130-settings-pay-legal-entities-edit-modal-open.png",
+      "menu": "settings-pay-legal-entities",
+      "action": "Edit-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "name": "131-settings-pay-legal-entities-add-clicked.png",
+      "menu": "settings-pay-legal-entities",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "name": "132-settings-pay-legal-entities-add-modal-open.png",
+      "menu": "settings-pay-legal-entities",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "name": "133-settings-settings-pay-statutory-packs-view.png",
+      "menu": "Settings",
+      "action": "settings-pay-statutory-packs",
+      "result": "view",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "name": "134-settings-pay-statutory-packs-edit-clicked.png",
+      "menu": "settings-pay-statutory-packs",
+      "action": "Edit",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "name": "135-settings-pay-statutory-packs-edit-modal-open.png",
+      "menu": "settings-pay-statutory-packs",
+      "action": "Edit-modal",
+      "result": "open",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "name": "136-settings-settings-pay-payslip-template-view.png",
+      "menu": "Settings",
+      "action": "settings-pay-payslip-template",
+      "result": "view",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "name": "137-settings-pay-payslip-template-save-clicked.png",
+      "menu": "settings-pay-payslip-template",
+      "action": "Save",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "name": "138-settings-settings-pay-data-policy-view.png",
+      "menu": "Settings",
+      "action": "settings-pay-data-policy",
+      "result": "view",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "name": "139-settings-pay-data-policy-save-clicked.png",
+      "menu": "settings-pay-data-policy",
+      "action": "Save",
+      "result": "clicked",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "name": "140-recruitment-land-view.png",
+      "menu": "Recruitment",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "name": "141-recruitment-tab-pipeline-view.png",
+      "menu": "Recruitment",
+      "action": "tab-Pipeline",
+      "result": "view",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "name": "142-recruitment-tab-openings-view.png",
+      "menu": "Recruitment",
+      "action": "tab-Openings",
+      "result": "view",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "name": "143-recruitment-tab-candidates-view.png",
+      "menu": "Recruitment",
+      "action": "tab-Candidates",
+      "result": "view",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "name": "144-recruitment-export-clicked.png",
+      "menu": "Recruitment",
+      "action": "Export",
+      "result": "clicked",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "name": "145-performance-land-view.png",
+      "menu": "Performance",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "name": "146-performance-tab-reviews-view.png",
+      "menu": "Performance",
+      "action": "tab-Reviews",
+      "result": "view",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "name": "147-performance-tab-goals-view.png",
+      "menu": "Performance",
+      "action": "tab-Goals",
+      "result": "view",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "name": "148-performance-tab-calibration-view.png",
+      "menu": "Performance",
+      "action": "tab-Calibration",
+      "result": "view",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "name": "149-performance-export-clicked.png",
+      "menu": "Performance",
+      "action": "Export",
+      "result": "clicked",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "name": "150-assets-land-view.png",
+      "menu": "Assets",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "151-assets-tab-inventory-view.png",
+      "menu": "Assets",
+      "action": "tab-Inventory",
+      "result": "view",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "152-assets-tab-assigned-view.png",
+      "menu": "Assets",
+      "action": "tab-Assigned",
+      "result": "view",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "153-assets-tab-requests-view.png",
+      "menu": "Assets",
+      "action": "tab-Requests",
+      "result": "view",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "154-assets-filter-open-open.png",
+      "menu": "Assets",
+      "action": "filter-open",
+      "result": "open",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "155-assets-filter-applied-applied.png",
+      "menu": "Assets",
+      "action": "filter-applied",
+      "result": "applied",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "156-assets-add-clicked.png",
+      "menu": "Assets",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "157-assets-add-modal-open.png",
+      "menu": "Assets",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "158-assets-export-clicked.png",
+      "menu": "Assets",
+      "action": "Export",
+      "result": "clicked",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "name": "159-announcements-land-view.png",
+      "menu": "Announcements",
+      "action": "land",
+      "result": "view",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "160-announcements-add-clicked.png",
+      "menu": "Announcements",
+      "action": "Add",
+      "result": "clicked",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "161-announcements-add-modal-open.png",
+      "menu": "Announcements",
+      "action": "Add-modal",
+      "result": "open",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "162-announcements-new-clicked.png",
+      "menu": "Announcements",
+      "action": "New",
+      "result": "clicked",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "163-announcements-new-modal-open.png",
+      "menu": "Announcements",
+      "action": "New-modal",
+      "result": "open",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "name": "164-shell-notifications-bell-open.png",
+      "menu": "shell",
+      "action": "notifications-bell",
+      "result": "open",
+      "url": "http://localhost:3001/dashboard"
+    }
+  ],
+  "generatedAt": "2026-08-02T19:16:17.162Z",
+  "consolidated": {
+    "backendIssues": 2,
+    "frontendIssues": 6,
+    "issueIdsBE": [
+      "ISSUE-HR-05",
+      "ISSUE-HR-09"
+    ],
+    "issueIdsFE": [
+      "ISSUE-HR-01",
+      "ISSUE-HR-02",
+      "ISSUE-HR-03",
+      "ISSUE-HR-04",
+      "ISSUE-HR-06",
+      "ISSUE-HR-07"
+    ],
+    "screenshotCountFinal": 185,
+    "findings": "FINDINGS.md",
+    "contracts": [
+      "docs/E2E_BACKEND_ISSUES_CONTRACT.md#HR_ADMIN",
+      "docs/E2E_FRONTEND_ISSUES_CONTRACT.md#HR_ADMIN"
+    ]
+  }
+}

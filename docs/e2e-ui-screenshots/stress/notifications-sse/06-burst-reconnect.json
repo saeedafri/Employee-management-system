@@ -1,0 +1,193 @@
+{
+  "sseMid": {
+    "uniqueUsers": 4,
+    "connectionCount": 5,
+    "connects": 5,
+    "disconnects": 0,
+    "emits": 9,
+    "emitFailures": 0,
+    "fanoutEnabled": true,
+    "published": 109,
+    "receivedFromRedis": 109
+  },
+  "sseAfterKill": {
+    "uniqueUsers": 0,
+    "connectionCount": 0,
+    "connects": 5,
+    "disconnects": 5,
+    "emits": 9,
+    "emitFailures": 0,
+    "fanoutEnabled": true,
+    "published": 109,
+    "receivedFromRedis": 109
+  },
+  "burst": [
+    {
+      "i": 0,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 1,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 2,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 3,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 4,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 5,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 6,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 7,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 8,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    },
+    {
+      "i": 9,
+      "status": 200,
+      "ok": true,
+      "comments": [
+        "connected"
+      ],
+      "errors": [
+        "Error: aborted"
+      ],
+      "hung": false,
+      "bytes": 13
+    }
+  ],
+  "burstFailCount": 0,
+  "burst401": 0,
+  "burstHung": 0,
+  "reOpen": [
+    {
+      "label": "priya-reconnect",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "label": "aman-reconnect",
+      "status": 200,
+      "ok": true
+    }
+  ],
+  "sseAfterBurst": {
+    "uniqueUsers": 0,
+    "connectionCount": 0,
+    "connects": 15,
+    "disconnects": 15,
+    "emits": 9,
+    "emitFailures": 0,
+    "fanoutEnabled": true,
+    "published": 109,
+    "receivedFromRedis": 109
+  },
+  "sseAfterReconnect": {
+    "uniqueUsers": 2,
+    "connectionCount": 2,
+    "connects": 17,
+    "disconnects": 15,
+    "emits": 9,
+    "emitFailures": 0,
+    "fanoutEnabled": true,
+    "published": 109,
+    "receivedFromRedis": 109
+  }
+}

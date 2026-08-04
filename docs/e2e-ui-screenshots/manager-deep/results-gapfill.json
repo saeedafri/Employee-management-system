@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-08-02T19:42:59.063Z",
+  "hasAmanOwnInApprovals": false,
+  "approveCount": 13,
+  "selfResult": null,
+  "apiSample": [
+    {
+      "status": 403,
+      "method": "POST",
+      "url": "http://localhost:3001/api/timesheets/cmqjpyhsz009j12oncxrxe5gz/approve",
+      "bodySnippet": "{\"success\":false,\"error\":{\"code\":\"NOT_TEAM_APPROVER\",\"message\":\"You can only decide requests for your direct reports\",\"details\":{},\"requestId\":\"86b758f7-0033-4fa5-90c7-b11b405ea522\"}}"
+    }
+  ],
+  "lastShot": 472
+}

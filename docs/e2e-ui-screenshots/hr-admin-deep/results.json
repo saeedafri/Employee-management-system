@@ -1,0 +1,3503 @@
+{
+  "depthStats": {
+    "menus": 17,
+    "tabs": 37,
+    "buttons": 391,
+    "modalsEntered": 57,
+    "nestedWizardSteps": 4,
+    "rowActions": 3,
+    "exports": 4,
+    "detailPages": 61,
+    "screenshots": 511,
+    "be": 2,
+    "fe": 7,
+    "both": 0,
+    "maxNestDepth": 2,
+    "findingsActions": 425,
+    "pngCount": 511
+  },
+  "findings": [
+    {
+      "menu": "Login",
+      "action": "login",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:09.649Z",
+      "screenshot": "002-login-success.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:11.588Z",
+      "screenshot": "004-dashboard.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Add Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:12.494Z",
+      "screenshot": "005-dashboard-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/AddEmployee",
+      "action": "Save draft",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:13.640Z",
+      "screenshot": "006-dashboard-addemployee-save-draft.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/AddEmployee",
+      "action": "Cancel",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:17.256Z",
+      "screenshot": "007-dashboard-addemployee-cancel.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/AddEmployee",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:18.741Z",
+      "screenshot": "008-dashboard-addemployee-next.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/AddEmployee",
+      "action": "Not specified",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:20.203Z",
+      "screenshot": "009-dashboard-addemployee-not-specified.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Add Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:27.158Z",
+      "screenshot": "013-dashboard-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "detail-page",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:27.192Z",
+      "screenshot": "014-dashboard-detail.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/detail",
+      "action": "Save draft",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:28.368Z",
+      "screenshot": "015-dashboard-detail-save-draft.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/detail",
+      "action": "Cancel",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:31.990Z",
+      "screenshot": "016-dashboard-detail-cancel.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/detail",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:33.479Z",
+      "screenshot": "017-dashboard-detail-next.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard/detail",
+      "action": "Not specified",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:34.951Z",
+      "screenshot": "018-dashboard-detail-not-specified.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "7d",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:38.681Z",
+      "screenshot": "019-dashboard-7d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "30d",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:40.225Z",
+      "screenshot": "020-dashboard-30d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "90d",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:41.694Z",
+      "screenshot": "021-dashboard-90d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Employees",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:43.907Z",
+      "screenshot": "022-employees.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "search",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:44.840Z",
+      "screenshot": "023-employees-search.png"
+    },
+    {
+      "menu": "Employees",
+      "action": "Add employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:46.059Z",
+      "screenshot": "024-employees-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "Columns",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:47.528Z",
+      "screenshot": "025-employees-columns.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "Export",
+      "status": "SKIP",
+      "at": "2026-08-02T19:25:53.486Z",
+      "note": "click failed"
+    },
+    {
+      "menu": "Employees",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:54.578Z",
+      "screenshot": "026-employees-all-departments.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "All statuses",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:56.042Z",
+      "screenshot": "027-employees-all-statuses.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "Comfortable",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:59.675Z",
+      "screenshot": "028-employees-comfortable.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Departments",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:01.773Z",
+      "screenshot": "029-departments.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Add department",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:03.443Z",
+      "screenshot": "030-departments-add-department.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:03.500Z",
+      "screenshot": "031-departments-modal-d1.png"
+    },
+    {
+      "menu": "Departments",
+      "action": "modal-ctrl:None (root department)",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:04.121Z",
+      "screenshot": "032-departments-modal-none-root-department-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Departments",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:04.198Z",
+      "screenshot": "033-departments-modal-d2.png"
+    },
+    {
+      "menu": "Departments",
+      "action": "modal-ctrl:None (root department)",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:04.896Z",
+      "screenshot": "034-departments-modal-none-root-department-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Departments",
+      "action": "modal-ctrl:Create department",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:05.555Z",
+      "screenshot": "035-departments-modal-create-department-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Customer Success",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:07.825Z",
+      "screenshot": "036-departments-actions-for-customer-success.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Engineering",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:09.310Z",
+      "screenshot": "037-departments-actions-for-engineering.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Finance",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:10.775Z",
+      "screenshot": "038-departments-actions-for-finance.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for HR",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:12.241Z",
+      "screenshot": "039-departments-actions-for-hr.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Marketing",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:13.718Z",
+      "screenshot": "040-departments-actions-for-marketing.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Operations",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:15.206Z",
+      "screenshot": "041-departments-actions-for-operations.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Product",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:16.679Z",
+      "screenshot": "042-departments-actions-for-product.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Sales",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:18.157Z",
+      "screenshot": "043-departments-actions-for-sales.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:21.830Z",
+      "screenshot": "044-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Attendance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:23.908Z",
+      "screenshot": "045-attendance.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Request Regularization",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:25.514Z",
+      "screenshot": "046-attendance-request-regularization.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:25.582Z",
+      "screenshot": "047-attendance-modal-d1.png"
+    },
+    {
+      "menu": "Attendance",
+      "action": "modal-ctrl:Attach file (optional)",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:26.234Z",
+      "screenshot": "048-attendance-modal-attach-file-optional-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Attendance",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:26.297Z",
+      "screenshot": "049-attendance-modal-d2.png"
+    },
+    {
+      "menu": "Attendance",
+      "action": "modal-ctrl:Attach file (optional)",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:26.947Z",
+      "screenshot": "050-attendance-modal-attach-file-optional-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Attendance",
+      "action": "modal-ctrl:Submit Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:27.526Z",
+      "screenshot": "051-attendance-modal-submit-request-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Attendance",
+      "action": "Previous month",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:30.162Z",
+      "screenshot": "052-attendance-previous-month.png",
+      "url": "http://localhost:3001/attendance?month=2026-07"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Next month",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:31.758Z",
+      "screenshot": "053-attendance-next-month.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:33.332Z",
+      "screenshot": "054-attendance-all-departments.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "All employees",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:34.816Z",
+      "screenshot": "055-attendance-all-employees.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:36.309Z",
+      "screenshot": "056-attendance-calendar.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Table",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:37.843Z",
+      "screenshot": "057-attendance-table.png",
+      "url": "http://localhost:3001/attendance?view=table"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:40.060Z",
+      "screenshot": "058-timesheets.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:41.457Z",
+      "screenshot": "059-timesheets-tab-my-timesheet.png"
+    },
+    {
+      "menu": "Timesheets/My Timesheet",
+      "action": "Previous week",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:42.724Z",
+      "screenshot": "060-timesheets-my-timesheet-previous-week.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets/My Timesheet",
+      "action": "Next week",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:44.174Z",
+      "screenshot": "061-timesheets-my-timesheet-next-week.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets/My Timesheet",
+      "action": "Copy last week",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:45.641Z",
+      "screenshot": "062-timesheets-my-timesheet-copy-last-week.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets/My Timesheet",
+      "action": "Submit week",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:49.262Z",
+      "screenshot": "063-timesheets-my-timesheet-submit-week.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets/My Timesheet",
+      "action": "Project",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:50.746Z",
+      "screenshot": "064-timesheets-my-timesheet-project.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets/My Timesheet",
+      "action": "No task",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:54.380Z",
+      "screenshot": "065-timesheets-my-timesheet-no-task.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:55.833Z",
+      "screenshot": "066-timesheets-tab-approvals.png"
+    },
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "Approve",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:57.683Z",
+      "screenshot": "067-timesheets-approvals-approve.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals",
+      "note": "mutation noted"
+    },
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "History",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:59.261Z",
+      "screenshot": "068-timesheets-approvals-history.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:59.343Z",
+      "screenshot": "069-timesheets-approvals-modal-d1.png"
+    },
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "Return",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:01.152Z",
+      "screenshot": "070-timesheets-approvals-return.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:01.266Z",
+      "screenshot": "071-timesheets-approvals-modal-d1.png"
+    },
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "modal-ctrl:Return week",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:01.956Z",
+      "screenshot": "072-timesheets-approvals-modal-return-week-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:02.044Z",
+      "screenshot": "073-timesheets-approvals-modal-d2.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Projects",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:08.784Z",
+      "screenshot": "074-timesheets-tab-projects.png"
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "New project",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:10.246Z",
+      "screenshot": "075-timesheets-projects-new-project.png",
+      "url": "http://localhost:3001/timesheets?tab=projects"
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:10.325Z",
+      "screenshot": "076-timesheets-projects-modal-d1.png"
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal-ctrl:Create project",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:11.251Z",
+      "screenshot": "077-timesheets-projects-modal-create-project-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:11.330Z",
+      "screenshot": "078-timesheets-projects-modal-d2.png"
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal-ctrl:Create project",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:12.074Z",
+      "screenshot": "079-timesheets-projects-modal-create-project-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:14.449Z",
+      "screenshot": "080-timesheets-projects-edit.png",
+      "url": "http://localhost:3001/timesheets?tab=projects"
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:14.549Z",
+      "screenshot": "081-timesheets-projects-modal-d1.png"
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal-ctrl:Add",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:15.408Z",
+      "screenshot": "082-timesheets-projects-modal-add-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:15.503Z",
+      "screenshot": "083-timesheets-projects-modal-d2.png"
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal-ctrl:Add",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:16.220Z",
+      "screenshot": "084-timesheets-projects-modal-add-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "modal-ctrl:No budget",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:16.882Z",
+      "screenshot": "085-timesheets-projects-modal-no-budget-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Timesheets/Projects",
+      "action": "Archive",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:19.246Z",
+      "screenshot": "087-timesheets-projects-archive.png",
+      "url": "http://localhost:3001/timesheets?tab=projects"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Rates",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:20.710Z",
+      "screenshot": "088-timesheets-tab-rates.png"
+    },
+    {
+      "menu": "Timesheets/Rates",
+      "action": "US Dollar (USD)",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:22.013Z",
+      "screenshot": "089-timesheets-rates-us-dollar-usd.png",
+      "url": "http://localhost:3001/timesheets?tab=rates"
+    },
+    {
+      "menu": "Timesheets/Rates",
+      "action": "No budget",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:23.482Z",
+      "screenshot": "090-timesheets-rates-no-budget.png",
+      "url": "http://localhost:3001/timesheets?tab=rates"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approval Flow",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:24.944Z",
+      "screenshot": "091-timesheets-tab-approval-flow.png"
+    },
+    {
+      "menu": "Timesheets/Approval Flow",
+      "action": "Manager",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:26.193Z",
+      "screenshot": "092-timesheets-approval-flow-manager.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets/Approval Flow",
+      "action": "Add step",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:27.659Z",
+      "screenshot": "093-timesheets-approval-flow-add-step.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets/Approval Flow",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:29.110Z",
+      "screenshot": "094-timesheets-approval-flow-save.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets/Approval Flow",
+      "action": "Anyone with role",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:30.595Z",
+      "screenshot": "095-timesheets-approval-flow-anyone-with-role.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets/Approval Flow",
+      "action": "Move step 1 up",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:34.310Z",
+      "screenshot": "096-timesheets-approval-flow-move-step-1-up.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets/Approval Flow",
+      "action": "Move step 1 down",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:35.775Z",
+      "screenshot": "097-timesheets-approval-flow-move-step-1-down.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Locks",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:37.227Z",
+      "screenshot": "098-timesheets-tab-locks.png"
+    },
+    {
+      "menu": "Timesheets/Locks",
+      "action": "Lock period",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:38.425Z",
+      "screenshot": "099-timesheets-locks-lock-period.png",
+      "url": "http://localhost:3001/timesheets?tab=locks"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Delegations",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:39.885Z",
+      "screenshot": "100-timesheets-tab-delegations.png"
+    },
+    {
+      "menu": "Timesheets/Delegations",
+      "action": "Create delegation",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:41.195Z",
+      "screenshot": "101-timesheets-delegations-create-delegation.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets/Delegations",
+      "action": "Yourself (default)",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:42.662Z",
+      "screenshot": "102-timesheets-delegations-yourself-default.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets/Delegations",
+      "action": "Choose a person",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:44.130Z",
+      "screenshot": "103-timesheets-delegations-choose-a-person.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Create delegation",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:45.782Z",
+      "screenshot": "104-timesheets-create-delegation.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Yourself (default)",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:47.230Z",
+      "screenshot": "105-timesheets-yourself-default.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Choose a person",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:48.696Z",
+      "screenshot": "106-timesheets-choose-a-person.png",
+      "url": "http://localhost:3001/timesheets?tab=delegations"
+    },
+    {
+      "menu": "Leave",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:50.846Z",
+      "screenshot": "107-leave.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:My Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:52.243Z",
+      "screenshot": "108-leave-tab-my-requests.png"
+    },
+    {
+      "menu": "Leave/My Requests",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:53.514Z",
+      "screenshot": "109-leave-my-requests-new-request.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Leave/My Requests",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:53.573Z",
+      "screenshot": "110-leave-my-requests-modal-d1.png"
+    },
+    {
+      "menu": "Leave/My Requests",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:54.233Z",
+      "screenshot": "111-leave-my-requests-modal-select-leave-type-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Leave/My Requests",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:54.297Z",
+      "screenshot": "112-leave-my-requests-modal-d2.png"
+    },
+    {
+      "menu": "Leave/My Requests",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:55.065Z",
+      "screenshot": "113-leave-my-requests-modal-select-leave-type-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/My Requests",
+      "action": "modal-ctrl:Submit Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:55.711Z",
+      "screenshot": "114-leave-my-requests-modal-submit-request-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/My Requests",
+      "action": "All statuses",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:57.978Z",
+      "screenshot": "115-leave-my-requests-all-statuses.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Team Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:59.407Z",
+      "screenshot": "116-leave-tab-team-calendar.png"
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:00.592Z",
+      "screenshot": "117-leave-team-calendar-new-request.png",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:00.653Z",
+      "screenshot": "118-leave-team-calendar-modal-d1.png"
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:01.273Z",
+      "screenshot": "119-leave-team-calendar-modal-select-leave-type-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:01.338Z",
+      "screenshot": "120-leave-team-calendar-modal-d2.png"
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:01.997Z",
+      "screenshot": "121-leave-team-calendar-modal-select-leave-type-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "modal-ctrl:Submit Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:02.622Z",
+      "screenshot": "122-leave-team-calendar-modal-submit-request-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "Previous month",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:04.877Z",
+      "screenshot": "123-leave-team-calendar-previous-month.png",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "menu": "Leave/Team Calendar",
+      "action": "Next month",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:06.374Z",
+      "screenshot": "124-leave-team-calendar-next-month.png",
+      "url": "http://localhost:3001/leave?tab=team-calendar"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Comp-off",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:07.794Z",
+      "screenshot": "125-leave-tab-comp-off.png"
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:08.989Z",
+      "screenshot": "126-leave-comp-off-new-request.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:09.060Z",
+      "screenshot": "127-leave-comp-off-modal-d1.png"
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:09.697Z",
+      "screenshot": "128-leave-comp-off-modal-select-leave-type-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:09.755Z",
+      "screenshot": "129-leave-comp-off-modal-d2.png"
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:10.394Z",
+      "screenshot": "130-leave-comp-off-modal-select-leave-type-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal-ctrl:Submit Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:11.007Z",
+      "screenshot": "131-leave-comp-off-modal-submit-request-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "Request comp-off",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:13.328Z",
+      "screenshot": "132-leave-comp-off-request-comp-off.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:13.392Z",
+      "screenshot": "133-leave-comp-off-modal-d1.png"
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal-ctrl:Select comp-off type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:14.044Z",
+      "screenshot": "134-leave-comp-off-modal-select-comp-off-type-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:14.103Z",
+      "screenshot": "135-leave-comp-off-modal-d2.png"
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal-ctrl:Select comp-off type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:14.747Z",
+      "screenshot": "136-leave-comp-off-modal-select-comp-off-type-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/Comp-off",
+      "action": "modal-ctrl:Submit Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:15.353Z",
+      "screenshot": "137-leave-comp-off-modal-submit-request-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:17.576Z",
+      "screenshot": "138-leave-tab-approvals.png"
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:18.790Z",
+      "screenshot": "139-leave-approvals-new-request.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:18.871Z",
+      "screenshot": "140-leave-approvals-modal-d1.png"
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:19.509Z",
+      "screenshot": "141-leave-approvals-modal-select-leave-type-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:19.577Z",
+      "screenshot": "142-leave-approvals-modal-d2.png"
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:20.205Z",
+      "screenshot": "143-leave-approvals-modal-select-leave-type-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "modal-ctrl:Submit Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:20.812Z",
+      "screenshot": "144-leave-approvals-modal-submit-request-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "Pending",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:23.060Z",
+      "screenshot": "145-leave-approvals-pending.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave/Approvals",
+      "action": "Recent",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:24.511Z",
+      "screenshot": "146-leave-approvals-recent.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:26.110Z",
+      "screenshot": "147-leave-new-request.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:26.171Z",
+      "screenshot": "148-leave-modal-d1.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:26.826Z",
+      "screenshot": "149-leave-modal-select-leave-type-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Leave",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:26.894Z",
+      "screenshot": "150-leave-modal-d2.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "modal-ctrl:Select leave type",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:27.536Z",
+      "screenshot": "151-leave-modal-select-leave-type-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave",
+      "action": "modal-ctrl:Submit Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:28.144Z",
+      "screenshot": "152-leave-modal-submit-request-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Leave",
+      "action": "Pending",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:30.426Z",
+      "screenshot": "153-leave-pending.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "Recent",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:31.877Z",
+      "screenshot": "154-leave-recent.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Holidays",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:34.049Z",
+      "screenshot": "155-holidays.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Import .ics",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:36.098Z",
+      "screenshot": "156-holidays-import-ics.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:36.210Z",
+      "screenshot": "157-holidays-modal-d1.png"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Add Holiday",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:38.146Z",
+      "screenshot": "158-holidays-add-holiday.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:38.245Z",
+      "screenshot": "159-holidays-modal-d1.png"
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal-ctrl:Add Holiday",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:38.934Z",
+      "screenshot": "160-holidays-modal-add-holiday-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Holidays",
+      "action": "Previous year",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:40.980Z",
+      "screenshot": "161-holidays-previous-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Next year",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:42.499Z",
+      "screenshot": "162-holidays-next-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for New Year's Day",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:44.000Z",
+      "screenshot": "163-holidays-actions-for-new-year-s-day.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Republic Day",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:45.482Z",
+      "screenshot": "164-holidays-actions-for-republic-day.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Holi",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:46.982Z",
+      "screenshot": "165-holidays-actions-for-holi.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Eid al-Fitr",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:48.479Z",
+      "screenshot": "166-holidays-actions-for-eid-al-fitr.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Ram Navami",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:49.945Z",
+      "screenshot": "167-holidays-actions-for-ram-navami.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Good Friday",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:51.445Z",
+      "screenshot": "168-holidays-actions-for-good-friday.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Maharashtra Day",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:52.912Z",
+      "screenshot": "169-holidays-actions-for-maharashtra-day.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Eid al-Adha",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:54.385Z",
+      "screenshot": "170-holidays-actions-for-eid-al-adha.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for KW National Day (litmus)",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:55.866Z",
+      "screenshot": "171-holidays-actions-for-kw-national-day-litmus.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for US Independence Day (litmus)",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:57.348Z",
+      "screenshot": "172-holidays-actions-for-us-independence-day-litmus.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Independence Day",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:58.830Z",
+      "screenshot": "173-holidays-actions-for-independence-day.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Onam",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:00.296Z",
+      "screenshot": "174-holidays-actions-for-onam.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Gandhi Jayanti",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:01.781Z",
+      "screenshot": "175-holidays-actions-for-gandhi-jayanti.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Dussehra",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:03.246Z",
+      "screenshot": "176-holidays-actions-for-dussehra.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Diwali",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:04.713Z",
+      "screenshot": "177-holidays-actions-for-diwali.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Guru Nanak Jayanti",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:06.198Z",
+      "screenshot": "178-holidays-actions-for-guru-nanak-jayanti.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for Christmas",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:07.663Z",
+      "screenshot": "179-holidays-actions-for-christmas.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Holiday policy",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:09.248Z",
+      "screenshot": "180-holidays-holiday-policy.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:09.320Z",
+      "screenshot": "181-holidays-modal-d1.png"
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal-ctrl:No substitution",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:10.079Z",
+      "screenshot": "182-holidays-modal-no-substitution-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:10.158Z",
+      "screenshot": "183-holidays-modal-d2.png"
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal-ctrl:No substitution",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:10.942Z",
+      "screenshot": "184-holidays-modal-no-substitution-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Holidays",
+      "action": "modal-ctrl:Next working day",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:13.748Z",
+      "screenshot": "185-holidays-modal-next-working-day-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:16.851Z",
+      "screenshot": "187-payroll.png"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Run Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:18.245Z",
+      "screenshot": "188-payroll-run-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:18.326Z",
+      "screenshot": "189-payroll-modal-d1.png"
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal-ctrl:Regular",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:19.039Z",
+      "screenshot": "190-payroll-modal-regular-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:19.156Z",
+      "screenshot": "191-payroll-modal-d2.png"
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal-ctrl:Regular",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:19.834Z",
+      "screenshot": "192-payroll-modal-regular-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal-ctrl:India Monthly Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:22.686Z",
+      "screenshot": "193-payroll-modal-india-monthly-payroll-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal-ctrl:August",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:23.299Z",
+      "screenshot": "194-payroll-modal-august-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal-ctrl:2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:23.932Z",
+      "screenshot": "195-payroll-modal-2026-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll",
+      "action": "modal-ctrl:Calculate Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:26.772Z",
+      "screenshot": "196-payroll-modal-calculate-payroll-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll",
+      "action": "Actions for 16–31 Dec 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:29.147Z",
+      "screenshot": "197-payroll-actions-for-16-31-dec-2026.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Actions for 1–15 Dec 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:30.653Z",
+      "screenshot": "198-payroll-actions-for-1-15-dec-2026.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Actions for December 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:32.153Z",
+      "screenshot": "199-payroll-actions-for-december-2026.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Actions for 16–30 Nov 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:33.632Z",
+      "screenshot": "200-payroll-actions-for-16-30-nov-2026.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Actions for 1–15 Nov 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:35.100Z",
+      "screenshot": "201-payroll-actions-for-1-15-nov-2026.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Actions for November 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:36.565Z",
+      "screenshot": "202-payroll-actions-for-november-2026.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Actions for 16–31 Oct 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:38.036Z",
+      "screenshot": "203-payroll-actions-for-16-31-oct-2026.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Prev",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:41.685Z",
+      "screenshot": "204-payroll-prev.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:43.133Z",
+      "screenshot": "205-payroll-next.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:44.612Z",
+      "screenshot": "206-payroll-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Global Workforce",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:46.084Z",
+      "screenshot": "207-payroll-global-workforce.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "run-detail",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:47.379Z",
+      "screenshot": "208-payroll-run-detail.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/run",
+      "action": "tab:Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:48.395Z",
+      "screenshot": "209-payroll-run-tab-pay-calendar.png"
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "New calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:49.708Z",
+      "screenshot": "210-payroll-run-pay-calendar-new-calendar.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:49.801Z",
+      "screenshot": "211-payroll-run-pay-calendar-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:50.555Z",
+      "screenshot": "212-payroll-run-pay-calendar-modal-none-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:50.673Z",
+      "screenshot": "213-payroll-run-pay-calendar-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:51.445Z",
+      "screenshot": "214-payroll-run-pay-calendar-modal-none-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:MONTHLY",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:54.381Z",
+      "screenshot": "215-payroll-run-pay-calendar-modal-monthly-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:LAST_WORKING_DAY",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:55.034Z",
+      "screenshot": "216-payroll-run-pay-calendar-modal-last-working-day-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:57.494Z",
+      "screenshot": "218-payroll-run-pay-calendar-edit.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:57.580Z",
+      "screenshot": "219-payroll-run-pay-calendar-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:58.359Z",
+      "screenshot": "220-payroll-run-pay-calendar-modal-none-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:58.443Z",
+      "screenshot": "221-payroll-run-pay-calendar-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:59.169Z",
+      "screenshot": "222-payroll-run-pay-calendar-modal-none-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:MONTHLY",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:01.994Z",
+      "screenshot": "223-payroll-run-pay-calendar-modal-monthly-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/run/Pay Calendar",
+      "action": "modal-ctrl:LAST_WORKING_DAY",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:02.604Z",
+      "screenshot": "224-payroll-run-pay-calendar-modal-last-working-day-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/run",
+      "action": "tab:Opening Balances",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:05.015Z",
+      "screenshot": "226-payroll-run-tab-opening-balances.png"
+    },
+    {
+      "menu": "Payroll/run/Opening Balances",
+      "action": "Import",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:08.399Z",
+      "screenshot": "227-payroll-run-opening-balances-import.png",
+      "url": "http://localhost:3001/payroll/migration?tab=opening"
+    },
+    {
+      "menu": "Payroll/run/Opening Balances",
+      "action": "Load roster template",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:09.860Z",
+      "screenshot": "228-payroll-run-opening-balances-load-roster-template.png",
+      "url": "http://localhost:3001/payroll/migration?tab=opening"
+    },
+    {
+      "menu": "Payroll/run",
+      "action": "tab:Historical Payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:11.327Z",
+      "screenshot": "229-payroll-run-tab-historical-payslips.png"
+    },
+    {
+      "menu": "Payroll/run/Historical Payslips",
+      "action": "Import",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:14.663Z",
+      "screenshot": "230-payroll-run-historical-payslips-import.png",
+      "url": "http://localhost:3001/payroll/migration?tab=historical"
+    },
+    {
+      "menu": "Payroll/run/Historical Payslips",
+      "action": "Load sample",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:16.149Z",
+      "screenshot": "231-payroll-run-historical-payslips-load-sample.png",
+      "url": "http://localhost:3001/payroll/migration?tab=historical"
+    },
+    {
+      "menu": "Payroll/run",
+      "action": "tab:Parallel Run",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:17.609Z",
+      "screenshot": "232-payroll-run-tab-parallel-run.png"
+    },
+    {
+      "menu": "Payroll/run/Parallel Run",
+      "action": "August 2026 · REVIEW",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:18.760Z",
+      "screenshot": "233-payroll-run-parallel-run-august-2026-review.png",
+      "url": "http://localhost:3001/payroll/migration?tab=parallel"
+    },
+    {
+      "menu": "Payroll/run/Parallel Run",
+      "action": "Reconcile",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:22.394Z",
+      "screenshot": "234-payroll-run-parallel-run-reconcile.png",
+      "url": "http://localhost:3001/payroll/migration?tab=parallel"
+    },
+    {
+      "menu": "Payroll/run",
+      "action": "tab:Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:23.793Z",
+      "screenshot": "235-payroll-run-tab-go-live.png"
+    },
+    {
+      "menu": "Payroll/run/Go-Live",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:24.936Z",
+      "screenshot": "236-payroll-run-go-live-save.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll/run",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:26.447Z",
+      "screenshot": "237-payroll-run-save.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/my-payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:30.361Z",
+      "screenshot": "238-payroll-my-payslips.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Run Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:31.698Z",
+      "screenshot": "239-payroll-payroll-my-payslips-run-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:31.790Z",
+      "screenshot": "240-payroll-payroll-my-payslips-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal-ctrl:Regular",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:32.537Z",
+      "screenshot": "241-payroll-payroll-my-payslips-modal-regular-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:32.647Z",
+      "screenshot": "242-payroll-payroll-my-payslips-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal-ctrl:Regular",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:33.355Z",
+      "screenshot": "243-payroll-payroll-my-payslips-modal-regular-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal-ctrl:India Monthly Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:36.182Z",
+      "screenshot": "244-payroll-payroll-my-payslips-modal-india-monthly-payroll.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal-ctrl:August",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:36.814Z",
+      "screenshot": "245-payroll-payroll-my-payslips-modal-august-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal-ctrl:2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:37.468Z",
+      "screenshot": "246-payroll-payroll-my-payslips-modal-2026-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "modal-ctrl:Calculate Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:40.270Z",
+      "screenshot": "247-payroll-payroll-my-payslips-modal-calculate-payroll-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "detail-page",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:41.193Z",
+      "screenshot": "248-payroll-payroll-my-payslips-detail.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Run Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:42.686Z",
+      "screenshot": "249-payroll-payroll-my-payslips-detail-run-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:42.821Z",
+      "screenshot": "250-payroll-payroll-my-payslips-detail-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:Off-cycle",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:43.549Z",
+      "screenshot": "251-payroll-payroll-my-payslips-detail-modal-off-cycle-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:43.642Z",
+      "screenshot": "252-payroll-payroll-my-payslips-detail-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:Off-cycle",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:44.464Z",
+      "screenshot": "253-payroll-payroll-my-payslips-detail-modal-off-cycle-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:India Monthly Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:47.283Z",
+      "screenshot": "254-payroll-payroll-my-payslips-detail-modal-india-monthly-.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:August",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:47.947Z",
+      "screenshot": "255-payroll-payroll-my-payslips-detail-modal-august-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:48.592Z",
+      "screenshot": "256-payroll-payroll-my-payslips-detail-modal-2026-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:Calculate Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:51.452Z",
+      "screenshot": "257-payroll-payroll-my-payslips-detail-modal-calculate-payr.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Actions for 16–31 Dec 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:53.899Z",
+      "screenshot": "258-payroll-payroll-my-payslips-detail-actions-for-16-31-de.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Actions for 1–15 Dec 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:55.421Z",
+      "screenshot": "259-payroll-payroll-my-payslips-detail-actions-for-1-15-dec.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Actions for December 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:56.888Z",
+      "screenshot": "260-payroll-payroll-my-payslips-detail-actions-for-december.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Actions for 16–30 Nov 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:58.370Z",
+      "screenshot": "261-payroll-payroll-my-payslips-detail-actions-for-16-30-no.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Actions for 1–15 Nov 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:59.868Z",
+      "screenshot": "262-payroll-payroll-my-payslips-detail-actions-for-1-15-nov.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Actions for November 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:01.335Z",
+      "screenshot": "263-payroll-payroll-my-payslips-detail-actions-for-november.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Actions for 16–31 Oct 2026",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:02.820Z",
+      "screenshot": "264-payroll-payroll-my-payslips-detail-actions-for-16-31-oc.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Prev",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:06.469Z",
+      "screenshot": "265-payroll-payroll-my-payslips-detail-prev.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:07.935Z",
+      "screenshot": "266-payroll-payroll-my-payslips-detail-next.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:13.298Z",
+      "screenshot": "267-payroll-payroll-my-payslips-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "detail-page",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:13.331Z",
+      "screenshot": "268-payroll-payroll-my-payslips-detail.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "tab:Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:14.348Z",
+      "screenshot": "269-payroll-payroll-my-payslips-detail-tab-pay-calendar.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "New calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:15.670Z",
+      "screenshot": "270-payroll-payroll-my-payslips-detail-pay-calendar-new-cal.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:15.784Z",
+      "screenshot": "271-payroll-payroll-my-payslips-detail-pay-calendar-modal-d.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:16.532Z",
+      "screenshot": "272-payroll-payroll-my-payslips-detail-pay-calendar-modal-n.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:16.631Z",
+      "screenshot": "273-payroll-payroll-my-payslips-detail-pay-calendar-modal-d.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:17.372Z",
+      "screenshot": "274-payroll-payroll-my-payslips-detail-pay-calendar-modal-n.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:MONTHLY",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:20.212Z",
+      "screenshot": "275-payroll-payroll-my-payslips-detail-pay-calendar-modal-m.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:LAST_WORKING_DAY",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:20.900Z",
+      "screenshot": "276-payroll-payroll-my-payslips-detail-pay-calendar-modal-l.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:23.441Z",
+      "screenshot": "278-payroll-payroll-my-payslips-detail-pay-calendar-edit.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:23.533Z",
+      "screenshot": "279-payroll-payroll-my-payslips-detail-pay-calendar-modal-d.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:24.360Z",
+      "screenshot": "280-payroll-payroll-my-payslips-detail-pay-calendar-modal-n.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:24.443Z",
+      "screenshot": "281-payroll-payroll-my-payslips-detail-pay-calendar-modal-d.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:25.229Z",
+      "screenshot": "282-payroll-payroll-my-payslips-detail-pay-calendar-modal-n.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:MONTHLY",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:28.047Z",
+      "screenshot": "283-payroll-payroll-my-payslips-detail-pay-calendar-modal-m.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Pay Calendar",
+      "action": "modal-ctrl:LAST_WORKING_DAY",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:28.690Z",
+      "screenshot": "284-payroll-payroll-my-payslips-detail-pay-calendar-modal-l.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "tab:Opening Balances",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:31.078Z",
+      "screenshot": "286-payroll-payroll-my-payslips-detail-tab-opening-balances.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Opening Balances",
+      "action": "Import",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:34.426Z",
+      "screenshot": "287-payroll-payroll-my-payslips-detail-opening-balances-imp.png",
+      "url": "http://localhost:3001/payroll/migration?tab=opening"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Opening Balances",
+      "action": "Load roster template",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:35.912Z",
+      "screenshot": "288-payroll-payroll-my-payslips-detail-opening-balances-loa.png",
+      "url": "http://localhost:3001/payroll/migration?tab=opening"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "tab:Historical Payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:37.327Z",
+      "screenshot": "289-payroll-payroll-my-payslips-detail-tab-historical-paysl.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Historical Payslips",
+      "action": "Import",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:40.693Z",
+      "screenshot": "290-payroll-payroll-my-payslips-detail-historical-payslips-.png",
+      "url": "http://localhost:3001/payroll/migration?tab=historical"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Historical Payslips",
+      "action": "Load sample",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:42.163Z",
+      "screenshot": "291-payroll-payroll-my-payslips-detail-historical-payslips-.png",
+      "url": "http://localhost:3001/payroll/migration?tab=historical"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "tab:Parallel Run",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:43.578Z",
+      "screenshot": "292-payroll-payroll-my-payslips-detail-tab-parallel-run.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Parallel Run",
+      "action": "August 2026 · REVIEW",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:44.813Z",
+      "screenshot": "293-payroll-payroll-my-payslips-detail-parallel-run-august-.png",
+      "url": "http://localhost:3001/payroll/migration?tab=parallel"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Parallel Run",
+      "action": "Reconcile",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:48.458Z",
+      "screenshot": "294-payroll-payroll-my-payslips-detail-parallel-run-reconci.png",
+      "url": "http://localhost:3001/payroll/migration?tab=parallel"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "tab:Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:49.927Z",
+      "screenshot": "295-payroll-payroll-my-payslips-detail-tab-go-live.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail/Go-Live",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:51.111Z",
+      "screenshot": "296-payroll-payroll-my-payslips-detail-go-live-save.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:52.716Z",
+      "screenshot": "297-payroll-payroll-my-payslips-detail-save.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Global Workforce",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:58.078Z",
+      "screenshot": "298-payroll-payroll-my-payslips-global-workforce.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "detail-page",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:58.228Z",
+      "screenshot": "299-payroll-payroll-my-payslips-detail.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "New Invoice",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:02.035Z",
+      "screenshot": "300-payroll-payroll-my-payslips-detail-new-invoice.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:02.135Z",
+      "screenshot": "301-payroll-payroll-my-payslips-detail-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:Select contractor…",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:02.843Z",
+      "screenshot": "302-payroll-payroll-my-payslips-detail-modal-select-contrac.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:02.928Z",
+      "screenshot": "303-payroll-payroll-my-payslips-detail-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "modal-ctrl:Select contractor…",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:03.644Z",
+      "screenshot": "304-payroll-payroll-my-payslips-detail-modal-select-contrac.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Worker type",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:06.145Z",
+      "screenshot": "306-payroll-payroll-my-payslips-detail-worker-type.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips/detail",
+      "action": "Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:07.628Z",
+      "screenshot": "307-payroll-payroll-my-payslips-detail-employee.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:13.801Z",
+      "screenshot": "308-payroll-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:14.830Z",
+      "screenshot": "309-payroll-payroll-migration-tab-pay-calendar.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "New calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:16.212Z",
+      "screenshot": "310-payroll-payroll-migration-pay-calendar-new-calendar.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:16.295Z",
+      "screenshot": "311-payroll-payroll-migration-pay-calendar-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:17.092Z",
+      "screenshot": "312-payroll-payroll-migration-pay-calendar-modal-none-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:17.180Z",
+      "screenshot": "313-payroll-payroll-migration-pay-calendar-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:17.934Z",
+      "screenshot": "314-payroll-payroll-migration-pay-calendar-modal-none-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:MONTHLY",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:20.776Z",
+      "screenshot": "315-payroll-payroll-migration-pay-calendar-modal-monthly-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:LAST_WORKING_DAY",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:21.438Z",
+      "screenshot": "316-payroll-payroll-migration-pay-calendar-modal-last-worki.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:23.998Z",
+      "screenshot": "318-payroll-payroll-migration-pay-calendar-edit.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:24.086Z",
+      "screenshot": "319-payroll-payroll-migration-pay-calendar-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:24.969Z",
+      "screenshot": "320-payroll-payroll-migration-pay-calendar-modal-none-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:25.106Z",
+      "screenshot": "321-payroll-payroll-migration-pay-calendar-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:_none",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:25.815Z",
+      "screenshot": "322-payroll-payroll-migration-pay-calendar-modal-none-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:MONTHLY",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:28.633Z",
+      "screenshot": "323-payroll-payroll-migration-pay-calendar-modal-monthly-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/migration/Pay Calendar",
+      "action": "modal-ctrl:LAST_WORKING_DAY",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:29.277Z",
+      "screenshot": "324-payroll-payroll-migration-pay-calendar-modal-last-worki.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Opening Balances",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:31.750Z",
+      "screenshot": "326-payroll-payroll-migration-tab-opening-balances.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Opening Balances",
+      "action": "Import",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:35.160Z",
+      "screenshot": "327-payroll-payroll-migration-opening-balances-import.png",
+      "url": "http://localhost:3001/payroll/migration?tab=opening"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Opening Balances",
+      "action": "Load roster template",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:36.682Z",
+      "screenshot": "328-payroll-payroll-migration-opening-balances-load-roster-.png",
+      "url": "http://localhost:3001/payroll/migration?tab=opening"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Historical Payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:38.133Z",
+      "screenshot": "329-payroll-payroll-migration-tab-historical-payslips.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Historical Payslips",
+      "action": "Import",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:41.520Z",
+      "screenshot": "330-payroll-payroll-migration-historical-payslips-import.png",
+      "url": "http://localhost:3001/payroll/migration?tab=historical"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Historical Payslips",
+      "action": "Load sample",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:43.038Z",
+      "screenshot": "331-payroll-payroll-migration-historical-payslips-load-samp.png",
+      "url": "http://localhost:3001/payroll/migration?tab=historical"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Parallel Run",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:44.460Z",
+      "screenshot": "332-payroll-payroll-migration-tab-parallel-run.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Parallel Run",
+      "action": "August 2026 · REVIEW",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:45.627Z",
+      "screenshot": "333-payroll-payroll-migration-parallel-run-august-2026-revi.png",
+      "url": "http://localhost:3001/payroll/migration?tab=parallel"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Parallel Run",
+      "action": "Reconcile",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:49.261Z",
+      "screenshot": "334-payroll-payroll-migration-parallel-run-reconcile.png",
+      "url": "http://localhost:3001/payroll/migration?tab=parallel"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:50.727Z",
+      "screenshot": "335-payroll-payroll-migration-tab-go-live.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration/Go-Live",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:51.878Z",
+      "screenshot": "336-payroll-payroll-migration-go-live-save.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "Save",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:53.448Z",
+      "screenshot": "337-payroll-payroll-migration-save.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/global",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:55.683Z",
+      "screenshot": "338-payroll-global.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "New Invoice",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:59.193Z",
+      "screenshot": "339-payroll-payroll-global-new-invoice.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:59.265Z",
+      "screenshot": "340-payroll-payroll-global-modal-d1.png"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "modal-ctrl:Select contractor…",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:59.996Z",
+      "screenshot": "341-payroll-payroll-global-modal-select-contractor-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:00.083Z",
+      "screenshot": "342-payroll-payroll-global-modal-d2.png"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "modal-ctrl:Select contractor…",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:00.786Z",
+      "screenshot": "343-payroll-payroll-global-modal-select-contractor-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Worker type",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:03.266Z",
+      "screenshot": "345-payroll-payroll-global-worker-type.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:04.746Z",
+      "screenshot": "346-payroll-payroll-global-employee.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:06.900Z",
+      "screenshot": "347-payout-methods.png",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "Review approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:08.398Z",
+      "screenshot": "348-payout-methods-review-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "Add account",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:09.893Z",
+      "screenshot": "349-payout-methods-add-account.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:12.048Z",
+      "screenshot": "350-payout-approvals.png"
+    },
+    {
+      "menu": "Payout/approvals",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:13.077Z",
+      "screenshot": "351-payout-approvals-tab-approvals.png"
+    },
+    {
+      "menu": "Payout/approvals",
+      "action": "tab:Verification",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:14.162Z",
+      "screenshot": "352-payout-approvals-tab-verification.png"
+    },
+    {
+      "menu": "Reports",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:16.439Z",
+      "screenshot": "353-reports.png"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:workforce/headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:18.285Z",
+      "screenshot": "354-reports-workforce-headcount.png",
+      "url": "http://localhost:3001/reports/workforce/headcount"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:workforce/turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:19.987Z",
+      "screenshot": "355-reports-workforce-turnover.png",
+      "url": "http://localhost:3001/reports/workforce/turnover"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:workforce/demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:21.751Z",
+      "screenshot": "356-reports-workforce-demographics.png",
+      "url": "http://localhost:3001/reports/workforce/demographics"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:attendance/summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:23.419Z",
+      "screenshot": "357-reports-attendance-summary.png",
+      "url": "http://localhost:3001/reports/attendance/summary"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:attendance/absenteeism",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:25.153Z",
+      "screenshot": "358-reports-attendance-absenteeism.png",
+      "url": "http://localhost:3001/reports/attendance/absenteeism"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:leave/utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:26.835Z",
+      "screenshot": "359-reports-leave-utilization.png",
+      "url": "http://localhost:3001/reports/leave/utilization"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:leave/pending",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:28.717Z",
+      "screenshot": "360-reports-leave-pending.png",
+      "url": "http://localhost:3001/reports/leave/pending"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:30.451Z",
+      "screenshot": "361-reports-payroll-summary.png",
+      "url": "http://localhost:3001/reports/payroll/summary"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/ctc-analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:32.222Z",
+      "screenshot": "362-reports-payroll-ctc-analysis.png",
+      "url": "http://localhost:3001/reports/payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/salary-register",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:34.010Z",
+      "screenshot": "363-reports-payroll-salary-register.png",
+      "url": "http://localhost:3001/reports/payroll/salary-register"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/statutory-register",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:35.729Z",
+      "screenshot": "364-reports-payroll-statutory-register.png",
+      "url": "http://localhost:3001/reports/payroll/statutory-register"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/bank-advice",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:37.471Z",
+      "screenshot": "365-reports-payroll-bank-advice.png",
+      "url": "http://localhost:3001/reports/payroll/bank-advice"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/variance-register",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:39.187Z",
+      "screenshot": "366-reports-payroll-variance-register.png",
+      "url": "http://localhost:3001/reports/payroll/variance-register"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:payroll/pay-equity",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:40.886Z",
+      "screenshot": "367-reports-payroll-pay-equity.png",
+      "url": "http://localhost:3001/reports/payroll/pay-equity"
+    },
+    {
+      "menu": "Reports",
+      "action": "type:timesheets/utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:42.599Z",
+      "screenshot": "368-reports-timesheets-utilization.png",
+      "url": "http://localhost:3001/reports/timesheets/utilization"
+    },
+    {
+      "menu": "Analytics",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:44.701Z",
+      "screenshot": "369-analytics.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "Analytics",
+      "action": "7d",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:47.289Z",
+      "screenshot": "370-analytics-7d.png",
+      "url": "http://localhost:3001/analytics?range=7d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "30d",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:48.961Z",
+      "screenshot": "371-analytics-30d.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "Analytics",
+      "action": "90d",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:50.584Z",
+      "screenshot": "372-analytics-90d.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "Custom",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:52.136Z",
+      "screenshot": "373-analytics-custom.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "modal:depth1",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:52.183Z",
+      "screenshot": "374-analytics-modal-d1.png"
+    },
+    {
+      "menu": "Analytics",
+      "action": "modal-ctrl:Apply range",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:52.971Z",
+      "screenshot": "375-analytics-modal-apply-range-d1.png",
+      "nest": 1
+    },
+    {
+      "menu": "Analytics",
+      "action": "modal:depth2",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:53.017Z",
+      "screenshot": "376-analytics-modal-d2.png"
+    },
+    {
+      "menu": "Analytics",
+      "action": "modal-ctrl:Apply range",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:53.643Z",
+      "screenshot": "377-analytics-modal-apply-range-d2.png",
+      "nest": 2
+    },
+    {
+      "menu": "Analytics",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:56.347Z",
+      "screenshot": "378-analytics-all-departments.png",
+      "url": "http://localhost:3001/analytics?range=custom&from=2026-08-10&to=2026-08-10"
+    },
+    {
+      "menu": "Analytics",
+      "action": "Load more",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:58.043Z",
+      "screenshot": "379-analytics-load-more.png",
+      "url": "http://localhost:3001/analytics?range=custom&from=2026-08-10&to=2026-08-10"
+    },
+    {
+      "menu": "Analytics",
+      "action": "6m",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:59.530Z",
+      "screenshot": "380-analytics-6m.png",
+      "url": "http://localhost:3001/analytics?range=custom&from=2026-08-10&to=2026-08-10"
+    },
+    {
+      "menu": "Analytics",
+      "action": "12m",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:01.048Z",
+      "screenshot": "381-analytics-12m.png",
+      "url": "http://localhost:3001/analytics?range=custom&from=2026-08-10&to=2026-08-10"
+    },
+    {
+      "menu": "Analytics",
+      "action": "2y",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:02.567Z",
+      "screenshot": "382-analytics-2y.png",
+      "url": "http://localhost:3001/analytics?range=custom&from=2026-08-10&to=2026-08-10"
+    },
+    {
+      "menu": "Permissions",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:04.744Z",
+      "screenshot": "383-permissions.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:company-profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:08.750Z",
+      "screenshot": "385-settings-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:41:14.896Z",
+      "resume": true,
+      "screenshot": "440-settings-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:41:19.030Z",
+      "resume": true,
+      "screenshot": "441-settings-locale.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:41:23.212Z",
+      "resume": true,
+      "screenshot": "442-settings-working-hours.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/attendance-rules",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:41:27.418Z",
+      "resume": true,
+      "screenshot": "443-settings-attendance-rules.png",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:41:31.603Z",
+      "resume": true,
+      "screenshot": "444-settings-notifications.png",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:41:35.902Z",
+      "resume": true,
+      "screenshot": "445-settings-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:13.268Z",
+      "resume": true,
+      "screenshot": "447-settings-audit-log.png",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:17.496Z",
+      "resume": true,
+      "screenshot": "448-settings-email-templates.png",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:18.761Z",
+      "resume": true,
+      "screenshot": "449-settings-email-templates-edit.png"
+    },
+    {
+      "menu": "Settings/integration-email",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:22.324Z",
+      "resume": true,
+      "screenshot": "451-settings-integration-email.png",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:26.445Z",
+      "resume": true,
+      "screenshot": "453-settings-integration-storage.png",
+      "url": "http://localhost:3001/settings/integration-storage"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:30.581Z",
+      "resume": true,
+      "screenshot": "455-settings-integration-webhooks.png",
+      "url": "http://localhost:3001/settings/integration-webhooks"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:36.777Z",
+      "resume": true,
+      "screenshot": "457-settings-billing-plan.png",
+      "url": "http://localhost:3001/settings/billing-plan"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:41.145Z",
+      "resume": true,
+      "screenshot": "459-settings-billing-invoices.png",
+      "url": "http://localhost:3001/settings/billing-invoices"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:45.460Z",
+      "resume": true,
+      "screenshot": "461-settings-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:50.768Z",
+      "resume": true,
+      "screenshot": "463-settings-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:52.108Z",
+      "resume": true,
+      "screenshot": "464-settings-leave-types-edit.png"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:55.797Z",
+      "resume": true,
+      "screenshot": "466-settings-leave-policies.png",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:57.116Z",
+      "resume": true,
+      "screenshot": "467-settings-leave-policies-edit.png"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "Publish",
+      "status": "PASS",
+      "at": "2026-08-02T19:42:59.700Z",
+      "resume": true,
+      "screenshot": "469-settings-leave-policies-publish.png"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:01.266Z",
+      "resume": true,
+      "screenshot": "470-settings-leave-packs.png",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:07.427Z",
+      "resume": true,
+      "screenshot": "471-settings-leave-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:11.598Z",
+      "resume": true,
+      "screenshot": "472-settings-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:15.804Z",
+      "resume": true,
+      "screenshot": "473-settings-pay-components.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:19.951Z",
+      "resume": true,
+      "screenshot": "474-settings-pay-groups.png",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "New",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:21.046Z",
+      "resume": true,
+      "screenshot": "475-settings-pay-groups-new.png"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Edit",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:21.951Z",
+      "resume": true,
+      "screenshot": "477-settings-pay-groups-edit.png"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:25.527Z",
+      "resume": true,
+      "screenshot": "479-settings-pay-schedules.png",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:29.650Z",
+      "resume": true,
+      "screenshot": "480-settings-pay-legal-entities.png",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:35.921Z",
+      "resume": true,
+      "screenshot": "481-settings-pay-statutory-packs.png",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:39.999Z",
+      "resume": true,
+      "screenshot": "482-settings-pay-payslip-template.png",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:44.137Z",
+      "resume": true,
+      "screenshot": "483-settings-pay-data-policy.png",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:48.250Z",
+      "resume": true,
+      "screenshot": "484-settings-pay-country-bank-schemas.png",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:52.431Z",
+      "resume": true,
+      "screenshot": "486-recruitment.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "tab:Pipeline",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:52.871Z",
+      "resume": true,
+      "screenshot": "487-recruitment-tab-pipeline.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "tab:Openings",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:53.358Z",
+      "resume": true,
+      "screenshot": "488-recruitment-tab-openings.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "tab:Candidates",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:53.855Z",
+      "resume": true,
+      "screenshot": "489-recruitment-tab-candidates.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:55.433Z",
+      "resume": true,
+      "screenshot": "490-recruitment-export.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Filter",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:57.751Z",
+      "resume": true,
+      "screenshot": "491-recruitment-filter.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:59.318Z",
+      "resume": true,
+      "screenshot": "493-performance.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "action": "tab:Reviews",
+      "status": "PASS",
+      "at": "2026-08-02T19:43:59.768Z",
+      "resume": true,
+      "screenshot": "494-performance-tab-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "tab:Goals",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:00.271Z",
+      "resume": true,
+      "screenshot": "495-performance-tab-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "tab:Calibration",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:00.703Z",
+      "resume": true,
+      "screenshot": "496-performance-tab-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:02.232Z",
+      "resume": true,
+      "screenshot": "497-performance-export.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:05.317Z",
+      "resume": true,
+      "screenshot": "498-assets.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "tab:Inventory",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:05.734Z",
+      "resume": true,
+      "screenshot": "499-assets-tab-inventory.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "tab:Assigned",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:06.167Z",
+      "resume": true,
+      "screenshot": "500-assets-tab-assigned.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "tab:Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:06.604Z",
+      "resume": true,
+      "screenshot": "501-assets-tab-requests.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:08.150Z",
+      "resume": true,
+      "screenshot": "502-assets-export.png"
+    },
+    {
+      "menu": "Announcements",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:11.281Z",
+      "resume": true,
+      "screenshot": "503-announcements.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Shell",
+      "action": "notifications",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:15.316Z",
+      "resume": true,
+      "screenshot": "504-shell-notifications.png"
+    },
+    {
+      "menu": "Employees/export-retry",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:16.840Z",
+      "resume": true,
+      "screenshot": "506-employees-export-retry.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees/export-retry",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:18.439Z",
+      "resume": true,
+      "screenshot": "507-employees-export-retry-export.png"
+    },
+    {
+      "menu": "Employees/export-retry",
+      "action": "Columns",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:20.895Z",
+      "resume": true,
+      "screenshot": "508-employees-export-retry-columns.png"
+    },
+    {
+      "menu": "Reports/export-retry",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:44:22.036Z",
+      "resume": true,
+      "screenshot": "509-reports-export-retry.png",
+      "url": "http://localhost:3001/reports/workforce/headcount"
+    }
+  ],
+  "issues": [
+    {
+      "id": "ISSUE-HR-01",
+      "role": "HR_ADMIN",
+      "title": "Login bootstrap 401s (me/refresh)",
+      "where": "/login page bootstrap",
+      "why": "Before credentials, UI calls GET /api/auth/me and POST /api/auth/refresh producing 401 UNAUTHORIZED / REFRESH_TOKEN_MISSING noise.",
+      "classification": "FRONTEND",
+      "how": "Skip me/refresh on public auth routes, or treat expected anonymous 401 as silent.",
+      "screenshot": "001-login-form.png",
+      "network": "401 GET /api/auth/me · 401 POST /api/auth/refresh"
+    },
+    {
+      "id": "ISSUE-HR-02",
+      "role": "HR_ADMIN",
+      "title": "Permissions nav visible to HR_ADMIN",
+      "where": "Sidebar → Permissions (/permissions)",
+      "why": "HR sees Permissions; page shows Access restricted (Super Admins only). Dead-end nav.",
+      "classification": "FRONTEND",
+      "how": "Hide Permissions unless memberType === 'SUPER_ADMIN'; keep Access Restricted for deep links.",
+      "screenshot": "383-permissions.png",
+      "network": "n/a (client role gate)"
+    },
+    {
+      "id": "ISSUE-HR-03",
+      "role": "HR_ADMIN",
+      "title": "SA-only Settings deep-links show Access restricted",
+      "where": "/settings/authentication, integration-*, billing-*, branding, pay/country-bank-schemas",
+      "why": "SettingsNav hides these for HR, but hard navigation shows Access restricted instead of redirecting to first allowed panel.",
+      "classification": "FRONTEND",
+      "how": "On unauthorized settings slug, redirect via firstAccessibleSettingsPath(role).",
+      "screenshot": "446-settings-authentication-restricted.png",
+      "network": "n/a (client gate)"
+    },
+    {
+      "id": "ISSUE-HR-04",
+      "role": "HR_ADMIN",
+      "title": "Reports secondary nav not real hrefs",
+      "where": "/reports left nav",
+      "why": "No <a href=\"/reports/...\"> discovered; report switches are not shareable links",
+      "classification": "FRONTEND",
+      "how": "Use Next <Link href=\"/reports/<slug>\"> for each report item",
+      "screenshot": "353-reports.png",
+      "network": "n/a",
+      "expected": "hrefs for each report",
+      "actual": "only client-state switches"
+    },
+    {
+      "id": "ISSUE-HR-05",
+      "role": "HR_ADMIN",
+      "title": "Performance: React duplicate key",
+      "where": "Performance",
+      "why": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsu",
+      "classification": "FRONTEND",
+      "how": "Fix FE console/key issues",
+      "screenshot": "494-performance-tab-reviews.png",
+      "network": "n/a (console)"
+    },
+    {
+      "id": "ISSUE-HR-06",
+      "role": "HR_ADMIN",
+      "title": "Reports path /reports/workforce/headcount intermittent Next 404",
+      "where": "Reports/export-retry / open",
+      "why": "Hard goto /reports/workforce/headcount returned Next.js HTML 404 during export-retry (not API JSON). Report shell otherwise worked in pass1 for all 15 types.",
+      "classification": "FRONTEND",
+      "how": "Ensure App Router page exists for REPORT_NAV slugs (or redirect /reports/<group>/<slug> → working reports shell). Pass1 hard-gotos succeeded earlier same day — verify soft-nav vs hard-nav parity.",
+      "screenshot": "509-reports-export-retry.png",
+      "network": "GET http://localhost:3001/reports/workforce/headcount 404"
+    },
+    {
+      "id": "ISSUE-HR-07",
+      "role": "HR_ADMIN",
+      "title": "Attendance summary period excludes today (timezone)",
+      "where": "GET /attendance/summary vs records/today",
+      "why": "Summary present=0 pct=0 endDate=2026-08-02T19:44:26.343Z while records/UI show attendance",
+      "classification": "BACKEND",
+      "how": "End summary at end-of-tenant-local-day or inclusive month",
+      "screenshot": "511-attendance-be-probe-settled.png",
+      "network": "summary present=0; records has PRESENT; today=PRESENT"
+    },
+    {
+      "id": "ISSUE-HR-08",
+      "role": "HR_ADMIN",
+      "title": "Attendance UI status vs API PRESENT mismatch",
+      "where": "/attendance Table",
+      "why": "API PRESENT but UI Half Day via client classifier",
+      "classification": "FRONTEND",
+      "how": "Prefer server status or align classifyDay with BE",
+      "screenshot": "511-attendance-be-probe-settled.png",
+      "network": "GET /attendance/records → PRESENT vs UI Half Day"
+    },
+    {
+      "id": "ISSUE-HR-09",
+      "role": "HR_ADMIN",
+      "title": "Zero-duration check-out accepted as PRESENT",
+      "where": "GET /attendance/today",
+      "why": "PRESENT with duration=0 totalMinutes=undefined",
+      "classification": "BACKEND",
+      "how": "Reject early check-out or mark incomplete/half-day",
+      "screenshot": "511-attendance-be-probe-settled.png",
+      "network": "today duration=0"
+    }
+  ],
+  "downloads": [
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": false,
+      "pageUrl": "http://localhost:3001/assets"
+    },
+    {
+      "suggested": "employees-2026-08-02.csv",
+      "ok": false,
+      "pageUrl": "http://localhost:3001/employees"
+    }
+  ],
+  "mutations": [
+    {
+      "menu": "Timesheets/Approvals",
+      "action": "Approve",
+      "url": "http://localhost:3001/timesheets?tab=approvals",
+      "screenshot": "067-timesheets-approvals-approve.png",
+      "at": "2026-08-02T19:26:57.683Z"
+    },
+    {
+      "menu": "Shell",
+      "action": "mark-all-read",
+      "at": "2026-08-02T19:44:15.346Z"
+    }
+  ],
+  "role": "HR_ADMIN",
+  "email": "hr@acme.test",
+  "resumed": true
+}

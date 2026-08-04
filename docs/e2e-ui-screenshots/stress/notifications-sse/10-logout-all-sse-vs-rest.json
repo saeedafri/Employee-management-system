@@ -1,0 +1,14 @@
+{
+  "note": "REST rejects revoked session; SSE accepts same JWT",
+  "afterLogoutAllSse": {
+    "status": 200,
+    "body": ": connected\n\n",
+    "connected": true
+  },
+  "restBehavior": {
+    "status": 401,
+    "code": "INVALID_TOKEN",
+    "message": "Session revoked or expired"
+  },
+  "rootCause": "notifications.routes.js stream handler calls verifyToken() only; authenticate.js also checks prisma.session.revokedAt + sessionId"
+}

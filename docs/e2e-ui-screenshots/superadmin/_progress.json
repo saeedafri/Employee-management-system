@@ -1,0 +1,3355 @@
+{
+  "counters": {
+    "menus": 17,
+    "buttons": 333,
+    "screenshots": 424,
+    "be": 0,
+    "fe": 4,
+    "both": 1
+  },
+  "findings": [
+    {
+      "menu": "Login",
+      "action": "login",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:41.341Z",
+      "screenshot": "02-login-success.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:42.792Z",
+      "screenshot": "03-dashboard.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Add Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:43.506Z",
+      "screenshot": "04-dashboard-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Approve",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:45.610Z",
+      "screenshot": "05-dashboard-approve.png",
+      "note": "mutation noted"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Deny",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:46.361Z",
+      "screenshot": "06-dashboard-deny.png",
+      "note": "mutation noted"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "Add Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:47.527Z",
+      "screenshot": "07-dashboard-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "7d",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:49.990Z",
+      "screenshot": "08-dashboard-7d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "30d",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:51.150Z",
+      "screenshot": "09-dashboard-30d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Dashboard",
+      "action": "90d",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:52.269Z",
+      "screenshot": "10-dashboard-90d.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Employees",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:54.239Z",
+      "screenshot": "11-employees.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "Employees",
+      "action": "search",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:54.691Z",
+      "screenshot": "12-employees-search.png"
+    },
+    {
+      "menu": "Employees",
+      "action": "Add employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:55.623Z",
+      "screenshot": "13-employees-add-employee.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "Columns",
+      "status": "PASS",
+      "at": "2026-08-02T19:24:56.722Z",
+      "screenshot": "14-employees-columns.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:02.589Z",
+      "screenshot": "15-employees-all-departments.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "All statuses",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:03.692Z",
+      "screenshot": "16-employees-all-statuses.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Employees",
+      "action": "Comfortable",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:06.800Z",
+      "screenshot": "17-employees-comfortable.png",
+      "url": "http://localhost:3001/employees/new"
+    },
+    {
+      "menu": "Departments",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:08.740Z",
+      "screenshot": "18-departments.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Add department",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:09.759Z",
+      "screenshot": "19-departments-add-department.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:13.010Z",
+      "screenshot": "21-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:14.128Z",
+      "screenshot": "22-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:17.192Z",
+      "screenshot": "23-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:20.275Z",
+      "screenshot": "24-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:23.359Z",
+      "screenshot": "25-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:26.450Z",
+      "screenshot": "26-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:29.564Z",
+      "screenshot": "27-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "control",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:32.657Z",
+      "screenshot": "28-departments-control.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Departments",
+      "action": "Actions for Customer Success",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:33.778Z",
+      "screenshot": "29-departments-actions-for-customer-success.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "Attendance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:35.792Z",
+      "screenshot": "30-attendance.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "All employees",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:36.691Z",
+      "screenshot": "31-attendance-all-employees.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Previous month",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:37.811Z",
+      "screenshot": "32-attendance-previous-month.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Next month",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:38.994Z",
+      "screenshot": "33-attendance-next-month.png",
+      "url": "http://localhost:3001/attendance?month=2026-07"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:40.074Z",
+      "screenshot": "34-attendance-calendar.png",
+      "url": "http://localhost:3001/attendance?month=2026-07"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Table",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:41.205Z",
+      "screenshot": "35-attendance-table.png",
+      "url": "http://localhost:3001/attendance?month=2026-07&view=table"
+    },
+    {
+      "menu": "Attendance",
+      "action": "Request Regularization",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:42.360Z",
+      "screenshot": "36-attendance-request-regularization.png",
+      "url": "http://localhost:3001/attendance?month=2026-07&view=table"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:44.414Z",
+      "screenshot": "37-timesheets.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:45.141Z",
+      "screenshot": "38-timesheets-tab-my-timesheet.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:45.909Z",
+      "screenshot": "39-timesheets-tab-approvals.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Projects",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:46.674Z",
+      "screenshot": "40-timesheets-tab-projects.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Rates",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:47.397Z",
+      "screenshot": "41-timesheets-tab-rates.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Approval Flow",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:48.143Z",
+      "screenshot": "42-timesheets-tab-approval-flow.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Locks",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:48.844Z",
+      "screenshot": "43-timesheets-tab-locks.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "tab:Delegations",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:49.583Z",
+      "screenshot": "44-timesheets-tab-delegations.png"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:50.618Z",
+      "screenshot": "45-timesheets-approvals.png",
+      "url": "http://localhost:3001/timesheets?tab=approvals"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Approval Flow",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:51.772Z",
+      "screenshot": "46-timesheets-approval-flow.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Create delegation",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:54.857Z",
+      "screenshot": "47-timesheets-create-delegation.png",
+      "url": "http://localhost:3001/timesheets?tab=approval-flow"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Projects",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:56.011Z",
+      "screenshot": "48-timesheets-projects.png",
+      "url": "http://localhost:3001/timesheets?tab=projects"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "Rates",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:57.178Z",
+      "screenshot": "49-timesheets-rates.png",
+      "url": "http://localhost:3001/timesheets?tab=rates"
+    },
+    {
+      "menu": "Timesheets",
+      "action": "My Timesheet",
+      "status": "PASS",
+      "at": "2026-08-02T19:25:58.343Z",
+      "screenshot": "50-timesheets-my-timesheet.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "Leave",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:00.261Z",
+      "screenshot": "51-leave.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:My Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:00.978Z",
+      "screenshot": "52-leave-tab-my-requests.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Team Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:01.688Z",
+      "screenshot": "53-leave-tab-team-calendar.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Comp-off",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:02.456Z",
+      "screenshot": "54-leave-tab-comp-off.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:03.177Z",
+      "screenshot": "55-leave-tab-approvals.png"
+    },
+    {
+      "menu": "Leave",
+      "action": "New Request",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:04.166Z",
+      "screenshot": "56-leave-new-request.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:05.441Z",
+      "screenshot": "58-leave-approvals.png",
+      "url": "http://localhost:3001/leave?tab=approvals"
+    },
+    {
+      "menu": "Leave",
+      "action": "Comp-off",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:06.571Z",
+      "screenshot": "59-leave-comp-off.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Leave",
+      "action": "Pending",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:07.711Z",
+      "screenshot": "60-leave-pending.png",
+      "url": "http://localhost:3001/leave?tab=comp-off"
+    },
+    {
+      "menu": "Leave",
+      "action": "My Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:13.645Z",
+      "screenshot": "61-leave-my-requests.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "Holidays",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:15.609Z",
+      "screenshot": "62-holidays.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Import .ics",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:16.780Z",
+      "screenshot": "63-holidays-import-ics.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Add Holiday",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:18.099Z",
+      "screenshot": "64-holidays-add-holiday.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Holiday policy",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:19.454Z",
+      "screenshot": "66-holidays-holiday-policy.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Previous year",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:20.628Z",
+      "screenshot": "67-holidays-previous-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Next year",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:21.797Z",
+      "screenshot": "68-holidays-next-year.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Holidays",
+      "action": "Actions for New Year's Day",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:22.910Z",
+      "screenshot": "69-holidays-actions-for-new-year-s-day.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "Payroll",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:24.900Z",
+      "screenshot": "70-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Run Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:26.004Z",
+      "screenshot": "71-payroll-run-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:27.145Z",
+      "screenshot": "72-payroll-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Prev",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:28.310Z",
+      "screenshot": "73-payroll-prev.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll",
+      "action": "Global Workforce",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:34.246Z",
+      "screenshot": "74-payroll-global-workforce.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/my-payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:35.987Z",
+      "screenshot": "75-payroll-my-payslips.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Run Payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:37.001Z",
+      "screenshot": "76-payroll-payroll-my-payslips-run-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:39.513Z",
+      "screenshot": "77-payroll-payroll-my-payslips-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Prev",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:43.931Z",
+      "screenshot": "78-payroll-payroll-my-payslips-prev.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Next",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:46.398Z",
+      "screenshot": "79-payroll-payroll-my-payslips-next.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "Payroll/payroll/my-payslips",
+      "action": "Global Workforce",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:48.891Z",
+      "screenshot": "80-payroll-payroll-my-payslips-global-workforce.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:51.979Z",
+      "screenshot": "81-payroll-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:52.711Z",
+      "screenshot": "82-payroll-payroll-migration-tab-pay-calendar.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Opening Balances",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:53.424Z",
+      "screenshot": "83-payroll-payroll-migration-tab-opening-balances.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Historical Payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:54.109Z",
+      "screenshot": "84-payroll-payroll-migration-tab-historical-payslips.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Parallel Run",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:54.810Z",
+      "screenshot": "85-payroll-payroll-migration-tab-parallel-run.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "tab:Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:55.489Z",
+      "screenshot": "86-payroll-payroll-migration-tab-go-live.png"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "Go-Live",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:56.390Z",
+      "screenshot": "87-payroll-payroll-migration-go-live.png",
+      "url": "http://localhost:3001/payroll/migration?tab=golive"
+    },
+    {
+      "menu": "Payroll/payroll/migration",
+      "action": "Pay Calendar",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:57.527Z",
+      "screenshot": "88-payroll-payroll-migration-pay-calendar.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "Payroll",
+      "action": "extra:/payroll/global",
+      "status": "PASS",
+      "at": "2026-08-02T19:26:59.257Z",
+      "screenshot": "89-payroll-global.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "New Invoice",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:00.715Z",
+      "screenshot": "90-payroll-payroll-global-new-invoice.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Worker type",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:01.912Z",
+      "screenshot": "92-payroll-payroll-global-worker-type.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:03.026Z",
+      "screenshot": "93-payroll-payroll-global-employee.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:04.144Z",
+      "screenshot": "94-payroll-payroll-global-employee.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:05.443Z",
+      "screenshot": "95-payroll-payroll-global-employee.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payroll/payroll/global",
+      "action": "Employee",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:06.632Z",
+      "screenshot": "96-payroll-payroll-global-employee.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:08.809Z",
+      "screenshot": "97-payout-methods.png",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "Review approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:09.711Z",
+      "screenshot": "98-payout-methods-review-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "Add account",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:10.856Z",
+      "screenshot": "99-payout-methods-add-account.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods",
+      "action": "extra:/payout-methods/approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:12.556Z",
+      "screenshot": "100-payout-methods-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "tab:Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:13.254Z",
+      "screenshot": "101-payout-methods-payout-methods-approvals-tab-approvals.png"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "tab:Verification",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:13.986Z",
+      "screenshot": "102-payout-methods-payout-methods-approvals-tab-verificatio.png"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "Approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:14.860Z",
+      "screenshot": "103-payout-methods-payout-methods-approvals-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Payout methods/payout-methods/approvals",
+      "action": "Verification",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:15.978Z",
+      "screenshot": "104-payout-methods-payout-methods-approvals-verification.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "Reports",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:17.880Z",
+      "screenshot": "105-reports.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports",
+      "action": "Export CSV",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:18.862Z",
+      "screenshot": "106-reports-export-csv.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports",
+      "action": "Headcount",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:20.579Z",
+      "screenshot": "107-reports-headcount.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "Reports",
+      "action": "Turnover",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:21.710Z",
+      "screenshot": "108-reports-turnover.png",
+      "url": "http://localhost:3001/reports?report=workforce/turnover"
+    },
+    {
+      "menu": "Reports",
+      "action": "Demographics",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:22.846Z",
+      "screenshot": "109-reports-demographics.png",
+      "url": "http://localhost:3001/reports?report=workforce/demographics"
+    },
+    {
+      "menu": "Reports",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:23.979Z",
+      "screenshot": "110-reports-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports",
+      "action": "CTC Analysis",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:25.132Z",
+      "screenshot": "111-reports-ctc-analysis.png",
+      "url": "http://localhost:3001/reports?report=payroll/ctc-analysis"
+    },
+    {
+      "menu": "Reports",
+      "action": "Utilization",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:26.353Z",
+      "screenshot": "112-reports-utilization.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:27.483Z",
+      "screenshot": "113-reports-all-departments.png",
+      "url": "http://localhost:3001/reports?report=leave/utilization"
+    },
+    {
+      "menu": "Reports",
+      "action": "Monthly Summary",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:28.631Z",
+      "screenshot": "114-reports-monthly-summary.png",
+      "url": "http://localhost:3001/reports?report=attendance/summary"
+    },
+    {
+      "menu": "Analytics",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:30.744Z",
+      "screenshot": "115-analytics.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "Analytics",
+      "action": "7d",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:31.916Z",
+      "screenshot": "116-analytics-7d.png",
+      "url": "http://localhost:3001/analytics?range=7d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "30d",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:33.197Z",
+      "screenshot": "117-analytics-30d.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "Analytics",
+      "action": "90d",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:34.466Z",
+      "screenshot": "118-analytics-90d.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "Custom",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:35.616Z",
+      "screenshot": "119-analytics-custom.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "All departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:37.017Z",
+      "screenshot": "120-analytics-all-departments.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "6m",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:38.132Z",
+      "screenshot": "121-analytics-6m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "12m",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:39.267Z",
+      "screenshot": "122-analytics-12m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "2y",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:40.414Z",
+      "screenshot": "123-analytics-2y.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "6m",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:41.596Z",
+      "screenshot": "124-analytics-6m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "12m",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:42.730Z",
+      "screenshot": "125-analytics-12m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "2y",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:43.869Z",
+      "screenshot": "126-analytics-2y.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Analytics",
+      "action": "6m",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:45.001Z",
+      "screenshot": "127-analytics-6m.png",
+      "url": "http://localhost:3001/analytics?range=90d"
+    },
+    {
+      "menu": "Permissions",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:46.966Z",
+      "screenshot": "128-permissions.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "action": "Add Role",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:47.961Z",
+      "screenshot": "129-permissions-add-role.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "action": "Save changes",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:51.209Z",
+      "screenshot": "131-permissions-save-changes.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Permissions",
+      "action": "Reset to defaults",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:54.297Z",
+      "screenshot": "132-permissions-reset-to-defaults.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "Settings",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:56.364Z",
+      "screenshot": "133-settings.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:27:57.362Z",
+      "screenshot": "134-settings-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:03.231Z",
+      "screenshot": "135-settings-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:04.333Z",
+      "screenshot": "136-settings-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:05.452Z",
+      "screenshot": "137-settings-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:06.548Z",
+      "screenshot": "138-settings-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:07.652Z",
+      "screenshot": "139-settings-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings",
+      "action": "In-app Preferences",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:08.798Z",
+      "screenshot": "140-settings-in-app-preferences.png",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "menu": "Settings",
+      "action": "Email",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:09.905Z",
+      "screenshot": "141-settings-email.png",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "menu": "Settings",
+      "action": "Storage",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:11.016Z",
+      "screenshot": "142-settings-storage.png",
+      "url": "http://localhost:3001/settings/integration-storage"
+    },
+    {
+      "menu": "Settings",
+      "action": "Webhooks",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:12.121Z",
+      "screenshot": "143-settings-webhooks.png",
+      "url": "http://localhost:3001/settings/integration-webhooks"
+    },
+    {
+      "menu": "Settings",
+      "action": "Plan",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:13.234Z",
+      "screenshot": "144-settings-plan.png",
+      "url": "http://localhost:3001/settings/billing-plan"
+    },
+    {
+      "menu": "Settings",
+      "action": "Invoices",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:14.356Z",
+      "screenshot": "145-settings-invoices.png",
+      "url": "http://localhost:3001/settings/billing-invoices"
+    },
+    {
+      "menu": "Settings",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:15.485Z",
+      "screenshot": "146-settings-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:company-profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:17.082Z",
+      "screenshot": "147-settings-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:18.182Z",
+      "screenshot": "148-settings-company-profile-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "Save Changes",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:22.615Z",
+      "screenshot": "149-settings-company-profile-save-changes.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:23.713Z",
+      "screenshot": "150-settings-company-profile-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:26.182Z",
+      "screenshot": "151-settings-company-profile-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:28.619Z",
+      "screenshot": "152-settings-company-profile-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:31.064Z",
+      "screenshot": "153-settings-company-profile-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/company-profile",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:33.531Z",
+      "screenshot": "154-settings-company-profile-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:35.164Z",
+      "screenshot": "155-settings-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:36.212Z",
+      "screenshot": "156-settings-branding-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "Upload",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:38.665Z",
+      "screenshot": "157-settings-branding-upload.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:39.780Z",
+      "screenshot": "158-settings-branding-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:40.885Z",
+      "screenshot": "159-settings-branding-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:43.317Z",
+      "screenshot": "160-settings-branding-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:45.750Z",
+      "screenshot": "161-settings-branding-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/branding",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:48.199Z",
+      "screenshot": "162-settings-branding-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:locale",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:51.076Z",
+      "screenshot": "163-settings-locale.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:52.134Z",
+      "screenshot": "164-settings-locale-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "Save Changes",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:56.618Z",
+      "screenshot": "165-settings-locale-save-changes.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:28:57.714Z",
+      "screenshot": "166-settings-locale-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:00.150Z",
+      "screenshot": "167-settings-locale-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:01.249Z",
+      "screenshot": "168-settings-locale-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:03.699Z",
+      "screenshot": "169-settings-locale-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/locale",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:06.152Z",
+      "screenshot": "170-settings-locale-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:working-hours",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:09.065Z",
+      "screenshot": "171-settings-working-hours.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:10.093Z",
+      "screenshot": "172-settings-working-hours-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "Save Changes",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:14.531Z",
+      "screenshot": "173-settings-working-hours-save-changes.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:15.649Z",
+      "screenshot": "174-settings-working-hours-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:18.068Z",
+      "screenshot": "175-settings-working-hours-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:20.482Z",
+      "screenshot": "176-settings-working-hours-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:23.000Z",
+      "screenshot": "177-settings-working-hours-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/working-hours",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:25.466Z",
+      "screenshot": "178-settings-working-hours-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-types",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:28.386Z",
+      "screenshot": "179-settings-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:29.613Z",
+      "screenshot": "180-settings-leave-types-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Add Type",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:32.159Z",
+      "screenshot": "181-settings-leave-types-add-type.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:33.380Z",
+      "screenshot": "183-settings-leave-types-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:35.798Z",
+      "screenshot": "184-settings-leave-types-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:38.221Z",
+      "screenshot": "185-settings-leave-types-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:40.665Z",
+      "screenshot": "186-settings-leave-types-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/leave-types",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:43.181Z",
+      "screenshot": "187-settings-leave-types-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:attendance-rules",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:46.117Z",
+      "screenshot": "188-settings-attendance-rules.png",
+      "url": "http://localhost:3001/settings/attendance-rules"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:47.481Z",
+      "screenshot": "189-settings-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:48.546Z",
+      "screenshot": "190-settings-timesheets-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:51.087Z",
+      "screenshot": "191-settings-timesheets-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:53.618Z",
+      "screenshot": "192-settings-timesheets-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:56.285Z",
+      "screenshot": "193-settings-timesheets-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:29:57.381Z",
+      "screenshot": "194-settings-timesheets-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:00.003Z",
+      "screenshot": "195-settings-timesheets-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Flag in review (default)",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:02.488Z",
+      "screenshot": "196-settings-timesheets-flag-in-review-default.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/timesheets",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:03.632Z",
+      "screenshot": "197-settings-timesheets-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-policies",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:06.736Z",
+      "screenshot": "198-settings-leave-policies.png",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:07.986Z",
+      "screenshot": "199-settings-leave-policies-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "New policy",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:10.540Z",
+      "screenshot": "200-settings-leave-policies-new-policy.png",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "New version",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:11.751Z",
+      "screenshot": "202-settings-leave-policies-new-version.png",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "New version",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:12.850Z",
+      "screenshot": "203-settings-leave-policies-new-version.png",
+      "url": "http://localhost:3001/settings/leave-policies"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:13.946Z",
+      "screenshot": "204-settings-leave-policies-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:16.485Z",
+      "screenshot": "205-settings-leave-policies-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/leave-policies",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:18.999Z",
+      "screenshot": "206-settings-leave-policies-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-packs",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:21.880Z",
+      "screenshot": "207-settings-leave-packs.png",
+      "url": "http://localhost:3001/settings/leave-packs"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:22.994Z",
+      "screenshot": "208-settings-leave-packs-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:25.413Z",
+      "screenshot": "209-settings-leave-packs-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:27.853Z",
+      "screenshot": "210-settings-leave-packs-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:30.318Z",
+      "screenshot": "211-settings-leave-packs-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:33.027Z",
+      "screenshot": "212-settings-leave-packs-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:35.569Z",
+      "screenshot": "213-settings-leave-packs-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/leave-packs",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:38.051Z",
+      "screenshot": "214-settings-leave-packs-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:leave-assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:40.996Z",
+      "screenshot": "215-settings-leave-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:42.094Z",
+      "screenshot": "216-settings-leave-assignments-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:43.198Z",
+      "screenshot": "217-settings-leave-assignments-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:45.836Z",
+      "screenshot": "218-settings-leave-assignments-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:48.320Z",
+      "screenshot": "219-settings-leave-assignments-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:50.766Z",
+      "screenshot": "220-settings-leave-assignments-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:53.245Z",
+      "screenshot": "221-settings-leave-assignments-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/leave-assignments",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:55.983Z",
+      "screenshot": "222-settings-leave-assignments-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/legal-entities",
+      "status": "PASS",
+      "at": "2026-08-02T19:30:59.024Z",
+      "screenshot": "223-settings-pay-legal-entities.png",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:00.074Z",
+      "screenshot": "224-settings-pay-legal-entities-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "Add Entity",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:02.678Z",
+      "screenshot": "225-settings-pay-legal-entities-add-entity.png",
+      "url": "http://localhost:3001/settings/pay/legal-entities"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:03.863Z",
+      "screenshot": "227-settings-pay-legal-entities-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:06.783Z",
+      "screenshot": "228-settings-pay-legal-entities-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:09.274Z",
+      "screenshot": "229-settings-pay-legal-entities-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:11.829Z",
+      "screenshot": "230-settings-pay-legal-entities-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/pay/legal-entities",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:14.315Z",
+      "screenshot": "231-settings-pay-legal-entities-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/statutory-packs",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:17.334Z",
+      "screenshot": "232-settings-pay-statutory-packs.png",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:18.463Z",
+      "screenshot": "233-settings-pay-statutory-packs-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "New pack",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:21.046Z",
+      "screenshot": "234-settings-pay-statutory-packs-new-pack.png",
+      "url": "http://localhost:3001/settings/pay/statutory-packs"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:22.288Z",
+      "screenshot": "236-settings-pay-statutory-packs-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:24.836Z",
+      "screenshot": "237-settings-pay-statutory-packs-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:27.330Z",
+      "screenshot": "238-settings-pay-statutory-packs-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:29.833Z",
+      "screenshot": "239-settings-pay-statutory-packs-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/pay/statutory-packs",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:32.247Z",
+      "screenshot": "240-settings-pay-statutory-packs-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/components",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:35.106Z",
+      "screenshot": "241-settings-pay-components.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "search",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:35.585Z",
+      "screenshot": "242-settings-pay-components-search.png"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:36.675Z",
+      "screenshot": "243-settings-pay-components-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "Add Component",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:39.217Z",
+      "screenshot": "244-settings-pay-components-add-component.png",
+      "url": "http://localhost:3001/settings/pay/components"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:40.417Z",
+      "screenshot": "246-settings-pay-components-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:42.883Z",
+      "screenshot": "247-settings-pay-components-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:45.317Z",
+      "screenshot": "248-settings-pay-components-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/components",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:47.805Z",
+      "screenshot": "249-settings-pay-components-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/groups",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:50.848Z",
+      "screenshot": "250-settings-pay-groups.png",
+      "url": "http://localhost:3001/settings/pay/groups"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:51.926Z",
+      "screenshot": "251-settings-pay-groups-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:54.415Z",
+      "screenshot": "252-settings-pay-groups-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:56.900Z",
+      "screenshot": "253-settings-pay-groups-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:31:59.425Z",
+      "screenshot": "254-settings-pay-groups-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:01.988Z",
+      "screenshot": "255-settings-pay-groups-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:04.553Z",
+      "screenshot": "256-settings-pay-groups-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/pay/groups",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:06.980Z",
+      "screenshot": "257-settings-pay-groups-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/schedules",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:10.196Z",
+      "screenshot": "258-settings-pay-schedules.png",
+      "url": "http://localhost:3001/settings/pay/schedules"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:11.233Z",
+      "screenshot": "259-settings-pay-schedules-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:13.870Z",
+      "screenshot": "260-settings-pay-schedules-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:16.300Z",
+      "screenshot": "261-settings-pay-schedules-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:18.835Z",
+      "screenshot": "262-settings-pay-schedules-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:21.511Z",
+      "screenshot": "263-settings-pay-schedules-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:24.089Z",
+      "screenshot": "264-settings-pay-schedules-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/pay/schedules",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:26.673Z",
+      "screenshot": "265-settings-pay-schedules-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/payslip-template",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:29.718Z",
+      "screenshot": "266-settings-pay-payslip-template.png",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:31.047Z",
+      "screenshot": "267-settings-pay-payslip-template-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "Save template",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:35.515Z",
+      "screenshot": "268-settings-pay-payslip-template-save-template.png",
+      "url": "http://localhost:3001/settings/pay/payslip-template"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:36.616Z",
+      "screenshot": "269-settings-pay-payslip-template-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:39.139Z",
+      "screenshot": "270-settings-pay-payslip-template-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:41.643Z",
+      "screenshot": "271-settings-pay-payslip-template-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:44.168Z",
+      "screenshot": "272-settings-pay-payslip-template-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/pay/payslip-template",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:46.598Z",
+      "screenshot": "273-settings-pay-payslip-template-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/data-policy",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:49.583Z",
+      "screenshot": "274-settings-pay-data-policy.png",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:50.608Z",
+      "screenshot": "275-settings-pay-data-policy-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "Save changes",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:53.032Z",
+      "screenshot": "276-settings-pay-data-policy-save-changes.png",
+      "url": "http://localhost:3001/settings/pay/data-policy"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:54.133Z",
+      "screenshot": "277-settings-pay-data-policy-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:56.624Z",
+      "screenshot": "278-settings-pay-data-policy-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:32:59.153Z",
+      "screenshot": "279-settings-pay-data-policy-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:01.725Z",
+      "screenshot": "280-settings-pay-data-policy-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/pay/data-policy",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:04.149Z",
+      "screenshot": "281-settings-pay-data-policy-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:pay/country-bank-schemas",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:07.058Z",
+      "screenshot": "282-settings-pay-country-bank-schemas.png",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:08.278Z",
+      "screenshot": "283-settings-pay-country-bank-schemas-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "action": "Add country",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:10.954Z",
+      "screenshot": "284-settings-pay-country-bank-schemas-add-country.png",
+      "url": "http://localhost:3001/settings/pay/country-bank-schemas"
+    },
+    {
+      "menu": "Settings/pay/country-bank-schemas",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:12.240Z",
+      "screenshot": "286-settings-pay-country-bank-schemas-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:15.568Z",
+      "screenshot": "287-settings-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:16.687Z",
+      "screenshot": "288-settings-authentication-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:19.167Z",
+      "screenshot": "289-settings-authentication-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:21.699Z",
+      "screenshot": "290-settings-authentication-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:24.211Z",
+      "screenshot": "291-settings-authentication-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:26.717Z",
+      "screenshot": "292-settings-authentication-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:27.835Z",
+      "screenshot": "293-settings-authentication-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/authentication",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:30.332Z",
+      "screenshot": "294-settings-authentication-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:sessions",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:33.476Z",
+      "screenshot": "295-settings-sessions.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/sessions",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:35.084Z",
+      "screenshot": "296-settings-sessions-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/sessions",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:37.848Z",
+      "screenshot": "297-settings-sessions-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/sessions",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:40.434Z",
+      "screenshot": "298-settings-sessions-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/sessions",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:42.991Z",
+      "screenshot": "299-settings-sessions-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/sessions",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:45.862Z",
+      "screenshot": "300-settings-sessions-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/sessions",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:48.636Z",
+      "screenshot": "301-settings-sessions-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/sessions",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:49.749Z",
+      "screenshot": "302-settings-sessions-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:audit-log",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:52.886Z",
+      "screenshot": "303-settings-audit-log.png",
+      "url": "http://localhost:3001/settings/audit-log"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:54.112Z",
+      "screenshot": "304-settings-audit-log-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:56.563Z",
+      "screenshot": "305-settings-audit-log-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:33:59.149Z",
+      "screenshot": "306-settings-audit-log-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:01.637Z",
+      "screenshot": "307-settings-audit-log-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:04.125Z",
+      "screenshot": "308-settings-audit-log-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:06.804Z",
+      "screenshot": "309-settings-audit-log-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/audit-log",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:09.388Z",
+      "screenshot": "310-settings-audit-log-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:email-templates",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:12.629Z",
+      "screenshot": "311-settings-email-templates.png",
+      "url": "http://localhost:3001/settings/email-templates"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:13.714Z",
+      "screenshot": "312-settings-email-templates-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:16.180Z",
+      "screenshot": "313-settings-email-templates-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:18.658Z",
+      "screenshot": "314-settings-email-templates-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:21.186Z",
+      "screenshot": "315-settings-email-templates-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:23.871Z",
+      "screenshot": "316-settings-email-templates-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:26.437Z",
+      "screenshot": "317-settings-email-templates-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/email-templates",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:28.965Z",
+      "screenshot": "318-settings-email-templates-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:notifications",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:31.881Z",
+      "screenshot": "319-settings-notifications.png",
+      "url": "http://localhost:3001/settings/notifications"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:32.909Z",
+      "screenshot": "320-settings-notifications-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:35.348Z",
+      "screenshot": "321-settings-notifications-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:37.765Z",
+      "screenshot": "322-settings-notifications-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "Timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:40.201Z",
+      "screenshot": "323-settings-notifications-timesheets.png",
+      "url": "http://localhost:3001/settings/timesheets"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "Authentication",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:42.649Z",
+      "screenshot": "324-settings-notifications-authentication.png",
+      "url": "http://localhost:3001/settings/authentication"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "Sessions & Devices",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:45.065Z",
+      "screenshot": "325-settings-notifications-sessions-devices.png",
+      "url": "http://localhost:3001/settings/sessions"
+    },
+    {
+      "menu": "Settings/notifications",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:47.479Z",
+      "screenshot": "326-settings-notifications-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings",
+      "action": "sub:integration-email",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:50.379Z",
+      "screenshot": "327-settings-integration-email.png",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "menu": "Settings/integration-email",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:51.427Z",
+      "screenshot": "328-settings-integration-email-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/integration-email",
+      "action": "Save configuration",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:53.880Z",
+      "screenshot": "329-settings-integration-email-save-configuration.png",
+      "url": "http://localhost:3001/settings/integration-email"
+    },
+    {
+      "menu": "Settings/integration-email",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:54.976Z",
+      "screenshot": "330-settings-integration-email-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/integration-email",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:34:57.396Z",
+      "screenshot": "331-settings-integration-email-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Login",
+      "action": "re-login-finish-pass",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:23.178Z",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:24.511Z",
+      "screenshot": "359-settings-integration-storage.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:25.062Z",
+      "screenshot": "360-settings-integration-storage-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:25.578Z",
+      "screenshot": "361-settings-integration-storage-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:26.096Z",
+      "screenshot": "362-settings-integration-storage-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "Working Hours",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:26.611Z",
+      "screenshot": "363-settings-integration-storage-working-hours.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "Leave Types",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:27.132Z",
+      "screenshot": "364-settings-integration-storage-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/integration-storage",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:27.674Z",
+      "screenshot": "365-settings-integration-storage-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:29.015Z",
+      "screenshot": "366-settings-integration-webhooks.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:29.564Z",
+      "screenshot": "367-settings-integration-webhooks-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:30.095Z",
+      "screenshot": "368-settings-integration-webhooks-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:30.615Z",
+      "screenshot": "369-settings-integration-webhooks-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "Working Hours",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:31.165Z",
+      "screenshot": "370-settings-integration-webhooks-working-hours.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "Leave Types",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:31.714Z",
+      "screenshot": "371-settings-integration-webhooks-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/integration-webhooks",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:32.260Z",
+      "screenshot": "372-settings-integration-webhooks-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:33.668Z",
+      "screenshot": "373-settings-billing-plan.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:34.235Z",
+      "screenshot": "374-settings-billing-plan-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:34.763Z",
+      "screenshot": "375-settings-billing-plan-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:35.282Z",
+      "screenshot": "376-settings-billing-plan-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "Working Hours",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:35.813Z",
+      "screenshot": "377-settings-billing-plan-working-hours.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "Leave Types",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:36.345Z",
+      "screenshot": "378-settings-billing-plan-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/billing-plan",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:36.892Z",
+      "screenshot": "379-settings-billing-plan-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:38.214Z",
+      "screenshot": "380-settings-billing-invoices.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "Company Profile",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:38.762Z",
+      "screenshot": "381-settings-billing-invoices-company-profile.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "Branding",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:39.296Z",
+      "screenshot": "382-settings-billing-invoices-branding.png",
+      "url": "http://localhost:3001/settings/branding"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "Locale & Timezone",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:39.840Z",
+      "screenshot": "383-settings-billing-invoices-locale-timezone.png",
+      "url": "http://localhost:3001/settings/locale"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "Working Hours",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:40.380Z",
+      "screenshot": "384-settings-billing-invoices-working-hours.png",
+      "url": "http://localhost:3001/settings/working-hours"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "Leave Types",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:40.897Z",
+      "screenshot": "385-settings-billing-invoices-leave-types.png",
+      "url": "http://localhost:3001/settings/leave-types"
+    },
+    {
+      "menu": "Settings/billing-invoices",
+      "action": "Assignments",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:41.442Z",
+      "screenshot": "386-settings-billing-invoices-assignments.png",
+      "url": "http://localhost:3001/settings/leave-assignments"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:42.781Z",
+      "screenshot": "387-recruitment.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "tab:Pipeline",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:43.197Z",
+      "screenshot": "388-recruitment-tab-pipeline.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "tab:Openings",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:43.645Z",
+      "screenshot": "389-recruitment-tab-openings.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "tab:Candidates",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:44.129Z",
+      "screenshot": "390-recruitment-tab-candidates.png"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:44.664Z",
+      "screenshot": "391-recruitment-export.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Post a Job",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:45.310Z",
+      "screenshot": "392-recruitment-post-a-job.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Pipeline",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:46.131Z",
+      "screenshot": "394-recruitment-pipeline.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Openings",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:46.679Z",
+      "screenshot": "395-recruitment-openings.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Candidates",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:47.279Z",
+      "screenshot": "396-recruitment-candidates.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Recruitment",
+      "action": "Filter",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:47.830Z",
+      "screenshot": "397-recruitment-filter.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "Performance",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:50.817Z",
+      "screenshot": "399-performance.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "action": "tab:Reviews",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:51.251Z",
+      "screenshot": "400-performance-tab-reviews.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "tab:Goals",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:51.751Z",
+      "screenshot": "401-performance-tab-goals.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "tab:Calibration",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:52.194Z",
+      "screenshot": "402-performance-tab-calibration.png"
+    },
+    {
+      "menu": "Performance",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:52.717Z",
+      "screenshot": "403-performance-export.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "action": "Start a Review",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:53.334Z",
+      "screenshot": "404-performance-start-a-review.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "action": "Reviews",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:54.098Z",
+      "screenshot": "406-performance-reviews.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "action": "Goals",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:54.718Z",
+      "screenshot": "407-performance-goals.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Performance",
+      "action": "Calibration",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:55.277Z",
+      "screenshot": "408-performance-calibration.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "Assets",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:56.531Z",
+      "screenshot": "409-assets.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "tab:Inventory",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:56.948Z",
+      "screenshot": "410-assets-tab-inventory.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "tab:Assigned",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:57.364Z",
+      "screenshot": "411-assets-tab-assigned.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "tab:Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:57.798Z",
+      "screenshot": "412-assets-tab-requests.png"
+    },
+    {
+      "menu": "Assets",
+      "action": "Export",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:58.332Z",
+      "screenshot": "413-assets-export.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "Add Asset",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:58.946Z",
+      "screenshot": "414-assets-add-asset.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "Inventory",
+      "status": "PASS",
+      "at": "2026-08-02T19:36:59.743Z",
+      "screenshot": "416-assets-inventory.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "Assigned",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:00.346Z",
+      "screenshot": "417-assets-assigned.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "Requests",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:00.898Z",
+      "screenshot": "418-assets-requests.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "Approve",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:01.434Z",
+      "screenshot": "419-assets-approve.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Assets",
+      "action": "View",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:02.047Z",
+      "screenshot": "420-assets-view.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "Announcements",
+      "action": "open",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:03.505Z",
+      "screenshot": "422-announcements.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "action": "New Announcement",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:04.153Z",
+      "screenshot": "423-announcements-new-announcement.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "action": "Share an update with the company…",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:04.941Z",
+      "screenshot": "425-announcements-share-an-update-with-the-company.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "action": "Post",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:05.754Z",
+      "screenshot": "427-announcements-post.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "action": "Announcement actions",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:06.441Z",
+      "screenshot": "429-announcements-announcement-actions.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "Announcements",
+      "action": "Company-wide 142",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:07.042Z",
+      "screenshot": "430-announcements-company-wide-142.png",
+      "url": "http://localhost:3001/announcements"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/dashboard",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:08.178Z",
+      "screenshot": "431-audit-dashboard.png",
+      "url": "http://localhost:3001/dashboard"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/employees",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:09.381Z",
+      "screenshot": "432-audit-employees.png",
+      "url": "http://localhost:3001/employees"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/departments",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:10.406Z",
+      "screenshot": "433-audit-departments.png",
+      "url": "http://localhost:3001/departments"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/attendance",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:11.410Z",
+      "screenshot": "434-audit-attendance.png",
+      "url": "http://localhost:3001/attendance"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/timesheets",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:12.393Z",
+      "screenshot": "435-audit-timesheets.png",
+      "url": "http://localhost:3001/timesheets"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/leave",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:13.496Z",
+      "screenshot": "436-audit-leave.png",
+      "url": "http://localhost:3001/leave"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/holidays",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:14.513Z",
+      "screenshot": "437-audit-holidays.png",
+      "url": "http://localhost:3001/holidays"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/payroll",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:15.565Z",
+      "screenshot": "438-audit-payroll.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/payroll/my-payslips",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:16.674Z",
+      "screenshot": "439-audit-payroll-my-payslips.png",
+      "url": "http://localhost:3001/payroll"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/payroll/migration",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:17.677Z",
+      "screenshot": "440-audit-payroll-migration.png",
+      "url": "http://localhost:3001/payroll/migration"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/payroll/global",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:18.744Z",
+      "screenshot": "441-audit-payroll-global.png",
+      "url": "http://localhost:3001/payroll/global"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/payout-methods",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:19.771Z",
+      "screenshot": "442-audit-payout-methods.png",
+      "url": "http://localhost:3001/payout-methods"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/payout-methods/approvals",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:20.804Z",
+      "screenshot": "443-audit-payout-methods-approvals.png",
+      "url": "http://localhost:3001/payout-methods/approvals"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/reports",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:21.908Z",
+      "screenshot": "444-audit-reports.png",
+      "url": "http://localhost:3001/reports"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/analytics",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:22.977Z",
+      "screenshot": "445-audit-analytics.png",
+      "url": "http://localhost:3001/analytics"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/permissions",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:24.092Z",
+      "screenshot": "446-audit-permissions.png",
+      "url": "http://localhost:3001/permissions"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/settings",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:25.147Z",
+      "screenshot": "447-audit-settings.png",
+      "url": "http://localhost:3001/settings/company-profile"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/recruitment",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:26.248Z",
+      "screenshot": "448-audit-recruitment.png",
+      "url": "http://localhost:3001/recruitment"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/performance",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:27.326Z",
+      "screenshot": "449-audit-performance.png",
+      "url": "http://localhost:3001/performance"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/assets",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:28.363Z",
+      "screenshot": "450-audit-assets.png",
+      "url": "http://localhost:3001/assets"
+    },
+    {
+      "menu": "NetworkAudit",
+      "action": "/announcements",
+      "status": "PASS",
+      "at": "2026-08-02T19:37:29.452Z",
+      "screenshot": "451-audit-announcements.png",
+      "url": "http://localhost:3001/announcements"
+    }
+  ],
+  "issues": [
+    {
+      "title": "Attendance today returns NO_EMPLOYEE_RECORD for SUPER_ADMIN",
+      "where": "Attendance / /attendance (also Dashboard widgets that call today)",
+      "why": "GET /api/attendance/today → 400 NO_EMPLOYEE_RECORD because superadmin@acme.test has no linked Employee. UI still triggers employee-scoped endpoint.",
+      "classification": "BOTH",
+      "how": "BE: return 200 empty payload for admin roles without employeeId (or dedicated admin today endpoint). FE: skip /attendance/today when user.employeeId is null; show org/team attendance only.",
+      "screenshot": "31-attendance-all-employees.png",
+      "network": "GET http://localhost:3001/api/attendance/today 400",
+      "expected": "Graceful empty / admin view without 400",
+      "actual": "400 {\"error\":{\"code\":\"NO_EMPLOYEE_RECORD\"}}",
+      "id": "ISSUE-SA-01",
+      "role": "SUPER_ADMIN"
+    },
+    {
+      "title": "Performance page duplicate React keys",
+      "where": "Performance / /performance",
+      "why": "40× console: Encountered two children with the same key (employee IDs reused as keys).",
+      "classification": "FRONTEND",
+      "how": "Use unique keys (e.g. `${employeeId}-${cycleId}` or index+id) in Performance list/map renders.",
+      "screenshot": "403-performance-export.png",
+      "network": "n/a (console)",
+      "expected": "No duplicate-key warnings",
+      "actual": "Repeated React key warnings on Performance",
+      "id": "ISSUE-SA-02",
+      "role": "SUPER_ADMIN"
+    },
+    {
+      "title": "Reports Export CSV download did not complete",
+      "where": "Reports / Export CSV",
+      "why": "Playwright download event for workforce-headcount-report.csv fired but file path/failure indicated unsuccessful save (ok:false).",
+      "classification": "FRONTEND",
+      "how": "Verify FE blob download + Content-Disposition handling for reports CSV; ensure click triggers real download not cancelled navigation.",
+      "screenshot": "106-reports-export-csv.png",
+      "network": "download workforce-headcount-report.csv (ok:false)",
+      "expected": "CSV file downloads successfully",
+      "actual": "Download event ok:false",
+      "id": "ISSUE-SA-03",
+      "role": "SUPER_ADMIN"
+    },
+    {
+      "title": "Assets Export CSV download did not complete",
+      "where": "Assets / Export",
+      "why": "Download event assets-inventory.csv with ok:false.",
+      "classification": "FRONTEND",
+      "how": "Fix Assets export download handler (blob URL / anchor download).",
+      "screenshot": "413-assets-export.png",
+      "network": "download assets-inventory.csv (ok:false)",
+      "expected": "CSV downloads",
+      "actual": "Download ok:false",
+      "id": "ISSUE-SA-04",
+      "role": "SUPER_ADMIN"
+    },
+    {
+      "title": "Login page fires auth/me and refresh 401 before credentials",
+      "where": "Login / /login",
+      "why": "GET http://localhost:3001/api/auth/me 401; POST http://localhost:3001/api/auth/refresh 401",
+      "classification": "FRONTEND",
+      "how": "Skip /auth/me and /auth/refresh on public auth routes; suppress expected 401 noise.",
+      "screenshot": "01-login-form.png",
+      "network": "GET /api/auth/me 401; POST /api/auth/refresh 401",
+      "expected": "No unauthenticated me/refresh calls on /login",
+      "actual": "401 UNAUTHORIZED / REFRESH_TOKEN_MISSING",
+      "id": "ISSUE-SA-05",
+      "role": "SUPER_ADMIN"
+    }
+  ],
+  "downloads": [
+    {
+      "suggested": "workforce-headcount-report.csv",
+      "ok": false,
+      "failure": {},
+      "pageUrl": "http://localhost:3001/reports"
+    },
+    {
+      "suggested": "assets-inventory.csv",
+      "ok": false,
+      "pageUrl": "http://localhost:3001/assets"
+    }
+  ],
+  "doneMenus": [
+    "Dashboard",
+    "Employees",
+    "Departments",
+    "Attendance",
+    "Timesheets",
+    "Leave",
+    "Holidays",
+    "Payroll",
+    "Payout methods",
+    "Reports",
+    "Analytics",
+    "Permissions",
+    "Settings",
+    "Recruitment",
+    "Performance",
+    "Assets",
+    "Announcements"
+  ],
+  "doneSettings": [
+    "company-profile",
+    "branding",
+    "locale",
+    "working-hours",
+    "leave-types",
+    "attendance-rules",
+    "timesheets",
+    "leave-policies",
+    "leave-packs",
+    "leave-assignments",
+    "pay/legal-entities",
+    "pay/statutory-packs",
+    "pay/components",
+    "pay/groups",
+    "pay/schedules",
+    "pay/payslip-template",
+    "pay/data-policy",
+    "pay/country-bank-schemas",
+    "authentication",
+    "sessions",
+    "audit-log",
+    "email-templates",
+    "notifications",
+    "integration-storage",
+    "integration-webhooks",
+    "billing-plan",
+    "billing-invoices"
+  ],
+  "shotIdx": 451,
+  "probe": {
+    "failCount": 3,
+    "consoleDupKeys": 40
+  }
+}
