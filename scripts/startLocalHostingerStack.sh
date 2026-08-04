@@ -3,18 +3,20 @@
 # Frontend: set API_BASE_URL=http://localhost:4000/api/v1 in ems-frontend/.env.local
 set -euo pipefail
 
-KEY="${HOME}/.ssh/hostinger_ems_ed25519"
+# Prefer the working Hostinger key; fall back to deploy key if present.
+KEY="${HOME}/.ssh/id_ed25519"
+[[ -f "$KEY" ]] || KEY="${HOME}/.ssh/hostinger_ems_ed25519"
 HOST="root@31.97.186.223"
 EMS="/Users/mohdsaeedafri/All-Code-Base/EMS"
 
 if ! pgrep -f "ssh.*127.0.0.1:15432" >/dev/null; then
-  ssh -i "$KEY" -o BatchMode=yes -o ServerAliveInterval=30 -f -N \
+  ssh -o IdentitiesOnly=yes -i "$KEY" -o BatchMode=yes -o ServerAliveInterval=30 -f -N \
     -L 127.0.0.1:15432:127.0.0.1:5432 \
     -L 127.0.0.1:16379:127.0.0.1:6379 "$HOST"
-  echo "SSH tunnels started"
+  echo "SSH tunnels started (key: $KEY)"
 fi
 
-ssh -i "$KEY" -o BatchMode=yes "$HOST" 'grep "^DATABASE_URL=" /opt/ems/app/.env' | python3 -c "
+ssh -o IdentitiesOnly=yes -i "$KEY" -o BatchMode=yes "$HOST" 'grep "^DATABASE_URL=" /opt/ems/app/.env' | python3 -c "
 import sys
 url=sys.stdin.read().strip().split('=',1)[1]
 for old in ['@ems-postgres:5432','@127.0.0.1:5432','@localhost:5432']:
