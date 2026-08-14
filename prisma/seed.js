@@ -145,7 +145,16 @@ async function main() {
     create: { tenantId: tenant.id, email: 'dev1@acme.test', passwordHash: pwHash, memberType: 'EMPLOYEE', status: 'ACTIVE' },
   });
 
-  console.log('✅ Users: 6 seed users');
+  // BE-6: there was no AUDITOR login on this tenant, so every AUDITOR grant in
+  // the handoff was unverifiable in production. The role and its 12 default keys
+  // already existed -- only the user was missing.
+  const auditorUser = await prisma.user.upsert({
+    where: { tenantId_email: { tenantId: tenant.id, email: 'auditor@acme.test' } },
+    update: { passwordHash: pwHash, status: 'ACTIVE' },
+    create: { tenantId: tenant.id, email: 'auditor@acme.test', passwordHash: pwHash, memberType: 'AUDITOR', status: 'ACTIVE' },
+  });
+
+  console.log('✅ Users: 7 seed users');
 
   // Assign roles to users (idempotent)
   for (const [userId, roleId] of [
@@ -155,6 +164,7 @@ async function main() {
     [employeeUser.id, employeeRole.id],
     [hrGmailUser.id, hrAdminRole.id],
     [dev1User.id, employeeRole.id],
+    [auditorUser.id, auditorRole.id],
   ]) {
     await prisma.userRole.upsert({
       where: { userId_roleId: { userId, roleId } },
