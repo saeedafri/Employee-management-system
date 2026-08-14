@@ -240,7 +240,7 @@ export default async function reportsRoutes(fastify) {
         required: ['reportType'],
         properties: {
           reportType: { type: 'string', description: 'e.g. workforce/headcount, attendance/summary, leave/pending, payroll/summary' },
-          format: { type: 'string', enum: ['CSV'], default: 'CSV' },
+          format: { type: 'string', enum: ['CSV', 'csv'], default: 'csv', description: 'Case-insensitive. POST /export/* takes lowercase; this took uppercase only. Both work now; lowercase is canonical.' },
           filters: { type: 'object', additionalProperties: true },
         },
       },

@@ -253,8 +253,12 @@ export async function exportReport(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const userId = request.user.sub;
-    const { reportType, format = 'CSV', filters = {} } = request.body;
-    const result = await reportsService.exportReport(tenantId, userId, { reportType, format, filters });
+    const { reportType, format = 'csv', filters = {} } = request.body;
+    // Same product, two casings: POST /export/* took 'csv', this took 'CSV'.
+    // Both are accepted; the service keeps receiving the uppercase form.
+    const result = await reportsService.exportReport(tenantId, userId, {
+      reportType, format: String(format).toUpperCase(), filters,
+    });
     return reply.status(202).send(successResponse(result));
   } catch (error) {
     request.log.error(error);

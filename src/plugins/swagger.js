@@ -638,7 +638,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
               required: ['reportType'],
               properties: {
                 reportType: { type: 'string', description: 'e.g. workforce/headcount, attendance/summary' },
-                format: { type: 'string', enum: ['CSV'], default: 'CSV' },
+                format: { type: 'string', enum: ['CSV', 'csv'], default: 'csv' },
                 filters: { type: 'object', additionalProperties: true },
               },
             }}],
