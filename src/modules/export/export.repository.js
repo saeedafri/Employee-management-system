@@ -141,10 +141,11 @@ export async function getExportJobStatus(jobId, tenantId) {
   });
 }
 
-export async function listExportJobs(tenantId, page = 1, limit = 10, status = null) {
+export async function listExportJobs(tenantId, page = 1, limit = 10, status = null, createdById = null) {
   const skip = (page - 1) * limit;
   const where = { tenantId };
   if (status) where.status = status;
+  if (createdById) where.createdById = createdById;
 
   const [jobs, total] = await Promise.all([
     prisma.exportJob.findMany({

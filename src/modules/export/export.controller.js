@@ -4,6 +4,7 @@ import { config } from '../../config/index.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { getSignedDocumentUrl, isCloudinaryConfigured } from '../../utils/cloudinary.js';
 import { CLOUDINARY_FILE_PREFIX } from '../../jobs/exportJob.js';
+import { hasPermission } from '../auth/auth.policy.js';
 import * as exportService from './export.service.js';
 import * as exportValidator from './export.validator.js';
 
@@ -153,7 +154,14 @@ export async function listExports(request, reply) {
     const tenantId = request.tenant.id;
     const query = exportValidator.listExportsSchema.parse(request.query);
 
-    const data = await exportService.listExports(tenantId, query.page, query.limit, query.status);
+    // BE-3: an employee saw all 7 tenant jobs, including EMPLOYEES bulk exports
+    // they never requested. Only an export-permission holder sees other people's.
+    const seesAll = ['employees:export', 'attendance:export', 'leave:export']
+      .some((key) => hasPermission(request.user, key));
+
+    const data = await exportService.listExports(
+      tenantId, query.page, query.limit, query.status, seesAll ? null : request.user.id,
+    );
 
     return reply.send(successResponse(data));
   } catch (error) {

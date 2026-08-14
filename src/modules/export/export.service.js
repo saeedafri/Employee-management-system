@@ -149,8 +149,8 @@ export async function getExportStatus(jobId, tenantId) {
   return response;
 }
 
-export async function listExports(tenantId, page, limit, status) {
-  const { jobs, total } = await exportRepository.listExportJobs(tenantId, page, limit, status);
+export async function listExports(tenantId, page, limit, status, createdById = null) {
+  const { jobs, total } = await exportRepository.listExportJobs(tenantId, page, limit, status, createdById);
 
   return {
     exports: jobs.map((job) => ({
@@ -158,7 +158,9 @@ export async function listExports(tenantId, page, limit, status) {
       export_type: job.exportType,
       format: job.format,
       status: job.status,
-      file_url: job.fileUrl,
+      // BE-3: no fileUrl here. It exposed the storage path
+      // (cloudinary://ems/<tenantId>/exports/<job_id>) to every caller;
+      // GET /export/:job_id/download resolves it and enforces the permission.
       error_message: job.errorMessage,
       created_at: job.createdAt,
       completed_at: job.completedAt,
