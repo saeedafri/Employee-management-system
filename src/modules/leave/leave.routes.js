@@ -12,7 +12,7 @@ export default async function leaveRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('leave:read')],
   }, (request, reply) => leaveController.getLeaveTypes(request, reply));
 
   fastify.post('/leave/types', {
@@ -86,7 +86,7 @@ export default async function leaveRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('leave:request')],
   }, (request, reply) => leaveController.createLeaveRequest(request, reply));
 
   fastify.post('/leave/requests/preview', {
@@ -121,7 +121,7 @@ export default async function leaveRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('leave:read')],
   }, (request, reply) => leaveController.getLeaveRequests(request, reply));
 
   fastify.get('/leave/team/requests', {
@@ -298,7 +298,7 @@ export default async function leaveRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('leave:read')],
   }, (request, reply) => leaveController.getLeaveBalance(request, reply));
 
   fastify.get('/leave/balance/me', {
@@ -308,6 +308,6 @@ export default async function leaveRoutes(fastify) {
       security: [{ Bearer: [] }],
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('leave:read')],
   }, (request, reply) => leaveController.getLeaveBalance(request, reply));
 }

@@ -1,4 +1,5 @@
 import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 import {
   listDepartments,
   getDepartment,
@@ -16,6 +17,7 @@ export default async function departmentsRoutes(fastify) {
   fastify.get(
     '/departments',
     {
+      onRequest: [requirePermission('departments:read')],
       schema: {
         tags: ['Departments'],
         description: 'Get all departments with hierarchical tree',

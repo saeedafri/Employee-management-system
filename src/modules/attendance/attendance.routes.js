@@ -19,7 +19,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:write')],
   }, (request, reply) => attendanceController.checkIn(request, reply));
 
   fastify.post('/attendance/check-out', {
@@ -34,7 +34,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:write')],
   }, (request, reply) => attendanceController.checkOut(request, reply));
 
   fastify.get('/attendance/records', {
@@ -54,7 +54,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:read')],
   }, (request, reply) => attendanceController.getAttendanceRecords(request, reply));
 
   fastify.get('/attendance/team/records', {
@@ -97,12 +97,12 @@ export default async function attendanceRoutes(fastify) {
 
   fastify.get('/attendance/calendar', {
     schema: calendarSchema('Your monthly attendance calendar (one entry per day, reconciled bucket + summary + LOP days).', false),
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:read')],
   }, (request, reply) => attendanceController.getMyAttendanceCalendar(request, reply));
 
   fastify.get('/employees/:id/attendance/calendar', {
     schema: calendarSchema('Monthly attendance calendar for an employee. MANAGER (their team) · HR_ADMIN/SUPER_ADMIN (anyone).', true),
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:read')],
   }, (request, reply) => attendanceController.getEmployeeAttendanceCalendar(request, reply));
 
   fastify.get('/attendance/team/weekly', {
@@ -137,7 +137,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:read')],
   }, (request, reply) => attendanceController.getAttendanceSummary(request, reply));
 
   fastify.post('/attendance/regularization', {
@@ -154,7 +154,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:write')],
   }, (request, reply) => attendanceController.submitRegularization(request, reply));
 
   fastify.get('/attendance/regularization', {
@@ -171,7 +171,7 @@ export default async function attendanceRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('attendance:read')],
   }, (request, reply) => attendanceController.getRegularizationRequests(request, reply));
 
   fastify.get('/attendance/team/regularization', {

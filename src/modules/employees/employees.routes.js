@@ -27,6 +27,7 @@ export async function employeesRoutes(fastify) {
   fastify.get(
     '/employees',
     {
+      onRequest: [requirePermission('employees:read')],
       schema: {
         tags: ['Employees'],
         description: 'List employees with pagination and filters',
@@ -66,6 +67,9 @@ export async function employeesRoutes(fastify) {
   fastify.get(
     '/employees/:id',
     {
+      // The self-or-`employees:read-any` check stays in the controller; this
+      // only gates the module itself.
+      onRequest: [requirePermission('employees:read')],
       schema: {
         tags: ['Employees'],
         description: 'Get employee details. HR/SUPER_ADMIN may pass ?includeTerminated=true to retrieve soft-deleted employees.',
