@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
+import { isLocalUrl } from '../utils/publicUrl.js';
 
 let transporter = null;
 
@@ -153,8 +154,22 @@ async function sendEmail(to, subject, template, data) {
   return { success: false, reason: 'No email provider configured' };
 }
 
+// Refuse to email a link the recipient cannot open. In production a localhost link is
+// always a misconfiguration, and delivering it is worse than not sending: the user gets
+// a dead button and the token is burned. Dev/test keep working against localhost.
+function linkUnusable(url, envName, to, template) {
+  if (!config.isProduction || !isLocalUrl(url)) return null;
+  logger.error({
+    type: 'email_link_not_configured', to, template, url, envName,
+    msg: `${envName} is not a public URL — refusing to send a link the recipient cannot open`,
+  });
+  return { success: false, reason: 'EMAIL_LINK_NOT_CONFIGURED', error: `${envName} is not set to a public URL` };
+}
+
 export async function enqueuePasswordResetEmail(to, resetToken, expiresInMinutes) {
   const resetUrl = `${config.frontendResetPasswordUrl}?token=${resetToken}`;
+  const blocked = linkUnusable(resetUrl, 'FRONTEND_RESET_PASSWORD_URL', to, 'password_reset');
+  if (blocked) return blocked;
   return sendEmail(to, 'Reset Your EMS Password', 'password_reset', { resetUrl, expiresInMinutes });
 }
 
@@ -163,6 +178,8 @@ export async function enqueueOtpEmail(to, code, expiresInMinutes) {
 }
 
 export async function sendInviteEmail(to, { employeeFirstName, companyName, activationUrl, expiresAt, supportEmail }) {
+  const blocked = linkUnusable(activationUrl, 'FRONTEND_APP_URL', to, 'account_invite');
+  if (blocked) return blocked;
   const subject = `Activate your account for ${companyName}`;
   return sendEmail(to, subject, 'account_invite', {
     employeeFirstName,

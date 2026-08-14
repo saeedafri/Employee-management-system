@@ -6,6 +6,7 @@ import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../utils/cloudinary.js';
 import * as exportRepository from '../modules/export/export.repository.js';
+import { buildCsv } from '../utils/csv.js';
 
 const EXPORTS_DIR = config.exportsDir || '/tmp/exports';
 mkdirSync(EXPORTS_DIR, { recursive: true });
@@ -145,19 +146,47 @@ async function generateExportFile(data, type, format, jobId) {
 }
 
 async function generateCSV(data, filepath) {
-  const flatData = data.map(flattenObject);
+  writeFileSync(filepath, buildJobCsv(data), 'utf8');
+}
 
-  if (flatData.length === 0) {
-    writeFileSync(filepath, '');
-    return;
+/**
+ * BE-10. The job-based CSVs were the odd ones out: values unquoted (so any
+ * value containing a comma corrupted the file), dates as `Date.prototype
+ * .toString()` ("Wed Jan 15 2020 00:00:00 GMT+0000 (Coordinated Universal
+ * Time)"), `departmentId` duplicated as `department.id`, and a trailing
+ * all-empty row. The direct exports already went through `utils/csv.js`;
+ * these now do too.
+ *
+ * Exported for the contract test.
+ */
+export function buildJobCsv(data) {
+  const flatData = data.map(flattenObject).filter(hasAnyValue);
+  if (flatData.length === 0) return '';
+
+  const headers = csvHeaders(flatData);
+  const rows = flatData.map((row) => headers.map((header) => formatCsvCell(row[header])));
+  return buildCsv(headers, rows);
+}
+
+/** Union of keys across rows, minus `<x>.id` where a scalar `<x>Id` already exists. */
+function csvHeaders(flatData) {
+  const keys = [];
+  for (const row of flatData) {
+    for (const key of Object.keys(row)) if (!keys.includes(key)) keys.push(key);
   }
+  return keys.filter((key) => {
+    const nested = key.match(/^(.+)\.id$/);
+    return !nested || !keys.includes(`${nested[1]}Id`);
+  });
+}
 
-  const headers = Object.keys(flatData[0]);
-  const rows = [
-    headers.map(escapeCSV).join(','),
-    ...flatData.map((row) => headers.map((h) => escapeCSV(String(row[h] ?? ''))).join(',')),
-  ];
-  writeFileSync(filepath, rows.join('\n'), 'utf8');
+function hasAnyValue(row) {
+  return Object.values(row).some((value) => value !== '' && value !== null && value !== undefined);
+}
+
+function formatCsvCell(value) {
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return value ?? '';
 }
 
 async function generateExcel(data, type, filepath) {
@@ -330,14 +359,6 @@ function formatColumnHeader(key) {
     .replace(/([A-Z])/g, ' $1')
     .replace(/\b\w/g, (c) => c.toUpperCase())
     .trim();
-}
-
-function escapeCSV(value) {
-  const str = String(value ?? '');
-  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
 }
 
 function flattenObject(obj, prefix = '') {

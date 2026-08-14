@@ -17,6 +17,9 @@ import {
 } from '../src/modules/export/exportRows.js';
 import { buildCsv, escapeCsvValue, orDash, yesNo } from '../src/utils/csv.js';
 import { exportEmployeesSchema } from '../src/modules/export/export.validator.js';
+import { buildJobCsv } from '../src/jobs/exportJob.js';
+import { exportFilename } from '../src/modules/export/export.controller.js';
+import { convertToCSV } from '../src/modules/auditLogs/auditLogs.controller.js';
 
 const firstLine = (csv) => csv.split('\n')[0];
 const dataLines = (csv) => csv.split('\n').slice(1);
@@ -191,5 +194,94 @@ describe('§2.1 Employees export — ids[] bulk selection', () => {
 
   it('rejects a non-string id', () => {
     assert.throws(() => exportEmployeesSchema.parse({ ids: [123] }));
+  });
+});
+
+describe('BE-10(a) job-based exports match the direct-export CSV conventions', () => {
+  const EMPLOYEES = [
+    {
+      id: 'cmqjpyds0001',
+      firstName: 'Aman',
+      lastName: 'Kumar',
+      designation: 'Senior Engineer, Platform', // the comma is the whole point
+      joinedOn: new Date('2020-01-15T00:00:00Z'),
+      departmentId: 'dept-1',
+      department: { id: 'dept-1', name: 'Engineering' },
+      manager: null,
+      createdAt: new Date('2026-06-18T09:30:00Z'),
+    },
+    // The all-empty row that used to land at EOF as `,,,,,,,,,,,,,`.
+    { id: '', firstName: '', lastName: '', designation: '', joinedOn: null },
+  ];
+
+  const csv = buildJobCsv(EMPLOYEES);
+
+  it('quotes every value, header row included', () => {
+    for (const cell of firstLine(csv).split(',')) {
+      assert.match(cell, /^".*"$/, `unquoted header cell: ${cell}`);
+    }
+    assert.ok(csv.includes('"Senior Engineer, Platform"'), 'a comma must not break the row');
+  });
+
+  it('emits dates as YYYY-MM-DD, not Date.prototype.toString()', () => {
+    assert.ok(csv.includes('"2020-01-15"'));
+    assert.ok(!csv.includes('GMT'), 'no JS toString() date form');
+    assert.ok(!csv.includes('Coordinated Universal Time'));
+  });
+
+  it('drops department.id, which duplicated departmentId', () => {
+    const headers = firstLine(csv);
+    assert.ok(headers.includes('"departmentId"'));
+    assert.ok(!headers.includes('"department.id"'));
+    assert.ok(headers.includes('"department.name"'), 'other nested fields still flatten');
+  });
+
+  it('has no trailing empty row', () => {
+    const lines = csv.split('\n');
+    assert.equal(dataLines(csv).length, 1, 'the all-empty row is dropped');
+    assert.ok(!/^,*$/.test(lines[lines.length - 1]));
+    assert.ok(!csv.endsWith('\n'));
+  });
+
+  it('an empty result set produces an empty file, not a header-only lie', () => {
+    assert.equal(buildJobCsv([]), '');
+  });
+});
+
+describe('BE-10(a) download filename convention', () => {
+  it('names the file <type>-<date>.<ext>, not export-<uuid>', () => {
+    const status = { export_type: 'EMPLOYEES', completed_at: '2026-08-13T11:00:00.000Z' };
+    assert.equal(exportFilename(status, 'csv'), 'employees-2026-08-13.csv');
+    assert.equal(exportFilename({ export_type: 'LEAVE', created_at: '2026-08-13T11:00:00.000Z' }, 'xlsx'),
+      'leave-2026-08-13.xlsx');
+  });
+});
+
+describe('BE-10(b) audit-log CSV export', () => {
+  const LOGS = [
+    {
+      id: 'log-1',
+      user_email: 'priya@acme.test',
+      action: 'UPDATE',
+      entity_type: 'Employee',
+      entity_id: 'emp-1',
+      created_at: new Date('2026-08-13T11:00:00Z'),
+    },
+  ];
+
+  it('quotes the header row too', () => {
+    for (const cell of firstLine(convertToCSV(LOGS)).split(',')) {
+      assert.match(cell, /^".*"$/, `unquoted header cell: ${cell}`);
+    }
+  });
+
+  it('emits an ISO date, not Date.prototype.toString()', () => {
+    const csv = convertToCSV(LOGS);
+    assert.ok(csv.includes('"2026-08-13T11:00:00.000Z"'));
+    assert.ok(!csv.includes('GMT'));
+  });
+
+  it('an empty export is header-only and still quoted', () => {
+    assert.equal(convertToCSV([]), '"id","user_email","action","entity_type","entity_id","created_at"');
   });
 });

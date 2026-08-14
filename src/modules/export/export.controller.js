@@ -84,7 +84,7 @@ export async function exportLeave(request, reply) {
 }
 
 const MIME_MAP = {
-  csv: 'text/csv',
+  csv: 'text/csv; charset=utf-8',
   xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   json: 'application/json',
   pdf: 'application/pdf',
@@ -92,6 +92,17 @@ const MIME_MAP = {
 
 function mimeForExt(ext) {
   return MIME_MAP[ext] || 'application/octet-stream';
+}
+
+/**
+ * `employees-2026-08-13.csv` -- the convention the direct exports already use,
+ * rather than the `export-<uuid>.csv` this endpoint produced.
+ */
+export function exportFilename(status, ext) {
+  const when = status.completed_at ?? status.created_at ?? new Date();
+  const stamp = new Date(when).toISOString().slice(0, 10);
+  const type = String(status.export_type ?? 'export').toLowerCase();
+  return `${type}-${stamp}.${ext}`;
 }
 
 export async function downloadExport(request, reply) {
@@ -107,10 +118,15 @@ export async function downloadExport(request, reply) {
 
     const ext = status.format === 'excel' ? 'xlsx' : status.format;
     const contentType = mimeForExt(ext);
-    const filename = `export-${job_id}.${ext}`;
+    const filename = exportFilename(status, ext);
     const stored = status.file_url || '';
 
-    // Prefer Cloudinary signed redirect when the job stored a cloudinary:// key.
+    // BE-10: this used to 302 to the Cloudinary signed URL. Cloudinary serves a
+    // raw asset as `application/octet-stream` with `filename="file"` -- the
+    // headers we set here never reached the browser, so an employees export
+    // downloaded as a extensionless file named `file`. Proxy the bytes instead
+    // so our Content-Type and filename are the ones the user gets.
+    // ponytail: buffers the whole artifact; stream it if exports outgrow memory.
     if (stored.startsWith(CLOUDINARY_FILE_PREFIX) && isCloudinaryConfigured()) {
       const publicId = stored.slice(CLOUDINARY_FILE_PREFIX.length);
       try {
@@ -119,9 +135,14 @@ export async function downloadExport(request, reply) {
           mimeType: contentType,
           expiresInSec: 300,
         });
-        return reply.redirect(signedUrl);
+        const upstream = await fetch(signedUrl);
+        if (!upstream.ok) throw new Error(`Cloudinary responded ${upstream.status}`);
+        return reply
+          .type(contentType)
+          .header('Content-Disposition', `attachment; filename="${filename}"`)
+          .send(Buffer.from(await upstream.arrayBuffer()));
       } catch (err) {
-        request.log.warn({ err, job_id }, 'Cloudinary signed URL failed; trying local disk');
+        request.log.warn({ err, job_id }, 'Cloudinary fetch failed; trying local disk');
       }
     }
 
