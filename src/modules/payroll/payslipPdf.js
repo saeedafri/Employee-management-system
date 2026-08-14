@@ -198,6 +198,17 @@ function renderCompanyHeader(doc, payslip, template, logo) {
   horizontalRule(doc, doc.y);
 }
 
+/**
+ * BE-8. The template can enable any field key, but the renderer only knows
+ * these. An enabled key that is not here resolves to undefined and is skipped
+ * silently -- which is what happened to `uan`, and is indistinguishable from a
+ * bug from the outside. The template response flags unsupported keys using this
+ * list so the settings UI can say so instead of showing them as enabled.
+ */
+export const RENDERABLE_FIELD_KEYS = Object.freeze([
+  'employeeCode', 'designation', 'department', 'pan', 'payDate', 'paymentRef',
+]);
+
 function renderEmployeeGrid(doc, payslip, template) {
   const employee = payslip.employee ?? {};
   const rows = [['Name', [employee.firstName, employee.lastName].filter(Boolean).join(' ')]];

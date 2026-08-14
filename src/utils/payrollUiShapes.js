@@ -1,3 +1,4 @@
+import { RENDERABLE_FIELD_KEYS } from '../modules/payroll/payslipPdf.js';
 /** UI contract helpers — normalize backend data to Phase 3 frontend shapes. */
 
 export const COMPONENT_TYPE_COLORS = {
@@ -89,7 +90,12 @@ export function fmtPayslipTemplateForUi(template) {
   const sections = ALL_PAYSLIP_SECTION_DEFS.map((def, index) =>
     normalizePayslipTemplateSection(byKey[def.key] ?? def, index),
   );
-  const fields = (template.fields ?? []).map(normalizePayslipTemplateField);
+  // BE-8: `supported: false` means the renderer has no mapping for this key, so
+  // enabling it will never put anything on the payslip.
+  const fields = (template.fields ?? []).map((field, index) => {
+    const normalized = normalizePayslipTemplateField(field, index);
+    return { ...normalized, supported: RENDERABLE_FIELD_KEYS.includes(normalized.key) };
+  });
   return {
     id: template.id,
     name: template.name,
