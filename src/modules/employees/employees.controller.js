@@ -85,7 +85,12 @@ export async function getEmployee(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
 
-    if (!canAccessEmployeeRecord(user, id)) {
+    // BE-9(a): `employees:read-any` is HR/SA-only, so a manager could list
+    // their 26 team members and open none of them -- the team screen was a dead
+    // end. A manager may open a direct report's profile. Deliberately checked
+    // here and not in canAccessEmployeeRecord: that helper also guards payslips,
+    // documents and tax forms, which stay HR/SA-only.
+    if (!canAccessEmployeeRecord(user, id) && !(await service.isDirectReport(tenantId, user.employeeId, id))) {
       return reply.code(403).send(errorResponse('FORBIDDEN', 'Cannot view other employee data', {}, request.id));
     }
 

@@ -118,6 +118,16 @@ export async function checkEmployeeCodeExists(employeeCode, _tenantId, excludeId
   return prisma.employee.findFirst({ where });
 }
 
+/** BE-9(a): is `employeeId` a direct report of `managerEmployeeId`? */
+export async function isDirectReport(tenantId, managerEmployeeId, employeeId) {
+  if (!managerEmployeeId || !employeeId) return false;
+  const found = await prisma.employee.findFirst({
+    where: { id: employeeId, tenantId, managerId: managerEmployeeId, deletedAt: null },
+    select: { id: true },
+  });
+  return Boolean(found);
+}
+
 export async function countEmployees(tenantId) {
   return prisma.employee.count({ where: { tenantId } });
 }

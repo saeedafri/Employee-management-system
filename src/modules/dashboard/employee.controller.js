@@ -8,13 +8,17 @@ import {
   getDocuments,
   getEmployeeTeam,
 } from './employee.service.js';
-import { errorResponse } from '../../utils/response.js';
+import { errorResponse, successResponse } from '../../utils/response.js';
 
 export async function employeeDashboardHandler(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!user.employeeId) {
-    return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', request.requestId));
+    // BE-9(b): a personal READ by someone with no linked Employee (SUPER_ADMIN)
+    // is an empty state, not a client error. Matches the decision already made
+    // for /attendance/summary|records|calendar in attendance.service.js.
+    // The write handlers below still 400 -- you cannot check in without one.
+    return reply.code(200).send(successResponse({ noEmployeeRecord: true }));
   }
 
   const result = await getEmployeeDashboard(user.employeeId, tenantId, request.tenant?.timezone || 'UTC');
@@ -25,7 +29,11 @@ export async function getTodayHandler(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!user.employeeId) {
-    return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', request.requestId));
+    // BE-9(b): a personal READ by someone with no linked Employee (SUPER_ADMIN)
+    // is an empty state, not a client error. Matches the decision already made
+    // for /attendance/summary|records|calendar in attendance.service.js.
+    // The write handlers below still 400 -- you cannot check in without one.
+    return reply.code(200).send(successResponse({ noEmployeeRecord: true }));
   }
 
   const result = await getEmployeeToday(user.employeeId, tenantId, request.tenant?.timezone || 'UTC');
@@ -58,7 +66,11 @@ export async function getBalanceHandler(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!user.employeeId) {
-    return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', request.requestId));
+    // BE-9(b): a personal READ by someone with no linked Employee (SUPER_ADMIN)
+    // is an empty state, not a client error. Matches the decision already made
+    // for /attendance/summary|records|calendar in attendance.service.js.
+    // The write handlers below still 400 -- you cannot check in without one.
+    return reply.code(200).send(successResponse({ noEmployeeRecord: true }));
   }
 
   const result = await getLeaveBalance(user.employeeId, tenantId);
@@ -76,7 +88,11 @@ export async function getDocumentsHandler(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!user.employeeId) {
-    return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', request.requestId));
+    // BE-9(b): a personal READ by someone with no linked Employee (SUPER_ADMIN)
+    // is an empty state, not a client error. Matches the decision already made
+    // for /attendance/summary|records|calendar in attendance.service.js.
+    // The write handlers below still 400 -- you cannot check in without one.
+    return reply.code(200).send(successResponse({ noEmployeeRecord: true }));
   }
 
   const result = await getDocuments(user.employeeId, tenantId);
@@ -87,7 +103,11 @@ export async function getTeamHandler(request, reply) {
   const { user } = request; const tenantId = request.tenant.id;
 
   if (!user.employeeId) {
-    return reply.code(400).send(errorResponse('NO_EMPLOYEE_RECORD', 'User has no employee record', request.requestId));
+    // BE-9(b): a personal READ by someone with no linked Employee (SUPER_ADMIN)
+    // is an empty state, not a client error. Matches the decision already made
+    // for /attendance/summary|records|calendar in attendance.service.js.
+    // The write handlers below still 400 -- you cannot check in without one.
+    return reply.code(200).send(successResponse({ noEmployeeRecord: true }));
   }
 
   const result = await getEmployeeTeam(user.employeeId, tenantId);

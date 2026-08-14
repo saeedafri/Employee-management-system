@@ -420,3 +420,9 @@ export async function getEmployeeActivity(employeeId, tenantId, { limit = 50 } =
     return errorResponse('ACTIVITY_FETCH_ERROR', error.message, null);
   }
 }
+
+
+/** BE-9(a): thin pass-through so the controller does not reach into the repo. */
+export async function isDirectReport(tenantId, managerEmployeeId, employeeId) {
+  return repo.isDirectReport(tenantId, managerEmployeeId, employeeId);
+}
