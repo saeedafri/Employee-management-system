@@ -204,8 +204,8 @@ function mapAssignment(row) {
   };
 }
 
-export async function listAssignments(prisma, tenantId, employeeId) {
-  const rows = await repo.listAssignments(prisma, tenantId, { employeeId });
+export async function listAssignments(prisma, tenantId, employeeId, employeeIds) {
+  const rows = await repo.listAssignments(prisma, tenantId, { employeeId, employeeIds });
   return rows.map(mapAssignment);
 }
 
@@ -436,8 +436,8 @@ export async function submitCompOff(prisma, tenantId, employeeId, body) {
   return mapCompOff(row, await employeeName(prisma, tenantId, employeeId));
 }
 
-export async function listCompOffRequests(prisma, tenantId, employeeId, status) {
-  const rows = await repo.listCompOff(prisma, tenantId, { employeeId, status });
+export async function listCompOffRequests(prisma, tenantId, employeeId, status, employeeIds) {
+  const rows = await repo.listCompOff(prisma, tenantId, { employeeId, employeeIds, status });
   const names = new Map();
   const out = [];
   for (const r of rows) {

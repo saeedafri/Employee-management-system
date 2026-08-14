@@ -39,11 +39,25 @@ export async function archivePublishedForCountry(prisma, tenantId, country, exce
 }
 
 // ── Assignments ────────────────────────────────────────────────────────────
-export async function listAssignments(prisma, tenantId, { employeeId } = {}) {
+export async function listAssignments(prisma, tenantId, { employeeId, employeeIds } = {}) {
   return prisma.leaveAssignment.findMany({
-    where: { tenantId, ...(employeeId ? { employeeId } : {}) },
+    where: {
+      tenantId,
+      ...(employeeId ? { employeeId } : {}),
+      ...(employeeIds ? { employeeId: { in: employeeIds } } : {}),
+    },
     orderBy: { assignedAt: 'desc' },
   });
+}
+
+/** Employee IDs reporting to `managerEmployeeId`, for team-scoped reads. */
+export async function listReportIds(prisma, tenantId, managerEmployeeId) {
+  if (!managerEmployeeId) return [];
+  const rows = await prisma.employee.findMany({
+    where: { tenantId, managerId: managerEmployeeId, deletedAt: null },
+    select: { id: true },
+  });
+  return rows.map((row) => row.id);
 }
 
 export async function getAssignment(prisma, tenantId, employeeId, policyId) {
@@ -82,9 +96,14 @@ export async function createLedgerTxn(prisma, tenantId, txn) {
 }
 
 // ── Comp-off ───────────────────────────────────────────────────────────────
-export async function listCompOff(prisma, tenantId, { employeeId, status } = {}) {
+export async function listCompOff(prisma, tenantId, { employeeId, employeeIds, status } = {}) {
   return prisma.compOffRequest.findMany({
-    where: { tenantId, ...(employeeId ? { employeeId } : {}), ...(status ? { status } : {}) },
+    where: {
+      tenantId,
+      ...(employeeId ? { employeeId } : {}),
+      ...(employeeIds ? { employeeId: { in: employeeIds } } : {}),
+      ...(status ? { status } : {}),
+    },
     orderBy: { submittedAt: 'desc' },
   });
 }

@@ -3,6 +3,7 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { prisma } from '../../plugins/prisma.js';
 import * as svc from './leaveEngine.service.js';
+import { hasPermission } from '../auth/auth.policy.js';
 
 const PRIVILEGED = new Set(['MANAGER', 'HR_ADMIN', 'SUPER_ADMIN']);
 
@@ -13,6 +14,23 @@ function resolveEmployeeId(request, fallbackToSelf = true) {
   if (!requested) return fallbackToSelf ? self : null;
   if (PRIVILEGED.has(request.user.memberType)) return requested;
   return self; // EMPLOYEE/AUDITOR can never read another person's ledger
+}
+
+/**
+ * Employee IDs the caller may see for per-employee leave data.
+ * `null` means unrestricted. Mirrors the scoping `/leave/ledger` already does,
+ * but permission-driven rather than memberType-driven: assignments are policy
+ * data, so `leave:policy-manage` is the whole-tenant key and `leave:team-read`
+ * the manager one.
+ */
+async function visibleEmployeeIds(request) {
+  const user = request.user;
+  if (hasPermission(user, 'leave:policy-manage')) return null;
+  if (hasPermission(user, 'leave:team-read')) {
+    const reports = await svc.repo.listReportIds(prisma, request.tenant.id, user.employeeId);
+    return [...new Set([user.employeeId, ...reports])].filter(Boolean);
+  }
+  return user.employeeId ? [user.employeeId] : [];
 }
 
 function fail(reply, request, error) {
@@ -100,8 +118,18 @@ export async function publishPolicy(request, reply) {
 // ── Assignments ──────────────────────────────────────────────────────────────
 export async function getAssignments(request, reply) {
   try {
-    const employeeId = resolveEmployeeId(request, false);
-    const assignments = await svc.listAssignments(prisma, request.tenant.id, employeeId || undefined);
+    const visible = await visibleEmployeeIds(request);
+    const requested = request.query?.employeeId;
+
+    // `visible === null` means unrestricted (leave:policy-manage). Otherwise an
+    // out-of-scope `?employeeId=` narrows to nothing rather than widening.
+    let employeeIds = null;
+    let employeeId;
+    if (visible === null) employeeId = requested || undefined;
+    else if (requested) employeeIds = visible.includes(requested) ? [requested] : [];
+    else employeeIds = visible;
+
+    const assignments = await svc.listAssignments(prisma, request.tenant.id, employeeId, employeeIds ?? undefined);
     return reply.send(successResponse({ assignments }));
   } catch (e) {
     return fail(reply, request, e);
@@ -184,9 +212,15 @@ export async function listCompOff(request, reply) {
   try {
     const scope = request.query?.scope;
     const status = request.query?.status;
+    // `scope=team` used to drop the employee filter entirely, so a MANAGER saw
+    // every comp-off request in the tenant, not their own reports'. Same shape
+    // of leak as BE-2 — scope it the same way.
     const isTeam = scope === 'team' && PRIVILEGED.has(request.user.memberType);
-    const employeeId = isTeam ? undefined : request.user.employeeId;
-    const requests = await svc.listCompOffRequests(prisma, request.tenant.id, employeeId, status);
+    const visible = isTeam
+      ? await visibleEmployeeIds(request)
+      : [request.user.employeeId].filter(Boolean);
+    const employeeIds = visible === null ? undefined : visible;
+    const requests = await svc.listCompOffRequests(prisma, request.tenant.id, undefined, status, employeeIds);
     return reply.send(successResponse({ requests }));
   } catch (e) {
     return fail(reply, request, e);
