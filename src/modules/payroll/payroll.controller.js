@@ -1,5 +1,6 @@
 import * as service from './payroll.service.js';
 import { renderPayslipPdf, payslipFilename } from './payslipPdf.js';
+import { renderTaxFormPdf, taxFormFilename } from './taxFormPdf.js';
 import * as payoutService from './payout/payout.service.js';
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
@@ -820,10 +821,35 @@ export async function updatePayslipTemplate(request, reply) {
 
 export async function getTaxForm(request, reply) {
   try {
-    const data = await service.getTaxForm(prisma, request.params.id, request.tenant.id, request.query.type || 'FORM16', request.query.fy);
+    const data = await service.getTaxForm(prisma, request.params.id, request.tenant.id, request.query.type || 'FORM16', request.query.fy, request.user);
     if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'No payroll data for this employee')); return; }
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
+}
+
+/**
+ * BE-5 — GET /payroll/employees/:employeeId/tax-forms/:formId/download?format=pdf
+ *
+ * There is no TaxForm table: a form is identified by its type (FORM16 / W2 /
+ * P60) plus the fiscal year, so `:formId` is the form type and `?fy=` selects
+ * the year. Ownership is enforced in the service, same as the payslip.
+ */
+export async function downloadTaxForm(request, reply) {
+  try {
+    const form = await service.getTaxForm(
+      prisma, request.params.employeeId, request.tenant.id,
+      request.params.formId, request.query?.fy, request.user,
+    );
+    if (!form) {
+      reply.code(404).send(errorResponse('NOT_FOUND', 'No payroll data for this employee'));
+      return;
+    }
+    const pdf = await renderTaxFormPdf(form);
+    return reply
+      .type('application/pdf')
+      .header('Content-Disposition', `attachment; filename="${taxFormFilename(form)}"`)
+      .send(pdf);
+  } catch (err) { return handleError(reply, err); }
 }
 
 export async function listReimbursementCategories(request, reply) {

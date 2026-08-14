@@ -2225,7 +2225,14 @@ export async function updatePayslipTemplate(prisma, tenantId, data) {
 // B2: localized TaxFormDocument (sections[]/identifiers[]/authority/jurisdiction) built from a
 // per-country form template + YTD payroll + the legal entity. Replaces the flat India-hardcoded
 // payload the FE could not render. 404 only when the employee id doesn't exist.
-export async function getTaxForm(prisma, employeeId, tenantId, type, fy) {
+export async function getTaxForm(prisma, employeeId, tenantId, type, fy, requestingUser) {
+  // A tax form is as personal as a payslip, but this route only ever checked
+  // `payroll:self-read` -- any employee holding that key could read anyone
+  // else's by id. Same self-or-`employees:read-any` rule the payslip uses.
+  // (Not in the tracker; found while building BE-5.)
+  if (requestingUser && !canAccessEmployeeRecord(requestingUser, employeeId)) {
+    throw AppError('Access denied', 'FORBIDDEN', 403);
+  }
   const ctx = await resolveEmployeeTaxContext(prisma, employeeId, tenantId, fy);
   if (!ctx.employee) return null;
   const emp = ctx.employee;

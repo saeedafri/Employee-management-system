@@ -1259,6 +1259,24 @@ export default async function payrollRoutes(fastify) {
     onRequest: [authenticate, canReadOwnPayroll],
   }, ctrl.getTaxForm);
 
+  fastify.get('/payroll/employees/:employeeId/tax-forms/:formId/download', {
+    schema: {
+      tags: ['Payroll'],
+      description: 'BE-5 — download the statutory tax form as a PDF. `:formId` is the form type (FORM16/W2/P60); `?fy=` selects the fiscal year. Self-or-HR/SA, same rule as the payslip route.',
+      security: [{ Bearer: [] }],
+      params: {
+        type: 'object',
+        required: ['employeeId', 'formId'],
+        properties: { employeeId: { type: 'string' }, formId: { type: 'string' } },
+      },
+      querystring: {
+        type: 'object',
+        properties: { fy: { type: 'string' }, format: { type: 'string', enum: ['pdf'], default: 'pdf' } },
+      },
+    },
+    onRequest: [authenticate, canReadOwnPayroll],
+  }, ctrl.downloadTaxForm);
+
   // ── Phase 3: Reimbursement Claims ───────────────────────────────────────────
 
   fastify.get('/payroll/reimbursement-categories', {

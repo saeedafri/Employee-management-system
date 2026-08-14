@@ -4875,6 +4875,7 @@ These endpoints were previously MSW-only frontend mocks. They are now fully impl
 | Method | Path | Roles | Notes |
 |--------|------|-------|-------|
 | GET | `/payroll/employees/:id/tax-form` | HR,SA | `?type=FORM16|W2|P60&fy=YYYY-YY`. Returns localized `TaxFormDocument` |
+| GET | `/payroll/employees/:employeeId/tax-forms/:formId/download?format=pdf` | `payroll:self-read` + self-or-HR/SA | **BE-5.** `:formId` = form type (FORM16/W2/P60); `?fy=` selects the fiscal year. Returns `application/pdf`, `tax-form-{name}-fy{fy}.pdf`. 403 for another employee's, 404 when the employee has no payroll data |
 
 **B2 `TaxFormDocument` (2026-06-28):** the FE renders this **verbatim**. The server selects a per-country/form-type template (Form 16 / W-2 / P60) and fills jurisdiction, authority, statutory identifiers, and **pre-formatted money strings** (server runs `Intl.NumberFormat` so the FE prints rows as-is). `type` defaults to the country default (`IN→FORM16`, `US→W2`, `GB→P60`). 404 only when the employee id doesn't exist; no payroll yet → zeroed rows, not 404.
 
