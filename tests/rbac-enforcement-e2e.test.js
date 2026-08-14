@@ -95,6 +95,10 @@ const MATRIX = [
   { url: '/api/v1/settings/security/auth', key: 'settings:security' },
   { url: '/api/v1/settings/roles-permissions', key: 'permissions:manage' },
   { url: '/api/v1/audit-logs/export', key: 'audit:export' },
+  // BE-1: the read routes were `authenticate`-only, so any employee could page
+  // the whole tenant audit trail.
+  { url: '/api/v1/audit-logs', key: 'audit:read' },
+  { url: '/api/v1/audit-logs/some-id', key: 'audit:read' },
 ];
 
 const ROLES = ['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER', 'EMPLOYEE', 'AUDITOR'];

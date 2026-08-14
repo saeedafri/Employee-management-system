@@ -22,7 +22,7 @@ export default async function auditLogsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('audit:read')],
   }, (request, reply) => auditLogsController.getAuditLogs(request, reply));
 
   fastify.get('/audit-logs/:id', {
@@ -38,7 +38,7 @@ export default async function auditLogsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('audit:read')],
   }, (request, reply) => auditLogsController.getAuditLogById(request, reply));
 
   fastify.post('/audit-logs/dpia-report', {
