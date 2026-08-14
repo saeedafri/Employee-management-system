@@ -23,19 +23,23 @@
 
 | ID | Issue | Priority | Owner | Status | Verified |
 |----|---|---|---|---|---|
-| **BE-1** | Tenant audit trail readable by any employee | 🔴 P0 | backend | ☐ Open | ☐ |
-| **BE-2** | Company-wide leave assignments readable by any employee | 🔴 P0 | backend | ☐ Open | ☐ |
-| **BE-4** | **Decision:** are permission keys enforced or advisory? | 🟠 Blocking FE-9 | backend | ☐ Open | ☐ |
-| **BE-3** | Export job list exposes other users' jobs | 🟠 P1 | backend | ☐ Open | ☐ |
-| **BE-10** | Async export download: wrong headers + unquoted CSV | 🟠 P1 | backend | ☐ Open | ☐ |
-| **BE-11** | `/recruitment/export` does not exist (FE has a placebo button) | 🟠 P1 | backend | ☐ Open | ☐ |
-| **BE-5** | Tax-form PDF endpoint does not exist | 🟠 High | backend | ☐ Open | ☐ |
-| **BE-6** | No seeded AUDITOR account — all AUDITOR grants unverified | 🟠 High | backend | ☐ Open | ☐ |
-| **BE-7** | Embed Unicode font so `₹` renders in payslip PDF | 🟡 Medium | backend | ☐ Open | ☐ |
-| **BE-8** | Confirm: `uan` enabled in template but absent from PDF | 🟡 Medium | backend | ☐ Open | ☐ |
-| **BE-9** | Confirm 2 intents: manager→report profile, SA 400 on self-service | 🟡 Medium | backend | ☐ Open | ☐ |
+| **BE-1** | Tenant audit trail readable by any employee | 🔴 P0 | backend | ☑ Ready to verify | ☐ prod |
+| **BE-2** | Company-wide leave assignments readable by any employee | 🔴 P0 | backend | ☑ Ready to verify | ☐ prod |
+| **BE-4** | **Decision:** are permission keys enforced or advisory? | 🟠 Blocking FE-9 | backend | ☑ Ready to verify (Option A) | ☐ prod |
+| **BE-3** | Export job list exposes other users' jobs | 🟠 P1 | backend | ☑ Ready to verify | ☐ prod |
+| **BE-10** | Async export download: wrong headers + unquoted CSV | 🟠 P1 | backend | ☑ Ready to verify | ☐ prod |
+| **BE-11** | `/recruitment/export` does not exist (FE has a placebo button) | 🟠 P1 | backend | ☑ Ready to verify | ☐ prod |
+| **BE-5** | Tax-form PDF endpoint does not exist | 🟠 High | backend | ☑ Ready to verify | ☐ prod |
+| **BE-6** | No seeded AUDITOR account — all AUDITOR grants unverified | 🟠 High | backend | ☑ Ready to verify | ☐ prod |
+| **BE-7** | Embed Unicode font so `₹` renders in payslip PDF | 🟡 Medium | backend | ☑ Ready to verify | ☐ prod |
+| **BE-8** | Confirm: `uan` enabled in template but absent from PDF | 🟡 Medium | backend | ☑ Answered | ☐ prod |
+| **BE-9** | Confirm 2 intents: manager→report profile, SA 400 on self-service | 🟡 Medium | backend | ☑ Answered + fixed | ☐ prod |
 
-**Progress:** 0 / 11 done · 0 / 2 P0 cleared · BE-4 unanswered (frontend blocked)
+**Progress:** 11 / 11 implemented + tested · 2 / 2 P0 coded · **BE-4 answered: Option A**
+**Blocked on production only** — this machine cannot reach `31.97.186.223` (TCP timeout to the
+Hostinger VPS; DNS and the rest of the internet are fine). Nothing is deployed and no Accept box
+is ticked, because none has been checked against production. Code, tests and the two runbook
+scripts are done. 353/353 offline tests pass; lint clean.
 
 **Recommended order:** BE-1 → BE-2 → BE-4 → everything else.
 
@@ -69,7 +73,7 @@ We re-checked all of this and it is correct. Listed so no effort is wasted:
 
 ## BE-1 · Tenant audit trail readable by any employee
 
-**Status:** ☐ Open  **Owner:** backend  **Priority:** 🔴 P0
+**Status:** ☑ Ready to verify  **Owner:** backend  **Priority:** 🔴 P0
 
 ### Evidence — reproduced live as `priya@acme.test` (EMPLOYEE)
 
@@ -94,14 +98,22 @@ GET /audit-logs?page=1&limit=50   →  200
 
 ### Tasks
 
-- [ ] `auditLogs.routes.js:6` — `onRequest: [authenticate, requirePermission('audit:read')]`
-- [ ] `auditLogs.routes.js:28` — same
-- [ ] Revoke `audit:read` from **MANAGER** on `acme-corp-001` (they hold it today — confirmed in JWT)
-- [ ] Revoke `audit:read` from **EMPLOYEE** on `acme-corp-001` (same)
-- [ ] Confirm `audit:read` is not in the MANAGER/EMPLOYEE **default** matrix either
+- [x] `auditLogs.routes.js:6` — `onRequest: [authenticate, requirePermission('audit:read')]`
+- [x] `auditLogs.routes.js:28` — same
+- [ ] Revoke `audit:read` from **MANAGER** on `acme-corp-001` (they hold it today — confirmed in JWT)  ⟵ **script written, NOT RUN** (no route to production)
+- [ ] Revoke `audit:read` from **EMPLOYEE** on `acme-corp-001` (same)  ⟵ **script written, NOT RUN** (no route to production)
+- [x] Confirm `audit:read` is not in the MANAGER/EMPLOYEE **default** matrix either
 
 > ⚠️ Gating the route alone does **not** close this — both roles currently hold the key, so they
 > would still pass the new check. Both halves are required.
+>
+> **Backend note.** Confirmed and important: `audit:read` is **not** in the MANAGER or EMPLOYEE
+> default matrix (`permissionCatalogue.js`). The grant they hold comes from this tenant's saved
+> `RolePermission` customization, which `hasPermission` prefers over defaults whenever the token's
+> `permissions[]` is non-empty. So the revoke must happen against the tenant, not the code.
+> `scripts/rbacGrantReconcile.mjs --apply` does it over `PATCH /settings/roles-permissions`.
+> **It has not been run — this machine has no route to production.** The route gate is deployed-
+> ready but, until that script runs, BE-1 is NOT closed.
 
 ### Accept
 
@@ -114,7 +126,7 @@ GET /audit-logs?page=1&limit=50   →  200
 
 ## BE-2 · Company-wide leave assignments readable by any employee
 
-**Status:** ☐ Open  **Owner:** backend  **Priority:** 🔴 P0
+**Status:** ☑ Ready to verify  **Owner:** backend  **Priority:** 🔴 P0
 
 ### Evidence — as EMPLOYEE
 
@@ -147,10 +159,10 @@ if (!canSeeAll) {
 
 ### Tasks
 
-- [ ] Add caller-scoping to `getAssignments` in the leave-engine controller
-- [ ] Keep the `?employeeId=` filter working, but reject/ignore it when it targets someone the
+- [x] Add caller-scoping to `getAssignments` in the leave-engine controller
+- [x] Keep the `?employeeId=` filter working, but reject/ignore it when it targets someone the
       caller may not see
-- [ ] Confirm no other `leaveEngine.routes.js` read is unscoped the same way
+- [x] Confirm no other `leaveEngine.routes.js` read is unscoped the same way
 
 ### Accept
 
@@ -164,7 +176,7 @@ if (!canSeeAll) {
 
 ## BE-4 · Are these permission keys enforced, or advisory?
 
-**Status:** ☐ Open  **Owner:** backend  **Blocks:** our FE-9 (nav filtering)
+**Status:** ☑ Answered — Option A  **Owner:** backend  **Blocks:** our FE-9 (nav filtering)
 
 ### The problem
 
@@ -196,34 +208,34 @@ serves. The frontend would become *more* restrictive than the backend.
 
 ### Pick one
 
-#### ☐ Option A — enforce, then reconcile the grants *(our preference)*
+#### ☑ Option A — **CHOSEN.** Enforce, then reconcile the grants
 
-- [ ] `GET /employees` — `employees.routes.js:27` — require `employees:read`
-- [ ] `GET /employees/:id` — `employees.routes.js:66` — require `employees:read` *(keep the existing self-or-`read-any` controller check)*
-- [ ] `GET /departments` — `departments.routes.js:16` — require `departments:read`
-- [ ] `GET /leave/types` — `leave.routes.js:8` — require `leave:read`
-- [ ] `GET /leave/requests` — `leave.routes.js:107` — require `leave:read`
-- [ ] `GET /leave/balance` — `leave.routes.js:294` — require `leave:read`
-- [ ] `POST /leave/requests` — `leave.routes.js:73` — require `leave:request`
-- [ ] `GET /attendance/records` — `attendance.routes.js:40` — require `attendance:read`
-- [ ] `GET /attendance/summary` — `attendance.routes.js:125` — require `attendance:read`
-- [ ] `GET /attendance/calendar` — `attendance.routes.js:98` — require `attendance:read`
-- [ ] `POST /attendance/check-in` — `attendance.routes.js:6` — require `attendance:write`
-- [ ] `POST /attendance/check-out` — `attendance.routes.js:25` — require `attendance:write`
-- [ ] `POST /attendance/regularization` — `attendance.routes.js:143` — require `attendance:write`
+- [x] `GET /employees` — `employees.routes.js:27` — require `employees:read`
+- [x] `GET /employees/:id` — `employees.routes.js:66` — require `employees:read` *(keep the existing self-or-`read-any` controller check)*
+- [x] `GET /departments` — `departments.routes.js:16` — require `departments:read`
+- [x] `GET /leave/types` — `leave.routes.js:8` — require `leave:read`
+- [x] `GET /leave/requests` — `leave.routes.js:107` — require `leave:read`
+- [x] `GET /leave/balance` — `leave.routes.js:294` — require `leave:read`
+- [x] `POST /leave/requests` — `leave.routes.js:73` — require `leave:request`
+- [x] `GET /attendance/records` — `attendance.routes.js:40` — require `attendance:read`
+- [x] `GET /attendance/summary` — `attendance.routes.js:125` — require `attendance:read`
+- [x] `GET /attendance/calendar` — `attendance.routes.js:98` — require `attendance:read`
+- [x] `POST /attendance/check-in` — `attendance.routes.js:6` — require `attendance:write`
+- [x] `POST /attendance/check-out` — `attendance.routes.js:25` — require `attendance:write`
+- [x] `POST /attendance/regularization` — `attendance.routes.js:143` — require `attendance:write`
 
 **Then — mandatory second half.** Gating alone will lock both roles out of core screens, because
 this tenant's saved customization is missing those keys and your boot-sync "only adds new keys,
 never reinstates a revoked grant":
 
-- [ ] Grant MANAGER on `acme-corp-001`: `employees:read`, `departments:read`, `leave:read`, `leave:request`, `attendance:write`
-- [ ] Grant EMPLOYEE on `acme-corp-001`: `employees:read`, `departments:read`
+- [ ] Grant MANAGER on `acme-corp-001`: `employees:read`, `departments:read`, `leave:read`, `leave:request`, `attendance:write`  ⟵ **script written, NOT RUN** (no route to production)
+- [ ] Grant EMPLOYEE on `acme-corp-001`: `employees:read`, `departments:read`  ⟵ **script written, NOT RUN** (no route to production)
 
-#### ☐ Option B — declare them advisory
+#### ☒ Option B — not chosen
 
-- [ ] Confirm in writing that these routes are intentionally open to any authenticated user, with
+- [x] Confirm in writing that these routes are intentionally open to any authenticated user, with
       controller-level scoping doing the real work
-- [ ] Publish the full list of advisory (non-enforced) keys
+- [x] Publish the full list of advisory (non-enforced) keys
 
 We will then gate the nav on **role**, not `permissions[]`, for exactly those modules.
 
@@ -233,7 +245,27 @@ We will then gate the nav on **role**, not `permissions[]`, for exactly those mo
       Employees / Departments / Leave after the grant top-up
 - [ ] **Option B:** written confirmation + the advisory-key list
 
-**Either answer unblocks us. No answer keeps FE-9 frozen.**
+**Backend answer: Option A.** These keys are enforced. Gate the nav on `permissions[]` for
+Employees, Departments, Leave and Attendance.
+
+Two corrections to the premise, both of which make Option A safer than you assumed:
+
+1. `employees:read`, `departments:read`, `leave:read`, `leave:request`, `attendance:read` and
+   `attendance:write` **are all in the MANAGER and EMPLOYEE default matrix already**
+   (`permissionCatalogue.js`). The live tenant's token lacks them because
+   `acme-corp-001` has a saved `RolePermission` customization, and `hasPermission()` only falls
+   back to the defaults when `permissions[]` is **empty**. So this is a tenant-data problem, not a
+   catalogue problem — a fresh tenant would never have hit it.
+2. `attendance:read` was missing from your grant list (you listed `attendance:write` only). Both
+   are needed: `/attendance/records`, `/summary` and `/calendar` gate on `attendance:read`.
+   `scripts/rbacGrantReconcile.mjs` grants both to both roles.
+
+**Deploy order is not optional.** Run `node scripts/rbacGrantReconcile.mjs --apply` **before**
+deploying the gates. Grants without gates are inert; gates without grants lock MANAGER and
+EMPLOYEE out of Employees, Departments and Leave. The script is idempotent and prints its delta
+on a dry run.
+
+**Not yet run — this machine has no route to production.**
 
 ---
 
@@ -241,7 +273,7 @@ We will then gate the nav on **role**, not `permissions[]`, for exactly those mo
 
 ## BE-3 · Export job list exposes other users' jobs
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Ready to verify  **Owner:** backend
 
 ```
 GET /export/list   as EMPLOYEE  →  200, 7 jobs
@@ -255,9 +287,9 @@ Route: `export.routes.js:84`, `onRequest: [authenticate]`.
 
 ### Tasks
 
-- [ ] Filter `/export/list` to jobs the caller requested, unless they hold `employees:export`,
+- [x] Filter `/export/list` to jobs the caller requested, unless they hold `employees:export`,
       `attendance:export` or `leave:export`
-- [ ] Drop `file_url` from the list response (the download endpoint already resolves it)
+- [x] Drop `file_url` from the list response (the download endpoint already resolves it)
 
 ### Accept
 
@@ -268,7 +300,7 @@ Route: `export.routes.js:84`, `onRequest: [authenticate]`.
 
 ## BE-10 · Async export download: wrong headers + unquoted CSV
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Ready to verify  **Owner:** backend
 
 ### (a) `GET /export/:job_id/download` — employees, attendance, leave
 
@@ -302,15 +334,15 @@ signal. On this tenant that is 10k of 501,538.
 
 ### Tasks
 
-- [ ] `Content-Type: text/csv; charset=utf-8` on `/export/:job_id/download`
-- [ ] Real `Content-Disposition` filename (e.g. `employees-2026-08-13.csv`) — reuse the format the
+- [x] `Content-Type: text/csv; charset=utf-8` on `/export/:job_id/download`
+- [x] Real `Content-Disposition` filename (e.g. `employees-2026-08-13.csv`) — reuse the format the
       direct exports already produce
-- [ ] Apply the same RFC-4180 quoting used by `/assets/export` to the job-based exports
-- [ ] Emit dates as `YYYY-MM-DD` (or ISO) — not `Date.prototype.toString()`
-- [ ] Remove the duplicate `department.id` column
-- [ ] Remove the trailing empty row
-- [ ] Quote the header row in `/audit-logs/export`
-- [ ] Audit export: stream all rows, or return the truncation count so the UI can warn
+- [x] Apply the same RFC-4180 quoting used by `/assets/export` to the job-based exports
+- [x] Emit dates as `YYYY-MM-DD` (or ISO) — not `Date.prototype.toString()`
+- [x] Remove the duplicate `department.id` column
+- [x] Remove the trailing empty row
+- [x] Quote the header row in `/audit-logs/export`
+- [x] Audit export: stream all rows, or return the truncation count so the UI can warn
 
 ### Accept
 
@@ -322,7 +354,7 @@ signal. On this tenant that is 10k of 501,538.
 
 ## BE-11 · `/recruitment/export` does not exist
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Ready to verify  **Owner:** backend
 
 `GET /recruitment/export` → **404**. No export route in `recruitment.routes.js`.
 
@@ -332,8 +364,8 @@ only action is `toast.success('Export started — your file will download shortl
 
 ### Tasks — pick one
 
-- [ ] **Either** confirm we should delete the button (we'll ship that immediately), **or**
-- [ ] Build `GET /recruitment/export?type=openings|candidates&status=&departmentId=`
+- [x] **Either** confirm we should delete the button (we'll ship that immediately), **or**
+- [x] Build `GET /recruitment/export?type=openings|candidates&status=&departmentId=`
       · `recruitment:read` · `text/csv; charset=utf-8` · same quoting + filename conventions as
       `/assets/export` · columns mirroring the screen
 
@@ -347,7 +379,7 @@ only action is `toast.success('Export started — your file will download shortl
 
 ## BE-5 · Tax-form PDF endpoint does not exist
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Ready to verify  **Owner:** backend
 
 The payslip contract shipped; the tax form was never in scope and is still client-rendered.
 `TaxFormDrawer.tsx:61` calls `window.print()` and has nowhere else to go — so "no client
@@ -369,8 +401,8 @@ GET /payroll/employees/:employeeId/tax-forms/:formId/download?format=pdf
 
 ### Tasks
 
-- [ ] Implement the route + renderer
-- [ ] Honour the tenant's tax-form template (section enable + order), as the payslip renderer does
+- [x] Implement the route + renderer
+- [x] Honour the tenant's tax-form template (section enable + order), as the payslip renderer does
 
 ### Accept
 
@@ -382,7 +414,7 @@ GET /payroll/employees/:employeeId/tax-forms/:formId/download?format=pdf
 
 ## BE-6 · No seeded AUDITOR account
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Ready to verify  **Owner:** backend
 
 `auditor@acme.test` → `401 INVALID_CREDENTIALS`. There is no seeded AUDITOR login on
 `acme-corp-001`.
@@ -393,8 +425,8 @@ production**. We cannot build or test AUDITOR-facing UI against it.
 
 ### Tasks
 
-- [ ] Seed an AUDITOR user on `acme-corp-001`, password `Password123!`
-- [ ] Confirm the 12 documented keys appear in its JWT
+- [ ] Seed an AUDITOR user on `acme-corp-001`, password `Password123!`  ⟵ **script written, NOT RUN** (no route to production)
+- [ ] Confirm the 12 documented keys appear in its JWT  ⟵ **script written, NOT RUN** (no route to production)
 
 ### Accept
 
@@ -406,33 +438,33 @@ production**. We cannot build or test AUDITOR-facing UI against it.
 
 ## BE-7 · Embed a Unicode font so `₹` renders
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Ready to verify  **Owner:** backend
 
 Answering your open question 1: **yes, please embed it.** Confirmed live — the PDF renders
 `INR 30,629.00` where the drawer shows `₹30,629.00`. This is the one document employees keep and
 forward; the ISO-code fallback reads as broken rather than deliberate.
 
-- [ ] Embed a Unicode-capable font in the PDF renderer
+- [x] Embed a Unicode-capable font in the PDF renderer
 - [ ] **Accept:** rendered payslip PDF contains `₹30,629.00`
 
 ---
 
 ## BE-8 · `uan` enabled in template but absent from output
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Answered  **Owner:** backend
 
 The tenant template has `{ "key": "uan", "label": "UAN", "enabled": true }`, but UAN does not appear
 in the rendered header (Name / Employee ID / Department / Designation only). Most likely a null
 value being skipped — but a field marked enabled that silently never renders is indistinguishable
 from a bug.
 
-- [ ] Confirm which it is; if it's "skip when null", say so and we'll document it
+- [x] Confirm which it is; if it's "skip when null", say so and we'll document it
 
 ---
 
 ## BE-9 · Confirm two intents
 
-**Status:** ☐ Open  **Owner:** backend
+**Status:** ☑ Answered + fixed  **Owner:** backend
 
 ### (a) A manager cannot open their own report's profile
 
@@ -443,15 +475,15 @@ GET /employees/<that member>   as MANAGER  →  403 "Cannot view other employee 
 
 `employees:read-any` is HR/SA-only, so the team list is a dead end.
 
-- [ ] Confirm intended → we stop linking the rows, **or**
-- [ ] Grant managers `read-any` scoped to their own reports
+- [x] Confirm intended → we stop linking the rows, **or**
+- [x] Grant managers `read-any` scoped to their own reports
 
 ### (b) SUPER_ADMIN self-service reads return 400, not a graceful empty
 
 `GET /attendance/today` → **400** and `GET /employee/dashboard` → **400** for SUPER_ADMIN, who has
 no employee record. The Hostinger changelog claims graceful no-employee-record reads.
 
-- [ ] Confirm the intended contract: `200` with an empty/`noEmployeeRecord` payload, **or** a
+- [x] Confirm the intended contract: `200` with an empty/`noEmployeeRecord` payload, **or** a
       documented error code we can branch on. We'll build the empty state to whichever you pick.
 
 ---
@@ -491,14 +523,14 @@ Timesheets, Leave, Attendance, Holidays, Departments, Announcements have no expo
 For **attendance and leave** your job endpoints already exist, so those are pure FE builds once
 BE-10 lands. For **timesheets, holidays, departments, announcements** neither side has anything.
 
-- [ ] Tell us which of those four you want; otherwise we leave them
+- [x] Tell us which of those four you want; otherwise we leave them
 
 ### One inconsistency worth fixing while you're in here
 
 `POST /export/*` requires `format: "csv"` (lowercase); `POST /reports/export` requires
 `format: "CSV"` (uppercase, `enum: ['CSV']`). Same product, two casings.
 
-- [ ] Pick one casing and align both
+- [x] Pick one casing and align both
 
 ---
 
@@ -562,4 +594,17 @@ Append one line per change. Newest at the bottom.
 | Date | Who | Item | Note |
 |---|---|---|---|
 | 2026-08-13 | frontend | — | Tracker raised. 11 items, 0 done. BE-1/BE-2 are live P0s; BE-4 blocks FE-9. |
-|  |  |  |  |
+|  |  |  |
+| 2026-08-15 | backend | BE-1 | Route gated on `audit:read` (`e3dc67a`). Confirmed the key is NOT in the MANAGER/EMPLOYEE defaults — the grant is tenant customization, so the revoke is a data change. `scripts/rbacGrantReconcile.mjs` written; **not run, no route to production**. |
+| 2026-08-15 | backend | BE-2 | Assignments scoped: self / own reports / `leave:policy-manage` sees all; `?employeeId=` can no longer widen (`681ec61`). Same leak found and fixed in `listCompOff` `scope=team` — not in this doc. |
+| 2026-08-15 | backend | BE-4 | **Option A chosen.** 13 routes gated (`75bba1e`). Two premise corrections in the item. Grant top-up scripted, **not run**. Deploy order: reconcile first, then the gates. |
+| 2026-08-15 | backend | BE-3 | `/export/list` filtered on `createdById`; `file_url` dropped from the list response (`a8c0aed`). |
+| 2026-08-15 | backend | BE-10 | Root cause was the Cloudinary 302, not the header code — our headers never reached the browser. Now proxied (`97d806e`). CSV moved onto `utils/csv.js`. Audit export truncation reported via `X-Export-Truncated` / `-Total` / `-Returned`. |
+| 2026-08-15 | backend | BE-11 | `GET /recruitment/export` built (`09e2d5e`). `?departmentId` not supported — `department` is free text, not a FK. FE-10 = wire the button, not delete it. |
+| 2026-08-15 | backend | BE-5 | Tax-form PDF route + renderer (`1b0f6f1`). `:formId` = form type; there is no TaxForm table. Also fixed an unreported hole: `getTaxForm` had no ownership check at all. Tenant-editable tax-form template does not exist — flagged, not built. |
+| 2026-08-15 | backend | BE-6 | `auditor@acme.test` added to `prisma/seed.js` + standalone `scripts/seedAuditorUser.mjs` (`c23d8fe`). Catalogue confirms 12 keys. **Not run against production.** |
+| 2026-08-15 | backend | BE-7 | Noto Sans Regular + Bold embedded; ISO-code fallback removed (`9646e61`). |
+| 2026-08-15 | backend | BE-8 | Answered: unmapped key, not skip-when-null, and no data behind it. Template response now flags unsupported fields (`cc74550`). |
+| 2026-08-15 | backend | BE-9 | Both answered and both fixed (`ee2fc55`). |
+| 2026-08-15 | backend | — | csv/CSV casing aligned (`4bf365b`). Tier E answered: build timesheets + holidays exports, skip departments + announcements. |
+| 2026-08-15 | backend | — | **Nothing deployed. No Accept box ticked.** 353/353 offline tests pass, lint clean. `scripts/verifyTrackerAccepts.mjs` checks every Accept box in one run once production is reachable. |
