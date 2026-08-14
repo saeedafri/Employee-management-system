@@ -96,3 +96,52 @@ export function invoicesCsv(invoices) {
 export function invoicesFilename(today) {
   return `invoices-${isoDate(today ?? new Date().toISOString())}.csv`;
 }
+
+// BE-11 RecruitmentScreen.tsx — the Export button had no endpoint behind it, it
+// only fired a toast. Columns mirror the two tables on the screen.
+export const OPENING_HEADERS = [
+  'Title', 'Department', 'Location', 'Employment Type', 'Applicants', 'Current Stage', 'Status', 'Posted',
+];
+
+export function openingRows(openings = []) {
+  return openings.map((opening) => [
+    opening.title,
+    opening.department,
+    opening.location,
+    opening.employmentType,
+    opening.applicantCount ?? 0,
+    orDash(opening.currentStage),
+    opening.status,
+    orDash(isoDate(opening.createdAt) || null),
+  ]);
+}
+
+export const CANDIDATE_HEADERS = [
+  'Name', 'Email', 'Role', 'Stage', 'Rating', 'Days In Stage', 'Referral', 'Applied',
+];
+
+export function candidateRows(candidates = []) {
+  return candidates.map((candidate) => [
+    candidate.name,
+    candidate.email,
+    candidate.role,
+    candidate.stage,
+    orDash(candidate.rating),
+    candidate.daysInStage ?? 0,
+    yesNo(candidate.isReferral),
+    orDash(isoDate(candidate.appliedAt) || null),
+  ]);
+}
+
+export function openingsCsv(openings) {
+  return buildCsv(OPENING_HEADERS, openingRows(openings));
+}
+
+export function candidatesCsv(candidates) {
+  return buildCsv(CANDIDATE_HEADERS, candidateRows(candidates));
+}
+
+/** `recruitment-openings-2026-08-13.csv` — same shape as invoicesFilename. */
+export function recruitmentFilename(type, today) {
+  return `recruitment-${type}-${isoDate(today ?? new Date().toISOString())}.csv`;
+}

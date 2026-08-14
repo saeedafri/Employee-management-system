@@ -14,6 +14,7 @@ import assert from 'node:assert/strict';
 import {
   REVIEW_HEADERS, GOAL_HEADERS, ASSET_HEADERS, INVOICE_HEADERS,
   reviewsCsv, goalsCsv, assetsCsv, invoicesCsv, invoicesFilename,
+  OPENING_HEADERS, CANDIDATE_HEADERS, openingsCsv, candidatesCsv, recruitmentFilename,
 } from '../src/modules/export/exportRows.js';
 import { buildCsv, escapeCsvValue, orDash, yesNo } from '../src/utils/csv.js';
 import { exportEmployeesSchema } from '../src/modules/export/export.validator.js';
@@ -283,5 +284,55 @@ describe('BE-10(b) audit-log CSV export', () => {
 
   it('an empty export is header-only and still quoted', () => {
     assert.equal(convertToCSV([]), '"id","user_email","action","entity_type","entity_id","created_at"');
+  });
+});
+
+describe('BE-11 recruitment export', () => {
+  const OPENINGS = [
+    {
+      title: 'Senior Engineer, Platform',
+      department: 'Engineering',
+      location: 'Bengaluru',
+      employmentType: 'FULL_TIME',
+      applicantCount: 12,
+      currentStage: 'interview',
+      status: 'Open',
+      createdAt: '2026-07-01T00:00:00.000Z',
+    },
+  ];
+
+  const CANDIDATES = [
+    {
+      name: 'Priya Sharma',
+      email: 'priya@acme.test',
+      role: 'Engineer',
+      stage: 'offer',
+      rating: 4,
+      daysInStage: 3,
+      isReferral: true,
+      appliedAt: '2026-07-20T00:00:00.000Z',
+    },
+    { name: 'Dev One', email: 'dev1@acme.test', role: 'Engineer', stage: 'applied', rating: null, daysInStage: 0, isReferral: false, appliedAt: null },
+  ];
+
+  it('openings: column set, order, quoting and yyyy-MM-dd dates', () => {
+    const csv = openingsCsv(OPENINGS);
+    assert.equal(firstLine(csv), OPENING_HEADERS.map((h) => `"${h}"`).join(','));
+    assert.ok(csv.includes('"Senior Engineer, Platform"'), 'comma stays inside its cell');
+    assert.ok(csv.includes('"2026-07-01"'));
+  });
+
+  it('candidates: column set, em dash for a missing rating, Yes/No referral', () => {
+    const csv = candidatesCsv(CANDIDATES);
+    assert.equal(firstLine(csv), CANDIDATE_HEADERS.map((h) => `"${h}"`).join(','));
+    const [first, second] = dataLines(csv);
+    assert.ok(first.includes('"Yes"'));
+    assert.ok(second.includes('"No"'));
+    assert.ok(second.includes('"—"'), 'missing rating renders as an em dash, like the UI');
+  });
+
+  it('names the file recruitment-{type}-{date}.csv', () => {
+    assert.equal(recruitmentFilename('openings', '2026-08-13T10:00:00.000Z'), 'recruitment-openings-2026-08-13.csv');
+    assert.match(recruitmentFilename('candidates'), /^recruitment-candidates-\d{4}-\d{2}-\d{2}\.csv$/);
   });
 });

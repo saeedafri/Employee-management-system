@@ -3192,6 +3192,7 @@ It is a public Cloudinary URL — no auth header needed to fetch the file itself
 | POST | `/recruitment/candidates/:id/advance` | HR,SA,MGR | Body: `{ stage }` — must be exact next stage. Sequence: applied→screening→interview→offer→hired. 409 if hired, 422 if invalid stage name or skip |
 | PATCH | `/recruitment/candidates/:id/rating` | HR,SA,MGR | Body: `{ rating: 1-5 }`. 422 if out of range, 404 if not found |
 | GET | `/recruitment/recruiters` | HR,SA,MGR | Returns HR_ADMIN users with employee profiles `{ recruiters: [{id, name, email}] }` |
+| GET | `/recruitment/export` | `recruitment:read` | **BE-11.** `?type=openings\|candidates` (default `openings`), `?status` (openings), `?stage`/`?openingId` (candidates). Returns `text/csv; charset=utf-8`, RFC-4180 quoted, `recruitment-{type}-{YYYY-MM-DD}.csv`. `departmentId` is NOT supported — an opening stores `department` as free text, not a FK |
 
 ---
 

@@ -126,6 +126,24 @@ export default async function recruitmentRoutes(fastify) {
     onRequest: [authenticate, canReadRecruitment],
   }, controller.updateCandidateRating);
 
+  fastify.get('/recruitment/export', {
+    schema: {
+      tags: ['Recruitment'],
+      summary: 'Export openings or candidates as CSV',
+      security: [{ Bearer: [] }],
+      querystring: {
+        type: 'object',
+        properties: {
+          type: { type: 'string', enum: ['openings', 'candidates'], default: 'openings' },
+          status: { type: 'string', description: 'Openings only' },
+          stage: { type: 'string', description: 'Candidates only' },
+          openingId: { type: 'string', description: 'Candidates only' },
+        },
+      },
+    },
+    onRequest: [authenticate, canReadRecruitment],
+  }, controller.exportRecruitment);
+
   fastify.get('/recruitment/recruiters', {
     schema: {
       tags: ['Recruitment'],
