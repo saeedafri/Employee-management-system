@@ -141,3 +141,15 @@ describe('payslipFilename', () => {
     assert.match(payslipFilename({ period: '2026-07' }), /^payslip-.*\.pdf$/);
   });
 });
+
+describe('BE-7 rupee renders instead of the ISO-code fallback', () => {
+  it('formatMoney returns the symbol, not INR', () => {
+    assert.equal(formatMoney(30629, 'INR', 'en-IN'), '\u20B930,629.00');
+  });
+
+  it('the PDF embeds a Unicode font that has the rupee glyph', async () => {
+    const pdf = (await renderPayslipPdf({ ...PAYSLIP, currency: 'INR' }, null)).toString('latin1');
+    assert.match(pdf, /NotoSans/, 'Noto Sans must be embedded, not built-in Helvetica');
+    assert.ok(!/BaseFont\s*\/Helvetica/.test(pdf), 'no WinAnsi Helvetica left');
+  });
+});
