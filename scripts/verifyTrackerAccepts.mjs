@@ -189,13 +189,16 @@ for (const path of ['/employees?page=1&limit=1', '/departments', '/leave/types',
 
 // ── BE-7 ────────────────────────────────────────────────────────────────────
 {
-  const payslips = await call('/payroll/payslips?page=1&limit=1', { token: tokens.EMPLOYEE });
-  const payslip = (payslips.json.data?.payslips ?? payslips.json.data ?? [])[0];
+  // There is no /payroll/payslips; payslips are listed per employee.
+  const me = await call('/auth/me', { token: tokens.EMPLOYEE });
+  const selfId = me.json.data?.employeeId ?? me.json.data?.employee?.id;
+  const payslips = await call(`/payroll/employees/${selfId}/payslips?page=1&limit=1`, { token: tokens.EMPLOYEE });
+  const list = payslips.json.data?.payslips ?? payslips.json.data?.items ?? payslips.json.data ?? [];
+  const payslip = Array.isArray(list) ? list[0] : undefined;
   if (!payslip?.id) {
-    check('BE-7', 'a payslip exists to render', false, 'no payslip on the seeded employee');
+    check('BE-7', 'a payslip exists to render', false,
+      `no payslip for ${selfId} (status ${payslips.status})`);
   } else {
-    const me = await call('/auth/me', { token: tokens.EMPLOYEE });
-    const selfId = me.json.data?.employeeId ?? me.json.data?.employee?.id;
     const response = await call(`/payroll/employees/${selfId}/payslips/${payslip.id}/download`, {
       token: tokens.EMPLOYEE, raw: true,
     });

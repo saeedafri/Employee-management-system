@@ -97,7 +97,10 @@ export async function exportAuditLogs(request, reply) {
       },
     );
 
-    const total = data.pagination?.total ?? data.logs.length;
+    // getAuditLogs returns a FLAT `total` (a real COUNT), not `pagination.total`.
+    // Reading the wrong key fell back to logs.length, so a 501,538-row tenant
+    // reported total=10000 truncated=false -- the exact silence BE-10(b) is about.
+    const total = data.total ?? data.logs.length;
     const truncated = total > data.logs.length;
     const stamp = new Date().toISOString().slice(0, 10);
 
