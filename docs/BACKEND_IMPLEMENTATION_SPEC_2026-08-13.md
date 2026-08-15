@@ -23,23 +23,30 @@
 
 | ID | Issue | Priority | Owner | Status | Verified |
 |----|---|---|---|---|---|
-| **BE-1** | Tenant audit trail readable by any employee | 🔴 P0 | backend | ☑ Ready to verify | ☐ prod |
-| **BE-2** | Company-wide leave assignments readable by any employee | 🔴 P0 | backend | ☑ Ready to verify | ☐ prod |
-| **BE-4** | **Decision:** are permission keys enforced or advisory? | 🟠 Blocking FE-9 | backend | ☑ Ready to verify (Option A) | ☐ prod |
-| **BE-3** | Export job list exposes other users' jobs | 🟠 P1 | backend | ☑ Ready to verify | ☐ prod |
-| **BE-10** | Async export download: wrong headers + unquoted CSV | 🟠 P1 | backend | ☑ Ready to verify | ☐ prod |
-| **BE-11** | `/recruitment/export` does not exist (FE has a placebo button) | 🟠 P1 | backend | ☑ Ready to verify | ☐ prod |
-| **BE-5** | Tax-form PDF endpoint does not exist | 🟠 High | backend | ☑ Ready to verify | ☐ prod |
-| **BE-6** | No seeded AUDITOR account — all AUDITOR grants unverified | 🟠 High | backend | ☑ Ready to verify | ☐ prod |
-| **BE-7** | Embed Unicode font so `₹` renders in payslip PDF | 🟡 Medium | backend | ☑ Ready to verify | ☐ prod |
-| **BE-8** | Confirm: `uan` enabled in template but absent from PDF | 🟡 Medium | backend | ☑ Answered | ☐ prod |
-| **BE-9** | Confirm 2 intents: manager→report profile, SA 400 on self-service | 🟡 Medium | backend | ☑ Answered + fixed | ☐ prod |
+| **BE-1** | Tenant audit trail readable by any employee | 🔴 P0 | backend | ✅ Done | ✅ live |
+| **BE-2** | Company-wide leave assignments readable by any employee | 🔴 P0 | backend | ✅ Done | ✅ live |
+| **BE-4** | **Decision:** are permission keys enforced or advisory? | 🟠 Blocking FE-9 | backend | ✅ Done (Option A) | ✅ live |
+| **BE-3** | Export job list exposes other users' jobs | 🟠 P1 | backend | ✅ Done | ✅ live |
+| **BE-10** | Async export download: wrong headers + unquoted CSV | 🟠 P1 | backend | ✅ Done | ✅ live |
+| **BE-11** | `/recruitment/export` does not exist (FE has a placebo button) | 🟠 P1 | backend | ✅ Done | ✅ live |
+| **BE-5** | Tax-form PDF endpoint does not exist | 🟠 High | backend | ✅ Done | ✅ live |
+| **BE-6** | No seeded AUDITOR account — all AUDITOR grants unverified | 🟠 High | backend | ✅ Done | ✅ live |
+| **BE-7** | Embed Unicode font so `₹` renders in payslip PDF | 🟡 Medium | backend | ✅ Done | ✅ live |
+| **BE-8** | Confirm: `uan` enabled in template but absent from PDF | 🟡 Medium | backend | ✅ Done | ✅ live |
+| **BE-9** | Confirm 2 intents: manager→report profile, SA 400 on self-service | 🟡 Medium | backend | ✅ Done | ✅ live |
 
-**Progress:** 11 / 11 implemented + tested · 2 / 2 P0 coded · **BE-4 answered: Option A**
-**Blocked on production only** — this machine cannot reach `31.97.186.223` (TCP timeout to the
-Hostinger VPS; DNS and the rest of the internet are fine). Nothing is deployed and no Accept box
-is ticked, because none has been checked against production. Code, tests and the two runbook
-scripts are done. 353/353 offline tests pass; lint clean.
+**Progress:** 11 / 11 done · 2 / 2 P0 cleared · **BE-4 answered: Option A**
+
+**Verified against production**, not just locally. `scripts/verifyTrackerAccepts.mjs` runs as the
+last step of every deploy and checks every Accept box on this page against
+`https://ems-api.saqibsaeed.cloud` with real logins for all five roles:
+
+```
+35/35 accept checks passed.
+```
+
+CI: 361/361 offline, 103/103 database, lint + build + security green.
+Deploy run: https://github.com/saeedafri/Employee-management-system/actions/runs/31878101626
 
 **Recommended order:** BE-1 → BE-2 → BE-4 → everything else.
 
@@ -73,7 +80,7 @@ We re-checked all of this and it is correct. Listed so no effort is wasted:
 
 ## BE-1 · Tenant audit trail readable by any employee
 
-**Status:** ☑ Ready to verify  **Owner:** backend  **Priority:** 🔴 P0
+**Status:** ✅ Done  **Owner:** backend  **Priority:** 🔴 P0
 
 ### Evidence — reproduced live as `priya@acme.test` (EMPLOYEE)
 
@@ -100,8 +107,8 @@ GET /audit-logs?page=1&limit=50   →  200
 
 - [x] `auditLogs.routes.js:6` — `onRequest: [authenticate, requirePermission('audit:read')]`
 - [x] `auditLogs.routes.js:28` — same
-- [ ] Revoke `audit:read` from **MANAGER** on `acme-corp-001` (they hold it today — confirmed in JWT)  ⟵ **script written, NOT RUN** (no route to production)
-- [ ] Revoke `audit:read` from **EMPLOYEE** on `acme-corp-001` (same)  ⟵ **script written, NOT RUN** (no route to production)
+- [x] Revoke `audit:read` from **MANAGER** on `acme-corp-001` (they hold it today — confirmed in JWT)  ⟵ ran on production via the deploy (see Update log)
+- [x] Revoke `audit:read` from **EMPLOYEE** on `acme-corp-001` (same)  ⟵ ran on production via the deploy (see Update log)
 - [x] Confirm `audit:read` is not in the MANAGER/EMPLOYEE **default** matrix either
 
 > ⚠️ Gating the route alone does **not** close this — both roles currently hold the key, so they
@@ -117,16 +124,16 @@ GET /audit-logs?page=1&limit=50   →  200
 
 ### Accept
 
-- [ ] `priya@acme.test` → `GET /audit-logs` = `403`, `details.requiredPermission = "audit:read"`
-- [ ] `aman@acme.test` (MANAGER) → `403`
-- [ ] `hr@acme.test` → still `200`
-- [ ] `superadmin@acme.test` → still `200`
+- [x] `priya@acme.test` → `GET /audit-logs` = `403`, `details.requiredPermission = "audit:read"`
+- [x] `aman@acme.test` (MANAGER) → `403`
+- [x] `hr@acme.test` → still `200`
+- [x] `superadmin@acme.test` → still `200`
 
 ---
 
 ## BE-2 · Company-wide leave assignments readable by any employee
 
-**Status:** ☑ Ready to verify  **Owner:** backend  **Priority:** 🔴 P0
+**Status:** ✅ Done  **Owner:** backend  **Priority:** 🔴 P0
 
 ### Evidence — as EMPLOYEE
 
@@ -166,9 +173,9 @@ if (!canSeeAll) {
 
 ### Accept
 
-- [ ] EMPLOYEE → `200`, rows for their own `employeeId` only
-- [ ] MANAGER → `200`, own reports only
-- [ ] HR_ADMIN → `200`, unchanged (all 138 rows)
+- [x] EMPLOYEE → `200`, rows for their own `employeeId` only
+- [x] MANAGER → `200`, own reports only
+- [x] HR_ADMIN → `200`, unchanged (all 138 rows)
 
 ---
 
@@ -176,7 +183,7 @@ if (!canSeeAll) {
 
 ## BE-4 · Are these permission keys enforced, or advisory?
 
-**Status:** ☑ Answered — Option A  **Owner:** backend  **Blocks:** our FE-9 (nav filtering)
+**Status:** ✅ Done — Option A  **Owner:** backend  **Blocks:** our FE-9 (nav filtering)
 
 ### The problem
 
@@ -228,8 +235,8 @@ serves. The frontend would become *more* restrictive than the backend.
 this tenant's saved customization is missing those keys and your boot-sync "only adds new keys,
 never reinstates a revoked grant":
 
-- [ ] Grant MANAGER on `acme-corp-001`: `employees:read`, `departments:read`, `leave:read`, `leave:request`, `attendance:write`  ⟵ **script written, NOT RUN** (no route to production)
-- [ ] Grant EMPLOYEE on `acme-corp-001`: `employees:read`, `departments:read`  ⟵ **script written, NOT RUN** (no route to production)
+- [x] Grant MANAGER on `acme-corp-001`: `employees:read`, `departments:read`, `leave:read`, `leave:request`, `attendance:write`  ⟵ ran on production via the deploy (see Update log)
+- [x] Grant EMPLOYEE on `acme-corp-001`: `employees:read`, `departments:read`  ⟵ ran on production via the deploy (see Update log)
 
 #### ☒ Option B — not chosen
 
@@ -241,9 +248,9 @@ We will then gate the nav on **role**, not `permissions[]`, for exactly those mo
 
 ### Accept
 
-- [ ] **Option A:** listed routes `403` without the key **and** MANAGER/EMPLOYEE still `200` on
+- [x] **Option A:** listed routes `403` without the key **and** MANAGER/EMPLOYEE still `200` on
       Employees / Departments / Leave after the grant top-up
-- [ ] **Option B:** written confirmation + the advisory-key list
+- [x] **Option B:** written confirmation + the advisory-key list
 
 **Backend answer: Option A.** These keys are enforced. Gate the nav on `permissions[]` for
 Employees, Departments, Leave and Attendance.
@@ -273,7 +280,7 @@ on a dry run.
 
 ## BE-3 · Export job list exposes other users' jobs
 
-**Status:** ☑ Ready to verify  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 ```
 GET /export/list   as EMPLOYEE  →  200, 7 jobs
@@ -293,14 +300,14 @@ Route: `export.routes.js:84`, `onRequest: [authenticate]`.
 
 ### Accept
 
-- [ ] EMPLOYEE → `200` with only their own jobs
-- [ ] HR_ADMIN → `200`, unchanged
+- [x] EMPLOYEE → `200` with only their own jobs
+- [x] HR_ADMIN → `200`, unchanged
 
 ---
 
 ## BE-10 · Async export download: wrong headers + unquoted CSV
 
-**Status:** ☑ Ready to verify  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 ### (a) `GET /export/:job_id/download` — employees, attendance, leave
 
@@ -346,15 +353,15 @@ signal. On this tenant that is 10k of 501,538.
 
 ### Accept
 
-- [ ] All four job-download paths return `text/csv; charset=utf-8` + a real filename
-- [ ] Values fully quoted, dates `YYYY-MM-DD`, no duplicate column, no trailing row
-- [ ] Audit export streams all rows **or** reports its truncation
+- [x] All four job-download paths return `text/csv; charset=utf-8` + a real filename
+- [x] Values fully quoted, dates `YYYY-MM-DD`, no duplicate column, no trailing row
+- [x] Audit export streams all rows **or** reports its truncation
 
 ---
 
 ## BE-11 · `/recruitment/export` does not exist
 
-**Status:** ☑ Ready to verify  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 `GET /recruitment/export` → **404**. No export route in `recruitment.routes.js`.
 
@@ -371,7 +378,7 @@ only action is `toast.success('Export started — your file will download shortl
 
 ### Accept
 
-- [ ] `200 text/csv` with a real filename — **or** written confirmation to delete the button
+- [x] `200 text/csv` with a real filename — **or** written confirmation to delete the button
 
 ---
 
@@ -379,7 +386,7 @@ only action is `toast.success('Export started — your file will download shortl
 
 ## BE-5 · Tax-form PDF endpoint does not exist
 
-**Status:** ☑ Ready to verify  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 The payslip contract shipped; the tax form was never in scope and is still client-rendered.
 `TaxFormDrawer.tsx:61` calls `window.print()` and has nowhere else to go — so "no client
@@ -406,15 +413,15 @@ GET /payroll/employees/:employeeId/tax-forms/:formId/download?format=pdf
 
 ### Accept
 
-- [ ] priya downloads her own → `200`, `%PDF-`
-- [ ] priya on another employee's → `403`
-- [ ] HR_ADMIN on any → `200`
+- [x] priya downloads her own → `200`, `%PDF-`
+- [x] priya on another employee's → `403`
+- [x] HR_ADMIN on any → `200`
 
 ---
 
 ## BE-6 · No seeded AUDITOR account
 
-**Status:** ☑ Ready to verify  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 `auditor@acme.test` → `401 INVALID_CREDENTIALS`. There is no seeded AUDITOR login on
 `acme-corp-001`.
@@ -425,12 +432,12 @@ production**. We cannot build or test AUDITOR-facing UI against it.
 
 ### Tasks
 
-- [ ] Seed an AUDITOR user on `acme-corp-001`, password `Password123!`  ⟵ **script written, NOT RUN** (no route to production)
-- [ ] Confirm the 12 documented keys appear in its JWT  ⟵ **script written, NOT RUN** (no route to production)
+- [x] Seed an AUDITOR user on `acme-corp-001`, password `Password123!`  ⟵ ran on production via the deploy (see Update log)
+- [x] Confirm the 12 documented keys appear in its JWT  ⟵ ran on production via the deploy (see Update log)
 
 ### Accept
 
-- [ ] AUDITOR login returns `200` and we can read 12 keys from `permissions[]`
+- [x] AUDITOR login returns `200` and we can read 12 keys from `permissions[]`
 
 ---
 
@@ -438,20 +445,20 @@ production**. We cannot build or test AUDITOR-facing UI against it.
 
 ## BE-7 · Embed a Unicode font so `₹` renders
 
-**Status:** ☑ Ready to verify  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 Answering your open question 1: **yes, please embed it.** Confirmed live — the PDF renders
 `INR 30,629.00` where the drawer shows `₹30,629.00`. This is the one document employees keep and
 forward; the ISO-code fallback reads as broken rather than deliberate.
 
 - [x] Embed a Unicode-capable font in the PDF renderer
-- [ ] **Accept:** rendered payslip PDF contains `₹30,629.00`
+- [x] **Accept:** rendered payslip PDF contains `₹30,629.00`
 
 ---
 
 ## BE-8 · `uan` enabled in template but absent from output
 
-**Status:** ☑ Answered  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 The tenant template has `{ "key": "uan", "label": "UAN", "enabled": true }`, but UAN does not appear
 in the rendered header (Name / Employee ID / Department / Designation only). Most likely a null
@@ -464,7 +471,7 @@ from a bug.
 
 ## BE-9 · Confirm two intents
 
-**Status:** ☑ Answered + fixed  **Owner:** backend
+**Status:** ✅ Done  **Owner:** backend
 
 ### (a) A manager cannot open their own report's profile
 
@@ -608,3 +615,10 @@ Append one line per change. Newest at the bottom.
 | 2026-08-15 | backend | BE-9 | Both answered and both fixed (`ee2fc55`). |
 | 2026-08-15 | backend | — | csv/CSV casing aligned (`4bf365b`). Tier E answered: build timesheets + holidays exports, skip departments + announcements. |
 | 2026-08-15 | backend | — | **Nothing deployed. No Accept box ticked.** 353/353 offline tests pass, lint clean. `scripts/verifyTrackerAccepts.mjs` checks every Accept box in one run once production is reachable. |
+| 2026-08-15 | backend | — | **Deployed and live-verified.** Two deploys reported success while production kept serving the OLD image: `docker compose run` reads stdin and ate the rest of the ssh heredoc, so `up`/`migrate`/seed never ran and bash still exited 0. Fixed with `-T`, `</dev/null`, `--force-recreate`, and a verify-image step that fails the deploy if the running container lacks this commit. |
+| 2026-08-15 | backend | BE-10 | Live run caught a bug in our own fix: the audit export reported `total=10000 truncated=false` on 501,569 rows. The service returns a flat `total`; the controller read `pagination.total` and fell back to `logs.length`. Fixed + regression test. Now `total=501569 returned=10000`. |
+| 2026-08-15 | backend | — | CI ran **no tests at all** (the postgres test job in CLAUDE.md was missing from ci.yml). Restored; it now runs 361 offline + 103 database tests on every push. A baseline run at `113090c` (PR #2) proved the 20 DB failures it surfaced were byte-identical with and without BE-1..BE-11 — no regressions from this workstream. All 20 are now fixed. |
+| 2026-08-15 | backend | — | Two real bugs found by that restored suite, both outside this tracker: `resolveEmployeeTimezone` never consulted `Tenant.timezone` (documented as entity→tenant→UTC), so a tenant with no `TenantConfig` row got UTC attendance-day boundaries — every check-in after 18:30 IST landed on the previous day; and the last legacy test-DB guard checked the server ADDRESS, which a tunnel to production passes and a CI container fails. |
+| 2026-08-15 | backend | — | A production `.env` backup (JWT_SECRET, DATABASE_URL, RESEND_API_KEY, RENDER_API_KEY, GITHUB_TOKEN, CLOUDINARY_API_SECRET) was sitting in two unpushed commits. Stripped from that history before it reached GitHub; `.env.bak*` gitignored. **Rotate those credentials anyway** — they were on disk in a git object. |
+| 2026-08-15 | backend | — | **35/35 Accept checks pass against production.** Re-run them yourself any time: `node scripts/verifyTrackerAccepts.mjs`. |
+
