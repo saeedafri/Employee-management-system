@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RBAC &amp; Exports Handoff</title>
+<style>
+  :root {
+    --ground: #FAFAFC;
+    --surface: #FFFFFF;
+    --surface-sunk: #F2F3F7;
+    --ink: #14161D;
+    --ink-soft: #454A57;
+    --ink-faint: #6E7484;
+    --rule: #E1E3EA;
+    --rule-strong: #C9CCD6;
+    --accent: #3F3BB5;
+    --accent-soft: #EDECFA;
+    --ok: #17683C;
+    --ok-soft: #E4F2E9;
+    --warn: #94540A;
+    --warn-soft: #FBF0DC;
+    --stop: #A32020;
+    --stop-soft: #FBE9E9;
+    --code-bg: #14161D;
+    --code-ink: #E6E7EC;
+    --measure: 68ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0E1015;
+      --surface: #171A21;
+      --surface-sunk: #1E222B;
+      --ink: #E9EAEF;
+      --ink-soft: #B2B7C4;
+      --ink-faint: #858B9B;
+      --rule: #2A2F3A;
+      --rule-strong: #3C4250;
+      --accent: #A6A2F5;
+      --accent-soft: #22213C;
+      --ok: #6FD79B;
+      --ok-soft: #14291D;
+      --warn: #E5B15C;
+      --warn-soft: #2C2214;
+      --stop: #F08C8C;
+      --stop-soft: #2E1717;
+      --code-bg: #0A0C10;
+      --code-ink: #DCDEE5;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0E1015;
+    --surface: #171A21;
+    --surface-sunk: #1E222B;
+    --ink: #E9EAEF;
+    --ink-soft: #B2B7C4;
+    --ink-faint: #858B9B;
+    --rule: #2A2F3A;
+    --rule-strong: #3C4250;
+    --accent: #A6A2F5;
+    --accent-soft: #22213C;
+    --ok: #6FD79B;
+    --ok-soft: #14291D;
+    --warn: #E5B15C;
+    --warn-soft: #2C2214;
+    --stop: #F08C8C;
+    --stop-soft: #2E1717;
+    --code-bg: #0A0C10;
+    --code-ink: #DCDEE5;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3.25rem;
+  }
+
+  .prose { max-width: var(--measure); }
+
+  code, pre, .mono, th, .pill, .keys {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 0.6rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    line-height: 1.08;
+    letter-spacing: -0.028em;
+    font-weight: 680;
+    margin: 0 0 0.75rem;
+    text-wrap: balance;
+  }
+
+  h2 {
+    font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+    line-height: 1.2;
+    letter-spacing: -0.019em;
+    font-weight: 660;
+    margin: 0 0 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule-strong);
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-size: 1.02rem;
+    letter-spacing: -0.008em;
+    font-weight: 650;
+    margin: 0 0 0.45rem;
+  }
+
+  p { margin: 0 0 1rem; }
+  p:last-child { margin-bottom: 0; }
+  .lede { font-size: 1.1rem; color: var(--ink-soft); }
+
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  section { display: flex; flex-direction: column; gap: 1.35rem; }
+
+  /* ---- verification banner ---- */
+  .verified {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--ok);
+    border-radius: 4px;
+    padding: 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .verified h2 { border: 0; padding: 0; margin: 0; font-size: 1.15rem; }
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.1rem;
+    margin: 0;
+  }
+  .metric { display: flex; flex-direction: column; gap: 0.15rem; }
+  .metric dt {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--ink-faint);
+    font-weight: 600;
+  }
+  .metric dd {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.32rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    color: var(--ok);
+    font-weight: 600;
+  }
+  .metric dd.plain { color: var(--ink); font-size: 1rem; font-weight: 500; }
+
+  /* ---- tables ---- */
+  .scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.65rem 0.85rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th {
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    font-weight: 600;
+    background: var(--surface-sunk);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.id { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; white-space: nowrap; }
+  td.evidence { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--ink-soft); }
+
+  .pill {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.14rem 0.5rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .pill.ok { background: var(--ok-soft); color: var(--ok); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .pill.stop { background: var(--stop-soft); color: var(--stop); }
+  .pill.info { background: var(--accent-soft); color: var(--accent); }
+
+  /* ---- code ---- */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 1rem 1.15rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.83rem;
+    line-height: 1.62;
+    margin: 0;
+  }
+  pre .c { color: #8B93A7; }
+  pre .g { color: #7FD6A0; }
+  pre .r { color: #F2938F; }
+  code:not(pre code) {
+    background: var(--surface-sunk);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.06em 0.34em;
+    font-size: 0.86em;
+  }
+
+  /* ---- change cards ---- */
+  .cards { display: flex; flex-direction: column; gap: 1rem; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.15rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .card.breaking { border-left: 4px solid var(--warn); }
+  .card.question { border-left: 4px solid var(--accent); }
+  .card-head { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+  .card-head h3 { margin: 0; }
+  .card p { max-width: var(--measure); }
+
+  .beforeafter { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.7rem; }
+  .ba { background: var(--surface-sunk); border-radius: 4px; padding: 0.7rem 0.85rem; }
+  .ba span {
+    display: block;
+    font-size: 0.63rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    margin-bottom: 0.28rem;
+    color: var(--ink-faint);
+  }
+  .ba code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    font-size: 0.82rem;
+    color: var(--ink);
+    word-break: break-word;
+  }
+  .ba.was span { color: var(--stop); }
+  .ba.now span { color: var(--ok); }
+
+  ul, ol { margin: 0; padding-left: 1.25rem; max-width: var(--measure); }
+  li { margin-bottom: 0.4rem; }
+  li:last-child { margin-bottom: 0; }
+
+  .note {
+    background: var(--surface-sunk);
+    border-radius: 4px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+  .note strong { color: var(--ink); }
+
+  footer {
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 1.4rem;
+    color: var(--ink-faint);
+    font-size: 0.86rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Backend → Frontend · 15 August 2026</p>
+    <h1>RBAC &amp; Exports Handoff</h1>
+    <p class="lede prose">
+      Every item in <code>BACKEND_IMPLEMENTATION_SPEC_2026-08-13.md</code> — BE-1 through BE-11 — is
+      implemented, deployed, and verified against production. This page is what changed, what breaks
+      on your side, and what is still open.
+    </p>
+  </header>
+
+  <div class="verified">
+    <h2>Verified on production, not just locally</h2>
+    <p class="prose" style="margin:0;color:var(--ink-soft)">
+      <code>scripts/verifyTrackerAccepts.mjs</code> checks every <em>Accept</em> box on the tracker against
+      <code>ems-api.saqibsaeed.cloud</code> with real logins for all five roles. It runs as the last step of
+      every deploy, so a regression fails the deploy rather than reaching you.
+    </p>
+    <dl class="metrics">
+      <div class="metric"><dt>Live accept checks</dt><dd>35 / 35</dd></div>
+      <div class="metric"><dt>Offline tests</dt><dd>361 / 361</dd></div>
+      <div class="metric"><dt>Database tests</dt><dd>103 / 103</dd></div>
+      <div class="metric"><dt>Deploy run</dt><dd class="plain">31878368975</dd></div>
+    </dl>
+    <div class="scroll" style="border:0">
+<pre><span class="c"># the two P0s, checked live as the seeded accounts</span>
+<span class="g">PASS</span>  BE-1  priya@acme.test → GET /audit-logs   403  requiredPermission=audit:read
+<span class="g">PASS</span>  BE-1  aman@acme.test  → GET /audit-logs   403
+<span class="g">PASS</span>  BE-1  hr@ / superadmin@               still 200
+<span class="g">PASS</span>  BE-2  EMPLOYEE 1 employee · MANAGER 23 (their team) · HR_ADMIN 138 rows
+</pre>
+    </div>
+  </div>
+
+  <section>
+    <h2>What shipped</h2>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Item</th><th>Status</th><th>Live evidence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="id">BE-1</td><td>Audit trail readable by any employee</td><td><span class="pill ok">Done</span></td><td class="evidence">403 + audit:read</td></tr>
+          <tr><td class="id">BE-2</td><td>Company-wide leave assignments readable by any employee</td><td><span class="pill ok">Done</span></td><td class="evidence">1 / 23 / 138 rows</td></tr>
+          <tr><td class="id">BE-4</td><td>Are permission keys enforced or advisory?</td><td><span class="pill ok">Option A</span></td><td class="evidence">gated + grants topped up</td></tr>
+          <tr><td class="id">BE-3</td><td>Export job list exposed other users' jobs</td><td><span class="pill ok">Done</span></td><td class="evidence">own jobs, no file_url</td></tr>
+          <tr><td class="id">BE-10</td><td>Async download headers + unquoted CSV</td><td><span class="pill ok">Done</span></td><td class="evidence">employees-2026-08-15.csv</td></tr>
+          <tr><td class="id">BE-11</td><td><code>/recruitment/export</code> did not exist</td><td><span class="pill ok">Built</span></td><td class="evidence">200 text/csv</td></tr>
+          <tr><td class="id">BE-5</td><td>Tax-form PDF endpoint did not exist</td><td><span class="pill ok">Built</span></td><td class="evidence">200 %PDF- · 403 · 404</td></tr>
+          <tr><td class="id">BE-6</td><td>No seeded AUDITOR account</td><td><span class="pill ok">Done</span></td><td class="evidence">auditor@acme.test · 12 keys</td></tr>
+          <tr><td class="id">BE-7</td><td>Embed a Unicode font so ₹ renders</td><td><span class="pill ok">Done</span></td><td class="evidence">NotoSans embedded</td></tr>
+          <tr><td class="id">BE-8</td><td><code>uan</code> enabled but absent from the PDF</td><td><span class="pill ok">Answered</span></td><td class="evidence">unmapped key, not null-skip</td></tr>
+          <tr><td class="id">BE-9</td><td>Manager→report profile · SA 400 on self-service</td><td><span class="pill ok">Both fixed</span></td><td class="evidence">200 noEmployeeRecord</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      <strong>You were right on all eleven.</strong> Every finding reproduced in our source. Three had
+      details worth correcting, called out below — none of them changed the verdict.
+    </p>
+  </section>
+
+  <section>
+    <h2>Breaking changes — read this part</h2>
+    <p class="prose">Six responses changed shape or status. Nothing here is optional; these are live now.</p>
+
+    <div class="cards">
+
+      <div class="card breaking">
+        <div class="card-head"><h3>Permission keys are enforced</h3><span class="pill warn">BE-4 · Option A</span></div>
+        <p>
+          Thirteen routes across Employees, Departments, Leave and Attendance now return <code>403</code>
+          without the key. <strong>You can gate the sidebar on <code>permissions[]</code> — FE-9 is unblocked.</strong>
+        </p>
+        <div class="beforeafter">
+          <div class="ba was"><span>Was</span><code>GET /employees → 200 for everyone (nothing checked)</code></div>
+          <div class="ba now"><span>Now</span><code>GET /employees → requires employees:read</code></div>
+        </div>
+        <p>
+          Two corrections to your premise, both of which made this safer than you expected. First, all six
+          keys <em>were already</em> in the MANAGER and EMPLOYEE default matrix — the live token lacked them
+          because <code>acme-corp-001</code> carries a saved role customization, and the default fallback only
+          applies when <code>permissions[]</code> is empty. A fresh tenant would never have hit this. Second,
+          your grant list was missing <code>attendance:read</code>; <code>/attendance/records</code>,
+          <code>/summary</code> and <code>/calendar</code> need it. Both roles were topped up before the gates
+          went live, and the reconcile now runs on every deploy before cutover.
+        </p>
+      </div>
+
+      <div class="card breaking">
+        <div class="card-head"><h3><code>file_url</code> is gone from the export list</h3><span class="pill warn">BE-3</span></div>
+        <p>
+          <code>GET /export/list</code> returns only the caller's own jobs unless they hold
+          <code>employees:export</code>, <code>attendance:export</code> or <code>leave:export</code> — and the
+          storage path is no longer in the payload. If anything reads <code>file_url</code> from the list, it
+          now reads <code>undefined</code>. Use <code>GET /export/:job_id/download</code>, which resolves it
+          behind the permission check.
+        </p>
+      </div>
+
+      <div class="card breaking">
+        <div class="card-head"><h3>Personal reads return 200, not 400</h3><span class="pill warn">BE-9(b)</span></div>
+        <p>
+          A user with no linked Employee — SUPER_ADMIN — now gets an empty state instead of a client error.
+          Branch on <code>data.noEmployeeRecord</code>.
+        </p>
+        <div class="beforeafter">
+          <div class="ba was"><span>Was</span><code>400 NO_EMPLOYEE_RECORD</code></div>
+          <div class="ba now"><span>Now</span><code>200 { data: { noEmployeeRecord: true } }</code></div>
+        </div>
+        <p>
+          Applies to <code>/employee/dashboard</code>, <code>/attendance/today</code>,
+          <code>/employee/balance</code>, <code>/employee/documents</code>, <code>/employee/team</code>.
+          <strong>Writes are unchanged</strong> — <code>check-in</code> and <code>check-out</code> still
+          <code>400</code>, because there is nothing to write against.
+        </p>
+      </div>
+
+      <div class="card breaking">
+        <div class="card-head"><h3>Job-based CSV downloads changed shape</h3><span class="pill warn">BE-10</span></div>
+        <p>
+          Your diagnosis pointed at the header code; the actual cause was the <code>302</code> to the Cloudinary
+          signed URL, which serves raw assets as <code>application/octet-stream</code> named <code>file</code> —
+          our headers never reached the browser. The bytes are proxied now.
+        </p>
+        <div class="beforeafter">
+          <div class="ba was"><span>Was</span><code>application/octet-stream · filename="file"</code></div>
+          <div class="ba now"><span>Now</span><code>text/csv; charset=utf-8 · employees-2026-08-15.csv</code></div>
+        </div>
+        <p>
+          Body changes too: every value quoted (RFC 4180), dates as <code>YYYY-MM-DD</code> instead of
+          <code>Date.toString()</code>, the duplicate <code>department.id</code> column dropped, and no trailing
+          empty row. Any parser pinned to the old column count needs a look.
+        </p>
+      </div>
+
+      <div class="card breaking">
+        <div class="card-head"><h3>Audit export now reports truncation</h3><span class="pill warn">BE-10(b)</span></div>
+        <p>
+          The 10,000-row cap stays — streaming 501,569 rows would buffer roughly 100 MB — but the response now
+          says so, so you can warn instead of silently handing someone 2% of the data.
+        </p>
+        <div class="scroll" style="border:0">
+<pre>X-Export-Total:      501569
+X-Export-Returned:   10000
+X-Export-Truncated:  true</pre>
+        </div>
+      </div>
+
+      <div class="card breaking">
+        <div class="card-head"><h3>Two roles lost audit access</h3><span class="pill stop">BE-1</span></div>
+        <p>
+          MANAGER and EMPLOYEE now get <code>403</code> on <code>GET /audit-logs</code> and
+          <code>/audit-logs/:id</code>, with <code>details.requiredPermission = "audit:read"</code>. Both keys
+          were revoked from the tenant as well as the route being gated — the route change alone would not have
+          closed it, since both roles held the key. Any audit surface shown to those roles will now be empty.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>New endpoints</h2>
+    <div class="scroll">
+<pre><span class="c">// BE-11 — replaces the placebo Export button at RecruitmentScreen.tsx:61</span>
+GET /recruitment/export?type=openings|candidates&amp;status=&amp;stage=&amp;openingId=
+    → 200 text/csv; charset=utf-8
+    → recruitment-openings-2026-08-15.csv    <span class="c">// RFC-4180 quoted</span>
+    → permission: recruitment:read
+
+<span class="c">// BE-5 — replaces window.print() at TaxFormDrawer.tsx:61</span>
+GET /payroll/employees/:employeeId/tax-forms/:formId/download?format=pdf
+    → 200 application/pdf
+    → tax-form-priya-sharma-fy2026-27.pdf
+    → :formId is the form TYPE (FORM16 | W2 | P60); ?fy= picks the year
+    → permission: payroll:self-read + self-or-HR/SA · 403 · 404</pre>
+    </div>
+    <p class="note">
+      There is no <code>TaxForm</code> table — a form is <em>(type, fiscal year)</em>, which is why
+      <code>:formId</code> is the type. The PDF renders the same <code>TaxFormDocument</code> the JSON endpoint
+      already returns, so the drawer and the file cannot drift.
+    </p>
+  </section>
+
+  <section>
+    <h2>Your queue, updated</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Item</th><th>Now</th></tr></thead>
+        <tbody>
+          <tr><td class="id">FE-9</td><td>Permission-based nav filtering</td><td><span class="pill ok">Unblocked</span> — Option A, gate on <code>permissions[]</code></td></tr>
+          <tr><td class="id">FE-10</td><td>Recruitment Export button</td><td><span class="pill ok">Wire it</span> — don't delete it, the endpoint exists</td></tr>
+          <tr><td class="id">FE-11</td><td>Tax-form PDF download</td><td><span class="pill ok">Unblocked</span></td></tr>
+          <tr><td class="id">FE-6</td><td>Payslip blob download</td><td><span class="pill ok">Unblocked</span> — <code>PayslipDrawer.tsx:94</code> still calls <code>window.print()</code></td></tr>
+          <tr><td class="id">FE-5</td><td>Three client-side CSVs → our endpoints</td><td><span class="pill info">Unchanged</span> — endpoints were already correct</td></tr>
+          <tr><td class="id">FE-8</td><td>55-row permissions matrix</td><td><span class="pill warn">Recheck</span> — BE-4 changed which routes enforce</td></tr>
+          <tr><td class="id">FE-1..4, 7</td><td>Export key, SSE, EventSource, bell, <code>ids[]</code></td><td><span class="pill info">No backend change</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Fixed beyond the tracker</h2>
+    <p class="prose">Found while working the queue. Same production, same deploy.</p>
+    <ul>
+      <li><strong>A second leak of the BE-2 shape.</strong> <code>GET /leave/comp-off/requests?scope=team</code>
+        dropped the employee filter entirely, so a MANAGER saw every comp-off request in the tenant rather than
+        their own reports'. Scoped with the same helper.</li>
+      <li><strong>Tax forms had no ownership check at all.</strong> <code>GET /payroll/employees/:id/tax-form</code>
+        checked only <code>payroll:self-read</code>, so any holder could read anyone's tax form by id. Now
+        self-or-HR/SA, matching the payslip rule.</li>
+      <li><strong>Attendance was recording the wrong day for some tenants.</strong> The employee-timezone
+        resolver documented its chain as entity → tenant → UTC but never read <code>Tenant.timezone</code>, so a
+        tenant with no <code>TenantConfig</code> row silently fell to UTC — putting every check-in after 18:30 IST
+        on the previous day. Backend-only; the UI never sends a date.</li>
+      <li><strong><code>csv</code> vs <code>CSV</code>.</strong> <code>POST /reports/export</code> now accepts
+        both and canonicalises internally, so callers sending <code>"CSV"</code> are unaffected. Lowercase is the
+        documented form, matching <code>POST /export/*</code>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Not done — so nobody is surprised</h2>
+    <p class="prose">All eleven items are closed, but three carry deviations from the letter of the request.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><h3><code>?departmentId</code> on the recruitment export</h3><span class="pill stop">Not supported</span></div>
+        <p>An opening stores <code>department</code> as free text, not a foreign key, so there is no id to filter on.
+           <code>?status</code>, <code>?stage</code> and <code>?openingId</code> work.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Tenant-editable tax-form template</h3><span class="pill stop">Does not exist</span></div>
+        <p>Unlike payslips there is no tenant-editable tax-form template — the layout is per form type in code.
+           The PDF honours that. Making it tenant-editable is a new settings surface, not part of this route.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Real UAN / PAN values</h3><span class="pill stop">Schema work</span></div>
+        <p><code>Employee</code> has no UAN column and <code>panNumber</code> is hardcoded <code>null</code> on the
+           payslip. The template response now carries <code>supported: &lt;bool&gt;</code> per field so your settings UI
+           can show unrenderable fields as unsupported instead of enabled-and-silent.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Tier E exports</h3><span class="pill info">Decided, not built</span></div>
+        <p>Build <strong>timesheets</strong> (billable hours and rates, real volume) and <strong>holidays</strong>
+           (small, static, genuinely mailed around). Skip <strong>departments</strong> — a flat CSV destroys the
+           hierarchy that is the point of the screen — and <strong>announcements</strong>, which is prose in CSV
+           cells. Say the word and we'll build the two.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Open questions for you</h2>
+    <div class="cards">
+      <div class="card question">
+        <div class="card-head"><h3>Custom roles: replace or add?</h3></div>
+        <p>
+          Assigning a custom role currently <em>unions</em> with the user's existing role links — that is what
+          ships, and a test pins it deliberately. A sibling test assumed it <em>replaces</em>. If replace is the
+          intent, the fix belongs in <code>POST /settings/roles/:key/users</code>. We did not decide this for you.
+        </p>
+      </div>
+      <div class="card question">
+        <div class="card-head"><h3><code>note</code> vs <code>notes</code> on check-in</h3></div>
+        <p>
+          <code>CheckInInput</code> declares <code>notes</code>; our <code>checkInSchema</code> expects
+          <code>note</code>. Unknown keys are stripped silently, so a note typed at check-in would vanish with no
+          error. <strong>Nothing is broken today</strong> — no call site passes it — but whoever wires that field
+          next loses the data. We'll accept both if you'd rather not touch the type.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Re-verify it yourself</h2>
+    <p class="prose">Don't take this page's word for it. One command runs the same 35 checks your probes cover:</p>
+    <div class="scroll" style="border:0">
+<pre>node scripts/verifyTrackerAccepts.mjs
+
+<span class="c"># or point it anywhere</span>
+API_BASE=https://ems-api.saqibsaeed.cloud/api/v1 node scripts/verifyTrackerAccepts.mjs</pre>
+    </div>
+    <p class="note">
+      New this cycle: CI had drifted to running <strong>no tests at all</strong> — the database test job was
+      missing from <code>ci.yml</code>, so 350+ tests hadn't run on push. It's restored and green, and the deploy
+      now asserts the running container actually carries the deployed commit before reporting success.
+    </p>
+  </section>
+
+  <footer>
+    Backend team · verified against <code>ems-api.saqibsaeed.cloud</code> on 15 August 2026 ·
+    tracker: <code>docs/BACKEND_IMPLEMENTATION_SPEC_2026-08-13.md</code>
+  </footer>
+
+</div>
+</body>
+</html>
