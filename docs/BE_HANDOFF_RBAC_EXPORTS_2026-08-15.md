@@ -25,7 +25,8 @@ fails the deploy instead of reaching you.
 | Backend offline tests | **361 / 361** |
 | Backend database tests | **103 / 103** |
 | Deploy run | `31878368975` |
-| Your vitest suite against this backend | **836 / 838** (the 2 known `OptionalHolidayPicker` failures, unchanged) |
+| Local end-to-end probe (independent, §9) | **55 passed · 0 backend failures** |
+| Your vitest suite (MSW mocks, not this backend) | **836 / 838** — the 2 known `OptionalHolidayPicker` failures, unchanged |
 
 ```
 PASS  BE-1  priya@acme.test  → GET /audit-logs   403  requiredPermission=audit:read
@@ -169,11 +170,23 @@ Anything reading `file_url` from this list now reads `undefined`. Use
 | Was | `400 { error: { code: "NO_EMPLOYEE_RECORD" } }` |
 | Now | `200 { success: true, data: { noEmployeeRecord: true }, meta: {} }` |
 
-Applies to `/employee/dashboard`, `/attendance/today`, `/employee/balance`, `/employee/documents`,
-`/employee/team`. Branch on `data.noEmployeeRecord === true` and render the empty state.
+Verified endpoint by endpoint against a local backend with a genuinely unlinked SUPER_ADMIN:
 
-**Writes are unchanged** — `/employee/check-in` and `/check-out` still `400 NO_EMPLOYEE_RECORD`,
-because there is nothing to write against.
+| Endpoint | No-employee response |
+|---|---|
+| `GET /employee/dashboard` | `200 { noEmployeeRecord: true }` |
+| `GET /attendance/today` | `200 { noEmployeeRecord: true }` |
+| `GET /employee/documents` · `/employees/me/documents` | `200 { noEmployeeRecord: true }` |
+| `GET /employee/team` · `/employees/me/team` | `200 { noEmployeeRecord: true }` |
+| `POST /attendance/check-in` · `/check-out` | `400 NO_EMPLOYEE_RECORD` — unchanged, nothing to write against |
+
+Branch on `data.noEmployeeRecord === true`.
+
+> **Correction to an earlier draft of this document.** It listed `/employee/balance` as a fifth
+> `noEmployeeRecord` endpoint. That route does not exist — it returns `404`. The real balance
+> endpoints are `GET /leave/balance` and `/leave/balance/me`, and they return `200` *without* the
+> flag. `getBalanceHandler` and `getHolidaysHandler` exist in `employee.controller.js` but are not
+> routed anywhere; they are dead code. Caught by running this document back as a test, not by review.
 
 ### 4.4 Job CSV downloads changed headers *and* column shape (BE-10)
 
@@ -363,9 +376,28 @@ hierarchy that is the point of the screen, and the rollups are already in the an
 
 ## 9. We tested this as you, before sending it
 
-Pulled `ems-frontend` at `c94ec1a`, read your memory under `docs/context/memory/`, ran
-`vitest run` (836/838 — the two documented `OptionalHolidayPicker` failures, unchanged), and checked
-whether the UI survives §4. **Three things break or mislead. All are one-line FE fixes.**
+Pulled `ems-frontend` at `c94ec1a`, read your memory under `docs/context/memory/`, ran `vitest run`,
+and — because MSW mocks prove nothing about integration — stood up a **local backend against a local
+Postgres** and drove every Accept box through real HTTP with the seeded logins.
+
+```
+scripts/probe-ui-contract.mjs     32 passed · 2 failed · 3 skipped
+scripts/probe-ui-contract-2.mjs   23 passed · 1 failed · 1 skipped
+```
+
+Every failure and skip was chased to ground:
+
+- The **2 failures in pass 1** are the real FE-1 bug (§9.2) — reproduced, not inferred.
+- The **1 failure in pass 2** was our probe calling `/employee/check-in`, which is not a route; the
+  write path is `/attendance/check-in`, and it correctly returns `400`.
+- The **3 skips in pass 1** were missing fixtures. Pass 2 created them through the public API
+  (leave packs + auto-assign) and they now pass.
+- The **1 skip in pass 2** was a wrong response shape in our probe; retested and passed
+  (§below, BE-5 ownership).
+
+That exercise found a **genuine error in this document** — see the correction box in §4.3.
+
+**Three things break or mislead on the UI side. All are one-line FE fixes.**
 
 ### 9.1 🔴 `audit-logs:read` is not a real permission key
 
@@ -408,7 +440,30 @@ SUPER_ADMIN will get blank widgets rather than an empty state. Add the branch (�
   column changes in §4.4 hit nothing today. They matter when FE-5 lands.
 - **Your test suite** — at its documented baseline against this backend, no new failures.
 
-### 9.5 Verdict
+### 9.5 What the local run proved, item by item
+
+Real HTTP, local backend, seeded database — not static analysis:
+
+```
+BE-1   EMPLOYEE 403 · MANAGER 403 · both with requiredPermission=audit:read · HR/SA 200
+BE-2   EMPLOYEE 1 of 59 · MANAGER 20 of 59 · HR 59 · ?employeeId= leaked 0 rows
+BE-4   all 7 gated routes reachable for MANAGER+EMPLOYEE · grants present (21 / 12 keys)
+BE-3   200, own jobs only, no file_url in any row
+BE-5   own 200 %PDF- · another employee's 403 · HR on any 200
+BE-6   auditor@acme.test 200 · exactly 12 keys · can read audit logs
+BE-7   payslip 200 %PDF- · NotoSans embedded · U+20B9 present in the ToUnicode map
+BE-9a  MANAGER on own report 200 · on a stranger 403
+BE-9b  4 read paths 200 noEmployeeRecord · both writes 400 NO_EMPLOYEE_RECORD
+BE-10  text/csv; charset=utf-8 · employees-2026-08-15.csv · quoted header · no GMT
+       no duplicate department.id · no trailing row · audit export sends X-Export-*
+BE-11  200 text/csv · recruitment-openings-2026-08-15.csv · quoted header
+```
+
+BE-7 is worth calling out: rather than just checking the font is embedded, the probe decompresses the
+PDF streams and looks for `U+20B9` in the ToUnicode CMap — which is the glyph→Unicode map for text
+actually drawn on the page. The rupee is genuinely rendered, not merely available.
+
+### 9.6 Verdict
 
 **Backend: yes, all eleven are done, and 35/35 accept checks pass live.** The deviations in §8 are
 real and documented rather than hidden — check them before you sign off.
