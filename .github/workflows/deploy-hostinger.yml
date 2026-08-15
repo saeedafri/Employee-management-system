@@ -64,12 +64,30 @@ jobs:
           git -C "$APP" pull --ff-only origin main
           git -C "$APP" log -1 --oneline
           echo "::endgroup::"
-          echo "::group::build+up"
+          echo "::group::build"
           docker compose build ems-backend
+          echo "::endgroup::"
+
+          # BE-1 + BE-4: reconcile the tenant's RolePermission grants BEFORE the
+          # gated code starts serving. The new routes require keys this tenant's
+          # saved customization had dropped; deploying the gates first would 403
+          # MANAGER and EMPLOYEE out of Employees, Departments and Leave. Grants
+          # are inert without the gates, so doing it in this order is always safe.
+          # Runs on the freshly built image while the OLD container still serves.
+          echo "::group::rbac-reconcile (pre-cutover)"
+          docker compose run --rm --no-deps ems-backend node scripts/rbacGrantReconcileDb.mjs --apply
+          echo "::endgroup::"
+
+          echo "::group::up"
           docker compose up -d ems-backend
           echo "::endgroup::"
           echo "::group::migrate"
           docker exec ems-backend npx prisma migrate deploy
+          echo "::endgroup::"
+
+          # BE-6: seed the AUDITOR login. Idempotent upsert, deletes nothing.
+          echo "::group::seed-auditor"
+          docker exec ems-backend node scripts/seedAuditorUser.mjs || echo "auditor seed skipped (non-fatal)"
           echo "::endgroup::"
           EOSSH
 
@@ -81,3 +99,13 @@ jobs:
             echo "waiting... ($code)"; sleep 3
           done
           echo "Health check FAILED"; exit 1
+
+      # Every `- [ ] Accept` box in docs/BACKEND_IMPLEMENTATION_SPEC_2026-08-13.md,
+      # checked against the environment we just deployed. Fails the run if any
+      # regress, so a bad RBAC change cannot sit green on production.
+      - name: Live accept checks (tracker BE-1..BE-11)
+        run: node scripts/verifyTrackerAccepts.mjs
+        env:
+          API_BASE: https://ems-api.saqibsaeed.cloud/api/v1
+          TENANT_KEY: acme-corp-001
+          SEED_PASSWORD: ${{ secrets.SEED_PASSWORD || 'Password123!' }}

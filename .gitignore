@@ -12,6 +12,12 @@ dist
 # Environment
 .env.local
 .env.*.local
+# A full production env backup was committed once (JWT_SECRET, DATABASE_URL,
+# RESEND_API_KEY, RENDER_API_KEY, GITHUB_TOKEN, CLOUDINARY_API_SECRET) and was
+# stripped from the unpushed history before it ever reached GitHub. Never again.
+.env.bak*
+.env.backup*
+*.env.bak
 
 # IDE
 .vscode/

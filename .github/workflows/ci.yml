@@ -65,3 +65,53 @@ jobs:
       - name: Audit dependencies
         run: npm audit --audit-level=high
         continue-on-error: true
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: [lint]
+    # CLAUDE.md records a test job with a postgres service added 2026-05-27. It
+    # is not in this file any more, so nothing has actually been running the 350+
+    # tests on push. Restored, with its own throwaway database -- no external DB,
+    # and the name contains `ems_test` so the test-database guard accepts it.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ems
+          POSTGRES_PASSWORD: ems
+          POSTGRES_DB: ems_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://ems:ems@127.0.0.1:5432/ems_test
+      JWT_SECRET: ci-test-secret-not-a-real-key
+      API_PREFIX: /api/v1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      - name: Seed the throwaway test database
+        run: npm run db:seed
+
+      - name: Offline suite (no DB, no network)
+        run: node scripts/runTests.mjs offline
+
+      - name: DB suite
+        run: node scripts/runTests.mjs db
