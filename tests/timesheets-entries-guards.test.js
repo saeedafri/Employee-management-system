@@ -17,6 +17,7 @@ import { test, before, after } from 'node:test';
 import { createApp } from '../src/app.js';
 import { prisma } from '../src/plugins/prisma.js';
 import { createAccessToken } from '../src/utils/token.js';
+import { assertTestDatabase } from './assertTestDatabase.js';
 
 const suffix = 'tsguard' + Date.now();
 let app;
@@ -26,12 +27,12 @@ let adminToken;
 let employeeToken;
 
 before(async () => {
-  // Never let this suite point at a shared/remote database.
-  const [{ db, addr }] = await prisma.$queryRaw`
-    select current_database() db, host(coalesce(inet_server_addr(), '::1')) addr`;
-  if (!['::1', '127.0.0.1'].includes(addr)) {
-    throw new Error(`Refusing to run against a non-local database (${db} @ ${addr})`);
-  }
+  // Never let this suite point at a shared/remote database. This used to check
+  // the server ADDRESS, which the shared guard's own header explains is the weak
+  // test: an SSH tunnel to production presents 127.0.0.1 and sails through,
+  // while a CI service container presents 172.18.0.2 and is refused despite
+  // being a throwaway. Judge the database NAME, which a tunnel cannot disguise.
+  assertTestDatabase('the timesheets entry guards');
 
   app = await createApp();
   await app.ready();

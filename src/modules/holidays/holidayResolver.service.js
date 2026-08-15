@@ -166,7 +166,18 @@ export async function resolveEmployeeTimezone(prisma, tenantId, employeeId) {
     where: { tenantId },
     select: { timezone: true },
   });
-  return tc?.timezone || 'UTC';
+  if (tc?.timezone) return tc.timezone;
+
+  // The chain is documented as entity -> tenant -> UTC, but only TenantConfig was
+  // ever consulted. Tenant.timezone is where the tenant record actually keeps it
+  // (seed.js sets Asia/Kolkata there), so a tenant with no TenantConfig row fell
+  // straight through to UTC. For an IST tenant that puts every check-in after
+  // 18:30 local on the PREVIOUS day. TenantConfig still wins when set.
+  const tenant = await prisma.tenant.findUnique({
+    where: { id: tenantId },
+    select: { timezone: true },
+  });
+  return tenant?.timezone || 'UTC';
 }
 
 async function rawHolidaysBetween(prisma, tenantId, startISO, endISO) {
