@@ -192,6 +192,23 @@ describe('custom roles replace memberType defaults', () => {
       where: { email: 'priya@acme.test' }, select: { id: true },
     });
 
+    // Precondition, previously assumed rather than established. This asserts the
+    // user ends up with ONLY the custom role -- but `extractPermissions` unions
+    // every assigned role, and the sibling test above pins that union behaviour
+    // deliberately. prisma/seed.js also gives priya a UserRole link to the system
+    // EMPLOYEE role, so without this she carries EMPLOYEE ∪ custom and the
+    // assertion fails on any freshly seeded database. It passed only where the
+    // seed link happened to be absent.
+    //
+    // OPEN QUESTION for the RBAC owner: should assigning a custom role REPLACE a
+    // user's existing role links, or add to them? Union is what ships today. If
+    // replace is intended, the fix belongs in POST /settings/roles/:key/users and
+    // this setup should be deleted.
+    const seededLinks = await prisma.userRole.findMany({
+      where: { userId: user.id }, select: { roleId: true },
+    });
+    await prisma.userRole.deleteMany({ where: { userId: user.id } });
+
     try {
       const assigned = await call('POST', `/api/v1/settings/roles/${ROLE_KEY}/users`, superUser.token, {
         userIds: [user.id],
@@ -213,10 +230,19 @@ describe('custom roles replace memberType defaults', () => {
     } finally {
       await prisma.userRole.deleteMany({ where: { userId: user.id } });
       await call('DELETE', `/api/v1/settings/roles/${ROLE_KEY}`, superUser.token);
+      // Put the seeded role links back. Leaving them deleted would silently
+      // change priya's permissions for every suite that runs after this one.
+      for (const { roleId } of seededLinks) {
+        await prisma.userRole.upsert({
+          where: { userId_roleId: { userId: user.id, roleId } },
+          update: {},
+          create: { userId: user.id, roleId },
+        });
+      }
     }
 
     const restored = await login('priya@acme.test');
-    assert.ok(restored.permissions.length > 1, 'defaults did not come back after unassignment');
+    assert.ok(restored.permissions.length > 1, 'the normal grants did not come back after unassignment');
     assert.ok(restored.permissions.includes('attendance:read'));
   });
 });
