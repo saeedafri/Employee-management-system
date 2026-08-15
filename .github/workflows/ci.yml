@@ -93,6 +93,10 @@ jobs:
       DATABASE_URL: postgresql://ems:ems@127.0.0.1:5432/ems_test
       JWT_SECRET: ci-test-secret-not-a-real-key
       API_PREFIX: /api/v1
+      # 64 hex chars = 32 bytes, the format payoutCrypto.js requires. Throwaway
+      # value for a throwaway database: the payout suite encrypts bank details at
+      # rest and 14 of its tests abort without it. Not a secret, not reused.
+      PAYOUT_ENC_KEY: "0000000000000000000000000000000000000000000000000000000000000001"
 
     steps:
       - uses: actions/checkout@v4
