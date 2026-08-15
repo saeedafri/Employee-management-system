@@ -74,20 +74,36 @@ jobs:
           # MANAGER and EMPLOYEE out of Employees, Departments and Leave. Grants
           # are inert without the gates, so doing it in this order is always safe.
           # Runs on the freshly built image while the OLD container still serves.
+          # -T and </dev/null are load-bearing. This whole script arrives on the
+          # remote shell's stdin via `bash -se <<EOSSH`; `docker compose run`
+          # allocates a TTY and reads stdin, so without them it SWALLOWS every
+          # remaining line -- up, migrate, seed all silently never ran and the
+          # step still exited 0, leaving the old image serving on a "successful"
+          # deploy. Same reason `docker exec` below gets </dev/null.
           echo "::group::rbac-reconcile (pre-cutover)"
-          docker compose run --rm --no-deps ems-backend node scripts/rbacGrantReconcileDb.mjs --apply
+          docker compose run --rm --no-deps -T ems-backend node scripts/rbacGrantReconcileDb.mjs --apply </dev/null
           echo "::endgroup::"
 
           echo "::group::up"
-          docker compose up -d ems-backend
+          docker compose up -d --force-recreate ems-backend </dev/null
           echo "::endgroup::"
           echo "::group::migrate"
-          docker exec ems-backend npx prisma migrate deploy
+          docker exec ems-backend npx prisma migrate deploy </dev/null
+          echo "::endgroup::"
+
+          # A deploy that reports success while the OLD image keeps serving is
+          # exactly the failure this workflow just had. Assert the running
+          # container actually contains this commit's code before calling it done.
+          echo "::group::verify-image"
+          echo "deployed commit: $(git -C "$APP" rev-parse --short HEAD)"
+          docker exec ems-backend grep -q exportRecruitment /app/src/modules/recruitment/recruitment.controller.js </dev/null \
+            || { echo "FATAL: the running container does not contain this commit's code"; exit 1; }
+          echo "running container carries this commit"
           echo "::endgroup::"
 
           # BE-6: seed the AUDITOR login. Idempotent upsert, deletes nothing.
           echo "::group::seed-auditor"
-          docker exec ems-backend node scripts/seedAuditorUser.mjs || echo "auditor seed skipped (non-fatal)"
+          docker exec ems-backend node scripts/seedAuditorUser.mjs </dev/null || echo "auditor seed skipped (non-fatal)"
           echo "::endgroup::"
           EOSSH
 
