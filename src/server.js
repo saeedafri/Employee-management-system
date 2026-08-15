@@ -4,6 +4,7 @@ import { createApp } from './app.js';
 import { startPayrollWorker } from './lib/payrollQueue.js';
 import { syncPermissionCatalogue } from './modules/auth/permissionSync.js';
 import { initSseFanout } from './utils/sseClients.js';
+import { isLocalUrl, EMAIL_LINK_SETTINGS } from './utils/publicUrl.js';
 import { installProcessErrorHandlers, recordProcessError } from './utils/processMonitor.js';
 import { prisma } from './plugins/prisma.js';
 
@@ -42,6 +43,20 @@ async function start() {
     // Start the in-process BullMQ worker for payroll CALCULATING (no-op without Redis).
     startPayrollWorker();
     await app.listen({ port: config.port, host: '0.0.0.0' });
+
+    // Surface unusable email links at boot rather than when an employee clicks a dead
+    // invite. Logged, not fatal: a bad link must not take the whole API down.
+    if (config.isProduction) {
+      for (const [envName, configKey] of EMAIL_LINK_SETTINGS) {
+        if (isLocalUrl(config[configKey])) {
+          app.log.error({
+            msg: `${envName} points at localhost — invite/reset emails will be refused`,
+            envName,
+            value: config[configKey],
+          });
+        }
+      }
+    }
 
     app.log.info({
       msg: 'Server started',
