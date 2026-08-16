@@ -16,6 +16,7 @@
  * Additive except for the two audit keys it is explicitly told to revoke.
  */
 import { PrismaClient } from '@prisma/client';
+import { DEFAULT_PERMISSIONS_BY_ROLE } from '../src/modules/auth/permissionCatalogue.js';
 
 const TENANT_KEY = process.env.TENANT_KEY ?? 'acme-corp-001';
 const apply = process.argv.includes('--apply');
@@ -26,13 +27,13 @@ const REVOKE = {
   EMPLOYEE: ['audit:read', 'audit:export'],
 };
 
-// BE-4 Option A — every key the newly-gated routes require. All of these are
-// already in each role's DEFAULT matrix; this tenant's saved customization is
-// what dropped them, and boot-sync never reinstates a revoked grant.
-const GRANT = {
-  MANAGER: ['employees:read', 'departments:read', 'leave:read', 'leave:request', 'attendance:read', 'attendance:write'],
-  EMPLOYEE: ['employees:read', 'departments:read', 'leave:read', 'leave:request', 'attendance:read', 'attendance:write'],
-};
+// Every key the role's DEFAULT matrix grants is reconciled, not just the six
+// BE-4 needed. Topping up one key at a time is how NEW-1 (`analytics:read` on
+// MANAGER) and NEW-2 (`leave:request` on HR_ADMIN) each surfaced separately,
+// weeks apart, as soon as a route started enforcing them -- both were keys the
+// documented defaults grant and this tenant's customization had silently
+// dropped. REVOKE below still wins, so deliberate removals are preserved.
+const RECONCILE_TO_DEFAULTS = ['HR_ADMIN', 'MANAGER', 'EMPLOYEE', 'AUDITOR'];
 
 const prisma = new PrismaClient();
 
@@ -45,7 +46,7 @@ if (!tenant) {
 
 let changed = 0;
 
-for (const roleKey of ['MANAGER', 'EMPLOYEE']) {
+for (const roleKey of RECONCILE_TO_DEFAULTS) {
   const role = await prisma.role.findFirst({ where: { tenantId: tenant.id, key: roleKey } });
   if (!role) {
     console.log(`${roleKey}: no role row on this tenant, skipping`);
@@ -58,8 +59,11 @@ for (const roleKey of ['MANAGER', 'EMPLOYEE']) {
   });
   const heldKeys = new Set(held.map((row) => row.permission.key));
 
-  const toRevoke = (REVOKE[roleKey] ?? []).filter((key) => heldKeys.has(key));
-  const toGrant = (GRANT[roleKey] ?? []).filter((key) => !heldKeys.has(key));
+  const revokeSet = new Set(REVOKE[roleKey] ?? []);
+  const toRevoke = [...revokeSet].filter((key) => heldKeys.has(key));
+  // Defaults minus anything we are explicitly revoking.
+  const toGrant = (DEFAULT_PERMISSIONS_BY_ROLE[roleKey] ?? [])
+    .filter((key) => !heldKeys.has(key) && !revokeSet.has(key));
 
   if (toRevoke.length === 0 && toGrant.length === 0) {
     console.log(`${roleKey}: already reconciled (${heldKeys.size} keys)`);

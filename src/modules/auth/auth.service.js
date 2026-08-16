@@ -127,6 +127,11 @@ export async function login(db, tenantId, email, password, ipAddress, userAgent)
   const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
+    // NEW-3: the payload had no `email`, but timesheetsConfig's actor helper
+    // reads `request.user.email` -- so every actor name it recorded was the
+    // literal fallback string 'Approver'. It is the caller's own address in
+    // their own token, so this discloses nothing they cannot already see.
+    email: user.email,
     tenantId,
     memberType: user.memberType,
     employeeId: user.employee?.id,
@@ -226,6 +231,11 @@ export async function adminLogin(db, tenantId, email, password, ipAddress, userA
   const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
+    // NEW-3: the payload had no `email`, but timesheetsConfig's actor helper
+    // reads `request.user.email` -- so every actor name it recorded was the
+    // literal fallback string 'Approver'. It is the caller's own address in
+    // their own token, so this discloses nothing they cannot already see.
+    email: user.email,
     tenantId,
     memberType: user.memberType,
     employeeId: user.employee?.id,
@@ -306,6 +316,11 @@ export async function completeMfaLogin(db, tenantId, userId, ipAddress, userAgen
   const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
+    // NEW-3: the payload had no `email`, but timesheetsConfig's actor helper
+    // reads `request.user.email` -- so every actor name it recorded was the
+    // literal fallback string 'Approver'. It is the caller's own address in
+    // their own token, so this discloses nothing they cannot already see.
+    email: user.email,
     tenantId,
     memberType: user.memberType,
     employeeId: user.employee?.id,
@@ -458,6 +473,7 @@ export async function refreshAccessToken(db, tenantId, sessionId, rawRefreshToke
   const permissions = await resolveEffectivePermissions(db, tenantId, user);
   const accessToken = await createAccessToken({
     sub: user.id,
+    email: user.email,
     tenantId: session.tenantId,
     memberType: user.memberType,
     employeeId: user.employee?.id,
@@ -875,6 +891,7 @@ export async function register(db, { companyName, fullName: _fullName, email, pa
 
     const accessToken = await createAccessToken({
       sub: user.id,
+      email: user.email,
       tenantId: tenant.id,
       memberType: 'SUPER_ADMIN',
       employeeId: null,
