@@ -158,10 +158,13 @@ for (const path of ['/employees?page=1&limit=1', '/departments', '/leave/types',
 
   const matrix = await call('/settings/roles-permissions', { token: tokens.SUPER_ADMIN });
   const matrixManager = (matrix.json.data?.matrix ?? matrix.json.matrix)?.MANAGER ?? [];
+  // Name the offending keys. "matrix 22 · token 21" is a symptom; the FE needs to
+  // know WHICH key so they can tell a stale grant from a real disagreement.
+  const onlyInMatrix = matrixManager.filter((key) => !managerKeys.includes(key));
+  const onlyInToken = managerKeys.filter((key) => !matrixManager.includes(key));
   check('NEW-1', 'the settings matrix agrees with the minted token',
-    matrixManager.includes('analytics:team-read') === managerKeys.includes('analytics:team-read')
-      && matrixManager.includes('analytics:read') === managerKeys.includes('analytics:read'),
-    `matrix ${matrixManager.length} · token ${managerKeys.length}`);
+    onlyInMatrix.length === 0 && onlyInToken.length === 0,
+    `matrix-only [${onlyInMatrix.join(', ') || '—'}] · token-only [${onlyInToken.join(', ') || '—'}]`);
 
   const summary = await call('/analytics/summary', { token: tokens.MANAGER });
   check('NEW-1', 'MANAGER denied tenant-wide analytics, naming the key it actually lacks',
