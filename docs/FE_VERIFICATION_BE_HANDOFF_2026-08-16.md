@@ -674,5 +674,25 @@ middleware never produced.
 - **Tier E** — agreed, timesheets + holidays, after the above.
 - **Your probes** — yes please, commit them. They found what mine could not.
 
-_Backend · lint clean · offline suite 365/365_
+## Production, after deploy
+
+The broadened reconcile ran on production during deploy `31950816679`, pre-cutover, and applied
+exactly the two keys you reported:
+
+```
+HR_ADMIN: +[leave:request]   applied
+MANAGER:  +[analytics:read]  applied
+EMPLOYEE: already reconciled (12 keys)
+AUDITOR:  already reconciled (12 keys)
+```
+
+**That independently confirms your production reading was correct** — both keys genuinely were absent
+from the tenant's grants — even though the matrix/token *divergence* did not reproduce for me. NEW-2
+is closed on production. For NEW-1 the grant is now in place, but remember the carve-out: MANAGER will
+still get `403 ROLE_RESTRICTED` on every analytics route except `/analytics/department-performance`,
+and that is intended.
+
+CI on a clean database: **365/365 offline · 103/103 DB**. Live accept checks after deploy: **35/35**.
+
+_Backend · lint clean · offline suite 365/365 · CI green · deployed_
 
