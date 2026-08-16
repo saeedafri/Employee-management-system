@@ -33,11 +33,21 @@ export function requireAnalyticsPermission(request, reply, done) {
   }
 
   if (user.memberType === 'MANAGER' && !MANAGER_ALLOWED_PATHS.includes(path)) {
+    // This denial is NOT about a missing key -- the check above already passed,
+    // so the caller holds `analytics:read`. It used to report
+    // `requiredPermission: 'analytics:read'` anyway, which told the client to
+    // grant a key that would change nothing; the frontend duly filed it as a
+    // missing grant (NEW-1) and would have granted it and seen the same 403.
+    // Report the real reason, and do not name a permission that cannot help.
     reply.code(403).send(
       errorResponse(
-        'FORBIDDEN',
+        'ROLE_RESTRICTED',
         'Analytics access restricted for this role',
-        { requiredPermission: 'analytics:read', userRole: user.memberType },
+        {
+          userRole: user.memberType,
+          reason: 'MANAGER analytics is limited to the team dashboard',
+          allowedPaths: MANAGER_ALLOWED_PATHS,
+        },
         request.id,
       ),
     );
