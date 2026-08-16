@@ -694,5 +694,32 @@ and that is intended.
 
 CI on a clean database: **365/365 offline · 103/103 DB**. Live accept checks after deploy: **35/35**.
 
-_Backend · lint clean · offline suite 365/365 · CI green · deployed_
+## Re-verified on production — deploy `31951559542`
+
+The production verifier's BE-3 block was the weak one that missed this. It now constructs a job the
+caller provably cannot own, and it is **proven to fail** on the pre-fix code (restored from git):
+
+```
+against PRE-FIX code:
+  FAIL  EMPLOYEE cannot see HR's freshly created job — job 4b0bad3c in a list of 7
+  FAIL  the two lists are NOT identical — EMPLOYEE 7 · HR 7
+
+against PRODUCTION, now:
+  PASS  EMPLOYEE cannot create any export job — employees=403 attendance=403 leave=403
+  PASS  the scoped listing actually succeeded (not a 5xx reading as empty) — status 200
+  PASS  EMPLOYEE cannot see HR's freshly created job — job fcbd227f in a list of 0
+  PASS  the two lists are NOT identical — EMPLOYEE 0 · HR 28
+  PASS  NEW-1 carve-out returns ROLE_RESTRICTED with no bogus requiredPermission
+  PASS  NEW-2 HR_ADMIN holds leave:request
+  PASS  NEW-3 the JWT carries an email claim
+```
+
+**44/44 live accept checks on production. CI on a clean database: 365/365 offline · 103/103 DB.**
+
+Two further holes of the same family were found and closed while proving the above: a 5xx returned no
+rows so "the job is not in the list" passed on a broken endpoint (the listing must now return 200
+before any conclusion is drawn), and BE-9's empty-state check reported a false failure on data where
+SUPER_ADMIN has an employee record.
+
+_Backend · lint clean · CI green · deployed and re-verified on production_
 
