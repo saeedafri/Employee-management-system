@@ -180,8 +180,14 @@ export async function listExports(request, reply) {
     const seesAll = ['employees:export', 'attendance:export', 'leave:export']
       .some((key) => hasPermission(request.user, key));
 
+    // BE-3 reopened: this passed `request.user.id`, which does not exist -- the
+    // JWT carries the user id as `sub`. The undefined hit a truthy guard in the
+    // repository and the filter was dropped entirely, so every role saw every
+    // job. authenticate.js now populates `.id`, and the scope is explicit so a
+    // missing value throws rather than silently widening.
     const data = await exportService.listExports(
-      tenantId, query.page, query.limit, query.status, seesAll ? null : request.user.id,
+      tenantId, query.page, query.limit, query.status,
+      seesAll ? { all: true } : { all: false, createdById: request.user.id },
     );
 
     return reply.send(successResponse(data));

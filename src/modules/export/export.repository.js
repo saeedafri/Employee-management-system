@@ -141,11 +141,29 @@ export async function getExportJobStatus(jobId, tenantId) {
   });
 }
 
-export async function listExportJobs(tenantId, page = 1, limit = 10, status = null, createdById = null) {
+/**
+ * @param {object} scope  `{ all: true }` or `{ all: false, createdById: string }`.
+ *
+ * Deliberately NOT an optional `createdById` with a truthy guard. That shape is
+ * what broke BE-3: the caller passed `undefined`, the guard skipped the clause,
+ * and the query silently widened to the whole tenant. An explicit object cannot
+ * be under-specified by accident -- a caller that forgets to scope throws here
+ * instead of leaking.
+ */
+export async function listExportJobs(tenantId, page = 1, limit = 10, status = null, scope = { all: true }) {
   const skip = (page - 1) * limit;
   const where = { tenantId };
   if (status) where.status = status;
-  if (createdById) where.createdById = createdById;
+
+  if (!scope || typeof scope.all !== 'boolean') {
+    throw new Error('listExportJobs: scope must be { all: boolean }');
+  }
+  if (!scope.all) {
+    if (typeof scope.createdById !== 'string' || scope.createdById.length === 0) {
+      throw new Error('listExportJobs: a scoped listing needs a non-empty createdById');
+    }
+    where.createdById = scope.createdById;
+  }
 
   const [jobs, total] = await Promise.all([
     prisma.exportJob.findMany({

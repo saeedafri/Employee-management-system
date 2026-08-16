@@ -41,7 +41,15 @@ export async function authenticate(request, reply) {
       throw new Error('Session revoked or expired');
     }
 
-    request.user = payload;
+    // The JWT carries the user id as `sub`, but 23 call sites across export,
+    // leave, timesheets and comp-off read `request.user.id` -- every one of them
+    // was silently `undefined`, and every column they fed is nullable, so the
+    // values went to NULL without erroring. `sub` IS `User.id` (minted from
+    // `user.id`, and the session check above compares it to `session.userId`),
+    // so normalising it here fixes all of them at the one place they route
+    // through, rather than 23 separate `.sub` edits that the next call site
+    // would get wrong again.
+    request.user = { ...payload, id: payload.sub };
   } catch (error) {
     return reply.code(401).send(
       errorResponse(

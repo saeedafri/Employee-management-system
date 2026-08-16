@@ -149,8 +149,8 @@ export async function getExportStatus(jobId, tenantId) {
   return response;
 }
 
-export async function listExports(tenantId, page, limit, status, createdById = null) {
-  const { jobs, total } = await exportRepository.listExportJobs(tenantId, page, limit, status, createdById);
+export async function listExports(tenantId, page, limit, status, scope = { all: true }) {
+  const { jobs, total } = await exportRepository.listExportJobs(tenantId, page, limit, status, scope);
 
   return {
     exports: jobs.map((job) => ({
