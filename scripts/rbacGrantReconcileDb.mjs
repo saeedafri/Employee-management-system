@@ -23,7 +23,13 @@ const apply = process.argv.includes('--apply');
 
 // BE-1 — the tenant's customization grants these; the defaults never did.
 const REVOKE = {
-  MANAGER: ['audit:read', 'audit:export'],
+  // BE-1 — the tenant's customization granted these; the defaults never did.
+  // analytics:read — MANAGER's tenant-wide analytics key was replaced by
+  // analytics:team-read when the path allowlist was removed. An earlier run of
+  // this script granted it (it was still a MANAGER default at the time), and
+  // this reconcile is additive-only, so without an explicit revoke MANAGER would
+  // KEEP it and silently gain access to all 9 analytics routes it never had.
+  MANAGER: ['audit:read', 'audit:export', 'analytics:read'],
   EMPLOYEE: ['audit:read', 'audit:export'],
 };
 

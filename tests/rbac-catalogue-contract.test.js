@@ -162,14 +162,51 @@ describe('no role loses access it had before the migration', () => {
       'analytics:read', 'audit:read'],
   };
 
+  /**
+   * A documented substitution, not a loss. MANAGER's legacy `analytics:read`
+   * never granted tenant-wide analytics: `analytics.policy.js` carried a MANAGER
+   * path allowlist from the original policy, so the only analytics route MANAGER
+   * could ever reach was department-performance. That allowlist is gone and the
+   * same access is now expressed as `analytics:team-read`, so the ACCESS this
+   * suite protects is unchanged while the key name is not.
+   *
+   * The allowlist is why the settings matrix showed Analytics ticked for a role
+   * that 403'd on 8 of 9 routes (FE verification report, NEW-1).
+   */
+  const SUBSTITUTED = {
+    MANAGER: { 'analytics:read': 'analytics:team-read' },
+  };
+
   for (const [role, legacyKeys] of Object.entries(LEGACY)) {
     it(`${role} retains all ${legacyKeys.length} legacy grants`, () => {
       const current = DEFAULT_PERMISSIONS_BY_ROLE[role];
       for (const key of legacyKeys) {
+        const replacement = SUBSTITUTED[role]?.[key];
+        if (replacement) {
+          assert.ok(
+            current.includes(replacement),
+            `${role} lost ${key} and did not gain its documented replacement ${replacement}`,
+          );
+          continue;
+        }
         assert.ok(current.includes(key), `${role} lost ${key}`);
       }
     });
   }
+
+  it('the MANAGER substitution preserves the one route it ever reached', async () => {
+    // Guards the claim above: if department-performance stops accepting the
+    // replacement key, this is a real access loss and must fail.
+    const { requireAnalyticsPermission } = await import('../src/modules/analytics/analytics.policy.js');
+    const manager = { memberType: 'MANAGER', permissions: [...DEFAULT_PERMISSIONS_BY_ROLE.MANAGER] };
+    const run = (url) => new Promise((resolve) => {
+      const request = { user: manager, url, id: 'r' };
+      const reply = { code: () => ({ send: () => resolve(403) }) };
+      requireAnalyticsPermission(request, reply, () => resolve(200));
+    });
+    assert.equal(await run('/api/v1/analytics/department-performance'), 200, 'MANAGER lost its team dashboard');
+    assert.equal(await run('/api/v1/analytics/summary'), 403, 'MANAGER must not gain tenant-wide analytics');
+  });
 });
 
 describe('route migration progress', () => {

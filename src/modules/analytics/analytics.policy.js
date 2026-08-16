@@ -1,58 +1,51 @@
 import { hasPermission } from '../auth/auth.policy.js';
 import { errorResponse } from '../../utils/response.js';
 
-const MANAGER_ALLOWED_PATHS = ['/api/v1/analytics/department-performance'];
-
 /**
- * Gap E (BACKEND_CONTRACT_configurable_rbac.md): this previously hardcoded
- * ['HR_ADMIN','SUPER_ADMIN'] and never consulted `permissions[]`, so the
- * `analytics:read` key existed in the catalogue but was enforced nowhere --
- * granting or revoking it in Settings had no effect at all.
+ * Analytics access is now expressed entirely in permission keys.
  *
- * Now driven by `analytics:read`. AUDITOR holds it by default (2026-07-26
- * decision), which is what the nav contract always promised.
+ * It used to be `analytics:read` plus a hardcoded MANAGER path allowlist, which
+ * meant the settings matrix showed Analytics ticked for MANAGER while every
+ * analytics route but one returned 403 -- and the 403 named `analytics:read`, a
+ * key the caller already held and which could not help. The frontend read that
+ * as a missing grant (report NEW-1); granting it would have changed nothing.
  *
- * The department-performance carve-out for MANAGER is preserved: MANAGER holds
- * `analytics:read` for their own dashboard widgets, so the explicit path check
- * keeps every *other* analytics route closed to them exactly as before.
+ *   analytics:read       tenant-wide dashboards (HR_ADMIN, SUPER_ADMIN, AUDITOR)
+ *   analytics:team-read  the manager's department-performance dashboard
+ *
+ * A role's keys now predict its access exactly, so the permissions screen and
+ * the API can no longer disagree.
  */
+/**
+ * Route -> the keys that satisfy it. This is a route/permission mapping, which is
+ * ordinary; what it replaces was a role/path allowlist, which is what made a
+ * role's key list stop predicting its access.
+ */
+const TEAM_SCOPED_PATHS = new Set(['/api/v1/analytics/department-performance']);
+
 export function requireAnalyticsPermission(request, reply, done) {
-  const user = request.user || {};
   const path = request.url.split('?')[0];
+  const keys = TEAM_SCOPED_PATHS.has(path)
+    ? ['analytics:read', 'analytics:team-read']
+    : ['analytics:read'];
+  return denyUnless(request, reply, done, keys);
+}
 
-  if (!hasPermission(user, 'analytics:read')) {
-    reply.code(403).send(
-      errorResponse(
-        'FORBIDDEN',
-        'Insufficient permissions for this action',
-        { requiredPermission: 'analytics:read', userRole: user.memberType ?? null },
-        request.id,
-      ),
-    );
+function denyUnless(request, reply, done, keys) {
+  const user = request.user || {};
+  if (keys.some((key) => hasPermission(user, key))) {
+    done();
     return;
   }
-
-  if (user.memberType === 'MANAGER' && !MANAGER_ALLOWED_PATHS.includes(path)) {
-    // This denial is NOT about a missing key -- the check above already passed,
-    // so the caller holds `analytics:read`. It used to report
-    // `requiredPermission: 'analytics:read'` anyway, which told the client to
-    // grant a key that would change nothing; the frontend duly filed it as a
-    // missing grant (NEW-1) and would have granted it and seen the same 403.
-    // Report the real reason, and do not name a permission that cannot help.
-    reply.code(403).send(
-      errorResponse(
-        'ROLE_RESTRICTED',
-        'Analytics access restricted for this role',
-        {
-          userRole: user.memberType,
-          reason: 'MANAGER analytics is limited to the team dashboard',
-          allowedPaths: MANAGER_ALLOWED_PATHS,
-        },
-        request.id,
-      ),
-    );
-    return;
-  }
-
-  done();
+  reply.code(403).send(
+    errorResponse(
+      'FORBIDDEN',
+      'Insufficient permissions for this action',
+      {
+        requiredPermission: keys.length === 1 ? keys[0] : keys,
+        userRole: user.memberType ?? null,
+      },
+      request.id,
+    ),
+  );
 }

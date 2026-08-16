@@ -9,6 +9,8 @@
  * Run scripts/rbacGrantReconcile.mjs --apply BEFORE the BE-4 gates deploy, and
  * scripts/seedAuditorUser.mjs before BE-6 can pass.
  */
+import { inflateSync } from 'node:zlib';
+
 const API = process.env.API_BASE ?? 'https://ems-api.saqibsaeed.cloud/api/v1';
 const TENANT = process.env.TENANT_KEY ?? 'acme-corp-001';
 const PASSWORD = process.env.SEED_PASSWORD ?? 'Password123!';
@@ -147,16 +149,28 @@ for (const path of ['/employees?page=1&limit=1', '/departments', '/leave/types',
   const managerKeys = JSON.parse(Buffer.from(tokens.MANAGER.split('.')[1], 'base64url').toString()).permissions ?? [];
   const hrClaims = JSON.parse(Buffer.from(tokens.HR_ADMIN.split('.')[1], 'base64url').toString());
 
-  check('NEW-1', 'MANAGER now holds analytics:read', managerKeys.includes('analytics:read'),
+  // NEW-1's real complaint was that a role's keys stopped predicting its access.
+  // The MANAGER path allowlist is gone; the team dashboard is its own key. So the
+  // matrix, the token and the API must now agree in BOTH directions.
+  check('NEW-1', 'MANAGER holds analytics:team-read, not tenant-wide analytics:read',
+    managerKeys.includes('analytics:team-read') && !managerKeys.includes('analytics:read'),
     `${managerKeys.length} keys`);
+
+  const matrix = await call('/settings/roles-permissions', { token: tokens.SUPER_ADMIN });
+  const matrixManager = (matrix.json.data?.matrix ?? matrix.json.matrix)?.MANAGER ?? [];
+  check('NEW-1', 'the settings matrix agrees with the minted token',
+    matrixManager.includes('analytics:team-read') === managerKeys.includes('analytics:team-read')
+      && matrixManager.includes('analytics:read') === managerKeys.includes('analytics:read'),
+    `matrix ${matrixManager.length} · token ${managerKeys.length}`);
+
   const summary = await call('/analytics/summary', { token: tokens.MANAGER });
-  check('NEW-1', 'the MANAGER carve-out reports ROLE_RESTRICTED, not a bogus requiredPermission',
-    summary.status === 403
-      && summary.json.error?.code === 'ROLE_RESTRICTED'
-      && summary.json.error?.details?.requiredPermission === undefined,
-    `${summary.status} ${summary.json.error?.code}`);
+  check('NEW-1', 'MANAGER denied tenant-wide analytics, naming the key it actually lacks',
+    summary.status === 403 && summary.json.error?.details?.requiredPermission === 'analytics:read',
+    `${summary.status} ${summary.json.error?.details?.requiredPermission}`);
   const deptPerf = await call('/analytics/department-performance', { token: tokens.MANAGER });
-  check('NEW-1', 'the one path MANAGER may reach is still open', deptPerf.status === 200, `got ${deptPerf.status}`);
+  check('NEW-1', 'MANAGER keeps the team dashboard it always had', deptPerf.status === 200, `got ${deptPerf.status}`);
+  const hrSummary = await call('/analytics/summary', { token: tokens.HR_ADMIN });
+  check('NEW-1', 'HR_ADMIN tenant-wide analytics unaffected (control)', hrSummary.status === 200, `got ${hrSummary.status}`);
 
   check('NEW-2', 'HR_ADMIN holds leave:request', (JSON.parse(Buffer.from(tokens.HR_ADMIN.split('.')[1], 'base64url').toString()).permissions ?? []).includes('leave:request'));
 
@@ -232,6 +246,25 @@ for (const path of ['/employees?page=1&limit=1', '/departments', '/leave/types',
     token: tokens.HR_ADMIN, raw: true,
   });
   check('BE-5', 'HR_ADMIN downloads any tax form', hr.status === 200, `got ${hr.status}`);
+
+  // BE-7 on production without seeding a payslip. The claim under test is that
+  // the embedded font can draw the rupee. The tax-form PDF formats money through
+  // Intl with style:'currency' and renders it with the same embedded Noto face as
+  // the payslip, so if U+20B9 appears in this document's ToUnicode CMap -- the
+  // glyph->Unicode map for text actually drawn -- the rupee renders on this host.
+  if (bytes.subarray(0, 5).toString() === '%PDF-') {
+    const latin = bytes.toString('latin1');
+    let rupee = false;
+    for (const match of latin.matchAll(/stream\r?\n([\s\S]*?)endstream/g)) {
+      try {
+        if (/20B9/i.test(inflateSync(Buffer.from(match[1], 'latin1')).toString('latin1'))) { rupee = true; break; }
+      } catch { /* not a flate stream */ }
+    }
+    check('BE-7', 'a Unicode font is embedded (not WinAnsi Helvetica)',
+      /NotoSans/.test(latin) && !/BaseFont\s*\/Helvetica/.test(latin));
+    check('BE-7', 'U+20B9 present in a PDF rendered on THIS host', rupee,
+      rupee ? 'rupee is in the drawn text' : 'not found — currency may not be INR on this tenant');
+  }
 }
 
 // ── BE-6 ────────────────────────────────────────────────────────────────────

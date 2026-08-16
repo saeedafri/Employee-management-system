@@ -63,7 +63,8 @@ export const PERMISSION_CATALOGUE = Object.freeze({
     'reports:schedule': 'Manage scheduled reports and export history',
   },
   analytics: {
-    'analytics:read': 'View analytics dashboards',
+    'analytics:read': 'View tenant-wide analytics dashboards',
+    'analytics:team-read': 'View the team analytics dashboard (department performance)',
   },
   permissions: {
     'permissions:manage': 'Manage roles and permissions',
@@ -143,7 +144,11 @@ const MANAGER_KEYS = [
   'attendance:read', 'attendance:write', 'attendance:team-read', 'attendance:approve',
   'leave:read', 'leave:request', 'leave:team-read', 'leave:approve',
   'holidays:read',
-  'analytics:read',
+  // MANAGER sees the team dashboard, not tenant-wide analytics. This used to be
+  // `analytics:read` plus a hardcoded path allowlist in analytics.policy.js, which
+  // made the settings matrix show Analytics ticked for a role that got 403 on all
+  // but one route (FE report NEW-1). Now it is just a different key.
+  'analytics:team-read',
   'payroll:self-read',
   'payout:self',
   'timesheets:read', 'timesheets:write', 'timesheets:approve',
