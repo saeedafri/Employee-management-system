@@ -135,13 +135,15 @@ export async function updateEmailTemplate(tenantId, type, data) {
 }
 
 export async function getRolePermissions(tenantId) {
+  // MULTI-TENANT FIX. This was `OR: [{ tenantId }, { isSystem: true }]`. Every
+  // tenant's seeded roles carry isSystem: true, so that clause matched EVERY
+  // tenant's MANAGER/HR_ADMIN/... rows, and `result[role.key] = ...` below then
+  // overwrote the caller's own role with whichever tenant sorted last. The
+  // permissions screen could therefore display another tenant's grants -- which
+  // is what produced the matrix/token disagreement reported as NEW-1.
+  // There are no global roles: every Role row in the database has a tenantId.
   const roles = await prisma.role.findMany({
-    where: {
-      OR: [
-        { tenantId },
-        { isSystem: true },
-      ],
-    },
+    where: { tenantId },
     include: {
       permissions: {
         include: {
@@ -167,14 +169,10 @@ export async function getRolePermissions(tenantId) {
 }
 
 export async function updateRolePermissions(tenantId, roleKey, permissions) {
+  // Same fix, and this side is worse than the read: with the isSystem OR, a
+  // tenant admin editing "MANAGER" could match and rewrite ANOTHER tenant's role.
   const role = await prisma.role.findFirst({
-    where: {
-      key: roleKey,
-      OR: [
-        { tenantId },
-        { isSystem: true },
-      ],
-    },
+    where: { key: roleKey, tenantId },
   });
 
   if (!role) {
