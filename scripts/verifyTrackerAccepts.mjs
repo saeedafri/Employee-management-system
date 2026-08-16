@@ -97,14 +97,72 @@ for (const path of ['/employees?page=1&limit=1', '/departments', '/leave/types',
 }
 
 // ── BE-3 ────────────────────────────────────────────────────────────────────
+// The previous version of this block asserted `status === 200` and counted rows.
+// It passed for weeks while the endpoint returned every job in the tenant to
+// every role, because it never asked the only question that matters: can the
+// caller see a row that provably is not theirs? This version constructs that row.
 {
+  // 1. Establish that the EMPLOYEE cannot create an export job at all.
+  const denials = [];
+  for (const [path, body] of [
+    ['/export/employees', { format: 'csv' }],
+    ['/export/attendance', { format: 'csv', from_date: '2026-08-01', to_date: '2026-08-16' }],
+    ['/export/leave', { format: 'csv', from_date: '2026-08-01', to_date: '2026-08-16' }],
+  ]) {
+    const res = await call(path, { token: tokens.EMPLOYEE, method: 'POST', body });
+    denials.push(`${path}=${res.status}`);
+  }
+  check('BE-3', 'EMPLOYEE cannot create any export job', denials.every((d) => d.endsWith('=403')), denials.join(' '));
+
+  // 2. HR creates one. By step 1 it cannot belong to the employee.
+  const created = await call('/export/employees', { token: tokens.HR_ADMIN, method: 'POST', body: { format: 'csv' } });
+  const foreignJobId = created.json.data?.job_id;
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  // 3. The decisive assertion.
   const employee = await call('/export/list?page=1&limit=50', { token: tokens.EMPLOYEE });
   const jobs = employee.json.data?.exports ?? [];
-  check('BE-3', 'EMPLOYEE sees only their own export jobs', employee.status === 200, `${jobs.length} jobs`);
-  check('BE-3', 'file_url is not in the list response', jobs.every((job) => !('file_url' in job)));
+  const ids = jobs.map((job) => job.job_id);
+  // The 200 check is load-bearing. Without it a 500 returns no rows, the
+  // "job not present" assertion passes, and a broken endpoint reads as secure.
+  // An assertion that a failure can satisfy is not an assertion.
+  check('BE-3', 'the scoped listing actually succeeded (not a 5xx reading as empty)',
+    employee.status === 200, `status ${employee.status}`);
+  check('BE-3', "EMPLOYEE cannot see HR's freshly created job",
+    employee.status === 200 && Boolean(foreignJobId) && !ids.includes(foreignJobId),
+    `job ${String(foreignJobId).slice(0, 8)} in a list of ${ids.length}`);
 
   const hr = await call('/export/list?page=1&limit=50', { token: tokens.HR_ADMIN });
-  check('BE-3', 'HR_ADMIN unchanged', hr.status === 200, `${(hr.json.data?.exports ?? []).length} jobs`);
+  const hrIds = (hr.json.data?.exports ?? []).map((job) => job.job_id);
+  check('BE-3', 'the two lists are NOT identical (they were, when it leaked)',
+    employee.status === 200 && hr.status === 200
+      && !(hrIds.length === ids.length && hrIds.every((id) => ids.includes(id))),
+    `EMPLOYEE ${ids.length} · HR ${hrIds.length}`);
+  check('BE-3', 'HR_ADMIN still sees the job it created', hrIds.includes(foreignJobId), `${hrIds.length} jobs`);
+  check('BE-3', 'file_url is not in the list response', jobs.every((job) => !('file_url' in job)));
+}
+
+// ── NEW-1 / NEW-2 / NEW-3 (from the FE verification report) ─────────────────
+{
+  const managerKeys = JSON.parse(Buffer.from(tokens.MANAGER.split('.')[1], 'base64url').toString()).permissions ?? [];
+  const hrClaims = JSON.parse(Buffer.from(tokens.HR_ADMIN.split('.')[1], 'base64url').toString());
+
+  check('NEW-1', 'MANAGER now holds analytics:read', managerKeys.includes('analytics:read'),
+    `${managerKeys.length} keys`);
+  const summary = await call('/analytics/summary', { token: tokens.MANAGER });
+  check('NEW-1', 'the MANAGER carve-out reports ROLE_RESTRICTED, not a bogus requiredPermission',
+    summary.status === 403
+      && summary.json.error?.code === 'ROLE_RESTRICTED'
+      && summary.json.error?.details?.requiredPermission === undefined,
+    `${summary.status} ${summary.json.error?.code}`);
+  const deptPerf = await call('/analytics/department-performance', { token: tokens.MANAGER });
+  check('NEW-1', 'the one path MANAGER may reach is still open', deptPerf.status === 200, `got ${deptPerf.status}`);
+
+  check('NEW-2', 'HR_ADMIN holds leave:request', (JSON.parse(Buffer.from(tokens.HR_ADMIN.split('.')[1], 'base64url').toString()).permissions ?? []).includes('leave:request'));
+
+  check('NEW-3', 'the JWT carries an email claim (actor name was always "Approver")',
+    typeof hrClaims.email === 'string' && hrClaims.email.includes('@'), String(hrClaims.email));
+  check('NEW-3', 'the JWT still carries sub (request.user.id derives from it)', typeof hrClaims.sub === 'string');
 }
 
 // ── BE-10 ───────────────────────────────────────────────────────────────────
@@ -209,10 +267,23 @@ for (const path of ['/employees?page=1&limit=1', '/departments', '/leave/types',
 }
 
 // ── BE-9(b) ─────────────────────────────────────────────────────────────────
-for (const path of ['/attendance/today', '/employee/dashboard']) {
-  const { status, json } = await call(path, { token: tokens.SUPER_ADMIN });
-  check('BE-9', `SUPER_ADMIN → GET ${path} is 200 with noEmployeeRecord`,
-    status === 200 && json.data?.noEmployeeRecord === true, `got ${status}`);
+{
+  // Only meaningful when the account genuinely has no Employee row. On a
+  // defaults-seeded database SUPER_ADMIN IS linked to an employee, so the
+  // endpoint correctly returns real data -- reporting that as a failure would be
+  // a false alarm, and silently passing it would be worse.
+  const me = await call('/auth/me', { token: tokens.SUPER_ADMIN });
+  const linked = Boolean(me.json.data?.employeeId ?? me.json.data?.employee?.id);
+  for (const path of ['/attendance/today', '/employee/dashboard']) {
+    const { status, json } = await call(path, { token: tokens.SUPER_ADMIN });
+    if (linked) {
+      check('BE-9', `SUPER_ADMIN → GET ${path} reachable (has an employee record here)`,
+        status === 200, `got ${status} — empty-state path not exercisable on this data`);
+    } else {
+      check('BE-9', `SUPER_ADMIN → GET ${path} is 200 with noEmployeeRecord`,
+        status === 200 && json.data?.noEmployeeRecord === true, `got ${status}`);
+    }
+  }
 }
 
 const failed = results.filter((result) => !result.passed);
