@@ -790,5 +790,27 @@ word if you want one seeded.
 
 **48/48 live accept checks on production.** 366/366 offline.
 
-_Backend · lint clean · CI green · deployed and re-verified on production_
+## Production database, verified directly (16 Aug, after the network block was lifted)
+
+Hostinger removed a network-level block on our source IP; SSH came back, and the production database
+was reachable for the first time. Your 1c lead, confirmed on **production data**:
+
+| Column | Rows | Actor recorded |
+|---|---|---|
+| `ExportJob.createdById` | 43 | **24** |
+| `LeaveRequest.approverId` (APPROVED) | 19 | **7** |
+| `Setting.updatedById` (timesheets) | 5 | **0** |
+
+- **ExportJob** — 19 historical rows NULL, 24 recorded since the fix. The write path works in production.
+- **LeaveRequest** — **12 approved leave requests on production have no approver recorded.** Those are
+  the pre-fix approvals; all 7 since the fix carry the approver's real id. Your lead was right, and the
+  damage window is now measurable: 12 rows are permanently unattributable.
+- **Setting (timesheets)** — all 5 rows are pre-fix NULLs. Nobody has edited timesheet settings on
+  production since the deploy, so **that path is still unexercised there**. It is proven locally
+  (pre-fix NULL → post-fix real id) and will self-verify the first time someone saves timesheet
+  settings. Not claiming it on production until then.
+
+48/48 live accept checks, run directly against production rather than from a CI runner.
+
+_Backend · lint clean · CI green · deployed and verified against the production database_
 
