@@ -222,7 +222,18 @@ Suggested change at all four sites: `request.user.id` → `request.user.sub`.
 > So "who approved this leave" genuinely was unrecorded, on a 200 response. All 23 sites are fixed by
 > the single normalisation; this one is now **proven end-to-end** rather than inferred. The remaining
 > timesheets sites take the same value from the same source and are fixed by the same change, but I am
-> marking them **inspection-level** rather than claiming otherwise — I did not construct a case for each.
+> **Update — the timesheets half is now proven too.** The nine `timesheetsConfig` sites pass their
+> user id into `setBlob`, which persists it as `Setting.updatedById`. Exercised over HTTP:
+> ```
+> PRE-FIX   PATCH /timesheets/rates-config → 200 · Setting.updatedById = NULL — UNRECORDED
+> POST-FIX  PATCH /timesheets/rates-config → 200 · updatedById = cmsu8rcwu001xce9yfn2rldtf ✅
+> ```
+> Same silent-NULL-on-a-200 shape as the leave approver. All nine share that single write path, so the
+> mechanism is proven; I exercised one endpoint, not nine.
+>
+> **Still inspection-level:** `timesheets.controller.js:134,147` and the two comp-off approve/reject
+> sites. They read the same value from the same source and are fixed by the same change, but I did not
+> construct a failing case for them.
 
 ### Same root cause, 20 further call sites — impact by inspection, not verified by us
 
@@ -640,7 +651,7 @@ _Frontend team · 3 rounds against production · 72 assertions round 1 · re-ver
 |---|---|---|---|
 | 1 | BE-3 reopened — fix all four sites | ✅ **Fixed at the root** (one normalisation, not four edits) | Proven end-to-end |
 | 1b | Decide what happens to existing NULL jobs | ✅ **Left NULL, fail-closed** — visible only to export-permission holders | Proven end-to-end |
-| 1c | Review the other 20 `request.user.id` sites | ✅ **All fixed by the same change**; leave approver **proven** was-NULL→now-recorded | Proven (leave) · inspection (timesheets) |
+| 1c | Review the other 20 `request.user.id` sites | ✅ **All fixed by the same change**; leave approver AND timesheets config **proven** was-NULL→now-recorded | Proven (leave, timesheets config) · inspection (4 remaining) |
 | 2 | NEW-1 MANAGER `analytics:read` | ⚠️ **Diagnosis rejected**, adjacent real bug fixed, divergence **unverified** | See NEW-1 |
 | 3 | NEW-2 HR_ADMIN `leave:request` | ✅ **Confirmed not deliberate; reconcile broadened** | Proven end-to-end |
 | 4 | NEW-3 `request.user.email` | ✅ **Fixed at all 5 mint sites** | Proven end-to-end |
@@ -650,8 +661,9 @@ _Frontend team · 3 rounds against production · 72 assertions round 1 · re-ver
 
 - **NEW-1's matrix/token divergence.** Did not reproduce; I have no production DB access. Unverified,
   not dismissed.
-- **The timesheets call sites.** Fixed by the same normalisation, but I did not construct a failing
-  case for each of the nine. Inspection-level.
+- **Four remaining call sites** — `timesheets.controller.js:134,147` and the two comp-off
+  approve/reject sites. Fixed by the same normalisation, no failing case constructed. Inspection-level.
+  (The nine `timesheetsConfig` sites are now proven via `Setting.updatedById`.)
 - **BE-7 on production.** Unverified. Local only.
 - **The two local DB-suite failures** (`rbac-customization-e2e`) reproduce on the clean pre-change
   commit as well — local database state, not a regression. CI's throwaway database is authoritative.
