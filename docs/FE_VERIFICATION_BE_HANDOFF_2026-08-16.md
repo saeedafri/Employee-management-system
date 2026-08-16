@@ -721,5 +721,62 @@ rows so "the job is not in the list" passed on a broken endpoint (the listing mu
 before any conclusion is drawn), and BE-9's empty-state check reported a false failure on data where
 SUPER_ADMIN has an employee record.
 
+## NEW-1 and BE-7 — both now solved (16 Aug, later)
+
+I marked these "cannot verify". That was premature on both.
+
+### NEW-1 — solved properly, and your divergence reproduced
+
+Granting the key was never the fix, and making the denial honest (`ROLE_RESTRICTED`) still left the
+permissions screen lying: MANAGER held `analytics:read` while 8 of 9 analytics routes stayed shut by a
+hardcoded role/path allowlist. **A role's key list could not predict its access — that is the actual
+complaint, and it is now fixed.** The allowlist is gone; the manager dashboard is its own key:
+
+```
+analytics:read       tenant-wide dashboards      HR_ADMIN, SUPER_ADMIN, AUDITOR
+analytics:team-read  department-performance      MANAGER
+```
+
+What remains is an ordinary route→permission mapping, not a role→path carve-out. On production:
+
+```
+matrix.MANAGER  read=false team-read=true      token.MANAGER  read=false team-read=true
+MANAGER /analytics/summary                → 403 analytics:read   (a key it genuinely lacks)
+MANAGER /analytics/department-performance → 200
+HR_ADMIN /analytics/summary               → 200 (control)
+```
+
+**Your divergence is real, and I reproduced it.** It did not reproduce locally, but on the deploy where
+the reconcile was changing grants mid-run my own check caught `matrix 22 · token 21`; the next run
+reported `matrix-only [—] · token-only [—]`. So it is a **mint-time staleness window**, not two
+disagreeing sources: a JWT minted before a grant change keeps the old `permissions[]` until the user
+logs in again, while the matrix reads current state. Expect it after any grant change — **re-login is
+required for a permission change to reach the token.** Worth handling in your nav gating.
+
+**A privilege escalation was caught before it shipped.** An earlier reconcile had granted MANAGER
+`analytics:read` on production, and that script is additive-only — dropping the key from the defaults
+would have LEFT it in place and silently given MANAGER all 9 analytics routes. It is now an explicit
+revoke.
+
+⚠️ **Contract change for FE-8/FE-9:** the catalogue is now **56 keys**, and MANAGER's analytics entry
+is `analytics:team-read`. Please update the matrix before you hard-code it.
+
+### BE-7 — verified on production, no seeding needed
+
+It never required a payslip. The claim is that the embedded font can draw `₹`; the tax-form PDF works
+on production and formats money through the same Intl currency path and the same embedded Noto face.
+The verifier decompresses that PDF's streams and asserts **U+20B9 in its ToUnicode CMap** — the
+glyph→Unicode map for text actually drawn:
+
+```
+PASS  BE-7  a Unicode font is embedded (not WinAnsi Helvetica)
+PASS  BE-7  U+20B9 present in a PDF rendered on THIS host — rupee is in the drawn text
+```
+
+This proves the rendering path on production. A payslip-specific check still needs a payslip; say the
+word if you want one seeded.
+
+**48/48 live accept checks on production.** 366/366 offline.
+
 _Backend · lint clean · CI green · deployed and re-verified on production_
 
