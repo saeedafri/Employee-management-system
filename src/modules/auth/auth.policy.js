@@ -61,7 +61,7 @@ export function requirePermission(permission) {
     throw new Error(`Unknown permission key: ${permission}`);
   }
 
-  return async function permissionPreHandler(request, reply) {
+  const permissionPreHandler = async function permissionPreHandler(request, reply) {
     if (hasPermission(request.user, permission)) return;
 
     return reply.code(403).send(
@@ -73,6 +73,10 @@ export function requirePermission(permission) {
       ),
     );
   };
+
+  // Read by the route manifest. Labels the guard; changes nothing it does.
+  permissionPreHandler.permissions = [permission];
+  return permissionPreHandler;
 }
 
 /**
@@ -87,7 +91,7 @@ export function requireAnyPermission(...permissions) {
     }
   }
 
-  return async function anyPermissionPreHandler(request, reply) {
+  const anyPermissionPreHandler = async function anyPermissionPreHandler(request, reply) {
     if (permissions.some((permission) => hasPermission(request.user, permission))) return;
 
     return reply.code(403).send(
@@ -99,6 +103,9 @@ export function requireAnyPermission(...permissions) {
       ),
     );
   };
+
+  anyPermissionPreHandler.permissions = permissions;
+  return anyPermissionPreHandler;
 }
 
 /**

@@ -4,6 +4,8 @@ import * as passwordResetController from './passwordReset.controller.js';
 import * as otpController from './otp.controller.js';
 import * as invitationService from './invitation.service.js';
 import { errorResponse } from '../../utils/response.js';
+import { successResponse } from '../../utils/response.js';
+import { permissionManifest } from './permissionManifest.js';
 
 export default async function authRoutes(fastify) {
   fastify.post('/auth/register', {
@@ -96,6 +98,19 @@ export default async function authRoutes(fastify) {
     },
     onRequest: [authenticate],
   }, async (request, reply) => authController.getMeController(request, reply));
+
+  fastify.get('/auth/permission-manifest', {
+    schema: {
+      tags: ['Authentication'],
+      description:
+        'Route -> permission map, generated from the live routing table. `permissions` is ANY-of: '
+        + 'holding one key is sufficient. An empty array means the route needs authentication only; '
+        + '`public: true` means no auth at all. Describes the rules, not anyone\'s grants.',
+      security: [{ Bearer: [] }],
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate],
+  }, async (request, reply) => reply.send(successResponse(permissionManifest())));
 
   fastify.patch('/auth/me/mfa', {
     schema: {

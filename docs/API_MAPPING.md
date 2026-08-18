@@ -245,6 +245,43 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
 
 ---
 
+### `GET /auth/permission-manifest`
+**Required roles:** any authenticated user. It describes the rules, not anyone's grants, so it discloses nothing about a person.
+**Source of truth:** the live Fastify routing table, collected at registration via an `onRoute` hook — generated, never hand-maintained.
+
+**Response `data`:**
+```json
+{
+  "version": "2026-08-18T11:04:00.000Z",
+  "routes": [
+    { "method": "GET",   "path": "/api/v1/settings/integrations/email",      "permissions": ["settings:integrations"] },
+    { "method": "PATCH", "path": "/api/v1/settings/branding",                "permissions": ["settings:manage"] },
+    { "method": "GET",   "path": "/api/v1/analytics/department-performance", "permissions": ["analytics:read", "analytics:team-read"] },
+    { "method": "GET",   "path": "/api/v1/analytics/summary",                "permissions": ["analytics:read"] },
+    { "method": "GET",   "path": "/api/v1/holidays",                         "permissions": [] },
+    { "method": "POST",  "path": "/api/v1/auth/login",   "permissions": [], "public": true }
+  ],
+  "notCovered": [{ "kind": "ownership", "detail": "..." }]
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `permissions` | **ANY-of** — holding one key is sufficient. Matches `requireAnyPermission` and `requireAnalyticsPermission`. |
+| `permissions: []` | Authentication only. The row is always emitted; a missing row and an empty array mean different things. |
+| `public: true` | No authentication at all (`/auth/login`, `/health`, `/docs`). Absent on every authenticated route. |
+| `path` | As declared, `:id` placeholders intact, including the `/api/v1` prefix. |
+| `version` | ISO timestamp, changes when the map changes. Safe to cache against. |
+| `notCovered` | What the manifest cannot express, stated rather than left silent. |
+
+> **Per-route, not per-union.** `/analytics/*` is guarded by one path-dependent hook: `analytics:team-read` satisfies `/analytics/department-performance` only, `analytics:read` the other eight. The manifest emits each route's own answer, so a MANAGER holding `analytics:team-read` is shown exactly one analytics screen.
+
+> **Module-wide guards are included.** Fastify's `onRoute` reports only hooks passed in a route's own options, so a guard installed with `fastify.addHook('onRequest', …)` is invisible to it — every `/analytics/*` route would publish as `permissions: []`, i.e. open to anyone signed in. `guardScope()` installs such hooks and stamps the routes, so they publish correctly. `tests/permission-manifest.test.js` fails if that regresses.
+
+> **Ownership is not a key.** Per-employee routes (payroll salary/payslips/ytd/tax-declaration/loans/tax-form, employee documents/photo) additionally enforce self-or-`employees:read-any` in the service. The manifest lists the key a **non-owner** needs; the owner reaches their own record without it. Do not hide a self-service screen from its owner on the strength of that key.
+
+---
+
 ### `GET /auth/me`
 
 **Response `data`:**
@@ -1635,9 +1672,20 @@ Query: `?range=30d|90d` (default `30d`).
     "MANAGER":     ["employees:read", "departments:read", "attendance:read", "attendance:write", "leave:read", "leave:request", "leave:approve", "analytics:read"],
     "AUDITOR":     ["employees:read", "departments:read", "attendance:read", "leave:read", "analytics:read", "audit:read"],
     "SUPER_ADMIN": ["employees:read", "employees:write", "employees:delete", "employees:export", "departments:read", "departments:write", "attendance:read", "attendance:write", "leave:read", "leave:request", "leave:approve", "analytics:read", "permissions:manage", "audit:read"]
-  }
+  },
+  "customRoles": [],
+  "catalogue": [
+    { "module": "employees", "permissions": [
+        { "key": "employees:read", "description": "View employee records" },
+        { "key": "employees:read-any", "description": "View any employee record, documents and photo" }
+    ] }
+  ]
 }
 ```
+
+> **`catalogue` (added 2026-08-18)** — every key in `PERMISSION_CATALOGUE`, grouped by module, **in catalogue order**, each with its human description. 56 keys across 19 modules; no key has an empty description. Tenant-independent: it describes which keys exist, not who holds them, so a custom role's keys never change it. Lets a client render the permissions matrix labels without keeping its own copy of the catalogue.
+
+> **`permissions` semantics changed (2026-08-18)** — it is now the full catalogue key list (`PERMISSION_KEYS`), not the union of keys some role currently holds. Before, a key granted to **no** role was absent from the response entirely, so the FE matrix rendered no row and no checkbox for it — it could never be granted again without a direct DB edit. Latent rather than live, because SUPER_ADMIN holds all 56 and cannot be edited; it would have bitten the first time a key shipped before being granted. For any tenant whose SUPER_ADMIN holds the full catalogue the array is byte-identical to before.
 
 ---
 

@@ -131,6 +131,11 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             },
           }),
         },
+        '/auth/permission-manifest': {
+          get: op('Authentication', 'Route -> permission map, generated from the live routing table (not hand-maintained). Returns { version, routes[{method, path, permissions[], public?}], notCovered[] }. `permissions` is ANY-of: holding one key is enough. An empty array means authentication only; `public: true` means no auth. Lets a client derive which key a screen needs instead of copying it from the backend source.', true, {
+            responses: { 200: r200, 401: { description: 'Missing or invalid access token' } },
+          }),
+        },
         '/auth/me/mfa': {
           patch: op('Authentication', 'Toggle your own MFA opt-in (contract §6). Under tenant mfa_policy=OPTIONAL this makes "users choose" real — sets user.mfaEnabled. Body { enabled: boolean }; returns { mfaEnabled }.', true, {
             parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['enabled'], properties: { enabled: { type: 'boolean' } } } }],

@@ -1,4 +1,5 @@
 import { authenticate } from '../../middleware/authenticate.js';
+import { guardScope } from '../auth/permissionManifest.js';
 import { requireAnalyticsPermission } from './analytics.policy.js';
 import * as analyticsController from './analytics.controller.js';
 
@@ -10,8 +11,9 @@ const filterParams = {
 
 export default async function analyticsRoutes(fastify) {
   // resolveTenant is already a global hook registered in app.js — do not add again
-  fastify.addHook('onRequest', authenticate);
-  fastify.addHook('onRequest', requireAnalyticsPermission);
+  // Same two hooks, same order -- guardScope also stamps each route into the
+  // manifest, which `onRoute` cannot see for module-wide hooks.
+  guardScope(fastify, [authenticate, requireAnalyticsPermission]);
 
   fastify.get('/analytics/summary', {
     schema: {

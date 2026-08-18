@@ -31,6 +31,17 @@ export function requireAnalyticsPermission(request, reply, done) {
   return denyUnless(request, reply, done, keys);
 }
 
+/**
+ * The per-route answer, not the union. Publishing the union here would tell the
+ * frontend MANAGER can reach all nine analytics routes; they can reach one, and
+ * a nav item that 403s is a bug they have already shipped once.
+ */
+requireAnalyticsPermission.permissionsFor = (path) =>
+  (TEAM_SCOPED_PATHS.has(path) ? ['analytics:read', 'analytics:team-read'] : ['analytics:read']);
+
+// Union, for any consumer that cannot ask per path.
+requireAnalyticsPermission.permissions = ['analytics:read', 'analytics:team-read'];
+
 function denyUnless(request, reply, done, keys) {
   const user = request.user || {};
   if (keys.some((key) => hasPermission(user, key))) {

@@ -1,4 +1,5 @@
 import { authenticate } from '../../middleware/authenticate.js';
+import { guardScope } from '../auth/permissionManifest.js';
 import {
   employeeDashboardHandler,
   getTodayHandler,
@@ -7,7 +8,7 @@ import {
 } from './employee.controller.js';
 
 export async function employeeDashboardRoutes(fastify) {
-  fastify.addHook('onRequest', authenticate);
+  guardScope(fastify, authenticate);
   fastify.get(
     '/employee/dashboard',
     {

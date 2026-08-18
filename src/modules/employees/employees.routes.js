@@ -1,4 +1,5 @@
 import { authenticate } from '../../middleware/authenticate.js';
+import { guardScope } from '../auth/permissionManifest.js';
 import { requirePermission } from '../auth/auth.policy.js';
 import {
   listEmployees,
@@ -22,7 +23,7 @@ import {
 } from './employees.controller.js';
 
 export async function employeesRoutes(fastify) {
-  fastify.addHook('onRequest', authenticate);
+  guardScope(fastify, authenticate);
 
   fastify.get(
     '/employees',

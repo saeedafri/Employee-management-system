@@ -1,4 +1,5 @@
 import { authenticate } from '../../middleware/authenticate.js';
+import { guardScope } from '../auth/permissionManifest.js';
 import { requirePermission } from '../auth/auth.policy.js';
 import {
   listHolidays,
@@ -23,7 +24,7 @@ import {
 } from './holidayResolved.controller.js';
 
 export default async function holidaysRoutes(fastify) {
-  fastify.addHook('onRequest', authenticate);
+  guardScope(fastify, authenticate);
 
   // ── Holiday Applicability Engine (HOLIDAY_ENGINE_BACKEND_CONTRACT) ──
   // Fully-resolved per-employee set: country-scoped + observed-shifted + optional/selected

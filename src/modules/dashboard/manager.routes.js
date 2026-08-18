@@ -1,4 +1,5 @@
 import { authenticate } from '../../middleware/authenticate.js';
+import { guardScope } from '../auth/permissionManifest.js';
 import {
   managerDashboardHandler,
   getTeamHandler,
@@ -9,7 +10,7 @@ import {
 } from './manager.controller.js';
 
 export async function managerDashboardRoutes(fastify) {
-  fastify.addHook('onRequest', authenticate);
+  guardScope(fastify, authenticate);
   fastify.get(
     '/manager/dashboard',
     {

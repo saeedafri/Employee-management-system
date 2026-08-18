@@ -79,3 +79,7 @@ export function authorize(allowedRoles = []) {
     }
   };
 }
+
+// Lets the route manifest distinguish an authenticate-only route from a public
+// one; an empty permission list means different things in each case.
+authenticate.isAuthGuard = true;

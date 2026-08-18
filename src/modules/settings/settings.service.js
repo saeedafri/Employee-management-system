@@ -4,6 +4,7 @@ import { resolveWorkWeekDays, toDayTokens } from '../../utils/workingDays.js';
 import { cacheGet, cacheSet, cacheDel } from '../../lib/redis.js';
 import { ensureTenantRolePermissionDefaults } from '../auth/auth.service.js';
 import { DEFAULT_PERMISSIONS_BY_ROLE } from '../auth/auth.policy.js';
+import { PERMISSION_CATALOGUE, PERMISSION_KEYS } from '../auth/permissionCatalogue.js';
 
 // Tenant config is read on nearly every page and changes rarely — cache it tenant-scoped.
 const TENANTCFG_KEY = (tenantId) => `cache:tenantcfg:${tenantId}`;
@@ -110,13 +111,22 @@ export async function getRolePermissions(tenantId) {
   }
 
   const roles = Object.keys(matrix);
-  const permissionSet = new Set(Object.values(matrix).flat());
 
+  // `permissions` used to be the union of keys some role currently holds, so a
+  // key granted to nobody vanished from the response -- and the FE renders its
+  // matrix rows from this array, leaving no checkbox to ever grant it again.
+  // The catalogue is the real answer to "which keys exist".
   return {
     roles,
-    permissions: Array.from(permissionSet).sort(),
+    permissions: [...PERMISSION_KEYS].sort(),
     matrix,
     customRoles,
+    // Key -> human label, grouped, in catalogue order. Previously only readable
+    // by opening permissionCatalogue.js, so the FE kept a hand-typed copy.
+    catalogue: Object.entries(PERMISSION_CATALOGUE).map(([module, keys]) => ({
+      module,
+      permissions: Object.entries(keys).map(([key, description]) => ({ key, description })),
+    })),
   };
 }
 

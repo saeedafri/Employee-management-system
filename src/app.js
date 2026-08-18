@@ -9,6 +9,7 @@ import { helmetPlugin } from './plugins/helmet.js';
 import { rateLimitPlugin } from './plugins/rateLimit.js';
 import { requestIdPlugin } from './plugins/requestId.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { collectRouteGuards, resetPermissionManifest } from './modules/auth/permissionManifest.js';
 import { resolveTenant } from './middleware/resolveTenant.js';
 import { attachRequestLogging } from './middleware/requestLogging.js';
 import authRoutes from './modules/auth/auth.routes.js';
@@ -85,6 +86,11 @@ export async function createApp() {
 
   // Global error handler
   fastify.setErrorHandler(errorHandler);
+
+  // Publish the route -> permission map. Must be added before any route
+  // registers; onRoute only fires for routes registered after the hook.
+  resetPermissionManifest();
+  fastify.addHook('onRoute', collectRouteGuards);
 
   // Register routes (MUST await all nested registrations)
   await fastify.register(
