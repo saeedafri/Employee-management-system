@@ -1,5 +1,33 @@
 import { prisma } from '../../plugins/prisma.js';
+import { hasPermission } from '../auth/auth.policy.js';
 import * as repo from './performance.repository.js';
+
+/**
+ * Both writes below are guarded by `performance:read` -- a READ key, which MANAGER
+ * holds -- and both scoped by tenant only, so any manager could calibrate (or set
+ * a goal on) ANY employee in the tenant, including HR's own review. Reproduced on
+ * production before this fix.
+ *
+ * `performance:manage` (HR, SUPER_ADMIN) keeps the tenant-wide reach it is meant
+ * to have. Everyone else is confined to themselves and their direct reports.
+ */
+async function assertCanWriteFor(tenantId, employeeId, requestingUser) {
+  if (!requestingUser) throw scopeError();
+  if (hasPermission(requestingUser, 'performance:manage')) return;
+  if (requestingUser.employeeId && requestingUser.employeeId === employeeId) return;
+
+  const employee = await repo.getEmployeeById(tenantId, employeeId);
+  if (!employee || !requestingUser.employeeId || employee.managerId !== requestingUser.employeeId) {
+    throw scopeError();
+  }
+}
+
+function scopeError() {
+  const err = new Error('This employee is not in your team');
+  err.code = 'FORBIDDEN';
+  err.statusCode = 403;
+  return err;
+}
 
 export async function getActiveCycle(tenantId) {
   const cycle = await repo.getActiveCycle(tenantId);
@@ -116,7 +144,8 @@ export async function getEmployees(tenantId) {
 
 const VALID_RATINGS = ['Exceeds', 'Strong', 'Meets', 'Developing', 'Below'];
 
-export async function updateReview(tenantId, employeeId, data) {
+export async function updateReview(tenantId, employeeId, data, requestingUser) {
+  await assertCanWriteFor(tenantId, employeeId, requestingUser);
   if (data.rating && !VALID_RATINGS.includes(data.rating)) {
     const err = new Error(`rating must be one of: ${VALID_RATINGS.join(', ')}`);
     err.code = 'VALIDATION_ERROR';
@@ -171,7 +200,7 @@ export async function updateReview(tenantId, employeeId, data) {
   };
 }
 
-export async function createGoal(tenantId, data) {
+export async function createGoal(tenantId, data, requestingUser) {
   const { employeeId, title, dueDate, progressPct } = data;
   if (!employeeId || !title || !dueDate) {
     const err = new Error('employeeId, title, dueDate are required');
@@ -179,6 +208,7 @@ export async function createGoal(tenantId, data) {
     err.statusCode = 422;
     throw err;
   }
+  await assertCanWriteFor(tenantId, employeeId, requestingUser);
   const emp = await repo.getEmployeeById(tenantId, employeeId);
   if (!emp) {
     const err = new Error('Employee not found');

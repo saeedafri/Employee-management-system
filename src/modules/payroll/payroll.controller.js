@@ -332,7 +332,7 @@ export async function deleteStatutoryPack(request, reply) {
 
 export async function getEmployeeYtd(request, reply) {
   try {
-    const data = await service.getEmployeeYtd(prisma, request.params.id, request.tenant.id, request.query.fy);
+    const data = await service.getEmployeeYtd(prisma, request.params.id, request.tenant.id, request.query.fy, request.user);
     if (!data) { reply.code(404).send(errorResponse('NOT_FOUND', 'Employee not found')); return; }
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
@@ -340,14 +340,14 @@ export async function getEmployeeYtd(request, reply) {
 
 export async function getTaxDeclaration(request, reply) {
   try {
-    const data = await service.getTaxDeclaration(prisma, request.params.id, request.tenant.id, request.query.fy);
+    const data = await service.getTaxDeclaration(prisma, request.params.id, request.tenant.id, request.query.fy, request.user);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function upsertTaxDeclaration(request, reply) {
   try {
-    const data = await service.upsertTaxDeclaration(prisma, request.params.id, request.tenant.id, request.body);
+    const data = await service.upsertTaxDeclaration(prisma, request.params.id, request.tenant.id, request.body, request.user);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
@@ -861,14 +861,14 @@ export async function listReimbursementCategories(request, reply) {
 
 export async function listReimbursementClaims(request, reply) {
   try {
-    const data = await service.listReimbursementClaims(prisma, request.tenant.id, request.query);
+    const data = await service.listReimbursementClaims(prisma, request.tenant.id, request.query, request.user);
     reply.send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }
 
 export async function submitReimbursementClaim(request, reply) {
   try {
-    const data = await service.submitReimbursementClaim(prisma, request.tenant.id, request.body);
+    const data = await service.submitReimbursementClaim(prisma, request.tenant.id, request.body, request.user);
     reply.code(201).send(successResponse(data));
   } catch (err) { handleError(reply, err); }
 }

@@ -73,6 +73,7 @@ export async function updateReview(request, reply) {
       request.tenant.id,
       request.params.employeeId,
       request.body,
+      request.user,
     );
     return reply.send(successResponse(review));
   } catch (err) {
@@ -83,7 +84,7 @@ export async function updateReview(request, reply) {
 
 export async function createGoal(request, reply) {
   try {
-    const goal = await service.createGoal(request.tenant.id, request.body);
+    const goal = await service.createGoal(request.tenant.id, request.body, request.user);
     return reply.code(201).send(successResponse(goal));
   } catch (err) {
     request.log.error(err);

@@ -485,7 +485,11 @@ export async function deleteStatutoryPack(prisma, id, tenantId) {
 
 // ── Phase 3: YTD ─────────────────────────────────────────────────────────────
 
-export async function getEmployeeYtd(prisma, employeeId, tenantId, fy) {
+export async function getEmployeeYtd(prisma, employeeId, tenantId, fy, requestingUser) {
+  // Same miss as getTaxForm below: the route only checked `payroll:self-read`,
+  // a key EVERY role holds, so any employee could read anyone's YTD gross, net
+  // and tax deducted by id. Verified against production before the fix.
+  assertEmployeeRecordAccess(requestingUser, employeeId);
   const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null } });
   if (!employee) return null;
 
@@ -629,7 +633,8 @@ async function resolveEmployeeTaxContext(prisma, employeeId, tenantId, fy) {
 
 // B1: enriched so an EMPLOYEE can render the declaration editor + projected-tax preview
 // without calling the admin-only /statutory-packs route. Never 404s.
-export async function getTaxDeclaration(prisma, employeeId, tenantId, fy) {
+export async function getTaxDeclaration(prisma, employeeId, tenantId, fy, requestingUser) {
+  assertEmployeeRecordAccess(requestingUser, employeeId);
   const ctx = await resolveEmployeeTaxContext(prisma, employeeId, tenantId, fy);
   const decl = await prisma.taxDeclaration.findUnique({
     where: { tenantId_employeeId_fiscalYear: { tenantId, employeeId, fiscalYear: ctx.fiscalYear } },
@@ -647,7 +652,10 @@ export async function getTaxDeclaration(prisma, employeeId, tenantId, fy) {
   };
 }
 
-export async function upsertTaxDeclaration(prisma, employeeId, tenantId, data) {
+export async function upsertTaxDeclaration(prisma, employeeId, tenantId, data, requestingUser) {
+  // The write side was worse than the read: `:id` went straight to the upsert, so
+  // one employee could overwrite another's regime and investment items.
+  assertEmployeeRecordAccess(requestingUser, employeeId);
   const ctx = await resolveEmployeeTaxContext(prisma, employeeId, tenantId, data.fiscalYear);
   const fiscalYear = data.fiscalYear || ctx.fiscalYear;
   const defaultRegime = ctx.defaultRegime || 'IN_NEW_REGIME';
@@ -712,14 +720,14 @@ function deriveLoan(row) {
 // loans; HR_ADMIN/SUPER_ADMIN may act for any employee in the tenant. This matches
 // the FE self-service "Request" button on My Pay (mode==='employee'); foreclosure
 // stays admin-only at the route level.
-function assertLoanAccess(requestingUser, employeeId) {
+function assertEmployeeRecordAccess(requestingUser, employeeId) {
   if (!canAccessEmployeeRecord(requestingUser, employeeId)) {
     throw AppError('Access denied', 'FORBIDDEN', 403);
   }
 }
 
 export async function getEmployeeLoans(prisma, employeeId, tenantId, requestingUser) {
-  assertLoanAccess(requestingUser, employeeId);
+  assertEmployeeRecordAccess(requestingUser, employeeId);
   const rows = await prisma.employeeLoan.findMany({
     where: { tenantId, employeeId },
     orderBy: { createdAt: 'desc' },
@@ -728,7 +736,7 @@ export async function getEmployeeLoans(prisma, employeeId, tenantId, requestingU
 }
 
 export async function createEmployeeLoan(prisma, employeeId, tenantId, data, requestingUser) {
-  assertLoanAccess(requestingUser, employeeId);
+  assertEmployeeRecordAccess(requestingUser, employeeId);
   // Contract LoanInput {type, principal, currency?, interestMethod, annualRatePct, tenureMonths,
   // startPeriod}. Back-compat: legacy {amount, emiAmount}.
   const principal = Number(data.principal ?? data.amount ?? 0);
@@ -2241,7 +2249,7 @@ export async function getTaxForm(prisma, employeeId, tenantId, type, fy, request
   const template = TAX_FORM_TEMPLATES[formType] || TAX_FORM_TEMPLATES.FORM16;
 
   // YTD payroll for the resolved fiscal year (major units). No payroll yet → zeroed rows, not 404.
-  const ytd = await getEmployeeYtd(prisma, employeeId, tenantId, ctx.fiscalYear);
+  const ytd = await getEmployeeYtd(prisma, employeeId, tenantId, ctx.fiscalYear, requestingUser);
   const grossMajor = ytd?.grossEarnings ?? 0;
   const taxDeductedMajor = ytd?.taxDeducted ?? 0;
   const netMajor = ytd?.netPay ?? 0;
@@ -2296,10 +2304,19 @@ export async function listReimbursementCategories(prisma, tenantId) {
   return cats.map((c, i) => ({ ...c, monthlyCap: Number(c.monthlyCap), color: REIMBURSEMENT_CATEGORY_COLORS[i % REIMBURSEMENT_CATEGORY_COLORS.length] }));
 }
 
-export async function listReimbursementClaims(prisma, tenantId, params = {}) {
+export async function listReimbursementClaims(prisma, tenantId, params = {}, requestingUser) {
   const where = { tenantId };
   if (params.status) where.status = params.status;
   if (params.employeeId) where.employeeId = params.employeeId;
+  // `payroll:self-read` gates this route and every role holds it, so without a
+  // filter a plain employee listed the whole tenant's claims. Approvers keep the
+  // tenant-wide view; everyone else is pinned to their own record.
+  if (requestingUser && !hasPermission(requestingUser, 'employees:read-any')) {
+    if (params.employeeId && params.employeeId !== requestingUser.employeeId) {
+      throw AppError('Access denied', 'FORBIDDEN', 403);
+    }
+    where.employeeId = requestingUser.employeeId ?? '__no_employee_record__';
+  }
   const [claims, total] = await prisma.$transaction([
     prisma.reimbursementClaim.findMany({
       where,
@@ -2332,7 +2349,8 @@ function fmtReimbursementClaimForUi(c) {
   };
 }
 
-export async function submitReimbursementClaim(prisma, tenantId, data) {
+export async function submitReimbursementClaim(prisma, tenantId, data, requestingUser) {
+  assertEmployeeRecordAccess(requestingUser, data.employeeId);
   const { generateId } = await import('../../utils/id.js');
   // H8 — enforce the category monthly cap (FE parity: payroll-claims CLAIM_OVER_CAP, 422).
   const category = await prisma.reimbursementCategory.findFirst({ where: { id: data.categoryId, tenantId } });
