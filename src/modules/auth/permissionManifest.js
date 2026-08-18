@@ -30,17 +30,18 @@ function entryFor(method, path) {
   const id = `${method} ${path}`;
   let entry = routes.get(id);
   if (!entry) {
-    entry = { method, path, permissions: new Set(), authenticated: false };
+    entry = { method, path, permissions: new Set(), roles: new Set(), authenticated: false };
     routes.set(id, entry);
   }
   return entry;
 }
 
 /** Merge one contribution. Called from several hooks per route, so order-independent. */
-export function recordRouteGuards(method, path, { permissions = [], authenticated = false } = {}) {
+export function recordRouteGuards(method, path, { permissions = [], roles = [], authenticated = false } = {}) {
   if (IGNORED_METHODS.has(method)) return;
   const entry = entryFor(method, path);
   for (const key of permissions) entry.permissions.add(key);
+  for (const role of roles) entry.roles.add(role);
   if (authenticated) entry.authenticated = true;
   stamp = null;
 }
@@ -61,10 +62,11 @@ function keysFromHandler(handler, path) {
 export function collectRouteGuards(route) {
   const handlers = [].concat(route.onRequest ?? [], route.preHandler ?? []).filter(Boolean);
   const permissions = handlers.flatMap((handler) => keysFromHandler(handler, route.url));
+  const roles = handlers.flatMap((handler) => handler.roles ?? []);
   const authenticated = handlers.some((handler) => handler.isAuthGuard === true);
 
   for (const method of [].concat(route.method)) {
-    recordRouteGuards(method, route.url, { permissions, authenticated });
+    recordRouteGuards(method, route.url, { permissions, roles, authenticated });
   }
 }
 
@@ -82,9 +84,10 @@ export function guardScope(fastify, guards) {
 
   fastify.addHook('onRoute', (route) => {
     const permissions = list.flatMap((guard) => keysFromHandler(guard, route.url));
+    const roles = list.flatMap((guard) => guard.roles ?? []);
     const authenticated = list.some((guard) => guard.isAuthGuard === true);
     for (const method of [].concat(route.method)) {
-      recordRouteGuards(method, route.url, { permissions, authenticated });
+      recordRouteGuards(method, route.url, { permissions, roles, authenticated });
     }
   });
 }
@@ -117,6 +120,10 @@ export function permissionManifest() {
         method: entry.method,
         path: entry.path,
         permissions: [...entry.permissions].sort(),
+        // Only /manager/* uses this: its rule is "you are somebody's manager",
+        // which is not a grantable capability. ANY-of, same as permissions, and
+        // ANDed with them -- a caller must satisfy both lists where both exist.
+        ...(entry.roles.size ? { roles: [...entry.roles].sort() } : {}),
         ...(entry.authenticated ? {} : { public: true }),
       }))
       .sort((a, b) => a.path.localeCompare(b.path) || a.method.localeCompare(b.method)),

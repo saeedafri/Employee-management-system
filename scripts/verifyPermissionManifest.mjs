@@ -54,12 +54,15 @@ for (const [role, session] of Object.entries(sessions)) {
     const res = await fetch(`${BASE}${route.path.slice(prefix.length)}`, {
       headers: { authorization: `Bearer ${session.token}`, 'x-tenant-key': TENANT },
     });
-    // SUPER_ADMIN bypasses every gate by design (authenticate.js), so it can
-    // never be forbidden regardless of what keys it holds.
-    const shouldForbid =
+    // `roles` is ANDed with `permissions`: /manager/* gates on being a manager,
+    // which no key grants and which SUPER_ADMIN does NOT bypass.
+    const failsRole = route.roles?.length > 0 && !route.roles.includes(role);
+    // SUPER_ADMIN bypasses every permission gate by design (authenticate.js).
+    const failsPermission =
       role !== 'SUPER_ADMIN'
       && route.permissions.length > 0
       && !route.permissions.some((key) => session.keys.has(key));
+    const shouldForbid = failsRole || failsPermission;
     const forbidden = res.status === 403;
     checked += 1;
     if (forbidden !== shouldForbid) {

@@ -1,5 +1,6 @@
 import * as logsController from './logs.controller.js';
 import { authenticate } from '../../middleware/authenticate.js';
+import { requirePermission } from '../auth/auth.policy.js';
 
 export default async function logsRoutes(fastify) {
   fastify.get('/logs', {
@@ -17,7 +18,7 @@ export default async function logsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('logs:read')],
   }, async (request, reply) => logsController.listLogs(request, reply));
 
   fastify.get('/logs/:id', {
@@ -33,7 +34,7 @@ export default async function logsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('logs:read')],
   }, async (request, reply) => logsController.getLog(request, reply));
 
   fastify.get('/logs/export', {
@@ -48,7 +49,7 @@ export default async function logsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('logs:read')],
   }, async (request, reply) => logsController.exportLogs(request, reply));
 
   fastify.get('/logs/stream', {
@@ -57,6 +58,6 @@ export default async function logsRoutes(fastify) {
       description: 'Stream logs as NDJSON (HR_ADMIN and SUPER_ADMIN only)',
       security: [{ Bearer: [] }],
     },
-    onRequest: [authenticate],
+    onRequest: [authenticate, requirePermission('logs:read')],
   }, async (request, reply) => logsController.streamLogs(request, reply));
 }

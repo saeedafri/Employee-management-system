@@ -126,3 +126,21 @@ export function canManageUser(user, targetUserId) {
 
   return user.sub === targetUserId;
 }
+
+/**
+ * Gate on memberType rather than a capability key.
+ *
+ * Used only by the manager dashboard, whose rule is genuinely "you are somebody's
+ * manager" rather than a permission anyone can be granted. It lives here, tagged,
+ * instead of inside five controllers, so the route manifest can publish it -- a
+ * check the manifest cannot see is a check the frontend will contradict.
+ */
+export function requireMemberType(memberTypes, message) {
+  const memberTypePreHandler = async function memberTypePreHandler(request, reply) {
+    if (memberTypes.includes(request.user?.memberType)) return;
+    return reply.code(403).send(errorResponse('FORBIDDEN', message, {}, request.id));
+  };
+
+  memberTypePreHandler.roles = [...memberTypes];
+  return memberTypePreHandler;
+}

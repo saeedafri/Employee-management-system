@@ -1,5 +1,6 @@
 import { authenticate } from '../../middleware/authenticate.js';
 import { guardScope } from '../auth/permissionManifest.js';
+import { requireMemberType } from '../auth/auth.policy.js';
 import {
   managerDashboardHandler,
   getTeamHandler,
@@ -10,7 +11,10 @@ import {
 } from './manager.controller.js';
 
 export async function managerDashboardRoutes(fastify) {
-  guardScope(fastify, authenticate);
+  // The memberType check used to sit in all five controllers, where no route-level
+  // manifest could see it -- so /manager/* published as "any signed-in user" while
+  // the API 403s everyone but a MANAGER. Same rule, same 403 body, declared once.
+  guardScope(fastify, [authenticate, requireMemberType(['MANAGER'], 'Only managers can access this')]);
   fastify.get(
     '/manager/dashboard',
     {

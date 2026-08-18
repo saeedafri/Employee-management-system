@@ -1,20 +1,9 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as logsService from './logs.service.js';
-import { hasPermission } from '../auth/auth.policy.js';
 
 export async function listLogs(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    if (!hasPermission(request.user, 'logs:read')) {
-      return reply.code(403).send(
-        errorResponse(
-          'FORBIDDEN',
-          'Insufficient permissions for this action',
-          { requiredPermission: 'logs:read' },
-          request.id,
-        ),
-      );
-    }
 
     const { level, module, actorUserId, from, to, limit, offset } = request.query;
 
@@ -52,16 +41,6 @@ export async function listLogs(request, reply) {
 export async function getLog(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    if (!hasPermission(request.user, 'logs:read')) {
-      return reply.code(403).send(
-        errorResponse(
-          'FORBIDDEN',
-          'Insufficient permissions for this action',
-          { requiredPermission: 'logs:read' },
-          request.id,
-        ),
-      );
-    }
 
     const { id } = request.params;
 
@@ -88,16 +67,6 @@ export async function getLog(request, reply) {
 export async function exportLogs(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    if (!hasPermission(request.user, 'logs:read')) {
-      return reply.code(403).send(
-        errorResponse(
-          'FORBIDDEN',
-          'Insufficient permissions for this action',
-          { requiredPermission: 'logs:read' },
-          request.id,
-        ),
-      );
-    }
 
     const { level, module, startDate, endDate, format } = request.query;
 
@@ -128,16 +97,6 @@ export async function exportLogs(request, reply) {
 export async function streamLogs(request, reply) {
   try {
     const { tenantId } = request.tenant;
-    if (!hasPermission(request.user, 'logs:read')) {
-      return reply.code(403).send(
-        errorResponse(
-          'FORBIDDEN',
-          'Insufficient permissions for this action',
-          { requiredPermission: 'logs:read' },
-          request.id,
-        ),
-      );
-    }
 
     const { level, module, startDate, endDate } = request.query;
 

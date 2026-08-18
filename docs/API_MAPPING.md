@@ -272,11 +272,16 @@ On any error, both cookies are cleared. Error codes: `REFRESH_TOKEN_MISSING`, `I
 | `public: true` | No authentication at all (`/auth/login`, `/health`, `/docs`). Absent on every authenticated route. |
 | `path` | As declared, `:id` placeholders intact, including the `/api/v1` prefix. |
 | `version` | ISO timestamp, changes when the map changes. Safe to cache against. |
+| `roles` | Present only where a route gates on `memberType` rather than a key (`/manager/*`). **ANDed** with `permissions`: a caller must satisfy both lists where both appear. SUPER_ADMIN does **not** bypass it. |
 | `notCovered` | What the manifest cannot express, stated rather than left silent. |
 
 > **Per-route, not per-union.** `/analytics/*` is guarded by one path-dependent hook: `analytics:team-read` satisfies `/analytics/department-performance` only, `analytics:read` the other eight. The manifest emits each route's own answer, so a MANAGER holding `analytics:team-read` is shown exactly one analytics screen.
 
 > **Module-wide guards are included.** Fastify's `onRoute` reports only hooks passed in a route's own options, so a guard installed with `fastify.addHook('onRequest', …)` is invisible to it — every `/analytics/*` route would publish as `permissions: []`, i.e. open to anyone signed in. `guardScope()` installs such hooks and stamps the routes, so they publish correctly. `tests/permission-manifest.test.js` fails if that regresses.
+
+> **Guards below the route layer (fixed 2026-08-18).** `/logs/*` checked `logs:read` inside its controller and `/manager/*` checked `memberType === 'MANAGER'` inside five controllers. Both are real gates no route-level manifest could see, so the manifest published all seven routes as "any signed-in user" while the API 403'd — caught by the per-role acceptance check, not by review. `/logs/*` now carries `requirePermission('logs:read')` on the route (same key, same 403 code; the `details` object gains `userRole`), and `/manager/*` carries a tagged `requireMemberType(['MANAGER'])` (same rule, same 403 code and message for the four read routes; the two approval routes previously said "Only managers can approve leaves"/"…requests" and now say "Only managers can access this").
+
+> **`/manager/*` refuses SUPER_ADMIN.** Pre-existing and unchanged: the rule is `memberType === 'MANAGER'`, so a SUPER_ADMIN gets 403 — the one place in the API that role does not reach. Flagged rather than altered, because the dashboard is built around `user.employeeId` and a SUPER_ADMIN has no employee record.
 
 > **Ownership is not a key.** Per-employee routes (payroll salary/payslips/ytd/tax-declaration/loans/tax-form, employee documents/photo) additionally enforce self-or-`employees:read-any` in the service. The manifest lists the key a **non-owner** needs; the owner reaches their own record without it. Do not hide a self-service screen from its owner on the strength of that key.
 

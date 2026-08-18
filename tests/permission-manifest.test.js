@@ -103,3 +103,15 @@ describe('the edge cases they asked about', () => {
     assert.ok(manifest.notCovered.some((n) => n.kind === 'custom-guard'));
   });
 });
+
+describe('guards that live below the route layer', () => {
+  it('/logs publishes logs:read rather than reading as unguarded', () => {
+    assert.deepEqual(find('GET', '/api/v1/logs').permissions, ['logs:read']);
+  });
+
+  it('/manager/* publishes its memberType rule', () => {
+    const row = find('GET', '/api/v1/manager/dashboard');
+    assert.deepEqual(row.roles, ['MANAGER']);
+    assert.ok(!row.public);
+  });
+});
