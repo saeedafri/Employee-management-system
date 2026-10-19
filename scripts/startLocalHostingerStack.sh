@@ -6,7 +6,7 @@ set -euo pipefail
 # Prefer the working Hostinger key; fall back to deploy key if present.
 KEY="${HOME}/.ssh/id_ed25519"
 [[ -f "$KEY" ]] || KEY="${HOME}/.ssh/hostinger_ems_ed25519"
-HOST="root@31.97.186.223"
+HOST="root@187.126.125.239"
 EMS="/Users/mohdsaeedafri/All-Code-Base/EMS"
 
 if ! pgrep -f "ssh.*127.0.0.1:15432" >/dev/null; then
