@@ -10,7 +10,16 @@ import { config } from '../config/index.js';
 // ponytail: in-memory store, per process; pass `redis` (ioredis) here when running >1 instance.
 export const rateLimitPlugin = fp(async (fastify, { enabled = config.env !== 'test' } = {}) => {
   if (!enabled) return;
-  await fastify.register(fastifyRateLimit, { global: false, cache: 10000 });
+  await fastify.register(fastifyRateLimit, {
+    global: false,
+    cache: 10000,
+    // The plugin's default throws a plain object; the app's errorHandler only honours
+    // coded errors, so a limited request surfaced as 500. Throw a coded 429 instead.
+    errorResponseBuilder: (req, ctx) => Object.assign(
+      new Error(`Too many attempts. Try again in ${ctx.after}.`),
+      { statusCode: 429, code: 'RATE_LIMITED' },
+    ),
+  });
 });
 
 // Route `config.rateLimit` keyed by the account being targeted (email / OTP challenge /
