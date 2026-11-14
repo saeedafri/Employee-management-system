@@ -46,8 +46,6 @@ export default async function authRoutes(fastify) {
         },
       },
     },
-    // Lockout-equivalent: 10 attempts per account per 15 min (correct password included).
-    config: { rateLimit: perAccount(10, '15 minutes') },
   }, async (request, reply) => authController.loginController(request, reply));
 
   fastify.post('/auth/admin/login', {
@@ -63,8 +61,6 @@ export default async function authRoutes(fastify) {
         },
       },
     },
-    // Lockout-equivalent: 10 attempts per account per 15 min (correct password included).
-    config: { rateLimit: perAccount(10, '15 minutes') },
   }, async (request, reply) => authController.adminLoginController(request, reply));
 
   fastify.post('/auth/refresh', {

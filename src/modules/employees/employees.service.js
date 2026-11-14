@@ -100,8 +100,11 @@ async function managerError(tenantId, managerId, employeeId) {
   return null;
 }
 
-export async function createEmployee(tenantId, data, userId) {
+export async function createEmployee(tenantId, data, userId, { canGrantSuperAdmin = false } = {}) {
   try {
+    if (data.memberType === 'SUPER_ADMIN' && !canGrantSuperAdmin) {
+      return errorResponse('FORBIDDEN', 'Only a super admin can create a super admin account', null);
+    }
     let leafDepartmentId;
     let departmentPath;
     try {

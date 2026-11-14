@@ -18,7 +18,7 @@ Contract changes from the full end-to-end test round. Shapes are unchanged unles
 
 | Area | Endpoint | Change |
 |---|---|---|
-| Auth | `POST /auth/login`, `POST /auth/admin/login` | Now limited to **10 attempts per account per 15 min** (correct password included) → `429`. `forgot-password`, `reset-password`, `verify-otp`, `resend-otp`, `register`, `accept-invitation`, `invitation/resend` limits now actually apply (they were never wired), keyed per account (email / challenge / token), not per IP. |
+| Auth | `POST /auth/login`, `POST /auth/admin/login` | **10 failed attempts** for an account within 15 min lock it for the rest of the window → `429 ACCOUNT_TEMPORARILY_LOCKED` (even with the right password). Successful logins don't count and reset the counter. `forgot-password`, `reset-password`, `verify-otp`, `resend-otp`, `register`, `accept-invitation`, `invitation/resend` limits now actually apply (they were never wired), keyed per account (email / challenge / token), not per IP. |
 | Auth | `POST /auth/login` | Wrong password on a LOCKED/DISABLED account now returns the generic `401 INVALID_CREDENTIALS` (state is only revealed after a correct password). Invited users still get `403 ACCOUNT_NOT_ACTIVATED`. A terminated/inactive employee gets `401 ACCOUNT_DISABLED`. |
 | Employees | `DELETE /employees/:id`, `POST /employees/bulk/deactivate` | Also disable the linked user and revoke every session — existing tokens stop working immediately. |
 | Employees | `POST /employees` | `memberType: SUPER_ADMIN` by a non-super-admin → `403 FORBIDDEN`. |

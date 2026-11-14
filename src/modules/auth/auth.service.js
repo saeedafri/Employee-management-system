@@ -36,7 +36,45 @@ class AppError extends Error {
   }
 }
 
+// Brute-force lockout: 10 FAILED logins for an account within 15 min lock it for the rest of
+// that window, correct password or not. Successful logins don't count, so shared test
+// accounts used by several people are never throttled.
+// ponytail: per-process Map; move to Redis INCR/EXPIRE when running more than one instance.
+const FAIL_LIMIT = 10;
+const FAIL_WINDOW_MS = 15 * 60 * 1000;
+const failedLogins = new Map();
+const lockKey = (email) => String(email ?? '').trim().toLowerCase();
+
+function assertNotLocked(key) {
+  if (config.env === 'test') return;
+  const f = failedLogins.get(key);
+  if (f && f.count >= FAIL_LIMIT && Date.now() < f.until) {
+    throw new AppError('Too many failed sign-in attempts. Try again in 15 minutes.', 'ACCOUNT_TEMPORARILY_LOCKED', 429);
+  }
+}
+
+function recordFailedLogin(key) {
+  const now = Date.now();
+  const f = failedLogins.get(key);
+  if (!f || now > f.until) failedLogins.set(key, { count: 1, until: now + FAIL_WINDOW_MS });
+  else f.count += 1;
+  if (failedLogins.size > 10000) for (const [k, v] of failedLogins) if (v.until < now) failedLogins.delete(k);
+}
+
 async function validateLogin(db, tenantId, email, password) {
+  const key = lockKey(email);
+  assertNotLocked(key);
+  try {
+    const user = await checkCredentials(db, tenantId, email, password);
+    failedLogins.delete(key);
+    return user;
+  } catch (err) {
+    if (err.code === 'INVALID_CREDENTIALS') recordFailedLogin(key);
+    throw err;
+  }
+}
+
+async function checkCredentials(db, tenantId, email, password) {
   const user = await authRepository.findUserByEmail(db, tenantId, email);
 
   if (!user) {

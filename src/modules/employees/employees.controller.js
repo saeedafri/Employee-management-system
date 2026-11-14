@@ -16,6 +16,7 @@ const UNPROCESSABLE_CODES = new Set(['VALIDATION_ERROR', 'NO_DELIVERY_EMAIL', 'I
 const RATE_LIMIT_CODES = new Set(['RATE_LIMITED']);
 
 function errorStatus(code) {
+  if (code === 'FORBIDDEN') return 403;
   if (CONFLICT_CODES.has(code)) return 409;
   if (NOT_FOUND_CODES.has(code)) return 404;
   if (UNPROCESSABLE_CODES.has(code)) return 422;
@@ -115,11 +116,8 @@ export async function createEmployee(request, reply) {
 
   try {
     const data = await validator.createEmployeeSchema.parseAsync(request.body);
-    // Nobody may mint an account above their own rank; only a super admin creates another.
-    if (data.memberType === 'SUPER_ADMIN' && user.memberType !== 'SUPER_ADMIN') {
-      return reply.code(403).send(errorResponse('FORBIDDEN', 'Only a super admin can create a super admin account', request.requestId));
-    }
-    const result = await service.createEmployee(tenantId, data, user.id);
+    // Minting a super-admin account is a super-admin power (permissions:manage), not an HR one.
+    const result = await service.createEmployee(tenantId, data, user.id, { canGrantSuperAdmin: hasPermission(user, 'permissions:manage') });
     reply.code(result.error ? errorStatus(result.error.code) : 201).send(result);
   } catch (error) {
     if (error.name === 'ZodError') {

@@ -314,11 +314,10 @@ export async function updateNotificationPreferences(tenantId, userId, data) {
   return updated;
 }
 
-// Nobody can hand out a permission they do not hold themselves (super admin holds all).
+// Nobody can hand out a permission they do not hold themselves (super admins hold every key).
 // Without this, settings:manage (HR) could create or assign a role carrying
 // permissions:manage / payroll:super and promote itself to super admin.
 function assertCanGrant(actor, keys) {
-  if (actor?.memberType === 'SUPER_ADMIN') return;
   const held = new Set(actor?.permissions ?? []);
   const missing = keys.filter((k) => !held.has(k));
   if (missing.length) {
