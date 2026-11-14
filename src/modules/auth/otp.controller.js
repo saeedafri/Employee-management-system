@@ -16,7 +16,8 @@ export async function verifyOtpController(request, reply) {
 
     // If this was an MFA login verification, complete the login
     if (result.purpose === 'LOGIN') {
-      const loginResult = await authService.completeMfaLogin(prisma, tenantId, result.userId, ip, userAgent);
+      // The OTP page posts without a tenant; the session must be created under the challenge's.
+      const loginResult = await authService.completeMfaLogin(prisma, result.tenantId ?? tenantId, result.userId, ip, userAgent);
 
       setRefreshTokenCookie(reply, loginResult.refreshToken);
       setAccessTokenCookie(reply, loginResult.accessToken);
@@ -55,8 +56,9 @@ export async function resendOtpController(request, reply) {
     const { challengeId } = await otpValidator.resendOtpSchema.parseAsync(request.body);
 
     // Get challenge to find the user email
+    // `tenantId: null` would match no challenge on the public route, so "resend code" always failed.
     const challenge = await prisma.otpChallenge.findFirst({
-      where: { tenantId, challengeId },
+      where: tenantId ? { tenantId, challengeId } : { challengeId },
       include: { user: true },
     });
 
@@ -66,7 +68,7 @@ export async function resendOtpController(request, reply) {
       );
     }
 
-    const result = await otpService.resendOtp(tenantId, challengeId, challenge.user.email);
+    const result = await otpService.resendOtp(challenge.tenantId, challengeId, challenge.user.email);
 
     return reply.code(202).send(
       successResponse(

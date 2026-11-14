@@ -200,6 +200,7 @@ export async function verifyOtp(tenantId, challengeId, code) {
     valid: true,
     challengeId: challenge.challengeId,
     userId: challenge.userId,
+    tenantId: challenge.tenantId, // the public verify route has no tenant of its own
     purpose: challenge.purpose,
   };
 }
