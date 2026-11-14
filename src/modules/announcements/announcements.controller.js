@@ -21,6 +21,16 @@ export async function getChannels(request, reply) {
   }
 }
 
+export async function createChannel(request, reply) {
+  try {
+    const channel = await service.createChannel(request.tenant.id, request.body);
+    return reply.code(201).send(successResponse(channel));
+  } catch (err) {
+    request.log.error(err);
+    return reply.code(err.statusCode || 500).send(errorResponse(err.code || 'INTERNAL_ERROR', err.message, {}, request.id));
+  }
+}
+
 export async function getEvents(request, reply) {
   try {
     const events = await service.getEvents(request.tenant.id);

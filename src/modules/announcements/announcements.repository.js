@@ -66,3 +66,16 @@ export async function deleteAnnouncement(id) {
 export async function getChannelById(tenantId, id) {
   return prisma.announcementChannel.findFirst({ where: { id, tenantId } });
 }
+
+export async function createChannel(tenantId, data) {
+  return prisma.announcementChannel.create({ data: { ...data, tenantId } });
+}
+
+// A new tenant has no channels; its first post lands in "General" instead of failing NO_CHANNEL.
+export async function ensureDefaultChannel(tenantId) {
+  return prisma.announcementChannel.upsert({
+    where: { tenantId_name: { tenantId, name: 'General' } },
+    update: {},
+    create: { tenantId, name: 'General', category: 'Company' },
+  });
+}

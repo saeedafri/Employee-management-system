@@ -29,6 +29,15 @@ async function requireOpsAccess(request, reply) {
   request.opsAuth = 'super_admin';
 }
 
+// A tenant's SUPER_ADMIN (every self-registered tenant has one) sees only their own tenant's
+// LogEntry rows and no process-level crash stacks, which belong to no tenant. The shared
+// OPS_LOGS_TOKEN is the platform operator and sees everything.
+const isOperator = (request) => request.opsAuth === 'token';
+function snapshotFor(request) {
+  const snapshot = getProcessSnapshot();
+  return isOperator(request) ? snapshot : { ...snapshot, recentErrors: [] };
+}
+
 function escapeHtml(s) {
   return String(s ?? '')
     .replace(/&/g, '&amp;')
@@ -142,7 +151,7 @@ export default async function opsRoutes(fastify) {
     return reply.send({
       success: true,
       data: {
-        process: getProcessSnapshot(),
+        process: snapshotFor(request),
         sse: getSseDiagnostics(),
         env: config.env,
       },
@@ -159,6 +168,7 @@ export default async function opsRoutes(fastify) {
     if (level && ['ERROR', 'WARN', 'INFO', 'DEBUG'].includes(level)) {
       where.level = level;
     }
+    if (!isOperator(request)) where.tenantId = request.user.tenantId;
 
     const logs = await prisma.logEntry.findMany({
       where,
@@ -176,7 +186,7 @@ export default async function opsRoutes(fastify) {
 
     const html = renderOpsHtml({
       logs,
-      snapshot: getProcessSnapshot(),
+      snapshot: snapshotFor(request),
       sse: getSseDiagnostics(),
       levelFilter: level || '',
       apiPrefix: config.apiPrefix || '/api/v1',

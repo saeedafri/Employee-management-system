@@ -37,11 +37,13 @@ export async function getDepartment(id, tenantId) {
 
 export async function createDepartment(tenantId, data, _userId) {
   try {
+    let depth = 0;
     if (data.parentId) {
       const parentExists = await repo.getDepartmentById(data.parentId, tenantId);
       if (!parentExists) {
         return errorResponse('INVALID_PARENT', 'Parent department does not exist', null);
       }
+      depth = parentExists.depth + 1;
     }
 
     if (data.departmentCode) {
@@ -56,7 +58,7 @@ export async function createDepartment(tenantId, data, _userId) {
       if (headCheck) return headCheck;
     }
 
-    const department = await repo.createDepartment(tenantId, data);
+    const department = await repo.createDepartment(tenantId, { ...data, depth });
     return successResponse(withHeadEmployeeName(department), { cached: false });
   } catch (error) {
     return errorResponse('CREATE_ERROR', error.message, null);
@@ -106,7 +108,12 @@ export async function updateDepartment(id, tenantId, data, _userId) {
       if (headCheck) return headCheck;
     }
 
-    const department = await repo.updateDepartment(id, tenantId, data);
+    let department = await repo.updateDepartment(id, tenantId, data);
+    if (data.parentId !== undefined && (data.parentId || null) !== existing.parentId) {
+      const parent = data.parentId ? await repo.getDepartmentById(data.parentId, tenantId) : null;
+      await repo.setSubtreeDepth(id, tenantId, parent ? parent.depth + 1 : 0);
+      department = await repo.getDepartmentById(id, tenantId);
+    }
     return successResponse(withHeadEmployeeName(department), { cached: false });
   } catch (error) {
     return errorResponse('UPDATE_ERROR', error.message, null);

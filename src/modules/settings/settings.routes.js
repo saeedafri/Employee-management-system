@@ -84,8 +84,9 @@ export default async function settingsRoutes(fastify) {
       description: 'Get role permissions matrix',
       security: [{ Bearer: [] }],
     },
-    onRequest: [authenticate],
-    preHandler: [requirePermission('permissions:manage')],
+    // onRequest, not preHandler: the guard must run before body validation, or an
+    // unauthorised caller learns the payload rules from a 422 instead of getting 403.
+    onRequest: [authenticate, requirePermission('permissions:manage')],
   }, (request, reply) => settingsController.getRolePermissions(request, reply));
 
   fastify.patch('/settings/roles-permissions', {
@@ -105,8 +106,9 @@ export default async function settingsRoutes(fastify) {
         },
       },
     },
-    onRequest: [authenticate],
-    preHandler: [requirePermission('permissions:manage')],
+    // onRequest, not preHandler: the guard must run before body validation, or an
+    // unauthorised caller learns the payload rules from a 422 instead of getting 403.
+    onRequest: [authenticate, requirePermission('permissions:manage')],
   }, (request, reply) => settingsController.updateRolePermissions(request, reply));
 
 
@@ -145,6 +147,7 @@ export default async function settingsRoutes(fastify) {
   fastify.post('/settings/roles', { schema: { tags: ['Settings'], description: 'Create a custom tenant role', security: [{ Bearer: [] }], body: { type: 'object', required: ['name', 'key'], properties: { name: { type: 'string' }, key: { type: 'string' }, permissions: { type: 'array', items: { type: 'string' } } } }, response: { 201: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.createRole(req, rep));
   fastify.delete('/settings/roles/:key', { schema: { tags: ['Settings'], description: 'Delete a custom role', security: [{ Bearer: [] }], params: { type: 'object', properties: { key: { type: 'string' } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.deleteRole(req, rep));
   fastify.post('/settings/roles/:key/users', { schema: { tags: ['Settings'], description: 'Assign users to a custom role', security: [{ Bearer: [] }], params: { type: 'object', properties: { key: { type: 'string' } } }, body: { type: 'object', required: ['userIds'], properties: { userIds: { type: 'array', items: { type: 'string' } } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.assignUsersToRole(req, rep));
+  fastify.delete('/settings/roles/:key/users/:userId', { schema: { tags: ['Settings'], description: 'Remove a user from a custom role (you must hold every permission the role grants)', security: [{ Bearer: [] }], params: { type: 'object', required: ['key', 'userId'], properties: { key: { type: 'string' }, userId: { type: 'string' } } }, response: { 200: { type: 'object', additionalProperties: true } } }, onRequest: [authenticate, canManageSettings] }, (req, rep) => settingsController.removeUserFromRole(req, rep));
 
   // ── Integrations (Phase 3 UI) ─────────────────────────────────────────────────
   const adminOnly = [authenticate, canManageIntegrations];

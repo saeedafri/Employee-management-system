@@ -16,6 +16,43 @@ export default async function performanceRoutes(fastify) {
     onRequest: [authenticate, canReadPerformance],
   }, controller.getActiveCycle);
 
+  const isoDate = { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' };
+  fastify.post('/performance/cycles', {
+    schema: {
+      tags: ['Performance'],
+      summary: 'Start a performance cycle (opens a review for every active employee)',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['name', 'selfReviewDue', 'managerReviewDue', 'calibrationDate'],
+        properties: {
+          name: { type: 'string', minLength: 1, maxLength: 120 },
+          selfReviewDue: isoDate,
+          managerReviewDue: isoDate,
+          calibrationDate: isoDate,
+        },
+      },
+      response: { 201: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, canManagePerformance],
+  }, controller.createCycle);
+
+  fastify.patch('/performance/cycles/:id', {
+    schema: {
+      tags: ['Performance'],
+      summary: 'Move a performance cycle to another status (Closed allows a new cycle)',
+      security: [{ Bearer: [] }],
+      params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+      body: {
+        type: 'object',
+        required: ['status'],
+        properties: { status: { type: 'string', enum: ['Upcoming', 'In progress', 'Calibrating', 'Closed'] } },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, canManagePerformance],
+  }, controller.updateCycle);
+
   fastify.get('/performance/summary', {
     schema: {
       tags: ['Performance'],

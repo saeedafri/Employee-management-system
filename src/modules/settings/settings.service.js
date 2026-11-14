@@ -176,3 +176,4 @@ export async function updateNotificationPreferences(tenantId, userId, data) { re
 export async function createRole(tenantId, data, actor) { return settingsRepository.createRole(tenantId, data, actor); }
 export async function deleteRole(tenantId, key) { return settingsRepository.deleteRole(tenantId, key); }
 export async function assignUsersToRole(tenantId, key, userIds, actor) { return settingsRepository.assignUsersToRole(tenantId, key, userIds, actor); }
+export async function removeUserFromRole(tenantId, key, userId, actor) { return settingsRepository.removeUserFromRole(tenantId, key, userId, actor); }

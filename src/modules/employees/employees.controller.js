@@ -9,6 +9,7 @@ import { generateId } from '../../utils/id.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
 import { assertCanViewEmployee } from '../../utils/approvalGuard.js';
 import sharp from 'sharp';
+import { verifiedFileType } from '../../utils/fileSignature.js';
 
 const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS', 'ALREADY_ACTIVE', 'EMPLOYEE_TERMINATED']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND', 'EMPLOYEE_NOT_FOUND']);
@@ -192,6 +193,9 @@ export async function uploadDocument(request, reply) {
 
     const { documentType = 'OTHER' } = request.query;
     const rawBuffer = await data.toBuffer();
+    if (!verifiedFileType(data.filename, rawBuffer)) {
+      return reply.code(422).send(errorResponse('INVALID_FILE_TYPE', 'File must be a real PDF, image (JPG, PNG, GIF, WebP), Word or Excel document', request.requestId));
+    }
     const fileId = generateId();
 
     const isImage = data.mimetype?.startsWith('image/');

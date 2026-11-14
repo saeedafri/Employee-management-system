@@ -234,6 +234,7 @@ export default async function holidaysRoutes(fastify) {
       security: [{ Bearer: [] }],
       querystring: {
         type: 'object',
+        required: ['year'], // without it the selection query reached Prisma and 500'd
         properties: { employeeId: { type: 'string' }, year: { type: 'integer' } },
       },
       response: { 200: { type: 'object', additionalProperties: true } },
@@ -260,7 +261,7 @@ export default async function holidaysRoutes(fastify) {
       description: 'Deselect a restricted holiday (422 if past)',
       security: [{ Bearer: [] }],
       params: { type: 'object', required: ['holidayId'], properties: { holidayId: { type: 'string' } } },
-      querystring: { type: 'object', properties: { year: { type: 'integer' } } },
+      querystring: { type: 'object', required: ['year'], properties: { year: { type: 'integer' } } },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
   }, removeOptionalSelection);

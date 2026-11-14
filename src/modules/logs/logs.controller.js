@@ -3,11 +3,11 @@ import * as logsService from './logs.service.js';
 
 export async function listLogs(request, reply) {
   try {
-    const { tenantId } = request.tenant;
+    const tenantId = request.tenant.id; // request.tenant has `id`; destructuring `tenantId` gave undefined = every tenant
 
     const { level, module, actorUserId, from, to, limit, offset } = request.query;
 
-    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const limitNum = Math.min(limit ? parseInt(limit, 10) : 50, 200); // uncapped, ?limit=1e6 read the whole table
     const offsetNum = offset ? parseInt(offset, 10) : 0;
 
     const result = await logsService.getLogs(tenantId, {
@@ -40,7 +40,7 @@ export async function listLogs(request, reply) {
 
 export async function getLog(request, reply) {
   try {
-    const { tenantId } = request.tenant;
+    const tenantId = request.tenant.id; // request.tenant has `id`; destructuring `tenantId` gave undefined = every tenant
 
     const { id } = request.params;
 
@@ -66,7 +66,7 @@ export async function getLog(request, reply) {
 
 export async function exportLogs(request, reply) {
   try {
-    const { tenantId } = request.tenant;
+    const tenantId = request.tenant.id; // request.tenant has `id`; destructuring `tenantId` gave undefined = every tenant
 
     const { level, module, startDate, endDate, format } = request.query;
 
@@ -96,7 +96,7 @@ export async function exportLogs(request, reply) {
 
 export async function streamLogs(request, reply) {
   try {
-    const { tenantId } = request.tenant;
+    const tenantId = request.tenant.id; // request.tenant has `id`; destructuring `tenantId` gave undefined = every tenant
 
     const { level, module, startDate, endDate } = request.query;
 

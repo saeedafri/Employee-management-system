@@ -106,3 +106,23 @@ export async function exportPerformance(request, reply) {
   const { reviews } = await service.getReviews(tenantId, { ...request.query, limit: EXPORT_LIMIT });
   return sendCsv(reply, 'performance-reviews.csv', reviewsCsv(reviews));
 }
+
+export async function createCycle(request, reply) {
+  try {
+    const cycle = await service.createCycle(request.tenant.id, request.body);
+    return reply.code(201).send(successResponse(cycle));
+  } catch (err) {
+    request.log.error(err);
+    return reply.code(err.statusCode || 500).send(errorResponse(err.code || 'INTERNAL_ERROR', err.message, {}, request.id));
+  }
+}
+
+export async function updateCycle(request, reply) {
+  try {
+    const cycle = await service.updateCycleStatus(request.tenant.id, request.params.id, request.body.status);
+    return reply.send(successResponse(cycle));
+  } catch (err) {
+    request.log.error(err);
+    return reply.code(err.statusCode || 500).send(errorResponse(err.code || 'INTERNAL_ERROR', err.message, {}, request.id));
+  }
+}

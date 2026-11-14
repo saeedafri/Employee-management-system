@@ -5,31 +5,14 @@ import { startPayrollWorker } from './lib/payrollQueue.js';
 import { syncPermissionCatalogue } from './modules/auth/permissionSync.js';
 import { initSseFanout } from './utils/sseClients.js';
 import { isLocalUrl, EMAIL_LINK_SETTINGS } from './utils/publicUrl.js';
-import { installProcessErrorHandlers, recordProcessError } from './utils/processMonitor.js';
-import { prisma } from './plugins/prisma.js';
+import { installProcessErrorHandlers } from './utils/processMonitor.js';
 
 const logger = pino();
 
-installProcessErrorHandlers(async (entry) => {
-  try {
-    // Best-effort persist crash-class events (no tenant — use first active tenant if any).
-    const tenant = await prisma.tenant.findFirst({ select: { id: true } });
-    if (!tenant) return;
-    await prisma.logEntry.create({
-      data: {
-        tenantId: tenant.id,
-        level: entry.kind === 'warning' ? 'WARN' : 'ERROR',
-        levelLabel: entry.kind === 'warning' ? 'Warning' : 'Error',
-        levelColor: entry.kind === 'warning' ? 'yellow' : 'red',
-        module: 'process',
-        message: `[${entry.kind}] ${entry.message}`,
-        metadataJson: { stack: entry.stack, at: entry.at },
-      },
-    });
-  } catch (err) {
-    recordProcessError('persist_failed', err);
-  }
-});
+// Process-level crashes belong to no tenant: they stay in the in-memory ring buffer
+// (operator-only via /ops/process). They used to be written under whichever tenant
+// findFirst() returned, so one customer's stack traces showed in another's /logs.
+installProcessErrorHandlers();
 
 async function start() {
   try {

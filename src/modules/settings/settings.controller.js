@@ -229,6 +229,7 @@ export const deleteLeaveType = wrap(async (req, rep) => { const { deleteLeaveTyp
 export const createRole = wrap(async (req, rep) => { rep.code(201); return settingsService.createRole(req.tenant.id, req.body, req.user); });
 export const deleteRole = wrap(async (req) => settingsService.deleteRole(req.tenant.id, req.params.key));
 export const assignUsersToRole = wrap(async (req) => settingsService.assignUsersToRole(req.tenant.id, req.params.key, req.body.userIds, req.user));
+export const removeUserFromRole = wrap(async (req) => settingsService.removeUserFromRole(req.tenant.id, req.params.key, req.params.userId, req.user));
 
 export const getEmailIntegration = wrap(async (req) => integrationsService.getEmailIntegration(req.tenant.id));
 export const updateEmailIntegration = wrap(async (req) => integrationsService.updateEmailIntegration(req.tenant.id, req.body));

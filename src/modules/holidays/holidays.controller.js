@@ -7,6 +7,9 @@ import { hasPermission } from '../auth/auth.policy.js';
 import { createJob, getJob, markCommitted } from '../../utils/importJobStore.js';
 import { prisma } from '../../plugins/prisma.js';
 
+// Another tenant's holiday id is indistinguishable from a missing one: 404, not 400.
+const statusOf = (result, ok) => (!result.error ? ok : result.error.code === 'NOT_FOUND' ? 404 : 400);
+
 export async function getUpcomingHolidays(request, reply) {
   const tenantId = request.tenant.id;
   try {
@@ -24,7 +27,7 @@ export async function listHolidays(request, reply) {
   try {
     const query = await validator.listQuerySchema.parseAsync(request.query);
     const result = await service.listHolidays(tenantId, query);
-    reply.code(result.error ? 400 : 200).send(result);
+    reply.code(statusOf(result, 200)).send(result);
   } catch (error) {
     if (error.name === 'ZodError') {
       const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
@@ -44,7 +47,7 @@ export async function createHoliday(request, reply) {
   try {
     const data = await validator.createHolidaySchema.parseAsync(request.body);
     const result = await service.createHoliday(tenantId, data, user.id);
-    reply.code(result.error ? 400 : 201).send(result);
+    reply.code(statusOf(result, 201)).send(result);
   } catch (error) {
     if (error.name === 'ZodError') {
       const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
@@ -65,7 +68,7 @@ export async function updateHoliday(request, reply) {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
     const data = await validator.updateHolidaySchema.parseAsync(request.body);
     const result = await service.updateHoliday(id, tenantId, data);
-    reply.code(result.error ? 400 : 200).send(result);
+    reply.code(statusOf(result, 200)).send(result);
   } catch (error) {
     if (error.name === 'ZodError') {
       const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
@@ -85,7 +88,7 @@ export async function deleteHoliday(request, reply) {
   try {
     const { id } = await validator.idParamSchema.parseAsync(request.params);
     const result = await service.deleteHoliday(id, tenantId);
-    reply.code(result.error ? 400 : 200).send(result);
+    reply.code(statusOf(result, 200)).send(result);
   } catch (error) {
     if (error.name === 'ZodError') {
       const details = error.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));

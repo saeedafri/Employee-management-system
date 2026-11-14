@@ -1,5 +1,6 @@
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
+import fp from 'fastify-plugin';
 import { config } from '../config/index.js';
 
 const sec = [{ Bearer: [], TenantKey: [] }];
@@ -23,8 +24,12 @@ function op(tag, summary, security = true, extra = {}) {
   return { tags: [tag], summary, security: security ? sec : undefined, responses: { 200: r200, 401: r401, 403: r403 }, ...extra };
 }
 
-export async function swaggerPlugin(fastify) {
-  await fastify.register(fastifySwagger, {
+// fp() + registered before the routes: @fastify/swagger collects routes through an onRoute
+// hook, so registered last (as it used to be) it saw none and /docs showed only the
+// hand-written `paths` below -- 128 routes were missing. Hand-written entries still win;
+// every other route is documented from its own route schema.
+export const swaggerPlugin = fp(async (fastify) => {
+  const swaggerOptions = {
     mode: 'dynamic',
     swagger: {
       info: {
@@ -285,11 +290,11 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           patch: op('Holidays', 'Upsert a country holiday policy (HR_ADMIN, SUPER_ADMIN). §2.4 — effective-dated/versioned: pass effectiveFrom to create a new version (closes the prior open one); omit to edit the current version in place.', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['countryCode'], properties: { countryCode: { type: 'string' }, restrictedLimit: { type: 'integer' }, observedRule: { type: 'string', enum: ['NONE', 'NEXT_WORKING_DAY', 'NEAREST_WORKING_DAY'] }, effectiveFrom: { type: 'string', format: 'date' }, version: { type: 'string' } } } }] }),
         },
         '/holidays/optional-selections': {
-          get:  op('Holidays', 'Restricted-holiday ids selected by an employee for a year', true, { parameters: [queryParam('employeeId', 'string', 'Defaults to caller (privileged only)'), queryParam('year', 'integer', 'Calendar year')] }),
+          get:  op('Holidays', 'Restricted-holiday ids selected by an employee for a year', true, { parameters: [queryParam('employeeId', 'string', 'Defaults to caller (privileged only)'), { ...queryParam('year', 'integer', 'Calendar year — required (422 VALIDATION_ERROR when missing)'), required: true }], responses: { 200: r200, 422: r422 } }),
           post: op('Holidays', 'Select a restricted holiday — 404 if missing, 422 NOT_OPTIONAL/WRONG_COUNTRY/PAST_HOLIDAY/LIMIT_REACHED', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['holidayId', 'year'], properties: { holidayId: { type: 'string' }, year: { type: 'integer' } } } }], responses: { 200: r200, 404: r404, 422: r422 } }),
         },
         '/holidays/optional-selections/{holidayId}': {
-          delete: op('Holidays', 'Deselect a restricted holiday — 422 PAST_HOLIDAY', true, { parameters: [pathParam('holidayId', 'Holiday id'), queryParam('year', 'integer', 'Calendar year')], responses: { 200: r200, 422: r422 } }),
+          delete: op('Holidays', 'Deselect a restricted holiday — 422 PAST_HOLIDAY', true, { parameters: [pathParam('holidayId', 'Holiday id'), { ...queryParam('year', 'integer', 'Calendar year — required'), required: true }], responses: { 200: r200, 422: r422 } }),
         },
 
         // ── TIMESHEET WORKFLOW EXTRAS (Phase 5.4/5.5) ─────────────────────────
@@ -508,10 +513,10 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           get: op('Dashboard', 'Pending approvals for manager'),
         },
         '/manager/leave-requests/{id}/decision': {
-          patch: op('Dashboard', 'Approve/reject leave request (manager)', true, { parameters: idParam }),
+          patch: op('Dashboard', 'Approve/reject leave request (manager). Same flow as PATCH /leave/requests/{id}/approve|reject (balances, team scope, audit); deny needs comment >= 10 chars.', true, { parameters: [...idParam, { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['decision'], properties: { decision: { type: 'string', enum: ['approve', 'deny'] }, comment: { type: 'string' } } } }], responses: { 200: r200, 403: r403, 404: r404, 409: r409, 422: r422 } }),
         },
         '/manager/regularization-requests/{id}/decision': {
-          patch: op('Dashboard', 'Approve/deny regularization request (manager)', true, { parameters: idParam }),
+          patch: op('Dashboard', 'Approve/deny regularization request (manager). Same flow as PATCH /attendance/regularization/{id}/approve|deny; deny needs a comment.', true, { parameters: [...idParam, { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['decision'], properties: { decision: { type: 'string', enum: ['approve', 'deny'] }, comment: { type: 'string' } } } }], responses: { 200: r200, 403: r403, 404: r404, 409: r409, 422: r422 } }),
         },
 
         // ── EXPORT ───────────────────────────────────────────────────────────
@@ -1020,7 +1025,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
         '/employees/{id}/documents': {
           get:  op('Employees', 'List documents for an employee (self or HR/SA). Each item includes `downloadUrl` (GET .../{documentId}/download) — the FE MUST use it. `fileUrl` is empty for new uploads (or a dead pre-migration link) and is NOT usable.', true, { parameters: idParam, responses: { 200: r200, 401: r401, 403: r403 } }),
-          post: op('Employees', 'Upload a document (multipart/form-data). Requires Cloudinary env vars. Stored privately (Cloudinary "authenticated") — the persisted `fileUrl` is empty; download only via the signed download endpoint. Self or HR/SA.', true, { parameters: idParam, responses: { 201: r201, 401: r401, 403: r403, 503: { description: 'STORAGE_NOT_CONFIGURED' } } }),
+          post: op('Employees', 'Upload a document (multipart/form-data). Requires Cloudinary env vars. Stored privately (Cloudinary "authenticated") — the persisted `fileUrl` is empty; download only via the signed download endpoint. Self or HR/SA. Only real PDF, JPG/PNG/GIF/WebP, DOC/DOCX, XLS/XLSX files (extension AND file signature checked).', true, { parameters: idParam, responses: { 201: r201, 401: r401, 403: r403, 422: { description: 'INVALID_FILE_TYPE — extension not allowed or content does not match it' }, 503: { description: 'STORAGE_NOT_CONFIGURED' } } }),
         },
         '/employees/{id}/documents/presign': {
           post: op('Employees', 'Get presign info for document upload — returns uploadUrl + documentId. Self or HR/SA.', true, { parameters: idParam, responses: { 200: r200, 401: r401, 403: r403, 503: { description: 'STORAGE_NOT_CONFIGURED' } } }),
@@ -1138,7 +1143,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Leave Engine', 'Auto-assign country policy + post opening grants/accruals, idempotent (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', schema: { type: 'object', properties: { employeeIds: { type: 'array', items: { type: 'string' } }, country: { type: 'string' } } } }] }),
         },
         '/leave/ledger': {
-          get: op('Leave Engine', 'Append-only ledger entries + folded balance for an employee/leave-type', true, { parameters: [queryParam('employeeId', 'string', 'Defaults to caller; non-privileged forced to self'), queryParam('leaveTypeId', 'string', 'Leave-type CODE (EL/SL/CL/CO/PTO/AL)')] }),
+          get: op('Leave Engine', 'Append-only ledger entries + folded balance for an employee/leave-type', true, { parameters: [queryParam('employeeId', 'string', 'Defaults to caller; non-privileged forced to self; MANAGER limited to self + direct reports (403)'), queryParam('leaveTypeId', 'string', 'Leave-type CODE (EL/SL/CL/CO/PTO/AL)')], responses: { 200: r200, 401: r401, 403: r403, 404: { description: 'NOT_FOUND — unknown or other-tenant employeeId' } } }),
         },
         '/leave/ledger/adjust': {
           post: op('Leave Engine', 'Post a manual ADJUSTMENT ledger entry (HR_ADMIN, SUPER_ADMIN)', true, { parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['employeeId', 'leaveTypeId', 'delta', 'reason'], properties: { employeeId: { type: 'string' }, leaveTypeId: { type: 'string' }, delta: { type: 'number' }, reason: { type: 'string' } } } }] }),
@@ -1954,7 +1959,15 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
         },
       },
     },
-  });
+  };
+  const curated = swaggerOptions.swagger.paths;
+  swaggerOptions.transform = ({ schema, url, route }) => {
+    const path = url.slice(config.apiPrefix.length).replace(/:([^/]+)/g, '{$1}');
+    const methods = [].concat(route.method).map((m) => m.toLowerCase());
+    const handWritten = url.startsWith(config.apiPrefix) && methods.some((m) => curated[path]?.[m]);
+    return { schema: handWritten ? { ...schema, hide: true } : schema, url };
+  };
+  await fastify.register(fastifySwagger, swaggerOptions);
 
   await fastify.register(fastifySwaggerUI, {
     routePrefix: '/docs',
@@ -1963,4 +1976,4 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
       deepLinking: true,
     },
   });
-}
+});

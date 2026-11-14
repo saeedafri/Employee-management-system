@@ -91,6 +91,7 @@ export async function createDepartment(tenantId, data) {
       name: data.name,
       departmentCode: data.departmentCode,
       parentId: data.parentId || null,
+      depth: data.depth ?? 0,
       headEmployeeId: data.headEmployeeId || null,
     },
     include: {
@@ -111,6 +112,13 @@ export async function getEmployeeForTenant(employeeId, tenantId) {
       managedDepartments: { where: { deletedAt: null }, select: { id: true } },
     },
   });
+}
+
+// depth = number of ancestors. Re-parenting moves the whole subtree, so children shift too.
+export async function setSubtreeDepth(id, tenantId, depth) {
+  await prisma.department.update({ where: { id }, data: { depth } });
+  const children = await prisma.department.findMany({ where: { tenantId, parentId: id }, select: { id: true } });
+  for (const child of children) await setSubtreeDepth(child.id, tenantId, depth + 1);
 }
 
 export async function updateDepartment(id, tenantId, data) {

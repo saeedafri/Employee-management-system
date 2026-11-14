@@ -29,19 +29,68 @@ function scopeError() {
   return err;
 }
 
+const shapeCycle = (cycle) => ({
+  id: cycle.id,
+  name: cycle.name,
+  selfReviewDue: cycle.selfReviewDue.toISOString().slice(0, 10),
+  managerReviewDue: cycle.managerReviewDue.toISOString().slice(0, 10),
+  calibrationDate: cycle.calibrationDate.toISOString().slice(0, 10),
+  progressPct: cycle.progressPct,
+  status: cycle.status,
+  startedAt: cycle.startedAt.toISOString(),
+});
+
 export async function getActiveCycle(tenantId) {
   const cycle = await repo.getActiveCycle(tenantId);
-  if (!cycle) return null;
-  return {
-    id: cycle.id,
-    name: cycle.name,
-    selfReviewDue: cycle.selfReviewDue.toISOString().slice(0, 10),
-    managerReviewDue: cycle.managerReviewDue.toISOString().slice(0, 10),
-    calibrationDate: cycle.calibrationDate.toISOString().slice(0, 10),
-    progressPct: cycle.progressPct,
-    status: cycle.status,
-    startedAt: cycle.startedAt.toISOString(),
-  };
+  return cycle ? shapeCycle(cycle) : null;
+}
+
+const CYCLE_STATUSES = ['Upcoming', 'In progress', 'Calibrating', 'Closed'];
+
+function cycleError(code, statusCode, message) {
+  const err = new Error(message);
+  err.code = code;
+  err.statusCode = statusCode;
+  return err;
+}
+
+// New tenants had no way to start a cycle, so reviews never existed. Starting one opens a
+// "Not started" review for every active employee, reviewed by their manager.
+export async function createCycle(tenantId, { name, selfReviewDue, managerReviewDue, calibrationDate }) {
+  if (!(selfReviewDue <= managerReviewDue && managerReviewDue <= calibrationDate)) {
+    throw cycleError('VALIDATION_ERROR', 422, 'Dates must run selfReviewDue <= managerReviewDue <= calibrationDate');
+  }
+  if (await repo.getActiveCycle(tenantId)) {
+    throw cycleError('ACTIVE_CYCLE_EXISTS', 409, 'Close the current cycle before starting a new one');
+  }
+  const employees = await prisma.employee.findMany({
+    where: { tenantId, deletedAt: null, employmentStatus: 'ACTIVE' },
+    select: { id: true, managerId: true },
+  });
+  const cycle = await prisma.$transaction(async (tx) => {
+    const created = await tx.performanceCycle.create({
+      data: {
+        tenantId, name, status: 'In progress',
+        selfReviewDue: new Date(selfReviewDue),
+        managerReviewDue: new Date(managerReviewDue),
+        calibrationDate: new Date(calibrationDate),
+      },
+    });
+    await tx.performanceReview.createMany({
+      data: employees.map((e) => ({ tenantId, cycleId: created.id, employeeId: e.id, reviewerId: e.managerId })),
+    });
+    return created;
+  });
+  return { ...shapeCycle(cycle), reviewsCreated: employees.length };
+}
+
+export async function updateCycleStatus(tenantId, id, status) {
+  if (!CYCLE_STATUSES.includes(status)) {
+    throw cycleError('VALIDATION_ERROR', 422, `status must be one of: ${CYCLE_STATUSES.join(', ')}`);
+  }
+  const { count } = await prisma.performanceCycle.updateMany({ where: { id, tenantId }, data: { status } });
+  if (!count) throw cycleError('NOT_FOUND', 404, 'Performance cycle not found');
+  return shapeCycle(await prisma.performanceCycle.findFirst({ where: { id, tenantId } }));
 }
 
 export async function getSummary(tenantId) {

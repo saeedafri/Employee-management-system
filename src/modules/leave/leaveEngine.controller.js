@@ -170,6 +170,11 @@ export async function autoAssign(request, reply) {
 export async function getLedger(request, reply) {
   try {
     const employeeId = resolveEmployeeId(request);
+    // MANAGER is in PRIVILEGED, so it could read anyone's ledger; confine it to self + reports.
+    const visible = await visibleEmployeeIds(request);
+    if (visible && employeeId && !visible.includes(employeeId)) {
+      return reply.code(403).send(errorResponse('FORBIDDEN', 'This employee is not in your team', {}, request.id));
+    }
     const leaveTypeId = request.query?.leaveTypeId ?? 'EL';
     const result = await svc.getLedger(prisma, request.tenant.id, employeeId, leaveTypeId, request.query?.country);
     return reply.send(successResponse(result));

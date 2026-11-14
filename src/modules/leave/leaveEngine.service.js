@@ -291,6 +291,12 @@ export async function autoAssign(prisma, tenantId, employee, country) {
 // ── Ledger ───────────────────────────────────────────────────────────────────
 export async function getLedger(prisma, tenantId, employeeId, leaveTypeCode, country) {
   const employee = await repo.getEmployee(prisma, tenantId, employeeId);
+  // An unknown (or another tenant's) id used to come back as an empty ledger with zero
+  // balances, echoing the id. A caller with no employee record (employeeId null) still
+  // gets the empty ledger.
+  if (!employee && employeeId) {
+    throw Object.assign(new Error('Employee not found'), { code: 'NOT_FOUND', statusCode: 404 });
+  }
   const ctx = buildEmployeeContext(employee ?? { id: employeeId }, country);
   const all = await repo.listLedger(prisma, tenantId, { employeeId });
   const entries = all

@@ -368,3 +368,14 @@ export async function assignUsersToRole(tenantId, key, userIds, actor) {
   await prisma.userRole.createMany({ data: userIds.map(uid => ({ userId: uid, roleId: role.id })), skipDuplicates: true });
   return { assigned: userIds };
 }
+
+// Revoking is held to the same rule as granting: you can only take away a role whose
+// permissions you hold yourself (HR cannot strip a super admin's role).
+export async function removeUserFromRole(tenantId, key, userId, actor) {
+  const role = await prisma.role.findFirst({ where: { key, tenantId }, include: { permissions: { include: { permission: { select: { key: true } } } } } });
+  if (!role) throw Object.assign(new Error('Role not found'), { code: 'NOT_FOUND', statusCode: 404 });
+  assertCanGrant(actor, role.permissions.map((rp) => rp.permission.key));
+  const { count } = await prisma.userRole.deleteMany({ where: { roleId: role.id, userId, user: { tenantId } } });
+  if (!count) throw Object.assign(new Error('This user does not hold the role'), { code: 'NOT_FOUND', statusCode: 404 });
+  return { removed: userId, role: key };
+}

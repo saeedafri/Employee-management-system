@@ -5,6 +5,7 @@ import { resolveAttendanceCalendar } from './attendanceCalendar.service.js';
 import { resolveEmployeeTimezone } from '../holidays/holidayResolver.service.js';
 import { uploadToCloudinary, isCloudinaryConfigured } from '../../utils/cloudinary.js';
 import { prisma } from '../../plugins/prisma.js';
+import { verifiedFileType } from '../../utils/fileSignature.js';
 
 export async function checkIn(request, reply) {
   try {
@@ -437,6 +438,7 @@ export async function uploadRegularizationDocument(request, reply) {
     for await (const chunk of data.file) chunks.push(chunk);
     const buffer = Buffer.concat(chunks);
     if (buffer.length > 5 * 1024 * 1024) return reply.code(422).send(errorResponse('FILE_TOO_LARGE', 'File exceeds 5 MB limit', {}, request.id));
+    if (!verifiedFileType(data.filename, buffer, ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'])) return reply.code(422).send(errorResponse('INVALID_FILE_TYPE', 'File must be PDF, JPG, PNG, DOC or DOCX', {}, request.id));
 
     let uploaded;
     try {

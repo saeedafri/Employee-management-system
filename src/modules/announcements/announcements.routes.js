@@ -34,6 +34,24 @@ export default async function announcementsRoutes(fastify) {
     onRequest: [authenticate],
   }, controller.getChannels);
 
+  fastify.post('/announcements/channels', {
+    schema: {
+      tags: ['Announcements'],
+      summary: 'Create an announcement channel',
+      security: [{ Bearer: [] }],
+      body: {
+        type: 'object',
+        required: ['name', 'category'],
+        properties: {
+          name: { type: 'string', minLength: 1, maxLength: 80 },
+          category: { type: 'string', enum: ['Company', 'People', 'Product', 'IT', 'Office'] },
+        },
+      },
+      response: { 201: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate, canWriteAnnouncements],
+  }, controller.createChannel);
+
   fastify.get('/announcements/events', {
     schema: {
       tags: ['Announcements'],

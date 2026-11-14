@@ -53,15 +53,38 @@ export async function getAnnouncements(tenantId, query) {
   };
 }
 
+const shapeChannel = (ch) => ({
+  id: ch.id,
+  name: ch.name,
+  postCount: ch.postCount,
+  category: ch.category,
+  color: categoryColor(ch.category),
+});
+
 export async function getChannels(tenantId) {
   const channels = await repo.getChannels(tenantId);
-  return channels.map(ch => ({
-    id: ch.id,
-    name: ch.name,
-    postCount: ch.postCount,
-    category: ch.category,
-    color: categoryColor(ch.category),
-  }));
+  return channels.map(shapeChannel);
+}
+
+export const CHANNEL_CATEGORIES = ['Company', 'People', 'Product', 'IT', 'Office'];
+
+export async function createChannel(tenantId, { name, category }) {
+  const trimmed = String(name ?? '').trim();
+  if (!trimmed || !CHANNEL_CATEGORIES.includes(category)) {
+    const err = new Error(`name is required and category must be one of: ${CHANNEL_CATEGORIES.join(', ')}`);
+    err.code = 'VALIDATION_ERROR';
+    err.statusCode = 422;
+    throw err;
+  }
+  try {
+    return shapeChannel(await repo.createChannel(tenantId, { name: trimmed, category }));
+  } catch (e) {
+    if (e.code !== 'P2002') throw e;
+    const err = new Error('A channel with this name already exists');
+    err.code = 'DUPLICATE_CHANNEL';
+    err.statusCode = 409;
+    throw err;
+  }
 }
 
 export async function getEvents(tenantId) {
@@ -117,13 +140,7 @@ export async function createAnnouncement(tenantId, userRole, data) {
   }
 
   const channels = await repo.getChannels(tenantId);
-  const resolvedChannelId = channelId || (channels[0]?.id) || null;
-  if (!resolvedChannelId) {
-    const err = new Error('No channels available. Create a channel first.');
-    err.code = 'NO_CHANNEL';
-    err.statusCode = 422;
-    throw err;
-  }
+  const resolvedChannelId = channelId || channels[0]?.id || (await repo.ensureDefaultChannel(tenantId)).id;
 
   const ann = await repo.createAnnouncement(tenantId, {
     channelId: resolvedChannelId,

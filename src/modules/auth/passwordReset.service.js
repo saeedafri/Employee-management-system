@@ -114,6 +114,9 @@ export async function validateResetToken(tenantId, rawToken) {
       statusCode: 400,
     };
   }
+  // Reset links carry only the token, so the public route usually has no tenant; audit
+  // rows require one. Without this every validate/complete 500'd after the password changed.
+  tenantId ??= token.tenantId;
 
   if (token.usedAt) {
     await authRepository.createAuditLog(prisma, {
@@ -193,6 +196,9 @@ export async function completePasswordReset(tenantId, rawToken, newPassword, ip,
       statusCode: 400,
     };
   }
+  // Reset links carry only the token, so the public route usually has no tenant; audit
+  // rows require one. Without this every validate/complete 500'd after the password changed.
+  tenantId ??= token.tenantId;
 
   if (token.usedAt) {
     await authRepository.createAuditLog(prisma, {

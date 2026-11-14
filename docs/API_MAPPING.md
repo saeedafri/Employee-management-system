@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last updated: 2026-11-14** (security & correctness fixes — see the change table below). Previously verified 2026-07-19 (Hostinger hardening `68d32f4` — exports/PDF, permissions SoT, SSE auth, ops logs, `noEmployeeRecord` empty reads)
+> **Last updated: 2026-11-14** (two change tables below: medium-issue round, then security & correctness fixes). Previously verified 2026-07-19 (Hostinger hardening `68d32f4` — exports/PDF, permissions SoT, SSE auth, ops logs, `noEmployeeRecord` empty reads)
 > **Production API (Hostinger):** `https://ems-api.saqibsaeed.cloud/api/v1`
 > Legacy Render (do not use for this product): `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:4000/api/v1` (or compose port)
@@ -11,6 +11,28 @@
 > **MSW (Mock Service Worker):** The deployed Vercel frontend has `NEXT_PUBLIC_USE_MOCKS` controlled by the Vercel env var. Default in code is `false`. If set to `true`, Phase 3 API calls are intercepted by MSW in the browser before reaching the backend BFF proxy. Set it to `false` in Vercel dashboard → Settings → Environment Variables to force real backend calls.
 
 ---
+
+## 2026-11-14 (round 2) — medium issues, email, auto-deploy
+
+| Area | Endpoint | Change |
+|---|---|---|
+| Auth | `GET /auth/reset-password/validate`, `POST /auth/reset-password` | Fixed `500` on every emailed reset link (audit row written without a tenant; the password still changed). Now `200`; reused token → `400 RESET_TOKEN_ALREADY_USED`. |
+| Logs | `GET /logs` (+ `/logs/:id`, `/logs/export`, `/logs/stream`) | **Tenant isolation fix:** all four read with no tenant filter (any HR/SA could read every tenant's logs); now scoped to the caller's tenant. `limit` capped at 200. Every `5xx` response is now written to the tenant's log (`level: ERROR`, `module` = first path segment, `requestId`, `metadata: {method, route, statusCode, name, code, stack}`). Process-level crashes are no longer filed under an arbitrary tenant. |
+| Ops | `GET /ops/logs`, `GET /ops/process` | A tenant SUPER_ADMIN now sees only their own tenant's log rows and no process crash stacks; the `OPS_LOGS_TOKEN` still sees everything. |
+| Announcements | `POST /announcements/channels` | **New.** Body `{ name, category: Company\|People\|Product\|IT\|Office }` → `201 { id, name, postCount, category, color }`; duplicate name → `409 DUPLICATE_CHANNEL`. `announcements:write`. |
+| Announcements | `POST /announcements` | A tenant with no channel no longer gets `422 NO_CHANNEL`: the post goes to an auto-created `General` (Company) channel. |
+| Performance | `POST /performance/cycles` | **New.** Body `{ name, selfReviewDue, managerReviewDue, calibrationDate }` (YYYY-MM-DD, in that order) → `201` cycle + `reviewsCreated`; opens a `Not started` review for every active employee (reviewer = their manager). An open cycle exists → `409 ACTIVE_CYCLE_EXISTS`. `performance:manage`. |
+| Performance | `PATCH /performance/cycles/:id` | **New.** Body `{ status: Upcoming\|In progress\|Calibrating\|Closed }`; `Closed` allows a new cycle. `performance:manage`. |
+| Settings | `DELETE /settings/roles/:key/users/:userId` | **New.** Removes a user from a role. Same rule as assigning: caller must hold every permission the role grants (`403`); user without the role → `404`. |
+| Settings | `GET/PATCH /settings/roles-permissions` | Authorization runs before body validation: an unauthorised caller gets `403`, not `422`. |
+| Manager | `PATCH /manager/leave-requests/:id/decision`, `PATCH /manager/regularization-requests/:id/decision` | Now run the same flow as `PATCH /leave/requests/:id/approve\|reject` and `/attendance/regularization/:id/approve\|deny` (balances, team scope, audit, notifications). `deny` on leave needs `comment` ≥ 10 chars; on regularization needs `comment`. Responses/errors are the canonical endpoints' (were `400 {}` before). |
+| Leave | `GET /leave/ledger?employeeId=` | Unknown / other-tenant id → `404 NOT_FOUND` (was an empty ledger echoing the id). MANAGER limited to self + direct reports → `403 FORBIDDEN`. |
+| Holidays | `GET /holidays/optional-selections`, `DELETE /holidays/optional-selections/:holidayId` | `year` is **required** → `422 VALIDATION_ERROR` when missing (was a `500`). |
+| Holidays | `PATCH/DELETE /holidays/:id` (+ GET/POST error paths) | Unknown or other-tenant holiday → `404 NOT_FOUND` (was `400`). |
+| Departments | `POST /departments`, `PATCH /departments/:id` | `depth` is now stored: parent depth + 1 (was always `0`); re-parenting updates the whole subtree. |
+| Documents | `POST /employees/:id/documents`, `POST /attendance/regularization/:id/document` | Extension must be allowed **and** the file's bytes must match it (PDF, JPG/PNG/GIF/WebP, DOC/DOCX, XLS/XLSX for documents; PDF/JPG/PNG/DOC/DOCX for regularization) → else `422 INVALID_FILE_TYPE`. HTML/scripts are refused. |
+| Employees | `GET /employees/:id?includeTerminated=true` | Unchanged — reminder: HR/SA must pass this to open an offboarded employee (plain GET is `404`). |
+| Swagger | `/docs` | Every route is now documented (430 operations; hand-written entries kept, the rest generated from route schemas). |
 
 ## 2026-11-14 — security & correctness fixes (E2E test round, Hostinger)
 

@@ -73,7 +73,7 @@ export async function createApp() {
     }
   });
 
-  // Register plugins (order matters - swagger goes last after routes)
+  // Register plugins (order matters - swagger registers just before the routes)
   await fastify.register(requestIdPlugin);
   await fastify.register(cookiePlugin);
   await fastify.register(prismaPlugin);
@@ -95,6 +95,9 @@ export async function createApp() {
   // registers; onRoute only fires for routes registered after the hook.
   resetPermissionManifest();
   fastify.addHook('onRoute', collectRouteGuards);
+
+  // Before the routes: swagger documents routes through its own onRoute hook.
+  await fastify.register(swaggerPlugin);
 
   // Register routes (MUST await all nested registrations)
   await fastify.register(
@@ -137,8 +140,6 @@ export async function createApp() {
   // Private ops pages (not under /api/v1, not in product nav)
   await fastify.register(opsRoutes);
 
-  // Register swagger AFTER all routes are defined
-  await fastify.register(swaggerPlugin);
 
   return fastify;
 }
