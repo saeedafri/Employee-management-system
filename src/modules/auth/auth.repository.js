@@ -171,6 +171,14 @@ export async function updateOtpChallenge(db, id, data) {
   });
 }
 
+// Public auth routes (reset link, OTP verify, invitation) carry no tenant, but audit rows
+// require one: writing tenantId null threw and turned a successful reset / OTP login into a
+// 500. Attribute the row to the actor's tenant; with no actor there is nothing to attribute.
 export async function createAuditLog(db, auditData) {
-  return db.auditLog.create({ data: auditData });
+  let { tenantId } = auditData;
+  if (!tenantId && auditData.actorUserId) {
+    tenantId = (await db.user.findUnique({ where: { id: auditData.actorUserId }, select: { tenantId: true } }))?.tenantId;
+  }
+  if (!tenantId) return null;
+  return db.auditLog.create({ data: { ...auditData, tenantId } });
 }

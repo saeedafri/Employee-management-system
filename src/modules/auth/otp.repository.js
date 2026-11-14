@@ -33,6 +33,4 @@ export async function invalidateExpiredChallenges(db, tenantId) {
   });
 }
 
-export async function createAuditLog(db, data) {
-  return db.auditLog.create({ data });
-}
+export { createAuditLog } from './auth.repository.js';
