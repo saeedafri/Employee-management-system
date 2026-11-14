@@ -135,55 +135,34 @@ export async function getLeavesReport(tenantId, filters) {
 }
 
 export async function getPayrollReport(tenantId, filters) {
-  const month = filters.month;
-  const year = filters.year;
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
-
-  const records = await reportsRepository.getAttendanceRecords(tenantId, {
-    fromDate: startDate,
-    toDate: endDate,
-    departmentId: filters.department_id,
-  });
+  const month = Number(filters.month);
+  const year = Number(filters.year);
+  // Real payslips of the period's non-cancelled runs. This used to count employees with
+  // attendance and multiply by a hard-coded 50,000.
+  const payslips = await reportsRepository.getPayslipsForPeriod(tenantId, `${year}-${String(month).padStart(2, '0')}`, filters.department_id);
 
   const byDepartment = {};
-  let totalEmployees = 0;
-  const uniqueEmployees = new Set();
-
-  records.forEach((record) => {
-    const deptId = record.employee.departmentId || 'Unassigned';
-    const deptName = record.employee.department?.name || 'Unassigned';
-    const empId = record.employee.id;
-
-    uniqueEmployees.add(empId);
-
-    if (!byDepartment[deptId]) {
-      byDepartment[deptId] = {
-        department_id: deptId,
-        department_name: deptName,
-        employee_count: 0,
-        total_payroll: 0,
-      };
-    }
-    if (!byDepartment[deptId].employee_ids) {
-      byDepartment[deptId].employee_ids = new Set();
-    }
-    byDepartment[deptId].employee_ids.add(empId);
-  });
-
-  Object.values(byDepartment).forEach((dept) => {
-    dept.employee_count = dept.employee_ids.size;
-    dept.total_payroll = dept.employee_count * 50000;
-    delete dept.employee_ids;
-  });
-
-  totalEmployees = uniqueEmployees.size;
+  const employees = new Set();
+  let totalPayroll = 0;
+  let totalNet = 0;
+  for (const p of payslips) {
+    const gross = Number(p.grossEarnings);
+    const deptId = p.employee.departmentId || 'Unassigned';
+    const dept = byDepartment[deptId] ??= { department_id: deptId, department_name: p.employee.department?.name || 'Unassigned', employee_count: 0, total_payroll: 0, ids: new Set() };
+    dept.ids.add(p.employeeId);
+    dept.total_payroll += gross;
+    employees.add(p.employeeId);
+    totalPayroll += gross;
+    totalNet += Number(p.netPay);
+  }
+  for (const dept of Object.values(byDepartment)) { dept.employee_count = dept.ids.size; delete dept.ids; }
 
   return {
     month,
     year,
-    total_employees: totalEmployees,
-    total_payroll: totalEmployees * 50000,
+    total_employees: employees.size,
+    total_payroll: totalPayroll,
+    total_net_pay: totalNet,
     by_department: Object.values(byDepartment),
   };
 }

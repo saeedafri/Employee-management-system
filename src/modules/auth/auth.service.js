@@ -43,21 +43,30 @@ async function validateLogin(db, tenantId, email, password) {
     throw new AppError('Invalid credentials', 'INVALID_CREDENTIALS', 401);
   }
 
+  // An invited user has no password yet, so the activation hint is the intended answer.
+  if (user.status === 'INVITED') {
+    throw new AppError('Please activate your account using the invitation email.', 'ACCOUNT_NOT_ACTIVATED', 403);
+  }
+
+  // Password before account state: a wrong password must not reveal whether the
+  // account is locked or disabled (account-state enumeration).
+  const passwordMatches = Boolean(user.passwordHash) && await verifyPassword(password, user.passwordHash);
+  if (!passwordMatches) {
+    throw new AppError('Invalid credentials', 'INVALID_CREDENTIALS', 401);
+  }
+
+  // Offboarded or deactivated employees lose access even if a status sync was missed.
+  const emp = user.employee;
+  if (emp && (emp.deletedAt || ['TERMINATED', 'INACTIVE'].includes(emp.employmentStatus))) {
+    throw new AppError('Account is disabled', 'ACCOUNT_DISABLED', 401);
+  }
+
   if (user.status === 'LOCKED') {
     throw new AppError('Account is locked', 'ACCOUNT_LOCKED', 401);
   }
 
   if (user.status === 'DISABLED') {
     throw new AppError('Account is disabled', 'ACCOUNT_DISABLED', 401);
-  }
-
-  if (user.status === 'INVITED') {
-    throw new AppError('Please activate your account using the invitation email.', 'ACCOUNT_NOT_ACTIVATED', 403);
-  }
-
-  const passwordMatches = await verifyPassword(password, user.passwordHash);
-  if (!passwordMatches) {
-    throw new AppError('Invalid credentials', 'INVALID_CREDENTIALS', 401);
   }
 
   return user;

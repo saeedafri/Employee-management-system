@@ -247,6 +247,14 @@ describe('BE-10(a) job-based exports match the direct-export CSV conventions', (
   it('an empty result set produces an empty file, not a header-only lie', () => {
     assert.equal(buildJobCsv([]), '');
   });
+
+  it('every row shares one header (map index must not prefix keys)', () => {
+    const two = buildJobCsv([EMPLOYEES[0], { ...EMPLOYEES[0], id: 'cmqjpyds0002', firstName: 'Priya' }]);
+    const headers = firstLine(two).split(',');
+    assert.ok(!headers.some((h) => /^"\d+\./.test(h)), `row-index prefixed header: ${firstLine(two)}`);
+    assert.equal(dataLines(two).length, 2);
+    for (const line of dataLines(two)) assert.equal(line.split('","').length, headers.length);
+  });
 });
 
 describe('BE-10(a) download filename convention', () => {

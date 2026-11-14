@@ -50,8 +50,25 @@ export async function getComponents(prisma, tenantId, query) {
   return repo.getComponents(prisma, tenantId, active);
 }
 
+// Codes are stored upper-case. A basisCode sent in any other case never matched, so
+// PERCENTAGE components (HRA, PF) silently computed 0 on every payslip, and a mixed-case
+// duplicate code slipped past the existence check into a 500.
+function normalizeCodes(data) {
+  if (typeof data.code === 'string') data.code = data.code.trim().toUpperCase();
+  if (typeof data.basisCode === 'string') data.basisCode = data.basisCode.trim().toUpperCase();
+}
+
+// A PERCENTAGE basis must be CTC or a component that exists in this tenant.
+async function assertBasisExists(prisma, tenantId, basisCode) {
+  if (!basisCode || basisCode === 'CTC') return;
+  const found = await prisma.salaryComponent.findFirst({ where: { tenantId, code: basisCode }, select: { id: true } });
+  if (!found) throw AppError(`basisCode ${basisCode} is not CTC or a component of this organisation`, 'VALIDATION_ERROR');
+}
+
 export async function createComponent(prisma, tenantId, data) {
+  normalizeCodes(data);
   validateComponentData(data, true);
+  if (data.calculationType === 'PERCENTAGE') await assertBasisExists(prisma, tenantId, data.basisCode);
   if (data.calculationType === 'FORMULA') {
     const existing = await repo.getComponents(prisma, tenantId);
     const allComps = [...existing, { code: data.code, calculationType: data.calculationType, formula: data.formula, basisCode: data.basisCode }];
@@ -62,7 +79,9 @@ export async function createComponent(prisma, tenantId, data) {
 
 export async function updateComponent(prisma, id, tenantId, data) {
   if (data.code) throw AppError('Component code is immutable', 'CODE_IMMUTABLE');
+  normalizeCodes(data);
   if (data.calculationType) validateComponentData(data, false);
+  if (data.basisCode) await assertBasisExists(prisma, tenantId, data.basisCode);
   return repo.updateComponent(prisma, id, tenantId, data);
 }
 
@@ -219,14 +238,16 @@ export async function getEmployeePayslips(prisma, employeeId, tenantId, requesti
   }
   const page = parseInt(query.page) || 1;
   const limit = parseInt(query.limit) || 12;
-  return repo.getEmployeePayslips(prisma, employeeId, tenantId, { page, limit, year: query.year });
+  // On their own record an employee sees final payslips only; HR reviewing someone else sees all.
+  const finalOnly = requestingUser.employeeId === employeeId;
+  return repo.getEmployeePayslips(prisma, employeeId, tenantId, { page, limit, year: query.year, finalOnly });
 }
 
 export async function getEmployeePayslip(prisma, employeeId, payslipId, tenantId, requestingUser) {
   if (!canAccessEmployeeRecord(requestingUser, employeeId)) {
     throw AppError('Access denied', 'FORBIDDEN', 403);
   }
-  return repo.getEmployeePayslipById(prisma, employeeId, payslipId, tenantId);
+  return repo.getEmployeePayslipById(prisma, employeeId, payslipId, tenantId, { finalOnly: requestingUser.employeeId === employeeId });
 }
 
 // ── Payroll Runs ──────────────────────────────────────────────────────────────
@@ -250,6 +271,13 @@ export async function createPayrollRun(prisma, tenantId, userId, data) {
   const type = data.type || 'REGULAR';
   if (!VALID_RUN_TYPES.includes(type)) {
     throw AppError(`Invalid run type: ${type}`, 'INVALID_RUN_TYPE', 422);
+  }
+  // A REGULAR run pays every salaried employee of its pay groups (a second REGULAR run for
+  // the cycle is refused), so a per-employee list was silently ignored and paid everyone.
+  if (type === 'REGULAR' && data.employeeIds?.length && !data.includeAllActiveEmployees) {
+    const err = AppError('employeeIds does not apply to a REGULAR run (it pays every salaried employee in its pay groups). Use type OFF_CYCLE to pay selected employees, or payGroupIds to scope by pay group.', 'VALIDATION_ERROR', 422);
+    err.details = [{ field: 'employeeIds', message: 'Only valid for OFF_CYCLE runs' }];
+    throw err;
   }
   if (type === 'OFF_CYCLE' && (!data.employeeIds || !data.employeeIds.length)) {
     const err = AppError('employeeIds required for OFF_CYCLE run', 'VALIDATION_ERROR', 400);

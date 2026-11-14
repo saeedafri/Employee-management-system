@@ -104,6 +104,23 @@ export default async function leaveRoutes(fastify) {
     onRequest: [authenticate],
   }, (request, reply) => leaveController.previewLeaveRequest(request, reply));
 
+  // The frontend calls this as a GET with query params (leave.api.ts); only POST existed,
+  // so every preview 404'd. Same handler, same result.
+  fastify.get('/leave/requests/preview', {
+    schema: {
+      tags: ['Leave Management'],
+      description: 'Same as POST /leave/requests/preview, with startDate/endDate as query params.',
+      security: [{ Bearer: [] }],
+      querystring: {
+        type: 'object',
+        required: ['startDate', 'endDate'],
+        properties: { startDate: { type: 'string' }, endDate: { type: 'string' }, leaveTypeId: { type: 'string' } },
+      },
+      response: { 200: { type: 'object', additionalProperties: true } },
+    },
+    onRequest: [authenticate],
+  }, (request, reply) => leaveController.previewLeaveRequest(request, reply));
+
   fastify.get('/leave/requests', {
     schema: {
       tags: ['Leave Management'],

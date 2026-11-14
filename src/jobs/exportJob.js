@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync, readFileSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync, rmSync } from 'fs';
 import { join } from 'path';
 import ExcelJS from 'exceljs';
 import PDFDocument from 'pdfkit';
@@ -41,6 +41,7 @@ async function persistSuccess(jobId, tenantId, filename, format) {
       });
       // Durable storage key; download route mints a signed URL / streams from disk fallback.
       fileUrl = `${CLOUDINARY_FILE_PREFIX}${uploaded.publicId}`;
+      rmSync(filepath, { force: true }); // served from Cloudinary now; don't accumulate on disk
       logger.info({
         type: 'export_uploaded_cloudinary',
         jobId,
@@ -160,7 +161,9 @@ async function generateCSV(data, filepath) {
  * Exported for the contract test.
  */
 export function buildJobCsv(data) {
-  const flatData = data.map(flattenObject).filter(hasAnyValue);
+  // Arrow, not map(flattenObject): map passes the row index as flattenObject's `prefix`,
+  // which keyed every row differently ("1.id", "2.id"…) — 15,000 columns for 1,000 rows.
+  const flatData = data.map((row) => flattenObject(row)).filter(hasAnyValue);
   if (flatData.length === 0) return '';
 
   const headers = csvHeaders(flatData);

@@ -6,6 +6,7 @@ import * as invitationService from './invitation.service.js';
 import { errorResponse } from '../../utils/response.js';
 import { successResponse } from '../../utils/response.js';
 import { permissionManifest } from './permissionManifest.js';
+import { perAccount } from '../../plugins/rateLimit.js';
 
 export default async function authRoutes(fastify) {
   fastify.post('/auth/register', {
@@ -29,10 +30,7 @@ export default async function authRoutes(fastify) {
         422: { type: 'object', additionalProperties: true },
       },
     },
-    rateLimit: {
-      max: 5,
-      timeWindow: '15 minutes',
-    },
+    config: { rateLimit: perAccount(5, '15 minutes') },
   }, async (request, reply) => authController.registerController(request, reply));
 
   fastify.post('/auth/login', {
@@ -48,6 +46,8 @@ export default async function authRoutes(fastify) {
         },
       },
     },
+    // Lockout-equivalent: 10 attempts per account per 15 min (correct password included).
+    config: { rateLimit: perAccount(10, '15 minutes') },
   }, async (request, reply) => authController.loginController(request, reply));
 
   fastify.post('/auth/admin/login', {
@@ -63,6 +63,8 @@ export default async function authRoutes(fastify) {
         },
       },
     },
+    // Lockout-equivalent: 10 attempts per account per 15 min (correct password included).
+    config: { rateLimit: perAccount(10, '15 minutes') },
   }, async (request, reply) => authController.adminLoginController(request, reply));
 
   fastify.post('/auth/refresh', {
@@ -167,10 +169,7 @@ export default async function authRoutes(fastify) {
         200: { type: 'object', additionalProperties: true },
       },
     },
-    rateLimit: {
-      max: 5,
-      timeWindow: '15 minutes',
-    },
+    config: { rateLimit: perAccount(5, '15 minutes') },
   }, async (request, reply) => passwordResetController.forgotPasswordController(request, reply));
 
   fastify.get('/auth/password-policy', {
@@ -236,10 +235,7 @@ export default async function authRoutes(fastify) {
         200: { type: 'object', additionalProperties: true },
       },
     },
-    rateLimit: {
-      max: 5,
-      timeWindow: '15 minutes',
-    },
+    config: { rateLimit: perAccount(5, '15 minutes') },
   }, async (request, reply) => passwordResetController.resetPasswordController(request, reply));
 
   fastify.post('/auth/otp/initiate', {
@@ -275,10 +271,7 @@ export default async function authRoutes(fastify) {
         200: { type: 'object', additionalProperties: true },
       },
     },
-    rateLimit: {
-      max: 5,
-      timeWindow: '5 minutes',
-    },
+    config: { rateLimit: perAccount(5, '5 minutes') },
   }, async (request, reply) => otpController.verifyOtpController(request, reply));
 
   fastify.post('/auth/resend-otp', {
@@ -296,10 +289,7 @@ export default async function authRoutes(fastify) {
         200: { type: 'object', additionalProperties: true },
       },
     },
-    rateLimit: {
-      max: 5,
-      timeWindow: '15 minutes',
-    },
+    config: { rateLimit: perAccount(5, '15 minutes') },
   }, async (request, reply) => otpController.resendOtpController(request, reply));
 
   // ── Invitation routes (public) ──────────────────────────────────────────────
@@ -340,7 +330,7 @@ export default async function authRoutes(fastify) {
         422: { type: 'object', additionalProperties: true },
       },
     },
-    rateLimit: { max: 10, timeWindow: '15 minutes' },
+    config: { rateLimit: perAccount(10, '15 minutes') },
   }, async (request, reply) => {
     const { token, password } = request.body;
     const result = await invitationService.acceptInvitation(token, password);
@@ -371,7 +361,7 @@ export default async function authRoutes(fastify) {
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },
-    rateLimit: { max: 5, timeWindow: '15 minutes' },
+    config: { rateLimit: perAccount(5, '15 minutes') },
   }, async (request, reply) => {
     await invitationService.publicResendInvite(request.body.email);
     return reply.send({ success: true, data: { message: 'If an invite exists, a new link was sent' }, meta: {} });

@@ -183,6 +183,7 @@ export async function createEntry(tenantId, employeeId, body) {
   }
   const sheet = await repo.getOrCreateTimesheet(tenantId, employeeId, weekStart);
   assertWeekEditable(sheet.status);
+  await assertCanLog(tenantId, employeeId, target, entryData.date, entryData.hours);
 
   const entry = await repo.createEntry(tenantId, sheet.id, employeeId, entryData);
   return entry;
@@ -201,11 +202,33 @@ export async function updateEntry(tenantId, id, data) {
   const existing = await repo.getEntryById(tenantId, id);
   if (!existing) return null;
   assertWeekEditable(existing.timesheet?.status); // can't edit a submitted/approved week
+  if ('hours' in data || 'date' in data || 'projectId' in data) {
+    const project = await repo.getProjectById(tenantId, data.projectId ?? existing.projectId);
+    if (!project) throw Object.assign(new Error('Project not found'), { statusCode: 404, code: 'PROJECT_NOT_FOUND' });
+    await assertCanLog(tenantId, existing.employeeId, project, data.date ?? existing.date, data.hours ?? existing.hours, id);
+  }
   const clean = {};
   for (const k of ENTRY_UPDATABLE) if (k in data) clean[k] = data[k];
   const entry = await repo.updateEntry(tenantId, id, clean);
   if (!entry) return null;
   return entry;
+}
+
+// Same membership rule as the project list (empty memberIds = open to everyone), and a
+// 24 h ceiling per person per day summed across entries: single entries were capped at
+// 24 h but 8 h + 20 h on one day was accepted, and non-members could log to any project.
+async function assertCanLog(tenantId, employeeId, project, date, hours, excludeEntryId = null) {
+  const members = JSON.parse(project.memberIds || '[]');
+  if (members.length && !members.includes(employeeId)) {
+    throw Object.assign(new Error('You are not a member of this project'), { statusCode: 403, code: 'NOT_PROJECT_MEMBER' });
+  }
+  const { _sum } = await prisma.timeEntry.aggregate({
+    where: { tenantId, employeeId, date, ...(excludeEntryId && { id: { not: excludeEntryId } }) },
+    _sum: { hours: true },
+  });
+  if ((_sum.hours ?? 0) + Number(hours) > 24) {
+    throw Object.assign(new Error(`More than 24 hours would be logged on ${date}`), { statusCode: 422, code: 'DAY_LIMIT_EXCEEDED' });
+  }
 }
 
 // 422 WEEK_LOCKED when the week isn't DRAFT/REJECTED — matches the FE mock so entries

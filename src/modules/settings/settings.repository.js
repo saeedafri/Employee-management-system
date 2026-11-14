@@ -314,7 +314,20 @@ export async function updateNotificationPreferences(tenantId, userId, data) {
   return updated;
 }
 
-export async function createRole(tenantId, data) {
+// Nobody can hand out a permission they do not hold themselves (super admin holds all).
+// Without this, settings:manage (HR) could create or assign a role carrying
+// permissions:manage / payroll:super and promote itself to super admin.
+function assertCanGrant(actor, keys) {
+  if (actor?.memberType === 'SUPER_ADMIN') return;
+  const held = new Set(actor?.permissions ?? []);
+  const missing = keys.filter((k) => !held.has(k));
+  if (missing.length) {
+    throw Object.assign(new Error(`You cannot grant permissions you do not hold: ${missing.join(', ')}`), { code: 'FORBIDDEN', statusCode: 403 });
+  }
+}
+
+export async function createRole(tenantId, data, actor) {
+  assertCanGrant(actor, data.permissions || []);
   const existing = await prisma.role.findFirst({ where: { key: data.key, tenantId } });
   if (existing) throw Object.assign(new Error('Role key already exists'), { code: 'DUPLICATE_ROLE_KEY', statusCode: 409 });
 
@@ -346,9 +359,13 @@ export async function deleteRole(tenantId, key) {
   return { key, status: 'deleted' };
 }
 
-export async function assignUsersToRole(tenantId, key, userIds) {
-  const role = await prisma.role.findFirst({ where: { key, tenantId } });
+export async function assignUsersToRole(tenantId, key, userIds, actor) {
+  const role = await prisma.role.findFirst({ where: { key, tenantId }, include: { permissions: { include: { permission: { select: { key: true } } } } } });
   if (!role) throw Object.assign(new Error('Role not found'), { code: 'NOT_FOUND', statusCode: 404 });
+  assertCanGrant(actor, role.permissions.map((rp) => rp.permission.key));
+  // Only users of this tenant: a foreign user id would pick up this tenant's role grants.
+  const inTenant = await prisma.user.count({ where: { id: { in: userIds }, tenantId } });
+  if (inTenant !== new Set(userIds).size) throw Object.assign(new Error('One or more users do not belong to this organisation'), { code: 'INVALID_USERS', statusCode: 422 });
   await prisma.userRole.createMany({ data: userIds.map(uid => ({ userId: uid, roleId: role.id })), skipDuplicates: true });
   return { assigned: userIds };
 }

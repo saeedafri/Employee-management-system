@@ -27,7 +27,8 @@ export const createEmployeeSchema = z.object({
   address: z.string().optional(),
   designation: z.string().optional(),
   departmentId: deptIdArray,
-  managerId: z.string().optional(),
+  // '' arrives when a client sends null (Ajv coerces null -> '' for strings): treat both as "no manager".
+  managerId: z.preprocess((v) => (v === '' ? null : v), z.string().min(1).nullable().optional()),
   joinedOn: z.coerce.date(),
   employmentType: z.enum(['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP']).default('FULL_TIME'),
   location: z.string().optional(),

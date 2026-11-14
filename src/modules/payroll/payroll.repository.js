@@ -299,7 +299,7 @@ function buildCalculatedComponents(pgComponents, annualCtc, currency = 'INR') {
       if (comp.calculationType === 'FLAT') {
         amount = comp.value || 0;
       } else if (comp.calculationType === 'PERCENTAGE') {
-        const basis = computed[comp.basisCode] || 0;
+        const basis = computed[comp.basisCode?.toUpperCase()] || 0;
         amount = ((comp.value || 0) / 100) * basis;
       } else if (comp.calculationType === 'FORMULA') {
         computed.GROSS = earnings.reduce((s, e) => s + e.amount, 0);
@@ -482,7 +482,7 @@ async function computePayslipYtd(prisma, employeeId, tenantId, throughPeriod, fi
   const throughDate = derivePeriodDatesFromString(throughPeriod).periodEnd;
 
   const allPayslips = await prisma.payslip.findMany({
-    where: { tenantId, employeeId, status: { in: ['PAID', 'PENDING', 'HELD'] } },
+    where: { tenantId, employeeId, status: { in: ['PAID', 'PENDING', 'HELD'] }, payrollRun: { status: { not: 'CANCELLED' } } },
     include: { payrollRun: { select: { startDate: true, period: true } } },
   });
   const payslips = allPayslips
@@ -563,8 +563,13 @@ function fmtPayslipDetail(ps, extras = {}) {
   };
 }
 
-export async function getEmployeePayslips(prisma, employeeId, tenantId, { page = 1, limit = 12, year } = {}) {
+// Runs whose payslips an employee may see on their own record: approved or paid only
+// (not DRAFT/CALCULATING/REVIEW numbers that may still change, never CANCELLED).
+export const FINAL_RUN_STATUSES = ['APPROVED', 'PAID'];
+
+export async function getEmployeePayslips(prisma, employeeId, tenantId, { page = 1, limit = 12, year, finalOnly = false } = {}) {
   const where = { tenantId, employeeId };
+  if (finalOnly) where.payrollRun = { status: { in: FINAL_RUN_STATUSES } };
   if (year) where.period = { startsWith: String(year) };
   const [rows, total] = await Promise.all([
     prisma.payslip.findMany({
@@ -576,9 +581,9 @@ export async function getEmployeePayslips(prisma, employeeId, tenantId, { page =
   return { items: rows.map(fmtPayslipSummary), pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
 }
 
-export async function getEmployeePayslipById(prisma, employeeId, payslipId, tenantId) {
+export async function getEmployeePayslipById(prisma, employeeId, payslipId, tenantId, { finalOnly = false } = {}) {
   const ps = await prisma.payslip.findFirst({
-    where: { id: payslipId, employeeId, tenantId },
+    where: { id: payslipId, employeeId, tenantId, ...(finalOnly && { payrollRun: { status: { in: FINAL_RUN_STATUSES } } }) },
     include: {
       employee: { include: { department: { select: { name: true } } } }, tenant: true,
       payrollRun: { select: { startDate: true, endDate: true } },
@@ -1137,7 +1142,7 @@ export async function calculatePayrollRun(prisma, id, tenantId) {
           // FLAT is a monthly figure → scale to the cycle's share (periodFactor=1 for MONTHLY).
           amount = (comp.value || 0) * periodFactor;
         } else if (comp.calculationType === 'PERCENTAGE') {
-          amount = ((comp.value || 0) / 100) * (computed[comp.basisCode] || 0);
+          amount = ((comp.value || 0) / 100) * (computed[comp.basisCode?.toUpperCase()] || 0);
         } else if (comp.calculationType === 'FORMULA') {
           // FE parity: formulas resolve over STRUCTURAL (un-prorated) GROSS/NET.
           computed.GROSS = structEarnSum;

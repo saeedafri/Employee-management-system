@@ -98,6 +98,8 @@ export async function employeesRoutes(fastify) {
   fastify.post(
     '/employees',
     {
+      // Declared on the route so the permission manifest publishes it (the controller checks it too).
+      onRequest: [requirePermission('employees:read-any')],
       schema: {
         tags: ['Employees'],
         description: 'Create new employee',
@@ -132,6 +134,8 @@ export async function employeesRoutes(fastify) {
   fastify.post(
     '/employees/:id/invite',
     {
+      // Declared on the route so the permission manifest publishes it (the controller checks it too).
+      onRequest: [requirePermission('employees:read-any')],
       schema: {
         tags: ['Employees'],
         description: 'Send or resend invitation email for an employee. Creates/links a User with INVITED status if needed.',

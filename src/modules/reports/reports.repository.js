@@ -777,3 +777,16 @@ function calculateNextRunDate(frequency) {
   nextDate.setHours(0, 0, 0, 0);
   return nextDate;
 }
+
+// Payslips of one period (incl. semi-monthly H1/H2) from runs that were not cancelled.
+export async function getPayslipsForPeriod(tenantId, period, departmentId) {
+  return prisma.payslip.findMany({
+    where: {
+      tenantId,
+      period: { startsWith: period },
+      payrollRun: { status: { not: 'CANCELLED' } },
+      ...(departmentId && { employee: { departmentId } }),
+    },
+    select: { employeeId: true, grossEarnings: true, netPay: true, employee: { select: { departmentId: true, department: { select: { name: true } } } } },
+  });
+}

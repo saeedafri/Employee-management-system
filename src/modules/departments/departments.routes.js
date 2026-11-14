@@ -52,6 +52,8 @@ export default async function departmentsRoutes(fastify) {
   fastify.post(
     '/departments',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('departments:write')],
       schema: {
         tags: ['Departments'],
         description: 'Create new department (HR_ADMIN only)',
@@ -76,6 +78,8 @@ export default async function departmentsRoutes(fastify) {
   fastify.patch(
     '/departments/:id',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('departments:write')],
       schema: {
         tags: ['Departments'],
         description: 'Update department (HR_ADMIN only)',
@@ -106,6 +110,8 @@ export default async function departmentsRoutes(fastify) {
   fastify.delete(
     '/departments/:id',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('departments:write')],
       schema: {
         tags: ['Departments'],
         description: 'Delete/archive department (HR_ADMIN only)',
@@ -127,6 +133,8 @@ export default async function departmentsRoutes(fastify) {
   fastify.post(
     '/departments/:id/reassign-and-delete',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('departments:write')],
       schema: {
         tags: ['Departments'],
         description: 'Reassign all employees to another department, then archive this one',
@@ -145,6 +153,8 @@ export default async function departmentsRoutes(fastify) {
   fastify.post(
     '/departments/:id/members',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('departments:write')],
       schema: {
         tags: ['Departments'],
         description: 'Bulk assign existing employees to a department. Idempotent — already-assigned employees are counted as skipped. Updates Employee.departmentId to target department. _count.employees is inclusive subtree count after update.',

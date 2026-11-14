@@ -226,9 +226,9 @@ export const getLeaveTypes = wrap(async (req) => { const { getLeaveTypes: fn } =
 export const createLeaveType = wrap(async (req) => { const { createLeaveType: fn } = await import('../leave/leave.service.js'); return fn(req.tenant.id, req.body); });
 export const updateLeaveType = wrap(async (req) => { const { updateLeaveType: fn } = await import('../leave/leave.service.js'); return fn(req.tenant.id, req.params.id, req.body); });
 export const deleteLeaveType = wrap(async (req, rep) => { const { deleteLeaveType: fn } = await import('../leave/leave.service.js'); const r = await fn(req.tenant.id, req.params.id); rep.code(200); return r; });
-export const createRole = wrap(async (req, rep) => { rep.code(201); return settingsService.createRole(req.tenant.id, req.body); });
+export const createRole = wrap(async (req, rep) => { rep.code(201); return settingsService.createRole(req.tenant.id, req.body, req.user); });
 export const deleteRole = wrap(async (req) => settingsService.deleteRole(req.tenant.id, req.params.key));
-export const assignUsersToRole = wrap(async (req) => settingsService.assignUsersToRole(req.tenant.id, req.params.key, req.body.userIds));
+export const assignUsersToRole = wrap(async (req) => settingsService.assignUsersToRole(req.tenant.id, req.params.key, req.body.userIds, req.user));
 
 export const getEmailIntegration = wrap(async (req) => integrationsService.getEmailIntegration(req.tenant.id));
 export const updateEmailIntegration = wrap(async (req) => integrationsService.updateEmailIntegration(req.tenant.id, req.body));

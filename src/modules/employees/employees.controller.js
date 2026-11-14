@@ -12,7 +12,7 @@ import sharp from 'sharp';
 
 const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS', 'ALREADY_ACTIVE', 'EMPLOYEE_TERMINATED']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND', 'EMPLOYEE_NOT_FOUND']);
-const UNPROCESSABLE_CODES = new Set(['VALIDATION_ERROR', 'NO_DELIVERY_EMAIL']);
+const UNPROCESSABLE_CODES = new Set(['VALIDATION_ERROR', 'NO_DELIVERY_EMAIL', 'INVALID_MANAGER']);
 const RATE_LIMIT_CODES = new Set(['RATE_LIMITED']);
 
 function errorStatus(code) {
@@ -115,6 +115,10 @@ export async function createEmployee(request, reply) {
 
   try {
     const data = await validator.createEmployeeSchema.parseAsync(request.body);
+    // Nobody may mint an account above their own rank; only a super admin creates another.
+    if (data.memberType === 'SUPER_ADMIN' && user.memberType !== 'SUPER_ADMIN') {
+      return reply.code(403).send(errorResponse('FORBIDDEN', 'Only a super admin can create a super admin account', request.requestId));
+    }
     const result = await service.createEmployee(tenantId, data, user.id);
     reply.code(result.error ? errorStatus(result.error.code) : 201).send(result);
   } catch (error) {
@@ -357,7 +361,10 @@ export async function bulkDeactivate(request, reply) {
         failed.push({ id, code: 'EMPLOYEE_HAS_DEPENDENTS', message: `Has ${directReports} direct reports.` });
         continue;
       }
-      await prisma.employee.update({ where: { id }, data: { employmentStatus: 'INACTIVE' } });
+      await prisma.$transaction([
+        prisma.employee.update({ where: { id }, data: { employmentStatus: 'INACTIVE' } }),
+        ...repo.revokeEmployeeAccess(id, 'EMPLOYEE_DEACTIVATED'),
+      ]);
       succeeded.push(id);
     } catch (err) {
       failed.push({ id, code: 'ERROR', message: err.message });

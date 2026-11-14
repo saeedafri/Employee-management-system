@@ -10,6 +10,7 @@ import { resolveApplicableHolidays } from './utils/applicability.js';
 import { observedDate } from './utils/observedDates.js';
 import { getEffectivePolicy } from './holidaysPolicy.service.js';
 import { resolveWorkWeekDays } from '../../utils/workingDays.js';
+import { ISO_COUNTRIES } from '../payroll/payout/isoCountries.js';
 
 const isoDay = (v) => new Date(v).toISOString().slice(0, 10); // UTC yyyy-mm-dd
 const atMidnightUTC = (ymd) => `${ymd}T00:00:00.000Z`;
@@ -116,6 +117,19 @@ export async function resolveEmployeeHolidayContext(prisma, tenantId, employeeId
       hoursPerDay = le.hoursPerDay ?? null;
     } else if (sal?.country) {
       countryCode = sal.country;
+    }
+  }
+
+  // No legal entity / salary country (every employee created before payroll setup): use the
+  // tenant's own country. Leaving it null kept only untagged holidays, so the company's
+  // country holidays were invisible to the employee and charged as working days on leave.
+  if (!countryCode) {
+    const tenant = await prisma.tenant.findUnique({ where: { id: tenantId }, select: { country: true } });
+    const c = tenant?.country?.trim();
+    if (c) {
+      countryCode = c.length === 2 ? c.toUpperCase()
+        : (ISO_COUNTRIES.find((x) => x.name.toLowerCase() === c.toLowerCase())?.code ?? c);
+      resolvedBy = 'TENANT_COUNTRY';
     }
   }
 

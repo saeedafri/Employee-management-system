@@ -317,19 +317,24 @@ export async function updateRegularizationRequest(tenantId, regularizationId, da
 
 export async function updateAttendanceStatus(tenantId, employeeId, attendanceDate, status) {
   const { start, end } = attendanceDayRange(attendanceDate);
+  const res = await prisma.attendanceRecord.updateMany({
+    where: { tenantId, employeeId, attendanceDate: { gte: start, lt: end } },
+    data: { status },
+  });
+  // Regularization is usually for a day with NO record (a missed check-in); updating
+  // zero rows made approval a no-op. Create the day instead.
+  if (res.count === 0) {
+    await prisma.attendanceRecord.create({ data: { tenantId, employeeId, attendanceDate: start, status } });
+  }
+  return res;
+}
 
-  return prisma.attendanceRecord.updateMany({
-    where: {
-      tenantId,
-      employeeId,
-      attendanceDate: {
-        gte: start,
-        lt: end,
-      },
-    },
-    data: {
-      status,
-    },
+// An open or approved request already covering this employee's day.
+export async function findActiveRegularizationForDay(tenantId, employeeId, attendanceDate) {
+  const { start, end } = attendanceDayRange(attendanceDate);
+  return prisma.attendanceRegularizationRequest.findFirst({
+    where: { tenantId, employeeId, attendanceDate: { gte: start, lt: end }, status: { in: ['PENDING', 'APPROVED'] } },
+    select: { id: true, status: true },
   });
 }
 

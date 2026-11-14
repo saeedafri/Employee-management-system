@@ -66,7 +66,8 @@ export async function previewLeaveRequest(request, reply) {
   try {
     const tenantId = request.tenant.id;
     const employeeId = request.user.employeeId;
-    const { startDate, endDate } = request.body || {};
+    // POST sends a body; the frontend's GET sends the same fields as query params.
+    const { startDate, endDate } = request.body ?? request.query ?? {};
     if (!startDate || !endDate) {
       return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'startDate and endDate are required', {}, request.id));
     }

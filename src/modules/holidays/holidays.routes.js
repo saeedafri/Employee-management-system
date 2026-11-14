@@ -84,6 +84,8 @@ export default async function holidaysRoutes(fastify) {
   fastify.post(
     '/holidays',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('holidays:write')],
       schema: {
         tags: ['Holidays'],
         description: 'Create holiday (HR_ADMIN only)',
@@ -108,6 +110,8 @@ export default async function holidaysRoutes(fastify) {
   fastify.patch(
     '/holidays/:id',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('holidays:write')],
       schema: {
         tags: ['Holidays'],
         description: 'Update holiday (HR_ADMIN only)',
@@ -137,6 +141,8 @@ export default async function holidaysRoutes(fastify) {
   fastify.delete(
     '/holidays/:id',
     {
+    // Declared on the route so the permission manifest publishes it (the controller checks it too).
+    onRequest: [requirePermission('holidays:write')],
       schema: {
         tags: ['Holidays'],
         description: 'Delete holiday (HR_ADMIN only)',

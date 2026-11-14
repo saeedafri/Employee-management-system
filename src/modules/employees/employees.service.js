@@ -84,6 +84,22 @@ async function generateEmployeeCode(tenantId) {
   return code;
 }
 
+// A manager must be a live employee of the SAME tenant (an id from another tenant would
+// otherwise be stored and its name served back), not the employee, and not anyone who
+// already reports to the employee (a reporting cycle).
+async function managerError(tenantId, managerId, employeeId) {
+  if (managerId == null) return null;
+  if (managerId === employeeId) return errorResponse('INVALID_MANAGER', 'An employee cannot be their own manager', null);
+  const find = (id) => prisma.employee.findFirst({ where: { id, tenantId, deletedAt: null }, select: { managerId: true } });
+  let node = await find(managerId);
+  if (!node) return errorResponse('INVALID_MANAGER', 'Manager not found in this organisation', null);
+  for (let hops = 0; employeeId && node?.managerId && hops < 50; hops++) {
+    if (node.managerId === employeeId) return errorResponse('INVALID_MANAGER', 'This manager reports to the employee; the change would create a reporting cycle', null);
+    node = await find(node.managerId);
+  }
+  return null;
+}
+
 export async function createEmployee(tenantId, data, userId) {
   try {
     let leafDepartmentId;
@@ -95,6 +111,9 @@ export async function createEmployee(tenantId, data, userId) {
     } catch (pathErr) {
       return deptPathError(pathErr.message);
     }
+
+    const badManager = await managerError(tenantId, data.managerId, null);
+    if (badManager) return badManager;
 
     if (!data.employeeCode) {
       data.employeeCode = await generateEmployeeCode(tenantId);
@@ -268,6 +287,11 @@ export async function updateEmployee(employeeId, tenantId, data, userId) {
     }
 
     let updateData = { ...data };
+
+    if ('managerId' in updateData) {
+      const badManager = await managerError(tenantId, updateData.managerId, employeeId);
+      if (badManager) return badManager;
+    }
 
     if (updateData.departmentId !== undefined) {
       try {

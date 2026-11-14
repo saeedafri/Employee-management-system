@@ -93,10 +93,23 @@ export async function updateEmployee(employeeId, tenantId, data) {
 }
 
 export async function softDeleteEmployee(employeeId) {
-  return prisma.employee.update({
-    where: { id: employeeId },
-    data: { employmentStatus: 'TERMINATED', deletedAt: new Date(), updatedBy: 'system' },
-  });
+  const [employee] = await prisma.$transaction([
+    prisma.employee.update({
+      where: { id: employeeId },
+      data: { employmentStatus: 'TERMINATED', deletedAt: new Date(), updatedBy: 'system' },
+    }),
+    ...revokeEmployeeAccess(employeeId, 'EMPLOYEE_TERMINATED'),
+  ]);
+  return employee;
+}
+
+// Offboarding must end access: disable the login and revoke every live session
+// (authenticate() checks the session on each request, so tokens die immediately).
+export function revokeEmployeeAccess(employeeId, reason) {
+  return [
+    prisma.user.updateMany({ where: { employeeId }, data: { status: 'DISABLED' } }),
+    prisma.session.updateMany({ where: { user: { employeeId }, revokedAt: null }, data: { revokedAt: new Date(), revokeReason: reason } }),
+  ];
 }
 
 export async function exportEmployeesCsv(tenantId) {

@@ -32,7 +32,14 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 export async function checkIn(tenantId, employeeId, {
   latitude, longitude, note, date, workMode,
 } = {}, { timezone = 'UTC', now = new Date() } = {}) {
-  const today = dateFromYmd(date) || tenantAttendanceDate(now, timezone);
+  const tenantToday = tenantAttendanceDate(now, timezone);
+  const requested = dateFromYmd(date);
+  // A client date only absorbs a device/tenant timezone skew (±1 day). Anything else is a
+  // back-dated or future check-in, i.e. attendance created without regularization.
+  if (requested && Math.abs(requested.getTime() - tenantToday.getTime()) > 86400000) {
+    throw new AppError('Check-in is only for today. Use a regularization request for other days.', 'DATE_OUT_OF_RANGE', 422);
+  }
+  const today = requested || tenantToday;
   const existingRecord = await attendanceRepository.getTodayAttendance(tenantId, employeeId, today);
 
   if (existingRecord && existingRecord.checkInAt) {
@@ -259,6 +266,10 @@ export async function getAttendanceSummary(tenantId, requester, filters = {}) {
 export async function submitRegularizationRequest(tenantId, employeeId, {
   attendanceDate, reason, type,
 }) {
+  const existing = await attendanceRepository.findActiveRegularizationForDay(tenantId, employeeId, new Date(attendanceDate));
+  if (existing) {
+    throw new AppError(`A ${existing.status.toLowerCase()} regularization request already exists for this day`, 'DUPLICATE_REGULARIZATION', 409);
+  }
   const request = await attendanceRepository.createRegularizationRequest({
     tenantId,
     employeeId,

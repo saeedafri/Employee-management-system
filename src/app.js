@@ -12,6 +12,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { collectRouteGuards, resetPermissionManifest } from './modules/auth/permissionManifest.js';
 import { resolveTenant } from './middleware/resolveTenant.js';
 import { attachRequestLogging } from './middleware/requestLogging.js';
+import { auditTrail } from './middleware/auditTrail.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import logsRoutes from './modules/logs/logs.routes.js';
 import analyticsRoutes from './modules/analytics/analytics.routes.js';
@@ -83,6 +84,9 @@ export async function createApp() {
 
   // Attach request logging
   await attachRequestLogging(fastify);
+
+  // Audit every successful authenticated write (one place, all modules)
+  auditTrail(fastify);
 
   // Global error handler
   fastify.setErrorHandler(errorHandler);

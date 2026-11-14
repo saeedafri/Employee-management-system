@@ -114,4 +114,14 @@ describe('guards that live below the route layer', () => {
     assert.deepEqual(row.roles, ['MANAGER']);
     assert.ok(!row.public);
   });
+
+  it('/manager/approvals also serves HR and super admins (tenant-wide queue)', () => {
+    assert.deepEqual(find('GET', '/api/v1/manager/approvals').roles, ['HR_ADMIN', 'MANAGER', 'SUPER_ADMIN']);
+  });
+
+  it('write routes guarded in their controllers publish the same key', () => {
+    assert.deepEqual(find('POST', '/api/v1/departments').permissions, ['departments:write']);
+    assert.deepEqual(find('POST', '/api/v1/holidays').permissions, ['holidays:write']);
+    assert.deepEqual(find('POST', '/api/v1/employees').permissions, ['employees:read-any']);
+  });
 });

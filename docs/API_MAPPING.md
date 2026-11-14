@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last verified: 2026-07-19** (Hostinger hardening `68d32f4` — exports/PDF, permissions SoT, SSE auth, ops logs, `noEmployeeRecord` empty reads)
+> **Last updated: 2026-11-14** (security & correctness fixes — see the change table below). Previously verified 2026-07-19 (Hostinger hardening `68d32f4` — exports/PDF, permissions SoT, SSE auth, ops logs, `noEmployeeRecord` empty reads)
 > **Production API (Hostinger):** `https://ems-api.saqibsaeed.cloud/api/v1`
 > Legacy Render (do not use for this product): `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:4000/api/v1` (or compose port)
@@ -11,6 +11,33 @@
 > **MSW (Mock Service Worker):** The deployed Vercel frontend has `NEXT_PUBLIC_USE_MOCKS` controlled by the Vercel env var. Default in code is `false`. If set to `true`, Phase 3 API calls are intercepted by MSW in the browser before reaching the backend BFF proxy. Set it to `false` in Vercel dashboard → Settings → Environment Variables to force real backend calls.
 
 ---
+
+## 2026-11-14 — security & correctness fixes (E2E test round, Hostinger)
+
+Contract changes from the full end-to-end test round. Shapes are unchanged unless stated.
+
+| Area | Endpoint | Change |
+|---|---|---|
+| Auth | `POST /auth/login`, `POST /auth/admin/login` | Now limited to **10 attempts per account per 15 min** (correct password included) → `429`. `forgot-password`, `reset-password`, `verify-otp`, `resend-otp`, `register`, `accept-invitation`, `invitation/resend` limits now actually apply (they were never wired), keyed per account (email / challenge / token), not per IP. |
+| Auth | `POST /auth/login` | Wrong password on a LOCKED/DISABLED account now returns the generic `401 INVALID_CREDENTIALS` (state is only revealed after a correct password). Invited users still get `403 ACCOUNT_NOT_ACTIVATED`. A terminated/inactive employee gets `401 ACCOUNT_DISABLED`. |
+| Employees | `DELETE /employees/:id`, `POST /employees/bulk/deactivate` | Also disable the linked user and revoke every session — existing tokens stop working immediately. |
+| Employees | `POST /employees` | `memberType: SUPER_ADMIN` by a non-super-admin → `403 FORBIDDEN`. |
+| Employees | `POST/PATCH /employees` | `managerId` must be an active employee of the **same tenant**, not the employee, and must not create a reporting cycle → `422 INVALID_MANAGER`. `managerId: null` clears the manager. |
+| Settings | `POST /settings/roles`, `POST /settings/roles/:key/users` | Caller can only grant permissions they hold (`403 FORBIDDEN`); assigned users must belong to the tenant (`422 INVALID_USERS`). |
+| Manager | `GET /manager/approvals` | Now also serves `HR_ADMIN` / `SUPER_ADMIN` with the tenant-wide pending queue (manifest `roles: [HR_ADMIN, MANAGER, SUPER_ADMIN]`). Other `/manager/*` routes stay MANAGER-only. |
+| Leave | `GET /leave/requests/preview?startDate=&endDate=` | **New** — same as the POST preview (the frontend calls GET). |
+| Attendance | `POST /attendance/check-in` | `date` may only be the tenant's today ±1 day (timezone skew) → otherwise `422 DATE_OUT_OF_RANGE`; use regularization for other days. |
+| Attendance | `POST /attendance/regularization` | A PENDING/APPROVED request already covering that day → `409 DUPLICATE_REGULARIZATION`. Approval now **creates** the day's attendance record (PRESENT) when none exists. |
+| Holidays | per-employee resolution | Employees with no legal entity/salary country resolve to the **tenant's country** (`resolvedBy: TENANT_COUNTRY`) instead of tenant-wide-only, so country holidays show and aren't charged as leave. |
+| Timesheets | `POST/PATCH /timesheets/entries` | Not a member of a project with a member list → `403 NOT_PROJECT_MEMBER`; more than 24 h on a day across entries → `422 DAY_LIMIT_EXCEEDED`. |
+| Payroll | `POST/PATCH /payroll/components` | `code` and `basisCode` are normalised to upper case; a PERCENTAGE `basisCode` must be `CTC` or an existing component → `400 VALIDATION_ERROR`. Calculation resolves basis codes case-insensitively. |
+| Payroll | `POST /payroll/runs` | `employeeIds` on a `REGULAR` run → `422 VALIDATION_ERROR` (a regular run pays every salaried employee; use `OFF_CYCLE` for selected employees). |
+| Payroll | `GET /payroll/employees/:id/payslips[/:payslipId[/download]]` | On their **own** record an employee only sees payslips of `APPROVED`/`PAID` runs. YTD excludes cancelled runs. |
+| Reports | `GET /reports/payroll` | Totals now come from the period's payslips (was a placeholder `employees × 50,000`). Adds `total_net_pay`. |
+| Export | `POST /export/employees` (CSV) | Fixed a column blow-up (row index leaked into headers: 15,000 columns for 1,000 rows). |
+| Audit | `GET /audit-logs` | Every successful authenticated write is now recorded (`action: "<METHOD> <route>"`, `entityType` = module, secrets redacted). |
+| Manifest | `GET /auth/permission-manifest` | Department/holiday writes publish `departments:write` / `holidays:write`; `POST /employees` and `/employees/:id/invite` publish `employees:read-any`. |
+
 
 ## Response Envelope
 

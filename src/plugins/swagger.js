@@ -421,6 +421,14 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
             parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['startDate', 'endDate'], properties: { startDate: { type: 'string' }, endDate: { type: 'string' } } } }],
             responses: { 200: r200, 422: r422 },
           }),
+          get: op('Leave', 'Same preview as POST, with startDate/endDate (and optional leaveTypeId) as query params — the form the frontend calls.', true, {
+            parameters: [
+              { in: 'query', name: 'startDate', required: true, type: 'string' },
+              { in: 'query', name: 'endDate', required: true, type: 'string' },
+              { in: 'query', name: 'leaveTypeId', required: false, type: 'string' },
+            ],
+            responses: { 200: r200, 422: r422 },
+          }),
         },
         '/leave/team/requests': {
           get: op('Leave', 'List team leave requests (manager)', true, {
