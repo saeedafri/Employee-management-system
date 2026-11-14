@@ -22,6 +22,7 @@ export default async function authRoutes(fastify) {
           fullName: { type: 'string', minLength: 2 },
           email: { type: 'string', format: 'email' },
           password: { type: 'string', minLength: 8 },
+          country: { type: 'string', pattern: '^[A-Za-z]{2}$', description: 'Optional ISO 3166-1 alpha-2 company country (e.g. IN). Scopes country-tagged holidays for employees with no legal entity yet.' },
         },
       },
       response: {

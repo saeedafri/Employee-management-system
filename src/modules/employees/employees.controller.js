@@ -11,7 +11,7 @@ import { assertCanViewEmployee } from '../../utils/approvalGuard.js';
 import sharp from 'sharp';
 import { verifiedFileType } from '../../utils/fileSignature.js';
 
-const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS', 'ALREADY_ACTIVE', 'EMPLOYEE_TERMINATED']);
+const CONFLICT_CODES = new Set(['DUPLICATE_EMPLOYEE_CODE', 'DUPLICATE_WORK_EMAIL', 'EMPLOYEE_HAS_DEPENDENTS', 'ALREADY_ACTIVE', 'EMPLOYEE_TERMINATED', 'NO_ACCOUNT', 'LAST_SUPER_ADMIN']);
 const NOT_FOUND_CODES = new Set(['NOT_FOUND', 'EMPLOYEE_NOT_FOUND']);
 const UNPROCESSABLE_CODES = new Set(['VALIDATION_ERROR', 'NO_DELIVERY_EMAIL', 'INVALID_MANAGER']);
 const RATE_LIMIT_CODES = new Set(['RATE_LIMITED']);
@@ -589,4 +589,12 @@ export async function sendInvite(request, reply) {
     }
     throw error;
   }
+}
+
+export async function changeRole(request, reply) {
+  const { user } = request;
+  const result = await service.changeEmployeeRole(request.tenant.id, request.params.id, request.body.memberType, user, {
+    canGrantSuperAdmin: hasPermission(user, 'permissions:manage'),
+  });
+  reply.code(result.error ? errorStatus(result.error.code) : 200).send(result);
 }

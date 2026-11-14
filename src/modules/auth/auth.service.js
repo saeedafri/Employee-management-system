@@ -839,7 +839,7 @@ async function findUniqueTenantKey(db, base) {
   return key;
 }
 
-export async function register(db, { companyName, fullName: _fullName, email, password }, ipAddress, userAgent) {
+export async function register(db, { companyName, fullName: _fullName, email, password, country = '' }, ipAddress, userAgent) {
   const normalizedEmail = email.toLowerCase().trim();
 
   const existingUser = await db.user.findFirst({
@@ -873,7 +873,7 @@ export async function register(db, { companyName, fullName: _fullName, email, pa
         name: companyName,
         legalName: companyName,
         displayName: companyName,
-        country: '',
+        country,
         primaryContactEmail: normalizedEmail,
       },
     });
@@ -952,7 +952,7 @@ export async function register(db, { companyName, fullName: _fullName, email, pa
       tenant: {
         id: tenant.id,
         name: tenant.name,
-        country: null,
+        country: tenant.country || null,
         currency: null,
         timezone: null,
       },

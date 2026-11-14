@@ -123,8 +123,10 @@ export async function exportEmployeesCsv(tenantId) {
   });
 }
 
-export async function checkEmployeeCodeExists(employeeCode, _tenantId, excludeId = null) {
-  const where = { employeeCode };
+// Codes are unique per company (@@unique([tenantId, employeeCode])) — checking globally
+// made a new company's codes start after other companies' and refused codes they use.
+export async function checkEmployeeCodeExists(employeeCode, tenantId, excludeId = null) {
+  const where = { tenantId, employeeCode };
   if (excludeId) {
     Object.assign(where, { NOT: { id: excludeId } });
   }

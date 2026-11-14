@@ -2,7 +2,7 @@ import * as repo from './employees.repository.js';
 import { prisma } from '../../plugins/prisma.js';
 import { successResponse, errorResponse } from '../../utils/response.js';
 import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
-import { createAndSendInvite } from '../auth/invitation.service.js';
+import { createAndSendInvite, inviteDelivery } from '../auth/invitation.service.js';
 import { generateSecureToken } from '../../utils/token.js';
 import { hashSHA256 } from '../../utils/hash.js';
 import { generateId } from '../../utils/id.js';
@@ -137,13 +137,12 @@ export async function createEmployee(tenantId, data, userId, { canGrantSuperAdmi
     // Pre-resolve invite targets outside transaction (read-only queries)
     let resolvedEmailTarget, deliveryEmail, companyName;
     if (sendInvite) {
-      if (emailTarget) {
-        resolvedEmailTarget = emailTarget;
-      } else {
+      let preferred = emailTarget;
+      if (!preferred) {
         const cfg = await prisma.tenantConfig.findUnique({ where: { tenantId }, select: { inviteEmailTarget: true } });
-        resolvedEmailTarget = cfg?.inviteEmailTarget ?? 'PERSONAL';
+        preferred = cfg?.inviteEmailTarget ?? 'PERSONAL';
       }
-      deliveryEmail = resolvedEmailTarget === 'WORK' ? (employeeData.workEmail ?? null) : (employeeData.personalEmail ?? null);
+      ({ target: resolvedEmailTarget, email: deliveryEmail } = inviteDelivery(employeeData, preferred));
 
       const cfg = await prisma.tenantConfig.findUnique({ where: { tenantId }, select: { companyName: true } });
       if (cfg?.companyName) {
@@ -452,4 +451,35 @@ export async function getEmployeeActivity(employeeId, tenantId, { limit = 50 } =
 /** BE-9(a): thin pass-through so the controller does not reach into the repo. */
 export async function isDirectReport(tenantId, managerEmployeeId, employeeId) {
   return repo.isDirectReport(tenantId, managerEmployeeId, employeeId);
+}
+
+// Change the login role of an employee's account. Same rule as create: only someone who may
+// grant SUPER_ADMIN can give or take it. Explicit UserRole grants outrank memberType, so the
+// old type's system-role link is dropped, and the user's sessions end so the new permissions
+// (carried in the JWT) apply from their next sign-in.
+export async function changeEmployeeRole(tenantId, employeeId, memberType, actor, { canGrantSuperAdmin = false } = {}) {
+  const employee = await prisma.employee.findFirst({ where: { id: employeeId, tenantId, deletedAt: null }, select: { userId: true } });
+  if (!employee) return errorResponse('NOT_FOUND', 'Employee not found', null);
+  if (!employee.userId) return errorResponse('NO_ACCOUNT', 'This employee has no login account yet. Send an invite first.', null);
+  if (employee.userId === actor.id) return errorResponse('FORBIDDEN', 'You cannot change your own role', null);
+  const user = await prisma.user.findFirst({ where: { id: employee.userId, tenantId }, select: { id: true, memberType: true } });
+  if (!user) return errorResponse('NOT_FOUND', 'Employee not found', null);
+
+  const previous = user.memberType;
+  if (previous === memberType) return successResponse({ userId: user.id, memberType, previous });
+  if ((memberType === 'SUPER_ADMIN' || previous === 'SUPER_ADMIN') && !canGrantSuperAdmin) {
+    return errorResponse('FORBIDDEN', 'Only a super admin can grant or remove super admin', null);
+  }
+  if (previous === 'SUPER_ADMIN') {
+    const admins = await prisma.user.count({ where: { tenantId, memberType: 'SUPER_ADMIN', status: 'ACTIVE', deletedAt: null } });
+    if (admins <= 1) return errorResponse('LAST_SUPER_ADMIN', 'The company needs at least one active super admin', null);
+  }
+
+  await prisma.$transaction([
+    prisma.user.update({ where: { id: user.id }, data: { memberType } }),
+    prisma.userRole.deleteMany({ where: { userId: user.id, role: { tenantId, key: previous, isSystem: true } } }),
+    prisma.session.updateMany({ where: { userId: user.id, revokedAt: null }, data: { revokedAt: new Date(), revokeReason: 'ROLE_CHANGED' } }),
+  ]);
+  await recordAuditLog(tenantId, actor.id, 'ROLE_CHANGED', 'User', user.id, { memberType: previous }, { memberType }).catch(() => {});
+  return successResponse({ userId: user.id, memberType, previous });
 }

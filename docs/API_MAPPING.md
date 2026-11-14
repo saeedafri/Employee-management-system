@@ -1,6 +1,6 @@
 # EMS API — Actual Response Mapping
 
-> **Last updated: 2026-11-14** (two change tables below: medium-issue round, then security & correctness fixes). Previously verified 2026-07-19 (Hostinger hardening `68d32f4` — exports/PDF, permissions SoT, SSE auth, ops logs, `noEmployeeRecord` empty reads)
+> **Last updated: 2026-11-14** (three change tables below: live UI audit fixes, medium-issue round, then security & correctness fixes). Previously verified 2026-07-19 (Hostinger hardening `68d32f4` — exports/PDF, permissions SoT, SSE auth, ops logs, `noEmployeeRecord` empty reads)
 > **Production API (Hostinger):** `https://ems-api.saqibsaeed.cloud/api/v1`
 > Legacy Render (do not use for this product): `https://employee-management-system-2b9q.onrender.com/api/v1`
 > Local: `http://localhost:4000/api/v1` (or compose port)
@@ -11,6 +11,18 @@
 > **MSW (Mock Service Worker):** The deployed Vercel frontend has `NEXT_PUBLIC_USE_MOCKS` controlled by the Vercel env var. Default in code is `false`. If set to `true`, Phase 3 API calls are intercepted by MSW in the browser before reaching the backend BFF proxy. Set it to `false` in Vercel dashboard → Settings → Environment Variables to force real backend calls.
 
 ---
+
+## 2026-11-14 (round 3) — fixes from the live UI audit
+
+| Area | Endpoint | Change |
+|---|---|---|
+| Leave | `GET`/`POST /leave/requests/preview` | Adds the fields the New Leave Request dialog reads: `balanceBefore`, `balanceAfter` (null without `leaveTypeId`) and `errors: string[]` — every reason submit would refuse (`Leave type not found`, no chargeable days, no/insufficient balance, overlap), in submit's order; empty = submittable. Submit (`POST /leave/requests`) now runs the same checks and returns the first one, so the dialog and submit always agree. The dialog crashed on every real preview because `errors` was missing. |
+| Employees | `POST /employees` (`sendInvite: true`), `POST /employees/:id/invite`, public resend | The invite goes to the preferred address (body `emailTarget`, else the tenant's `invite_email_target`) and falls back to the other one when it is blank. Before, a hire with no personal email (default target PERSONAL) got **no login account** and their chosen role was dropped. `invite.sentTo` reports the address used (`WORK`/`PERSONAL`). |
+| Employees | `PATCH /employees/:id/role` | **New.** Body `{ memberType: SUPER_ADMIN\|HR_ADMIN\|MANAGER\|EMPLOYEE\|AUDITOR }` → `200 { userId, memberType, previous }`. `employees:write`; granting or removing SUPER_ADMIN needs `permissions:manage` → else `403`. Own role → `403`. Last active super admin → `409 LAST_SUPER_ADMIN`. No login yet → `409 NO_ACCOUNT`. Drops the old system-role link and ends the user's sessions (new permissions apply at next sign-in). Audit action `ROLE_CHANGED`. |
+| Employees | `GET /employees/next-code`, `POST /employees`, `PATCH /employees/:id` | Employee codes are checked **per company** (matches the DB unique key). A new company's first code is `E0001` (was continuing after other companies' codes), and a code another company uses is no longer refused with `409 DUPLICATE_EMPLOYEE_CODE`. |
+| Timesheets | `GET /timesheets/audit` | Week history now works: submit / recall / approve / reject are recorded (audit rows, `entityType: Timesheet`) and served as `[{ id, timesheetId, weekStart, employeeId, action: WEEK_SUBMITTED\|WEEK_RECALLED\|WEEK_APPROVED\|WEEK_REJECTED, actor, at, comment? }]`, newest first. Open to every signed-in user: approvers (`timesheets:approve`) read any employee, everyone else only their own weeks (was `403` for employees and always empty for approvers). |
+| Leave Engine | `POST /leave/policies/:id/new-version` | Accepts an unsaved starter-pack id (`pack-in`, `pack-global`, …), which `GET /leave/policies` lists when the tenant has no saved policies: the pack is saved, then versioned → `201` (was `404 No such policy`). |
+| Auth | `POST /auth/register` | Optional `country` (ISO 3166-1 alpha-2, e.g. `IN`) stored as the company country → `422 VALIDATION_ERROR` if not two letters. Employees with no legal entity resolve holidays through the company country, so without it country-tagged holidays never reached them. Response `tenant.country` echoes it. |
 
 ## 2026-11-14 (round 2) — medium issues, email, auto-deploy
 

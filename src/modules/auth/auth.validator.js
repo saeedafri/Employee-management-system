@@ -63,4 +63,7 @@ export const registerSchema = z.object({
   fullName: z.string().trim().min(2, 'Full name must be at least 2 characters'),
   email: z.string().email('Invalid email').toLowerCase().trim(),
   password: z.string().min(8, 'Password must be at least 8 characters'),
+  // ISO 3166-1 alpha-2. Optional; without it, country-tagged holidays can't reach employees
+  // who have no legal entity yet (the resolver falls back to the company's country).
+  country: z.string().trim().regex(/^[A-Za-z]{2}$/, 'Country must be a 2-letter ISO code').transform((c) => c.toUpperCase()).optional(),
 });

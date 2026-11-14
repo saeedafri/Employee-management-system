@@ -67,11 +67,11 @@ export async function previewLeaveRequest(request, reply) {
     const tenantId = request.tenant.id;
     const employeeId = request.user.employeeId;
     // POST sends a body; the frontend's GET sends the same fields as query params.
-    const { startDate, endDate } = request.body ?? request.query ?? {};
+    const { startDate, endDate, leaveTypeId } = request.body ?? request.query ?? {};
     if (!startDate || !endDate) {
       return reply.code(422).send(errorResponse('VALIDATION_ERROR', 'startDate and endDate are required', {}, request.id));
     }
-    const preview = await leaveService.previewLeaveRequest(tenantId, employeeId, { startDate, endDate });
+    const preview = await leaveService.previewLeaveRequest(tenantId, employeeId, { startDate, endDate, leaveTypeId });
     return reply.code(200).send(successResponse(preview));
   } catch (error) {
     return reply.code(500).send(errorResponse('INTERNAL_ERROR', error.message, {}, request.id));

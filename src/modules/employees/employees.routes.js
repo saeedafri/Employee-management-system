@@ -20,6 +20,7 @@ import {
   uploadPhoto,
   deletePhoto,
   sendInvite,
+  changeRole,
 } from './employees.controller.js';
 
 export async function employeesRoutes(fastify) {
@@ -129,6 +130,32 @@ export async function employeesRoutes(fastify) {
       preValidation: [requirePermission('employees:write')],
     },
     createEmployee,
+  );
+
+  fastify.patch(
+    '/employees/:id/role',
+    {
+      onRequest: [requirePermission('employees:write')],
+      schema: {
+        tags: ['Employees'],
+        description: 'Change the login role (memberType) of an employee\'s account. Only a super admin may grant or remove SUPER_ADMIN; you cannot change your own role; the last active super admin cannot be demoted. Ends the user\'s sessions so the new permissions apply at next sign-in. 409 NO_ACCOUNT when the employee has no login yet (send an invite first).',
+        security: [{ Bearer: [] }],
+        params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
+        body: {
+          type: 'object',
+          required: ['memberType'],
+          additionalProperties: false,
+          properties: { memberType: { type: 'string', enum: ['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER', 'EMPLOYEE', 'AUDITOR'] } },
+        },
+        response: {
+          200: { type: 'object', additionalProperties: true },
+          403: { type: 'object', additionalProperties: true },
+          404: { type: 'object', additionalProperties: true },
+          409: { type: 'object', additionalProperties: true },
+        },
+      },
+    },
+    changeRole,
   );
 
   fastify.post(

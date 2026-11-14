@@ -1,5 +1,12 @@
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as service from './timesheets.service.js';
+import { recordAuditLog } from '../auditLogs/auditLogs.service.js';
+
+// One row per week action — GET /timesheets/audit serves these as the History panel.
+function logWeek(request, sheet, action, comment) {
+  const values = { employeeId: sheet.employeeId, weekStart: sheet.weekStart, actor: request.user.email, comment: comment?.trim() || undefined };
+  return recordAuditLog(request.tenant.id, request.user.id, action, 'Timesheet', sheet.id, null, values).catch(() => {});
+}
 
 // ── Projects ──────────────────────────────────────────────────────────────────
 
@@ -121,6 +128,7 @@ export async function submitTimesheet(request, reply) {
   try {
     const sheet = await service.submitTimesheet(request.tenant.id, request.params.id, request.user.employeeId);
     if (!sheet) return reply.code(404).send(errorResponse('NOT_FOUND', 'Timesheet not found', {}, request.id));
+    await logWeek(request, sheet, 'WEEK_SUBMITTED');
     return reply.send(successResponse(sheet));
   } catch (err) {
     if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
@@ -134,6 +142,7 @@ export async function approveTimesheet(request, reply) {
     const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
     const sheet = await service.approveTimesheet(request.tenant.id, request.params.id, actor, comment);
     if (!sheet) return reply.code(404).send(errorResponse('NOT_FOUND', 'Timesheet not found', {}, request.id));
+    await logWeek(request, sheet, 'WEEK_APPROVED', comment);
     return reply.send(successResponse(sheet));
   } catch (err) {
     if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
@@ -147,6 +156,7 @@ export async function rejectTimesheet(request, reply) {
     const actor = { id: request.user.id, employeeId: request.user.employeeId, memberType: request.user.memberType };
     const sheet = await service.rejectTimesheet(request.tenant.id, request.params.id, actor, comment);
     if (!sheet) return reply.code(404).send(errorResponse('NOT_FOUND', 'Timesheet not found', {}, request.id));
+    await logWeek(request, sheet, 'WEEK_REJECTED', comment);
     return reply.send(successResponse(sheet));
   } catch (err) {
     if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));
@@ -170,6 +180,7 @@ export async function recallTimesheet(request, reply) {
   try {
     const sheet = await service.recallTimesheet(request.tenant.id, request.params.id, request.user.employeeId);
     if (!sheet) return reply.code(404).send(errorResponse('NOT_FOUND', 'Timesheet not found', {}, request.id));
+    await logWeek(request, sheet, 'WEEK_RECALLED');
     return reply.send(successResponse(sheet));
   } catch (err) {
     if (err.statusCode) return reply.code(err.statusCode).send(errorResponse(err.code, err.message, {}, request.id));

@@ -92,12 +92,12 @@ export default async function leaveRoutes(fastify) {
   fastify.post('/leave/requests/preview', {
     schema: {
       tags: ['Leave Management'],
-      description: 'Holiday-aware chargeable-day preview for a leave request. Uses the shared holiday engine — excludes weekends (employee work-week) and resolved public holidays (same set the calendar shows + payroll counts). Returns { calendarDays, weekendDays, holidayDays, chargeableDays, holidaysExcluded[] }.',
+      description: 'Holiday-aware dry run of a leave request. Uses the shared holiday engine — excludes weekends (employee work-week) and resolved public holidays (same set the calendar shows + payroll counts). Returns { calendarDays, weekendDays, holidayDays, chargeableDays, holidaysExcluded[], balanceBefore, balanceAfter, errors[] }. errors[] lists every reason submit would refuse (empty = submittable); balances are null without leaveTypeId.',
       security: [{ Bearer: [] }],
       body: {
         type: 'object',
         required: ['startDate', 'endDate'],
-        properties: { startDate: { type: 'string' }, endDate: { type: 'string' } },
+        properties: { startDate: { type: 'string' }, endDate: { type: 'string' }, leaveTypeId: { type: 'string' } },
       },
       response: { 200: { type: 'object', additionalProperties: true } },
     },

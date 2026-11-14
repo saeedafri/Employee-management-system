@@ -22,10 +22,9 @@ function* eachDayUTC(startDate, endDate) {
  * Consumes the SHARED holiday resolver — the same engine payroll + attendance use — so the
  * holidays excluded here are identical to the ones the calendar shows and payroll counts.
  */
-export async function previewLeaveRequest(tenantId, employeeId, { startDate, endDate }) {
-  const { dates, holidays, workWeekDays } = await resolveHolidayDateSet(prisma, tenantId, {
-    employeeId, from: startDate, to: endDate,
-  });
+export async function previewLeaveRequest(tenantId, employeeId, { startDate, endDate, leaveTypeId }) {
+  const check = await checkLeaveRequest(tenantId, employeeId, { leaveTypeId, startDate, endDate });
+  const { dates, holidays, workWeekDays } = check;
   const workSet = new Set(workWeekDays);
   let calendarDays = 0; let weekendDays = 0; let holidayDays = 0; let chargeableDays = 0;
   for (const d of eachDayUTC(startDate, endDate)) {
@@ -41,7 +40,62 @@ export async function previewLeaveRequest(tenantId, employeeId, { startDate, end
       date: hh.holidayDate.slice(0, 10), name: hh.name, observed: hh.observed,
     })),
     workWeekDays,
+    // What the request dialog shows: balance before/after this request and every reason
+    // submit would refuse it (empty = submittable). Balances are null without a leave type.
+    balanceBefore: check.available,
+    balanceAfter: check.available === null ? null : check.available - chargeableDays,
+    errors: check.problems.map((p) => p.message),
   };
+}
+
+// Everything that blocks a leave request, in the order submit reports it. The preview lists
+// them all; submit throws the first — so the dialog warns about exactly what submit refuses.
+async function checkLeaveRequest(tenantId, employeeId, { leaveTypeId, startDate, endDate }) {
+  const problems = [];
+  const resolved = leaveTypeId ? await resolveRequestLeaveType(tenantId, leaveTypeId) : null;
+  if (leaveTypeId && !resolved) {
+    problems.push({ message: 'Leave type not found', code: 'LEAVE_TYPE_NOT_FOUND', status: 404 });
+  }
+
+  // BE-PAY-2: charge only working, non-holiday days — same resolver the calendar and payroll use.
+  const { dates, holidays, workWeekDays } = await resolveHolidayDateSet(prisma, tenantId, {
+    employeeId, from: startDate, to: endDate,
+  });
+  const totalDays = chargeableDaysBetween(startDate, endDate, workWeekDays, dates);
+  if (totalDays <= 0) {
+    problems.push({ message: 'Selected dates contain no chargeable working days (all weekly-offs/holidays)', code: 'NO_CHARGEABLE_DAYS', status: 400 });
+  }
+
+  // Without an employee id the balance and overlap queries would run tenant-wide.
+  const available = resolved && employeeId ? await availableDays(tenantId, employeeId, resolved) : null;
+  if (resolved && available === null) {
+    problems.push({ message: 'No leave balance found for this leave type', code: 'NO_LEAVE_BALANCE', status: 400 });
+  } else if (available !== null && totalDays > available) {
+    problems.push({
+      message: `Insufficient leave balance. Available: ${available}, Requested: ${totalDays}`,
+      code: 'INSUFFICIENT_BALANCE', status: 400, details: { available, requested: totalDays },
+    });
+  }
+
+  const overlapping = employeeId
+    ? await leaveRepository.checkOverlappingLeaves(tenantId, employeeId, startDate, endDate)
+    : null;
+  if (overlapping) {
+    problems.push({ message: 'Overlapping leave request exists', code: 'OVERLAPPING_LEAVE', status: 400, details: { existingLeaveId: overlapping.id } });
+  }
+  return { resolved, totalDays, available, problems, dates, holidays, workWeekDays };
+}
+
+// Days the employee can still take: engine ledger for policy types, legacy LeaveBalance
+// rows otherwise. null = no balance for this type at all.
+async function availableDays(tenantId, employeeId, resolved) {
+  if (resolved.mode === 'policy') {
+    const balances = await leaveEngineService.getBalancesForEmployee(prisma, tenantId, employeeId);
+    const b = balances.find((x) => x.leaveTypeCode === resolved.code || x.leaveTypeId === resolved.code);
+    return b ? b.available : null;
+  }
+  const balance = await leaveRepository.getLeaveBalance(tenantId, employeeId, resolved.typeRowId);
+  return balance ? balance.balance - balance.pending : null;
 }
 
 export async function getLeaveTypes(tenantId) {
@@ -152,70 +206,10 @@ async function classifyStoredLeaveType(tenantId, typeRowId) {
 export async function createLeaveRequest(tenantId, employeeId, {
   leaveTypeId, startDate, endDate, reason,
 }) {
-  const resolved = await resolveRequestLeaveType(tenantId, leaveTypeId);
-  if (!resolved) {
-    throw new AppError('Leave type not found', 'LEAVE_TYPE_NOT_FOUND', 404);
-  }
-
-  // BE-PAY-2: charge only working, non-holiday days — same resolver the preview,
-  // calendar, and payroll use, so submit == preview == what payroll counts.
-  const { dates: holidaySet, workWeekDays } = await resolveHolidayDateSet(prisma, tenantId, {
-    employeeId, from: startDate, to: endDate,
-  });
-  const totalDays = chargeableDaysBetween(startDate, endDate, workWeekDays, holidaySet);
-  if (totalDays <= 0) {
-    throw new AppError(
-      'Selected dates contain no chargeable working days (all weekly-offs/holidays)',
-      'NO_CHARGEABLE_DAYS',
-      400,
-    );
-  }
-
-  // Balance check — engine ledger (source of truth for /leave/balance) for policy types,
-  // legacy LeaveBalance rows otherwise.
-  if (resolved.mode === 'policy') {
-    const balances = await leaveEngineService.getBalancesForEmployee(prisma, tenantId, employeeId);
-    const b = balances.find((x) => x.leaveTypeCode === resolved.code || x.leaveTypeId === resolved.code);
-    if (!b) {
-      throw new AppError('No leave balance found for this leave type', 'NO_LEAVE_BALANCE', 400);
-    }
-    if (totalDays > b.available) {
-      throw new AppError(
-        `Insufficient leave balance. Available: ${b.available}, Requested: ${totalDays}`,
-        'INSUFFICIENT_BALANCE',
-        400,
-        { available: b.available, requested: totalDays },
-      );
-    }
-  } else {
-    const balance = await leaveRepository.getLeaveBalance(tenantId, employeeId, resolved.typeRowId);
-    if (!balance) {
-      throw new AppError('No leave balance found for this leave type', 'NO_LEAVE_BALANCE', 400);
-    }
-    const availableBalance = balance.balance - balance.pending;
-    if (totalDays > availableBalance) {
-      throw new AppError(
-        `Insufficient leave balance. Available: ${availableBalance}, Requested: ${totalDays}`,
-        'INSUFFICIENT_BALANCE',
-        400,
-        { available: availableBalance, requested: totalDays },
-      );
-    }
-  }
-
-  const overlappingLeave = await leaveRepository.checkOverlappingLeaves(
-    tenantId,
-    employeeId,
-    startDate,
-    endDate,
-  );
-  if (overlappingLeave) {
-    throw new AppError(
-      'Overlapping leave request exists',
-      'OVERLAPPING_LEAVE',
-      400,
-      { existingLeaveId: overlappingLeave.id },
-    );
+  const { resolved, totalDays, problems } = await checkLeaveRequest(tenantId, employeeId, { leaveTypeId, startDate, endDate });
+  if (problems.length) {
+    const [p] = problems;
+    throw new AppError(p.message, p.code, p.status, p.details);
   }
 
   const leaveRequest = await leaveRepository.createLeaveRequest({

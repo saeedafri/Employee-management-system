@@ -2,6 +2,7 @@
 // (ems-frontend/src/mocks/handlers/timesheets.ts) for MSW-off parity.
 import { successResponse, errorResponse } from '../../utils/response.js';
 import * as svc from './timesheetsConfig.service.js';
+import { hasPermission } from '../auth/auth.policy.js';
 
 function actor(request) {
   return {
@@ -40,7 +41,13 @@ export async function deleteLock(request, reply) {
 // ── Audit ──
 export async function getAudit(request, reply) {
   try {
-    const { timesheetId, week, employeeId } = request.query || {};
+    const { timesheetId, week } = request.query || {};
+    let { employeeId } = request.query || {};
+    // Non-approvers read the history of their own weeks only (the History button is on My Timesheet).
+    if (!hasPermission(request.user, 'timesheets:approve')) {
+      if (!request.user.employeeId) return reply.code(403).send(errorResponse('FORBIDDEN', 'Insufficient permissions for this action', {}, request.id));
+      employeeId = request.user.employeeId;
+    }
     return reply.send(successResponse(await svc.getAudit(request.tenant.id, { timesheetId, week, employeeId })));
   } catch (e) { return fail(reply, request, e); }
 }

@@ -15,7 +15,7 @@ export default async function timesheetsConfigRoutes(fastify) {
   fastify.delete('/timesheets/locks/:id', { schema: { tags: T, description: 'Remove a period lock (HR_ADMIN/SUPER_ADMIN)', security: [{ Bearer: [] }], params: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } }, response: ok }, onRequest: [authenticate, canAdminTimesheets] }, c.deleteLock);
 
   // Audit trail
-  fastify.get('/timesheets/audit', { schema: { tags: T, description: 'Timesheet activity audit trail (filter ?timesheetId/?week/?employeeId)', security: [{ Bearer: [] }], querystring: { type: 'object', properties: { timesheetId: { type: 'string' }, week: { type: 'string' }, employeeId: { type: 'string' } } }, response: ok }, onRequest: [authenticate, canApproveTimesheets] }, c.getAudit);
+  fastify.get('/timesheets/audit', { schema: { tags: T, description: 'Timesheet activity audit trail (filter ?timesheetId/?week/?employeeId). Approvers (timesheets:approve) see any employee; everyone else sees only entries for their own timesheets.', security: [{ Bearer: [] }], querystring: { type: 'object', properties: { timesheetId: { type: 'string' }, week: { type: 'string' }, employeeId: { type: 'string' } } }, response: ok }, onRequest: [authenticate] }, c.getAudit);
 
   // Approval chain
   fastify.get('/timesheets/approval-chain', { schema: { tags: T, description: 'Approval chain steps', security: [{ Bearer: [] }], response: ok }, onRequest: [authenticate, canApproveTimesheets] }, c.getApprovalChain);

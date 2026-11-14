@@ -29,10 +29,16 @@ async function getCompanyName(tenantId) {
   return tenant?.name ?? 'Your Company';
 }
 
-function resolveEmailAddress(employee, emailTarget) {
-  if (emailTarget === 'WORK') return employee.workEmail ?? null;
-  return employee.personalEmail ?? null;
+// Where an invite goes: the preferred address, else the other one. The work email is
+// required on every employee, so an invite is never silently dropped (a blank optional
+// personal email used to leave the hire with no account and their role discarded).
+export function inviteDelivery(employee, preferredTarget) {
+  const byTarget = { WORK: employee.workEmail, PERSONAL: employee.personalEmail };
+  const other = preferredTarget === 'WORK' ? 'PERSONAL' : 'WORK';
+  const target = byTarget[preferredTarget] ? preferredTarget : other;
+  return { target, email: byTarget[target] ?? null };
 }
+
 
 async function invalidatePriorInvites(userId, tenantId) {
   await prisma.userInvitation.updateMany({
@@ -99,8 +105,7 @@ async function writeAuditLog(tenantId, actorUserId, action, entityId, extra = {}
  * Used by POST /employees (sendInvite=true) and POST /employees/:id/invite.
  */
 export async function createAndSendInvite(tenantId, employee, emailTargetOverride, createdById, memberType = 'EMPLOYEE') {
-  const emailTarget = emailTargetOverride ?? (await getInviteEmailTarget(tenantId));
-  const email = resolveEmailAddress(employee, emailTarget);
+  const { target: emailTarget, email } = inviteDelivery(employee, emailTargetOverride ?? (await getInviteEmailTarget(tenantId)));
 
   if (!email) {
     return {
@@ -278,12 +283,11 @@ export async function publicResendInvite(email) {
     orderBy: { createdAt: 'desc' },
   });
 
-  const emailTarget = existingInvite?.emailTarget ?? (await getInviteEmailTarget(user.tenantId));
+  const { target: emailTarget, email: deliveryEmail } = inviteDelivery(employee, existingInvite?.emailTarget ?? (await getInviteEmailTarget(user.tenantId)));
 
   // Invalidate old invites
   await invalidatePriorInvites(user.id, user.tenantId);
 
-  const deliveryEmail = resolveEmailAddress(employee, emailTarget) ?? employee.workEmail;
   if (!deliveryEmail) return { queued: false };
 
   const companyName = await getCompanyName(user.tenantId);

@@ -66,15 +66,27 @@ export async function deleteLock(tenantId, id, userId) {
 
 // ── Audit ────────────────────────────────────────────────────────────────────
 export async function getAudit(tenantId, { timesheetId, week, employeeId } = {}) {
-  const log = await getBlob(tenantId, 'auditLog', []);
-  return log
-    .filter(
-      (a) =>
-        (!timesheetId || a.timesheetId === timesheetId) &&
-        (!week || a.weekStart === week) &&
-        (!employeeId || a.employeeId === employeeId),
-    )
-    .sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const on = (key, value) => ({ newValuesJson: { path: [key], equals: value } });
+  const rows = await prisma.auditLog.findMany({
+    where: {
+      tenantId,
+      entityType: 'Timesheet',
+      ...(timesheetId && { entityId: timesheetId }),
+      AND: [employeeId && on('employeeId', employeeId), week && on('weekStart', week)].filter(Boolean),
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 200,
+  });
+  return rows.map((r) => ({
+    id: r.id,
+    timesheetId: r.entityId,
+    weekStart: r.newValuesJson?.weekStart,
+    employeeId: r.newValuesJson?.employeeId,
+    action: r.action,
+    actor: r.newValuesJson?.actor ?? 'System',
+    at: r.createdAt.toISOString(),
+    ...(r.newValuesJson?.comment && { comment: r.newValuesJson.comment }),
+  }));
 }
 
 // ── Approval chain ───────────────────────────────────────────────────────────

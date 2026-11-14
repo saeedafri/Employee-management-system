@@ -556,7 +556,15 @@ export async function createPolicyVersion(prisma, tenantId, input) {
 }
 
 export async function newPolicyVersion(prisma, tenantId, id) {
-  const src = await repo.getPolicyById(prisma, tenantId, id);
+  let src = await repo.getPolicyById(prisma, tenantId, id);
+  // listPolicies shows unsaved starter packs (id `pack-in`…) when a tenant has none, with a
+  // "New version" button — save that pack first, then version the saved copy.
+  const pack = !src && LEAVE_STARTER_PACKS.find((p) => p.id === id);
+  if (pack) {
+    const { policies } = await seedPacks(prisma, tenantId, pack.country);
+    const seeded = policies.find((p) => p.version === pack.version);
+    src = seeded && (await repo.getPolicyById(prisma, tenantId, seeded.id));
+  }
   if (!src) return null;
   return createPolicyVersion(prisma, tenantId, {
     country: src.country,

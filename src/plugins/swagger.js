@@ -212,9 +212,15 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           delete: op('Employees', 'Delete / terminate employee', true, { parameters: idParam }),
         },
         '/employees/{id}/invite': {
-          post: op('Employees', 'Send or resend invitation email for an employee. Creates/links User with INVITED status if needed. Rate-limited 3/hr per employee. Errors: 404 EMPLOYEE_NOT_FOUND, 409 ALREADY_ACTIVE, 409 EMPLOYEE_TERMINATED, 422 NO_DELIVERY_EMAIL, 429 RATE_LIMITED.', true, {
+          post: op('Employees', 'Send or resend invitation email for an employee. Creates/links User with INVITED status if needed. Delivered to the preferred address (body emailTarget, else the tenant setting), falling back to the other address when it is blank — `sentTo` says which was used. Rate-limited 3/hr per employee. Errors: 404 EMPLOYEE_NOT_FOUND, 409 ALREADY_ACTIVE, 409 EMPLOYEE_TERMINATED, 429 RATE_LIMITED.', true, {
             parameters: idParam,
             responses: { 200: r200, 404: r404, 409: r409, 422: r422, 429: { description: 'RATE_LIMITED' } },
+          }),
+        },
+        '/employees/{id}/role': {
+          patch: op('Employees', 'Change the login role (memberType) of an employee\'s account. Body { memberType: SUPER_ADMIN|HR_ADMIN|MANAGER|EMPLOYEE|AUDITOR } → 200 { userId, memberType, previous }. Needs employees:write; granting or removing SUPER_ADMIN needs permissions:manage (403). Own role → 403. Demoting the last active super admin → 409 LAST_SUPER_ADMIN. No login yet → 409 NO_ACCOUNT (invite first). The user\'s sessions end so the new permissions apply at next sign-in.', true, {
+            parameters: [...idParam, { in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['memberType'], properties: { memberType: { type: 'string', enum: ['SUPER_ADMIN', 'HR_ADMIN', 'MANAGER', 'EMPLOYEE', 'AUDITOR'] } } } }],
+            responses: { 200: r200, 403: { description: 'FORBIDDEN' }, 404: r404, 409: r409 },
           }),
         },
         '/employees/export/csv': {
@@ -318,7 +324,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           delete: op('Timesheets', 'Remove a period lock (HR_ADMIN, SUPER_ADMIN)', true, { parameters: idParam }),
         },
         '/timesheets/audit': {
-          get: op('Timesheets', 'Timesheet activity audit trail (MANAGER+)', true, { parameters: [queryParam('timesheetId', 'string', ''), queryParam('week', 'string', 'weekStart YYYY-MM-DD'), queryParam('employeeId', 'string', '')] }),
+          get: op('Timesheets', 'Week history: [{ id, timesheetId, weekStart, employeeId, action: WEEK_SUBMITTED|WEEK_RECALLED|WEEK_APPROVED|WEEK_REJECTED, actor, at, comment? }], newest first. Approvers (timesheets:approve) read any employee; everyone else gets only their own weeks (employeeId is forced to theirs).', true, { parameters: [queryParam('timesheetId', 'string', ''), queryParam('week', 'string', 'weekStart YYYY-MM-DD'), queryParam('employeeId', 'string', '')] }),
         },
         '/timesheets/approval-chain': {
           get:   op('Timesheets', 'Approval chain steps (MANAGER+)'),
@@ -422,8 +428,8 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Leave', 'Create leave request. Body { leaveTypeId, startDate, endDate, reason }. `leaveTypeId` accepts EITHER a legacy LeaveType id OR a policy leave code (EL/SL/CL/CO) — on policy-pack tenants the code from GET /leave/types is resolved via active policies and bridged to a backing LeaveType, validated against the ledger balance (granted − used − pending), and a LEAVE_PENDING_HOLD ledger txn is posted. `totalDays` is the chargeable working-day count — excludes weekly-offs + public holidays, same value as POST /leave/requests/preview → chargeableDays. 404 LEAVE_TYPE_NOT_FOUND only when the code matches no policy/legacy type; 400 INSUFFICIENT_BALANCE when no balance; 400 NO_CHARGEABLE_DAYS when the whole range is weekend/holiday.', true, { responses: { 201: r201, 400: { description: 'NO_CHARGEABLE_DAYS | INSUFFICIENT_BALANCE | OVERLAPPING_LEAVE | NO_LEAVE_BALANCE' }, 404: { description: 'LEAVE_TYPE_NOT_FOUND' } } }),
         },
         '/leave/requests/preview': {
-          post: op('Leave', 'Holiday-aware chargeable-day preview (HOLIDAY_ENGINE_BACKEND_CONTRACT §3). Excludes weekends (employee work-week) + resolved public holidays via the shared holiday engine — same set the calendar shows + payroll counts. Returns { calendarDays, weekendDays, holidayDays, chargeableDays, holidaysExcluded:[{date,name,observed}], workWeekDays }.', true, {
-            parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['startDate', 'endDate'], properties: { startDate: { type: 'string' }, endDate: { type: 'string' } } } }],
+          post: op('Leave', 'Holiday-aware dry run of a leave request (HOLIDAY_ENGINE_BACKEND_CONTRACT §3). Excludes weekends (employee work-week) + resolved public holidays via the shared holiday engine — same set the calendar shows + payroll counts. Returns { calendarDays, weekendDays, holidayDays, chargeableDays, holidaysExcluded:[{date,name,observed}], workWeekDays, balanceBefore, balanceAfter, errors:string[] }. errors[] holds every reason submit would refuse (type not found, no chargeable days, no/insufficient balance, overlap) — empty means submittable. balanceBefore/After are null when leaveTypeId is omitted.', true, {
+            parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', required: ['startDate', 'endDate'], properties: { startDate: { type: 'string' }, endDate: { type: 'string' }, leaveTypeId: { type: 'string' } } } }],
             responses: { 200: r200, 422: r422 },
           }),
           get: op('Leave', 'Same preview as POST, with startDate/endDate (and optional leaveTypeId) as query params — the form the frontend calls.', true, {
@@ -1128,7 +1134,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           post: op('Leave Engine', 'Create a DRAFT policy version (HR_ADMIN, SUPER_ADMIN)', true, { responses: { 201: r201 }, parameters: [{ in: 'body', name: 'body', required: true, schema: { type: 'object', additionalProperties: true } }] }),
         },
         '/leave/policies/{id}/new-version': {
-          post: op('Leave Engine', 'Clone a policy into a new DRAFT version (HR_ADMIN, SUPER_ADMIN)', true, { parameters: idParam, responses: { 201: r201, 404: r404 } }),
+          post: op('Leave Engine', 'Clone a policy into a new DRAFT version (HR_ADMIN, SUPER_ADMIN). Also accepts an unsaved starter-pack id (pack-in, pack-global…) as listed when the tenant has no saved policies: the pack is saved first, then versioned.', true, { parameters: idParam, responses: { 201: r201, 404: r404 } }),
         },
         '/leave/policies/{id}': {
           patch: op('Leave Engine', 'Patch a DRAFT policy — 409 if PUBLISHED (HR_ADMIN, SUPER_ADMIN)', true, { parameters: idParam, responses: { 200: r200, 404: r404, 409: r409 } }),
