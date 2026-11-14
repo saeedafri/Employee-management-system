@@ -90,8 +90,10 @@ export async function recordAuditLog(tenantId, actorUserId, action, entityType, 
       action,
       entityType,
       entityId,
-      oldValuesJson: oldValues ? JSON.stringify(oldValues) : null,
-      newValuesJson: newValues ? JSON.stringify(newValues) : null,
+      // Json columns: store the object itself. Stringifying made each row a JSON *string*
+      // that JSON-path filters can't see (normalizeAuditJson still reads old string rows).
+      oldValuesJson: oldValues ?? undefined,
+      newValuesJson: newValues ?? undefined,
       ipAddress,
       userAgent,
     },

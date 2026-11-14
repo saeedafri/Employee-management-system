@@ -142,7 +142,7 @@ export async function createEmployee(tenantId, data, userId, { canGrantSuperAdmi
         const cfg = await prisma.tenantConfig.findUnique({ where: { tenantId }, select: { inviteEmailTarget: true } });
         preferred = cfg?.inviteEmailTarget ?? 'PERSONAL';
       }
-      ({ target: resolvedEmailTarget, email: deliveryEmail } = inviteDelivery(employeeData, preferred));
+      ({ target: resolvedEmailTarget, email: deliveryEmail } = inviteDelivery(employeeData, preferred, { explicit: Boolean(emailTarget) }));
 
       const cfg = await prisma.tenantConfig.findUnique({ where: { tenantId }, select: { companyName: true } });
       if (cfg?.companyName) {

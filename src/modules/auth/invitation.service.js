@@ -29,14 +29,14 @@ async function getCompanyName(tenantId) {
   return tenant?.name ?? 'Your Company';
 }
 
-// Where an invite goes: the preferred address, else the other one. The work email is
-// required on every employee, so an invite is never silently dropped (a blank optional
-// personal email used to leave the hire with no account and their role discarded).
-export function inviteDelivery(employee, preferredTarget) {
+// Where an invite goes. A target the caller chose explicitly is honoured as-is; the tenant
+// default falls back to the other address when blank. The work email is required, so a
+// default invite is never dropped (a blank optional personal email used to leave the hire
+// with no account and their role discarded).
+export function inviteDelivery(employee, target, { explicit = false } = {}) {
   const byTarget = { WORK: employee.workEmail, PERSONAL: employee.personalEmail };
-  const other = preferredTarget === 'WORK' ? 'PERSONAL' : 'WORK';
-  const target = byTarget[preferredTarget] ? preferredTarget : other;
-  return { target, email: byTarget[target] ?? null };
+  const used = explicit || byTarget[target] ? target : target === 'WORK' ? 'PERSONAL' : 'WORK';
+  return { target: used, email: byTarget[used] ?? null };
 }
 
 
@@ -105,7 +105,9 @@ async function writeAuditLog(tenantId, actorUserId, action, entityId, extra = {}
  * Used by POST /employees (sendInvite=true) and POST /employees/:id/invite.
  */
 export async function createAndSendInvite(tenantId, employee, emailTargetOverride, createdById, memberType = 'EMPLOYEE') {
-  const { target: emailTarget, email } = inviteDelivery(employee, emailTargetOverride ?? (await getInviteEmailTarget(tenantId)));
+  const { target: emailTarget, email } = emailTargetOverride
+    ? inviteDelivery(employee, emailTargetOverride, { explicit: true })
+    : inviteDelivery(employee, await getInviteEmailTarget(tenantId));
 
   if (!email) {
     return {

@@ -72,7 +72,7 @@ GET /leave/requests/preview?leaveTypeId=EL&startDate=2026-11-24&endDate=2026-11-
 
 ### 2.3 Invites never drop the account (live)
 
-`POST /employees` with `sendInvite: true` (and `POST /employees/:id/invite`) send to the preferred address (body `emailTarget`, else Settings → Company Profile → "Send invites to"). When that address is blank they **fall back to the other one**. Before, a hire with no personal email got no account and lost their role. The response `invite.sentTo` (`WORK` or `PERSONAL`) is the address actually used. `NO_DELIVERY_EMAIL` can no longer happen in practice, because the work email is required.
+`POST /employees` with `sendInvite: true` (and `POST /employees/:id/invite`) without `emailTarget` (what the form sends) go to Settings → Company Profile → "Send invites to". When that address is blank they **fall back to the other one**. An explicit `emailTarget` is honoured as-is. Before, a hire with no personal email got no account and lost their role. The response `invite.sentTo` (`WORK` or `PERSONAL`) is the address actually used. Without `emailTarget`, `NO_DELIVERY_EMAIL` can no longer happen, because the work email is required.
 
 | # | Task | UI status |
 |---|---|---|

@@ -77,8 +77,9 @@ async function checkLeaveRequest(tenantId, employeeId, { leaveTypeId, startDate,
     });
   }
 
+  // Prisma DateTime filters need Date objects; the preview passes raw YYYY-MM-DD strings.
   const overlapping = employeeId
-    ? await leaveRepository.checkOverlappingLeaves(tenantId, employeeId, startDate, endDate)
+    ? await leaveRepository.checkOverlappingLeaves(tenantId, employeeId, new Date(startDate), new Date(endDate))
     : null;
   if (overlapping) {
     problems.push({ message: 'Overlapping leave request exists', code: 'OVERLAPPING_LEAVE', status: 400, details: { existingLeaveId: overlapping.id } });

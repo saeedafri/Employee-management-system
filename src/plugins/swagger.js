@@ -212,7 +212,7 @@ Copy the \`accessToken\` cookie value from browser DevTools (Application → Coo
           delete: op('Employees', 'Delete / terminate employee', true, { parameters: idParam }),
         },
         '/employees/{id}/invite': {
-          post: op('Employees', 'Send or resend invitation email for an employee. Creates/links User with INVITED status if needed. Delivered to the preferred address (body emailTarget, else the tenant setting), falling back to the other address when it is blank — `sentTo` says which was used. Rate-limited 3/hr per employee. Errors: 404 EMPLOYEE_NOT_FOUND, 409 ALREADY_ACTIVE, 409 EMPLOYEE_TERMINATED, 429 RATE_LIMITED.', true, {
+          post: op('Employees', 'Send or resend invitation email for an employee. Creates/links User with INVITED status if needed. With no body emailTarget it goes to the address in the tenant setting, falling back to the other one when blank — `sentTo` says which was used; an explicit emailTarget is honoured as-is (422 NO_DELIVERY_EMAIL if missing). Rate-limited 3/hr per employee. Errors: 404 EMPLOYEE_NOT_FOUND, 409 ALREADY_ACTIVE, 409 EMPLOYEE_TERMINATED, 429 RATE_LIMITED.', true, {
             parameters: idParam,
             responses: { 200: r200, 404: r404, 409: r409, 422: r422, 429: { description: 'RATE_LIMITED' } },
           }),
