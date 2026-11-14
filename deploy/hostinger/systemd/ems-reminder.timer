@@ -1,0 +1,9 @@
+[Unit]
+Description=EMS timesheet submit reminders, every 12h
+
+[Timer]
+OnCalendar=*-*-* 00,12:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

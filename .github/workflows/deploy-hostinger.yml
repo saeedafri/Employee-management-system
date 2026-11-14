@@ -1,8 +1,13 @@
 name: Deploy to Hostinger
 
-# Push to main -> auto-deploy to the Hostinger VPS (the REAL server). No manual steps.
+# Every green CI run on main deploys that exact commit to the VPS (187.126.125.239, shared
+# with rentocloud). No manual steps. The deploy key is a forced-command key: it can only run
+# /usr/local/sbin/ems-deploy-shim, which runs deploy/hostinger/deploy.sh from the release:
+# pg_dump -> build image -> cut over -> health-gated, automatic rollback on failure.
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -12,113 +17,45 @@ concurrency:
 
 jobs:
   deploy:
-    name: Build-check + deploy to Hostinger
+    name: Deploy tested commit
+    # Only after CI passed on a push to main (never for PRs or red runs).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Ship release to the VPS
+        env:
+          DEPLOY_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+          HOST: ${{ secrets.HOSTINGER_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          git archive --format=tar.gz HEAD src prisma package.json package-lock.json deploy \
+            | ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes \
+                -o ConnectTimeout=20 -o ServerAliveInterval=30 "root@$HOST" "deploy $(git rev-parse HEAD)"
+
+      - name: Live health through nginx
+        run: |
+          for i in $(seq 1 20); do
+            code=$(curl -s -m 6 -o /dev/null -w "%{http_code}" https://ems-api.saqibsaeed.cloud/health || echo 000)
+            [ "$code" = 200 ] && { echo "live $code"; exit 0; }
+            echo "waiting ($code)"; sleep 3
+          done
+          exit 1
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
-      # Fail fast before touching prod if the push is broken.
-      - run: npm ci
-      - run: npm run lint
-      - run: npx prisma generate
-      - name: Verify app loads
-        run: node --input-type=module --eval "import('./src/app.js').then(()=>{console.log('app OK');process.exit(0)}).catch(e=>{console.error(e);process.exit(1)})"
-
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          # Best-effort known_hosts seed. Never fatal: a transient keyscan blip must
-          # not abort the deploy (the ssh step below uses accept-new as the fallback).
-          ssh-keyscan -T 15 -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || \
-            echo "ssh-keyscan did not return keys (non-fatal); relying on accept-new"
-
-      - name: Deploy (backup -> pull -> build -> migrate -> restart)
-        run: |
-          ssh -i ~/.ssh/deploy_key -o BatchMode=yes \
-            -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=30 \
-            "${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}" 'bash -se' <<'EOSSH'
-          set -euo pipefail
-          cd /opt/ems
-          echo "::group::backup"
-          docker exec ems-postgres pg_dump -U ems_user -d ems | gzip > "/opt/ems/backups/ems_predeploy_$(date +%Y%m%d_%H%M%S).sql.gz"
-          ls -t /opt/ems/backups/ems_predeploy_*.sql.gz | tail -n +15 | xargs -r rm -f   # keep newest 14
-          echo "::endgroup::"
-          echo "::group::pull"
-          APP=/opt/ems/app
-          git -C "$APP" fetch --prune origin main
-          # A --ff-only pull aborts if an incoming (upstream-tracked) file already exists
-          # untracked on the box. Remove ONLY files that are BOTH untracked locally AND
-          # tracked at origin/main. Box-only files (Dockerfile, .dockerignore, .env*) are
-          # NOT tracked upstream, so this can never delete them.
-          comm -12 \
-            <(git -C "$APP" ls-files --others --exclude-standard | sort) \
-            <(git -C "$APP" ls-tree -r --name-only origin/main | sort) \
-            | while IFS= read -r f; do echo "clearing stray untracked (incoming-tracked): $f"; rm -f "$APP/$f"; done
-          git -C "$APP" pull --ff-only origin main
-          git -C "$APP" log -1 --oneline
-          echo "::endgroup::"
-          echo "::group::build"
-          docker compose build ems-backend
-          echo "::endgroup::"
-
-          # BE-1 + BE-4: reconcile the tenant's RolePermission grants BEFORE the
-          # gated code starts serving. The new routes require keys this tenant's
-          # saved customization had dropped; deploying the gates first would 403
-          # MANAGER and EMPLOYEE out of Employees, Departments and Leave. Grants
-          # are inert without the gates, so doing it in this order is always safe.
-          # Runs on the freshly built image while the OLD container still serves.
-          # -T and </dev/null are load-bearing. This whole script arrives on the
-          # remote shell's stdin via `bash -se <<EOSSH`; `docker compose run`
-          # allocates a TTY and reads stdin, so without them it SWALLOWS every
-          # remaining line -- up, migrate, seed all silently never ran and the
-          # step still exited 0, leaving the old image serving on a "successful"
-          # deploy. Same reason `docker exec` below gets </dev/null.
-          echo "::group::rbac-reconcile (pre-cutover)"
-          docker compose run --rm --no-deps -T ems-backend node scripts/rbacGrantReconcileDb.mjs --apply </dev/null
-          echo "::endgroup::"
-
-          echo "::group::up"
-          docker compose up -d --force-recreate ems-backend </dev/null
-          echo "::endgroup::"
-          echo "::group::migrate"
-          docker exec ems-backend npx prisma migrate deploy </dev/null
-          echo "::endgroup::"
-
-          # A deploy that reports success while the OLD image keeps serving is
-          # exactly the failure this workflow just had. Assert the running
-          # container actually contains this commit's code before calling it done.
-          echo "::group::verify-image"
-          echo "deployed commit: $(git -C "$APP" rev-parse --short HEAD)"
-          docker exec ems-backend grep -q exportRecruitment /app/src/modules/recruitment/recruitment.controller.js </dev/null \
-            || { echo "FATAL: the running container does not contain this commit's code"; exit 1; }
-          echo "running container carries this commit"
-          echo "::endgroup::"
-
-          # BE-6: seed the AUDITOR login. Idempotent upsert, deletes nothing.
-          echo "::group::seed-auditor"
-          docker exec ems-backend node scripts/seedAuditorUser.mjs </dev/null || echo "auditor seed skipped (non-fatal)"
-          echo "::endgroup::"
-          EOSSH
-
-      - name: Health check (live)
-        run: |
-          for i in $(seq 1 40); do
-            code=$(curl -s -m 6 -o /dev/null -w "%{http_code}" https://ems-api.saqibsaeed.cloud/health || echo 000)
-            if [ "$code" = "200" ]; then echo "Hostinger healthy ($code)"; exit 0; fi
-            echo "waiting... ($code)"; sleep 3
-          done
-          echo "Health check FAILED"; exit 1
-
-      # Every `- [ ] Accept` box in docs/BACKEND_IMPLEMENTATION_SPEC_2026-08-13.md,
-      # checked against the environment we just deployed. Fails the run if any
-      # regress, so a bad RBAC change cannot sit green on production.
+      # Every `- [ ] Accept` box in docs/BACKEND_IMPLEMENTATION_SPEC_2026-08-13.md, checked
+      # against the environment just deployed, so an RBAC regression cannot sit green on prod.
       - name: Live accept checks (tracker BE-1..BE-11)
         run: node scripts/verifyTrackerAccepts.mjs
         env:

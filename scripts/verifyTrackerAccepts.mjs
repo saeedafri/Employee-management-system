@@ -79,15 +79,17 @@ for (const role of ['HR_ADMIN', 'SUPER_ADMIN']) {
     employee.status === 200 && employeeIdsOf(employee.json).size <= 1,
     `${employeeIdsOf(employee.json).size} distinct employees`);
 
+  const hr = await call('/leave/assignments', { token: tokens.HR_ADMIN });
+  const hrRows = (hr.json.data?.assignments ?? []).length;
+
+  // A tenant with no assignments at all (acme on the Hostinger box) cannot show scoping either way.
   const manager = await call('/leave/assignments', { token: tokens.MANAGER });
   const managerCount = employeeIdsOf(manager.json).size;
   check('BE-2', 'MANAGER sees their reports, not the tenant',
-    manager.status === 200 && managerCount > 0 && managerCount < 75, `${managerCount} distinct employees`);
+    manager.status === 200 && (hrRows === 0 ? managerCount === 0 : managerCount > 0 && managerCount < 75),
+    hrRows === 0 ? 'tenant has no leave assignments — scope not exercisable on this data' : `${managerCount} distinct employees`);
 
-  const hr = await call('/leave/assignments', { token: tokens.HR_ADMIN });
-  check('BE-2', 'HR_ADMIN unchanged (all rows)',
-    hr.status === 200 && (hr.json.data?.assignments ?? []).length >= managerCount,
-    `${(hr.json.data?.assignments ?? []).length} rows`);
+  check('BE-2', 'HR_ADMIN unchanged (all rows)', hr.status === 200 && hrRows >= managerCount, `${hrRows} rows`);
 }
 
 // ── BE-4 (Option A) ─────────────────────────────────────────────────────────

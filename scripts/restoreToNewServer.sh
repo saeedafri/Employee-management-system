@@ -41,7 +41,7 @@ ssh -p "$PORT" -i "$KEY" "root@$NEW_IP" '
     -p 6379:6379 \
     -e POSTGRES_DB=ems \
     -e POSTGRES_USER=ems_user \
-    -e POSTGRES_PASSWORD=b3dc6022286765e48af328d30dedf10957f0c6e0323efceb \
+    -e POSTGRES_PASSWORD="${POSTGRES_PASSWORD:?export POSTGRES_PASSWORD first (never commit it)}" \
     -v /opt/ems/entrypoint.sh:/usr/local/bin/entrypoint.sh \
     -v /opt/ems-data/postgres:/var/lib/postgresql/16/main \
     -v /opt/ems-data/redis:/var/lib/redis \

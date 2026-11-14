@@ -1,0 +1,9 @@
+[Unit]
+Description=EMS nightly Postgres backup (keeps 30)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+UMask=0077
+ExecStart=/bin/sh -c 'f=/opt/ems-backups/ems_nightly_$(date -u +%%Y%%m%%d).dump; docker exec ems-postgres pg_dump -U ems_user -Fc ems > "$f.tmp" && mv "$f.tmp" "$f" && ls -1t /opt/ems-backups/ems_nightly_*.dump | tail -n +31 | xargs -r rm -f'

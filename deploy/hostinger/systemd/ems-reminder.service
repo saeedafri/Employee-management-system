@@ -1,0 +1,8 @@
+[Unit]
+Description=EMS timesheet submit reminders
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker exec ems-backend node src/jobs/submitReminderJob.js
