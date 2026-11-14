@@ -14,6 +14,7 @@ const TENANT_ID = 'test-medium-tenant-' + Date.now();
 let app;
 let hr;
 let mgr;
+let emp;
 const employeeIds = [];
 
 async function login(email) {
@@ -47,6 +48,7 @@ before(async () => {
     data: [
       { id: `${TENANT_ID}-hr`, tenantId: TENANT_ID, email: 'hr@medium.test', passwordHash, memberType: 'HR_ADMIN', status: 'ACTIVE' },
       { id: `${TENANT_ID}-mgr`, tenantId: TENANT_ID, email: 'mgr@medium.test', passwordHash, memberType: 'MANAGER', status: 'ACTIVE' },
+      { id: `${TENANT_ID}-emp`, tenantId: TENANT_ID, email: 'emp@medium.test', passwordHash, memberType: 'EMPLOYEE', status: 'ACTIVE' },
     ],
   });
   for (let i = 1; i <= 2; i++) {
@@ -59,7 +61,7 @@ before(async () => {
     });
     employeeIds.push(emp.id);
   }
-  [hr, mgr] = await Promise.all([login('hr@medium.test'), login('mgr@medium.test')]);
+  [hr, mgr, emp] = await Promise.all([login('hr@medium.test'), login('mgr@medium.test'), login('emp@medium.test')]);
 });
 
 after(async () => {
@@ -102,7 +104,8 @@ describe('announcements work for a tenant with no channel', () => {
     assert.equal(created.status, 201);
     assert.equal(created.body.data.name, 'IT news');
     assert.equal((await call(hr, 'POST', '/announcements/channels', { name: 'IT news', category: 'IT' })).status, 409);
-    assert.equal((await call(mgr, 'POST', '/announcements/channels', { name: 'Nope', category: 'IT' })).status, 403);
+    // MANAGER holds announcements:write by default; EMPLOYEE only reads.
+    assert.equal((await call(emp, 'POST', '/announcements/channels', { name: 'Nope', category: 'IT' })).status, 403);
   });
 });
 
